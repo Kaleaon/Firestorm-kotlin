@@ -122,6 +122,6 @@ class Color4u(var r: UByte, var g: UByte, var b: UByte, var a: UByte) {
 fun distVec(a: Color4u, b: Color4u): Float = (a - b).length()
 fun distVecSquared(a: Color4u, b: Color4u): Float = (a - b).lengthSquared()
 
-private fun Float.roundToUByte(): UByte = kotlin.math.roundToInt().coerceIn(0, 255).toUByte()
+private fun Float.roundToUByte(): UByte = kotlin.math.round(this).toInt().coerceIn(0, 255).toUByte()
 private fun Float.scaleClampToUByte(scale: Float): UByte =
-    (this * scale).let { kotlin.math.roundToInt(it).coerceIn(0, 255).toUByte() }
+    kotlin.math.round(this * scale).toInt().coerceIn(0, 255).toUByte()

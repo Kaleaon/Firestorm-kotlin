@@ -2,7 +2,6 @@ package com.firestorm.llmath
 
 import kotlin.math.cos
 import kotlin.math.sin
-import kotlin.math.sqrt
 
 class CoordFrame {
     var origin = Vector3(0f, 0f, 0f)
@@ -46,9 +45,9 @@ class CoordFrame {
 
     constructor(mat: Matrix4) {
         origin.set(mat.getTranslation())
-        xAxis.set(mat.getForwardRow())
-        yAxis.set(mat.getLeftRow())
-        zAxis.set(mat.getUpRow())
+        xAxis.set(mat[0, 0], mat[0, 1], mat[0, 2])
+        yAxis.set(mat[1, 0], mat[1, 1], mat[1, 2])
+        zAxis.set(mat[2, 0], mat[2, 1], mat[2, 2])
     }
 
     fun isFinite(): Boolean =
@@ -66,8 +65,8 @@ class CoordFrame {
     }
 
     fun setOrigin(x: Float, y: Float, z: Float) { origin.set(x, y, z) }
-    fun setOrigin(v: Vector3)       { origin.set(v) }
-    fun setOrigin(frame: CoordFrame) { origin.set(frame.origin) }
+    fun setOrigin(v: Vector3)                   { origin.set(v) }
+    fun setOrigin(frame: CoordFrame)             { origin.set(frame.origin) }
 
     var originX: Float get() = origin.x; set(v) { origin.x = v }
     var originY: Float get() = origin.y; set(v) { origin.y = v }
@@ -77,10 +76,10 @@ class CoordFrame {
         xAxis.set(x); yAxis.set(y); zAxis.set(z)
     }
 
-    fun setAxes(rotation: Matrix3) {
-        xAxis.set(rotation.row(0))
-        yAxis.set(rotation.row(1))
-        zAxis.set(rotation.row(2))
+    fun setAxes(m: Matrix3) {
+        xAxis.set(m[0, 0], m[0, 1], m[0, 2])
+        yAxis.set(m[1, 0], m[1, 1], m[1, 2])
+        zAxis.set(m[2, 0], m[2, 1], m[2, 2])
     }
 
     fun setAxes(q: Quaternion) {
@@ -98,11 +97,13 @@ class CoordFrame {
     fun translate(v: Vector3) { origin += v }
 
     fun rotate(angle: Float, x: Float, y: Float, z: Float) {
-        rotate(Quaternion(angle, Vector3(x, y, z)))
+        val q = Quaternion().also { it.setAngleAxis(angle, x, y, z) }
+        rotate(q)
     }
 
     fun rotate(angle: Float, axis: Vector3) {
-        rotate(Quaternion(angle, axis))
+        val q = Quaternion().also { it.setAngleAxis(angle, axis) }
+        rotate(q)
     }
 
     fun rotate(q: Quaternion) {
@@ -110,46 +111,55 @@ class CoordFrame {
     }
 
     fun rotate(m: Matrix3) {
-        xAxis = xAxis.rotVec(m)
-        yAxis = yAxis.rotVec(m)
+        xAxis = m * xAxis
+        yAxis = m * yAxis
         orthonormalize()
     }
 
     fun orthonormalize() {
         xAxis.normalize()
-        yAxis -= xAxis * (xAxis * yAxis)
+        val dot = xAxis * yAxis
+        yAxis -= xAxis * dot
         yAxis.normalize()
-        zAxis = xAxis cross yAxis
+        zAxis = xAxis % yAxis
     }
 
     fun roll(angle: Float)  { rotate2(yAxis, zAxis, angle) }
     fun pitch(angle: Float) { rotate2(zAxis, xAxis, angle) }
     fun yaw(angle: Float)   { rotate2(xAxis, yAxis, angle) }
 
-    fun getOrigin(): Vector3 = origin
-    fun getXAxis(): Vector3  = xAxis
-    fun getYAxis(): Vector3  = yAxis
-    fun getZAxis(): Vector3  = zAxis
+    fun getOrigin(): Vector3   = origin
+    fun getXAxis(): Vector3    = xAxis
+    fun getYAxis(): Vector3    = yAxis
+    fun getZAxis(): Vector3    = zAxis
     fun getAtAxis(): Vector3   = xAxis
     fun getLeftAxis(): Vector3 = yAxis
     fun getUpAxis(): Vector3   = zAxis
 
-    fun getQuaternion(): Quaternion = Quaternion(xAxis, yAxis, zAxis)
+    fun getQuaternion(): Quaternion = Matrix3(
+        floatArrayOf(
+            xAxis.x, xAxis.y, xAxis.z,
+            yAxis.x, yAxis.y, yAxis.z,
+            zAxis.x, zAxis.y, zAxis.z
+        )
+    ).toQuaternion()
 
     fun getMatrixToLocal(mat: Matrix4) {
-        mat.setFwdCol(xAxis)
-        mat.setLeftCol(yAxis)
-        mat.setUpCol(zAxis)
-        val tx = -(origin.x * mat[0, 0] + origin.y * mat[1, 0] + origin.z * mat[2, 0])
-        val ty = -(origin.x * mat[0, 1] + origin.y * mat[1, 1] + origin.z * mat[2, 1])
-        val tz = -(origin.x * mat[0, 2] + origin.y * mat[1, 2] + origin.z * mat[2, 2])
-        mat[3, 0] = tx; mat[3, 1] = ty; mat[3, 2] = tz
+        // Transpose of rotation goes into columns
+        mat[0, 0] = xAxis.x; mat[1, 0] = xAxis.y; mat[2, 0] = xAxis.z
+        mat[0, 1] = yAxis.x; mat[1, 1] = yAxis.y; mat[2, 1] = yAxis.z
+        mat[0, 2] = zAxis.x; mat[1, 2] = zAxis.y; mat[2, 2] = zAxis.z
+        mat[3, 0] = -(origin.x * mat[0, 0] + origin.y * mat[1, 0] + origin.z * mat[2, 0])
+        mat[3, 1] = -(origin.x * mat[0, 1] + origin.y * mat[1, 1] + origin.z * mat[2, 1])
+        mat[3, 2] = -(origin.x * mat[0, 2] + origin.y * mat[1, 2] + origin.z * mat[2, 2])
     }
 
     fun getRotMatrixToParent(mat: Matrix4) {
-        mat.setFwdRow(-yAxis)
-        mat.setLeftRow(zAxis)
-        mat.setUpRow(-xAxis)
+        val ny = -yAxis
+        mat[0, 0] = ny.x;    mat[0, 1] = ny.y;    mat[0, 2] = ny.z
+        mat[1, 0] = zAxis.x; mat[1, 1] = zAxis.y; mat[1, 2] = zAxis.z
+        val nx = -xAxis
+        mat[2, 0] = nx.x;    mat[2, 1] = nx.y;    mat[2, 2] = nx.z
     }
 
     fun rotateToLocal(v: Vector3): Vector3 =
@@ -214,13 +224,13 @@ class CoordFrame {
     }
 
     fun lookDir(at: Vector3, up: Vector3 = Vector3(0f, 0f, 1f)) {
-        var left = up cross at
+        var left = up % at
         if (left.isNull()) {
             val tweaked = Vector3(at.x + 0.01f, at.y, at.z).also { it.normalize() }
-            left = up cross tweaked
+            left = up % tweaked
         }
         left.normalize()
-        val upVec = at cross left
+        val upVec = at % left
         if (at.isFinite() && left.isFinite() && upVec.isFinite()) {
             setAxes(at, left, upVec)
         }

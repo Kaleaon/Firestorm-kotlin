@@ -7,6 +7,7 @@ This repository now includes an executable import-and-conversion pipeline for `p
 1. **Repository import** (`RepositoryImport.cloneIfMissing`) that clones upstream source with `--depth 1`.
 2. **File inventory** (`RepositoryImport.listFiles`) for deterministic migration accounting.
 3. **Kotlin conversion pass** (`KotlinTranspiler.transpileAll`) that walks imported text source files and emits Kotlin artifacts for each input file.
+4. **Native stub extraction** (`CLikeKotlinStubGenerator`) that emits Kotlin class and function stubs from C/C++-style source patterns.
 
 ## Conversion output contract
 
@@ -17,19 +18,17 @@ For every supported, non-binary file in the imported source tree:
   - normalized Kotlin `package` based on source path,
   - deterministic object name (`<SourceFileName>Port`),
   - metadata (`sourcePath`, `originalExtension`),
+  - extracted native stubs when source is C/C++ (`class` and `fun ... = TODO(...)`),
   - full original source embedded as a Kotlin multiline string (`originalCode`).
 
-This ensures all imported code is represented in properly formatted Kotlin output, enabling deterministic tracking and incremental replacement with hand-written Kotlin implementations.
+This guarantees source preservation while providing immediately compilable Kotlin scaffolding for incremental manual migration.
 
 ## Run
 
 ```bash
-kotlin MainKt --import-convert
+gradle test
 ```
 
-Or run steps independently:
-
 ```bash
-kotlin MainKt --import
-kotlin MainKt --convert
+gradle run --args='--import-convert'
 ```

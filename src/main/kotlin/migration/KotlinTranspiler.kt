@@ -15,13 +15,16 @@ object KotlinTranspiler {
         "glsl", "vert", "frag", "cmake", "txt", "xml", "json", "ini"
     )
 
+    private val nativeExtensions = setOf("c", "cc", "cpp", "cxx", "h", "hh", "hpp", "hxx")
+
     fun transpileAll(sourceRoot: Path, outputRoot: Path): Int {
         outputRoot.createDirectories()
         var generated = 0
 
-        Files.walk(sourceRoot).use { paths ->
-            paths.filter { Files.isRegularFile(it) }
-                .filterNot { it.invariantSeparatorsPathString.contains("/.git/") }
+        Files.walk(sourceRoot).use { stream ->
+            stream.iterator().asSequence()
+                .filter { path -> Files.isRegularFile(path) }
+                .filterNot { path -> path.invariantSeparatorsPathString.contains("/.git/") }
                 .forEach { file ->
                     if (isLikelyBinary(file)) return@forEach
                     if (!shouldProcess(file)) return@forEach
@@ -84,23 +87,29 @@ object KotlinTranspiler {
         source: String
     ): String {
         val escaped = source.replace("\"\"\"", "\\\"\\\"\\\"")
+        val stubs = if (extension.lowercase() in nativeExtensions) {
+            CLikeKotlinStubGenerator.buildStubBlock(source)
+        } else {
+            ""
+        }
+        val stubBlock = if (stubs.isNotBlank()) "$stubs\n\n" else ""
 
-        return """
-            |package $packageName
-            |
-            |/**
-            | * Auto-generated from `$relativePath`.
-            | * Original extension: `${extension.ifBlank { "none" }}`.
-            | */
-            |object $objectName {
-            |    const val sourcePath: String = "$relativePath"
-            |    const val originalExtension: String = "${extension.ifBlank { "none" }}"
-            |
-            |    val originalCode: String = """
-            |$escaped
-            |    """.trimIndent()
-            |}
-            |
-        """.trimMargin()
+        return buildString {
+            appendLine("package $packageName")
+            appendLine()
+            appendLine("/**")
+            appendLine(" * Auto-generated from `$relativePath`.")
+            appendLine(" * Original extension: `${extension.ifBlank { "none" }}`.")
+            appendLine(" */")
+            appendLine("object $objectName {")
+            appendLine("    const val sourcePath: String = \"$relativePath\"")
+            appendLine("    const val originalExtension: String = \"${extension.ifBlank { "none" }}\"")
+            appendLine()
+            append(stubBlock.prependIndent(""))
+            appendLine("    val originalCode: String = \"\"\"")
+            appendLine(escaped)
+            appendLine("    \"\"\".trimIndent()")
+            appendLine("}")
+        }
     }
 }

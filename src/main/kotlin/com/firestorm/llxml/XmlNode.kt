@@ -200,19 +200,13 @@ class XmlNode(
         LLUUID.fromString(value.trim()) ?: LLUUID.NULL
 
     fun getValueAsColor4(): Color4? {
-        val parts = value.trim().split(Regex("\\s+"))
-        if (parts.size < 4) return null
-        return try {
-            Color4(parts[0].toFloat(), parts[1].toFloat(), parts[2].toFloat(), parts[3].toFloat())
-        } catch (_: NumberFormatException) { null }
+        val values = parseFloatTuple(value, 4) ?: return null
+        return Color4(values[0], values[1], values[2], values[3])
     }
 
     fun getValueAsVector3(): Vector3? {
-        val parts = value.trim().split(Regex("\\s+"))
-        if (parts.size < 3) return null
-        return try {
-            Vector3(parts[0].toFloat(), parts[1].toFloat(), parts[2].toFloat())
-        } catch (_: NumberFormatException) { null }
+        val values = parseFloatTuple(value, 3) ?: return null
+        return Vector3(values[0], values[1], values[2])
     }
 
     // Typed attribute getters
@@ -243,20 +237,14 @@ class XmlNode(
 
     fun getAttributeColor4(attrName: String): Color4? {
         val v = attributes[attrName]?.value?.trim() ?: return null
-        val parts = v.split(Regex("\\s+"))
-        if (parts.size < 4) return null
-        return try {
-            Color4(parts[0].toFloat(), parts[1].toFloat(), parts[2].toFloat(), parts[3].toFloat())
-        } catch (_: NumberFormatException) { null }
+        val values = parseFloatTuple(v, 4) ?: return null
+        return Color4(values[0], values[1], values[2], values[3])
     }
 
     fun getAttributeVector3(attrName: String): Vector3? {
         val v = attributes[attrName]?.value?.trim() ?: return null
-        val parts = v.split(Regex("\\s+"))
-        if (parts.size < 3) return null
-        return try {
-            Vector3(parts[0].toFloat(), parts[1].toFloat(), parts[2].toFloat())
-        } catch (_: NumberFormatException) { null }
+        val values = parseFloatTuple(v, 3) ?: return null
+        return Vector3(values[0], values[1], values[2])
     }
 
     // Typed value setters
@@ -304,6 +292,16 @@ class XmlNode(
     }
 
     companion object {
+        private val WHITESPACE_REGEX = Regex("\\s+")
+
+        private fun parseFloatTuple(source: String, expected: Int): FloatArray? {
+            val parts = source.trim().split(WHITESPACE_REGEX).filter { it.isNotEmpty() }
+            if (parts.size < expected) return null
+            return FloatArray(expected) { index ->
+                parts[index].toFloatOrNull() ?: return null
+            }
+        }
+
         fun parse(xml: String): XmlNode? = runCatching {
             val factory = DocumentBuilderFactory.newInstance().apply { isNamespaceAware = false }
             val builder = factory.newDocumentBuilder()

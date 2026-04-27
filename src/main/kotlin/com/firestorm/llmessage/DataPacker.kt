@@ -230,6 +230,21 @@ class DataPackerAsciiBuffer(buffer: CharArray) : DataPacker() {
         }
     }
 
+    private fun parseSizedHexPayload(payload: String, expectedSize: Int? = null): ByteArray? {
+        val trimmed = payload.trim()
+        if (trimmed.isEmpty()) {
+            return if (expectedSize == null || expectedSize == 0) ByteArray(0) else null
+        }
+        if (trimmed.length % 2 != 0) return null
+        val actualSize = trimmed.length / 2
+        if (expectedSize != null && actualSize < expectedSize) return null
+        val targetSize = expectedSize ?: actualSize
+        return ByteArray(targetSize) { index ->
+            val off = index * 2
+            trimmed.substring(off, off + 2).toIntOrNull(16)?.toByte() ?: return null
+        }
+    }
+
     override fun packU8(value: UByte, name: String) = writeToken(name, value.toInt().toString())
     override fun unpackU8(name: String) = readToken(name)?.toUByteOrNull()
 
@@ -260,9 +275,7 @@ class DataPackerAsciiBuffer(buffer: CharArray) : DataPacker() {
         val parts = token.split(' ', limit = 2)
         val size = parts[0].toIntOrNull() ?: return null
         if (parts.size < 2) return ByteArray(0)
-        return (0 until size).map { i ->
-            parts[1].substring(i * 2, i * 2 + 2).toInt(16).toByte()
-        }.toByteArray()
+        return parseSizedHexPayload(parts[1], size)
     }
 
     override fun packBinaryDataFixed(value: ByteArray, size: Int, name: String): Boolean {
@@ -271,7 +284,7 @@ class DataPackerAsciiBuffer(buffer: CharArray) : DataPacker() {
     }
     override fun unpackBinaryDataFixed(size: Int, name: String): ByteArray? {
         val hex = readToken(name) ?: return null
-        return (0 until size).map { i -> hex.substring(i * 2, i * 2 + 2).toInt(16).toByte() }.toByteArray()
+        return parseSizedHexPayload(hex, size)
     }
 
     override fun packColor4(r: Float, g: Float, b: Float, a: Float, name: String) =
@@ -298,12 +311,15 @@ class DataPackerAsciiBuffer(buffer: CharArray) : DataPacker() {
 class DataPackerAsciiFile(private val stream: OutputStream, private val indent: Int = 2) : DataPacker() {
     private val writer = PrintWriter(stream)
     private val fields: MutableMap<String, ArrayDeque<String>> = mutableMapOf()
+    private val fields: MutableList<Pair<String, String>> = mutableListOf()
+    private var readIndex: Int = 0
 
     init { writeEnabled = true }
 
-    override fun hasNext(): Boolean = true
+    override fun hasNext(): Boolean = readIndex < fields.size
 
     private fun writeField(name: String, value: String) {
+        fields.add(name to value)
         writer.println("${" ".repeat(indent)}$name\t$value")
         writer.flush()
         fields.getOrPut(name) { ArrayDeque() }.addLast(value)
@@ -326,6 +342,29 @@ class DataPackerAsciiFile(private val stream: OutputStream, private val indent: 
             }
         } catch (_: NumberFormatException) {
             null
+        }
+    }
+
+    private fun readField(name: String): String? {
+        if (readIndex >= fields.size) return null
+        val (fieldName, value) = fields[readIndex]
+        if (name.isNotEmpty() && fieldName != name) return null
+        readIndex++
+        return value
+    }
+
+    private fun parseSizedHexPayload(payload: String, expectedSize: Int? = null): ByteArray? {
+        val trimmed = payload.trim()
+        if (trimmed.isEmpty()) {
+            return if (expectedSize == null || expectedSize == 0) ByteArray(0) else null
+        }
+        if (trimmed.length % 2 != 0) return null
+        val actualSize = trimmed.length / 2
+        if (expectedSize != null && actualSize < expectedSize) return null
+        val targetSize = expectedSize ?: actualSize
+        return ByteArray(targetSize) { i ->
+            val off = i * 2
+            trimmed.substring(off, off + 2).toIntOrNull(16)?.toByte() ?: return null
         }
     }
 

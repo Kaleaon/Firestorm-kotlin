@@ -310,6 +310,7 @@ class DataPackerAsciiBuffer(buffer: CharArray) : DataPacker() {
 
 class DataPackerAsciiFile(private val stream: OutputStream, private val indent: Int = 2) : DataPacker() {
     private val writer = PrintWriter(stream)
+    private val fields: MutableMap<String, ArrayDeque<String>> = mutableMapOf()
     private val fields: MutableList<Pair<String, String>> = mutableListOf()
     private var readIndex: Int = 0
 
@@ -321,6 +322,27 @@ class DataPackerAsciiFile(private val stream: OutputStream, private val indent: 
         fields.add(name to value)
         writer.println("${" ".repeat(indent)}$name\t$value")
         writer.flush()
+        fields.getOrPut(name) { ArrayDeque() }.addLast(value)
+    }
+
+    private fun readField(name: String): String? {
+        val byName = fields[name]
+        if (byName != null && byName.isNotEmpty()) {
+            return byName.removeFirst()
+        }
+        return null
+    }
+
+    private fun parseHexBytes(hex: String): ByteArray? {
+        val cleanHex = hex.trim()
+        if (cleanHex.length % 2 != 0) return null
+        return try {
+            ByteArray(cleanHex.length / 2) { idx ->
+                cleanHex.substring(idx * 2, idx * 2 + 2).toInt(16).toByte()
+            }
+        } catch (_: NumberFormatException) {
+            null
+        }
     }
 
     private fun readField(name: String): String? {
@@ -374,28 +396,37 @@ class DataPackerAsciiFile(private val stream: OutputStream, private val indent: 
     override fun unpackBinaryData(name: String): ByteArray? {
         val token = readField(name) ?: return null
         val parts = token.split(' ', limit = 2)
-        val size = parts[0].toIntOrNull() ?: return null
-        if (parts.size < 2) return ByteArray(0)
-        return parseSizedHexPayload(parts[1], size)
+        val expectedSize = parts.firstOrNull()?.toIntOrNull() ?: return null
+        if (parts.size < 2) return if (expectedSize == 0) ByteArray(0) else null
+        val bytes = parseHexBytes(parts[1]) ?: return null
+        return if (bytes.size == expectedSize) bytes else null
     }
 
     override fun packBinaryDataFixed(value: ByteArray, size: Int, name: String): Boolean {
-        writeField(name, value.take(size).joinToString("") { "%02x".format(it) })
+        val fixed = if (value.size >= size) {
+            value.copyOf(size)
+        } else {
+            value + ByteArray(size - value.size)
+        }
+        writeField(name, fixed.joinToString("") { "%02x".format(it) })
         return true
     }
-    override fun unpackBinaryDataFixed(size: Int, name: String): ByteArray? =
-        parseSizedHexPayload(readField(name) ?: return null, size)
+    override fun unpackBinaryDataFixed(size: Int, name: String): ByteArray? {
+        val token = readField(name) ?: return null
+        val bytes = parseHexBytes(token) ?: return null
+        return if (bytes.size == size) bytes else null
+    }
 
     override fun packColor4(r: Float, g: Float, b: Float, a: Float, name: String): Boolean {
         writeField(name, "$r $g $b $a"); return true
     }
     override fun unpackColor4(name: String): FloatArray? {
-        val p = readField(name)?.trim()?.split(Regex("\\s+")) ?: return null
-        if (p.size < 4) return null
-        val r = p[0].toFloatOrNull() ?: return null
-        val g = p[1].toFloatOrNull() ?: return null
-        val b = p[2].toFloatOrNull() ?: return null
-        val a = p[3].toFloatOrNull() ?: return null
+        val parts = readField(name)?.trim()?.split(Regex("\\s+")) ?: return null
+        if (parts.size < 4) return null
+        val r = parts[0].toFloatOrNull() ?: return null
+        val g = parts[1].toFloatOrNull() ?: return null
+        val b = parts[2].toFloatOrNull() ?: return null
+        val a = parts[3].toFloatOrNull() ?: return null
         return floatArrayOf(r, g, b, a)
     }
 
@@ -403,11 +434,11 @@ class DataPackerAsciiFile(private val stream: OutputStream, private val indent: 
         writeField(name, "${value.x} ${value.y} ${value.z}"); return true
     }
     override fun unpackVector3(name: String): Vector3? {
-        val p = readField(name)?.trim()?.split(Regex("\\s+")) ?: return null
-        if (p.size < 3) return null
-        val x = p[0].toFloatOrNull() ?: return null
-        val y = p[1].toFloatOrNull() ?: return null
-        val z = p[2].toFloatOrNull() ?: return null
+        val parts = readField(name)?.trim()?.split(Regex("\\s+")) ?: return null
+        if (parts.size < 3) return null
+        val x = parts[0].toFloatOrNull() ?: return null
+        val y = parts[1].toFloatOrNull() ?: return null
+        val z = parts[2].toFloatOrNull() ?: return null
         return Vector3(x, y, z)
     }
 

@@ -136,13 +136,13 @@ class CoordFrame {
     fun getLeftAxis(): Vector3 = yAxis
     fun getUpAxis(): Vector3   = zAxis
 
-    fun getQuaternion(): Quaternion = Matrix3(
-        floatArrayOf(
-            xAxis.x, xAxis.y, xAxis.z,
-            yAxis.x, yAxis.y, yAxis.z,
-            zAxis.x, zAxis.y, zAxis.z
-        )
-    ).toQuaternion()
+    fun getQuaternion(): Quaternion {
+        val m = Matrix3()
+        m[0, 0] = xAxis.x; m[0, 1] = xAxis.y; m[0, 2] = xAxis.z
+        m[1, 0] = yAxis.x; m[1, 1] = yAxis.y; m[1, 2] = yAxis.z
+        m[2, 0] = zAxis.x; m[2, 1] = zAxis.y; m[2, 2] = zAxis.z
+        return m.toQuaternion()
+    }
 
     fun getMatrixToLocal(mat: Matrix4) {
         // Transpose of rotation goes into columns

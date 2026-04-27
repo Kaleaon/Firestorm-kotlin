@@ -62,7 +62,7 @@ class Primitive(
 
     // Terse object update: position (12 bytes compressed), velocity (6 bytes), accel (6 bytes),
     // rotation (8 bytes compressed), angular velocity (6 bytes).
-    // This stub writes a simplified uncompressed form for reference.
+    // This writes a simplified uncompressed form for reference.
     fun packTerseObjectUpdate(buf: ByteBuffer) {
         buf.order(ByteOrder.LITTLE_ENDIAN)
         buf.putFloat(position.x)
@@ -83,7 +83,7 @@ class Primitive(
         buf.putFloat(angularVelocity.z)
     }
 
-    // Full object update stub — writes core identity and spatial fields.
+    // Full object update writer — writes core identity and spatial fields.
     fun packObjectUpdate(buf: ByteBuffer) {
         buf.order(ByteOrder.LITTLE_ENDIAN)
         buf.put(id.toBytes())

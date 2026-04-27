@@ -1,22 +1,26 @@
 plugins {
+    kotlin("jvm") version "2.1.0"
     application
-    kotlin("jvm") version "2.0.21"
 }
+
+group = "com.firestorm"
+version = "1.0.0"
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
+    implementation(kotlin("stdlib"))
     testImplementation(kotlin("test"))
+}
+
+application {
+    mainClass.set("MainKt")
 }
 
 kotlin {
     jvmToolchain(21)
-}
-
-application {
-    mainClass = "MainKt"
 }
 
 tasks.test {

@@ -2,6 +2,7 @@ package com.firestorm.llxml
 
 import org.xml.sax.Attributes
 import org.xml.sax.InputSource
+import org.xml.sax.ext.LexicalHandler
 import org.xml.sax.helpers.DefaultHandler
 import java.io.File
 import java.io.StringReader
@@ -39,7 +40,7 @@ class XmlParser {
 
     // SAX-based incremental parse handler, mirrors LLXmlParser's virtual callback API.
     // Subclasses override the on* methods for event-driven processing.
-    open class SaxHandler : DefaultHandler() {
+    open class SaxHandler : DefaultHandler(), LexicalHandler {
         var depth: Int = 0
             private set
         var lastError: String = "no error"
@@ -73,6 +74,7 @@ class XmlParser {
             onProcessingInstruction(target, data)
         }
 
+        // LexicalHandler methods for CDATA section tracking
         override fun startCDATA() {
             depth++
             onStartCdataSection()
@@ -83,10 +85,22 @@ class XmlParser {
             depth++
         }
 
+        override fun comment(ch: CharArray, start: Int, length: Int) {
+            onComment(String(ch, start, length))
+        }
+
+        override fun startDTD(name: String?, publicId: String?, systemId: String?) {}
+        override fun endDTD() {}
+        override fun startEntity(name: String?) {}
+        override fun endEntity(name: String?) {}
+
         fun parseString(xml: String): Boolean = runCatching {
             val factory = SAXParserFactory.newInstance()
             val parser = factory.newSAXParser()
-            parser.parse(InputSource(StringReader(xml)), this)
+            val xmlReader = parser.xmlReader
+            xmlReader.setProperty("http://xml.org/sax/properties/lexical-handler", this)
+            xmlReader.contentHandler = this
+            xmlReader.parse(InputSource(StringReader(xml)))
             true
         }.getOrElse { e ->
             lastError = e.message ?: "Unknown error"

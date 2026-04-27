@@ -297,6 +297,7 @@ class DataPackerAsciiBuffer(buffer: CharArray) : DataPacker() {
 
 class DataPackerAsciiFile(private val stream: OutputStream, private val indent: Int = 2) : DataPacker() {
     private val writer = PrintWriter(stream)
+    private val fields: MutableMap<String, ArrayDeque<String>> = mutableMapOf()
 
     init { writeEnabled = true }
 
@@ -305,51 +306,103 @@ class DataPackerAsciiFile(private val stream: OutputStream, private val indent: 
     private fun writeField(name: String, value: String) {
         writer.println("${" ".repeat(indent)}$name\t$value")
         writer.flush()
+        fields.getOrPut(name) { ArrayDeque() }.addLast(value)
+    }
+
+    private fun readField(name: String): String? {
+        val byName = fields[name]
+        if (byName != null && byName.isNotEmpty()) {
+            return byName.removeFirst()
+        }
+        return null
+    }
+
+    private fun parseHexBytes(hex: String): ByteArray? {
+        val cleanHex = hex.trim()
+        if (cleanHex.length % 2 != 0) return null
+        return try {
+            ByteArray(cleanHex.length / 2) { idx ->
+                cleanHex.substring(idx * 2, idx * 2 + 2).toInt(16).toByte()
+            }
+        } catch (_: NumberFormatException) {
+            null
+        }
     }
 
     override fun packU8(value: UByte, name: String): Boolean { writeField(name, value.toInt().toString()); return true }
-    override fun unpackU8(name: String): UByte? = null
+    override fun unpackU8(name: String): UByte? = readField(name)?.toUByteOrNull()
 
     override fun packU16(value: UShort, name: String): Boolean { writeField(name, value.toInt().toString()); return true }
-    override fun unpackU16(name: String): UShort? = null
+    override fun unpackU16(name: String): UShort? = readField(name)?.toUShortOrNull()
 
     override fun packS16(value: Short, name: String): Boolean { writeField(name, value.toString()); return true }
-    override fun unpackS16(name: String): Short? = null
+    override fun unpackS16(name: String): Short? = readField(name)?.toShortOrNull()
 
     override fun packU32(value: UInt, name: String): Boolean { writeField(name, value.toLong().toString()); return true }
-    override fun unpackU32(name: String): UInt? = null
+    override fun unpackU32(name: String): UInt? = readField(name)?.toUIntOrNull()
 
     override fun packS32(value: Int, name: String): Boolean { writeField(name, value.toString()); return true }
-    override fun unpackS32(name: String): Int? = null
+    override fun unpackS32(name: String): Int? = readField(name)?.toIntOrNull()
 
     override fun packF32(value: Float, name: String): Boolean { writeField(name, value.toString()); return true }
-    override fun unpackF32(name: String): Float? = null
+    override fun unpackF32(name: String): Float? = readField(name)?.toFloatOrNull()
 
     override fun packString(value: String, name: String): Boolean { writeField(name, value); return true }
-    override fun unpackString(name: String): String? = null
+    override fun unpackString(name: String): String? = readField(name)
 
     override fun packBinaryData(value: ByteArray, name: String): Boolean {
         writeField(name, "${value.size} ${value.joinToString("") { "%02x".format(it) }}")
         return true
     }
-    override fun unpackBinaryData(name: String): ByteArray? = null
+    override fun unpackBinaryData(name: String): ByteArray? {
+        val token = readField(name) ?: return null
+        val parts = token.split(' ', limit = 2)
+        val expectedSize = parts.firstOrNull()?.toIntOrNull() ?: return null
+        if (parts.size < 2) return if (expectedSize == 0) ByteArray(0) else null
+        val bytes = parseHexBytes(parts[1]) ?: return null
+        return if (bytes.size == expectedSize) bytes else null
+    }
 
     override fun packBinaryDataFixed(value: ByteArray, size: Int, name: String): Boolean {
-        writeField(name, value.take(size).joinToString("") { "%02x".format(it) })
+        val fixed = if (value.size >= size) {
+            value.copyOf(size)
+        } else {
+            value + ByteArray(size - value.size)
+        }
+        writeField(name, fixed.joinToString("") { "%02x".format(it) })
         return true
     }
-    override fun unpackBinaryDataFixed(size: Int, name: String): ByteArray? = null
+    override fun unpackBinaryDataFixed(size: Int, name: String): ByteArray? {
+        val token = readField(name) ?: return null
+        val bytes = parseHexBytes(token) ?: return null
+        return if (bytes.size == size) bytes else null
+    }
 
     override fun packColor4(r: Float, g: Float, b: Float, a: Float, name: String): Boolean {
         writeField(name, "$r $g $b $a"); return true
     }
-    override fun unpackColor4(name: String): FloatArray? = null
+    override fun unpackColor4(name: String): FloatArray? {
+        val parts = readField(name)?.trim()?.split(Regex("\\s+")) ?: return null
+        if (parts.size < 4) return null
+        val r = parts[0].toFloatOrNull() ?: return null
+        val g = parts[1].toFloatOrNull() ?: return null
+        val b = parts[2].toFloatOrNull() ?: return null
+        val a = parts[3].toFloatOrNull() ?: return null
+        return floatArrayOf(r, g, b, a)
+    }
 
     override fun packVector3(value: Vector3, name: String): Boolean {
         writeField(name, "${value.x} ${value.y} ${value.z}"); return true
     }
-    override fun unpackVector3(name: String): Vector3? = null
+    override fun unpackVector3(name: String): Vector3? {
+        val parts = readField(name)?.trim()?.split(Regex("\\s+")) ?: return null
+        if (parts.size < 3) return null
+        val x = parts[0].toFloatOrNull() ?: return null
+        val y = parts[1].toFloatOrNull() ?: return null
+        val z = parts[2].toFloatOrNull() ?: return null
+        return Vector3(x, y, z)
+    }
 
     override fun packUUID(value: LLUUID, name: String): Boolean { writeField(name, value.toString()); return true }
-    override fun unpackUUID(name: String): LLUUID? = null
+    override fun unpackUUID(name: String): LLUUID? = readField(name)?.let { LLUUID.fromString(it) }
 }

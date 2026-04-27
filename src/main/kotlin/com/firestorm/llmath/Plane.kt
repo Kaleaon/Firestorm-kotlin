@@ -3,43 +3,53 @@ package com.firestorm.llmath
 import kotlin.math.*
 
 class Plane {
-    private var nx: Float = 0f
-    private var ny: Float = 0f
-    private var nz: Float = 0f
-    private var d: Float  = 1f
+    var a: Float = 0f
+    var b: Float = 0f
+    var c: Float = 0f
+    var d: Float = 1f
 
     constructor()
 
     constructor(point: Vector3, dVal: Float) {
-        nx = point.x; ny = point.y; nz = point.z; d = dVal
+        a = point.x; b = point.y; c = point.z; d = dVal
     }
 
     constructor(point: Vector3, n: Vector3) {
         val dVal = -(point * n)
-        nx = n.x; ny = n.y; nz = n.z; d = dVal
+        a = n.x; b = n.y; c = n.z; d = dVal
     }
 
     constructor(p0: Vector3, p1: Vector3, p2: Vector3) {
         val u = p1 - p0
         val v = p2 - p0
-        val w = Vector3(u.x, u.y, u.z) % v
+        val w = u % v
         w.normalize()
         val dVal = -(w * p0)
-        nx = w.x; ny = w.y; nz = w.z; d = dVal
+        a = w.x; b = w.y; c = w.z; d = dVal
     }
 
-    fun set(other: Plane) { nx = other.nx; ny = other.ny; nz = other.nz; d = other.d }
+    fun set(other: Plane) { a = other.a; b = other.b; c = other.c; d = other.d }
 
-    fun normal(): Vector3 = Vector3(nx, ny, nz)
+    fun set(n: Vector3, dVal: Float) { a = n.x; b = n.y; c = n.z; d = dVal }
 
-    fun dist(v: Vector3): Float = nx * v.x + ny * v.y + nz * v.z + d
+    fun normal(): Vector3 = Vector3(a, b, c)
 
-    fun clear() { nx = 0f; ny = 0f; nz = 0f; d = 1f }
+    fun dist(v: Vector3): Float = a * v.x + b * v.y + c * v.z + d
 
-    operator fun get(idx: Int): Float = when (idx) { 0 -> nx; 1 -> ny; 2 -> nz; else -> d }
+    fun clear() { a = 0f; b = 0f; c = 0f; d = 1f }
+
+    fun calcPlaneMask(): UByte {
+        var mask = 0u
+        if (a >= 0f) mask = mask or 0x1u
+        if (b >= 0f) mask = mask or 0x2u
+        if (c >= 0f) mask = mask or 0x4u
+        return mask.toUByte()
+    }
+
+    operator fun get(idx: Int): Float = when (idx) { 0 -> a; 1 -> b; 2 -> c; else -> d }
 
     fun equal(other: Plane): Boolean =
-        nx == other.nx && ny == other.ny && nz == other.nz && d == other.d
+        a == other.a && b == other.b && c == other.c && d == other.d
 
-    override fun toString(): String = "Plane($nx, $ny, $nz, $d)"
+    override fun toString(): String = "Plane($a, $b, $c, $d)"
 }

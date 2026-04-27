@@ -4,10 +4,6 @@ import kotlin.math.*
 
 class Camera : CoordFrame {
 
-    enum class AgentPlane(val index: Int) {
-        LEFT(0), RIGHT(1), NEAR(2), BOTTOM(3), TOP(4), FAR(5), USER_CLIP(6);
-    }
-
     companion object {
         const val DEFAULT_FIELD_OF_VIEW: Float = 60f * DEG_TO_RAD
         const val DEFAULT_ASPECT_RATIO: Float  = 640f / 480f
@@ -33,21 +29,30 @@ class Camera : CoordFrame {
         const val PLANE_MASK_NUM: Int               = 8
         const val AGENT_FRUSTUM_NUM: Int            = 8
 
+        const val AGENT_PLANE_LEFT: Int      = 0
+        const val AGENT_PLANE_RIGHT: Int     = 1
+        const val AGENT_PLANE_NEAR: Int      = 2
+        const val AGENT_PLANE_BOTTOM: Int    = 3
+        const val AGENT_PLANE_TOP: Int       = 4
+        const val AGENT_PLANE_FAR: Int       = 5
+        const val AGENT_PLANE_USER_CLIP: Int = 6
+
         const val PLANE_LEFT: Int   = 0
         const val PLANE_RIGHT: Int  = 1
         const val PLANE_BOTTOM: Int = 2
         const val PLANE_TOP: Int    = 3
-        const val PLANE_NUM: Int    = 4
 
         const val HORIZ_PLANE_LEFT: Int  = 0
         const val HORIZ_PLANE_RIGHT: Int = 1
         const val HORIZ_PLANE_NUM: Int   = 2
     }
 
-    private val agentPlanes      = Array(AGENT_PLANE_USER_CLIP_NUM) { Plane() }
-    private val regionPlanes     = Array(AGENT_PLANE_USER_CLIP_NUM) { Plane() }
-    private val lastAgentPlanes  = Array(AGENT_PLANE_USER_CLIP_NUM) { Plane() }
-    private val planeMask        = IntArray(PLANE_MASK_NUM) { PLANE_MASK_NONE }
+    private val agentPlanes     = Array(AGENT_PLANE_USER_CLIP_NUM) { Plane() }
+    private val regionPlanes    = Array(AGENT_PLANE_USER_CLIP_NUM) { Plane() }
+    private val lastAgentPlanes = Array(AGENT_PLANE_USER_CLIP_NUM) { Plane() }
+    // planeMask[i]: bitmask of which octant sign the plane normal points into (0..7),
+    // or PLANE_MASK_NONE (0xff) when the plane is disabled.
+    private val planeMask = IntArray(PLANE_MASK_NUM) { PLANE_MASK_NONE }
 
     var view: Float = DEFAULT_FIELD_OF_VIEW
         private set
@@ -63,9 +68,9 @@ class Camera : CoordFrame {
 
     private var frustCenter     = Vector3()
     private var frustRadiusSq   = 0f
-    private var planeCount      = 6
+    private var planeCount      = AGENT_PLANE_NO_USER_CLIP_NUM
 
-    val agentFrustum    = Array(AGENT_FRUSTUM_NUM) { Vector3() }
+    val agentFrustum        = Array(AGENT_FRUSTUM_NUM) { Vector3() }
     var frustumCornerDist: Float = 0f
 
     constructor() : super() {
@@ -80,10 +85,10 @@ class Camera : CoordFrame {
         farPlane: Float
     ) : super() {
         this.viewHeightInPixels = viewHeightInPixels
-        aspect    = llClamp(aspectRatio, MIN_ASPECT_RATIO, MAX_ASPECT_RATIO)
-        near      = llClamp(nearPlane,   MIN_NEAR_PLANE,   MAX_NEAR_PLANE)
-        val fp    = if (farPlane < 0f) DEFAULT_FAR_PLANE else farPlane
-        far       = llClamp(fp, MIN_FAR_PLANE, MAX_FAR_PLANE)
+        aspect = llClamp(aspectRatio, MIN_ASPECT_RATIO, MAX_ASPECT_RATIO)
+        near   = llClamp(nearPlane,   MIN_NEAR_PLANE,   MAX_NEAR_PLANE)
+        val fp = if (farPlane < 0f) DEFAULT_FAR_PLANE else farPlane
+        far    = llClamp(fp, MIN_FAR_PLANE, MAX_FAR_PLANE)
         setView(verticalFovRads)
     }
 
@@ -91,20 +96,20 @@ class Camera : CoordFrame {
         var changed = false
         for (i in 0 until planeCount) {
             if (planeMask[i] != PLANE_MASK_NONE && !changed) {
-                changed = !agentPlanes[i].equals(lastAgentPlanes[i])
+                changed = !agentPlanes[i].equal(lastAgentPlanes[i])
             }
             lastAgentPlanes[i].set(agentPlanes[i])
         }
         return changed
     }
 
-    fun getAgentPlane(idx: Int): Plane = agentPlanes[idx]
-    fun getUserClipPlane(): Plane       = agentPlanes[AgentPlane.USER_CLIP.index]
+    fun getAgentPlane(idx: Int): Plane    = agentPlanes[idx]
+    fun getUserClipPlane(): Plane          = agentPlanes[AGENT_PLANE_USER_CLIP]
 
     fun setUserClipPlane(plane: Plane) {
         planeCount = AGENT_PLANE_USER_CLIP_NUM
-        agentPlanes[AgentPlane.USER_CLIP.index].set(plane)
-        planeMask[AgentPlane.USER_CLIP.index] = plane.calcPlaneMask()
+        agentPlanes[AGENT_PLANE_USER_CLIP].set(plane)
+        planeMask[AGENT_PLANE_USER_CLIP] = calcPlaneMask(plane)
     }
 
     fun disableUserClipPlane() {
@@ -142,7 +147,7 @@ class Camera : CoordFrame {
     fun getMaxView(): Float =
         if (aspect > 1f) MAX_FIELD_OF_VIEW / aspect else MAX_FIELD_OF_VIEW
 
-    fun getYaw(): Float   = atan2(xAxis.y, xAxis.x)
+    fun getYaw(): Float = atan2(xAxis.y, xAxis.x)
     fun getPitch(): Float {
         val xyLen = sqrt(xAxis.x * xAxis.x + xAxis.y * xAxis.y)
         return atan2(xAxis.z, xyLen)
@@ -169,10 +174,12 @@ class Camera : CoordFrame {
         val dy = center.y - frustCenter.y
         val dz = center.z - frustCenter.z
         val dsq = dx * dx + dy * dy + dz * dz
-        val rsq = (far * 0.5f + radius).let { it * it }
-        return if (dsq < rsq) 1 else 0
+        val r = far * 0.5f + radius
+        return if (dsq < r * r) 1 else 0
     }
 
+    // Returns 0 if outside, 1 if intersecting, 2 if fully inside.
+    // center and halfExtents are in the same space as the frustum planes.
     fun AABBInFrustum(center: Vector3, halfExtents: Vector3, planes: Array<Plane>? = null): Int {
         val p = planes ?: agentPlanes
         val maxPlanes = minOf(planeCount, AGENT_PLANE_USER_CLIP_NUM)
@@ -180,9 +187,9 @@ class Camera : CoordFrame {
         for (i in 0 until maxPlanes) {
             val mask = planeMask[i]
             if (mask < PLANE_MASK_NUM) {
-                val plane = p[i]
-                val d = plane.dist(center)
-                val r = plane.normalAbsDot(halfExtents)
+                val n = p[i].normal()
+                val r = abs(n.x) * halfExtents.x + abs(n.y) * halfExtents.y + abs(n.z) * halfExtents.z
+                val d = p[i].dist(center)
                 if (d > r) return 0
                 if (!result) result = (d > -r)
             }
@@ -198,11 +205,12 @@ class Camera : CoordFrame {
         val maxPlanes = minOf(planeCount, AGENT_PLANE_USER_CLIP_NUM)
         var result = false
         for (i in 0 until maxPlanes) {
+            if (i == AGENT_PLANE_FAR) continue
             val mask = planeMask[i]
-            if (i != AgentPlane.FAR.index && mask < PLANE_MASK_NUM) {
-                val plane = p[i]
-                val d = plane.dist(center)
-                val r = plane.normalAbsDot(halfExtents)
+            if (mask < PLANE_MASK_NUM) {
+                val n = p[i].normal()
+                val r = abs(n.x) * halfExtents.x + abs(n.y) * halfExtents.y + abs(n.z) * halfExtents.z
+                val d = p[i].dist(center)
                 if (d > r) return 0
                 if (!result) result = (d > -r)
             }
@@ -232,35 +240,78 @@ class Camera : CoordFrame {
 
     fun calcAgentFrustumPlanes(frust: Array<Vector3>) {
         for (i in 0 until AGENT_FRUSTUM_NUM) agentFrustum[i].set(frust[i])
-        frustumCornerDist = (frust[5] - origin).length()
+        val diff = frust[5] - origin
+        frustumCornerDist = diff.length()
 
-        agentPlanes[AgentPlane.NEAR.index]   = planeFromPoints(frust[0], frust[1], frust[2])
-        agentPlanes[AgentPlane.FAR.index]    = planeFromPoints(frust[5], frust[4], frust[6])
-        agentPlanes[AgentPlane.LEFT.index]   = planeFromPoints(frust[4], frust[0], frust[7])
-        agentPlanes[AgentPlane.RIGHT.index]  = planeFromPoints(frust[1], frust[5], frust[6])
-        agentPlanes[AgentPlane.TOP.index]    = planeFromPoints(frust[3], frust[2], frust[6])
-        agentPlanes[AgentPlane.BOTTOM.index] = planeFromPoints(frust[1], frust[0], frust[4])
+        agentPlanes[AGENT_PLANE_NEAR]   = planeFromPoints(frust[0], frust[1], frust[2])
+        agentPlanes[AGENT_PLANE_FAR]    = planeFromPoints(frust[5], frust[4], frust[6])
+        agentPlanes[AGENT_PLANE_LEFT]   = planeFromPoints(frust[4], frust[0], frust[7])
+        agentPlanes[AGENT_PLANE_RIGHT]  = planeFromPoints(frust[1], frust[5], frust[6])
+        agentPlanes[AGENT_PLANE_TOP]    = planeFromPoints(frust[3], frust[2], frust[6])
+        agentPlanes[AGENT_PLANE_BOTTOM] = planeFromPoints(frust[1], frust[0], frust[4])
 
         for (i in 0 until planeCount) {
-            planeMask[i] = agentPlanes[i].calcPlaneMask()
+            planeMask[i] = calcPlaneMask(agentPlanes[i])
         }
     }
 
     fun calcRegionFrustumPlanes(shift: Vector3, farClipDistance: Float) {
-        val farPlaneNormal = Vector3(agentPlanes[5].a, agentPlanes[5].b, agentPlanes[5].c)
-        val dd = farPlaneNormal * origin
-        val farW = if (dd + agentPlanes[5].d < 0f) {
-            -farClipDistance - dd + farPlaneNormal * shift
+        val fn = agentPlanes[AGENT_PLANE_FAR].normal()
+        val dd = fn * origin
+        val farW = if (dd + agentPlanes[AGENT_PLANE_FAR][3] < 0f) {
+            -farClipDistance - dd + fn * shift
         } else {
-            farClipDistance - dd + farPlaneNormal * shift
+            farClipDistance - dd + fn * shift
         }
 
         for (i in 0 until 7) {
-            if (planeMask[i] != PLANE_MASK_NONE) continue
-            val n = Vector3(agentPlanes[i].a, agentPlanes[i].b, agentPlanes[i].c)
-            val d = if (i != 5) agentPlanes[i].d + n * shift else farW
-            regionPlanes[i].set(n, d)
+            if (planeMask[i] == PLANE_MASK_NONE) continue
+            val n = agentPlanes[i].normal()
+            val d = if (i != AGENT_PLANE_FAR) agentPlanes[i][3] + n * shift else farW
+            regionPlanes[i] = Plane(n, d)
         }
+    }
+
+    protected fun calculateFrustumPlanes() {
+        val top    = far * tan(0.5f * view)
+        val bottom = -top
+        val left   = top * aspect
+        val right  = -left
+        calculateFrustumPlanes(left, right, top, bottom)
+    }
+
+    protected fun calculateFrustumPlanes(left: Float, right: Float, top: Float, bottom: Float) {
+        val halfFar = transformToAbsolute(Vector3(far * 0.5f, 0f, 0f))
+        frustCenter = halfFar
+        val r = far * 0.5f
+        frustRadiusSq = r * r * 1.05f
+    }
+
+    protected fun calculateFrustumPlanesFromWindow(x1: Float, y1: Float, x2: Float, y2: Float) {
+        val viewHeight = tan(0.5f * view) * far
+        val viewWidth  = viewHeight * aspect
+        calculateFrustumPlanes(
+            x1 * -2f * viewWidth,
+            x2 * -2f * viewWidth,
+            y2 *  2f * viewHeight,
+            y1 *  2f * viewHeight
+        )
+    }
+
+    private fun planeFromPoints(p1: Vector3, p2: Vector3, p3: Vector3): Plane {
+        val n = ((p2 - p1) % (p3 - p1)).also { it.normalize() }
+        return Plane(p1, n)
+    }
+
+    // Compute a mask (0..7) encoding which octant the plane normal points into.
+    // This is used as an index into the frustum scaler table for AABB tests.
+    private fun calcPlaneMask(plane: Plane): Int {
+        val n = plane.normal()
+        var mask = 0
+        if (n.x < 0f) mask = mask or 1
+        if (n.y < 0f) mask = mask or 2
+        if (n.z < 0f) mask = mask or 4
+        return mask
     }
 
     override fun toString(): String = buildString {
@@ -274,35 +325,5 @@ class Camera : CoordFrame {
         appendLine("  NearPlane = $near")
         appendLine("  FarPlane = $far")
         append("}")
-    }
-
-    protected fun calculateFrustumPlanes() {
-        val top    = far * tan(0.5f * view)
-        val bottom = -top
-        val left   = top * aspect
-        val right  = -left
-        calculateFrustumPlanes(left, right, top, bottom)
-    }
-
-    protected fun calculateFrustumPlanes(left: Float, right: Float, top: Float, bottom: Float) {
-        val halfFar = Vector3(1f, 0f, 0f) * (far * 0.5f)
-        frustCenter = transformToAbsolute(halfFar)
-        val r = far * 0.5f
-        frustRadiusSq = r * r * 1.05f
-    }
-
-    protected fun calculateFrustumPlanesFromWindow(x1: Float, y1: Float, x2: Float, y2: Float) {
-        val viewHeight = tan(0.5f * view) * far
-        val viewWidth  = viewHeight * aspect
-        val left   = x1 * -2f * viewWidth
-        val right  = x2 * -2f * viewWidth
-        val bottom = y1 *  2f * viewHeight
-        val top    = y2 *  2f * viewHeight
-        calculateFrustumPlanes(left, right, top, bottom)
-    }
-
-    private fun planeFromPoints(p1: Vector3, p2: Vector3, p3: Vector3): Plane {
-        val n = ((p2 - p1) cross (p3 - p1)).also { it.normalize() }
-        return Plane(p1, n)
     }
 }

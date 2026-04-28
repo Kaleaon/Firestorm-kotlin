@@ -3,6 +3,7 @@ package com.firestorm.llcharacter
 import com.firestorm.llcommon.LLUUID
 import com.firestorm.llmath.Quaternion
 import com.firestorm.llmath.Vector3
+import com.firestorm.llmath.slerp
 
 const val MIN_REQUIRED_PIXEL_AREA_KEYFRAME = 40f
 const val MAX_CHAIN_LENGTH = 4
@@ -72,7 +73,7 @@ class KeyframeMotion(val id: LLUUID) {
         }
 
         private fun interp(u: Float, before: RotationKey, after: RotationKey): Quaternion =
-            before.rotation.slerp(after.rotation, u)
+            slerp(u, before.rotation, after.rotation)
     }
 
     class PositionCurve {
@@ -139,7 +140,6 @@ class KeyframeMotion(val id: LLUUID) {
     var lastLoopedTime: Float = 0f
     var assetStatus: AssetStatus = AssetStatus.UNDEFINED
 
-    fun getName(): String = name
     fun getID(): LLUUID = id
     fun getDuration(): Float = jointMotionList?.duration ?: 0f
     fun getEaseInDuration(): Float = jointMotionList?.easeInDuration ?: 0f

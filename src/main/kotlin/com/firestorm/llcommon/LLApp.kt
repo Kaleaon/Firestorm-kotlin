@@ -16,7 +16,7 @@ abstract class LLApp {
 
     fun setStatus(s: AppStatus) {
         status.set(s)
-        companion.statusRef.set(s)
+        Companion.statusRef.set(s)
     }
 
     fun isRunning(): Boolean = status.get() == AppStatus.RUNNING
@@ -78,19 +78,10 @@ abstract class LLApp {
             instance = app
         }
 
-        @JvmStatic
         fun isRunning(): Boolean = statusRef.get() == AppStatus.RUNNING
-
-        @JvmStatic
         fun isQuitting(): Boolean = statusRef.get() == AppStatus.QUITTING
-
-        @JvmStatic
         fun isError(): Boolean = statusRef.get() == AppStatus.ERROR
-
-        @JvmStatic
         fun isStopped(): Boolean = statusRef.get() == AppStatus.STOPPED
-
-        @JvmStatic
         fun isExiting(): Boolean = isQuitting() || isError()
 
         @JvmStatic

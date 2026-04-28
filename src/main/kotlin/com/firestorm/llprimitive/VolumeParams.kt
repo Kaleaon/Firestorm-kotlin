@@ -6,42 +6,42 @@ import com.firestorm.llmath.Vector2
 
 // Profile curve codes (stored in the low nibble of the profile byte)
 object ProfileCurve {
-    const val CIRCLE: UByte       = 0x00u
-    const val SQUARE: UByte       = 0x01u
-    const val ISO_TRI: UByte      = 0x02u
-    const val EQUAL_TRI: UByte    = 0x03u
-    const val RIGHT_TRI: UByte    = 0x04u
-    const val CIRCLE_HALF: UByte  = 0x05u
+    val CIRCLE: UByte       = 0x00u
+    val SQUARE: UByte       = 0x01u
+    val ISO_TRI: UByte      = 0x02u
+    val EQUAL_TRI: UByte    = 0x03u
+    val RIGHT_TRI: UByte    = 0x04u
+    val CIRCLE_HALF: UByte  = 0x05u
 
     // Hole type (high nibble)
-    const val HOLE_SAME: UByte    = 0x00u
-    const val HOLE_CIRCLE: UByte  = 0x10u
-    const val HOLE_SQUARE: UByte  = 0x20u
-    const val HOLE_TRIANGLE: UByte = 0x30u
+    val HOLE_SAME: UByte    = 0x00u
+    val HOLE_CIRCLE: UByte  = 0x10u
+    val HOLE_SQUARE: UByte  = 0x20u
+    val HOLE_TRIANGLE: UByte = 0x30u
 }
 
 // Path curve codes
 object PathCurve {
-    const val LINE: UByte         = 0x10u
-    const val CIRCLE: UByte       = 0x20u
-    const val CIRCLE2: UByte      = 0x30u
-    const val TEST: UByte         = 0x40u
-    const val FLEXIBLE: UByte     = 0x80u
+    val LINE: UByte         = 0x10u
+    val CIRCLE: UByte       = 0x20u
+    val CIRCLE2: UByte      = 0x30u
+    val TEST: UByte         = 0x40u
+    val FLEXIBLE: UByte     = 0x80u
 }
 
 // Sculpt types
 object SculptType {
-    const val NONE: UByte         = 0u
-    const val SPHERE: UByte       = 1u
-    const val TORUS: UByte        = 2u
-    const val PLANE: UByte        = 3u
-    const val CYLINDER: UByte     = 4u
-    const val MESH: UByte         = 5u
-    const val GLTF: UByte         = 6u
+    val NONE: UByte         = 0u
+    val SPHERE: UByte       = 1u
+    val TORUS: UByte        = 2u
+    val PLANE: UByte        = 3u
+    val CYLINDER: UByte     = 4u
+    val MESH: UByte         = 5u
+    val GLTF: UByte         = 6u
 
-    const val FLAG_INVERT: UByte  = 64u
-    const val FLAG_MIRROR: UByte  = 128u
-    const val TYPE_MASK: UByte    = 0x3Fu
+    val FLAG_INVERT: UByte  = 64u
+    val FLAG_MIRROR: UByte  = 128u
+    val TYPE_MASK: UByte    = 0x3Fu
 }
 
 data class VolumeParams(

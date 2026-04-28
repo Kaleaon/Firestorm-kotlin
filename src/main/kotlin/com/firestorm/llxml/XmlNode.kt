@@ -87,7 +87,7 @@ class XmlNode(
         return removed
     }
 
-    fun setParent(newParent: XmlNode?) {
+    fun reparent(newParent: XmlNode?) {
         parent?.removeChild(this)
         newParent?.addChild(this)
     }
@@ -256,9 +256,6 @@ class XmlNode(
     fun setStringValue(v: String) { value = v; type = NodeType.STRING }
     fun setUUIDValue(v: LLUUID) { value = v.toString(); type = NodeType.UUID }
 
-    fun setValue(v: String) { value = v }
-    fun setName(n: String) { name = n }
-    fun setLineNumber(line: Int) { lineNumber = line }
 
     fun setAttributes(nodeType: NodeType, prec: Int, enc: NodeEncoding, len: Int) {
         type = nodeType; precision = prec; encoding = enc; length = len

@@ -17,19 +17,19 @@ enum class PrimCode(val code: UByte) {
     LEGACY(15u),
 
     // Legacy subtypes (high nibble encodes subtype, low nibble = LEGACY)
-    LEGACY_AVATAR(0x20u or 15u),
-    LEGACY_GRASS(0x50u or 15u),
-    TREE_NEW(0x60u or 15u),
-    LEGACY_PART_SYS(0x80u or 15u),
-    LEGACY_ROCK(0x90u or 15u),
-    LEGACY_TEXT_BUBBLE(0xE0u or 15u),
-    LEGACY_TREE(0xF0u or 15u),
+    LEGACY_AVATAR((0x20u or 15u).toUByte()),
+    LEGACY_GRASS((0x50u or 15u).toUByte()),
+    TREE_NEW((0x60u or 15u).toUByte()),
+    LEGACY_PART_SYS((0x80u or 15u).toUByte()),
+    LEGACY_ROCK((0x90u or 15u).toUByte()),
+    LEGACY_TEXT_BUBBLE((0xE0u or 15u).toUByte()),
+    LEGACY_TREE((0xF0u or 15u).toUByte()),
 
     // Hemi variants
-    CYLINDER_HEMI(5u or 0x10u),
-    CONE_HEMI(6u or 0x10u),
-    SPHERE_HEMI(7u or 0x10u),
-    TORUS_HEMI(8u or 0x10u),
+    CYLINDER_HEMI((5u or 0x10u).toUByte()),
+    CONE_HEMI((6u or 0x10u).toUByte()),
+    SPHERE_HEMI((7u or 0x10u).toUByte()),
+    TORUS_HEMI((8u or 0x10u).toUByte()),
 
     UNKNOWN(0xFFu);
 

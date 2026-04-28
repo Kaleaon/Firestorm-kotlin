@@ -7,23 +7,23 @@ typealias PermissionMask = UInt
 typealias PermissionBit = UInt
 
 object PermFlags {
-    const val TRANSFER: UInt    = 1u shl 13   // 0x00002000
-    const val MODIFY: UInt      = 1u shl 14   // 0x00004000
-    const val COPY: UInt        = 1u shl 15   // 0x00008000
-    const val EXPORT: UInt      = 1u shl 16   // 0x00010000  (OpenSim)
-    const val MOVE: UInt        = 1u shl 19   // 0x00080000
-    const val RESERVED: UInt    = 1u shl 31
+    val TRANSFER: UInt    = 1u shl 13   // 0x00002000
+    val MODIFY: UInt      = 1u shl 14   // 0x00004000
+    val COPY: UInt        = 1u shl 15   // 0x00008000
+    val EXPORT: UInt      = 1u shl 16   // 0x00010000  (OpenSim)
+    val MOVE: UInt        = 1u shl 19   // 0x00080000
+    val RESERVED: UInt    = 1u shl 31
 
-    const val NONE: UInt        = 0x00000000u
-    const val ALL: UInt         = 0x7FFFFFFFu
-    const val ITEM_UNRESTRICTED: UInt = MODIFY or COPY or TRANSFER
+    val NONE: UInt        = 0x00000000u
+    val ALL: UInt         = 0x7FFFFFFFu
+    val ITEM_UNRESTRICTED: UInt = MODIFY or COPY or TRANSFER
 
     // Field selectors for wire protocol
-    const val FIELD_BASE: UByte       = 0x01u
-    const val FIELD_OWNER: UByte      = 0x02u
-    const val FIELD_GROUP: UByte      = 0x04u
-    const val FIELD_EVERYONE: UByte   = 0x08u
-    const val FIELD_NEXT_OWNER: UByte = 0x10u
+    val FIELD_BASE: UByte       = 0x01u
+    val FIELD_OWNER: UByte      = 0x02u
+    val FIELD_GROUP: UByte      = 0x04u
+    val FIELD_EVERYONE: UByte   = 0x08u
+    val FIELD_NEXT_OWNER: UByte = 0x10u
 }
 
 class Permissions(

@@ -8,34 +8,34 @@ import java.nio.ByteOrder
 
 // Flags mirroring LLPrimitive static constants
 object PrimFlags {
-    const val PHANTOM: UInt              = 0x1u shl 0
-    const val VOLUME_DETECT: UInt        = 0x1u shl 1
-    const val DYNAMIC: UInt              = 0x1u shl 2
-    const val AVATAR: UInt               = 0x1u shl 3
-    const val SCULPT: UInt               = 0x1u shl 4
-    const val COLLISION_CALLBACK: UInt   = 0x1u shl 5
-    const val CONVEX: UInt               = 0x1u shl 6
-    const val DEFAULT_VOLUME: UInt       = 0x1u shl 7
-    const val SITTING: UInt              = 0x1u shl 8
-    const val SITTING_ON_GROUND: UInt    = 0x1u shl 9
+    val PHANTOM: UInt              = 0x1u shl 0
+    val VOLUME_DETECT: UInt        = 0x1u shl 1
+    val DYNAMIC: UInt              = 0x1u shl 2
+    val AVATAR: UInt               = 0x1u shl 3
+    val SCULPT: UInt               = 0x1u shl 4
+    val COLLISION_CALLBACK: UInt   = 0x1u shl 5
+    val CONVEX: UInt               = 0x1u shl 6
+    val DEFAULT_VOLUME: UInt       = 0x1u shl 7
+    val SITTING: UInt              = 0x1u shl 8
+    val SITTING_ON_GROUND: UInt    = 0x1u shl 9
 }
 
 // Extra network parameter type IDs
 object ExtraParamType {
-    const val FLEXIBLE: UShort         = 0x10u
-    const val LIGHT: UShort            = 0x20u
-    const val SCULPT: UShort           = 0x30u
-    const val LIGHT_IMAGE: UShort      = 0x40u
-    const val MESH: UShort             = 0x60u
-    const val EXTENDED_MESH: UShort    = 0x70u
-    const val RENDER_MATERIAL: UShort  = 0x80u
-    const val REFLECTION_PROBE: UShort = 0x90u
+    val FLEXIBLE: UShort         = 0x10u
+    val LIGHT: UShort            = 0x20u
+    val SCULPT: UShort           = 0x30u
+    val LIGHT_IMAGE: UShort      = 0x40u
+    val MESH: UShort             = 0x60u
+    val EXTENDED_MESH: UShort    = 0x70u
+    val RENDER_MATERIAL: UShort  = 0x80u
+    val REFLECTION_PROBE: UShort = 0x90u
 }
 
 class Primitive(
     var id: LLUUID             = LLUUID.NULL,
     var position: Vector3      = Vector3.ZERO,
-    var rotation: Quaternion   = Quaternion.IDENTITY,
+    var rotation: Quaternion   = Quaternion.DEFAULT,
     var scale: Vector3         = Vector3(1f, 1f, 1f),
     var velocity: Vector3      = Vector3.ZERO,
     var angularVelocity: Vector3  = Vector3.ZERO,

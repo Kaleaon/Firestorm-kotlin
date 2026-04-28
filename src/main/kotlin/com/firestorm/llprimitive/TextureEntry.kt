@@ -117,7 +117,7 @@ data class TextureEntry(
         // Deserialise from a raw packed binary representation (little-endian).
         fun unpack(buf: ByteBuffer): TextureEntry {
             buf.order(ByteOrder.LITTLE_ENDIAN)
-            val id = LLUUID.fromBytes(ByteArray(16).also { buf.get(it) })
+            val id = LLUUID.fromBytes(ByteArray(16).also { buf.get(it) }) ?: LLUUID.NULL
             val r = buf.get().toInt() and 0xFF
             val g = buf.get().toInt() and 0xFF
             val b = buf.get().toInt() and 0xFF

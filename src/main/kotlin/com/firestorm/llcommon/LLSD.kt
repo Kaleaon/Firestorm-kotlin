@@ -112,6 +112,9 @@ sealed class LLSD {
 
     fun has(key: String): Boolean = this is LLSDMap && value.containsKey(key)
 
+    fun asFloat(): Float = asReal().toFloat()
+    fun asInteger(): Int = asInt()
+
     companion object {
         fun of(value: Boolean): LLSD = LLSDBoolean(value)
         fun of(value: Int): LLSD = LLSDInteger(value)
@@ -121,9 +124,17 @@ sealed class LLSD {
         fun of(value: LLDate): LLSD = LLSDDate(value)
         fun of(value: LLURI): LLSD = LLSDURI(value)
         fun of(value: ByteArray): LLSD = LLSDBinary(value)
-        fun ofMap(value: Map<String, LLSD> = emptyMap()): LLSD = LLSDMap(value)
-        fun ofArray(value: List<LLSD> = emptyList()): LLSD = LLSDArray(value)
+        fun ofMap(value: Map<String, LLSD> = kotlin.collections.emptyMap()): LLSD = LLSDMap(value)
+        fun ofArray(value: List<LLSD> = kotlin.collections.emptyList()): LLSD = LLSDArray(value)
         fun emptyMap(): LLSD = LLSDMap(mapOf())
         fun emptyArray(): LLSD = LLSDArray(listOf())
+
+        fun integer(v: Int): LLSD = LLSDInteger(v)
+        fun real(v: Double): LLSD = LLSDReal(v)
+        fun string(v: String): LLSD = LLSDString(v)
+        fun uuid(v: LLUUID): LLSD = LLSDUUID(v)
+        fun bool(v: Boolean): LLSD = LLSDBoolean(v)
+        fun array(vararg items: LLSD): LLSD = LLSDArray(items.toList())
+        fun map(vararg pairs: Pair<String, LLSD>): LLSD = LLSDMap(mapOf(*pairs))
     }
 }

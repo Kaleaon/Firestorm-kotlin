@@ -145,7 +145,7 @@ class DataPackerBinaryBuffer(buffer: ByteArray) : DataPacker() {
         return true
     }
     override fun unpackString(name: String): String? {
-        val end = buf.indexOf(0.toByte(), pos)
+        val end = (pos until buf.size).firstOrNull { buf[it] == 0.toByte() } ?: -1
         if (end == -1 || end > buf.size) return null
         val s = String(buf, pos, end - pos, Charsets.UTF_8)
         pos = end + 1
@@ -310,7 +310,6 @@ class DataPackerAsciiBuffer(buffer: CharArray) : DataPacker() {
 
 class DataPackerAsciiFile(private val stream: OutputStream, private val indent: Int = 2) : DataPacker() {
     private val writer = PrintWriter(stream)
-    private val fields: MutableMap<String, ArrayDeque<String>> = mutableMapOf()
     private val fields: MutableList<Pair<String, String>> = mutableListOf()
     private var readIndex: Int = 0
 
@@ -322,15 +321,14 @@ class DataPackerAsciiFile(private val stream: OutputStream, private val indent: 
         fields.add(name to value)
         writer.println("${" ".repeat(indent)}$name\t$value")
         writer.flush()
-        fields.getOrPut(name) { ArrayDeque() }.addLast(value)
     }
 
     private fun readField(name: String): String? {
-        val byName = fields[name]
-        if (byName != null && byName.isNotEmpty()) {
-            return byName.removeFirst()
-        }
-        return null
+        if (readIndex >= fields.size) return null
+        val (fieldName, value) = fields[readIndex]
+        if (name.isNotEmpty() && fieldName != name) return null
+        readIndex++
+        return value
     }
 
     private fun parseHexBytes(hex: String): ByteArray? {
@@ -343,14 +341,6 @@ class DataPackerAsciiFile(private val stream: OutputStream, private val indent: 
         } catch (_: NumberFormatException) {
             null
         }
-    }
-
-    private fun readField(name: String): String? {
-        if (readIndex >= fields.size) return null
-        val (fieldName, value) = fields[readIndex]
-        if (name.isNotEmpty() && fieldName != name) return null
-        readIndex++
-        return value
     }
 
     private fun parseSizedHexPayload(payload: String, expectedSize: Int? = null): ByteArray? {

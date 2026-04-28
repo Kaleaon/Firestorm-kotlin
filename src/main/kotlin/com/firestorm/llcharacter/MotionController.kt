@@ -32,10 +32,6 @@ class MotionController {
 
     private val motionRegistry: MutableMap<LLUUID, (LLUUID) -> Motion> = mutableMapOf()
 
-    fun setCharacter(character: Character) {
-        this.character = character
-    }
-
     fun registerMotion(id: LLUUID, factory: (LLUUID) -> Motion): Boolean {
         motionRegistry[id] = factory
         return true
@@ -209,6 +205,7 @@ class MotionController {
 
 abstract class Motion(val id: LLUUID) {
     var name: String = ""
+    @set:JvmName("setStoppedProp")
     protected var stopped: Boolean = false
     protected var active: Boolean = false
     var activationTimestamp: Float = 0f
@@ -226,7 +223,7 @@ abstract class Motion(val id: LLUUID) {
     abstract fun onInitialize(character: Character): MotionController.UpdateType
     abstract fun onUpdate(time: Float, jointMask: ByteArray): Boolean
     abstract fun onDeactivate()
-    protected abstract fun onActivate(): Boolean
+    abstract fun onActivate(): Boolean
 
     fun isStopped(): Boolean = stopped
     fun isActive(): Boolean = active

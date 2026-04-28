@@ -22,7 +22,7 @@ data class DecodeRequest(
     val responder: DecodeResponder
 )
 
-class ImageWorker(private val threaded: Boolean = true) {
+open class ImageWorker(private val threaded: Boolean = true) {
 
     private val executor: ExecutorService = if (threaded)
         Executors.newFixedThreadPool(DECODE_THREAD_COUNT)

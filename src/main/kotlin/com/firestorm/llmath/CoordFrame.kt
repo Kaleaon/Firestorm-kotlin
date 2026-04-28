@@ -3,7 +3,7 @@ package com.firestorm.llmath
 import kotlin.math.cos
 import kotlin.math.sin
 
-class CoordFrame {
+open class CoordFrame {
     var origin = Vector3(0f, 0f, 0f)
     var xAxis  = Vector3(1f, 0f, 0f)
     var yAxis  = Vector3(0f, 1f, 0f)
@@ -65,7 +65,6 @@ class CoordFrame {
     }
 
     fun setOrigin(x: Float, y: Float, z: Float) { origin.set(x, y, z) }
-    fun setOrigin(v: Vector3)                   { origin.set(v) }
     fun setOrigin(frame: CoordFrame)             { origin.set(frame.origin) }
 
     var originX: Float get() = origin.x; set(v) { origin.x = v }
@@ -94,7 +93,7 @@ class CoordFrame {
         origin.x += x; origin.y += y; origin.z += z
     }
 
-    fun translate(v: Vector3) { origin += v }
+    fun translate(v: Vector3) { origin = origin + v }
 
     fun rotate(angle: Float, x: Float, y: Float, z: Float) {
         val q = Quaternion().also { it.setAngleAxis(angle, x, y, z) }
@@ -119,7 +118,7 @@ class CoordFrame {
     fun orthonormalize() {
         xAxis.normalize()
         val dot = xAxis * yAxis
-        yAxis -= xAxis * dot
+        yAxis = yAxis - xAxis * dot
         yAxis.normalize()
         zAxis = xAxis % yAxis
     }
@@ -128,10 +127,6 @@ class CoordFrame {
     fun pitch(angle: Float) { rotate2(zAxis, xAxis, angle) }
     fun yaw(angle: Float)   { rotate2(xAxis, yAxis, angle) }
 
-    fun getOrigin(): Vector3   = origin
-    fun getXAxis(): Vector3    = xAxis
-    fun getYAxis(): Vector3    = yAxis
-    fun getZAxis(): Vector3    = zAxis
     fun getAtAxis(): Vector3   = xAxis
     fun getLeftAxis(): Vector3 = yAxis
     fun getUpAxis(): Vector3   = zAxis
@@ -237,7 +232,7 @@ class CoordFrame {
     }
 
     fun lookAt(origin: Vector3, poi: Vector3, up: Vector3 = Vector3(0f, 0f, 1f)) {
-        setOrigin(origin)
+        this.origin.set(origin)
         val at = (poi - origin).also { it.normalize() }
         lookDir(at, up)
     }

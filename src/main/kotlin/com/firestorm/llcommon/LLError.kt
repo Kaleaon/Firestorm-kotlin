@@ -12,7 +12,7 @@ object LLError {
 
     object Settings {
         @Volatile var minLevel: ELevel = ELevel.DEBUG
-        @Volatile var handler: Handler = ConsoleHandler().also { h ->
+        @set:JvmName("setHandlerProp") @Volatile var handler: Handler = ConsoleHandler().also { h ->
             h.formatter = SimpleFormatter()
             h.level = Level.ALL
         }

@@ -221,6 +221,22 @@ object AttachmentsMgr {
         detachRequests.expireOlderThan(MAX_ATTACHMENT_REQUEST_LIFETIME)
     }
 
+    // Called back by the COF-link inventory callback when a link has been
+    // registered.  If the item has since been detached, the stale COF link
+    // is removed immediately.
+    internal fun onRegisterAttachmentComplete(idItemLink: LLUUID) {
+        TODO("APR: resolve idItemLink to its base item via gInventory.getLinkedItemID, " +
+             "call clearPendingAttachmentLink, then remove COF link if item is no longer worn")
+    }
+
+    // Re-queues every currently-attached object for a fresh attachment request.
+    // Used to recover from "phantom attachment" situations where the object is
+    // rendered but the server has lost track of it.
+    fun refreshAttachments() {
+        TODO("APR: iterate gAgentAvatarp.mAttachmentPoints; for each non-temp attachment " +
+             "not already requested recently, push an AttachmentRequest and call addTime")
+    }
+
     // -----------------------------------------------------------------------
     // ItemRequestTimes  (inner helper; mirrors C++ LLItemRequestTimes)
     // -----------------------------------------------------------------------

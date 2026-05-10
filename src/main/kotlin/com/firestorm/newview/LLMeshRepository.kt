@@ -88,7 +88,7 @@ open class RequestStats {
     private var mTimerStarted: Boolean = false
 
     private companion object {
-        const val DOWNLOAD_RETRY_LIMIT: UInt = 8u
+        val DOWNLOAD_RETRY_LIMIT: UInt = 8u
         const val DOWNLOAD_RETRY_DELAY_MS: Long = 500L
     }
 
@@ -663,7 +663,7 @@ class LLMeshRepository {
     }
 
     // Per-LOD loading maps — index 0=lowest, 3=highest
-    val mLoadingMeshes: Array<MutableMap<UUID, MeshLoadData>> = Array(4) { mutableMapOf() }
+    val mLoadingMeshes: Array<MutableMap<UUID, MeshLoadData>> = Array(4) { mutableMapOf<UUID, MeshLoadData>() }
     val mSkinMap: MutableMap<UUID, LLMeshSkinInfo> = mutableMapOf()
     val mDecompositionMap: MutableMap<UUID, LLModel.Decomposition> = mutableMapOf()
     val mPendingRequests: MutableList<PendingRequestBase> = mutableListOf()

@@ -50,7 +50,7 @@ open class MultiFloater(
     }
 
     open fun onClose(appQuitting: Boolean) {
-        if (isMinimized) setMinimized(false)
+        if (isMinimized) isMinimized = false
         super.onClose(appQuitting)
     }
 

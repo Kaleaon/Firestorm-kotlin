@@ -1,353 +1,542 @@
-/**
- * ViewerPartSource.kt
- * Converted from llviewerpartsource.h / llviewerpartsource.cpp
- *
- * Particle-source base classes for the Second Life viewer's particle system.
- * Rendering, texture-fetch, and object-list look-ups are stubbed with TODO.
- * The data model, type hierarchy, and ID-seed logic are faithfully transcribed.
- */
-
 package com.firestorm.newview
 
-import com.firestorm.llmath.*
-import com.firestorm.llcommon.*
+import java.util.UUID
+import java.util.concurrent.atomic.AtomicInteger
+import kotlin.math.PI
+import kotlin.math.cos
+import kotlin.math.sin
+import kotlin.math.sqrt
+
+typealias VPCallback = (part: ViewerPart, dt: Float) -> Unit
 
 // ---------------------------------------------------------------------------
-// PartSourceType  (analogous to the LL_PART_SOURCE_* enum)
+// Minimal math/colour stubs – just enough structure for the particle system.
 // ---------------------------------------------------------------------------
 
-/**
- * Identifies the behavioural class of a particle source.
- *
- * [code] matches the U16 wire values used in SL's particle system data.
- */
-enum class PartSourceType(val code: UShort) {
-    /** Null / undefined — used as a sentinel. */
-    NULL_SOURCE(0u),
-    /** Generic script-driven particle source (PART_SOURCE_SCRIPT). */
-    SCRIPT(1u),
-    /** Spiral effect (avatar customisation). */
-    SPIRAL(2u),
-    /** Tractor-beam / editing beam. */
-    BEAM(3u),
-    /** Chat bubble effect. */
-    CHAT(4u),
-    /** Muted: source exists but emits nothing. */
-    MUTED(0xFFFFu),
+data class Vector3(val x: Float = 0f, val y: Float = 0f, val z: Float = 0f) {
+    operator fun plus(o: Vector3) = Vector3(x + o.x, y + o.y, z + o.z)
+    operator fun minus(o: Vector3) = Vector3(x - o.x, y - o.y, z - o.z)
+    operator fun times(s: Float) = Vector3(x * s, y * s, z * s)
+    fun magnitude() = sqrt((x * x + y * y + z * z).toDouble()).toFloat()
+    fun magnitudeSquared() = x * x + y * y + z * z
+    fun normalized(): Vector3 {
+        val m = magnitude()
+        return if (m > 0f) Vector3(x / m, y / m, z / m) else this
+    }
+    fun isFinite() = x.isFinite() && y.isFinite() && z.isFinite()
+    companion object { val ZERO = Vector3() }
+}
+
+data class Vector3d(val x: Double = 0.0, val y: Double = 0.0, val z: Double = 0.0) {
+    fun magnitudeSquared() = x * x + y * y + z * z
+    fun isZero() = x == 0.0 && y == 0.0 && z == 0.0
+    operator fun plus(o: Vector3d) = Vector3d(x + o.x, y + o.y, z + o.z)
+    operator fun minus(o: Vector3d) = Vector3d(x - o.x, y - o.y, z - o.z)
+    operator fun times(s: Double) = Vector3d(x * s, y * s, z * s)
+    fun toVector3() = Vector3(x.toFloat(), y.toFloat(), z.toFloat())
+    companion object { val ZERO = Vector3d() }
+}
+
+data class Vector2(val x: Float = 0f, val y: Float = 0f) {
+    operator fun plus(o: Vector2) = Vector2(x + o.x, y + o.y)
+    operator fun times(s: Float) = Vector2(x * s, y * s)
+    fun magnitude() = sqrt((x * x + y * y).toDouble()).toFloat()
+}
+
+data class Color4(val r: Float = 0f, val g: Float = 0f, val b: Float = 0f, val a: Float = 1f)
+data class Color4U(val r: UByte = 0u, val g: UByte = 0u, val b: UByte = 0u, val a: UByte = 0u)
+data class Color3(val r: Float, val g: Float, val b: Float)
+data class Quaternion(val x: Float = 0f, val y: Float = 0f, val z: Float = 0f, val w: Float = 1f) {
+    companion object { val DEFAULT = Quaternion() }
+}
+
+// Blend func constants mirroring LLRender enums
+const val BF_SOURCE_ALPHA = 0
+const val BF_ONE_MINUS_SOURCE_ALPHA = 1
+
+// Part-data flags (mirroring LLPartData)
+object PartFlags {
+    const val LL_PART_DEAD_MASK: UInt               = 0u
+    const val LL_PART_HUD: UInt                     = 0x0200u
+    const val LL_PART_FOLLOW_SRC_MASK: UInt         = 0x0001u
+    const val LL_PART_FOLLOW_VELOCITY_MASK: UInt    = 0x0002u
+    const val LL_PART_TARGET_POS_MASK: UInt         = 0x0004u
+    const val LL_PART_TARGET_LINEAR_MASK: UInt      = 0x0008u
+    const val LL_PART_WIND_MASK: UInt               = 0x0010u
+    const val LL_PART_BOUNCE_MASK: UInt             = 0x0020u
+    const val LL_PART_INTERP_COLOR_MASK: UInt       = 0x0040u
+    const val LL_PART_INTERP_SCALE_MASK: UInt       = 0x0080u
+    const val LL_PART_RIBBON_MASK: UInt             = 0x0100u
+}
+
+data class PartData(
+    val maxAge: Float = 10f,
+    val startColor: Color4 = Color4(),
+    val endColor: Color4 = Color4(),
+    val startScale: Vector2 = Vector2(1f, 1f),
+    val endScale: Vector2 = Vector2(1f, 1f),
+    val blendFuncDest: Int = BF_ONE_MINUS_SOURCE_ALPHA,
+    val blendFuncSource: Int = BF_SOURCE_ALPHA,
+    val startGlow: Float = 0f,
+    val endGlow: Float = 0f,
+    val flags: UInt = 0u
+) {
+    companion object {
+        val LL_PART_DEAD_MASK: UInt = PartFlags.LL_PART_DEAD_MASK
+    }
+}
+
+data class PartSysData(
+    val maxAge: Float = 0f,
+    val startAge: Float = 0f,
+    val burstRate: Float = 0.1f,
+    val burstPartCount: Int = 1,
+    var burstRadius: Float = 0f,
+    val burstSpeedMin: Float = 0f,
+    val burstSpeedMax: Float = 1f,
+    val innerAngle: Float = 0f,
+    val outerAngle: Float = 0f,
+    val pattern: UInt = 0u,
+    val flags: UInt = 0u,
+    val angularVelocity: Vector3 = Vector3.ZERO,
+    val partAccel: Vector3 = Vector3.ZERO,
+    val targetUUID: UUID = UUID(0, 0),
+    val partData: PartData = PartData()
+) {
+    companion object {
+        const val LL_PART_SRC_PATTERN_DROP: UInt        = 0x01u
+        const val LL_PART_SRC_PATTERN_EXPLODE: UInt     = 0x02u
+        const val LL_PART_SRC_PATTERN_ANGLE: UInt       = 0x04u
+        const val LL_PART_SRC_PATTERN_ANGLE_CONE: UInt  = 0x08u
+        const val LL_PART_USE_NEW_ANGLE: UInt           = 0x01u
+    }
 }
 
 // ---------------------------------------------------------------------------
-// ViewerPartSource  (LLViewerPartSource)
+// ViewerObject stub – implemented elsewhere in the port
 // ---------------------------------------------------------------------------
 
-/**
- * Abstract base for all particle sources.
- *
- * Subclasses implement [update] to emit particles each simulation tick.
- * The owning [ViewerPartSim] calls [update] and checks [isDead] to decide
- * whether to retire the source.
- */
-abstract class ViewerPartSource(val type: PartSourceType) {
+abstract class ViewerObject {
+    abstract val id: UUID
+    abstract fun isAvatar(): Boolean
+    abstract fun isAttachment(): Boolean
+    abstract fun isDead(): Boolean
+    abstract fun isHUDAttachment(): Boolean
+    abstract fun getRenderPosition(): Vector3
+    abstract fun getRenderRotation(): Quaternion
+    abstract fun getPositionAgent(): Vector3
+    abstract fun getPositionGlobal(): Vector3d
+    abstract fun getWorldRotation(): Quaternion
+    abstract fun getRotationRegion(): Quaternion
+    abstract var mDrawable: Any?
+}
 
-    // -- Identity -------------------------------------------------------------
+// ---------------------------------------------------------------------------
+// Base particle source
+// ---------------------------------------------------------------------------
 
-    /** Unique numeric ID for this source within the current session. */
-    val id: UInt = nextId()
+open class ViewerPartSource(val type: UInt) {
 
-    /** UUID of the script/object owner. */
-    var ownerID: LLUUID = LLUUID.NULL
+    companion object {
+        const val LL_PART_SOURCE_NULL: UInt   = 0u
+        const val LL_PART_SOURCE_SCRIPT: UInt = 1u
+        const val LL_PART_SOURCE_SPIRAL: UInt = 2u
+        const val LL_PART_SOURCE_BEAM: UInt   = 3u
+        const val LL_PART_SOURCE_CHAT: UInt   = 4u
 
-    // -- Spatial state --------------------------------------------------------
+        private val idSeed = AtomicInteger(0)
 
-    /** Current agent-space position of the emission point. */
-    var pos: Vector3 = Vector3.ZERO
+        fun updatePart(part: ViewerPart, dt: Float) {
+            // base no-op; subclasses override via companion static
+        }
+    }
 
-    /** Agent-space position of the particle target (beam/spiral sources). */
-    var targetPos: Vector3 = Vector3.ZERO
+    var posAgent: Vector3 = Vector3.ZERO
+    var targetPosAgent: Vector3 = Vector3.ZERO
+    var lastUpdatePosAgent: Vector3 = Vector3.ZERO
+    var sourceObjectp: ViewerObject? = null
+    val id: UInt = idSeed.incrementAndGet().toUInt()
+    var lastPart: ViewerPart? = null
 
-    /** Position at last update tick (used for velocity-based placement). */
-    var lastUpdatePos: Vector3 = Vector3.ZERO
-
-    // -- Lifecycle flags ------------------------------------------------------
-
-    var isOnClipboard: Boolean = false
+    var isDead: Boolean = false
+        protected set
     var isSuspended: Boolean = false
 
-    // -- Internal state -------------------------------------------------------
-
-    protected var isDead: Boolean = false
-
-    /** Time (seconds) since last update call. */
     protected var lastUpdateTime: Float = 0f
-    /** Time (seconds) of the last emitted particle. */
     protected var lastPartTime: Float = 0f
-
-    /** Maximum quota of active particles from this source (0 = unlimited). */
-    var quota: UInt = 0u
-
-    /** Bit-flags from the LLPartSysData particle description. */
+    protected var ownerUUID: UUID = UUID(0, 0)
+    protected var ownerAvatarp: ViewerObject? = null
+    protected var imagep: Any? = null
     protected var partFlags: UInt = 0u
-
-    /** Delay (in ticks) before the source starts emitting. */
     protected var delay: UInt = 0u
 
-    // -- Texture / avatar back-references (set by concrete subclasses) --------
+    open fun update(dt: Float) {
+        error("ViewerPartSource.update() must be overridden")
+    }
 
-    /** UUID of the particle texture image. */
-    var imageID: LLUUID = LLUUID.NULL
-        protected set
-
-    // -------------------------------------------------------------------------
-    // Abstract interface
-    // -------------------------------------------------------------------------
-
-    /**
-     * Advance the particle source by [dt] seconds.
-     * Concrete subclasses emit new [ViewerPart] instances via the sim.
-     */
-    abstract fun update(dt: Float)
-
-    // -------------------------------------------------------------------------
-    // Lifecycle helpers
-    // -------------------------------------------------------------------------
-
-    fun isDead(): Boolean = isDead
-
-    open fun setDead() { isDead = true }
+    open fun setDead() {
+        isDead = true
+    }
 
     fun setSuspended(state: Boolean) { isSuspended = state }
-    fun isSuspended(): Boolean = isSuspended
+    fun setOwnerUUID(ownerId: UUID) { ownerUUID = ownerId }
+    fun getOwnerUUID(): UUID = ownerUUID
 
-    /**
-     * Cancel the startup delay so the source emits immediately.
-     * Useful for short-lived sources that would otherwise miss their window.
-     */
-    fun setStart() { delay = 0u }
+    fun getImageUUID(): UUID {
+        TODO("GPU: return texture UUID from imagep")
+    }
 
-    // -------------------------------------------------------------------------
-    // Companion
-    // -------------------------------------------------------------------------
-
-    companion object {
-        private var idSeed: UInt = 0u
-
-        private fun nextId(): UInt = ++idSeed
-
-        /**
-         * Base update hook called for every live particle each tick.
-         * In the C++ code this is a no-op in the base class; overridden by
-         * sources that continuously modify existing particles (e.g. spirals).
-         */
-        fun updatePart(dt: Float) {
-            // No-op in base: concrete update logic in particle sim callbacks.
-        }
+    fun setStart() {
+        delay = 0u
     }
 }
 
 // ---------------------------------------------------------------------------
-// ViewerPartSourceScript  (LLViewerPartSourceScript)
+// Script-driven particle source
 // ---------------------------------------------------------------------------
 
-/**
- * Script-driven particle source attached to an in-world object.
- *
- * Parses [LLPartSysData]-equivalent parameters and continuously emits
- * particles according to the script's particle system definition.
- */
-class ViewerPartSourceScript : ViewerPartSource(PartSourceType.SCRIPT) {
-
-    // -- Particle-system description ------------------------------------------
-
-    /**
-     * Snapshot of the script's LLPartSysData.  In C++ this carries all
-     * particle parameters (rate, age, pattern, etc.).  Here it is typed
-     * as a generic parameter map; a richer data class can be substituted.
-     */
-    var template: MutableMap<String, Any> = mutableMapOf()
-
-    // -- Rotation -------------------------------------------------------------
-
-    /** Current rotation of the emission cone (updated each tick). */
-    var rotation: Vector4 = Vector4.IDENTITY   // analogous to LLQuaternion mRotation
-
-    // -------------------------------------------------------------------------
-    // Lifecycle
-    // -------------------------------------------------------------------------
-
-    override fun setDead() {
-        super.setDead()
-        // In the C++ code: release target object pointer etc.
-    }
-
-    // -------------------------------------------------------------------------
-    // Emission
-    // -------------------------------------------------------------------------
-
-    /**
-     * Advance the script particle source by [dt] seconds and emit new
-     * particles according to [template].
-     *
-     * Full emission logic (burst count, interpolation, pattern-based
-     * velocity) requires the particle simulator; stubbed here.
-     */
-    override fun update(dt: Float) {
-        if (isDead || isSuspended) return
-        if (delay > 0u) { delay--; return }
-        lastUpdateTime += dt
-        updatePart()
-    }
-
-    /**
-     * Emit one particle from the current source configuration.
-     * Called by [update] and by the external particle simulator.
-     */
-    fun updatePart() {
-        TODO("PARTICLE: emit particle from script source using template=$template")
-    }
-
-    // -------------------------------------------------------------------------
-    // Message deserialization stubs
-    // -------------------------------------------------------------------------
-
-    /** Apply a particle system data update received over the network. */
-    fun updateFromMesg(): Boolean {
-        TODO("PARTICLE: unpack LLPartSysData from network message")
-    }
-
-    /** Set the object that script particles track as a target. */
-    fun setTargetObject(targetId: LLUUID) {
-        TODO("PARTICLE: resolve target object from ID=$targetId and store reference")
-    }
+class ViewerPartSourceScript(sourceObjp: ViewerObject) : ViewerPartSource(LL_PART_SOURCE_SCRIPT) {
 
     companion object {
-        /**
-         * Factory: unpack a [ViewerPartSourceScript] from a network block.
-         * [blockNum] is the index of the ObjectUpdate block.
-         */
-        fun unpackPSS(sourceObjectId: LLUUID, existing: ViewerPartSourceScript?, blockNum: Int): ViewerPartSourceScript {
-            TODO("PARTICLE: unpack LLPartSysData from ObjectUpdate block $blockNum for object $sourceObjectId")
+        fun unpackPSS(
+            sourceObjp: ViewerObject,
+            pssp: ViewerPartSourceScript?,
+            blockNum: Int
+        ): ViewerPartSourceScript? {
+            TODO("APR: unpack script particle system from network message block $blockNum")
         }
 
-        /** Factory: create from an explicit [LLPartSysData]-equivalent parameter map. */
-        fun createPSS(sourceObjectId: LLUUID, params: Map<String, Any>): ViewerPartSourceScript {
-            return ViewerPartSourceScript().also { src ->
-                src.template.putAll(params)
+        fun unpackPSSFromDataPacker(
+            sourceObjp: ViewerObject,
+            pssp: ViewerPartSourceScript?,
+            dp: Any,
+            legacy: Boolean
+        ): ViewerPartSourceScript? {
+            TODO("APR: unpack script particle system from data packer; legacy=$legacy")
+        }
+
+        fun createPSS(
+            sourceObjp: ViewerObject,
+            particleParameters: PartSysData
+        ): ViewerPartSourceScript {
+            val newPssp = ViewerPartSourceScript(sourceObjp)
+            newPssp.partSysData = particleParameters
+            if (particleParameters.targetUUID != UUID(0, 0)) {
+                TODO("APR: look up target object by UUID and call setTargetObject")
+            }
+            return newPssp
+        }
+    }
+
+    init {
+        sourceObjectp = sourceObjp
+        posAgent = sourceObjp.getPositionAgent()
+        imagep = TODO("GPU: fetch default particle image (LLViewerFetchedTexture::sDefaultParticleImagep)")
+    }
+
+    var partSysData: PartSysData = PartSysData()
+    private var rotation: Quaternion = Quaternion.DEFAULT
+    private var targetObjectp: ViewerObject? = null
+
+    override fun setDead() {
+        isDead = true
+        sourceObjectp = null
+        targetObjectp = null
+    }
+
+    override fun update(dt: Float) {
+        if (isSuspended) return
+
+        if (ownerAvatarp == null && ownerUUID != UUID(0, 0)) {
+            ownerAvatarp = TODO("APR: find avatar by ownerUUID")
+        }
+
+        TODO("GPU: check owner avatar overall-appearance; return early if not AOA_NORMAL; " +
+             "update source/target positions; generate burst particles per partSysData")
+    }
+
+    fun getImage(): Any? = imagep
+
+    fun setImage(img: Any?) {
+        imagep = img
+    }
+
+    fun setTargetObject(objp: ViewerObject?) {
+        targetObjectp = objp
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Spiral particle source (customize-avatar effect)
+// ---------------------------------------------------------------------------
+
+class ViewerPartSourceSpiral(pos: Vector3) : ViewerPartSource(LL_PART_SOURCE_SPIRAL) {
+
+    companion object {
+        fun updatePart(part: ViewerPart, dt: Float) {
+            val frac = part.lastUpdateTime / part.maxAge
+            val ps = part.partSourcep as? ViewerPartSourceSpiral ?: return
+            val srcObj = ps.sourceObjectp
+            part.posAgent = if (srcObj != null && !srcObj.isDead() && srcObj.mDrawable != null) {
+                srcObj.getRenderPosition()
+            } else {
+                ps.posAgent
+            }
+            val x = sin(2.0 * PI * frac + part.parameter).toFloat()
+            val y = cos(2.0 * PI * frac + part.parameter).toFloat()
+            part.posAgent = part.posAgent.copy(
+                x = part.posAgent.x + x,
+                y = part.posAgent.y + y,
+                z = part.posAgent.z + (-0.5f + frac)
+            )
+        }
+    }
+
+    var color: Color4 = Color4()
+
+    init { posAgent = pos }
+
+    override fun setDead() {
+        isDead = true
+        sourceObjectp = null
+    }
+
+    override fun update(dt: Float) {
+        if (imagep == null) {
+            imagep = TODO("GPU: fetch default particle image")
+        }
+
+        val rate = 0.025f
+        lastUpdateTime += dt
+        var dtUpdate = minOf(maxOf(1f, 10f * rate), lastUpdateTime - lastPartTime)
+
+        if (dtUpdate > rate) {
+            lastPartTime = lastUpdateTime
+            if (!ViewerPartSim.shouldAddPart()) return
+
+            val srcObj = sourceObjectp
+            if (srcObj != null && !srcObj.isDead() && srcObj.mDrawable != null) {
+                posAgent = srcObj.getRenderPosition()
+            }
+
+            val part = ViewerPart()
+            part.init(this, imagep, ViewerPartSourceSpiral::updatePart)
+            part.startColor = color
+            part.endColor = color.copy(a = 0f)
+            part.posAgent = posAgent
+            part.maxAge = 1f
+            part.flags = PartFlags.LL_PART_INTERP_COLOR_MASK
+            part.lastUpdateTime = 0f
+            part.scale = Vector2(0.25f, 0.25f)
+            part.parameter = (Math.random() * 2.0 * PI).toFloat()
+            part.blendFuncDest = BF_ONE_MINUS_SOURCE_ALPHA
+            part.blendFuncSource = BF_SOURCE_ALPHA
+            part.startGlow = 0f
+            part.endGlow = 0f
+            part.glow = Color4U(0u, 0u, 0u, 0u)
+            ViewerPartSim.addPart(part)
+        }
+    }
+
+    fun setSourceObject(objp: ViewerObject?) { sourceObjectp = objp }
+    fun setColor(c: Color4) { color = c }
+}
+
+// ---------------------------------------------------------------------------
+// Tractor-beam particle source
+// ---------------------------------------------------------------------------
+
+class ViewerPartSourceBeam : ViewerPartSource(LL_PART_SOURCE_BEAM) {
+
+    companion object {
+        fun updatePart(part: ViewerPart, dt: Float) {
+            val frac = part.lastUpdateTime / part.maxAge
+            val psb = part.partSourcep as? ViewerPartSourceBeam ?: run {
+                part.flags = PartFlags.LL_PART_DEAD_MASK
+                return
+            }
+            if (psb.sourceObjectp == null) {
+                part.flags = PartFlags.LL_PART_DEAD_MASK
+                return
+            }
+            val srcObj = psb.sourceObjectp
+            val sourcePosAgent: Vector3 = when {
+                srcObj != null && !srcObj.isDead() && srcObj.mDrawable != null -> {
+                    if (srcObj.isAvatar()) {
+                        TODO("GPU: get left-wrist world position from avatar")
+                    } else {
+                        srcObj.getRenderPosition()
+                    }
+                }
+                else -> Vector3.ZERO
+            }
+            val tgtObj = psb.targetObjectp
+            val targetPosAgent: Vector3 = when {
+                tgtObj != null && !tgtObj.isDead() && tgtObj.mDrawable != null -> tgtObj.getRenderPosition()
+                else -> Vector3.ZERO
+            }
+            val fromSrc = sourcePosAgent * (1f - frac)
+            part.posAgent = if (psb.targetObjectp == null) {
+                fromSrc + TODO<Vector3>("APR: convert psb.lkgTargetPosGlobal to agent coords") * frac
+            } else {
+                fromSrc + targetPosAgent * frac
             }
         }
     }
-}
 
-// ---------------------------------------------------------------------------
-// ViewerPartSourceSpiral  (LLViewerPartSourceSpiral)
-// ---------------------------------------------------------------------------
+    var targetObjectp: ViewerObject? = null
+    var lkgTargetPosGlobal: Vector3d = Vector3d.ZERO
+    var color: Color4 = Color4()
 
-/**
- * Spiral particle effect — used during avatar customisation (colour changes,
- * wearable attachment, etc.).
- */
-class ViewerPartSourceSpiral(initialPos: Vector3) : ViewerPartSource(PartSourceType.SPIRAL) {
-
-    var color: Color4 = Color4(1f, 1f, 1f, 1f)
-
-    private var lkgSourcePosGlobal: Vector3 = initialPos
-
-    init { pos = initialPos }
-
-    override fun setDead() { super.setDead() }
-
-    override fun update(dt: Float) {
-        if (isDead || isSuspended) return
-        lastUpdateTime += dt
-        TODO("PARTICLE: emit spiral particle arc around source at pos=$pos")
-    }
-
-    fun setSourceObject(objectId: LLUUID) {
-        TODO("PARTICLE: bind spiral source to object $objectId for position tracking")
+    override fun setDead() {
+        isDead = true
+        sourceObjectp = null
+        targetObjectp = null
     }
 
     fun setColor(c: Color4) { color = c }
 
-    companion object {
-        fun updatePart(dt: Float) {
-            TODO("PARTICLE: update spiral particle trajectory for dt=$dt")
+    override fun update(dt: Float) {
+        val rate = 0.025f
+        lastUpdateTime += dt
+
+        val srcObj = sourceObjectp
+        if (srcObj != null && !srcObj.isDead() && srcObj.mDrawable != null) {
+            posAgent = if (srcObj.isAvatar()) {
+                TODO("GPU: get left-wrist world position from avatar")
+            } else {
+                srcObj.getRenderPosition()
+            }
         }
+
+        val tgtObj = targetObjectp
+        when {
+            tgtObj != null && !tgtObj.isDead() && tgtObj.mDrawable != null ->
+                targetPosAgent = tgtObj.getRenderPosition()
+            !lkgTargetPosGlobal.isZero() ->
+                targetPosAgent = TODO("APR: convert lkgTargetPosGlobal to agent position")
+        }
+
+        var dtUpdate = minOf(maxOf(1f, 10f * rate), lastUpdateTime - lastPartTime)
+
+        if (dtUpdate > rate) {
+            lastPartTime = lastUpdateTime
+            if (!ViewerPartSim.shouldAddPart()) return
+
+            if (imagep == null) imagep = TODO("GPU: fetch default particle image")
+
+            val part = ViewerPart()
+            part.init(this, imagep, ViewerPartSourceBeam::updatePart)
+            part.flags = (PartFlags.LL_PART_INTERP_COLOR_MASK or
+                PartFlags.LL_PART_INTERP_SCALE_MASK or
+                PartFlags.LL_PART_TARGET_POS_MASK or
+                PartFlags.LL_PART_FOLLOW_VELOCITY_MASK)
+            part.maxAge = 0.5f
+            part.startColor = color
+            part.endColor = color.copy(a = 0.4f)
+            part.color = part.startColor
+            part.startScale = Vector2(0.1f, 0.1f)
+            part.endScale = Vector2(0.1f, 0.1f)
+            part.scale = part.startScale
+            part.posAgent = posAgent
+            part.velocity = targetPosAgent - posAgent
+            part.blendFuncDest = BF_ONE_MINUS_SOURCE_ALPHA
+            part.blendFuncSource = BF_SOURCE_ALPHA
+            part.startGlow = 0f
+            part.endGlow = 0f
+            part.glow = Color4U(0u, 0u, 0u, 0u)
+            ViewerPartSim.addPart(part)
+        }
+    }
+
+    fun setSourceObject(objp: ViewerObject?) { sourceObjectp = objp }
+    fun setTargetObject(objp: ViewerObject?) { targetObjectp = objp }
+
+    fun setSourcePosGlobal(posGlobal: Vector3d) {
+        TODO("APR: convert posGlobal to agent coords and assign to posAgent")
+    }
+
+    fun setTargetPosGlobal(posGlobal: Vector3d) {
+        lkgTargetPosGlobal = posGlobal
     }
 }
 
 // ---------------------------------------------------------------------------
-// ViewerPartSourceBeam  (LLViewerPartSourceBeam)
+// Chat-bubble spiral particle source
 // ---------------------------------------------------------------------------
 
-/**
- * Tractor-beam / editing beam particle source — particles stream from the
- * agent's hand to the selected object.
- */
-class ViewerPartSourceBeam : ViewerPartSource(PartSourceType.BEAM) {
-
-    var color: Color4 = Color4(1f, 1f, 1f, 1f)
-    var targetObjectId: LLUUID = LLUUID.NULL
-    var lkgTargetPosGlobal: Vector3 = Vector3.ZERO
-
-    override fun setDead() { super.setDead() }
-
-    override fun update(dt: Float) {
-        if (isDead || isSuspended) return
-        lastUpdateTime += dt
-        TODO("PARTICLE: emit beam particles from pos=$pos toward target=$lkgTargetPosGlobal")
-    }
-
-    fun setSourceObject(objectId: LLUUID) {
-        TODO("PARTICLE: bind beam source to object $objectId")
-    }
-
-    fun setTargetObject(targetId: LLUUID) {
-        targetObjectId = targetId
-        TODO("PARTICLE: resolve beam target object $targetId for position tracking")
-    }
-
-    fun setSourcePosGlobal(posGlobal: Vector3) { pos = posGlobal }
-    fun setTargetPosGlobal(posGlobal: Vector3) { lkgTargetPosGlobal = posGlobal }
-    fun setColor(c: Color4) { color = c }
+class ViewerPartSourceChat(pos: Vector3) : ViewerPartSource(LL_PART_SOURCE_CHAT) {
 
     companion object {
-        fun updatePart(dt: Float) {
-            TODO("PARTICLE: update beam particle trajectory for dt=$dt")
+        fun updatePart(part: ViewerPart, dt: Float) {
+            val frac = part.lastUpdateTime / part.maxAge
+            val ps = part.partSourcep as? ViewerPartSourceChat ?: return
+            val srcObj = ps.sourceObjectp
+            part.posAgent = if (srcObj != null && !srcObj.isDead() && srcObj.mDrawable != null) {
+                srcObj.getRenderPosition()
+            } else {
+                ps.posAgent
+            }
+            val x = sin(2.0 * PI * frac + part.parameter).toFloat()
+            val y = cos(2.0 * PI * frac + part.parameter).toFloat()
+            part.posAgent = part.posAgent.copy(
+                x = part.posAgent.x + x,
+                y = part.posAgent.y + y,
+                z = part.posAgent.z + (-0.5f + frac)
+            )
         }
     }
-}
 
-// ---------------------------------------------------------------------------
-// ViewerPartSourceChat  (LLViewerPartSourceChat)
-// ---------------------------------------------------------------------------
+    var color: Color4 = Color4()
 
-/**
- * Chat-bubble particle effect — spawned around an avatar when they speak
- * in local chat.
- */
-class ViewerPartSourceChat(initialPos: Vector3) : ViewerPartSource(PartSourceType.CHAT) {
+    init { posAgent = pos }
 
-    var color: Color4 = Color4(1f, 1f, 1f, 1f)
-    private var lkgSourcePosGlobal: Vector3 = initialPos
-
-    init { pos = initialPos }
-
-    override fun setDead() { super.setDead() }
+    override fun setDead() {
+        isDead = true
+        sourceObjectp = null
+    }
 
     override fun update(dt: Float) {
-        if (isDead || isSuspended) return
+        if (imagep == null) imagep = TODO("GPU: fetch default particle image")
+
+        val rate = 0.025f
         lastUpdateTime += dt
-        TODO("PARTICLE: emit chat bubble particles around pos=$pos")
-    }
 
-    fun setSourceObject(objectId: LLUUID) {
-        TODO("PARTICLE: bind chat source to object/avatar $objectId")
-    }
+        if (lastUpdateTime > 2f) {
+            setDead()
+            return
+        }
 
-    fun setColor(c: Color4) { color = c }
+        var dtUpdate = minOf(maxOf(1f, 10f * rate), lastUpdateTime - lastPartTime)
 
-    companion object {
-        fun updatePart(dt: Float) {
-            TODO("PARTICLE: update chat bubble particle trajectory for dt=$dt")
+        if (dtUpdate > rate) {
+            lastPartTime = lastUpdateTime
+            if (!ViewerPartSim.shouldAddPart()) return
+
+            val srcObj = sourceObjectp
+            if (srcObj != null && !srcObj.isDead() && srcObj.mDrawable != null) {
+                posAgent = srcObj.getRenderPosition()
+            }
+
+            val part = ViewerPart()
+            part.init(this, imagep, ViewerPartSourceChat::updatePart)
+            part.startColor = color
+            part.endColor = color.copy(a = 0f)
+            part.posAgent = posAgent
+            part.maxAge = 1f
+            part.flags = PartFlags.LL_PART_INTERP_COLOR_MASK
+            part.lastUpdateTime = 0f
+            part.scale = Vector2(0.25f, 0.25f)
+            part.parameter = (Math.random() * 2.0 * PI).toFloat()
+            part.blendFuncDest = BF_ONE_MINUS_SOURCE_ALPHA
+            part.blendFuncSource = BF_SOURCE_ALPHA
+            part.startGlow = 0f
+            part.endGlow = 0f
+            part.glow = Color4U(0u, 0u, 0u, 0u)
+            ViewerPartSim.addPart(part)
         }
     }
+
+    fun setSourceObject(objp: ViewerObject?) { sourceObjectp = objp }
+    fun setColor(c: Color4) { color = c }
 }

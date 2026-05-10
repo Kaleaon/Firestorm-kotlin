@@ -1,20 +1,4 @@
-/**
- * AppViewer.kt
- * Kotlin conversion of llappviewer.h / llappviewer.cpp
- *
- * Original: Second Life Viewer Source Code
- * Copyright (C) 2010, Linden Research, Inc.
- * Licensed under LGPL v2.1
- */
-
 package com.firestorm.newview
-
-import com.firestorm.llcommon.*
-import com.firestorm.llmath.*
-
-// ---------------------------------------------------------------------------
-// Last-exec event enumeration (mirrors eLastExecEvent)
-// ---------------------------------------------------------------------------
 
 enum class LastExecEvent {
     NORMAL,
@@ -27,311 +11,375 @@ enum class LastExecEvent {
     MISSING_FILES,
     GRAPHICS_INIT,
     UNKNOWN,
-    LOGOUT_UNKNOWN;
+    LOGOUT_UNKNOWN
 }
 
-// ---------------------------------------------------------------------------
-// Idle callback data (mirrors the on-idle callback mechanism)
-// ---------------------------------------------------------------------------
+var gLastExecEvent: LastExecEvent = LastExecEvent.NORMAL
+var gLastExecDuration: Int = -1
+var gLastAgentSessionId: String = ""
 
-/**
- * Data carrier for a one-shot idle callback.
- *
- * @param id       Stable identifier for removal.
- * @param callback The work to execute on the next idle tick.
- */
-data class IdleCallbackData(
-    val id: Int,
-    val callback: () -> Unit
-)
+var gDebugInfo: MutableMap<String, Any> = mutableMapOf()
+var gShowObjectUpdates: Boolean = false
 
-// ---------------------------------------------------------------------------
-// AppViewer singleton  (mirrors LLAppViewer)
-// ---------------------------------------------------------------------------
+var gFrameCount: UInt = 0u
+var gForegroundFrameCount: UInt = 0u
+var gFrameTime: Long = 0L
+var gFrameTimeSeconds: Float = 0f
+var gFrameIntervalSeconds: Float = 0f
+var gFpsClamped: Float = 10f
+var gFrameDtClamped: Float = 0f
+var gStartTime: Long = 0L
+var gLogoutMaxTime: Float = 6f
+var gPendingMetricsUploads: Int = 0
+var gSimLastTime: Float = 0f
+var gSimFrames: Float = 0f
+var gDisconnected: Boolean = false
+var gRestoreGl: Boolean = false
+var gUseWireframe: Boolean = false
+var gMemoryAllocated: Long = 0L
+var gLastVersionChannel: String = ""
+var gWindVec: FloatArray = floatArrayOf(3f, 3f, 0f)
+var gRelativeWindVec: FloatArray = floatArrayOf(0f, 0f, 0f)
+var gRandomizeFramerate: Boolean = false
+var gPeriodicSlowFrame: Boolean = false
+var gDoDisconnect: Boolean = false
+var gSimulateMemLeak: Boolean = false
 
-/**
- * Main application lifecycle singleton, equivalent to LLAppViewer.
- *
- * Complex subsystems (texture cache, network pump, joystick, etc.) are
- * stubbed with TODO() because they depend on platform-specific and
- * OpenGL-dependent infrastructure not yet ported.
- */
-object AppViewer {
+private const val LOGOUT_REQUEST_TIME = 6f
 
-    // -----------------------------------------------------------------------
-    // State flags
-    // -----------------------------------------------------------------------
+abstract class AppViewerBase {
 
-    /** True once [requestQuit] or [forceQuit] has been called. */
-    var isQuitting: Boolean = false
-        private set
-
-    /** True once the viewer has begun its final exit sequence. */
-    var isExiting: Boolean = false
-        private set
-
-    /** True if this is a second instance of the viewer running simultaneously. */
     var isSecondInstance: Boolean = false
-        private set
+        protected set
 
     var quitRequested: Boolean = false
-        private set
+        protected set
+
+    var closingFloaters: Boolean = false
+        protected set
 
     var logoutRequestSent: Boolean = false
-        private set
+        protected set
 
     var savedFinalSnapshot: Boolean = false
-        private set
+        protected set
 
-    // -----------------------------------------------------------------------
-    // Identifying strings
-    // -----------------------------------------------------------------------
+    var savePerAccountSettings: Boolean = false
+        protected set
 
     var serialNumber: String = ""
-        private set
+        protected set
 
     var serverReleaseNotesURL: String = ""
 
     var currentSkin: String = ""
     var currentSkinTheme: String = ""
 
-    // -----------------------------------------------------------------------
-    // Cache/cleanup flags
-    // -----------------------------------------------------------------------
-
     var purgeCache: Boolean = false
-        private set
+        protected set
+
+    var purgeCacheOnExit: Boolean = false
+        protected set
 
     var purgeUserDataOnExit: Boolean = false
-        private set
+        protected set
+
+    var purgeSettings: Boolean = false
+        protected set
+
+    var purgeTextures: Boolean = false
+        protected set
 
     var saveSettingsOnExit: Boolean = true
 
-    // -----------------------------------------------------------------------
-    // Timing globals (convenience mirrors of C++ extern globals)
-    // -----------------------------------------------------------------------
+    var isFirstRun: Boolean = false
+        protected set
 
-    var frameCount: UInt = 0u
-    var foregroundFrameCount: UInt = 0u
-    var fpsClamped: Float = 0f
-    var frameDtClamped: Float = 0f
-    var frameTimeSeconds: Float = 0f
-    var frameIntervalSeconds: Float = 0f
-    var logoutMaxTime: Float = 30f
-    var simLastTime: Float = 0f
-    var simFrames: Float = 0f
-    var disconnected: Boolean = false
-    var doDisconnect: Boolean = false
-    var randomizeFramerate: Boolean = false
-    var periodicSlowFrame: Boolean = false
+    var numSessions: Int = 0
+        protected set
 
-    // -----------------------------------------------------------------------
-    // Version / cache constants (companion would hold static members in C++)
-    // -----------------------------------------------------------------------
+    private val idleCallbacks: MutableList<() -> Unit> = mutableListOf()
+    val onLoginCompleted: MutableList<() -> Unit> = mutableListOf()
 
-    companion object {
-        const val GLOBAL_SETTINGS_NAME: String = "Global"
-        const val WINDOW_CLASS: String = "Second Life"
+    abstract fun init(): Boolean
+    abstract fun cleanup(): Boolean
+    abstract fun frame(): Boolean
+    abstract fun restoreErrorTrap(): Boolean
+    abstract fun generateSerialNumber(): String
 
-        fun getTextureCacheVersion(): UInt = TODO("texture cache versioning not yet ported")
-        fun getObjectCacheVersion(): UInt  = TODO("object cache versioning not yet ported")
-        fun getDiskCacheVersion(): UInt    = TODO("disk cache versioning not yet ported")
+    open fun beingDebugged(): Boolean = false
+    open fun initWindow(): Boolean = TODO("GPU: init viewer window")
+    open fun initLoggingAndGetLastDuration() {}
+    open fun initConsole() {}
+    open fun initHardwareTest(): Boolean = true
+    open fun overrideDetectedHardware() {}
+    open fun initSLURLHandler(): Boolean = false
+    open fun sendURLToOtherInstance(url: String): Boolean = false
+    open fun meetsRequirementsForMaximizedStart(): Boolean = false
+    open fun sendOutOfDiskSpaceNotification() {}
+    open fun startCachePurge() {}
+
+    fun forceQuit() {
+        TODO("APR: use JVM equivalent - set mQuitRequested / exit immediately")
     }
 
-    // -----------------------------------------------------------------------
-    // Idle callbacks
-    // -----------------------------------------------------------------------
-
-    private val idleCallbacks: MutableList<IdleCallbackData> = mutableListOf()
-    private var nextCallbackId: Int = 0
-
-    /**
-     * Registers [callback] to be executed once on the next idle tick.
-     * Returns a stable ID that can be passed to [removeOnIdleCallback].
-     */
-    fun addOnIdleCallback(callback: () -> Unit): Int {
-        val id = nextCallbackId++
-        idleCallbacks.add(IdleCallbackData(id, callback))
-        return id
+    fun fastQuit(errorCode: Int = 0) {
+        TODO("APR: use JVM equivalent - send logout message then exit($errorCode)")
     }
 
-    /** Removes the idle callback registered under [id], if still present. */
-    fun removeOnIdleCallback(id: Int) {
-        idleCallbacks.removeAll { it.id == id }
-    }
-
-    /** Drains and executes all pending one-shot idle callbacks. */
-    fun fireIdleCallbacks() {
-        val snapshot = idleCallbacks.toList()
-        idleCallbacks.clear()
-        for (entry in snapshot) {
-            entry.callback()
-        }
-    }
-
-    // -----------------------------------------------------------------------
-    // Login-completed signal
-    // -----------------------------------------------------------------------
-
-    private val loginCompletedListeners: MutableList<() -> Unit> = mutableListOf()
-
-    fun setOnLoginCompletedCallback(cb: () -> Unit) {
-        loginCompletedListeners.add(cb)
-    }
-
-    fun handleLoginComplete() {
-        TODO("login-complete handling not yet ported")
-    }
-
-    // -----------------------------------------------------------------------
-    // Main application lifecycle stubs
-    // -----------------------------------------------------------------------
-
-    /**
-     * Application initialisation entry point.
-     * Mirrors `LLAppViewer::init()`.
-     */
-    fun init(): Boolean {
-        TODO("Application init not yet ported")
-    }
-
-    /**
-     * Per-frame body logic.
-     * Mirrors `LLAppViewer::frame()`.
-     */
-    fun mainLoop(): Boolean {
-        TODO("Main loop frame not yet ported")
-    }
-
-    /** Graceful quit request; the user may be prompted to confirm. */
     fun requestQuit() {
         quitRequested = true
-        isQuitting = true
     }
 
-    /** Immediate, unconditional shutdown without error state. */
-    fun forceQuit() {
-        isQuitting = true
-        isExiting = true
-    }
-
-    /** Faster quit that first sends a logout message. */
-    fun fastQuit(errorCode: Int = 0) {
-        TODO("fastQuit not yet ported (errorCode=$errorCode)")
-    }
-
-    /** Interactive quit — prompt the user, then call [requestQuit]. */
     fun userQuit() {
-        TODO("userQuit dialog not yet ported")
+        TODO("GPU: show confirm-quit dialog, then requestQuit()")
     }
 
-    /** Abort a pending quit request. */
+    fun earlyExit(name: String, substitutions: Map<String, String> = emptyMap()): Nothing {
+        TODO("GPU: show error dialog for $name then force-exit")
+    }
+
+    fun earlyExitNoNotify(): Nothing {
+        TODO("APR: use JVM equivalent - force-exit without dialog")
+    }
+
     fun abortQuit() {
         quitRequested = false
-        isQuitting = false
     }
 
-    /** Display an error dialog and forcibly quit. */
-    fun earlyExit(name: String, substitutions: Map<String, String> = emptyMap()): Nothing {
-        TODO("earlyExit dialog not yet ported (name=$name)")
+    fun flushLFSIO() {
+        TODO("APR: use JVM equivalent - wait for LFS transfers to complete")
     }
 
-    /** Forcibly quit without showing a dialog. */
-    fun earlyExitNoNotify(): Nothing {
-        TODO("earlyExitNoNotify not yet ported")
+    fun writeDebugInfo(isStatic: Boolean = true) {
+        TODO("APR: use JVM equivalent - write static_debug_info.log")
     }
 
-    // -----------------------------------------------------------------------
-    // Misc. application state
-    // -----------------------------------------------------------------------
+    fun getViewerInfo(): Map<String, Any> = TODO("APR: use JVM equivalent - collect version/platform/GPU info")
 
-    fun getSecondLifeTitle(): String = TODO("title not yet ported")
-    fun getWindowTitle(): String     = TODO("window title not yet ported")
+    fun getViewerInfoString(defaultString: Boolean = false): String = TODO("APR: use JVM equivalent - format viewer info")
+
+    fun checkForCrash() {
+        TODO("APR: use JVM equivalent - process marker files from previous run")
+    }
+
+    fun getSerialNumber(): String = serialNumber
+
+    fun getPurgeCache(): Boolean = purgeCache
+
+    fun getSecondLifeTitle(): String = TODO("APR: use JVM equivalent - LLVersionInfo channel/version string")
+
+    fun getWindowTitle(): String = TODO("APR: use JVM equivalent - gWindowTitle")
 
     fun forceDisconnect(msg: String) {
-        TODO("forceDisconnect not yet ported (msg=$msg)")
+        TODO("APR: use JVM equivalent - show DisconnectedRegion notification and set gDoDisconnect")
     }
 
     fun sendSimpleLogoutRequest() {
-        TODO("logout request not yet ported")
+        TODO("APR: use JVM equivalent - send LogoutRequest UDP message")
     }
 
+    fun badNetworkHandler() {
+        TODO("APR: use JVM equivalent - trigger crash for bad network packet")
+    }
+
+    fun hasSavedFinalSnapshot(): Boolean = savedFinalSnapshot
+
     fun saveFinalSnapshot() {
-        TODO("saveFinalSnapshot not yet ported")
+        TODO("GPU: take final screenshot to screen_last.png")
+    }
+
+    fun loadNameCache() {
+        TODO("APR: use JVM equivalent - load name cache from disk")
+    }
+
+    fun saveNameCache() {
+        TODO("APR: use JVM equivalent - save name cache to disk")
+    }
+
+    fun removeMarkerFiles() {
+        TODO("APR: use JVM equivalent - delete .exec_marker and .logout_marker files")
+    }
+
+    fun recordSessionToMarker() {
+        TODO("APR: use JVM equivalent - write session info to marker file")
+    }
+
+    fun removeDumpDir() {
+        TODO("APR: use JVM equivalent - remove minidump directory")
+    }
+
+    fun forceErrorLLError() { TODO("APR: trigger LL_ERRS for testing") }
+    fun forceErrorLLErrorMsg() { TODO("APR: trigger LL_ERRS with message for testing") }
+    fun forceErrorBreakpoint() { TODO("APR: raise SIGTRAP for testing") }
+    fun forceErrorBadMemoryAccess() { TODO("APR: dereference null for testing") }
+    fun forceErrorInfiniteLoop() { TODO("APR: enter infinite loop for testing") }
+    fun forceErrorSoftwareException() { TODO("APR: throw unhandled exception for testing") }
+    fun forceErrorOSSpecificException() { TODO("APR: raise OS exception for testing") }
+    fun forceErrorDriverCrash() { TODO("GPU: provoke GPU driver crash for testing") }
+    fun forceErrorCoroprocedureCrash() { TODO("APR: crash a coroproc for testing") }
+    fun forceErrorWorkQueueCrash() { TODO("APR: crash work queue for testing") }
+    fun forceErrorThreadCrash() { TODO("APR: crash background thread for testing") }
+    fun forceExceptionThreadCrash() { TODO("APR: throw from thread for testing") }
+
+    fun loadSettingsFromDirectory(locationKey: String, setDefaults: Boolean = false): Boolean {
+        TODO("APR: use JVM equivalent - load settings XML from location_key path")
+    }
+
+    fun getSettingsFilename(locationKey: String, file: String): String {
+        TODO("APR: use JVM equivalent - resolve settings file path from location key")
+    }
+
+    fun loadColorSettings() {
+        TODO("APR: use JVM equivalent - load colors.xml into LLUIColorTable")
+    }
+
+    fun initMainloopTimeout(state: String) {
+        TODO("APR: use JVM equivalent - start watchdog timer for $state")
+    }
+
+    fun destroyMainloopTimeout() {
+        TODO("APR: use JVM equivalent - stop watchdog timer")
+    }
+
+    fun pauseMainloopTimeout() {
+        TODO("APR: use JVM equivalent - pause watchdog timer")
+    }
+
+    fun resumeMainloopTimeout(state: String = "") {
+        TODO("APR: use JVM equivalent - resume watchdog timer for $state")
+    }
+
+    fun pingMainloopTimeout(state: String) {
+        TODO("APR: use JVM equivalent - ping watchdog timer for $state")
+    }
+
+    fun getMainloopTimeoutSec(): Float = TODO("APR: use JVM equivalent - return watchdog timeout seconds")
+
+    fun handleLoginComplete() {
+        for (cb in onLoginCompleted) cb()
+        TODO("APR: use JVM equivalent - finish post-login setup")
+    }
+
+    fun setOnLoginCompletedCallback(cb: () -> Unit) {
+        onLoginCompleted.add(cb)
+    }
+
+    fun addOnIdleCallback(cb: () -> Unit) {
+        idleCallbacks.add(cb)
+    }
+
+    fun fireIdleCallbacks() {
+        val snapshot = idleCallbacks.toList()
+        idleCallbacks.clear()
+        snapshot.forEach { it() }
+    }
+
+    fun initGeneralThread() {
+        TODO("APR: use JVM equivalent - start general-purpose thread pool")
     }
 
     fun purgeUserDataOnExit() {
         purgeUserDataOnExit = true
     }
 
-    fun loadNameCache() { TODO("name cache load not yet ported") }
-    fun saveNameCache() { TODO("name cache save not yet ported") }
-
-    fun removeMarkerFiles()    { TODO("marker files not yet ported") }
-    fun recordSessionToMarker(){ TODO("session marker not yet ported") }
-
-    fun outOfMemorySoftQuit()  { TODO("OOM soft quit not yet ported") }
-
-    // -----------------------------------------------------------------------
-    // Mainloop timeout helpers
-    // -----------------------------------------------------------------------
-
-    fun initMainloopTimeout(state: String)  { TODO("mainloop timeout not yet ported") }
-    fun destroyMainloopTimeout()            { TODO("mainloop timeout not yet ported") }
-    fun pauseMainloopTimeout()              { TODO("mainloop timeout not yet ported") }
-    fun resumeMainloopTimeout(state: String = "") { TODO("mainloop timeout not yet ported") }
-    fun pingMainloopTimeout(state: String)  { TODO("mainloop timeout not yet ported") }
-    fun getMainloopTimeoutSec(): Float      = TODO("mainloop timeout not yet ported")
-
-    // -----------------------------------------------------------------------
-    // Settings helpers
-    // -----------------------------------------------------------------------
-
-    fun loadSettingsFromDirectory(locationKey: String, setDefaults: Boolean = false): Boolean {
-        TODO("settings loading not yet ported (key=$locationKey)")
+    fun purgeCefStaleCaches() {
+        TODO("APR: use JVM equivalent - remove stale CEF cache folders in background")
     }
 
-    fun getSettingsFilename(locationKey: String, file: String): String {
-        TODO("settings filename not yet ported")
+    fun purgeCache() {
+        TODO("APR: use JVM equivalent - clear local disk cache")
     }
 
-    fun loadColorSettings() { TODO("color settings not yet ported") }
-    fun loadKeyBindings()   { TODO("key bindings not yet ported") }
+    fun purgeCacheImmediate() {
+        TODO("APR: use JVM equivalent - synchronously clear local disk cache")
+    }
 
-    // -----------------------------------------------------------------------
-    // Debug / crash helpers
-    // -----------------------------------------------------------------------
+    fun updateTextureThreads(maxTimeSec: Float): Int = TODO("GPU: pump texture decode/fetch threads")
 
-    fun writeDebugInfo(isStatic: Boolean = true) { TODO("debug info not yet ported") }
-    fun checkForCrash()                          { TODO("crash check not yet ported") }
-    fun badNetworkHandler()                      { TODO("bad network handler not yet ported") }
-    fun writeSystemInfo()                        { TODO("system info not yet ported") }
+    fun loadKeyBindings() {
+        TODO("APR: use JVM equivalent - load key_bindings.xml")
+    }
 
-    // -----------------------------------------------------------------------
-    // Audio
-    // -----------------------------------------------------------------------
+    open fun setMasterSystemAudioMute(mute: Boolean) {
+        TODO("APR: use JVM equivalent - mute/unmute OS audio")
+    }
 
-    fun setMasterSystemAudioMute(mute: Boolean) { TODO("audio mute not yet ported") }
-    fun getMasterSystemAudioMute(): Boolean     = TODO("audio mute not yet ported")
+    open fun getMasterSystemAudioMute(): Boolean = TODO("APR: use JVM equivalent - query OS audio mute state")
 
-    // -----------------------------------------------------------------------
-    // Metrics
-    // -----------------------------------------------------------------------
+    fun getAppCoreHttp(): Any = TODO("APR: use JVM equivalent - return LLAppCoreHttp instance")
 
-    fun metricsUpdateRegion(regionHandle: ULong) { TODO("metrics not yet ported") }
-    fun metricsSend(enableReporting: Boolean)    { TODO("metrics not yet ported") }
+    fun updateNameLookupUrl(region: Any?) {
+        TODO("APR: use JVM equivalent - update avatar name lookup URL from region capabilities")
+    }
 
-    // -----------------------------------------------------------------------
-    // ServerReleaseNotesURLFetcher inner object (mirrors nested class)
-    // -----------------------------------------------------------------------
+    fun postToMainCoro(work: () -> Unit) {
+        TODO("APR: use JVM equivalent - enqueue work on main-thread WorkQueue")
+    }
 
-    /**
-     * Fetches the server release-notes URL asynchronously.
-     * Mirrors `LLAppViewer::LLAppViewer::ServerReleaseNotesURLFetcher`.
-     */
-    object ServerReleaseNotesURLFetcher {
-        fun fetchURL(url: String) {
-            TODO("ServerReleaseNotesURLFetcher not yet ported (url=$url)")
+    fun createErrorMarker(errorCode: LastExecEvent) {
+        TODO("APR: use JVM equivalent - write $errorCode to .error_marker file")
+    }
+
+    fun errorMarkerExists(): Boolean = TODO("APR: use JVM equivalent - check for .error_marker file")
+
+    fun outOfMemorySoftQuit() {
+        TODO("APR: use JVM equivalent - attempt soft quit on OOM condition")
+    }
+
+    fun setSaveSettingsOnExit(state: Boolean) {
+        saveSettingsOnExit = state
+    }
+
+    companion object {
+        var instance: AppViewerBase? = null
+            private set
+
+        const val GLOBAL_SETTINGS_NAME: String = "Global"
+        const val WINDOW_CLASS: String = "Second Life"
+
+        fun getTextureCacheVersion(): UInt = TODO("APR: texture cache version constant")
+        fun getObjectCacheVersion(): UInt  = TODO("APR: object cache version constant")
+        fun getDiskCacheVersion(): UInt    = TODO("APR: disk cache version constant")
+
+        fun metricsUpdateRegion(regionHandle: ULong) {
+            TODO("APR: use JVM equivalent - update metrics region handle")
         }
+
+        fun metricsSend(enableReporting: Boolean) {
+            TODO("APR: use JVM equivalent - flush viewer metrics to server")
+        }
+
+        internal fun setInstance(viewer: AppViewerBase) {
+            check(instance == null) { "AppViewerBase instance already set" }
+            instance = viewer
+        }
+    }
+}
+
+object AppViewer : AppViewerBase() {
+
+    init {
+        setInstance(this)
+    }
+
+    override fun init(): Boolean {
+        TODO("APR: use JVM equivalent - full application initialisation sequence")
+    }
+
+    override fun cleanup(): Boolean {
+        TODO("APR: use JVM equivalent - full application cleanup sequence")
+    }
+
+    override fun frame(): Boolean {
+        TODO("GPU: execute one frame: idle callbacks, network pump, render")
+    }
+
+    override fun restoreErrorTrap(): Boolean {
+        TODO("APR: use JVM equivalent - platform-specific error handler reset")
+    }
+
+    override fun generateSerialNumber(): String {
+        TODO("APR: use JVM equivalent - platform-specific machine serial number")
     }
 }

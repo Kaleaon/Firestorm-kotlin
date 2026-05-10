@@ -1,7 +1,6 @@
 package com.firestorm.llui
 
 import com.firestorm.llmath.Rect
-import java.util.UUID
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
@@ -11,6 +10,9 @@ private const val FOLDER_CLOSE_TIME_CONSTANT = 0.02f
 private const val FOLDER_OPEN_TIME_CONSTANT = 0.03f
 private const val FAVORITE_IMAGE_SIZE = 14
 private const val FAVORITE_IMAGE_PAD = 3
+
+const val ACCEPT_YES_MULTI = 2
+const val ACCEPT_NO = 0
 
 open class FolderViewItem(
     val root: FolderView,
@@ -56,14 +58,13 @@ open class FolderViewItem(
         var protectedColor: Color4 = Color4(1f, 0f, 0f, 1f)
         var colorSetInitialized: Boolean = false
 
-        fun getLabelFontForStyle(style: Int): Any {
-            return fontsForStyle.getOrPut(style) {
+        fun getLabelFontForStyle(style: Int): Any =
+            fontsForStyle.getOrPut(style) {
                 TODO("GPU: resolve font for style=$style from font registry")
             }
-        }
 
         fun initClass() {
-            TODO("GPU: load default params and initialize static colors and images from UI theme")
+            TODO("GPU: initialize static colors, images, and fonts from UI theme defaults")
         }
 
         fun cleanupClass() {
@@ -99,17 +100,13 @@ open class FolderViewItem(
     var isItemCut: Boolean = false
     var cutGeneration: Int = 0
     var isSelected: Boolean = false
-
-    private var labelFont: Any? = null
-
     var visible: Boolean = true
     var rect: Rect = Rect()
 
+    private var labelFont: Any? = null
+
     init {
         viewModelItem.setFolderViewItem(this)
-        if (!colorSetInitialized) {
-            TODO("GPU: initialize static color set from UI color table")
-        }
     }
 
     fun getLabelFont(): Any {
@@ -174,9 +171,7 @@ open class FolderViewItem(
     open fun refresh() {
         label = viewModelItem.getDisplayName()
         isFavorite = viewModelItem.isFavorite() && !viewModelItem.isItemInTrash()
-        icon = viewModelItem.getIcon()
-        iconOpen = viewModelItem.getIconOpen()
-        iconOverlay = viewModelItem.getIconOverlay()
+        icon = viewModelItem.getIcon(); iconOpen = viewModelItem.getIconOpen(); iconOverlay = viewModelItem.getIconOverlay()
         if (root.useLabelSuffix()) {
             labelStyle = viewModelItem.getLabelStyle()
             labelFont = null
@@ -188,9 +183,7 @@ open class FolderViewItem(
     }
 
     fun refreshSuffix() {
-        icon = viewModelItem.getIcon()
-        iconOpen = viewModelItem.getIconOpen()
-        iconOverlay = viewModelItem.getIconOverlay()
+        icon = viewModelItem.getIcon(); iconOpen = viewModelItem.getIconOpen(); iconOverlay = viewModelItem.getIconOverlay()
         isFavorite = viewModelItem.isFavorite() && !viewModelItem.isItemInTrash()
         if (root.useLabelSuffix()) {
             labelStyle = viewModelItem.getLabelStyle()
@@ -204,7 +197,7 @@ open class FolderViewItem(
     fun arrangeAndSet(setSelection: Boolean, takeKeyboardFocus: Boolean) {
         parentFolder?.requestArrange()
         if (setSelection) {
-            root.setSelection(this, true, takeKeyboardFocus)
+            root.setSelection(this, openItem = true, takeKeyboardFocus = takeKeyboardFocus)
             root.scrollToShowSelection()
         }
     }
@@ -226,7 +219,7 @@ open class FolderViewItem(
 
         if (labelWidthDirty) {
             if (suffixNeedsRefresh) refreshSuffix()
-            TODO("GPU: measure labelWidth using font metrics for label and suffix strings")
+            TODO("GPU: measure labelWidth using font metrics for label+suffix strings")
         }
 
         width[0] = max(width[0], labelWidth)
@@ -236,9 +229,7 @@ open class FolderViewItem(
     }
 
     open fun getItemHeight(): Int = itemHeight
-
     fun getLabelXPos(): Int = indentation + arrowSize + textPad + iconWidth + iconPad
-
     fun getIconPad(): Int = iconPad
     fun getTextPad(): Int = textPad
 
@@ -259,10 +250,7 @@ open class FolderViewItem(
     fun deselectItem() { isSelected = false }
 
     open fun selectItem() {
-        if (!isSelected) {
-            isSelected = true
-            viewModelItem.selectItem()
-        }
+        if (!isSelected) { isSelected = true; viewModelItem.selectItem() }
     }
 
     open fun isMovable(): Boolean = viewModelItem.isItemMovable()
@@ -273,37 +261,27 @@ open class FolderViewItem(
         parentFolder?.extractItem(this)
     }
 
-    fun remove(): Boolean {
-        if (!isRemovable()) return false
-        return viewModelItem.removeItem()
-    }
+    fun remove(): Boolean = if (!isRemovable()) false else viewModelItem.removeItem()
 
     fun buildContextMenu(menu: MenuGL, flags: UInt) {
         viewModelItem.buildContextMenu(menu, flags)
     }
 
     open fun openItem() {
-        if (!marketplaceItem || !viewModelItem.isItemWearable()) {
-            viewModelItem.openItem()
-        }
+        if (!marketplaceItem || !viewModelItem.isItemWearable()) viewModelItem.openItem()
     }
 
-    fun rename(newName: String) {
-        if (newName.isNotEmpty()) viewModelItem.renameItem(newName)
-    }
-
+    fun rename(newName: String) { if (newName.isNotEmpty()) viewModelItem.renameItem(newName) }
     fun getName(): String = viewModelItem.getName()
     fun getLabel(): String = label
 
     open fun setOpen(open: Boolean = true) {}
     open fun isOpen(): Boolean = false
-
     open fun isFolderComplete(): Boolean = true
     open fun areChildrenInited(): Boolean = true
     open fun setChildrenInited(inited: Boolean) {}
 
     fun isInSelection(): Boolean = isSelected || (parentFolder?.isInSelection() ?: false)
-
     fun setUnselected() { isSelected = false }
     fun setIsCurSelection(select: Boolean) { isCurSelection = select }
     fun getIsCurSelection(): Boolean = isCurSelection
@@ -312,7 +290,7 @@ open class FolderViewItem(
     fun getFolderViewModel(): FolderViewModelInterface = root.getFolderViewModel()
 
     open fun handleRightMouseDown(x: Int, y: Int, mask: Int): Boolean {
-        if (!isSelected) root.setSelection(this, false)
+        if (!isSelected) root.setSelection(this, openItem = false)
         return true
     }
 
@@ -323,7 +301,7 @@ open class FolderViewItem(
             when {
                 mask and MASK_CTRL != 0 -> root.changeSelection(this, !isSelected)
                 mask and MASK_SHIFT != 0 -> parentFolder?.extendSelectionTo(this)
-                else -> root.setSelection(this, false)
+                else -> root.setSelection(this, openItem = false)
             }
         } else {
             selectPending = true
@@ -334,7 +312,7 @@ open class FolderViewItem(
     open fun handleHover(x: Int, y: Int, mask: Int): Boolean {
         isMouseOverTitle = (y > (rect.height - itemHeight))
         if (hasMouseCapture() && isMovable()) {
-            TODO("APR: use JVM equivalent for drag threshold check and cursor change")
+            TODO("APR: use JVM equivalent for drag threshold check and cursor management")
         }
         root.setHoveredItem(this)
         root.setShowSelectionContext(false)
@@ -347,7 +325,7 @@ open class FolderViewItem(
             when {
                 mask and MASK_CTRL != 0 -> root.changeSelection(this, !isSelected)
                 mask and MASK_SHIFT != 0 -> parentFolder?.extendSelectionTo(this)
-                else -> root.setSelection(this, false)
+                else -> root.setSelection(this, openItem = false)
             }
         }
         selectPending = false
@@ -355,10 +333,7 @@ open class FolderViewItem(
         return true
     }
 
-    open fun handleDoubleClick(x: Int, y: Int, mask: Int): Boolean {
-        openItem()
-        return true
-    }
+    open fun handleDoubleClick(x: Int, y: Int, mask: Int): Boolean { openItem(); return true }
 
     fun onMouseLeave(x: Int, y: Int, mask: Int) {
         isMouseOverTitle = false
@@ -371,12 +346,7 @@ open class FolderViewItem(
         accept: IntArray, tooltipMsg: StringBuilder,
     ): Boolean {
         val accepted = viewModelItem.dragOrDrop(mask.toUInt(), drop, cargoType, cargoData, tooltipMsg)
-        if (accepted) {
-            dragAndDropTarget = true
-            accept[0] = ACCEPT_YES_MULTI
-        } else {
-            accept[0] = ACCEPT_NO
-        }
+        accept[0] = if (accepted) { dragAndDropTarget = true; ACCEPT_YES_MULTI } else ACCEPT_NO
         if (parentFolder != null && !accepted) {
             root.setDraggingOverItem(this)
             val handled = parentFolder!!.handleDragAndDropFromChild(mask, drop, cargoType, cargoData, accept, tooltipMsg)
@@ -387,27 +357,27 @@ open class FolderViewItem(
     }
 
     fun handleToolTip(x: Int, y: Int, mask: Int): Boolean {
-        TODO("GPU: measure label width; show tooltip if truncated, else clear tooltip")
+        TODO("GPU: measure label pixel width; show tooltip if truncated, else clear")
     }
 
     open fun draw() {
         val showContext = root.getShowSelectionContext()
-        val filled = showContext || root.getParentPanel().hasFocus()
+        val filled = showContext || root.parentPanelHasFocus()
         viewModelItem.update()
         if (!singleFolderMode) drawOpenFolderArrow()
         drawFavoriteIcon()
         drawHighlight(showContext, filled, highlightBgColor, flashBgColor, focusOutlineColor, mouseOverColor)
-        TODO("GPU: draw icon, label, suffix, filter highlights, and locked/protected annotations")
+        TODO("GPU: draw icon, label text, suffix, filter highlight boxes, and locked/protected annotations")
     }
 
     fun drawOpenFolderArrow() {
         if (hasVisibleChildren || !isFolderComplete()) {
-            TODO("GPU: gl_draw_scaled_rotated_image for folder arrow at indentation=$indentation rotation=$controlLabelRotation")
+            TODO("GPU: gl_draw_scaled_rotated_image for folder arrow at x=$indentation rotation=$controlLabelRotation")
         }
     }
 
     fun drawFavoriteIcon() {
-        TODO("GPU: draw favorite star or hollow-star image based on isFavorite/hasFavorites flags")
+        TODO("GPU: draw favorite star or hollow-star image based on isFavorite/hasFavorites state")
     }
 
     open fun isHighlightAllowed(): Boolean = isSelected
@@ -424,20 +394,15 @@ open class FolderViewItem(
         selectColor: Color4, flashColor: Color4,
         outlineColor: Color4, hoverColor: Color4,
     ) {
-        TODO("GPU: render selection/flash/outline/hover highlight rects via gl_rect_2d")
+        TODO("GPU: render selection/flash/outline/hover highlight rectangles via gl_rect_2d")
     }
 
     fun drawLabel(font: Any, x: Float, y: Float, color: Color4, rightX: FloatArray) {
         TODO("GPU: render label text with ellipsis clipping using font vertex buffer")
     }
 
-    fun hasMouseCapture(): Boolean = TODO("APR: use JVM equivalent for gFocusMgr mouse capture check")
+    fun hasMouseCapture(): Boolean = TODO("APR: use JVM equivalent for mouse capture state check")
     fun pointInView(x: Int, y: Int): Boolean = x >= 0 && y >= 0 && x < rect.width && y < rect.height
-
-    companion object {
-        const val ACCEPT_YES_MULTI = 2
-        const val ACCEPT_NO = 0
-    }
 }
 
 open class FolderViewFolder(
@@ -451,15 +416,10 @@ open class FolderViewFolder(
     allowDrop: Boolean = true,
     fontColor: Color4 = Color4(1f, 1f, 1f, 1f),
     fontHighlightColor: Color4 = Color4(1f, 1f, 1f, 1f),
-    leftPad: Int = 0,
-    iconPad: Int = 0,
-    iconWidth: Int = 0,
-    textPad: Int = 0,
-    textPadRight: Int = 0,
-    arrowSize: Int = 0,
-    maxFolderItemOverlap: Int = 0,
-    singleFolderMode: Boolean = false,
-    doubleClickOverride: Boolean = false,
+    leftPad: Int = 0, iconPad: Int = 0, iconWidth: Int = 0,
+    textPad: Int = 0, textPadRight: Int = 0,
+    arrowSize: Int = 0, maxFolderItemOverlap: Int = 0,
+    singleFolderMode: Boolean = false, doubleClickOverride: Boolean = false,
     forInventory: Boolean = false,
 ) : FolderViewItem(
     root, viewModelItem, name, folderIndentation, itemHeightParam, itemTopPad,
@@ -481,7 +441,6 @@ open class FolderViewFolder(
     var lastCalculatedWidth: Int = 0
     var isFolderCompleteState: Boolean = false
     var areChildrenInitedState: Boolean = false
-    private var favoritesDirtyFlags: Int = 0
 
     override fun isFolderComplete(): Boolean = isFolderCompleteState
     override fun areChildrenInited(): Boolean = areChildrenInitedState
@@ -523,9 +482,7 @@ open class FolderViewFolder(
         }
 
         super.arrange(width, height)
-
         curHeight = max(height[0].toFloat(), curHeight)
-        var runningHeight = height[0].toFloat()
         var targetH = height[0].toFloat()
 
         if (needsArrange()) {
@@ -536,7 +493,6 @@ open class FolderViewFolder(
                     if (folder.visible) {
                         val cw = intArrayOf(width[0]); val ch = intArrayOf(0)
                         targetH += folder.arrange(cw, ch)
-                        runningHeight += ch[0]
                         width[0] = max(width[0], cw[0])
                     }
                 }
@@ -545,7 +501,6 @@ open class FolderViewFolder(
                     if (item.visible) {
                         val cw = intArrayOf(width[0]); val ch = intArrayOf(0)
                         targetH += item.arrange(cw, ch)
-                        runningHeight += ch[0]
                         width[0] = max(width[0], cw[0])
                     }
                 }
@@ -586,28 +541,23 @@ open class FolderViewFolder(
     }
 
     fun extendSelectionTo(selection: FolderViewItem) {
-        TODO("APR: use JVM equivalent for range-selection from current selection to target item")
+        TODO("APR: use JVM equivalent for range-selection between current and target item")
     }
 
     override fun isRemovable(): Boolean =
-        viewModelItem.isItemRemovable() &&
-            folders.all { it.isRemovable() } &&
-            items.all { it.isRemovable() }
+        viewModelItem.isItemRemovable() && folders.all { it.isRemovable() } && items.all { it.isRemovable() }
 
     override fun isMovable(): Boolean =
-        viewModelItem.isItemMovable() &&
-            folders.all { it.isMovable() } &&
-            items.all { it.isMovable() }
+        viewModelItem.isItemMovable() && folders.all { it.isMovable() } && items.all { it.isMovable() }
 
     override fun destroyView() {
         for (f in folders.toList()) f.destroyView()
         for (i in items.toList()) i.destroyView()
-        gFocusMgr.releaseFocusIfNeeded(TODO("APR: wrap FolderViewFolder as FocusableElement for gFocusMgr"))
         super.destroyView()
     }
 
     fun destroyRoot() {
-        TODO("APR: use JVM equivalent for root folder cleanup")
+        TODO("APR: use JVM equivalent for root folder cleanup and resource release")
     }
 
     open fun extractItem(item: FolderViewItem, deparentModel: Boolean = true) {
@@ -616,17 +566,12 @@ open class FolderViewFolder(
         item.parentFolder = null
     }
 
-    fun isInSelection(): Boolean = isSelected || (parentFolder?.isInSelection() ?: false)
-
     fun setAutoOpenCountdown(countdown: Float) { autoOpenCountdown = countdown }
 
     open fun toggleOpen() { setOpen(!isOpenState) }
 
     override fun setOpen(open: Boolean) {
-        if (isOpenState != open) {
-            isOpenState = open
-            requestArrange()
-        }
+        if (isOpenState != open) { isOpenState = open; requestArrange() }
     }
 
     open fun requestArrange() {
@@ -705,7 +650,7 @@ open class FolderViewFolder(
         mask: Int, drop: Boolean, cargoType: DragAndDropType, cargoData: Any?,
         accept: IntArray, tooltipMsg: StringBuilder,
     ): Boolean {
-        TODO("APR: use JVM equivalent for folder drag-and-drop via view model")
+        TODO("APR: use JVM equivalent for folder drag-and-drop handling via view model")
     }
 
     override fun handleHover(x: Int, y: Int, mask: Int): Boolean {
@@ -737,17 +682,15 @@ open class FolderViewFolder(
     }
 }
 
-abstract class FolderView : FolderViewFolder(
-    root = TODO("FolderView is its own root; subclass must break this circularity"),
-    viewModelItem = TODO("FolderView subclass must supply its own FolderViewModelItem"),
-) {
+abstract class FolderView {
+    abstract val rect: Rect
+    abstract fun getFolderViewModel(): FolderViewModelInterface
     abstract fun removeFromSelectionList(item: FolderViewItem)
     abstract fun setSelection(item: FolderViewItem, openItem: Boolean, takeKeyboardFocus: Boolean = false)
     abstract fun changeSelection(item: FolderViewItem, selected: Boolean)
     abstract fun scrollToShowSelection()
-    abstract fun getFolderViewModel(): FolderViewModelInterface
     abstract fun getShowSelectionContext(): Boolean
-    abstract fun getParentPanel(): UICtrl
+    abstract fun parentPanelHasFocus(): Boolean
     abstract fun useLabelSuffix(): Boolean
     abstract fun getUseEllipses(): Boolean
     abstract fun getArrangeGeneration(): Int

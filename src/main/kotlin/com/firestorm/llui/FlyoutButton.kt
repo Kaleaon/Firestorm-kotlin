@@ -4,7 +4,7 @@ import com.firestorm.llmath.Rect
 
 private const val FLYOUT_BUTTON_ARROW_WIDTH = 24
 
-class FlyoutButton(
+open class FlyoutButton(
     name: String,
     label: String = "",
     rect: Rect = Rect()

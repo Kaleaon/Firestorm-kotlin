@@ -1,5 +1,6 @@
 package com.firestorm.llui
 
+import com.firestorm.llmath.Rect
 import java.util.UUID
 import kotlin.math.max
 
@@ -17,8 +18,6 @@ fun llsdsAreEqual(a: LlsdValue, b: LlsdValue): Boolean {
     }
     return a.toString() == b.toString()
 }
-
-enum class AddPosition { TOP, BOTTOM, DEFAULT }
 
 abstract class ItemComparator {
     abstract fun compare(item1: Panel, item2: Panel): Boolean
@@ -60,14 +59,14 @@ open class FlatListView(
 
     open fun canFocusChildren(): Boolean = false
 
-    open fun addItem(item: Panel, value: LlsdValue = null, pos: AddPosition = AddPosition.BOTTOM, rearrange: Boolean = true): Boolean {
+    open fun addItem(item: Panel, value: LlsdValue = null, pos: AddPosition = AddPosition.ADD_BOTTOM, rearrange: Boolean = true): Boolean {
         if (value == null) return false
         if (item.parent != null) return false
 
         val pair = ItemPair(item, value)
         when (pos) {
-            AddPosition.TOP -> itemPairs.add(0, pair)
-            AddPosition.BOTTOM, AddPosition.DEFAULT -> itemPairs.add(pair)
+            AddPosition.ADD_TOP -> itemPairs.add(0, pair)
+            AddPosition.ADD_BOTTOM, AddPosition.ADD_DEFAULT -> itemPairs.add(pair)
         }
         item.tabStop = false
 
@@ -338,9 +337,8 @@ open class FlatListView(
         TODO("APR: use JVM equivalent for notifying parent of size_changes dimensions")
     }
 
-    protected fun getLastSelectedItemRect(): com.firestorm.llmath.Rect =
-        selectedItemPairs.lastOrNull()?.panel?.rect
-            ?: com.firestorm.llmath.Rect(0, 0, 0, 0)
+    protected fun getLastSelectedItemRect(): Rect =
+        selectedItemPairs.lastOrNull()?.panel?.rect ?: Rect()
 
     protected fun ensureSelectedVisible() {
         TODO("APR: use JVM equivalent for scrollToShowRect of last selected item")

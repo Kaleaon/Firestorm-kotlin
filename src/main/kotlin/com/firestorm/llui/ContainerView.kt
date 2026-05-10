@@ -8,12 +8,12 @@ open class ContainerView(
     rect: Rect = Rect(),
     private var label: String = "",
     var showLabel: Boolean = false,
-    displayChildren: Boolean = true,
+    displayChildrenInitial: Boolean = true,
     var backgroundVisible: Boolean = true,
     var backgroundColor: Color4 = Color4(0f, 0f, 0f, 0.25f)
 ) : View(name, rect) {
 
-    var displayChildren: Boolean = displayChildren
+    var displayChildren: Boolean = displayChildrenInitial
         set(value) {
             field = value
             for (child in children) child.visible = value
@@ -22,15 +22,14 @@ open class ContainerView(
     var scrollContainer: ScrollContainer? = null
 
     fun postBuild(): Boolean {
-        this.displayChildren = displayChildren
+        displayChildren = displayChildren
         reshape(rect.width, rect.height, false)
         return true
     }
 
-    fun addChild(child: View, tabGroup: Int = 0): Boolean {
+    fun addChildToBack(child: View) {
         addChild(child)
         sendChildToBack(child)
-        return true
     }
 
     fun handleDoubleClick(x: Int, y: Int, mask: UInt): Boolean = handleMouseDown(x, y, mask)
@@ -68,11 +67,8 @@ open class ContainerView(
 
     override fun reshape(width: Int, height: Int, called: Boolean) {
         val sc = scrollContainer
-        var scrollerRect = if (sc != null) {
-            sc.getContentWindowRect()
-        } else {
-            Rect(0, 0, width, 0)
-        }
+        val scrollerRect = if (sc != null) sc.getContentWindowRect()
+                           else Rect(0, 0, width, 0)
 
         arrange(scrollerRect.width, scrollerRect.height, called)
 
@@ -87,35 +83,26 @@ open class ContainerView(
     fun getRequiredRect(): Rect {
         var totalHeight = if (showLabel) 20 else 0
         if (displayChildren) {
-            for (child in children) {
-                totalHeight += child.rect.height + 2
-            }
+            for (child in children) totalHeight += child.rect.height + 2
         }
         return Rect(0, totalHeight, 0, 0)
     }
 
-    fun setLabel(text: String) {
-        label = text
-    }
-
+    fun setLabel(text: String) { label = text }
     fun getDisplayChildren(): Boolean = displayChildren
 
     private fun arrange(width: Int, height: Int, calledFromParent: Boolean) {
         var totalHeight = if (showLabel) 20 else 0
-
         if (displayChildren) {
-            for (child in children) {
-                totalHeight += child.rect.height + 2
-            }
+            for (child in children) totalHeight += child.rect.height + 2
         }
-
         if (totalHeight < height) totalHeight = height
 
-        val myRect = rect
-        if (followsTop()) {
-            rect = Rect(myRect.left, myRect.top, myRect.left + width, myRect.top - totalHeight)
+        val anchorTop = followsTop()
+        rect = if (anchorTop) {
+            Rect(rect.left, rect.top, rect.left + width, rect.top - totalHeight)
         } else {
-            rect = Rect(myRect.left, myRect.bottom + totalHeight, myRect.left + width, myRect.bottom)
+            Rect(rect.left, rect.bottom + totalHeight, rect.left + width, rect.bottom)
         }
 
         val left = 10

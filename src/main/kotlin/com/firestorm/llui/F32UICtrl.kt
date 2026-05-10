@@ -2,14 +2,14 @@ package com.firestorm.llui
 
 import com.firestorm.llmath.Rect
 
-abstract class F32UICtrl(
+open class F32UICtrl(
     name: String,
     rect: Rect = Rect(),
     initialValue: Float = 0f,
     minValue: Float = 0f,
     maxValue: Float = 1f,
     increment: Float = 0.1f
-) : View(name, rect) {
+) : UICtrl(name, rect) {
 
     val initialValue: Float = initialValue
     var minValue: Float = minValue

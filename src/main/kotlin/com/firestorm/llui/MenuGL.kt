@@ -57,11 +57,11 @@ open class MenuItemGL(val name: String) {
     fun getLabel(): String = label
 
     fun setLabelArg(key: String, text: String): Boolean {
-        label = label.replace("[${key}]", text)
+        label = label.replace("[$key]", text)
         return true
     }
 
-    fun setJumpKey(key: Int) { jumpKey = key }
+    fun setJumpKey(key: Int) { jumpKey = key.uppercaseChar().code }
     fun getJumpKey(): Int = jumpKey
 
     open fun getNominalHeight(): UInt = (12u + MENU_ITEM_PADDING.toUInt())
@@ -121,18 +121,18 @@ open class MenuItemGL(val name: String) {
 
     open fun handleKeyHere(key: Int, mask: UInt): Boolean {
         if (getHighlight() && getMenu()?.isOpen() == true) {
-            when (key) {
-                KEY_UP -> {
+            when {
+                key == KEY_UP -> {
                     MenuGL.keyboardMode = true
                     getMenu()?.highlightPrevItem(this)
                     return true
                 }
-                KEY_DOWN -> {
+                key == KEY_DOWN -> {
                     MenuGL.keyboardMode = true
                     getMenu()?.highlightNextItem(this)
                     return true
                 }
-                KEY_RETURN -> if (mask == MASK_NONE) {
+                key == KEY_RETURN && mask == MASK_NONE -> {
                     MenuGL.keyboardMode = true
                     onCommit()
                     return true
@@ -158,8 +158,7 @@ open class MenuItemGL(val name: String) {
         !(getMenu()?.isScrollable() ?: false)
 
     open fun handleHover(x: Int, y: Int, mask: UInt): Boolean {
-        TODO("GPU: set cursor to arrow for menu item hover")
-        return true
+        TODO("GPU: set cursor to arrow")
     }
 
     open fun handleRightMouseDown(x: Int, y: Int, mask: UInt): Boolean = false
@@ -199,6 +198,10 @@ open class MenuItemGL(val name: String) {
 
     private fun keyIsRepeated(key: Int): Boolean = false
 
+    private fun Char.uppercaseChar(): Char = this.uppercaseChar()
+
+    private fun Int.uppercaseChar(): Char = this.toChar().uppercaseChar()
+
     fun getNominalWidth(): UInt {
         var width = if (briefItem) BRIEF_PAD_PIXELS else PLAIN_PAD_PIXELS
         if (acceleratorKey != KEY_NONE) {
@@ -232,19 +235,19 @@ open class MenuItemSeparatorGL(name: String = "separator") : MenuItemGL(name) {
 
     override fun buildDrawLabel() {
         if (visibilityCallbacksForSelf.isNotEmpty()) {
-            val isVisible = visibilityCallbacksForSelf.all { it(this) }
-            visible = isVisible
+            visible = visibilityCallbacksForSelf.all { it(this) }
         }
     }
 
     override fun handleMouseDown(x: Int, y: Int, mask: UInt): Boolean {
         val menu = getMenu() ?: return false
-        return if (y > (getNominalHeight() / 2u).toInt()) {
-            menu.items.firstOrNull { it != this && it.visible && it.enabled }
-                ?.handleMouseDown(x, it.height, mask) ?: false
+        val midY = (getNominalHeight() / 2u).toInt()
+        return if (y > midY) {
+            val prev = menu.items.firstOrNull { it != this && it.visible && it.enabled }
+            prev?.handleMouseDown(x, prev.getNominalHeight().toInt(), mask) ?: false
         } else {
-            menu.items.lastOrNull { it != this && it.visible && it.enabled }
-                ?.handleMouseDown(x, 0, mask) ?: false
+            val next = menu.items.lastOrNull { it != this && it.visible && it.enabled }
+            next?.handleMouseDown(x, 0, mask) ?: false
         }
     }
 
@@ -260,9 +263,6 @@ open class MenuItemSeparatorGL(name: String = "separator") : MenuItemGL(name) {
         return false
     }
 }
-
-private val MenuItemSeparatorGL.height: Int get() = getNominalHeight().toInt()
-private val MenuItemGL.height: Int get() = getNominalHeight().toInt()
 
 open class MenuItemCallGL(name: String) : MenuItemGL(name) {
     val enableCallbacks: MutableList<(MenuItemCallGL) -> Boolean> = mutableListOf()
@@ -314,7 +314,8 @@ open class MenuItemCheckGL(name: String) : MenuItemCallGL(name) {
     fun addCheckCallback(cb: (MenuItemCheckGL) -> Boolean) { checkCallbacks.add(cb) }
 
     override fun setValue(value: Any?) {
-        checked = value?.toString()?.toBoolean() ?: false
+        checked = value as? Boolean ?: value?.toString()?.toBoolean() ?: false
+        drawBoolLabel = if (checked) MenuGL.BOOLEAN_TRUE_PREFIX else ""
     }
 
     override fun getValue(): Any? = checked
@@ -328,7 +329,6 @@ open class MenuItemCheckGL(name: String) : MenuItemCallGL(name) {
     }
 
     override fun onCommit() {
-        checked = !checked
         super.onCommit()
     }
 }
@@ -407,10 +407,13 @@ open class MenuGL(val name: String) {
     fun setBackgroundColor(color: FloatArray) { backgroundColor = color }
     fun getBackgroundColor(): FloatArray = backgroundColor
     fun setBackgroundVisible(b: Boolean) { bgVisible = b }
+
     fun setCanTearOff(tearOff: Boolean) {
         if (tearOff && tearOffItem == null) {
-            tearOffItem = MenuItemTearOffGL("tear_off")
-            items.add(0, tearOffItem!!)
+            tearOffItem = MenuItemTearOffGL("tear_off").also {
+                it.setParentMenu(this)
+                items.add(0, it)
+            }
         } else if (!tearOff && tearOffItem != null) {
             items.remove(tearOffItem)
             tearOffItem = null
@@ -553,7 +556,7 @@ open class MenuGL(val name: String) {
     fun getJumpKey(): Int = jumpKey
     fun setJumpKey(key: Int) { jumpKey = key }
     fun getShortcutPad(): Int = shortcutPad
-    fun scrollItems(direction: ScrollingDirection): Boolean = TODO("GPU: scroll menu items")
+    fun scrollItems(direction: ScrollingDirection): Boolean { TODO("GPU: scroll menu items") }
     fun isScrollable(): Boolean = scrollable
     fun resetScrollPositionOnShow(reset: Boolean) { resetScrollPositionOnShow = reset }
     fun isScrollPositionOnShowReset(): Boolean = resetScrollPositionOnShow
@@ -561,7 +564,8 @@ open class MenuGL(val name: String) {
     fun getAlwaysShowMenu(): Boolean = alwaysShowMenu
 
     fun appendContextSubMenu(menu: MenuGL): Boolean {
-        val branch = ContextMenuBranch(menu.name, menu as? ContextMenu ?: return false)
+        val ctx = menu as? ContextMenu ?: return false
+        val branch = ContextMenuBranch(menu.name, ctx)
         return addContextChild(branch)
     }
 
@@ -603,41 +607,60 @@ open class MenuItemBranchGL(name: String, private var branch: MenuGL?) : MenuIte
     fun getBranch(): MenuGL? = branch
 
     override fun handleMouseUp(x: Int, y: Int, mask: UInt): Boolean {
-        getBranch()?.let {
-            if (it.isOpen()) {
-                onCommit()
-                return true
-            }
-        }
-        return false
+        MenuGL.keyboardMode = false
+        onCommit()
+        return true
     }
 
     override fun hasAccelerator(key: Int, mask: UInt): Boolean =
-        super.hasAccelerator(key, mask) || getBranch()?.hasAccelerator(key, mask) ?: false
+        getBranch()?.hasAccelerator(key, mask) ?: false
 
     override fun handleAcceleratorKey(key: Int, mask: UInt): Boolean =
         getBranch()?.handleAcceleratorKey(key, mask) ?: false
 
     override fun addToAcceleratorList(list: MutableList<MenuKeyboardBinding>): Boolean {
-        getBranch()?.items?.forEach { it.addToAcceleratorList(list) }
-        return super.addToAcceleratorList(list)
+        val b = getBranch() ?: return false
+        var result = false
+        var count = b.getItemCount().toInt()
+        while (count-- > 0) {
+            b.getItem(count)?.let { result = it.addToAcceleratorList(list) }
+        }
+        return result
     }
 
     override fun buildDrawLabel() {
+        drawAccelLabel = ""
         drawBranchLabel = MenuGL.BRANCH_SUFFIX
-        super.buildDrawLabel()
     }
 
     override fun onCommit() {
         openMenu()
+        if (MenuGL.keyboardMode && getBranch() != null && getBranch()?.getHighlightedItem() == null) {
+            getBranch()?.highlightNextItem(null)
+        }
     }
 
     override fun setHighlight(hl: Boolean) {
+        if (hl == getHighlight()) return
+        val b = getBranch() ?: return
+        val autoOpen = enabled && (!b.visible || b.getTornOff())
         super.setHighlight(hl)
-        if (!hl) getBranch()?.setVisible(false)
+        if (hl) {
+            if (autoOpen) openMenu()
+        } else {
+            if (!b.getTornOff()) {
+                b.setVisible(false)
+            } else {
+                b.clearHoverItem()
+            }
+        }
     }
 
-    override fun isActive(): Boolean = getBranch()?.isOpen() ?: false
+    override fun draw() {
+        TODO("GPU: render branch menu item '${label}'")
+    }
+
+    override fun isActive(): Boolean = isOpen() && getBranch()?.getHighlightedItem() != null
     override fun isOpen(): Boolean = getBranch()?.isOpen() ?: false
 
     override fun updateBranchParent(parent: Any?) {
@@ -645,14 +668,39 @@ open class MenuItemBranchGL(name: String, private var branch: MenuGL?) : MenuIte
     }
 
     override fun onVisibilityChange(newVisibility: Boolean) {
-        if (!newVisibility) getBranch()?.setVisible(false)
+        if (!newVisibility && getBranch()?.getTornOff() == false) {
+            getBranch()?.setVisible(false)
+        }
         super.onVisibilityChange(newVisibility)
     }
 
     override fun setEnabledSubMenus(enabled: Boolean) { getBranch()?.setEnabledSubMenus(enabled) }
 
+    override fun handleKeyHere(key: Int, mask: UInt): Boolean {
+        val b = getBranch() ?: return super.handleKeyHere(key, mask)
+        if (getHighlight() && getMenu()?.isOpen() == true && (isActive() || MenuGL.keyboardMode)) {
+            if (b.visible && key == KEY_LEFT) {
+                MenuGL.keyboardMode = true
+                val handled = b.clearHoverItem()
+                if (handled && getMenu()?.getTornOff() == true) {
+                }
+                return handled
+            }
+            if (key == KEY_RIGHT && b.getHighlightedItem() == null) {
+                MenuGL.keyboardMode = true
+                if (b.highlightNextItem(null) != null) return true
+            }
+        }
+        return super.handleKeyHere(key, mask)
+    }
+
     open fun openMenu() {
         TODO("GPU: open branch menu for '${name}'")
+    }
+
+    companion object {
+        private const val KEY_LEFT: Int = 0x25
+        private const val KEY_RIGHT: Int = 0x27
     }
 }
 
@@ -680,6 +728,8 @@ open class ContextMenu(name: String) : MenuGL(name) {
     open fun handleRightMouseUp(x: Int, y: Int, mask: UInt): Boolean = true
 
     override fun addChild(view: MenuItemGL, tabGroup: Int): Boolean = addContextChild(view)
+    override fun deleteAllChildren() { items.clear() }
+    override fun removeChild(ctrl: MenuItemGL) { items.remove(ctrl) }
 }
 
 open class ContextMenuBranch(name: String, private val branchMenu: ContextMenu) : MenuItemGL(name) {
@@ -707,7 +757,7 @@ open class MenuBarGL(name: String) : MenuGL(name) {
     private var altKeyTrigger: Boolean = false
 
     override fun handleAcceleratorKey(key: Int, mask: UInt): Boolean {
-        if (key == KEY_F10 && mask == MASK_NONE) {
+        if (key == KEY_F10 && mask == MenuItemGL.MASK_NONE) {
             keyboardMode = true
             items.firstOrNull { it.visible && it.enabled }?.setHighlight(true)
             return true
@@ -724,6 +774,7 @@ open class MenuBarGL(name: String) : MenuGL(name) {
 
     override fun addSeparator(): Boolean {
         val sep = MenuItemSeparatorGL("vseparator")
+        sep.setParentMenu(this)
         items.add(sep)
         return true
     }
@@ -731,10 +782,7 @@ open class MenuBarGL(name: String) : MenuGL(name) {
     override fun handleHover(x: Int, y: Int, mask: UInt): Boolean = true
 
     fun getRightmostMenuEdge(): Int {
-        return items.filterIsInstance<MenuItemBranchGL>()
-            .lastOrNull { it.visible }?.let {
-                TODO("GPU: get rightmost x position of menu item")
-            } ?: 0
+        TODO("GPU: get rightmost x edge of menu bar children")
     }
 
     fun resetMenuTrigger() { altKeyTrigger = false }
@@ -750,7 +798,7 @@ open class MenuBarGL(name: String) : MenuGL(name) {
     }
 }
 
-class MenuHolderGL(name: String) {
+open class MenuHolderGL(name: String) {
     var canHide: Boolean = true
     var visible: Boolean = true
 
@@ -768,7 +816,7 @@ class MenuHolderGL(name: String) {
     open fun handleRightMouseUp(x: Int, y: Int, mask: UInt): Boolean = false
     open fun handleKey(key: Int, mask: UInt, fromParent: Boolean): Boolean = false
 
-    fun getVisibleMenu(): Any? = null
+    fun getVisibleMenu(): MenuGL? = null
     open fun hasVisibleMenu(): Boolean = getVisibleMenu() != null
 
     companion object {
@@ -809,7 +857,7 @@ open class MenuItemTearOffGL(name: String) : MenuItemGL(name) {
     override fun onCommit() {
         val menu = getMenu() ?: return
         if (menu.getTornOff()) {
-            TODO("APR: close tear-off floater")
+            TODO("APR: close tear-off floater parent")
         } else {
             if (getHighlight()) menu.highlightNextItem(this)
             menu.needsArrange()
@@ -818,7 +866,7 @@ open class MenuItemTearOffGL(name: String) : MenuItemGL(name) {
         super.onCommit()
     }
 
-    override fun draw() { TODO("GPU: render tear-off separator") }
+    override fun draw() { TODO("GPU: render tear-off separator lines") }
     override fun getNominalHeight(): UInt = TEAROFF_SEPARATOR_HEIGHT_PIXELS.toUInt()
 }
 
@@ -846,6 +894,3 @@ abstract class ViewListener {
         fun cleanup() { registry.clear() }
     }
 }
-
-private const val KEY_F10: Int = 0x79
-private const val MASK_NONE: UInt = 0u

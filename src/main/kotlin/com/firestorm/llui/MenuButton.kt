@@ -153,5 +153,5 @@ open class MenuButton(name: String) : Button(name) {
     }
 }
 
-private fun MenuGL.getMenuHeight(): Int = TODO("GPU: get menu height")
-private fun MenuGL.getMenuWidth(): Int = TODO("GPU: get menu width")
+private fun MenuGL.getMenuHeight(): Int { TODO("GPU: get menu height") }
+private fun MenuGL.getMenuWidth(): Int { TODO("GPU: get menu width") }

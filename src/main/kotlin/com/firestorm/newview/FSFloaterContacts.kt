@@ -345,7 +345,7 @@ class FSFloaterContacts(val seed: LLSD) {
 
         fun getInstance(): FSFloaterContacts =
             instance ?: synchronized(this) {
-                instance ?: FSFloaterContacts(LLSD()).also { instance = it }
+                instance ?: FSFloaterContacts(LLSD.Undefined).also { instance = it }
             }
 
         fun findInstance(): FSFloaterContacts? = instance

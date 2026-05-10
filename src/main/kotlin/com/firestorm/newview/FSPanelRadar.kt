@@ -152,17 +152,18 @@ class FSPanelRadar {
 
     private fun onColumnVisibilityChecked(userdata: LLSD) {
         val column = userdata.asString()
-        val columnConfig = TODO("Read FSRadarColumnConfig UInt from gSavedSettings") as UInt
         val bit = columnBits[column] ?: return
-        val newValue = if (columnConfig and bit != 0u) columnConfig and bit.inv() else columnConfig or bit
-        TODO("gSavedSettings.setU32(\"FSRadarColumnConfig\", newValue)")
+        TODO(
+            "Read FSRadarColumnConfig UInt from gSavedSettings; " +
+            "if (columnConfig and $bit != 0u) clear bit else set bit; " +
+            "write result back via gSavedSettings.setU32(\"FSRadarColumnConfig\", newValue)"
+        )
     }
 
     private fun onEnableColumnVisibilityChecked(userdata: LLSD): Boolean {
         val column = userdata.asString()
-        val columnConfig = TODO("Read FSRadarColumnConfig UInt from gSavedSettings") as UInt
         val bit = columnBits[column] ?: return false
-        return columnConfig and bit != 0u
+        TODO("Read FSRadarColumnConfig UInt from gSavedSettings; return columnConfig and $bit != 0u")
     }
 
     private inner class ButtonsUpdater(private val cb: () -> Unit) {
@@ -176,4 +177,3 @@ class FSPanelRadar {
     }
 }
 
-private fun LLSD.asString(): String = TODO("APR: convert LLSD to String")

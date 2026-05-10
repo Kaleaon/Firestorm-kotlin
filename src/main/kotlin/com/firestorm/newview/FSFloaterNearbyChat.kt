@@ -90,29 +90,15 @@ class FSFloaterNearbyChat(val key: LLSD) {
         }
     }
 
-    fun addMessage(chat: LLChat, archive: Boolean = true, args: LLSD = LLSD()) {
-        val showTimestamps = true
-        val useOnePlainText = false
-
-        val chatArgs = args.copy()
-        chatArgs["use_plain_text_chat_history"] = useOnePlainText
-        chatArgs["show_time"] = showTimestamps
-        chatArgs["is_local"] = true
-
-        TODO("Append to chatHistoryMuted; if !chat.muted append to chatHistory")
-
-        if (archive) {
-            messageArchive.add(chat)
-            if (messageArchive.size > 200) messageArchive.removeAt(0)
-        }
-
-        if (args["do_not_log"].asBoolean() || chat.muted) return
-
-        if (isChatMultiTab()) {
-            TODO("If not in visible chain and source is agent/object: flash container tab")
-        }
-
-        TODO("If LogNearbyChat: resolve from_name; strip RLV names; handle IM prefix for log; check antispam; LLLogChat.saveHistory")
+    fun addMessage(chat: LLChat, archive: Boolean = true, args: LLSD = LLSD.Undefined) {
+        TODO(
+            "Build chatArgs map merging args with use_plain_text_chat_history/show_time/is_local; " +
+            "append to chatHistoryMuted; if !chat.muted append to chatHistory; " +
+            "if archive: push to messageArchive capped at 200; " +
+            "skip logging if do_not_log or chat.muted; " +
+            "if isChatMultiTab and not in visible chain: flash container tab for agent/object sources; " +
+            "if LogNearbyChat: resolve from_name, strip RLV names, handle IM prefix, check antispam, LLLogChat.saveHistory"
+        )
     }
 
     fun clearChatHistory() {
@@ -121,14 +107,12 @@ class FSFloaterNearbyChat(val key: LLSD) {
 
     fun updateChatHistoryStyle() {
         clearChatHistory()
-        val doNotLog = LLSD()
-        doNotLog["do_not_log"] = true
+        val doNotLog = LLSD.LLSDMap(mapOf("do_not_log" to LLSD.LLSDBoolean(true)))
         messageArchive.forEach { addMessage(it, false, doNotLog) }
     }
 
     fun loadHistory() {
-        val doNotLog = LLSD()
-        doNotLog["do_not_log"] = true
+        val doNotLog = LLSD.LLSDMap(mapOf("do_not_log" to LLSD.LLSDBoolean(true)))
         TODO(
             "Load chat history via LLLogChat.loadChatHistory(\"chat\"); " +
             "parse each entry resolving IM prefix and group IM prefix; " +
@@ -142,8 +126,7 @@ class FSFloaterNearbyChat(val key: LLSD) {
             loadHistory()
         }
         clearChatHistory()
-        val doNotLog = LLSD()
-        doNotLog["do_not_log"] = true
+        val doNotLog = LLSD.LLSDMap(mapOf("do_not_log" to LLSD.LLSDBoolean(true)))
         messageArchive.forEach { addMessage(it, false, doNotLog) }
     }
 
@@ -325,7 +308,7 @@ class FSFloaterNearbyChat(val key: LLSD) {
 
         fun getInstance(): FSFloaterNearbyChat =
             instance ?: synchronized(this) {
-                instance ?: FSFloaterNearbyChat(LLSD()).also { instance = it }
+                instance ?: FSFloaterNearbyChat(LLSD.Undefined).also { instance = it }
             }
 
         fun isChatMultiTab(): Boolean {
@@ -354,7 +337,3 @@ class FSFloaterNearbyChat(val key: LLSD) {
     }
 }
 
-private fun LLSD.asBoolean(): Boolean = TODO("APR: convert LLSD to Boolean")
-private fun LLSD.copy(): LLSD = TODO("APR: shallow-copy LLSD")
-private operator fun LLSD.set(key: String, value: Any?) { TODO("APR: set LLSD key") }
-private operator fun LLSD.get(key: String): LLSD = TODO("APR: get LLSD key")

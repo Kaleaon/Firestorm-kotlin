@@ -316,7 +316,7 @@ class PanelMainInventory {
     fun onUpFolderClicked() {
         val currentId = getSingleFolderViewRoot()
         val cat = InventoryModel.categories[currentId] ?: return
-        setSingleFolderViewRoot(cat.parentUUID, clearNavHistory = false)
+        setSingleFolderViewRoot(cat.parentId, clearNavHistory = false)
     }
 
     fun onBackFolderClicked() {

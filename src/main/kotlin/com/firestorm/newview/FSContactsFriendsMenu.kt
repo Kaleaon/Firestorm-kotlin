@@ -1,6 +1,5 @@
 package com.firestorm.newview
 
-import com.firestorm.llcommon.LLSD
 import com.firestorm.llcommon.LLUUID
 import com.firestorm.llui.UrlAction
 
@@ -52,7 +51,7 @@ class FSContactsFriendsMenu : LLListContextMenu() {
             "teleport_to" -> {
                 uuids.size == 1 && FSRadar.getEntry(uuids.first()) != null
             }
-            "offer_teleport" -> AvatarActions.canOfferTeleport(uuids)
+            "offer_teleport" -> TODO("APR: AvatarActions.canOfferTeleport(uuids)")
             "request_teleport" -> {
                 uuids.size == 1 && AvatarActions.canRequestTeleport(uuids.first())
             }

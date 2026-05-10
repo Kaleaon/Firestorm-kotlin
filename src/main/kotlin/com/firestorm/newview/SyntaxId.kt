@@ -3,7 +3,6 @@ package com.firestorm.newview
 import com.firestorm.llcommon.LLUUID
 import com.firestorm.llui.LLSD
 import java.io.File
-import java.net.URL
 
 private const val SYNTAX_ID_CAPABILITY_NAME = "LSLSyntax"
 private const val SYNTAX_ID_SIMULATOR_FEATURE = "LSLSyntaxId"

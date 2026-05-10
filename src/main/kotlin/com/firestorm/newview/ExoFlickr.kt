@@ -1,0 +1,105 @@
+package com.firestorm.newview
+
+import java.net.URLEncoder
+import java.util.Base64
+import javax.crypto.Mac
+import javax.crypto.spec.SecretKeySpec
+
+private const val UPLOAD_URL = "https://up.flickr.com/services/upload/"
+private const val API_URL = "https://api.flickr.com/services/rest/"
+
+object ExoFlickr {
+
+    typealias ResponseCallback = (success: Boolean, response: Map<String, Any?>) -> Unit
+
+    fun request(method: String, args: Map<String, Any?>, callback: ResponseCallback) {
+        val params = args.toMutableMap()
+        params["format"] = "json"
+        params["method"] = method
+        params["nojsoncallback"] = 1
+        signRequest(params, "GET", API_URL)
+        val url = buildHttpUrl(API_URL, params)
+        TODO("APR: use JVM equivalent HTTP GET for $url; on response parse JSON body -> callback(status in 200..299, parsedMap)")
+    }
+
+    fun uploadPhoto(args: Map<String, Any?>, imageData: ByteArray, extension: String, callback: ResponseCallback) {
+        val params = args.toMutableMap()
+        signRequest(params, "POST", UPLOAD_URL)
+
+        val boundary = "------------abcdefgh012345"
+        val postStream = StringBuilder()
+        postStream.append("--$boundary")
+        for ((key, value) in params) {
+            postStream.append("\r\nContent-Disposition: form-data; name=\"$key\"")
+            postStream.append("\r\n\r\n${value}")
+            postStream.append("\r\n--$boundary")
+        }
+        val mimeType = when (extension) {
+            "jpg" -> "image/jpeg"
+            "png" -> "image/png"
+            else  -> "application/x-wtf"
+        }
+        postStream.append("\r\nContent-Disposition: form-data; name=\"photo\"; filename=\"snapshot.$extension\"")
+        postStream.append("\r\nContent-Type: $mimeType")
+        postStream.append("\r\n\r\n")
+
+        val postHead = postStream.toString().toByteArray(Charsets.ISO_8859_1)
+        val postTail = "\r\n--$boundary--".toByteArray(Charsets.ISO_8859_1)
+        val body = postHead + imageData + postTail
+
+        TODO("APR: use JVM equivalent HTTP POST to $UPLOAD_URL with Content-Type multipart/form-data; boundary=$boundary; on response parse XML -> callback(stat==\"ok\", outputMap)")
+    }
+
+    fun signRequest(params: MutableMap<String, Any?>, method: String, url: String) {
+        params["oauth_consumer_key"] = EXO_FLICKR_API_KEY
+        val oauthToken = SavedPerAccountSettings.getString("ExodusFlickrToken")
+        if (oauthToken.isNotEmpty()) {
+            params["oauth_token"] = oauthToken
+        }
+        params["oauth_signature_method"] = "HMAC-SHA1"
+        params["oauth_timestamp"] = System.currentTimeMillis() / 1000L
+        params["oauth_nonce"] = (Math.random() * Int.MAX_VALUE).toInt()
+        params["oauth_version"] = "1.0"
+        params["oauth_signature"] = getSignatureForCall(params, url, method)
+    }
+
+    fun getSignatureForCall(parameters: Map<String, Any?>, url: String, method: String): String {
+        val sortedKeys = parameters.keys.sorted()
+        val q = StringBuilder()
+        q.append(urlEncode(method))
+        q.append("&").append(urlEncode(url)).append("&")
+        for ((index, key) in sortedKeys.withIndex()) {
+            if (index != 0) q.append("%26")
+            q.append(urlEncode(key))
+            q.append("%3D").append(urlEncode(urlEncode(parameters[key].toString())))
+        }
+        val tokenSecret = SavedPerAccountSettings.getString("ExodusFlickrTokenSecret")
+        val key = "$EXO_FLICKR_API_SECRET&$tokenSecret"
+        val toHash = q.toString()
+        val mac = Mac.getInstance("HmacSHA1")
+        mac.init(SecretKeySpec(key.toByteArray(Charsets.UTF_8), "HmacSHA1"))
+        val digest = mac.doFinal(toHash.toByteArray(Charsets.UTF_8))
+        return Base64.getEncoder().encodeToString(digest)
+    }
+
+    private fun buildHttpUrl(base: String, params: Map<String, Any?>): String {
+        val query = params.entries.joinToString("&") { (k, v) ->
+            "${urlEncode(k)}=${urlEncode(v.toString())}"
+        }
+        return "$base?$query"
+    }
+
+    private fun urlEncode(s: String): String =
+        URLEncoder.encode(s, "UTF-8").replace("+", "%20")
+}
+
+object SavedPerAccountSettings {
+    fun getString(key: String): String = TODO("APR: use JVM equivalent per-account settings store for key=$key")
+    fun setString(key: String, value: String): Unit = TODO("APR: use JVM equivalent per-account settings store for key=$key")
+}
+
+object EXO_FLICKR_API_KEY_HOLDER {
+    const val key: String = ""
+}
+const val EXO_FLICKR_API_KEY: String = ""
+const val EXO_FLICKR_API_SECRET: String = ""

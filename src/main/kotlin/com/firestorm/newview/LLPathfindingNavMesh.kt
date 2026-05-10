@@ -80,21 +80,16 @@ class LLPathfindingNavMesh(pRegionUUID: LLUUID) {
         }
 
         if (navMeshStatus.version == navMeshVersion) {
-            val status: ENavMeshRequestStatus
             val rawData = pContent[NAVMESH_DATA_FIELD] as? ByteArray
             if (rawData != null) {
-                val decompressed = TODO("APR: use JVM equivalent — decompress zlib/gzip navmesh binary from rawData") as? ByteArray
-                if (decompressed == null) {
-                    status = ENavMeshRequestStatus.kNavMeshRequestError
-                } else {
-                    navMeshData = decompressed
-                    status = ENavMeshRequestStatus.kNavMeshRequestCompleted
-                }
+                // Decompress the zlib-compressed navmesh binary delivered by the server.
+                val decompressed: ByteArray = TODO("APR: use JVM equivalent — inflate rawData with java.util.zip.InflaterInputStream")
+                @Suppress("UNREACHABLE_CODE")
+                navMeshData = decompressed
+                setRequestStatus(ENavMeshRequestStatus.kNavMeshRequestCompleted)
             } else {
-                status = ENavMeshRequestStatus.kNavMeshRequestError
+                setRequestStatus(ENavMeshRequestStatus.kNavMeshRequestError)
             }
-            @Suppress("UNREACHABLE_CODE")
-            setRequestStatus(status)
         }
     }
 

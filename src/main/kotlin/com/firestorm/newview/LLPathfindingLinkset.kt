@@ -12,11 +12,7 @@ class LLPathfindingLinkset : LLPathfindingObject {
         DYNAMIC_PHANTOM
     }
 
-    private enum class ENavMeshGenerationCategory {
-        IGNORE,
-        INCLUDE,
-        EXCLUDE
-    }
+    private enum class ENavMeshGenerationCategory { IGNORE, INCLUDE, EXCLUDE }
 
     val isTerrain: Boolean
     val landImpact: UInt
@@ -46,17 +42,14 @@ class LLPathfindingLinkset : LLPathfindingObject {
         private const val LINKSET_WALKABILITY_C_FIELD = "C"
         private const val LINKSET_WALKABILITY_D_FIELD = "D"
 
-        private const val LINKSET_CATEGORY_VALUE_INCLUDE = 0
-        private const val LINKSET_CATEGORY_VALUE_EXCLUDE = 1
-        private const val LINKSET_CATEGORY_VALUE_IGNORE  = 2
+        private const val CATEGORY_VALUE_INCLUDE = 0
+        private const val CATEGORY_VALUE_EXCLUDE = 1
+        private const val CATEGORY_VALUE_IGNORE  = 2
 
-        fun getLinksetUseWithToggledPhantom(linksetUse: ELinksetUse): ELinksetUse {
-            val phantom = isPhantom(linksetUse)
-            val category = getNavMeshGenerationCategory(linksetUse)
-            return getLinksetUse(!phantom, category)
-        }
+        fun getLinksetUseWithToggledPhantom(linksetUse: ELinksetUse): ELinksetUse =
+            getLinksetUse(!isPhantom(linksetUse), getNavMeshGenerationCategory(linksetUse))
 
-        private fun isPhantom(linksetUse: ELinksetUse): Boolean = when (linksetUse) {
+        private fun isPhantom(use: ELinksetUse): Boolean = when (use) {
             ELinksetUse.WALKABLE,
             ELinksetUse.STATIC_OBSTACLE,
             ELinksetUse.DYNAMIC_OBSTACLE -> false
@@ -66,8 +59,8 @@ class LLPathfindingLinkset : LLPathfindingObject {
             ELinksetUse.UNKNOWN          -> false
         }
 
-        private fun getLinksetUse(isPhantom: Boolean, category: ENavMeshGenerationCategory): ELinksetUse {
-            return if (isPhantom) {
+        private fun getLinksetUse(phantom: Boolean, category: ENavMeshGenerationCategory): ELinksetUse =
+            if (phantom) {
                 when (category) {
                     ENavMeshGenerationCategory.IGNORE  -> ELinksetUse.DYNAMIC_PHANTOM
                     ENavMeshGenerationCategory.INCLUDE -> ELinksetUse.MATERIAL_VOLUME
@@ -80,77 +73,73 @@ class LLPathfindingLinkset : LLPathfindingObject {
                     ENavMeshGenerationCategory.EXCLUDE -> ELinksetUse.STATIC_OBSTACLE
                 }
             }
-        }
 
-        private fun getNavMeshGenerationCategory(linksetUse: ELinksetUse): ENavMeshGenerationCategory = when (linksetUse) {
+        private fun getNavMeshGenerationCategory(use: ELinksetUse): ENavMeshGenerationCategory = when (use) {
             ELinksetUse.WALKABLE,
             ELinksetUse.MATERIAL_VOLUME   -> ENavMeshGenerationCategory.INCLUDE
             ELinksetUse.STATIC_OBSTACLE,
             ELinksetUse.EXCLUSION_VOLUME  -> ENavMeshGenerationCategory.EXCLUDE
             ELinksetUse.DYNAMIC_OBSTACLE,
-            ELinksetUse.DYNAMIC_PHANTOM   -> ENavMeshGenerationCategory.IGNORE
+            ELinksetUse.DYNAMIC_PHANTOM,
             ELinksetUse.UNKNOWN           -> ENavMeshGenerationCategory.IGNORE
         }
 
-        private fun convertCategoryToInt(category: ENavMeshGenerationCategory): Int = when (category) {
-            ENavMeshGenerationCategory.IGNORE  -> LINKSET_CATEGORY_VALUE_IGNORE
-            ENavMeshGenerationCategory.INCLUDE -> LINKSET_CATEGORY_VALUE_INCLUDE
-            ENavMeshGenerationCategory.EXCLUDE -> LINKSET_CATEGORY_VALUE_EXCLUDE
+        private fun categoryToInt(category: ENavMeshGenerationCategory): Int = when (category) {
+            ENavMeshGenerationCategory.IGNORE  -> CATEGORY_VALUE_IGNORE
+            ENavMeshGenerationCategory.INCLUDE -> CATEGORY_VALUE_INCLUDE
+            ENavMeshGenerationCategory.EXCLUDE -> CATEGORY_VALUE_EXCLUDE
         }
 
-        private fun convertCategoryFromInt(value: Int): ENavMeshGenerationCategory = when (value) {
-            LINKSET_CATEGORY_VALUE_IGNORE  -> ENavMeshGenerationCategory.IGNORE
-            LINKSET_CATEGORY_VALUE_INCLUDE -> ENavMeshGenerationCategory.INCLUDE
-            LINKSET_CATEGORY_VALUE_EXCLUDE -> ENavMeshGenerationCategory.EXCLUDE
-            else                           -> ENavMeshGenerationCategory.IGNORE
+        private fun categoryFromInt(value: Int): ENavMeshGenerationCategory = when (value) {
+            CATEGORY_VALUE_INCLUDE -> ENavMeshGenerationCategory.INCLUDE
+            CATEGORY_VALUE_EXCLUDE -> ENavMeshGenerationCategory.EXCLUDE
+            else                   -> ENavMeshGenerationCategory.IGNORE
         }
     }
 
-    // Terrain constructor — no UUID, no object-level fields
+    // Terrain-only constructor: no object-level UUID or object fields
     constructor(terrainData: Map<String, Any>) : super() {
-        isTerrain = true
-        landImpact = 0u
+        isTerrain    = true
+        landImpact   = 0u
         isModifiable = false
-        canBeVolume = false
-        isScripted = false
+        canBeVolume  = false
+        isScripted   = false
         hasIsScripted = true
-        val parsed = parsePathfindingData(terrainData)
-        linksetUse = parsed.use
-        walkabilityCoefficientA = parsed.a
-        walkabilityCoefficientB = parsed.b
-        walkabilityCoefficientC = parsed.c
-        walkabilityCoefficientD = parsed.d
+        val pf = parsePathfindingData(terrainData)
+        linksetUse              = pf.use
+        walkabilityCoefficientA = pf.a
+        walkabilityCoefficientB = pf.b
+        walkabilityCoefficientC = pf.c
+        walkabilityCoefficientD = pf.d
     }
 
-    // Object constructor
+    // Regular object constructor
     constructor(uuid: String, linksetData: Map<String, Any>) : super(uuid, linksetData) {
         isTerrain = false
-        val linksetFields = parseLinksetData(linksetData)
-        landImpact = linksetFields.landImpact
-        isModifiable = linksetFields.isModifiable
-        canBeVolume = linksetFields.canBeVolume
-        isScripted = linksetFields.isScripted
-        hasIsScripted = linksetFields.hasIsScripted
-        val parsed = parsePathfindingData(linksetData)
-        // can_be_volume may also appear in pathfinding block; honour it if present
-        if (linksetData.containsKey(LINKSET_CAN_BE_VOLUME)) {
-            canBeVolume = (linksetData[LINKSET_CAN_BE_VOLUME] as Boolean)
-        }
-        linksetUse = parsed.use
-        walkabilityCoefficientA = parsed.a
-        walkabilityCoefficientB = parsed.b
-        walkabilityCoefficientC = parsed.c
-        walkabilityCoefficientD = parsed.d
+        val ls = parseLinksetData(linksetData)
+        landImpact    = ls.landImpact
+        isModifiable  = ls.isModifiable
+        isScripted    = ls.isScripted
+        hasIsScripted = ls.hasIsScripted
+        val pf = parsePathfindingData(linksetData)
+        linksetUse              = pf.use
+        walkabilityCoefficientA = pf.a
+        walkabilityCoefficientB = pf.b
+        walkabilityCoefficientC = pf.c
+        walkabilityCoefficientD = pf.d
+        // can_be_volume may appear in either block; pathfinding block takes precedence if present
+        canBeVolume = if (linksetData.containsKey(LINKSET_CAN_BE_VOLUME))
+            linksetData[LINKSET_CAN_BE_VOLUME] as Boolean else ls.canBeVolume
     }
 
     constructor(other: LLPathfindingLinkset) : super(other) {
-        isTerrain = other.isTerrain
-        landImpact = other.landImpact
-        isModifiable = other.isModifiable
-        canBeVolume = other.canBeVolume
-        isScripted = other.isScripted
-        hasIsScripted = other.hasIsScripted
-        linksetUse = other.linksetUse
+        isTerrain               = other.isTerrain
+        landImpact              = other.landImpact
+        isModifiable            = other.isModifiable
+        canBeVolume             = other.canBeVolume
+        isScripted              = other.isScripted
+        hasIsScripted           = other.hasIsScripted
+        linksetUse              = other.linksetUse
         walkabilityCoefficientA = other.walkabilityCoefficientA
         walkabilityCoefficientB = other.walkabilityCoefficientB
         walkabilityCoefficientC = other.walkabilityCoefficientC
@@ -169,30 +158,28 @@ class LLPathfindingLinkset : LLPathfindingObject {
         !canBeVolume && (use == ELinksetUse.MATERIAL_VOLUME || use == ELinksetUse.EXCLUSION_VOLUME)
 
     fun encodeAlteredFields(use: ELinksetUse, pA: Int, pB: Int, pC: Int, pD: Int): MutableMap<String, Any> {
-        val itemData = mutableMapOf<String, Any>()
+        val out = mutableMapOf<String, Any>()
 
         if (!isTerrain && use != ELinksetUse.UNKNOWN && linksetUse != use &&
             (canBeVolume || (use != ELinksetUse.MATERIAL_VOLUME && use != ELinksetUse.EXCLUSION_VOLUME))
         ) {
-            if (isModifiable) {
-                itemData[LINKSET_PHANTOM_FIELD] = isPhantom(use)
-            }
-            itemData[LINKSET_CATEGORY_FIELD] = convertCategoryToInt(getNavMeshGenerationCategory(use))
+            if (isModifiable) out[LINKSET_PHANTOM_FIELD] = isPhantom(use)
+            out[LINKSET_CATEGORY_FIELD] = categoryToInt(getNavMeshGenerationCategory(use))
         }
 
         if (walkabilityCoefficientA != pA)
-            itemData[LINKSET_WALKABILITY_A_FIELD] = pA.coerceIn(MIN_WALKABILITY_VALUE, MAX_WALKABILITY_VALUE)
+            out[LINKSET_WALKABILITY_A_FIELD] = pA.coerceIn(MIN_WALKABILITY_VALUE, MAX_WALKABILITY_VALUE)
         if (walkabilityCoefficientB != pB)
-            itemData[LINKSET_WALKABILITY_B_FIELD] = pB.coerceIn(MIN_WALKABILITY_VALUE, MAX_WALKABILITY_VALUE)
+            out[LINKSET_WALKABILITY_B_FIELD] = pB.coerceIn(MIN_WALKABILITY_VALUE, MAX_WALKABILITY_VALUE)
         if (walkabilityCoefficientC != pC)
-            itemData[LINKSET_WALKABILITY_C_FIELD] = pC.coerceIn(MIN_WALKABILITY_VALUE, MAX_WALKABILITY_VALUE)
+            out[LINKSET_WALKABILITY_C_FIELD] = pC.coerceIn(MIN_WALKABILITY_VALUE, MAX_WALKABILITY_VALUE)
         if (walkabilityCoefficientD != pD)
-            itemData[LINKSET_WALKABILITY_D_FIELD] = pD.coerceIn(MIN_WALKABILITY_VALUE, MAX_WALKABILITY_VALUE)
+            out[LINKSET_WALKABILITY_D_FIELD] = pD.coerceIn(MIN_WALKABILITY_VALUE, MAX_WALKABILITY_VALUE)
 
-        return itemData
+        return out
     }
 
-    // ---- private helpers ----
+    // ---- private parse helpers ----
 
     private data class LinksetFields(
         val landImpact: UInt,
@@ -202,34 +189,21 @@ class LLPathfindingLinkset : LLPathfindingObject {
         val hasIsScripted: Boolean
     )
 
-    private data class PathfindingFields(
-        val use: ELinksetUse,
-        val a: Int,
-        val b: Int,
-        val c: Int,
-        val d: Int
-    )
+    private data class PathfindingFields(val use: ELinksetUse, val a: Int, val b: Int, val c: Int, val d: Int)
 
     private fun parseLinksetData(data: Map<String, Any>): LinksetFields {
         val impact = (requireNotNull(data[LINKSET_LAND_IMPACT_FIELD]) as Number).toInt()
         require(impact >= 0)
-        val modifiable = requireNotNull(data[LINKSET_MODIFIABLE_FIELD]) as Boolean
-        val hasScript = data.containsKey(LINKSET_IS_SCRIPTED_FIELD)
-        val scripted = if (hasScript) requireNotNull(data[LINKSET_IS_SCRIPTED_FIELD]) as Boolean else false
-        return LinksetFields(
-            landImpact = impact.toUInt(),
-            isModifiable = modifiable,
-            canBeVolume = true,
-            isScripted = scripted,
-            hasIsScripted = hasScript
-        )
+        val modifiable   = requireNotNull(data[LINKSET_MODIFIABLE_FIELD]) as Boolean
+        val hasScripted  = data.containsKey(LINKSET_IS_SCRIPTED_FIELD)
+        val scripted     = if (hasScripted) data[LINKSET_IS_SCRIPTED_FIELD] as Boolean else false
+        return LinksetFields(impact.toUInt(), modifiable, canBeVolume = true, scripted, hasScripted)
     }
 
     private fun parsePathfindingData(data: Map<String, Any>): PathfindingFields {
-        val phantom = if (data.containsKey(LINKSET_PHANTOM_FIELD))
-            data[LINKSET_PHANTOM_FIELD] as Boolean else false
-        val categoryInt = (requireNotNull(data[LINKSET_CATEGORY_FIELD]) as Number).toInt()
-        val use = getLinksetUse(phantom, convertCategoryFromInt(categoryInt))
+        val phantom  = if (data.containsKey(LINKSET_PHANTOM_FIELD)) data[LINKSET_PHANTOM_FIELD] as Boolean else false
+        val catInt   = (requireNotNull(data[LINKSET_CATEGORY_FIELD]) as Number).toInt()
+        val use      = getLinksetUse(phantom, categoryFromInt(catInt))
         val a = (requireNotNull(data[LINKSET_WALKABILITY_A_FIELD]) as Number).toInt()
             .also { require(it in MIN_WALKABILITY_VALUE..MAX_WALKABILITY_VALUE) }
         val b = (requireNotNull(data[LINKSET_WALKABILITY_B_FIELD]) as Number).toInt()

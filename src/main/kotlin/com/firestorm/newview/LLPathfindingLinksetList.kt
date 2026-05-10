@@ -12,40 +12,36 @@ class LLPathfindingLinksetList : LLPathfindingObjectList {
         use: LLPathfindingLinkset.ELinksetUse,
         pA: Int, pB: Int, pC: Int, pD: Int
     ): MutableMap<String, Any> {
-        val listData = mutableMapOf<String, Any>()
-        for ((uuid, obj) in objectMap) {
+        val out = mutableMapOf<String, Any>()
+        for ((uuid, obj) in getObjectMap()) {
             val linkset = obj as LLPathfindingLinkset
             if (!linkset.isTerrain) {
                 val encoded = linkset.encodeAlteredFields(use, pA, pB, pC, pD)
-                if (encoded.isNotEmpty()) {
-                    listData[uuid] = encoded
-                }
+                if (encoded.isNotEmpty()) out[uuid] = encoded
             }
         }
-        return listData
+        return out
     }
 
     fun encodeTerrainFields(
         use: LLPathfindingLinkset.ELinksetUse,
         pA: Int, pB: Int, pC: Int, pD: Int
     ): MutableMap<String, Any> {
-        for ((_, obj) in objectMap) {
+        for ((_, obj) in getObjectMap()) {
             val linkset = obj as LLPathfindingLinkset
-            if (linkset.isTerrain) {
-                return linkset.encodeAlteredFields(use, pA, pB, pC, pD)
-            }
+            if (linkset.isTerrain) return linkset.encodeAlteredFields(use, pA, pB, pC, pD)
         }
         return mutableMapOf()
     }
 
     fun isShowUnmodifiablePhantomWarning(use: LLPathfindingLinkset.ELinksetUse): Boolean =
-        objectMap.values.any { (it as LLPathfindingLinkset).isShowUnmodifiablePhantomWarning(use) }
+        getObjectMap().values.any { (it as LLPathfindingLinkset).isShowUnmodifiablePhantomWarning(use) }
 
     fun isShowPhantomToggleWarning(use: LLPathfindingLinkset.ELinksetUse): Boolean =
-        objectMap.values.any { (it as LLPathfindingLinkset).isShowPhantomToggleWarning(use) }
+        getObjectMap().values.any { (it as LLPathfindingLinkset).isShowPhantomToggleWarning(use) }
 
     fun isShowCannotBeVolumeWarning(use: LLPathfindingLinkset.ELinksetUse): Boolean =
-        objectMap.values.any { (it as LLPathfindingLinkset).isShowCannotBeVolumeWarning(use) }
+        getObjectMap().values.any { (it as LLPathfindingLinkset).isShowCannotBeVolumeWarning(use) }
 
     data class PossibleStates(
         val canBeWalkable: Boolean,
@@ -57,40 +53,45 @@ class LLPathfindingLinksetList : LLPathfindingObjectList {
     )
 
     fun determinePossibleStates(): PossibleStates {
-        var canBeWalkable = false
-        var canBeStaticObstacle = false
+        var canBeWalkable        = false
+        var canBeStaticObstacle  = false
         var canBeDynamicObstacle = false
-        var canBeMaterialVolume = false
+        var canBeMaterialVolume  = false
         var canBeExclusionVolume = false
-        var canBeDynamicPhantom = false
+        var canBeDynamicPhantom  = false
 
-        for ((_, obj) in objectMap) {
+        for ((_, obj) in getObjectMap()) {
             if (canBeWalkable && canBeStaticObstacle && canBeDynamicObstacle &&
                 canBeMaterialVolume && canBeExclusionVolume && canBeDynamicPhantom
             ) break
 
             val linkset = obj as LLPathfindingLinkset
-            if (linkset.isTerrain) {
-                canBeWalkable = true
-            } else if (linkset.isModifiable) {
-                canBeWalkable = true
-                canBeStaticObstacle = true
-                canBeDynamicObstacle = true
-                canBeDynamicPhantom = true
-                if (linkset.canBeVolume) {
-                    canBeMaterialVolume = true
-                    canBeExclusionVolume = true
+            when {
+                linkset.isTerrain -> {
+                    canBeWalkable = true
                 }
-            } else if (linkset.isPhantom()) {
-                canBeDynamicPhantom = true
-                if (linkset.canBeVolume) {
-                    canBeMaterialVolume = true
-                    canBeExclusionVolume = true
+                linkset.isModifiable -> {
+                    canBeWalkable        = true
+                    canBeStaticObstacle  = true
+                    canBeDynamicObstacle = true
+                    canBeDynamicPhantom  = true
+                    if (linkset.canBeVolume) {
+                        canBeMaterialVolume  = true
+                        canBeExclusionVolume = true
+                    }
                 }
-            } else {
-                canBeWalkable = true
-                canBeStaticObstacle = true
-                canBeDynamicObstacle = true
+                linkset.isPhantom() -> {
+                    canBeDynamicPhantom = true
+                    if (linkset.canBeVolume) {
+                        canBeMaterialVolume  = true
+                        canBeExclusionVolume = true
+                    }
+                }
+                else -> {
+                    canBeWalkable        = true
+                    canBeStaticObstacle  = true
+                    canBeDynamicObstacle = true
+                }
             }
         }
 
@@ -101,11 +102,12 @@ class LLPathfindingLinksetList : LLPathfindingObjectList {
     }
 
     private fun parseLinksetListData(linksetListData: Map<String, Any>) {
+        val map = getObjectMap()
         for ((uuid, value) in linksetListData) {
             @Suppress("UNCHECKED_CAST")
             val linksetData = value as? Map<String, Any> ?: continue
             if (linksetData.isNotEmpty()) {
-                objectMap[uuid] = LLPathfindingLinkset(uuid, linksetData)
+                map[uuid] = LLPathfindingLinkset(uuid, linksetData)
             }
         }
     }

@@ -1,563 +1,566 @@
-// Converted from llviewerpartsim.h / llviewerpartsim.cpp (Firestorm / Linden Research)
-// LGPL-2.1-only — see project root for full license text.
-
 package com.firestorm.newview
 
-import com.firestorm.llmath.*
-import com.firestorm.llcommon.*
+import java.util.UUID
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.math.sqrt
 
 // ---------------------------------------------------------------------------
-// Particle source types
+// ViewerPart – a single live particle
 // ---------------------------------------------------------------------------
 
-/**
- * Classifies what drives a particle source's emission behaviour.
- *
- * Mirrors the LLViewerPartSource sub-type hierarchy; represented as an enum
- * rather than a class hierarchy for simplicity.
- */
-enum class PartSourceType {
-    /** Emits from a fixed point in the world (llParticleSystem default). */
-    SCRIPT,
-    /** Emits along a beam between two objects. */
-    BEAM,
-    /** Attached to a muted or blocked object; used to suppress rendering. */
-    MUTED,
-    /** Chat / text bubble particle. */
-    CHAT,
-}
-
-// ---------------------------------------------------------------------------
-// Viewer part (individual particle)
-// ---------------------------------------------------------------------------
-
-/**
- * A single simulated particle.
- *
- * Mirrors LLViewerPart / LLPartData in llviewerpartsim.h.
- * Ribbon-particle parent/child links are retained as nullable references.
- */
 class ViewerPart {
 
-    val partId: UInt = nextPartId++
+    companion object {
+        val sNextPartID = AtomicInteger(1)
 
-    // ---- simulation state ----
+        const val LL_PART_INTERP_COLOR_MASK: UInt   = PartFlags.LL_PART_INTERP_COLOR_MASK
+        const val LL_PART_INTERP_SCALE_MASK: UInt   = PartFlags.LL_PART_INTERP_SCALE_MASK
+        const val LL_PART_DEAD_MASK: UInt            = PartFlags.LL_PART_DEAD_MASK
+    }
+
+    init { ViewerPartSim.particleCount2.incrementAndGet() }
+
+    var partID: UInt = 0u
+    var lastUpdateTime: Float = 0f
+    var skipOffset: Float = 0f
+
+    var vpCallback: VPCallback? = null
+    var partSourcep: ViewerPartSource? = null
+
+    var parent: ViewerPart? = null
+    var child: ViewerPart? = null
+
+    var imagep: Any? = null
     var posAgent: Vector3 = Vector3.ZERO
     var velocity: Vector3 = Vector3.ZERO
     var accel: Vector3 = Vector3.ZERO
     var axis: Vector3 = Vector3.ZERO
-
-    // ---- appearance ----
-    var color: Color4 = Color4(1f, 1f, 1f, 1f)
-    var startColor: Color4 = Color4(1f, 1f, 1f, 1f)
-    var endColor: Color4 = Color4(1f, 1f, 1f, 1f)
-    var scale: Vector2 = Vector2(0.1f, 0.1f)
-    var startScale: Vector2 = Vector2(0.1f, 0.1f)
-    var endScale: Vector2 = Vector2(0.1f, 0.1f)
+    var color: Color4 = Color4()
+    var scale: Vector2 = Vector2()
     var startGlow: Float = 0f
     var endGlow: Float = 0f
+    var glow: Color4U = Color4U()
 
-    // ---- lifecycle ----
-    var flags: UInt = 0x00Fu
-    var lastUpdateTime: Float = 0f
+    // PartData fields inlined
+    var flags: UInt = 0u
     var maxAge: Float = 10f
-    var skipOffset: Float = 0f
+    var startColor: Color4 = Color4()
+    var endColor: Color4 = Color4()
+    var startScale: Vector2 = Vector2(1f, 1f)
+    var endScale: Vector2 = Vector2(1f, 1f)
+    var blendFuncDest: Int = BF_ONE_MINUS_SOURCE_ALPHA
+    var blendFuncSource: Int = BF_SOURCE_ALPHA
+    var posOffset: Vector3 = Vector3.ZERO
+    var parameter: Float = 0f
 
-    // ---- blend ----
-    var blendFuncSource: BlendFactor = BlendFactor.BF_SOURCE_ALPHA
-    var blendFuncDest: BlendFactor = BlendFactor.BF_ONE_MINUS_SOURCE_ALPHA
+    fun init(sourcep: ViewerPartSource, img: Any?, cb: VPCallback?) {
+        partID = sNextPartID.getAndIncrement().toUInt()
+        flags = 0x00fu
+        lastUpdateTime = 0f
+        maxAge = 10f
+        skipOffset = 0f
+        vpCallback = cb
+        partSourcep = sourcep
+        imagep = img
+    }
 
-    // ---- texture ----
-    /** Opaque handle to a LLViewerTexture. */
-    var imageHandle: Any? = null
-
-    // ---- ribbon links ----
-    var parent: ViewerPart? = null
-    var child: ViewerPart? = null
-
-    // ---- source back-reference ----
-    var partSource: Any? = null   // LLViewerPartSource in C++
-
-    // ---- helpers ----
-
-    /** True when this particle has expired or been explicitly killed. */
-    val isDead: Boolean get() = (flags and PART_DEAD_MASK) != 0u || lastUpdateTime > maxAge
-
-    companion object {
-        /** Monotonically increasing particle ID counter, thread-safe. */
-        private var nextPartId: UInt = 1u
-
-        const val PART_DEAD_MASK: UInt = 0xFFFFFFFFu
+    fun finalize() {
+        val src = partSourcep
+        if (src != null && src.lastPart === this) src.lastPart = null
+        parent?.let { if (it.child === this) it.child = child }
+        child?.let { if (it.parent === this) it.parent = parent }
+        partSourcep = null
+        ViewerPartSim.particleCount2.decrementAndGet()
     }
 }
 
 // ---------------------------------------------------------------------------
-// Viewer part group (spatial bucket)
+// ViewerPartGroup – a spatial bucket of particles
 // ---------------------------------------------------------------------------
 
-/**
- * A spatial bucket that owns a list of [ViewerPart]s and the matching
- * [VOPartGroup] viewer object used for rendering.
- *
- * Mirrors LLViewerPartGroup in llviewerpartsim.h.
- */
-class ViewerPartGroupSim(
-    val centerAgent: Vector3,
-    val boxSide: Float,
-    val isHud: Boolean = false,
-) {
-    val id: UInt = nextGroupId++
-    val boxRadius: Float = sqrt(3f) * boxSide * 0.5f
+class ViewerPartGroup(centerAgent: Vector3, boxSide: Float, val hud: Boolean) {
+
+    companion object {
+        private val idSeed = AtomicInteger(0)
+        private const val SQRT3 = 1.7320508f
+    }
 
     val particles: MutableList<ViewerPart> = mutableListOf()
 
+    val centerAgent: Vector3
+    val boxRadius: Float
+    val boxSide: Float
+    private var minObjPos: Vector3
+    private var maxObjPos: Vector3
+
     var uniformParticles: Boolean = true
+    val id: UInt = idSeed.incrementAndGet().toUInt()
     var skippedTime: Float = 0f
 
-    /** Backing viewer object (null while the group is being set up). */
-    var voPartGroup: VOPartGroup? = null
+    var voPartGroupp: Any? = null      // stub for LLVOPartGroup
+    private var regionp: Any? = null   // stub for LLViewerRegion
 
-    private var minObjPos: Vector3 = centerAgent - Vector3(boxRadius, boxRadius, boxRadius)
-    private var maxObjPos: Vector3 = centerAgent + Vector3(boxRadius, boxRadius, boxRadius)
+    init {
+        this.centerAgent = centerAgent
+        this.boxRadius = SQRT3 * boxSide * 0.5f
+        this.boxSide = boxSide
 
-    /** How many live particles this group currently holds. */
-    val count: Int get() = particles.size
+        val extents = Vector3(boxRadius, boxRadius, boxRadius)
+        minObjPos = centerAgent - extents
+        maxObjPos = centerAgent + extents
 
-    /** True when [pos] falls within this group's AABB and size range. */
+        regionp = TODO("APR: look up viewer region from centerAgent position")
+
+        voPartGroupp = if (hud) {
+            TODO("GPU: createObjectViewer(LL_VO_HUD_PART_GROUP, region)")
+        } else {
+            TODO("GPU: createObjectViewer(LL_VO_PART_GROUP, region)")
+        }
+        TODO("GPU: configure voPartGroupp position, scale, add to pipeline; " +
+             "compute minObjPos/maxObjPos from spatial group octree node")
+    }
+
+    fun cleanup() {
+        TODO("GPU: kill voPartGroupp via gObjectList if not already dead")
+    }
+
     fun posInGroup(pos: Vector3, desiredSize: Float = -1f): Boolean {
         if (pos.x < minObjPos.x || pos.y < minObjPos.y || pos.z < minObjPos.z) return false
         if (pos.x > maxObjPos.x || pos.y > maxObjPos.y || pos.z > maxObjPos.z) return false
         if (desiredSize > 0f &&
-            (desiredSize < boxRadius * 0.5f || desiredSize > boxRadius * 2f)
-        ) return false
+            (desiredSize < boxRadius * 0.5f || desiredSize > boxRadius * 2f)) return false
         return true
     }
 
-    /**
-     * Try to insert [part] into this group.
-     * Returns false if the position or uniformity does not match.
-     */
     fun addPart(part: ViewerPart, desiredSize: Float = -1f): Boolean {
+        if (part.flags and PartFlags.LL_PART_HUD != 0u && !hud) return false
+
         val uniformPart = part.scale.x == part.scale.y &&
-                (part.flags and FOLLOW_VELOCITY_MASK) == 0u
-        if (!posInGroup(part.posAgent, desiredSize)) return false
-        if (uniformParticles && !uniformPart) return false
-        if (!uniformParticles && uniformPart) return false
-        part.skipOffset = skippedTime
+            (part.flags and PartFlags.LL_PART_FOLLOW_VELOCITY_MASK == 0u)
+
+        if (!posInGroup(part.posAgent, desiredSize) ||
+            (uniformParticles && !uniformPart) ||
+            (!uniformParticles && uniformPart)) return false
+
+        TODO("GPU: markRebuild(voPartGroupp drawable, REBUILD_ALL)")
+
         particles.add(part)
+        part.skipOffset = skippedTime
         ViewerPartSim.particleCount.incrementAndGet()
-        TODO("GPU: markRebuild(voPartGroup?.drawable, REBUILD_ALL)")
         return true
     }
 
-    /**
-     * Advance all particles by [dt] seconds.
-     *
-     * Handles:
-     * - position/velocity integration (Euler)
-     * - colour & scale interpolation
-     * - glow interpolation
-     * - wind drag (flag WIND_MASK)
-     * - bounce (flag BOUNCE_MASK)
-     * - follow-source drift (flag FOLLOW_SRC_MASK)
-     * - expiry of dead or aged-out particles
-     * - transfer of out-of-bounds particles to a new group via [ViewerPartSim]
-     */
-    fun updateParticles(dt: Float) {
-        val iter = particles.iterator()
+    fun updateParticles(lastdt: Float) {
+        val gravity = Vector3(0f, 0f, -9.8f)
+        ViewerPartSim.checkParticleCount(particles.size.toUInt())
+
         var changed = false
-        while (iter.hasNext()) {
-            val part = iter.next()
-            val effectiveDt = dt + skippedTime - part.skipOffset
+        var i = 0
+        while (i < particles.size) {
+            val part = particles[i]
+            val dt = lastdt + skippedTime - part.skipOffset
             part.skipOffset = 0f
-            val curTime = part.lastUpdateTime + effectiveDt
-            val frac = (curTime / part.maxAge).coerceIn(0f, 1f)
 
-            // Velocity integration
-            part.posAgent = part.posAgent + part.velocity * effectiveDt +
-                    part.accel * (0.5f * effectiveDt * effectiveDt)
-            part.velocity = part.velocity + part.accel * effectiveDt
+            val curTime = part.lastUpdateTime + dt
+            val frac = curTime / part.maxAge
 
-            // Colour interpolation
-            if ((part.flags and INTERP_COLOR_MASK) != 0u) {
-                part.color = lerp(part.startColor, part.endColor, frac)
+            if (part.flags and PartFlags.LL_PART_FOLLOW_SRC_MASK != 0u) {
+                part.posAgent = (part.partSourcep?.posAgent ?: Vector3.ZERO) + part.posOffset
             }
 
-            // Scale interpolation
-            if ((part.flags and INTERP_SCALE_MASK) != 0u) {
-                part.scale = lerp(part.startScale, part.endScale, frac)
+            part.vpCallback?.invoke(part, dt)
+
+            if (part.flags and PartFlags.LL_PART_WIND_MASK != 0u) {
+                part.velocity = part.velocity * (1f - 0.1f * dt)
+                part.velocity = part.velocity + TODO<Vector3>("APR: get wind velocity from region at part.posAgent") * (0.1f * dt)
             }
+
+            if (part.flags and PartFlags.LL_PART_TARGET_POS_MASK != 0u) {
+                val remaining = part.maxAge - part.lastUpdateTime
+                val step = (dt / remaining).coerceIn(0f, 0.1f) * 5f
+                val deltaPos = (part.partSourcep?.targetPosAgent ?: Vector3.ZERO) - part.posAgent
+                val deltaPosScaled = deltaPos * (1f / remaining)
+                part.velocity = part.velocity * (1f - step) + deltaPosScaled * step
+            }
+
+            if (part.flags and PartFlags.LL_PART_TARGET_LINEAR_MASK != 0u) {
+                val src = part.partSourcep
+                val deltaPos = (src?.targetPosAgent ?: Vector3.ZERO) - (src?.posAgent ?: Vector3.ZERO)
+                part.posAgent = (src?.posAgent ?: Vector3.ZERO) + deltaPos * frac
+                part.velocity = deltaPos
+            } else {
+                part.posAgent = part.posAgent + part.velocity * dt + part.accel * (0.5f * dt * dt)
+                part.velocity = part.velocity + part.accel * dt
+            }
+
+            if (part.flags and PartFlags.LL_PART_BOUNCE_MASK != 0u) {
+                val srcZ = part.partSourcep?.posAgent?.z ?: 0f
+                val dz = part.posAgent.z - srcZ
+                if (dz < 0f) {
+                    part.posAgent = part.posAgent.copy(z = part.posAgent.z - 2f * dz)
+                    part.velocity = part.velocity.copy(z = part.velocity.z * -0.75f)
+                }
+            }
+
+            if (part.flags and PartFlags.LL_PART_FOLLOW_SRC_MASK != 0u) {
+                part.posOffset = part.posAgent - (part.partSourcep?.posAgent ?: Vector3.ZERO)
+            }
+
+            if (part.flags and PartFlags.LL_PART_INTERP_COLOR_MASK != 0u) {
+                val sc = part.startColor
+                val ec = part.endColor
+                val inv = 1f - frac
+                part.color = Color4(
+                    r = sc.r * inv + ec.r * frac,
+                    g = sc.g * inv + ec.g * frac,
+                    b = sc.b * inv + ec.b * frac,
+                    a = sc.a * inv + ec.a * frac
+                )
+            }
+
+            if (part.flags and PartFlags.LL_PART_INTERP_SCALE_MASK != 0u) {
+                val ss = part.startScale
+                val es = part.endScale
+                part.scale = Vector2(
+                    x = ss.x * (1f - frac) + es.x * frac,
+                    y = ss.y * (1f - frac) + es.y * frac
+                )
+            }
+
+            val glowAlpha = (part.startGlow + (part.endGlow - part.startGlow) * frac) * 255f
+            part.glow = part.glow.copy(a = glowAlpha.toInt().coerceIn(0, 255).toUByte())
 
             part.lastUpdateTime = curTime
 
-            when {
-                part.isDead -> {
-                    iter.remove()
-                    ViewerPartSim.particleCount.decrementAndGet()
-                    changed = true
-                }
-                !posInGroup(part.posAgent) -> {
-                    // Transfer to a new spatial group
-                    iter.remove()
-                    ViewerPartSim.particleCount.decrementAndGet()
+            val isDead = part.lastUpdateTime > part.maxAge ||
+                part.flags == PartFlags.LL_PART_DEAD_MASK
+            if (isDead) {
+                particles.removeAt(i)
+                ViewerPartSim.particleCount.decrementAndGet()
+                part.finalize()
+                changed = true
+            } else {
+                val desiredSize = calcDesiredSize(part.posAgent, part.scale)
+                if (!posInGroup(part.posAgent, desiredSize)) {
+                    particles.removeAt(i)
                     ViewerPartSim.put(part)
+                    // put() increments sParticleCount on success, so always decrement here
+                    ViewerPartSim.particleCount.decrementAndGet()
                     changed = true
+                } else {
+                    i++
                 }
             }
         }
 
         if (changed) {
-            TODO("GPU: markRebuild(voPartGroup?.drawable, REBUILD_ALL)")
+            TODO("GPU: markRebuild(voPartGroupp drawable, REBUILD_ALL) if voPartGroupp not null")
         }
 
         if (particles.isEmpty()) {
-            TODO("GPU: gObjectList.killObject(voPartGroup); voPartGroup = null")
+            TODO("GPU: gObjectList.killObject(voPartGroupp); set voPartGroupp = null")
         }
+
+        ViewerPartSim.checkParticleCount()
     }
 
-    /** Shift all particle positions and the AABB by [offset]. */
     fun shift(offset: Vector3) {
+        val nc = centerAgent + offset
         minObjPos = minObjPos + offset
         maxObjPos = maxObjPos + offset
-        for (p in particles) p.posAgent = p.posAgent + offset
+        particles.forEach { it.posAgent = it.posAgent + offset }
     }
 
-    /** Mark all particles belonging to [sourceId] as dead. */
     fun removeParticlesByID(sourceId: UInt) {
-        for (p in particles) {
-            if (p.partId == sourceId) p.flags = ViewerPart.PART_DEAD_MASK
+        particles.forEach { p ->
+            if (p.partSourcep?.id == sourceId) p.flags = PartFlags.LL_PART_DEAD_MASK
         }
     }
 
-    /** Clean up the VO and clear the particle list. */
-    fun cleanup() {
-        TODO("GPU: if voPartGroup is alive, gObjectList.killObject(voPartGroup)")
-        voPartGroup = null
-    }
-
-    companion object {
-        private var nextGroupId: UInt = 0u
-
-        const val FOLLOW_VELOCITY_MASK: UInt = 0x00000040u
-        const val INTERP_COLOR_MASK: UInt    = 0x00000004u
-        const val INTERP_SCALE_MASK: UInt    = 0x00000008u
-
-        private fun lerp(a: Color4, b: Color4, t: Float): Color4 =
-            Color4(
-                a.r + (b.r - a.r) * t,
-                a.g + (b.g - a.g) * t,
-                a.b + (b.b - a.b) * t,
-                a.a + (b.a - a.a) * t,
-            )
-
-        private fun lerp(a: Vector2, b: Vector2, t: Float): Vector2 =
-            Vector2(a.x + (b.x - a.x) * t, a.y + (b.y - a.y) * t)
-    }
+    fun getCount(): Int = particles.size
+    fun getRegion(): Any? = regionp
 }
 
 // ---------------------------------------------------------------------------
-// ViewerPartSim — global particle simulation manager
+// ViewerPartSim – singleton particle simulation
 // ---------------------------------------------------------------------------
 
-/**
- * Singleton that owns all [ViewerPartGroupSim]s and [PartSourceType] sources,
- * drives the per-frame simulation tick, and enforces the global particle cap.
- *
- * Mirrors LLViewerPartSim (LLSingleton) in llviewerpartsim.h.
- * GPU / rendering calls are stubbed with [TODO].
- */
 object ViewerPartSim {
 
-    // ---- constants ----
+    const val MAX_PART_COUNT: Int              = 8192
+    const val PART_THROTTLE_THRESHOLD: Float   = 0.9f
+    const val PART_ADAPT_RATE_MULT: Float      = 2.0f
+    val PART_THROTTLE_RESCALE: Float           = PART_THROTTLE_THRESHOLD / (1f - PART_THROTTLE_THRESHOLD)
+    val PART_ADAPT_RATE_MULT_RECIP: Float      = 1f / PART_ADAPT_RATE_MULT
 
-    /** Hard cap; matches LL_MAX_PARTICLE_COUNT in C++. */
-    const val MAX_PART_COUNT: Int = 8192
+    var maxParticleCount: Int = 0
 
-    /** Fraction of the cap above which throttling kicks in. */
-    const val PART_THROTTLE_THRESHOLD: Float = 0.9f
-
-    /** Rescale factor used by [maxRate]. */
-    val PART_THROTTLE_RESCALE: Float =
-        PART_THROTTLE_THRESHOLD / (1f - PART_THROTTLE_THRESHOLD)
-
-    const val PART_ADAPT_RATE_MULT: Float = 2f
-    val PART_ADAPT_RATE_MULT_RECIP: Float = 1f / PART_ADAPT_RATE_MULT
-
-    /** Side length of each spatial partition box (metres). */
-    const val PART_SIM_BOX_SIDE: Float = 16f
-
-    // ---- mutable state ----
-
-    /**
-     * Maximum number of particles allowed. Set from the "RenderMaxPartCount"
-     * preference, capped at [MAX_PART_COUNT].
-     */
-    var maxPartCount: Int = MAX_PART_COUNT
-        set(value) { field = value.coerceAtMost(MAX_PART_COUNT) }
-
-    /** Live particle count tracked atomically to avoid races during update. */
+    // Atomic counters to detect per-frame mismatches (mirrors AVX2 mismatch fix in original)
     val particleCount: AtomicInteger = AtomicInteger(0)
-
-    /** Secondary counter used for consistency checking (Firestorm FIRE-34600). */
     val particleCount2: AtomicInteger = AtomicInteger(0)
 
-    /** Current adaptive emission rate; increases when near the cap. */
     var particleAdaptiveRate: Float = 0.0625f
-        private set
-
-    /** Current burst emission rate fraction. */
     var particleBurstRate: Float = 0.5f
-        private set
 
-    /** Convenience alias matching the C++ getter. */
-    val partCount: Int get() = particleCount.get()
+    private val partGroups: MutableList<ViewerPartGroup> = mutableListOf()
+    private val partSources: MutableList<ViewerPartSource> = mutableListOf()
 
-    private val viewerPartGroups: MutableList<ViewerPartGroupSim> = mutableListOf()
-    private val viewerPartSources: MutableList<Any?> = mutableListOf()  // LLViewerPartSource in C++
+    private var idSeed: UInt = 0u
+    var id: UInt = ++idSeed
 
-    private var enabled: Boolean = true
-    private var instanceId: UInt = 0u
+    private var lastSimTime: Long = System.nanoTime()
 
-    // ---- lifecycle ----
+    // Allow callers to iterate sources read-only
+    fun getParticleSystemList(): List<ViewerPartSource> = partSources
 
-    init {
-        instanceId = instanceSeed++
-    }
-
-    /** Enable or disable the particle simulation. Matches C++ enable(bool). */
     fun enable(enabled: Boolean) {
-        if (!enabled) {
-            maxPartCount = 0
-        } else if (maxPartCount < 1) {
-            maxPartCount = MAX_PART_COUNT
+        if (!enabled && maxParticleCount > 0) {
+            maxParticleCount = 0
+        } else if (enabled && maxParticleCount < 1) {
+            maxParticleCount = TODO("APR: read RenderMaxPartCount from settings, clamp to MAX_PART_COUNT")
         }
-        this.enabled = enabled
     }
 
-    /** Destroy all particle groups and sources. Call on viewer shutdown. */
     fun destroyClass() {
-        clearParts()
-        viewerPartSources.clear()
+        partGroups.forEach { it.cleanup() }
+        partGroups.clear()
+        partSources.clear()
     }
 
-    // ---- source management ----
-
-    /**
-     * Register a new particle source with the simulation.
-     * [source] is typed as [Any?] to avoid a hard compile-time dependency on
-     * the C++ LLViewerPartSource hierarchy; callers should pass the concrete
-     * Kotlin analogue when available.
-     */
-    fun addPartSource(source: Any?) {
-        viewerPartSources.add(source)
-    }
-
-    /** Remove the most recently added particle source (used during undo). */
-    fun removeLastCreatedSource() {
-        if (viewerPartSources.isNotEmpty()) viewerPartSources.removeAt(viewerPartSources.lastIndex)
-    }
-
-    /** Return an immutable view of the current source list. */
-    fun getParticleSystemList(): List<Any?> = viewerPartSources
-
-    // ---- particle management ----
-
-    /**
-     * Add a raw [ViewerPart] to the simulation, finding or creating the
-     * appropriate spatial group.
-     * Silently drops the particle if the global cap is reached.
-     */
-    fun addPart(part: ViewerPart) {
-        if (particleCount.get() < MAX_PART_COUNT) {
-            put(part)
-        }
-        // else: particle is dropped (matches C++ behaviour)
-    }
-
-    /**
-     * Internal: assign [part] to an existing group or create a new one.
-     * Returns the group that accepted the particle, or null if the position
-     * is invalid / out of range.
-     */
-    internal fun put(part: ViewerPart): ViewerPartGroupSim? {
-        val MAX_MAG_SQ = 1_000_000f * 1_000_000f
-        val magSq = part.posAgent.let { it.x * it.x + it.y * it.y + it.z * it.z }
-        if (magSq > MAX_MAG_SQ) return null  // out of world bounds
-
-        val desiredSize = calcDesiredSize(part.posAgent, part.scale)
-
-        for (group in viewerPartGroups) {
-            if (group.addPart(part, desiredSize)) return group
-        }
-
-        // No existing group fit; create a new one.
-        val newGroup = createViewerPartGroup(part.posAgent, desiredSize, (part.flags and HUD_MASK) != 0u)
-        newGroup.uniformParticles = part.scale.x == part.scale.y &&
-                (part.flags and ViewerPartGroupSim.FOLLOW_VELOCITY_MASK) == 0u
-        if (!newGroup.addPart(part)) {
-            viewerPartGroups.remove(newGroup)
-            newGroup.cleanup()
-            return null
-        }
-        return newGroup
-    }
-
-    private fun createViewerPartGroup(posAgent: Vector3, desiredSize: Float, hud: Boolean): ViewerPartGroupSim {
-        val group = ViewerPartGroupSim(posAgent, desiredSize, hud)
-        viewerPartGroups.add(group)
-        TODO("GPU: create VOPartGroup viewer object and attach it to the group")
-        return group
-    }
-
-    /** Remove all particles and groups belonging to a specific region. */
-    fun cleanupRegion(regionHandle: Any?) {
-        TODO("GPU: remove all groups whose mRegionp == regionHandle; kill their VOs")
-    }
-
-    /** Expire all particles belonging to system [systemId]. */
-    fun clearParticlesByID(systemId: UInt) {
-        for (group in viewerPartGroups) group.removeParticlesByID(systemId)
-    }
-
-    /** Expire all particles whose source is owned by [taskId]. */
-    fun clearParticlesByOwnerID(taskId: LLUUID) {
-        TODO("GPU: iterate groups; flag particles where partSource.ownerUUID == taskId as dead")
-    }
-
-    /** Remove and destroy all particle groups and their particles. */
-    fun clearParts() {
-        for (group in viewerPartGroups) {
-            group.cleanup()
-        }
-        viewerPartGroups.clear()
-        particleCount.set(0)
-    }
-
-    // ---- simulation tick ----
-
-    /**
-     * Advance the entire particle simulation by one frame.
-     *
-     * - Drives all registered [viewerPartSources] to emit new particles.
-     * - Steps all [viewerPartGroups] forward by the elapsed delta-time.
-     * - Sources are iterated in a random order to avoid starvation.
-     *
-     * Mirrors LLViewerPartSim::updateSimulation().
-     */
-    fun update(dt: Float) {
-        if (!enabled) return
-        updatePartBurstRate()
-
-        // Update sources (randomised start index to prevent starvation)
-        val srcCount = viewerPartSources.size
-        if (srcCount > 0) {
-            TODO("GPU: iterate sources in random order; call source.update(dt)")
-        }
-
-        // Update groups
-        val deadGroups = mutableListOf<ViewerPartGroupSim>()
-        for (group in viewerPartGroups) {
-            group.updateParticles(dt)
-            if (group.count == 0) deadGroups.add(group)
-        }
-        for (g in deadGroups) {
-            viewerPartGroups.remove(g)
-            g.cleanup()
-        }
-
-        checkParticleCount()
-    }
-
-    // ---- throttle / rate ----
-
-    /**
-     * True if a new particle from a burst source should be spawned this frame.
-     * Returns false when the particle count is at or above the hard cap,
-     * or when the frame rate is too low.
-     */
     fun shouldAddPart(): Boolean {
-        if (particleCount.get() >= MAX_PART_COUNT) return false
-        if (particleCount.get() > PART_THROTTLE_THRESHOLD * maxPartCount) {
-            val frac = (particleCount.get().toFloat() / maxPartCount - PART_THROTTLE_THRESHOLD) *
-                    PART_THROTTLE_RESCALE
+        val count = particleCount.get()
+        if (count >= MAX_PART_COUNT) return false
+        if (count > PART_THROTTLE_THRESHOLD * maxParticleCount) {
+            val frac = (count.toFloat() / maxParticleCount - PART_THROTTLE_THRESHOLD) * PART_THROTTLE_RESCALE
             if (Math.random().toFloat() < frac) return false
         }
-        // Low-FPS guard is a TODO because we don't have gFPSClamped in Kotlin yet
+        val minFrameRate = 4f
+        val currentFps: Float = TODO("APR: read current clamped FPS value (gFPSClamped)")
+        @Suppress("UNREACHABLE_CODE")
+        if (currentFps < minFrameRate) return false
         return true
     }
 
-    /**
-     * Maximum emission rate for burst sources at the current particle count.
-     * Returns 0 below the throttle threshold, rising linearly to 1 at the cap.
-     */
     fun maxRate(): Float {
-        if (particleCount.get() >= MAX_PART_COUNT) return 1f
-        if (particleCount.get() > PART_THROTTLE_THRESHOLD * maxPartCount) {
-            return ((particleCount.get().toFloat() / maxPartCount) -
-                    PART_THROTTLE_THRESHOLD) * PART_THROTTLE_RESCALE
+        val count = particleCount.get()
+        return when {
+            count >= MAX_PART_COUNT -> 1f
+            count > PART_THROTTLE_THRESHOLD * maxParticleCount ->
+                ((count.toFloat() / maxParticleCount) - PART_THROTTLE_THRESHOLD) * PART_THROTTLE_RESCALE
+            else -> 0f
         }
-        return 0f
     }
 
     fun getRefRate(): Float = particleAdaptiveRate
     fun getBurstRate(): Float = particleBurstRate
+    fun aboveParticleLimit(): Boolean = particleCount.get() > maxParticleCount
 
-    /** Adjust [particleAdaptiveRate] based on whether the cap was hit last frame. */
-    fun updatePartBurstRate() {
-        particleAdaptiveRate = if (particleCount.get() >= maxPartCount) {
-            (particleAdaptiveRate * PART_ADAPT_RATE_MULT).coerceAtMost(1f)
+    fun setMaxPartCount(max: Int) { maxParticleCount = max }
+    fun getMaxPartCount(): Int = maxParticleCount
+
+    fun addPart(part: ViewerPart) {
+        if (particleCount.get() < MAX_PART_COUNT) {
+            put(part)
         } else {
-            (particleAdaptiveRate * PART_ADAPT_RATE_MULT_RECIP).coerceAtLeast(0.0625f)
+            part.finalize()
         }
     }
 
-    // ---- spatial helpers ----
+    fun put(part: ViewerPart): ViewerPartGroup? {
+        val maxMag = 1_000_000f * 1_000_000f
+        if (part.posAgent.magnitudeSquared() > maxMag || !part.posAgent.isFinite()) return null
 
-    /**
-     * Compute the preferred spatial-box size for a particle at [posAgent] with
-     * the given [scale].  Mirrors the C++ calc_desired_size() free function.
-     */
-    private fun calcDesiredSize(posAgent: Vector3, scale: Vector2): Float {
-        TODO("GPU: (posAgent - camera.origin).length / 4 clamped to [scale.length*0.5, BOX_SIDE*2]")
+        val desiredSize = calcDesiredSize(part.posAgent, part.scale)
+
+        for (group in partGroups) {
+            if (group.addPart(part, desiredSize)) return group
+        }
+
+        val group = createViewerPartGroup(part.posAgent, desiredSize, part.flags and PartFlags.LL_PART_HUD != 0u)
+        group.uniformParticles = part.scale.x == part.scale.y &&
+            (part.flags and PartFlags.LL_PART_FOLLOW_VELOCITY_MASK == 0u)
+
+        if (!group.addPart(part)) {
+            partGroups.remove(group)
+            group.cleanup()
+            part.finalize()
+            return null
+        }
+        return group
     }
 
-    // ---- spatial-coordinate shift ----
+    private fun createViewerPartGroup(posAgent: Vector3, desiredSize: Float, hud: Boolean): ViewerPartGroup {
+        val group = ViewerPartGroup(posAgent, desiredSize, hud)
+        partGroups.add(group)
+        return group
+    }
 
-    /**
-     * Shift all source and particle positions by [offset] when the coordinate
-     * origin moves (region crossing, etc.).
-     */
     fun shift(offset: Vector3) {
-        for (group in viewerPartGroups) group.shift(offset)
-        TODO("GPU: shift all source mPosAgent / mTargetPosAgent / mLastUpdatePosAgent")
+        partSources.forEach { src ->
+            src.posAgent = src.posAgent + offset
+            src.targetPosAgent = src.targetPosAgent + offset
+            src.lastUpdatePosAgent = src.lastUpdatePosAgent + offset
+        }
+        partGroups.forEach { it.shift(offset) }
     }
 
-    // ---- consistency checks (Firestorm FIRE-34600) ----
+    fun updateSimulation() {
+        val nowNs = System.nanoTime()
+        val dt = ((nowNs - lastSimTime) / 1_000_000_000.0).toFloat().coerceAtMost(0.1f)
+        lastSimTime = nowNs
 
-    /**
-     * Verify that [particleCount] and [particleCount2] are in agreement and
-     * that neither exceeds [size].
-     * Logs warnings (or errors after repeated failures) on mismatch.
-     */
+        val count = partSources.size
+        if (count == 0) {
+            updatePartBurstRate()
+            return
+        }
+
+        val start = (Math.random() * count).toInt()
+        val dir = if (Math.random() > 0.5) 1 else -1
+        val delDir = if (dir == -1) -1 else 0
+
+        var i = start
+        var numUpdates = 0
+        while (numUpdates < count) {
+            i = when {
+                i >= partSources.size -> 0
+                i < 0 -> partSources.size - 1
+                else -> i
+            }
+
+            val src = partSources[i]
+            if (!src.isDead) {
+                val vobj = src.sourceObjectp
+                var upd = true
+
+                if (vobj != null && vobj.isAvatar()) {
+                    upd = TODO("APR: check if avatar is in mute list; set upd=false if muted")
+                }
+                if (upd && vobj != null) {
+                    upd = TODO("APR: check isOwnerInMuteList; attachment particle rendering flag")
+                }
+
+                if (upd) src.update(dt)
+            }
+
+            if (partSources[i].isDead) {
+                partSources.removeAt(i)
+                i += delDir
+            } else {
+                i += dir
+            }
+            numUpdates++
+        }
+
+        var gi = 0
+        while (gi < partGroups.size) {
+            val group = partGroups[gi]
+
+            val visirate: Int = TODO("GPU: determine visirate (1 or 8) from group drawable spatial group visibility")
+            @Suppress("UNREACHABLE_CODE")
+            val currentFrame: Int = TODO("GPU: get current frame number (LLDrawable::getCurrentFrame())")
+            @Suppress("UNREACHABLE_CODE")
+            if ((currentFrame + group.id.toInt()) % visirate == 0) {
+                TODO("GPU: markRebuild(vobj drawable, REBUILD_ALL) if vobj is alive and drawable not null")
+                group.updateParticles(dt * visirate)
+                group.skippedTime = 0f
+                if (group.getCount() == 0) {
+                    partGroups.removeAt(gi)
+                    gi--
+                }
+            } else {
+                group.skippedTime += dt
+            }
+            gi++
+        }
+
+        val frame: Int = TODO("GPU: get current frame number for adaptive-rate check")
+        @Suppress("UNREACHABLE_CODE")
+        if (frame % 16 == 0) {
+            val cnt = particleCount.get()
+            if (cnt > maxParticleCount * 0.875f && particleAdaptiveRate < 2f) {
+                particleAdaptiveRate *= PART_ADAPT_RATE_MULT
+            } else if (cnt < maxParticleCount * 0.5f && particleAdaptiveRate > 0.03125f) {
+                particleAdaptiveRate *= PART_ADAPT_RATE_MULT_RECIP
+            }
+        }
+
+        updatePartBurstRate()
+    }
+
+    fun updatePartBurstRate() {
+        val frame: Int = TODO("GPU: get current frame number")
+        @Suppress("UNREACHABLE_CODE")
+        if (frame and 0xf == 0) {
+            val cnt = particleCount.get()
+            when {
+                cnt >= MAX_PART_COUNT -> particleBurstRate = 0f
+                cnt > 0 -> {
+                    if (particleBurstRate > 0.0000001f) {
+                        val totalParticles = cnt / particleBurstRate
+                        val newRate = (0.9f * maxParticleCount / totalParticles).coerceIn(0f, 1f)
+                        val deltaThreshold = minOf(0.1f * maxOf(newRate, particleBurstRate), 0.1f)
+                        val delta = (newRate - particleBurstRate).coerceIn(-deltaThreshold, deltaThreshold)
+                        particleBurstRate = (particleBurstRate + 0.5f * delta).coerceIn(0f, 1f)
+                    } else {
+                        particleBurstRate += 0.0000001f
+                    }
+                }
+                else -> particleBurstRate += 0.00125f
+            }
+        }
+    }
+
+    fun addPartSource(sourcep: ViewerPartSource) {
+        sourcep.setStart()
+        partSources.add(sourcep)
+    }
+
+    fun removeLastCreatedSource() {
+        if (partSources.isNotEmpty()) partSources.removeAt(partSources.lastIndex)
+    }
+
+    fun cleanupRegion(regionp: Any) {
+        val iter = partGroups.iterator()
+        while (iter.hasNext()) {
+            val group = iter.next()
+            if (group.getRegion() === regionp) {
+                group.cleanup()
+                iter.remove()
+            }
+        }
+    }
+
+    fun clearParticlesByID(systemId: UInt) {
+        partGroups.forEach { it.removeParticlesByID(systemId) }
+        partSources.firstOrNull { it.id == systemId }?.setDead()
+    }
+
+    fun clearParticlesByOwnerID(taskId: UUID) {
+        partSources
+            .filter { it.getOwnerUUID() == taskId }
+            .forEach { clearParticlesByID(it.id) }
+    }
+
     fun checkParticleCount(size: UInt = 0u) {
-        val c1 = particleCount.get()
-        val c2 = particleCount2.get()
-        if (c1 != c2) {
-            // In production this becomes an error after 10 consecutive mismatches
-            System.err.println("ViewerPartSim: particle count mismatch: count=$c1 count2=$c2")
+        val cnt = particleCount.get()
+        val cnt2 = particleCount2.get()
+        if (cnt2 != cnt) {
+            System.err.println("WARN: sParticleCount=$cnt sParticleCount2=$cnt2")
         }
-        if (size > 0u && size.toInt() > c2) {
-            System.err.println("ViewerPartSim: array size $size > particle count2 $c2")
+        if (size > cnt2.toUInt()) {
+            System.err.println("WARN: array size=$size > sParticleCount2=$cnt2")
         }
     }
+}
 
-    /** True when the live count exceeds the configured maximum. */
-    fun aboveParticleLimit(): Boolean = particleCount.get() > maxPartCount
+// ---------------------------------------------------------------------------
+// Free function used by both ViewerPartGroup and ViewerPartSim
+// ---------------------------------------------------------------------------
 
-    private companion object {
-        private var instanceSeed: UInt = 0u
-        private const val HUD_MASK: UInt = 0x00000080u
-    }
+fun calcDesiredSize(posAgent: Vector3, scale: Vector2): Float {
+    val cameraDist: Float = TODO("GPU: compute distance from posAgent to camera origin")
+    @Suppress("UNREACHABLE_CODE")
+    val desired = cameraDist / 4f
+    return desired.coerceIn(scale.magnitude() * 0.5f, 32f)  // 32 = PART_SIM_BOX_SIDE*2
 }

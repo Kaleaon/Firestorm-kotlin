@@ -1,180 +1,168 @@
-// Converted from llvosurfacepatch.h / llvosurfacepatch.cpp (Firestorm / Linden Research)
-// LGPL-2.1-only — see project root for full license text.
-
 package com.firestorm.newview
 
-import com.firestorm.llmath.*
-import com.firestorm.llcommon.*
+import kotlin.math.*
 
-/**
- * Viewer object representing a single terrain patch.
- *
- * Mirrors [LLVOSurfacePatch] from llvosurfacepatch.h.
- * Each region surface is divided into a grid of patches; this class owns the
- * drawable and vertex data for one cell.
- *
- * All GPU/geometry calls are stubbed with [TODO].
- */
-open class VOSurfacePatch(
-    id: LLUUID,
-    localId: UInt,
-    pCode: UInt,
-) : ViewerObject(id, localId, pCode) {
+class VOSurfacePatch {
 
-    // ---- key fields ----
+    companion object {
+        var lodFactor: Float = 1f
 
-    /** Current level-of-detail: stride in grid samples (1 = full resolution). */
-    var lodLevel: Int = 1
+        fun initClass() {}
+    }
 
-    /** True when geometry needs to be rebuilt. */
-    var isDirty: Boolean = false
+    var patch: SurfacePatch? = null
+        set(value) { field = value; if (value != null) dirtyPatch() }
 
-    /** True when the underlying composition texture is out of date. */
-    var isDirtyTexture: Boolean = false
+    var isDirtied: Boolean   = false
+        private set
 
-    /** Reference to the [LLSurfacePatch] data source (untyped to avoid circular deps). */
-    var patch: Any? = null           // typed as LLSurfacePatch* in C++
-
-    /** Dirty flag set when the surface patch itself has changed. */
-    var dirtiedPatch: Boolean = false
-
-    // ---- stride cache (avoids per-frame recalculation) ----
-
+    private var pool: Any?   = null     // LLFacePool equivalent
     private var baseComp: Int = 0
-    private var lastNorthStride: Int = 0
-    private var lastEastStride: Int = 0
-    private var lastStride: Int = 0
-    private var lastLength: Int = 0
 
-    // ---- lifecycle ----
+    private var dirtyTexture: Boolean  = false
+    private var dirtyTerrain: Boolean  = false
 
-    /**
-     * Detach from the underlying surface patch and call base markDead.
-     * Mirrors [LLVOSurfacePatch::markDead].
-     */
+    private var lastNorthStride: Int   = 0
+    private var lastEastStride: Int    = 0
+    private var lastStride: Int        = 0
+    private var lastLength: Int        = 0
+
+    // Position is stored in region-local coords; renderer consumes it.
+    private var positionRegion: Vector3 = Vector3(0f, 0f, 0f)
+
+    fun setPositionRegion(pos: Vector3) { positionRegion = pos }
+
+    fun isActive(): Boolean = false
+
+    fun setPixelAreaAndAngle() {
+        TODO("GPU: set appAngle=50, pixelArea=500*500")
+    }
+
+    fun updateTextures() {}
+
+    fun getPool(): Any? {
+        TODO("GPU: getPool(POOL_TERRAIN, patch surface texture)")
+    }
+
+    fun createDrawable() {
+        TODO("GPU: allocDrawable, setRenderType(TERRAIN), addFace(pool)")
+    }
+
+    fun updateGL() {
+        patch?.updateGL()
+    }
+
+    fun updateGeometry(): Boolean {
+        TODO("GPU: compute strides, geometry sizes via getGeomSizes*")
+    }
+
+    fun updateFaceSize(idx: Int) {
+        if (idx != 0) return
+        if (lastStride == 0) {
+            TODO("GPU: face.setSize(0, 0)")
+            return
+        }
+        var numVertices = 0; var numIndices = 0
+        getGeomSizesMain(lastStride, numVertices, numIndices).also { (nv, ni) -> numVertices = nv; numIndices = ni }
+        getGeomSizesNorth(lastStride, lastNorthStride, numVertices, numIndices).also { (nv, ni) -> numVertices = nv; numIndices = ni }
+        getGeomSizesEast(lastStride, lastEastStride, numVertices, numIndices).also { (nv, ni) -> numVertices = nv; numIndices = ni }
+        TODO("GPU: face.setSize(numVertices, numIndices)")
+    }
+
+    fun updateLOD(): Boolean = true
+
+    fun getTerrainGeometry() {
+        TODO("GPU: fill vertex/normal/texcoord/index buffers for main+north+east geometry")
+    }
+
+    fun dirtyPatch() {
+        isDirtied    = true
+        dirtyTerrain = true
+        val p = patch ?: return
+        val s = p.surface ?: return
+        setPositionRegion(p.centerRegion)
+        val scaleFactor = s.getGridsPerPatchEdge() * s.getMetersPerGrid()
+        TODO("GPU: setScale(scaleFactor, scaleFactor, maxZ - minZ)")
+    }
+
+    fun dirtyGeom() {
+        TODO("GPU: markRebuild(REBUILD_ALL), clear vertex buffer, movePartition")
+    }
+
     fun markDead() {
-        (patch as? AutoCloseable)?.close()   // clearVObj() equivalent
+        patch?.clearVObj()
         patch = null
         TODO("GPU: super.markDead()")
     }
 
-    /** Terrain patches are static — idle update not needed. */
-    fun isActive(): Boolean = false
-
-    // ---- geometry / LOD ----
-
-    /**
-     * Set a fixed apparent angle and pixel area; terrain uses a large constant.
-     * Mirrors the trivial [LLVOSurfacePatch::setPixelAreaAndAngle].
-     */
-    fun setPixelAreaAndAngle() {
-        // mAppAngle = 50f; mPixelArea = 500*500f
-        TODO("GPU: set fixed mAppAngle=50 / mPixelArea=250000")
+    fun updateSpatialExtents() {
+        TODO("GPU: compute AABB from positionAgent +/- scale*0.5")
     }
 
-    /** Terrain textures are managed by the region surface; no-op here. */
-    fun updateTextures() = Unit
+    fun getPartitionType(): UInt = TODO("GPU: return PARTITION_TERRAIN")
 
-    /** Create the RENDER_TYPE_TERRAIN drawable. */
-    fun createDrawable(): Boolean {
-        TODO("GPU: pipeline.allocDrawable; resolve LLDrawPoolTerrain via getPool(); addFace")
+    fun lineSegmentIntersect(
+        start: FloatArray, end: FloatArray,
+        face: Int = -1,
+        pickTransparent: Boolean = false,
+        pickRigged: Boolean = false,
+        pickUnselectable: Boolean = true,
+        faceHit: IntArray? = null,
+        intersection: FloatArray? = null,
+        texCoord: FloatArray? = null,
+        normal: FloatArray? = null,
+        tangent: FloatArray? = null
+    ): Boolean {
+        TODO("GPU: terrain ray–march intersection")
     }
 
-    /** Propagate GL texture state from the surface patch. */
-    fun updateGL() {
-        TODO("GPU: delegate to mPatchp->updateGL()")
+    // Geometry sizing helpers — pure arithmetic, no GPU calls.
+
+    fun getGeomSizesMain(stride: Int, numVertices: Int, numIndices: Int): Pair<Int, Int> {
+        val patchSize = patch?.surface?.getGridsPerPatchEdge() ?: 0
+        val vertSize  = patchSize / stride
+        return if (vertSize >= 2) {
+            Pair(numVertices + vertSize * vertSize, numIndices + 6 * (vertSize - 1) * (vertSize - 1))
+        } else Pair(numVertices, numIndices)
     }
 
-    /**
-     * Recompute strides for main, north, and east seam faces.
-     *
-     * Reads [getRenderStride] / [getNeighborPatch] from the surface patch
-     * to determine required vertex/index counts, then stores results in the
-     * stride-cache fields.
-     */
-    fun updateGeometry(): Boolean {
-        isDirty = false
-        TODO("GPU: resolve renderStride/northStride/eastStride from mPatchp; store in lastStride fields")
+    fun getGeomSizesNorth(stride: Int, northStride: Int, numVertices: Int, numIndices: Int): Pair<Int, Int> {
+        val patchSize = patch?.surface?.getGridsPerPatchEdge() ?: 0
+        var length    = patchSize / stride
+        return when {
+            northStride == stride -> Pair(numVertices + 2 * length + 1, numIndices + length * 6 - 3)
+            northStride > stride  -> Pair(numVertices + length + length / 2 + 1, numIndices + (length / 2) * 9 - 3)
+            else -> {
+                length = patchSize / northStride
+                Pair(numVertices + length + length / 2 + 1, numIndices + 9 * (length / 2) - 3)
+            }
+        }
     }
 
-    /**
-     * Resize face vertex/index counts from cached stride values.
-     * Only face index 0 is valid for terrain.
-     */
-    fun updateFaceSize(idx: Int) {
-        require(idx == 0) { "Terrain partition requested invalid face index: $idx" }
-        TODO("GPU: call getGeomSizesMain/North/East and facep.setSize()")
+    fun getGeomSizesEast(stride: Int, eastStride: Int, numVertices: Int, numIndices: Int): Pair<Int, Int> {
+        val patchSize = patch?.surface?.getGridsPerPatchEdge() ?: 0
+        var length    = patchSize / stride
+        return when {
+            eastStride == stride -> Pair(numVertices + 2 * length + 1, numIndices + length * 6 - 3)
+            eastStride > stride  -> Pair(numVertices + length + length / 2 + 1, numIndices + (length / 2) * 9 - 3)
+            else -> {
+                length = patchSize / eastStride
+                Pair(numVertices + length + length / 2 + 1, numIndices + 9 * (length / 2) - 3)
+            }
+        }
     }
 
-    /** LOD is driven by render stride; always returns true. */
-    fun updateLOD(): Boolean = true
-
-    // ---- geometry helpers ----
-
-    /**
-     * Compute vertex/index counts for the interior (main) patch strip at [stride].
-     * Returns (numVertices, numIndices).
-     */
-    fun getGeomSizesMain(stride: Int): Pair<Int, Int> {
-        TODO("compute main quad-strip geometry counts")
+    // updateMainGeometry / updateNorthGeometry / updateEastGeometry all operate on GPU-side
+    // strider buffers; stubs with detail comments preserved from the C++ logic.
+    fun updateMainGeometry(indexOffset: UInt): UInt {
+        TODO("GPU: emit vert_size*vert_size vertices and alternating-winding index quads")
     }
 
-    /**
-     * Compute vertex/index counts for the north seam strip,
-     * stitching [stride] to [northStride].
-     */
-    fun getGeomSizesNorth(stride: Int, northStride: Int): Pair<Int, Int> {
-        TODO("compute north seam geometry counts")
+    fun updateNorthGeometry(indexOffset: UInt): UInt {
+        TODO("GPU: emit north-seam vertices for equal/greater/lesser stride cases")
     }
 
-    /**
-     * Compute vertex/index counts for the east seam strip,
-     * stitching [stride] to [eastStride].
-     */
-    fun getGeomSizesEast(stride: Int, eastStride: Int): Pair<Int, Int> {
-        TODO("compute east seam geometry counts")
-    }
-
-    /** Fill main patch vertices/normals/texcoords/indices into the vertex buffer. */
-    fun updateMainGeometry(indexOffset: UInt) {
-        TODO("GPU: write main terrain quad-strip vertices into face vertex buffer")
-    }
-
-    /** Fill north seam vertices into the vertex buffer to stitch LOD boundaries. */
-    fun updateNorthGeometry(indexOffset: UInt) {
-        TODO("GPU: write north seam vertices into face vertex buffer")
-    }
-
-    /** Fill east seam vertices into the vertex buffer to stitch LOD boundaries. */
-    fun updateEastGeometry(indexOffset: UInt) {
-        TODO("GPU: write east seam vertices into face vertex buffer")
-    }
-
-    /** Ray–terrain intersection (delegates to patch height-map in full impl). */
-    fun lineSegmentIntersect(start: Vector3, end: Vector3): Boolean {
-        TODO("GPU: height-field ray intersection against terrain geometry")
-    }
-
-    /** Spatial extents from the underlying surface patch bounds. */
-    fun updateSpatialExtents(): Pair<Vector3, Vector3> {
-        TODO("GPU: read patch min/max elevation and return world-space AABB")
-    }
-
-    /** Mark patch and geometry dirty, schedule rebuild. */
-    fun dirtyPatch() {
-        dirtiedPatch = true
-        isDirty = true
-    }
-
-    /** Mark only geometry dirty. */
-    fun dirtyGeom() {
-        isDirty = true
-    }
-
-    // ---- companion (static) ----
-
-    companion object {
-        /** Global LOD scaling factor, driven by viewer performance settings. */
-        var lodFactor: Float = 1f
+    fun updateEastGeometry(indexOffset: UInt): UInt {
+        TODO("GPU: emit east-seam vertices for equal/greater/lesser stride cases")
     }
 }

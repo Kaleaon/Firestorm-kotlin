@@ -174,11 +174,6 @@ object ChannelManager {
     fun getChannelList(): List<ChannelElem> = channelList
 }
 
-object AppViewer {
-    val instance: AppViewer get() = TODO("APR: use JVM equivalent")
-    fun setOnLoginCompletedCallback(callback: () -> Unit): Unit = TODO("APR: use JVM equivalent")
-}
-
 object IMMgr {
     val instance: IMMgr get() = TODO("APR: use JVM equivalent")
     val numberOfUnreadIM: Int get() = TODO("APR: use JVM equivalent")

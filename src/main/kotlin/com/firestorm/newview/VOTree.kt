@@ -1,192 +1,229 @@
-// Converted from llvotree.h / llvotree.cpp (Firestorm / Linden Research)
-// LGPL-2.1-only — see project root for full license text.
-
 package com.firestorm.newview
 
-import com.firestorm.llmath.*
-import com.firestorm.llcommon.*
+import kotlin.math.*
 
-/** Per-species static data loaded from trees.xml. */
 data class TreeSpeciesData(
-    val textureId: LLUUID,
-    val branchLength: Float,
-    val droop: Float,
-    val twist: Float,
-    val branches: Float,
-    val depth: UByte,
-    val scaleStep: Float,
-    val trunkDepth: UByte,
-    val leafScale: Float,
-    val trunkLength: Float,
-    val billboardScale: Float,
-    val billboardRatio: Float,
-    val trunkAspect: Float,
-    val branchAspect: Float,
-    val randomLeafRotate: Float,
-    val noiseScale: Float,
-    val noiseMag: Float,
-    val taper: Float,
-    val repeatTrunkZ: Float,
-    val name: String,
+    var textureId: String        = "",
+    var branchLength: Float      = 0f,
+    var droop: Float             = 0f,
+    var twist: Float             = 0f,
+    var branches: Float          = 0f,
+    var depth: UByte             = 0u,
+    var scaleStep: Float         = 0f,
+    var trunkDepth: UByte        = 0u,
+    var leafScale: Float         = 0f,
+    var trunkLength: Float       = 0f,
+    var billboardScale: Float    = 0f,
+    var billboardRatio: Float    = 0f,
+    var trunkAspect: Float       = 0f,
+    var branchAspect: Float      = 0f,
+    var randomLeafRotate: Float  = 0f,
+    var noiseScale: Float        = 0f,
+    var noiseMag: Float          = 0f,
+    var taper: Float             = 0f,
+    var repeatTrunkZ: Float      = 0f,
+    var name: String             = ""
 )
 
-/**
- * Viewer object representing a procedural tree.
- *
- * Mirrors [LLVOTree] from llvotree.h.
- * Recursive branch generation and all GPU calls are stubbed with [TODO].
- */
-open class VOTree(
-    id: LLUUID,
-    localId: UInt,
-    pCode: UInt,
-) : ViewerObject(id, localId, pCode) {
+private const val MAX_SLICES  = 32
+private const val LEAF_LEFT   = 0.52f
+private const val LEAF_RIGHT  = 0.98f
+private const val LEAF_TOP    = 1.0f
+private const val LEAF_BOTTOM = 0.52f
+private const val LEAF_WIDTH  = 1.0f
+private const val LEAF_INDICES  = 24
+private const val LEAF_VERTICES = 16
 
-    // ---- per-instance state ----
+private const val SRR3 = 0.577350269f   // sqrt(1/3)
+private const val SRR2 = 0.707106781f   // sqrt(1/2)
 
-    var species: UByte = 0u
-
-    // Branch geometry parameters (copied from species table on update)
-    var branchLength: Float = 0f
-    var trunkLength: Float = 0f
-    var droop: Float = 0f
-    var twist: Float = 0f
-    var branches: Float = 0f
-    var depth: UByte = 0u
-    var scaleStep: Float = 0f
-    var trunkDepth: UByte = 0u
-    var trunkLod: UInt = 0u
-    var leafScale: Float = 0f
-    var billboardScale: Float = 0f
-    var billboardRatio: Float = 0f
-    var trunkAspect: Float = 0f
-    var branchAspect: Float = 0f
-    var randomLeafRotate: Float = 0f
-
-    // Wind animation
-    var trunkBend: Vector3 = Vector3.ZERO
-    var wind: Vector3 = Vector3.ZERO
-
-    // Cached position/rotation to detect need for full mesh rebuild
-    private var lastPosition: Vector3 = Vector3.ZERO
-    private var lastRotation: Vector3 = Vector3.ZERO   // quaternion, simplified to Vector3 here
-
-    private var frameCount: UInt = 0u
-
-    // ---- public API ----
-
-    /** Compute apparent angle and pixel area from camera. */
-    fun setPixelAreaAndAngle() {
-        TODO("GPU: compute mAppAngle/mPixelArea from billboard extents and camera distance")
-    }
-
-    /** Update species-specific texture state. */
-    fun updateTextures() {
-        TODO("GPU: update mTreeImagep virtual size stats")
-    }
-
-    /**
-     * Per-frame idle: select LOD level and request mesh rebuild when position/rotation changes.
-     *
-     * LOD selection follows [sLODAngles]: lower trunk-LOD index = higher quality.
-     */
-    fun idleUpdate(time: Double) {
-        TODO("GPU: compare app_angle vs sLODAngles, call markRebuild when trunkLOD or position changes")
-    }
-
-    /** Allocate drawable with RENDER_TYPE_TREE and one initial face. */
-    fun createDrawable(): Boolean {
-        TODO("GPU: pipeline.allocDrawable; add face to LLDrawPoolTree")
-    }
-
-    /**
-     * Rebuild vertex buffer.
-     * First builds a reference buffer (leaves + LOD cylinder slices),
-     * then calls [updateMesh] to generate the final per-instance mesh.
-     */
-    fun updateGeometry(): Boolean {
-        if (trunkLod >= MAX_LOD_LEVELS.toUInt()) {
-            TODO("GPU: clear face vertex buffer, tree not visible at this distance")
-        }
-        TODO("GPU: allocate mReferenceBuffer with leaf quads + LOD cylinder slices; call updateMesh()")
-    }
-
-    /** Generate per-instance mesh from the reference buffer via [genBranchPipeline]. */
-    fun updateMesh() {
-        TODO("GPU: apply position/rotation/wind-bend matrix; call genBranchPipeline recursively")
-    }
-
-    /**
-     * Recursive branch generator.
-     *
-     * @param trunkLod   LOD level (0 = highest quality)
-     * @param stopLevel  recursion stop depth
-     * @param depth      current recursion depth
-     * @param trunkDepth remaining trunk segments
-     * @param scale      current branch scale
-     */
-    fun genBranchPipeline(trunkLod: Int, stopLevel: Int, depth: Int,
-                          trunkDepth: Int, scale: Float, twist: Float,
-                          droop: Float, branches: Float, alpha: Float) {
-        TODO("GPU: appendMesh cylinder, recurse for sub-branches, append leaf quads at tips")
-    }
-
-    /** Count vertices and indices that [genBranchPipeline] will emit. */
-    fun calcNumVerts(trunkLod: Int, stopLevel: Int, depth: Int,
-                     trunkDepth: Int, branches: Float): Pair<UInt, UInt> {
-        TODO("compute vert_count / index_count matching genBranchPipeline recursion")
-    }
-
-    /** Compute bounding-sphere radius and update drawable. */
-    fun updateRadius() {
-        TODO("GPU: drawable.setRadius(32f)")
-    }
-
-    /** Spatial extents for the tree based on billboard scale and rotation. */
-    fun updateSpatialExtents(): Pair<Vector3, Vector3> {
-        TODO("GPU: compute newMin/newMax from billboard scale * rotation; setPositionGroup")
-    }
-
-    /** Ray–tetrahedron intersection against the tree's bounding box. */
-    fun lineSegmentIntersect(start: Vector3, end: Vector3): Boolean {
-        TODO("GPU: linesegment_tetrahedron against drawable spatial extents")
-    }
-
-    // ---- companion (static) ----
+open class VOTree {
 
     companion object {
-        const val MAX_LOD_LEVELS = 4
+        const val MAX_NUM_TREE_LOD_LEVELS = 4
 
-        /** Level-of-detail factor controlled by viewer preferences. */
+        val lodIndexOffset  = IntArray(MAX_NUM_TREE_LOD_LEVELS)
+        val lodIndexCount   = IntArray(MAX_NUM_TREE_LOD_LEVELS)
+        val lodVertexOffset = IntArray(MAX_NUM_TREE_LOD_LEVELS)
+        val lodVertexCount  = IntArray(MAX_NUM_TREE_LOD_LEVELS)
+        val lodSlices       = intArrayOf(10, 5, 4, 3)
+        val lodAngles       = floatArrayOf(30f, 20f, 15f, Float.MIN_VALUE)
+
         var treeFactor: Float = 1f
-
-        /** Minimum apparent angle (degrees) to switch LOD; index 3 disables rendering. */
-        val lodAngles: FloatArray = floatArrayOf(30f, 20f, 15f, Float.MIN_VALUE)
-
-        /** Number of cylinder slices per LOD level (highest to lowest quality). */
-        val lodSlices: IntArray = intArrayOf(10, 5, 4, 3)
-
-        val lodVertexOffset: IntArray = IntArray(MAX_LOD_LEVELS)
-        val lodVertexCount:  IntArray = IntArray(MAX_LOD_LEVELS)
-        val lodIndexOffset:  IntArray = IntArray(MAX_LOD_LEVELS)
-        val lodIndexCount:   IntArray = IntArray(MAX_LOD_LEVELS)
-
-        /** Loaded from trees.xml at startup. Key = species id. */
-        val speciesTable: MutableMap<UInt, TreeSpeciesData> = mutableMapOf()
         var maxTreeSpecies: Int = 0
 
-        /** Returns true when [treeFactor] is below the lowest LOD threshold. */
-        fun isTreeRenderingStopped(): Boolean =
-            treeFactor < lodAngles[MAX_LOD_LEVELS - 1]
+        val speciesTable: MutableMap<UInt, TreeSpeciesData> = mutableMapOf()
 
-        /** Parse trees.xml and populate [speciesTable]. */
+        fun isTreeRenderingStopped(): Boolean =
+            treeFactor < lodAngles[MAX_NUM_TREE_LOD_LEVELS - 1]
+
         fun initClass() {
-            TODO("parse trees.xml into speciesTable")
+            TODO("APR: parse trees.xml and populate speciesTable")
         }
 
-        /** Release all species data. Call on viewer shutdown. */
         fun cleanupClass() {
             speciesTable.clear()
         }
     }
+
+    protected var trunkBend: Vector3   = Vector3(0f, 0f, 0f)
+    protected var wind: Vector3        = Vector3(0f, 0f, 0f)
+
+    // Vertex buffer handles — GPU-side, stubbed.
+    protected var referenceBuffer: Any? = null
+    protected var treeImagep: Any?      = null
+
+    protected var species: UByte        = 0u
+    protected var branchLength: Float   = 0f
+    protected var trunkLength: Float    = 0f
+    protected var droop: Float          = 0f
+    protected var twist: Float          = 0f
+    protected var branches: Float       = 0f
+    protected var depth: UByte          = 0u
+    protected var scaleStep: Float      = 0f
+    protected var trunkDepth: UByte     = 0u
+    protected var trunkLod: UInt        = 0u
+    protected var leafScale: Float      = 0f
+    protected var billboardScale: Float = 0f
+    protected var billboardRatio: Float = 0f
+    protected var trunkAspect: Float    = 0f
+    protected var branchAspect: Float   = 0f
+    protected var randomLeafRotate: Float = 0f
+
+    protected var lastPosition: Vector3    = Vector3(0f, 0f, 0f)
+    protected var lastRotation: FloatArray = FloatArray(4)  // quaternion xyzw
+
+    protected var frameCount: UInt = 0u
+
+    fun processUpdateMessage(): UInt {
+        TODO("APR: call super, copy species/species-data, markRebuild")
+    }
+
+    fun idleUpdate() {
+        TODO("GPU: compute trunk_LOD from appAngle and distance, markRebuild if changed or moved/rotated")
+    }
+
+    fun render() {}
+
+    fun setPixelAreaAndAngle() {
+        TODO("GPU: compute appAngle and pixelArea from distance, scale, billboard parameters")
+    }
+
+    fun updateTextures() {
+        TODO("GPU: if renderDebugTextureArea, setDebugText with sqrt(pixelArea)")
+    }
+
+    fun createDrawable() {
+        TODO("GPU: allocDrawable, setLit(false), RENDER_TYPE_TREE, add face to POOL_TREE with treeImagep")
+    }
+
+    fun updateGeometry(): Boolean {
+        if (trunkLod.toInt() >= MAX_NUM_TREE_LOD_LEVELS) {
+            referenceBuffer = null
+            TODO("GPU: clear face vertex buffer, return true")
+        }
+
+        buildReferenceBufferIfNeeded()
+        updateMesh()
+        return true
+    }
+
+    private fun buildReferenceBufferIfNeeded() {
+        if (referenceBuffer != null) return
+
+        var maxVertices = LEAF_VERTICES
+        var maxIndices  = LEAF_INDICES
+        for (lod in 0 until MAX_NUM_TREE_LOD_LEVELS) {
+            val slices = lodSlices[lod]
+            lodVertexOffset[lod] = maxVertices
+            lodVertexCount[lod]  = slices * slices
+            lodIndexOffset[lod]  = maxIndices
+            lodIndexCount[lod]   = (slices - 1) * (slices - 1) * 6
+            maxIndices  += lodIndexCount[lod]
+            maxVertices += lodVertexCount[lod]
+        }
+
+        TODO("GPU: allocate LLVertexBuffer(VERTEX_DATA_MASK) with maxVertices/maxIndices, fill leaf quads and cylinder LOD slices")
+    }
+
+    fun updateMesh() {
+        TODO("GPU: build transform matrices from position/rotation/trunkBend, call genBranchPipeline into a new vertex buffer")
+    }
+
+    fun appendMesh(
+        matrix: FloatArray, normMat: FloatArray,
+        vertStart: Int, vertCount: Int, indexCount: Int, indexOffset: Int
+    ) {
+        TODO("GPU: copy/transform vertices from referenceBuffer into live mesh buffer")
+    }
+
+    fun genBranchPipeline(
+        matrix: FloatArray,
+        trunkLod: Int, stopLevel: Int,
+        depth: UShort, trunkDepth: UShort,
+        scale: Float, twist: Float, droop: Float, branches: Float, alpha: Float
+    ) {
+        val length = if (trunkDepth > 0u || scale == 1f) this.trunkLength else this.branchLength
+        val aspect = if (trunkDepth > 0u || scale == 1f) this.trunkAspect else this.branchAspect
+        val constantTwist = 360f / branches
+
+        if (stopLevel >= 0 && depth.toInt() > stopLevel) {
+            val width = scale * length * aspect
+            TODO("GPU: build scale matrix, appendMesh for trunk cylinder, recurse for branches and trunk continuation")
+        } else {
+            TODO("GPU: appendMesh for leaf cross-quads")
+        }
+    }
+
+    fun calcNumVerts(trunkLod: Int, stopLevel: Int, depth: UShort, trunkDepth: UShort, branches: Float): Pair<UInt, UInt> {
+        var verts: UInt = 0u; var indices: UInt = 0u
+        if (stopLevel >= 0) {
+            if (depth.toInt() > stopLevel) {
+                indices += lodIndexCount[trunkLod].toUInt()
+                verts   += lodVertexCount[trunkLod].toUInt()
+                repeat(branches.toInt()) {
+                    val (v, i) = calcNumVerts(trunkLod, stopLevel, (depth - 1u).toUShort(), 0u, branches)
+                    verts += v; indices += i
+                }
+                if (trunkDepth > 0u) {
+                    val (v, i) = calcNumVerts(trunkLod, stopLevel, depth, (trunkDepth - 1u).toUShort(), branches)
+                    verts += v; indices += i
+                }
+            } else {
+                indices += LEAF_INDICES.toUInt()
+                verts   += LEAF_VERTICES.toUInt()
+            }
+        } else {
+            indices += LEAF_INDICES.toUInt()
+            verts   += LEAF_VERTICES.toUInt()
+        }
+        return Pair(verts, indices)
+    }
+
+    fun updateRadius() {
+        TODO("GPU: setRadius(32.0f) on drawable")
+    }
+
+    fun updateSpatialExtents() {
+        TODO("GPU: compute AABB from billboard scale/ratio/radius, setPositionGroup")
+    }
+
+    fun lineSegmentIntersect(
+        start: FloatArray, end: FloatArray,
+        face: Int = -1,
+        pickTransparent: Boolean = false,
+        pickRigged: Boolean = false,
+        pickUnselectable: Boolean = true,
+        faceHit: IntArray? = null,
+        intersection: FloatArray? = null,
+        texCoord: FloatArray? = null,
+        normal: FloatArray? = null,
+        tangent: FloatArray? = null
+    ): Boolean {
+        TODO("GPU: linesegment_tetrahedron test against scaled AABB")
+    }
+
+    fun getPartitionType(): UInt = TODO("GPU: return PARTITION_TREE")
+
+    fun destroyVB() { referenceBuffer = null }
 }

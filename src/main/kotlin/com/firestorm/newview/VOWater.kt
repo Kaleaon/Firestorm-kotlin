@@ -60,8 +60,6 @@ open class VOWater(
         TODO("GPU: compute AABB from positionAgent ± scale*0.5; setPositionGroup(centre)")
     }
 
-    open fun updateTextures() {}
-
     open fun getPartitionType(): Int =
         if (isEdgePatch) PARTITION_VOIDWATER else PARTITION_WATER
 

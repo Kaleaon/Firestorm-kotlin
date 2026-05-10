@@ -132,10 +132,10 @@ open class Surface(val type: UInt, var region: ViewerRegion? = null) {
     private var gridsPerPatchEdge: UInt = 0u
     private var metersPerGrid: Float = 1f
     private var metersPerEdge: Float = 1f
-    private val pvArray = PatchVertexArray()
+    internal val pvArray = PatchVertexArray()
 
     var hasZData: Boolean = false
-        private set
+        internal set
     var minZ: Float = 10000f
     var maxZ: Float = -10000f
 
@@ -184,11 +184,10 @@ open class Surface(val type: UInt, var region: ViewerRegion? = null) {
         for (j in 0 until patchesPerEdge) {
             for (i in 0 until patchesPerEdge) {
                 val patch = getPatch(i, j)
-                val po = patch.originGlobal
                 val updated = Vector3d(
                     originGlobal.x + i * metersPerGrid * gridsPerPatchEdge.toInt(),
                     originGlobal.y + j * metersPerGrid * gridsPerPatchEdge.toInt(),
-                    po.z
+                    patch.getOriginGlobal().z
                 )
                 patch.setOriginGlobal(updated)
             }

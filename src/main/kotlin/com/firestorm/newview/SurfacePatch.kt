@@ -559,7 +559,7 @@ class SurfacePatch {
             intArrayOf(NORTHEAST, SOUTHEAST), // EAST
             intArrayOf(NORTHEAST, NORTHWEST), // NORTH
             intArrayOf(NORTHWEST, SOUTHWEST), // WEST
-            intArrayOf(SOUTHWEST, SOUTHEAST), // SOUTH
+            intArrayOf(SOUTHWEST, SOUTHEAST)  // SOUTH
         )
     }
 }

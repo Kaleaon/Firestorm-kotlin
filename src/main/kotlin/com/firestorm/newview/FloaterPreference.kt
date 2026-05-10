@@ -1,5 +1,6 @@
 package com.firestorm.newview
 
+import com.firestorm.floater.Floater
 import kotlin.math.ln
 
 private const val VISIBILITY_DEFAULT = "default"
@@ -28,13 +29,6 @@ enum class GraphicsSettings {
 }
 
 typealias NotificationsMap = MutableMap<String, String>
-
-open class Floater(val key: Any?) {
-    open fun postBuild(): Boolean = true
-    open fun onOpen(key: Any?) = Unit
-    open fun onClose(appQuitting: Boolean) = Unit
-    open fun draw() = Unit
-}
 
 open class PanelPreference : Floater(null) {
     val savedValues: MutableMap<Any, Any> = mutableMapOf()

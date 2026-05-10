@@ -1,21 +1,12 @@
-/**
- * FSFloaterContacts.kt
- * Kotlin conversion of fsfloatercontacts.h / fsfloatercontacts.cpp
- *
- * Legacy contacts/friends floater for the Firestorm viewer.
- *
- * Phoenix Firestorm Project — LGPL 2.1
- */
-
 package com.firestorm.newview
 
-import com.firestorm.llcommon.*
-import com.firestorm.llmath.*
-import com.firestorm.llui.*
+import com.firestorm.llcommon.LLSD
+import com.firestorm.llcommon.LLUUID
 
-// ---------------------------------------------------------------------------
-// Column order constants (mirrors FRIENDS_COLUMN_ORDER in the C++ header)
-// ---------------------------------------------------------------------------
+private const val FRIENDS_TAB_NAME   = "friends_panel"
+private const val GROUP_TAB_NAME     = "groups_panel"
+private const val MAX_FRIEND_SELECT  = 20u
+private const val RIGHTS_CHANGE_TIMEOUT = 5f
 
 private enum class FriendsColumnOrder {
     LIST_ONLINE_STATUS,
@@ -30,34 +21,10 @@ private enum class FriendsColumnOrder {
     LIST_FRIEND_UPDATE_GEN
 }
 
-// ---------------------------------------------------------------------------
-// Rights grant/revoke command (mirrors EGrantRevoke)
-// ---------------------------------------------------------------------------
-
 private enum class GrantRevoke { GRANT, REVOKE }
 
-// ---------------------------------------------------------------------------
-// Sort order exposed in the public API
-// ---------------------------------------------------------------------------
+enum class SortOrder { BY_NAME, BY_STATUS, BY_DISPLAY_NAME }
 
-enum class SortOrder {
-    BY_NAME,
-    BY_STATUS,
-    BY_DISPLAY_NAME
-}
-
-// ---------------------------------------------------------------------------
-// Data class representing a single contact/friend entry
-// ---------------------------------------------------------------------------
-
-/**
- * Immutable snapshot of a friend list entry.
- *
- * @param id            Agent UUID of the contact.
- * @param name          Display name (or username) of the contact.
- * @param isOnline      Whether the contact is currently online.
- * @param rightsGranted Bitmask of rights granted by/to this contact (mirrors LLRelationship rights).
- */
 data class ContactEntry(
     val id: LLUUID,
     val name: String,
@@ -65,258 +32,326 @@ data class ContactEntry(
     val rightsGranted: UInt
 )
 
-// ---------------------------------------------------------------------------
-// Main floater class
-// ---------------------------------------------------------------------------
+class FSFloaterContacts(val seed: LLSD) {
 
-/**
- * Firestorm contacts/friends floater.
- *
- * Displays two tabs — Friends and Groups — with per-friend rights management,
- * filtering, sorting, and action buttons.  Complex UI / network logic is
- * stubbed with [TODO] so that the class compiles and exposes its public API.
- *
- * Mirrors [FSFloaterContacts] from `fsfloatercontacts.h`.
- */
-class FSFloaterContacts {
-
-    // ------------------------------------------------------------------
-    // Public state
-    // ------------------------------------------------------------------
-
-    /** Live list of contact entries, updated via [onFriendListChanged]. */
     val contacts: MutableList<ContactEntry> = mutableListOf()
 
-    // ------------------------------------------------------------------
-    // Private state
-    // ------------------------------------------------------------------
-
-    /** Current sort order applied to [contacts]. */
     private var currentSortOrder: SortOrder = SortOrder.BY_NAME
-
-    /** Friend-filter substring; empty means no filter. */
     private var friendFilterSubString: String = ""
-
-    /** Whether the contacts list needs a full name refresh. */
+    private var friendFilterSubStringOrig: String = ""
+    private var friendListFontName: String = ""
+    private var lastColumnDisplayModeChanged: String = ""
+    private var resetLastColumnDisplayModeChanged: Boolean = false
     private var dirtyNames: Boolean = true
-
-    /** Whether rights-change processing is currently allowed. */
     private var allowRightsChange: Boolean = true
-
-    /** Number of pending rights changes. */
     private var numRightsChanged: Int = 0
-
-    /** Whether a rights-change notification has already been triggered. */
     private var rightsChangeNotificationTriggered: Boolean = false
 
-    // ------------------------------------------------------------------
-    // Lifecycle
-    // ------------------------------------------------------------------
+    private val rlvBehaviorCallbacks: MutableList<(String) -> Unit> = mutableListOf()
+    private val contactSetChangedCallbacks: MutableList<(String) -> Unit> = mutableListOf()
+    private val avatarNameCacheConnections: MutableMap<LLUUID, () -> Unit> = mutableMapOf()
 
-    /** Called after the floater's XML children have been built. */
     fun postBuild(): Boolean {
-        TODO("Wire up tab container, friend list scroll control, filter editors, and action buttons")
+        TODO("Wire up tab container, friend list, filter editors, buttons, and signals")
     }
 
-    /** Called when the floater is opened; selects the correct initial tab. */
     fun onOpen(key: LLSD) {
-        TODO("Switch to the tab specified by key (friends_panel / groups_panel)")
+        TODO("Handle ContactsTornOff tear-off logic; call openTab(key.asString())")
     }
 
-    /** Called every frame to update the display. */
     fun draw() {
-        TODO("Refresh UI elements that change every frame (e.g. online-status icons)")
-    }
-
-    /**
-     * Timer tick — fires on a 5-minute interval (mirrors LLEventTimer(300.f)).
-     * Used to force a periodic friend-list refresh.
-     */
-    fun tick(): Boolean {
-        TODO("Schedule periodic friend-list refresh; return false to keep timer running")
-    }
-
-    // ------------------------------------------------------------------
-    // LLFriendObserver implementation
-    // ------------------------------------------------------------------
-
-    /**
-     * Called by the avatar tracker when a friend's online/rights status changes.
-     *
-     * @param changedMask Bitmask indicating what changed (online state, rights, etc.).
-     */
-    fun changed(changedMask: UInt) {
-        TODO("Decode changedMask, update affected ContactEntry items, refresh UI")
-    }
-
-    // ------------------------------------------------------------------
-    // Public API
-    // ------------------------------------------------------------------
-
-    /**
-     * Called whenever the server pushes an update to the friend list.
-     * Rebuilds [contacts] from the authoritative data source.
-     */
-    fun onFriendListChanged() {
-        TODO("Query LLAvatarTracker, rebuild contacts list, call refreshNames()")
-    }
-
-    /**
-     * Refresh the display names of all entries in [contacts] by consulting
-     * the avatar-name cache.
-     */
-    fun refreshNames() {
-        dirtyNames = false
-        TODO("Request avatar names via LLAvatarNameCache for all contact IDs, update entries")
-    }
-
-    /**
-     * Sort [contacts] in-place according to [by].
-     *
-     * @param by The [SortOrder] to apply.
-     */
-    fun sortContacts(by: SortOrder) {
-        currentSortOrder = by
-        when (by) {
-            SortOrder.BY_NAME         -> contacts.sortBy { it.name }
-            SortOrder.BY_STATUS       -> contacts.sortByDescending { it.isOnline }
-            SortOrder.BY_DISPLAY_NAME -> contacts.sortBy { it.name } // display-name source TBD
+        if (resetLastColumnDisplayModeChanged) {
+            resetLastColumnDisplayModeChanged = false
+            TODO("Restore column display mode setting: $lastColumnDisplayModeChanged")
         }
+        if (dirtyNames) {
+            onDisplayNameChanged()
+            dirtyNames = false
+            TODO("Mark friend list as needing sort")
+        }
+        TODO("Call super.draw()")
     }
 
-    /**
-     * Apply a new filter string to the friends list.
-     *
-     * @param filter Sub-string to match against contact names; empty clears the filter.
-     */
-    fun resetFriendFilter(filter: String = "") {
-        friendFilterSubString = filter
-        TODO("Apply filter to the scroll-list control")
+    fun tick(): Boolean {
+        onDisplayNameChanged()
+        return false
     }
 
-    /** Called when a display-name cache entry is updated. */
+    fun handleKeyHere(key: Int, mask: Int): Boolean {
+        TODO("Handle filter-editor shortcut and Ctrl+W close-host")
+    }
+
+    fun changed(changedMask: UInt) {
+        TODO("Decode changedMask (ADD|ONLINE, ADD, REMOVE, POWERS, ONLINE); update list items accordingly")
+    }
+
+    fun openTab(name: String) {
+        when (name) {
+            "friends"      -> childShowTab("friends_and_groups", FRIENDS_TAB_NAME)
+            "groups"       -> { childShowTab("friends_and_groups", GROUP_TAB_NAME); updateGroupButtons() }
+            "contact_sets" -> childShowTab("friends_and_groups", "contact_sets_panel")
+            else           -> return
+        }
+        TODO("Show/focus the host container or this floater directly")
+    }
+
+    fun getPanelByName(panelName: String): Any? {
+        TODO("Return mTabContainer.getPanelByName(panelName)")
+    }
+
+    fun sortFriendList() {
+        TODO("Clear sort order, set sort column based on FSFriendListSortOrder setting, re-sort by display_name or user_name then icon_online_status")
+    }
+
     fun onDisplayNameChanged() {
         dirtyNames = true
-        TODO("Schedule a deferred refreshNames() call")
+        TODO("For each item in friend list: fetch avatar name from cache; update columns; request async fetch if not cached")
     }
 
-    /** Switch to the named tab. */
-    fun openTab(name: String) {
-        TODO("Call mTabContainer.selectTabByName(name)")
+    fun resetFriendFilter() {
+        friendFilterSubString = ""
+        friendFilterSubStringOrig = ""
+        TODO("Clear filter editor text; call onFriendFilterEdit(\"\")")
     }
 
-    // ------------------------------------------------------------------
-    // Private helpers
-    // ------------------------------------------------------------------
+    fun onGetFilterOpacityCallback(type: Int, alpha: Float): Float {
+        val ttActive = 0
+        val imOpacity = 1.0f
+        return if (type != ttActive) minOf(imOpacity, alpha) else alpha
+    }
 
     private fun getActiveTabName(): String {
-        TODO("Return the name of the currently selected tab container child")
+        TODO("Return mTabContainer.getCurrentPanel().getName()")
     }
 
     private fun getCurrentItemID(): LLUUID {
-        TODO("Return the UUID of the currently selected row in the active list")
+        val curTab = getActiveTabName()
+        return when (curTab) {
+            FRIENDS_TAB_NAME -> TODO("Return mFriendsList.getFirstSelected()?.getUUID() ?: LLUUID.null")
+            GROUP_TAB_NAME   -> TODO("Return mGroupList.getSelectedUUID()")
+            else             -> LLUUID.NULL
+        }
     }
 
     private fun getCurrentItemIDs(selectedUuids: MutableList<LLUUID>) {
-        TODO("Populate selectedUuids from all selected rows in the active list")
+        val curTab = getActiveTabName()
+        when (curTab) {
+            FRIENDS_TAB_NAME -> getCurrentFriendItemIDs(selectedUuids)
+            GROUP_TAB_NAME   -> TODO("mGroupList.getSelectedUUIDs(selectedUuids)")
+        }
+    }
+
+    private fun getCurrentFriendItemIDs(selectedUuids: MutableList<LLUUID>) {
+        TODO("Populate selectedUuids from mFriendsList.getAllSelected()")
     }
 
     private fun refreshRightsChangeList() {
-        TODO("Enable/disable rights-column cells based on allowRightsChange")
+        val friends = mutableListOf<LLUUID>()
+        getCurrentFriendItemIDs(friends)
+        val numSelected = friends.size
+        var canOfferTeleport = numSelected >= 1
+        var selectedFriendsOnline = true
+        TODO("Check each friend's online/RLV status; enable/disable Im and TP buttons")
     }
 
     private fun refreshUI() {
-        TODO("Enable/disable all action buttons based on current selection state")
+        TODO("Recompute single_selected / multiple_selected; enable/disable all action buttons; call refreshRightsChangeList()")
     }
 
     private fun updateFriendCount() {
-        TODO("Update mFriendsCountTb label with contacts.size")
+        TODO("Query LLAvatarTracker buddy list size; update mFriendsCountTb label with COUNT arg")
     }
 
-    private fun applyRightsToFriends() {
-        TODO("Collect pending rights changes and call sendRightsGrant()")
+    private fun onSelectName() {
+        refreshUI()
+        applyRightsToFriends()
     }
 
     private fun addFriend(agentId: LLUUID) {
-        TODO("Dispatch an LLAvatarActions::requestFriendshipDialog call")
+        TODO("Fetch LLRelationship from avatar tracker; build LLSD element with all columns; add to mFriendsList; apply contact-set color")
     }
 
-    private fun updateFriendItem(agentId: LLUUID) {
-        TODO("Refresh the scroll-list row for agentId from LLAvatarTracker data")
+    private fun updateFriendItem(agentId: LLUUID, info: Any?) {
+        TODO("Update columns in the scroll-list row for agentId: online icon, names, rights checkboxes, font style, contact-set color")
+    }
+
+    private fun updateFriendItem(agentId: LLUUID, relationship: Any?, requestId: LLUUID) {
+        disconnectAvatarNameCacheConnection(requestId)
+        updateFriendItem(agentId, relationship)
+    }
+
+    private fun updateFriendItemColor(item: Any, agentId: LLUUID) {
+        TODO("Fetch contact-set color from LGGContactSets; apply or clear color on user_name, display_name, full_name cells")
+    }
+
+    private fun applyRightsToFriends() {
+        if (rightsChangeNotificationTriggered) return
+        TODO(
+            "Iterate selected items; compare UI checkbox state to LLRelationship rights; " +
+            "build rights_updates map; call confirmModifyRights or sendRightsGrant"
+        )
     }
 
     private fun confirmModifyRights(ids: Map<LLUUID, Int>, command: GrantRevoke) {
-        TODO("Show confirmation notification before calling sendRightsGrant()")
+        if (ids.isEmpty()) return
+        TODO("Show GrantModifyRights / RevokeModifyRights notification with modifyRightsConfirmation callback")
+    }
+
+    private fun modifyRightsConfirmation(notification: Any, response: Any, rights: Map<LLUUID, Int>): Boolean {
+        rightsChangeNotificationTriggered = false
+        TODO("If option 0 selected call sendRightsGrant(rights), else resync view from model; call refreshUI()")
     }
 
     private fun sendRightsGrant(ids: Map<LLUUID, Int>) {
-        TODO("Send GRANT_USERDATA message for each id in ids")
+        if (ids.isEmpty()) return
+        numRightsChanged = ids.size
+        TODO("Send GrantUserRights message via gMessageSystem for each id; call gAgent.sendReliableMessage()")
     }
 
-    // ------------------------------------------------------------------
-    // Button callbacks — friends tab
-    // ------------------------------------------------------------------
+    private fun isItemsFreeOfFriends(uuids: List<LLUUID>): Boolean {
+        TODO("Return true iff none of the uuids is already a buddy in LLAvatarTracker")
+    }
 
-    private fun onViewProfileButtonClicked()    { TODO("LLAvatarActions::showProfile(getCurrentItemID())") }
-    private fun onImButtonClicked()             { TODO("LLAvatarActions::startIM(getCurrentItemID())") }
-    private fun onTeleportButtonClicked()       { TODO("LLAvatarActions::offerTeleport(selectedIds)") }
-    private fun onPayButtonClicked()            { TODO("LLAvatarActions::pay(getCurrentItemID())") }
-    private fun onDeleteFriendButtonClicked()   { TODO("LLAvatarActions::removeFriendDialog(selectedIds)") }
-    private fun onMapButtonClicked()            { TODO("LLAvatarActions::showOnMap(getCurrentItemID())") }
+    private fun childShowTab(id: String, tabname: String) {
+        TODO("Find LLTabContainer child '$id'; call selectTabByName('$tabname')")
+    }
 
-    // ------------------------------------------------------------------
-    // Button callbacks — groups tab
-    // ------------------------------------------------------------------
+    private fun updateRlvRestrictions(behavior: String) {
+        if (behavior == "showloc" || behavior == "showworldmap" || behavior == "pay") {
+            refreshUI()
+        }
+    }
 
-    private fun onGroupChatButtonClicked()      { TODO("LLGroupActions::startIM(selectedGroupId)") }
-    private fun onGroupInfoButtonClicked()      { TODO("LLGroupActions::show(selectedGroupId)") }
-    private fun onGroupActivateButtonClicked()  { TODO("gAgent.setGroup(selectedGroupId)") }
-    private fun onGroupFavoriteButtonClicked()  { TODO("FSFavoriteGroups::toggle(selectedGroupId)") }
-    private fun onGroupLeaveButtonClicked()     { TODO("LLGroupActions::leave(selectedGroupId)") }
-    private fun onGroupCreateButtonClicked()    { TODO("LLGroupActions::createGroup()") }
-    private fun onGroupSearchButtonClicked()    { TODO("LLFloaterReg::showInstance(\"search\", ...)") }
-    private fun onGroupTitlesButtonClicked()    { TODO("LLFloaterReg::showInstance(\"group_titles\")") }
-    private fun onGroupInviteButtonClicked()    { TODO("LLFloaterGroupInvite::showForGroup(selectedGroupId)") }
-    private fun updateGroupButtons()            { TODO("Enable/disable group action buttons based on selection") }
+    private fun onColumnDisplayModeChanged(settingsName: String = "") {
+        lastColumnDisplayModeChanged = settingsName
+        TODO(
+            "Validate at least one column visible; rebuild mFriendsList columns based on " +
+            "FSFriendListColumnShow* and FSFriendListColumnShowPermissions settings; re-sort"
+        )
+    }
 
-    // ------------------------------------------------------------------
-    // Companion object — singleton access + factory helpers
-    // ------------------------------------------------------------------
+    private fun onFriendFilterEdit(searchString: String) {
+        friendFilterSubStringOrig = searchString.trimStart()
+        val searchUpper = friendFilterSubStringOrig.uppercase()
+        if (friendFilterSubString == searchUpper) return
+        friendFilterSubString = searchUpper
+        TODO("mFriendsList.setFilterString(friendFilterSubStringOrig)")
+    }
+
+    private fun onGroupFilterEdit(searchString: String) {
+        TODO("mGroupList.setNameFilter(searchString)")
+    }
+
+    private fun onContactSetsChanged(type: String) {
+        if (type == "UPDATED_LISTS" || type == "UPDATED_MEMBERS") {
+            onDisplayNameChanged()
+        }
+    }
+
+    private fun getFullName(avName: Any): String {
+        TODO(
+            "If displayName is default or UseDisplayNames=false: return userName. " +
+            "Otherwise format as 'displayName (userName)' or 'userName (displayName)' " +
+            "per FSFriendListFullNameFormat setting"
+        )
+    }
+
+    private fun setDirtyNames(requestId: LLUUID) {
+        disconnectAvatarNameCacheConnection(requestId)
+        dirtyNames = true
+    }
+
+    private fun disconnectAvatarNameCacheConnection(requestId: LLUUID) {
+        avatarNameCacheConnections.remove(requestId)
+    }
+
+    private fun handleFriendsListDragAndDrop(
+        x: Int, y: Int, mask: Int, drop: Boolean,
+        cargoType: Int, cargoData: Any?, accept: Any
+    ): Boolean {
+        TODO("Handle DAD_PERSON: accept and call requestFriendshipDialog; else forward to hit item via LLToolDragAndDrop")
+    }
+
+    private fun onAvatarPicked(ids: List<LLUUID>, names: List<Any>) {
+        TODO("If ids/names non-empty: call LLAvatarActions.requestFriendshipDialog(ids.first, names.first.completeName)")
+    }
+
+    private fun onAddFriendWizButtonClicked(ctrl: Any?) {
+        TODO("Show LLFloaterAvatarPicker with onAvatarPicked callback; set isItemsFreeOfFriends as OK-button enable guard")
+    }
+
+    private fun onViewProfileButtonClicked()   { TODO("LLAvatarActions.showProfile(getCurrentItemID())") }
+    private fun onImButtonClicked() {
+        val selected = mutableListOf<LLUUID>()
+        getCurrentItemIDs(selected)
+        when {
+            selected.size == 1 -> TODO("LLAvatarActions.startIM(selected.first())")
+            selected.size > 1  -> TODO("LLAvatarActions.startConference(selected)")
+        }
+    }
+    private fun onTeleportButtonClicked() {
+        val selected = mutableListOf<LLUUID>()
+        getCurrentItemIDs(selected)
+        TODO("LLAvatarActions.offerTeleport(selected)")
+    }
+    private fun onPayButtonClicked() {
+        val id = getCurrentItemID()
+        TODO("If id non-null: LLAvatarActions.pay(id)")
+    }
+    private fun onDeleteFriendButtonClicked() {
+        val selected = mutableListOf<LLUUID>()
+        getCurrentItemIDs(selected)
+        when {
+            selected.size == 1 -> TODO("LLAvatarActions.removeFriendDialog(selected.first())")
+            selected.size > 1  -> TODO("LLAvatarActions.removeFriendsDialog(selected)")
+        }
+    }
+    private fun onMapButtonClicked() {
+        val id = getCurrentItemID()
+        TODO("If id non-null and is_agent_mappable: LLAvatarActions.showOnMap(id)")
+    }
+
+    private fun onGroupChatButtonClicked() {
+        val id = getCurrentItemID()
+        TODO("If id non-null: LLGroupActions.startIM(id)")
+    }
+    private fun onGroupInfoButtonClicked()     { TODO("LLGroupActions.show(getCurrentItemID())") }
+    private fun onGroupActivateButtonClicked() { TODO("LLGroupActions.activate(mGroupList.getSelectedUUID())") }
+    private fun onGroupFavoriteButtonClicked() {
+        val id = getCurrentItemID()
+        TODO("If id non-null: FSFavoriteGroups.toggleFavorite(id); updateGroupButtons()")
+    }
+    private fun onGroupLeaveButtonClicked() {
+        val id = getCurrentItemID()
+        TODO("If id non-null: LLGroupActions.leave(id)")
+    }
+    private fun onGroupCreateButtonClicked()   { TODO("LLGroupActions.createGroup()") }
+    private fun onGroupSearchButtonClicked()   { TODO("LLGroupActions.search()") }
+    private fun onGroupTitlesButtonClicked()   { TODO("LLFloaterReg.toggleInstance(\"fs_group_titles\")") }
+    private fun onGroupInviteButtonClicked() {
+        val id = getCurrentItemID()
+        TODO("If id non-null: LLFloaterGroupInvite.showForGroup(id)")
+    }
+    private fun updateGroupButtons() {
+        val groupId = getCurrentItemID()
+        TODO(
+            "Enable/disable group buttons based on groupId nullity, agent powers, group membership, " +
+            "favorite status; update group count label; toggle favorite button label"
+        )
+    }
 
     companion object {
+        @Volatile private var instance: FSFloaterContacts? = null
 
-        @Volatile
-        private var instance: FSFloaterContacts? = null
-
-        /**
-         * Return the singleton instance, creating it if necessary.
-         * Mirrors [FSFloaterContacts::getInstance()] in C++.
-         */
         fun getInstance(): FSFloaterContacts =
             instance ?: synchronized(this) {
-                instance ?: FSFloaterContacts().also { instance = it }
+                instance ?: FSFloaterContacts(LLSD()).also { instance = it }
             }
 
-        /**
-         * Return the singleton instance only if it already exists.
-         * Mirrors [FSFloaterContacts::findInstance()] in C++.
-         */
         fun findInstance(): FSFloaterContacts? = instance
 
-        /** Make the contacts floater visible. */
-        fun show() {
-            getInstance().openTab("friends_panel")
-            TODO("LLFloaterReg::showInstance(\"fs_contacts\")")
-        }
-
-        /** Hide the contacts floater. */
-        fun hide() {
-            TODO("LLFloaterReg::hideInstance(\"fs_contacts\")")
-        }
-
-        /** Toggle visibility of the contacts floater. */
-        fun toggle() {
-            TODO("LLFloaterReg::toggleInstance(\"fs_contacts\")")
-        }
+        fun show() { getInstance().openTab("friends") }
+        fun hide() { TODO("LLFloaterReg.hideInstance(\"imcontacts\")") }
+        fun toggle() { TODO("LLFloaterReg.toggleInstance(\"imcontacts\")") }
     }
 }

@@ -125,7 +125,7 @@ class SurfacePatch {
     // Evaluate the terrain point at grid offset (x, y).
     fun eval(x: UInt, y: UInt, stride: UInt): Triple<Vector3, Vector3, Vector2> {
         val s = surface ?: return Triple(Vector3(0f, 0f, 0f), Vector3.Z_AXIS, Vector2(0f, 0f))
-        val surfaceStride = s.getGridsPerEdge()
+        val surfaceStride = s.gridsPerEdge
         val pointOffset   = (x + y * surfaceStride.toUInt()).toInt()
         val normal        = getNormal(x, y)
         val originAgent   = getOriginAgent()
@@ -147,7 +147,7 @@ class SurfacePatch {
         }
         val s = surface ?: return
         val patchWidth    = s.pvArray.patchWidth.toInt()
-        val surfaceStride = s.getGridsPerEdge()
+        val surfaceStride = s.gridsPerEdge
         val mpg           = s.getMetersPerGrid() * stride.toInt()
 
         data class Offset(var ox: Int, var oy: Int, var stride: Int)
@@ -165,22 +165,22 @@ class SurfacePatch {
             if (off.ox < 0) {
                 val nb = patch.getNeighborPatch(WEST)
                 if (nb == null) off.ox = 0
-                else { patches[i][j] = nb; off.ox += patchWidth; off.stride = nb.surface?.getGridsPerEdge() ?: surfaceStride }
+                else { patches[i][j] = nb; off.ox += patchWidth; off.stride = nb.surface?.gridsPerEdge ?: surfaceStride }
             }
             if (off.oy < 0) {
                 val nb = patch.getNeighborPatch(SOUTH)
                 if (nb == null) off.oy = 0
-                else { patches[i][j] = nb; off.oy += patchWidth; off.stride = nb.surface?.getGridsPerEdge() ?: surfaceStride }
+                else { patches[i][j] = nb; off.oy += patchWidth; off.stride = nb.surface?.gridsPerEdge ?: surfaceStride }
             }
             if (off.ox >= patchWidth) {
                 val nb = patch.getNeighborPatch(EAST)
                 if (nb == null) off.ox = patchWidth - 1
-                else { patches[i][j] = nb; off.ox -= patchWidth; off.stride = nb.surface?.getGridsPerEdge() ?: surfaceStride }
+                else { patches[i][j] = nb; off.ox -= patchWidth; off.stride = nb.surface?.gridsPerEdge ?: surfaceStride }
             }
             if (off.oy >= patchWidth) {
                 val nb = patch.getNeighborPatch(NORTH)
                 if (nb == null) off.oy = patchWidth - 1
-                else { patches[i][j] = nb; off.oy -= patchWidth; off.stride = nb.surface?.getGridsPerEdge() ?: surfaceStride }
+                else { patches[i][j] = nb; off.oy -= patchWidth; off.stride = nb.surface?.gridsPerEdge ?: surfaceStride }
             }
         }
 
@@ -204,7 +204,7 @@ class SurfacePatch {
 
     fun calcNormalFlat(x: UInt, y: UInt, index: UInt) {
         val s = surface ?: return
-        val surfaceStride = s.getGridsPerEdge()
+        val surfaceStride = s.gridsPerEdge
         val patchWidth    = s.pvArray.patchWidth.toInt()
         val mpg           = s.getMetersPerGrid()
 
@@ -242,13 +242,13 @@ class SurfacePatch {
     }
 
     fun getNormal(x: UInt, y: UInt): Vector3 {
-        val stride = surface?.getGridsPerEdge() ?: 1
+        val stride = surface?.gridsPerEdge ?: 1
         return normData[stride * y.toInt() + x.toInt()]
     }
 
     fun getPointAgent(x: UInt, y: UInt): Vector3 {
         val s = surface ?: return Vector3(0f, 0f, 0f)
-        val stride      = s.getGridsPerEdge()
+        val stride      = s.gridsPerEdge
         val pointOffset = x.toInt() + y.toInt() * stride
         val origin      = getOriginAgent()
         return Vector3(
@@ -260,7 +260,7 @@ class SurfacePatch {
 
     fun getTexCoords(x: UInt, y: UInt): Vector2 {
         val s      = surface ?: return Vector2(0f, 0f)
-        val stride = s.getGridsPerEdge()
+        val stride = s.gridsPerEdge
         val pt     = getPointAgent(x, y)
         val rel    = pt - s.getOriginAgent()
         val sc     = 1f / stride.toFloat()
@@ -279,7 +279,7 @@ class SurfacePatch {
         if (!dirtyZStats) return
         val s = surface ?: return
         val gppe = s.getGridsPerPatchEdge()
-        val gpe  = s.getGridsPerEdge()
+        val gpe  = s.gridsPerEdge
         val mpg  = s.getMetersPerGrid()
 
         var zMin = surfaceZData[dataOffset]
@@ -326,7 +326,7 @@ class SurfacePatch {
         if (normalsInvalid[NORTHWEST] || normalsInvalid[WEST] || normalsInvalid[SOUTHWEST]) {
             if (getNeighborPatch(NORTH) == null && getNeighborPatch(NORTHWEST)?.hasReceivedData == true) {
                 val nb = getNeighborPatch(NORTHWEST)!!
-                surfaceZData[dataOffset + gppe.toInt() * s.getGridsPerEdge()] =
+                surfaceZData[dataOffset + gppe.toInt() * s.gridsPerEdge] =
                     nb.surfaceZData[nb.dataOffset + gppe.toInt()]
             }
             for (j in 0u until gppe) { calcNormal(0u, j, 2u, pbr); calcNormal(1u, j, 2u, pbr) }
@@ -336,14 +336,14 @@ class SurfacePatch {
             val seNb = getNeighborPatch(SOUTHEAST)
             if (getNeighborPatch(EAST) == null && seNb?.hasReceivedData == true) {
                 surfaceZData[dataOffset + gppe.toInt()] =
-                    seNb.surfaceZData[seNb.dataOffset + gppe.toInt() * (seNb.surface?.getGridsPerEdge() ?: 1)]
+                    seNb.surfaceZData[seNb.dataOffset + gppe.toInt() * (seNb.surface?.gridsPerEdge ?: 1)]
             }
             for (i in 0u until gppe) { calcNormal(i, 0u, 2u, pbr); calcNormal(i, 1u, 2u, pbr) }
             dirtyPatch = true
         }
         if (normalsInvalid[NORTHEAST]) {
             // NE corner z fixup — mirrors the complex logic in the C++ for cross-surface boundaries.
-            val gpe = s.getGridsPerEdge()
+            val gpe = s.gridsPerEdge
             val neIdx = dataOffset + gppe.toInt() + gppe.toInt() * gpe
             val diagIdx = dataOffset + (gppe.toInt() - 1) + (gppe.toInt() - 1) * gpe
             val neNb = getNeighborPatch(NORTHEAST)
@@ -354,7 +354,7 @@ class SurfacePatch {
                     nNb == null && eNb == null -> surfaceZData[diagIdx]
                     nNb == null && eNb?.hasReceivedData == true -> {
                         val eGppe = eNb.surface?.getGridsPerPatchEdge() ?: gppe.toInt()
-                        val eGpe  = eNb.surface?.getGridsPerEdge() ?: gpe
+                        val eGpe  = eNb.surface?.gridsPerEdge ?: gpe
                         eNb.surfaceZData[eNb.dataOffset + (eGppe - 1) * eGpe]
                     }
                     eNb == null && nNb?.hasReceivedData == true -> {
@@ -379,7 +379,7 @@ class SurfacePatch {
     fun updateEastEdge() {
         val s = surface ?: return
         val gppe = s.getGridsPerPatchEdge()
-        val gpe  = s.getGridsPerEdge()
+        val gpe  = s.gridsPerEdge
         val eNb  = getNeighborPatch(EAST)
         val westSrc: Int
         val eastSrc: Int
@@ -393,7 +393,7 @@ class SurfacePatch {
             connectedEdge and EAST_EDGE != NO_EDGE -> {
                 westSrc    = dataOffset + gppe
                 eastSrc    = eNb.dataOffset
-                eastStride = eNb.surface?.getGridsPerEdge() ?: gpe
+                eastStride = eNb.surface?.gridsPerEdge ?: gpe
             }
             else -> return
         }
@@ -405,7 +405,7 @@ class SurfacePatch {
     fun updateNorthEdge() {
         val s = surface ?: return
         val gppe = s.getGridsPerPatchEdge()
-        val gpe  = s.getGridsPerEdge()
+        val gpe  = s.gridsPerEdge
         val nNb  = getNeighborPatch(NORTH)
         val southSrc: Int
         val northSrc: Int

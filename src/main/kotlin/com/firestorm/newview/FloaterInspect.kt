@@ -55,7 +55,7 @@ class FloaterInspect(key: String) : Floater(key) {
     fun onOpen(key: String) {
         val prevForcesel: Boolean =
             TODO("APR: SelectMgr.getInstance().setForceSelection(true)") as Boolean
-        TODO("APR: ToolMgr.setTransientTool(ToolComp.inspectInstance())")
+        ToolMgr.setTransientTool(ToolCompInspect)
         TODO("APR: SelectMgr.getInstance().setForceSelection(prevForcesel)")
         objectSelection = TODO("APR: SelectMgr.getInstance().getSelection()")
         refresh()
@@ -68,7 +68,7 @@ class FloaterInspect(key: String) : Floater(key) {
         val buildVisible: Boolean =
             TODO("APR: FloaterReg.instanceVisible(\"build\")") as Boolean
         if (!buildVisible) {
-            if (TODO("APR: ToolMgr.getBaseTool() === ToolComp.inspectInstance()") as Boolean) {
+            if (ToolMgr.getBaseTool() === ToolCompInspect) {
                 ToolMgr.clearTransientTool()
             }
             ToolMgr.setCurrentToolset(gBasicToolset!!)
@@ -103,7 +103,7 @@ class FloaterInspect(key: String) : Floater(key) {
     }
 
     fun onFocusReceived() {
-        TODO("APR: ToolMgr.setTransientTool(ToolComp.inspectInstance())")
+        ToolMgr.setTransientTool(ToolCompInspect)
         TODO("APR: super.onFocusReceived()")
     }
 

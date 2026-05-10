@@ -53,7 +53,7 @@ object ToolMgr {
             addTool(ToolCamera)
         }
         gCameraToolset!!.addTool(ToolCamera)
-        gMouselookToolset!!.addTool(TODO("APR: ToolCompGun singleton") as Tool)
+        gMouselookToolset!!.addTool(ToolCompGun)
         gFaceEditToolset!!.addTool(ToolCamera)
 
         setCurrentToolset(gBasicToolset!!)
@@ -81,12 +81,12 @@ object ToolMgr {
                 // When returning from Camera to Pie while FloaterInspect is open,
                 // restore the inspect composite rather than plain Pie.
                 val inspectInstance: FloaterInspect? = TODO("APR: FloaterReg.getTypedInstance(\"inspect\")") as FloaterInspect?
-                if (ToolComp.isToolCameraActive() &&
+                if (ToolCompInspect.isToolCameraActive() &&
                     prevTool === ToolCamera &&
                     curTool === ToolPie &&
                     inspectInstance?.isVisible() == true
                 ) {
-                    setTransientTool(ToolComp.inspectInstance())
+                    setTransientTool(ToolCompInspect)
                 } else {
                     curTool.handleSelect()
                 }

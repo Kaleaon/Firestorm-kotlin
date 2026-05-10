@@ -2,11 +2,10 @@ package com.firestorm.llcharacter
 
 import com.firestorm.llcommon.LLUUID
 import com.firestorm.llmath.Vector3
-import com.firestorm.llmath.llClamp
 import kotlin.math.abs
 import kotlin.math.sign
-import kotlin.math.sin
 import kotlin.math.sqrt
+
 
 private const val PHYSICS_MOTION_FADEIN_TIME  = 1.0f
 private const val PHYSICS_MOTION_FADEOUT_TIME = 1.0f

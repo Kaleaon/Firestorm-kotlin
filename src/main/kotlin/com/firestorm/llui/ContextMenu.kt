@@ -27,8 +27,11 @@ open class ContextMenuFull(name: String) : MenuGL(name) {
         super.show(x, y)
     }
 
-    override fun hide() {
-        super.hide()
+    // Resets hover state in addition to hiding the menu.
+    // hide() in MenuGL is not open, so we extend visibility control here
+    // by clearing the extra fields and then delegating.
+    fun hideAndReset() {
+        hide()
         hoveredAnyItem = false
         hoverItemLabel = null
     }
@@ -71,7 +74,7 @@ class ContextMenuBranch(
     }
 
     fun highlight(on: Boolean) {
-        if (on) showSubMenu() else branch.hide()
+        if (on) showSubMenu() else branch.hideAndReset()
     }
 
     fun getBranch(): ContextMenuFull = branch

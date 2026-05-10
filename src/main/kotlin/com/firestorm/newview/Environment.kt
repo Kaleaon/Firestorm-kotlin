@@ -167,10 +167,9 @@ object Environment {
     fun getSunDirection(): Vector3    = TODO("return sun direction in viewer +x right +z up coords")
     fun getMoonDirection(): Vector3   = TODO("return moon direction in viewer coords")
 
-    fun getLightDirectionCFR(): Vector4  = TODO("convert getLightDirection() to Camera-Frame-Right coords")
-    fun getSunDirectionCFR(): Vector4    = TODO("convert getSunDirection() to CFR")
-    fun getMoonDirectionCFR(): Vector4   = TODO("convert getMoonDirection() to CFR")
-
+    fun getLightDirectionCFR(): Vector4 = TODO("convert getLightDirection() to Camera-Frame-Right coords")
+    fun getSunDirectionCFR(): Vector4   = TODO("convert getSunDirection() to CFR")
+    fun getMoonDirectionCFR(): Vector4  = TODO("convert getMoonDirection() to CFR")
     fun getClampedLightNorm(): Vector4  = TODO("OGL coords, Y clamped above -0.1 to avoid sky shader artifacts")
     fun getClampedSunNorm(): Vector4    = TODO("OGL coords sun, Y clamped above -0.1")
     fun getClampedMoonNorm(): Vector4   = TODO("OGL coords moon, Y clamped above -0.1")
@@ -180,7 +179,6 @@ object Environment {
     fun getWaterHeight(): Float = TODO("return current region water level")
     fun getIsSunUp(): Boolean   = TODO("return sunDirection.z > 0")
     fun getIsMoonUp(): Boolean  = TODO("return moonDirection.z > 0")
-
     fun getCloudScrollDelta(): Vector2 = cloudScrollDelta
     fun pauseCloudScroll()  { isCloudScrollPaused = true }
     fun resumeCloudScroll() { isCloudScrollPaused = false }
@@ -205,7 +203,6 @@ object Environment {
     }
 
     fun addEnvironmentChangedListener(cb: EnvChangedCallback) { envChangedListeners += cb }
-
     fun saveToSettings()    { TODO("serialise local environment overrides to disk") }
     fun loadFromSettings(): Boolean = TODO("deserialise local environment overrides from disk")
 

@@ -493,7 +493,6 @@ class SurfacePatch {
     fun getMeanComposition(): Float = meanComposition
     fun getMinComposition(): Float  = minComposition
     fun getMaxComposition(): Float  = maxComposition
-    fun getCenterRegion(): Vector3  = centerRegion
     fun isHeightsGenerated(): Boolean = heightsGenerated
 
     fun getOriginGlobal(): Vector3d = originGlobal

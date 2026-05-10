@@ -29,6 +29,19 @@ object Pipeline {
         renderTypeMask = renderTypeMask and (1uL shl type).inv()
     }
 
+    var sRenderDeferred: Boolean = false
+    var sImpostorRender: Boolean = false
+    var sRenderingHUDs: Boolean = false
+    var sUnderWaterRender: Boolean = false
+    var sReflectionRender: Boolean = false
+    var sReflectionProbesEnabled: Boolean = false
+    var RenderDepthOfField: Boolean = false
+    var RenderAvatarCloth: Boolean = false
+    var sRenderParticles: Boolean = true
+    var sImpostorRenderAlphaDepthPass: Boolean = false
+
+    var mTextureMatrixOps: Int = 0
+
     fun addObject(obj: ViewerObject) {}
 
     fun removeObject(obj: ViewerObject, killParticles: Boolean) {}
@@ -38,6 +51,24 @@ object Pipeline {
     fun updateGeom(maxTime: Float) {}
 
     fun renderGeom(viewerCamera: ViewerCamera) {}
+
+    fun isWaterClip(): Boolean { TODO("GPU: isWaterClip") }
+    fun enableLightsDynamic() { TODO("GPU: enableLightsDynamic") }
+    fun enableLightsFullbright() { TODO("GPU: enableLightsFullbright") }
+    fun bindDeferredShader(shader: GLSLShader) { TODO("GPU: bindDeferredShader") }
+    fun bindDeferredShaderFast(shader: GLSLShader) { TODO("GPU: bindDeferredShaderFast") }
+    fun unbindDeferredShader(shader: GLSLShader) { TODO("GPU: unbindDeferredShader") }
+    fun bindReflectionProbes(shader: GLSLShader) { TODO("GPU: bindReflectionProbes") }
+    fun unbindReflectionProbes(shader: GLSLShader) { TODO("GPU: unbindReflectionProbes") }
+    fun setEnvMat(shader: GLSLShader) { TODO("GPU: setEnvMat") }
+    fun beginRenderMap(type: Int): Iterator<DrawInfo> { TODO("GPU: beginRenderMap") }
+    fun endRenderMap(type: Int): Iterator<DrawInfo> { TODO("GPU: endRenderMap") }
+    fun hasRenderType(type: Int): Boolean = renderTypeEnabled(type)
+    fun beginAlphaGroups(): Iterator<SpatialGroup> { TODO("GPU: beginAlphaGroups") }
+    fun endAlphaGroups(): Iterator<SpatialGroup> { TODO("GPU: endAlphaGroups") }
+    fun beginRiggedAlphaGroups(): Iterator<SpatialGroup> { TODO("GPU: beginRiggedAlphaGroups") }
+    fun endRiggedAlphaGroups(): Iterator<SpatialGroup> { TODO("GPU: endRiggedAlphaGroups") }
+    fun shadersLoaded(): Boolean { TODO("GPU: shadersLoaded") }
 
     companion object {
         const val RENDER_TYPE_SKY = 1

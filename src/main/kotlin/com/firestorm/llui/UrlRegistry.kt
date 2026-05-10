@@ -134,34 +134,6 @@ object UrlRegistry {
         return true
     }
 
-    fun findUrl(text: String, match: UrlMatch, cb: UrlLabelCallback = nullUrlLabelCallback): Boolean {
-        if (!findUrl(text, match, cb, false, false)) return false
-
-        val wideMatched = match.matchedText
-        val start = text.indexOf(wideMatched)
-        if (start == -1) return false
-        val end = start + wideMatched.length - 1
-
-        match.setValues(
-            start = start.toUInt(),
-            end = end.toUInt(),
-            url = match.url,
-            label = match.label,
-            query = match.query,
-            tooltip = match.tooltip,
-            icon = match.icon,
-            style = match.style,
-            menuName = match.menuName,
-            location = match.location,
-            matchedText = match.matchedText,
-            id = match.id,
-            underline = match.underline,
-            trusted = false,
-            skipIcon = match.skipProfileIcon
-        )
-        return true
-    }
-
     fun hasUrl(text: String): Boolean {
         val match = UrlMatch()
         return findUrl(text, match)

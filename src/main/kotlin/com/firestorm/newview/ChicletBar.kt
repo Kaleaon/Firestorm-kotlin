@@ -1,8 +1,6 @@
 package com.firestorm.newview
 
 import com.firestorm.llcommon.LLUUID
-import com.firestorm.llui.LLPanel
-import com.firestorm.llui.LLRect
 
 // Corresponds to: llchicletbar.h / llchicletbar.cpp
 // Top-of-screen horizontal bar that hosts the ChicletPanel and IM/notification
@@ -13,7 +11,7 @@ import com.firestorm.llui.LLRect
 
 /**
  * Discriminates the chiclet type when adding to [ChicletBar].
- * Corresponds to [LLIMChiclet::EType] but extended with non-IM types.
+ * Corresponds to [IMChicletBase] session types plus non-IM variants.
  */
 enum class ChicletType {
     /** Person-to-person IM session. */
@@ -52,7 +50,7 @@ interface IMSessionObserver {
  *
  * Mirrors C++ [LLChicletBar] (LLSingleton + LLPanel + LLIMSessionObserver).
  *
- * Implemented as a Kotlin `object` (singleton) to match the C++ LLSingleton pattern.
+ * Implemented as a Kotlin `object` (singleton) matching the C++ LLSingleton pattern.
  */
 object ChicletBar : IMSessionObserver {
 
@@ -99,8 +97,7 @@ object ChicletBar : IMSessionObserver {
     }
 
     override fun sessionIDUpdated(oldSessionId: LLUUID, newSessionId: LLUUID) {
-        val chiclet = chicletPanel.findChiclet(oldSessionId) ?: return
-        // Re-register under the new session id
+        if (chicletPanel.findChiclet(oldSessionId) == null) return
         removeChiclet(oldSessionId)
         val type = resolveChicletType(newSessionId)
         addChiclet(newSessionId, type)
@@ -165,18 +162,12 @@ object ChicletBar : IMSessionObserver {
     // ── IM chiclet factory ────────────────────────────────────────────────────
 
     /**
-     * Creates and registers the correct [IMChiclet] subtype based on session type.
+     * Creates and registers the correct chiclet subtype based on session type.
      * Mirrors C++ LLChicletBar::createIMChiclet().
      */
     fun createIMChiclet(sessionId: LLUUID): Chiclet {
-        val sessionType = IMChiclet.getIMSessionType(sessionId)
-        val chicletType = when (sessionType) {
-            IMSessionType.IM     -> IMSessionType.IM
-            IMSessionType.GROUP  -> IMSessionType.GROUP
-            IMSessionType.AD_HOC -> IMSessionType.AD_HOC
-            IMSessionType.UNKNOWN -> IMSessionType.UNKNOWN
-        }
-        return chicletPanel.createChiclet(sessionId, chicletType)
+        val sessionType = IMChicletBase.getIMSessionType(sessionId)
+        return chicletPanel.createChiclet(sessionId, sessionType)
     }
 
     // ── Layout ────────────────────────────────────────────────────────────────
@@ -203,12 +194,11 @@ object ChicletBar : IMSessionObserver {
     }
 
     /**
-     * Returns headroom (current width − minimum width) of the chiclet panel.
+     * Returns headroom (current panel width − minimum) for the chiclet panel.
      * Mirrors C++ LLChicletBar::getChicletPanelShrinkHeadroom().
      */
-    private fun getChicletPanelShrinkHeadroom(): Int {
-        return (chicletPanel.minWidth).coerceAtLeast(0)
-    }
+    private fun getChicletPanelShrinkHeadroom(): Int =
+        chicletPanel.minWidth.coerceAtLeast(0)
 
     /**
      * Adjusts chiclet bar width to avoid overlapping the mini-location bar.
@@ -218,13 +208,12 @@ object ChicletBar : IMSessionObserver {
         // TODO("GL: query LLPanelTopInfoBar geometry and clamp our right edge")
     }
 
-    /** Resolves the [ChicletType] for [sessionId] by querying IMMgr. */
-    private fun resolveChicletType(sessionId: LLUUID): ChicletType {
-        return when (IMChiclet.getIMSessionType(sessionId)) {
-            IMSessionType.IM     -> ChicletType.IM
-            IMSessionType.GROUP  -> ChicletType.GROUP
-            IMSessionType.AD_HOC -> ChicletType.AD_HOC
+    /** Resolves [ChicletType] for [sessionId] via IMMgr. */
+    private fun resolveChicletType(sessionId: LLUUID): ChicletType =
+        when (IMChicletBase.getIMSessionType(sessionId)) {
+            IMSessionType.IM      -> ChicletType.IM
+            IMSessionType.GROUP   -> ChicletType.GROUP
+            IMSessionType.AD_HOC  -> ChicletType.AD_HOC
             IMSessionType.UNKNOWN -> ChicletType.UNKNOWN
         }
-    }
 }

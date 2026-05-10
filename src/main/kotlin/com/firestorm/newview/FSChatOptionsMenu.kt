@@ -14,9 +14,7 @@ object FSChatOptionsMenu {
                 } else {
                     val panel = FloaterSidePanelContainer.getPanel("people", "panel_people")
                         ?: return
-                    val panelVisible: Boolean = TODO("UI: panel.isInVisibleChain()")
-                    @Suppress("UNREACHABLE_CODE")
-                    if (panelVisible) {
+                    if (isPanelInVisibleChain(panel)) {
                         FloaterReg.hideInstance("people")
                     } else {
                         FloaterSidePanelContainer.showPanel(
@@ -47,7 +45,7 @@ object FSChatOptionsMenu {
     fun onMenuItemEnable(userdata: LLSD, source: LLView?): Boolean {
         val option = userdata.asString()
         return when (option) {
-            "typing_chevron" -> (source as? FSFloaterIM)?.isP2PChat ?: false
+            "typing_chevron"         -> (source as? FSFloaterIM)?.isP2PChat ?: false
             "show_channel_selection" -> gSavedSettings.getBool("FSNearbyChatbar")
             "show_send_button"       -> gSavedSettings.getBool("FSNearbyChatbar")
             else -> false
@@ -57,12 +55,12 @@ object FSChatOptionsMenu {
     fun onMenuItemVisible(userdata: LLSD, source: LLView?): Boolean {
         val option = userdata.asString()
         return when (option) {
-            "typing_chevron"       -> source is FSFloaterIM
-            "show_chat_bar"        -> source is FSFloaterNearbyChat
+            "typing_chevron"         -> source is FSFloaterIM
+            "show_chat_bar"          -> source is FSFloaterNearbyChat
             "show_channel_selection" -> source is FSFloaterNearbyChat
-            "show_send_button"     -> source is FSFloaterNearbyChat
-            "show_im_send_button"  -> source is FSFloaterIM
-            "show_mini_icons"      -> !gSavedSettings.getBool("PlainTextChatHistory")
+            "show_send_button"       -> source is FSFloaterNearbyChat
+            "show_im_send_button"    -> source is FSFloaterIM
+            "show_mini_icons"        -> !gSavedSettings.getBool("PlainTextChatHistory")
             else -> false
         }
     }
@@ -71,9 +69,8 @@ object FSChatOptionsMenu {
         val option = userdata.asString()
         return when (option) {
             "blocklist" -> {
-                if (gSavedSettings.getBool("FSUseStandaloneBlocklistFloater"))
+                gSavedSettings.getBool("FSUseStandaloneBlocklistFloater") &&
                     FloaterReg.instanceVisible("fs_blocklist")
-                else false
             }
             "font_size_small"  -> gSavedSettings.getS32("ChatFontSize") == 0
             "font_size_medium" -> gSavedSettings.getS32("ChatFontSize") == 1
@@ -86,5 +83,9 @@ object FSChatOptionsMenu {
             }
             else -> false
         }
+    }
+
+    private fun isPanelInVisibleChain(panel: LLPanelBase): Boolean {
+        TODO("UI: panel.isInVisibleChain()")
     }
 }

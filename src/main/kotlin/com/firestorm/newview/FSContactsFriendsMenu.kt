@@ -1,0 +1,142 @@
+package com.firestorm.newview
+
+import com.firestorm.llcommon.LLSD
+import com.firestorm.llcommon.LLUUID
+import com.firestorm.llui.UrlAction
+
+class FSContactsFriendsMenu : LLListContextMenu() {
+
+    var uuids: MutableList<LLUUID> = mutableListOf()
+
+    override fun createMenu(): LLContextMenu? {
+        if (uuids.size == 1) {
+            val id = uuids.first()
+            TODO(
+                "UI: register single-select callbacks for id=$id — " +
+                "Contacts.Friends.ShowProfile→AvatarActions.showProfile, " +
+                "Contacts.Friends.RemoveFriend→removeFriendDialog, " +
+                "Contacts.Friends.SendIM→startIM, Contacts.Friends.Calllog→viewChatHistory, " +
+                "Contacts.Friends.OfferTeleport→offerTeleport, " +
+                "Contacts.Friends.RequestTeleport→AvatarActions.requestTeleport, " +
+                "Contacts.Friends.ZoomIn→zoomIn, Contacts.Friends.Pay→pay, " +
+                "Contacts.Friends.AddToContactSet→addToContactSet, " +
+                "Contacts.Friends.TeleportToTarget→teleportToAvatar, " +
+                "Contacts.Friends.TrackAvatar→onTrackAvatarMenuItemClick, " +
+                "Contacts.Friends.CopyLabel→copyNameToClipboard, " +
+                "Contacts.Friends.CopyUrl→copySLURLToClipboard, " +
+                "Contacts.Friends.SelectOption→selectOption, Mention.CopyURI→copyURLToClipboard; " +
+                "Contacts.Friends.EnableItem→enableContextMenuItem, " +
+                "Contacts.Friends.EnableZoomIn→AvatarActions.canZoomIn(id), " +
+                "Contacts.Friends.CheckOption→checkOption; " +
+                "load menu_fs_contacts_friends.xml"
+            )
+        } else {
+            TODO(
+                "UI: register multi-select callbacks — " +
+                "Contacts.Friends.SendIM→AvatarActions.startConference(uuids), " +
+                "Contacts.Friends.OfferTeleport→offerTeleport, " +
+                "Contacts.Friends.RemoveFriend→removeFriendsDialog(uuids), " +
+                "Contacts.Friends.AddToContactSet→addToContactSet, " +
+                "Contacts.Friends.SelectOption→selectOption; " +
+                "Contacts.Friends.EnableItem→enableContextMenuItem, " +
+                "Contacts.Friends.CheckOption→checkOption; " +
+                "load menu_fs_contacts_friends_multiselect.xml"
+            )
+        }
+    }
+
+    private fun enableContextMenuItem(userdata: Any?): Boolean {
+        val item = userdata?.toString() ?: return false
+        return when (item) {
+            "remove_friend" -> uuids.isNotEmpty() && uuids.all { AvatarActions.isFriend(it) }
+            "teleport_to" -> {
+                uuids.size == 1 && FSRadar.getEntry(uuids.first()) != null
+            }
+            "offer_teleport" -> AvatarActions.canOfferTeleport(uuids)
+            "request_teleport" -> {
+                uuids.size == 1 && AvatarActions.canRequestTeleport(uuids.first())
+            }
+            "track_avatar" -> {
+                uuids.size == 1 && FSRadar.getEntry(uuids.first()) != null
+            }
+            "can_callog" -> {
+                if (uuids.size == 1) TODO("APR: LLLogChat.isTranscriptExist(uuids.first())")
+                else false
+            }
+            "FSFriendListColumnShowUserName" -> {
+                gSavedSettings.getBool("FSFriendListColumnShowDisplayName") ||
+                    gSavedSettings.getBool("FSFriendListColumnShowFullName")
+            }
+            "FSFriendListColumnShowDisplayName" -> {
+                gSavedSettings.getBool("FSFriendListColumnShowUserName") ||
+                    gSavedSettings.getBool("FSFriendListColumnShowFullName")
+            }
+            "FSFriendListColumnShowFullName" -> {
+                gSavedSettings.getBool("FSFriendListColumnShowUserName") ||
+                    gSavedSettings.getBool("FSFriendListColumnShowDisplayName")
+            }
+            "FSFriendListFullNameFormat" -> gSavedSettings.getBool("FSFriendListColumnShowFullName")
+            else -> false
+        }
+    }
+
+    private fun offerTeleport() {
+        AvatarActions.offerTeleport(uuids)
+    }
+
+    private fun teleportToAvatar() {
+        AvatarActions.teleportTo(uuids.first())
+    }
+
+    private fun onTrackAvatarMenuItemClick() {
+        AvatarActions.track(uuids.first())
+    }
+
+    private fun addToContactSet() {
+        TODO("APR: AvatarActions.addToContactSet(uuids)")
+    }
+
+    private fun copyNameToClipboard(id: LLUUID) {
+        val avName = AvatarName()
+        AvatarNameCache.get(id, avName)
+        UrlAction.copyUrlToClipboard(avName.getAccountName())
+    }
+
+    private fun copySLURLToClipboard(id: LLUUID) {
+        val slurl = LLSLURL("agent", id.uuid, "about").getSLURLString()
+        UrlAction.copyUrlToClipboard(slurl)
+    }
+
+    private fun selectOption(userdata: Any?) {
+        val option = userdata?.toString() ?: return
+        when (option) {
+            "sort_by_username"          -> gSavedSettings.setS32("FSFriendListSortOrder", 0)
+            "sort_by_displayname"       -> gSavedSettings.setS32("FSFriendListSortOrder", 1)
+            "format_username_displayname" -> gSavedSettings.setS32("FSFriendListFullNameFormat", 0)
+            "format_displayname_username" -> gSavedSettings.setS32("FSFriendListFullNameFormat", 1)
+        }
+    }
+
+    private fun checkOption(userdata: Any?): Boolean {
+        val option = userdata?.toString() ?: return false
+        return when (option) {
+            "sort_by_username"            -> gSavedSettings.getS32("FSFriendListSortOrder") == 0
+            "sort_by_displayname"         -> gSavedSettings.getS32("FSFriendListSortOrder") == 1
+            "format_username_displayname" -> gSavedSettings.getS32("FSFriendListFullNameFormat") == 0
+            "format_displayname_username" -> gSavedSettings.getS32("FSFriendListFullNameFormat") == 1
+            else -> false
+        }
+    }
+
+    private fun copyURLToClipboard() {
+        UrlAction.copyUrlToClipboard(
+            "secondlife:///app/agent/${uuids.first().uuid}/mention"
+        )
+    }
+
+    companion object {
+        val instance = FSContactsFriendsMenu()
+    }
+}
+
+val gFSContactsFriendsMenu: FSContactsFriendsMenu = FSContactsFriendsMenu.instance

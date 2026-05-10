@@ -1,6 +1,6 @@
 package com.firestorm.newview
 
-import java.util.UUID
+import com.firestorm.llcommon.LLUUID
 
 // Singleton manager for all pathfinding operations in the current region.
 // Coroutine-based HTTP calls are stubbed with TODO markers because the JVM
@@ -33,8 +33,8 @@ object LLPathfindingManager {
     // boost::signals2 agent-state listeners → plain list of lambdas
     private val agentStateListeners: MutableList<AgentStateCallback> = mutableListOf()
 
-    // region UUID → nav mesh, mirrors NavMeshMap
-    private val navMeshMap: MutableMap<UUID, LLPathfindingNavMesh> = mutableMapOf()
+    // region LLUUID → nav mesh, mirrors C++ NavMeshMap
+    private val navMeshMap: MutableMap<LLUUID, LLPathfindingNavMesh> = mutableMapOf()
 
     // ---- system lifecycle ----
 
@@ -67,9 +67,8 @@ object LLPathfindingManager {
     fun registerNavMeshListenerForRegion(
         region: LLViewerRegion?,
         callback: LLPathfindingNavMesh.NavMeshCallback
-    ): LLPathfindingNavMesh.NavMeshSlot {
-        return getNavMeshForRegion(region).registerNavMeshListener(callback)
-    }
+    ): LLPathfindingNavMesh.NavMeshCallback =
+        getNavMeshForRegion(region).registerNavMeshListener(callback)
 
     fun requestGetNavMeshForRegion(region: LLViewerRegion?, isGetStatusOnly: Boolean) {
         val navMesh = getNavMeshForRegion(region)
@@ -114,9 +113,7 @@ object LLPathfindingManager {
                     val doTerrain = isAllowViewTerrainProperties()
                     val responder = LinksetsResponder(requestId, callback, objectRequested = true, terrainRequested = doTerrain)
                     linksetObjectsCoro(objectUrl, responder, putData = null)
-                    if (doTerrain) {
-                        linksetTerrainCoro(terrainUrl, responder, putData = null)
-                    }
+                    if (doTerrain) linksetTerrainCoro(terrainUrl, responder, putData = null)
                 }
             }
         }
@@ -220,45 +217,37 @@ object LLPathfindingManager {
         navMeshRebakeCoro(url, callback)
     }
 
-    // ---- deferred handlers (called when region capabilities become available) ----
+    // ---- deferred handlers (fired when region capabilities become available) ----
 
-    private fun handleDeferredGetAgentStateForRegion(regionUUID: UUID) {
+    private fun handleDeferredGetAgentStateForRegion(regionUUID: LLUUID) {
         val current = getCurrentRegion()
-        if (current != null && current.regionId == regionUUID) {
-            requestGetAgentState()
-        }
+        if (current != null && current.regionId == regionUUID) requestGetAgentState()
     }
 
-    private fun handleDeferredGetNavMeshForRegion(regionUUID: UUID, isGetStatusOnly: Boolean) {
+    private fun handleDeferredGetNavMeshForRegion(regionUUID: LLUUID, isGetStatusOnly: Boolean) {
         val current = getCurrentRegion()
-        if (current != null && current.regionId == regionUUID) {
-            requestGetNavMeshForRegion(current, isGetStatusOnly)
-        }
+        if (current != null && current.regionId == regionUUID) requestGetNavMeshForRegion(current, isGetStatusOnly)
     }
 
     private fun handleDeferredGetLinksetsForRegion(
-        regionUUID: UUID,
+        regionUUID: LLUUID,
         requestId: RequestId,
         callback: ObjectRequestCallback
     ) {
         val current = getCurrentRegion()
-        if (current != null && current.regionId == regionUUID) {
-            requestGetLinksets(requestId, callback)
-        }
+        if (current != null && current.regionId == regionUUID) requestGetLinksets(requestId, callback)
     }
 
     private fun handleDeferredGetCharactersForRegion(
-        regionUUID: UUID,
+        regionUUID: LLUUID,
         requestId: RequestId,
         callback: ObjectRequestCallback
     ) {
         val current = getCurrentRegion()
-        if (current != null && current.regionId == regionUUID) {
-            requestGetCharacters(requestId, callback)
-        }
+        if (current != null && current.regionId == regionUUID) requestGetCharacters(requestId, callback)
     }
 
-    // ---- coroutine stubs (HTTP) ----
+    // ---- coroutine stubs (replace with JVM async HTTP) ----
 
     private fun navMeshStatusRequestCoro(url: String, regionHandle: Long, isGetStatusOnly: Boolean) {
         TODO("APR: use JVM equivalent — GET $url, parse LLPathfindingNavMeshStatus, call navMesh handle* methods")
@@ -273,20 +262,12 @@ object LLPathfindingManager {
     }
 
     // putData == null → GET; non-null → PUT
-    private fun linksetObjectsCoro(
-        url: String,
-        responder: LinksetsResponder,
-        putData: Map<String, Any>?
-    ) {
+    private fun linksetObjectsCoro(url: String, responder: LinksetsResponder, putData: Map<String, Any>?) {
         TODO("APR: use JVM equivalent — ${if (putData == null) "GET" else "PUT"} $url, " +
                 "call responder.handleObjectLinksetsResult / handleObjectLinksetsError")
     }
 
-    private fun linksetTerrainCoro(
-        url: String,
-        responder: LinksetsResponder,
-        putData: Map<String, Any>?
-    ) {
+    private fun linksetTerrainCoro(url: String, responder: LinksetsResponder, putData: Map<String, Any>?) {
         TODO("APR: use JVM equivalent — ${if (putData == null) "GET" else "PUT"} $url, " +
                 "call responder.handleTerrainLinksetsResult / handleTerrainLinksetsError")
     }
@@ -295,15 +276,12 @@ object LLPathfindingManager {
         TODO("APR: use JVM equivalent — GET $url, wrap result in LLPathfindingCharacterList, call callback")
     }
 
-    // ---- internal state updates ----
+    // ---- internal state updates (called from sim-push message handlers) ----
 
     internal fun handleNavMeshStatusUpdate(navMeshStatus: LLPathfindingNavMeshStatus) {
         val navMesh = getNavMeshForRegion(navMeshStatus.regionUUID)
-        if (!navMeshStatus.isValid) {
-            navMesh.handleNavMeshError()
-        } else {
-            navMesh.handleNavMeshNewVersion(navMeshStatus)
-        }
+        if (!navMeshStatus.isValid) navMesh.handleNavMeshError()
+        else navMesh.handleNavMeshNewVersion(navMeshStatus)
     }
 
     internal fun handleAgentState(canRebakeRegion: Boolean) {
@@ -316,11 +294,11 @@ object LLPathfindingManager {
 
     // ---- nav mesh map ----
 
-    private fun getNavMeshForRegion(regionUUID: UUID): LLPathfindingNavMesh =
+    private fun getNavMeshForRegion(regionUUID: LLUUID): LLPathfindingNavMesh =
         navMeshMap.getOrPut(regionUUID) { LLPathfindingNavMesh(regionUUID) }
 
     private fun getNavMeshForRegion(region: LLViewerRegion?): LLPathfindingNavMesh =
-        getNavMeshForRegion(region?.regionId ?: UUID(0L, 0L))
+        getNavMeshForRegion(region?.regionId ?: LLUUID.NULL)
 
     // ---- capability URL helpers ----
 
@@ -356,7 +334,6 @@ object LLPathfindingManager {
             val url = region.getCapability(capabilityName)
             if (url.isNotEmpty()) return url
         }
-        // mirror LL_WARNS — callers treat an empty string as "not available"
         return ""
     }
 
@@ -364,7 +341,7 @@ object LLPathfindingManager {
         TODO("APR: use JVM equivalent of gAgent.getRegion()")
     }
 
-    // ---- LinksetsResponder (inner class, mirrors the C++ helper) ----
+    // ---- LinksetsResponder — coordinates parallel object + terrain HTTP responses ----
 
     private class LinksetsResponder(
         private val requestId: RequestId,
@@ -406,10 +383,10 @@ object LLPathfindingManager {
             check(objectState  != EMessagingState.WAITING)
             check(terrainState != EMessagingState.WAITING)
 
-            val status = if (
+            val allGood =
                 (objectState  == EMessagingState.RECEIVED_GOOD || objectState  == EMessagingState.NOT_REQUESTED) &&
                 (terrainState == EMessagingState.RECEIVED_GOOD || terrainState == EMessagingState.NOT_REQUESTED)
-            ) ERequestStatus.REQUEST_COMPLETED else ERequestStatus.REQUEST_ERROR
+            val status = if (allGood) ERequestStatus.REQUEST_COMPLETED else ERequestStatus.REQUEST_ERROR
 
             if (objectState != EMessagingState.RECEIVED_GOOD) {
                 objectLinksetList = LLPathfindingLinksetList()

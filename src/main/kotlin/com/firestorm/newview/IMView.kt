@@ -962,6 +962,10 @@ class OutgoingCallDialog(payload: Map<String, Any>) : CallDialog(payload) {
 
     companion object {
         val OCD_KEY: UUID = UUID.fromString("7CF78E11-0CFE-498D-ADB9-1417BF03DDB4")
+
+        fun onCancel(userData: Any) {
+            TODO("APR: use JVM equivalent - end the voice call in progress when user cancels")
+        }
     }
 
     override fun postBuild(): Boolean {
@@ -971,12 +975,6 @@ class OutgoingCallDialog(payload: Map<String, Any>) : CallDialog(payload) {
 
     fun show(key: Any) {
         TODO("APR: use JVM equivalent - update outgoing call dialog with session/caller info and show")
-    }
-
-    companion object {
-        fun onCancel(userData: Any) {
-            TODO("APR: use JVM equivalent - end the voice call in progress when user cancels")
-        }
     }
 }
 

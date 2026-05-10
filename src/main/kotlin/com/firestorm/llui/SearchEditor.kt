@@ -1,132 +1,77 @@
 package com.firestorm.llui
 
+import com.firestorm.llmath.Rect
+
 typealias CommitCallback = (source: Any?, value: Any?) -> Unit
 
-open class LineEditor(
-    val name: String = "",
-    var text: String = "",
-    var label: String = "",
-    var textPadLeft: Int = 0,
-    var textPadRight: Int = 0,
-    var revertOnEsc: Boolean = true,
-    var commitOnFocusLost: Boolean = true,
-    var bgImage: Any? = null,
-    var bgImageFocused: Any? = null,
-    var passDelete: Boolean = false,
-    var commitCallback: CommitCallback? = null,
-    var keystrokeCallback: (() -> Unit)? = null
-) {
-    fun getText(): String = text
-    fun getWText(): String = text
-    fun setText(t: String) { text = t }
-    fun setValue(v: Any?) { text = v?.toString() ?: "" }
-    fun getValue(): Any? = text
-    fun setTextArg(key: String, replacement: String): Boolean = true
-    fun setLabelArg(key: String, replacement: String): Boolean = true
-    fun setLabel(newLabel: String) { label = newLabel }
-    fun clear() { text = "" }
-    fun setFocus(b: Boolean) {}
-    fun hasFocus(): Boolean = false
-    fun isDirty(): Boolean = false
-    fun setBgImage(img: Any?) { bgImage = img }
-    fun setBgImageFocused(img: Any?) { bgImageFocused = img }
-    fun setCommitOnFocusLost(b: Boolean) { commitOnFocusLost = b }
-    fun setPassDelete(b: Boolean) { passDelete = b }
-    fun onCommit() { commitCallback?.invoke(this, getValue()) }
-    fun deleteAllChildren() {}
-    fun addChild(child: Any) {}
-    fun evaluateFloat(): Boolean = text.toFloatOrNull() != null
-    fun resetScrollPosition() {}
-}
-
-open class Button(val name: String = "") {
-    var visible: Boolean = true
-    fun setVisible(b: Boolean) { visible = b }
-}
-
 open class SearchEditor(
+    name: String,
+    rect: Rect = Rect(),
     searchButtonVisible: Boolean = false,
     clearButtonVisible: Boolean = false,
-    highlightTextField: Boolean = false,
-    backgroundImage: Any? = null,
-    backgroundImageFocused: Any? = null,
-    backgroundImageHighlight: Any? = null,
-    lineEditorFactory: () -> LineEditor = { LineEditor() },
-    searchButtonFactory: (() -> Button)? = null,
-    clearButtonFactory: (() -> Button)? = null
-) : UiCtrl() {
+    val highlightTextField: Boolean = false,
+    val backgroundImage: Any? = null,
+    val backgroundImageFocused: Any? = null,
+    val backgroundImageHighlight: Any? = null
+) : View(name, rect) {
 
     var keystrokeCallback: CommitCallback? = null
     var textChangedCallback: CommitCallback? = null
 
-    protected val searchEditor: LineEditor = lineEditorFactory().also { editor ->
-        editor.revertOnEsc = false
-        editor.commitCallback = { _, _ -> onCommit() }
-        editor.keystrokeCallback = { handleKeystroke() }
-        editor.setPassDelete(true)
+    protected val searchEditor: LineEditor = LineEditor("filter edit box", rect)
+    protected val searchButton: Button? = if (searchButtonVisible) Button("search button") else null
+    protected val clearButton: Button? = if (clearButtonVisible) Button("clear button") else null
+
+    init {
+        searchEditor.revertOnEsc = false
+        searchEditor.commitCallback = { onCommit() }
+        searchEditor.keystrokeCallback = { handleKeystroke() }
+        addChild(searchEditor)
+        searchButton?.let { searchEditor.addChild(it) }
+        clearButton?.let { searchEditor.addChild(it) }
     }
-
-    protected val searchButton: Button? = if (searchButtonVisible) searchButtonFactory?.invoke() else null
-    protected val clearButton: Button? = if (clearButtonVisible) clearButtonFactory?.invoke() else null
-
-    private val editorImage: Any? = backgroundImage
-    private val editorImageFocused: Any? = backgroundImageFocused
-    private val editorSearchImage: Any? = backgroundImageHighlight
-    private val highlightTextField: Boolean = highlightTextField
 
     fun setCommitOnFocusLost(b: Boolean) {
-        searchEditor.setCommitOnFocusLost(b)
+        searchEditor.commitOnFocusLost = b
     }
 
-    open fun draw() {
-        clearButton?.setVisible(searchEditor.getWText().isNotEmpty())
+    override fun draw() {
+        clearButton?.visible = searchEditor.getText().isNotEmpty()
 
         if (highlightTextField) {
-            if (searchEditor.getWText().isNotEmpty()) {
-                searchEditor.setBgImage(editorSearchImage)
-                searchEditor.setBgImageFocused(editorSearchImage)
+            if (searchEditor.getText().isNotEmpty()) {
+                searchEditor.setBgImage(backgroundImageHighlight)
+                searchEditor.setBgImageFocused(backgroundImageHighlight)
             } else {
-                searchEditor.setBgImage(editorImage)
-                searchEditor.setBgImageFocused(editorImageFocused)
+                searchEditor.setBgImage(backgroundImage)
+                searchEditor.setBgImageFocused(backgroundImageFocused)
             }
         }
-    }
 
-    fun setText(newText: String) {
-        searchEditor.setText(newText)
+        super.draw()
     }
-
-    fun getText(): String = searchEditor.getText()
 
     open fun setValue(value: Any?) {
-        searchEditor.setValue(value)
+        searchEditor.setText(value?.toString() ?: "")
     }
 
-    open fun getValue(): Any? = searchEditor.getValue()
+    open fun getValue(): Any? = searchEditor.getText()
 
     open fun setTextArg(key: String, text: String): Boolean = searchEditor.setTextArg(key, text)
 
     open fun setLabelArg(key: String, text: String): Boolean = searchEditor.setLabelArg(key, text)
 
-    open fun setLabel(newLabel: String) {
-        searchEditor.setLabel(newLabel)
-    }
+    open fun setLabel(newLabel: String) { searchEditor.label = newLabel }
 
-    open fun clear() {
-        searchEditor.clear()
-    }
+    open fun clear() { searchEditor.clear() }
 
-    open fun setFocus(b: Boolean) {
-        searchEditor.setFocus(b)
-    }
+    open fun setFocus(b: Boolean) { searchEditor.setFocus(b) }
 
-    fun setKeystrokeCallback(cb: CommitCallback) {
-        keystrokeCallback = cb
-    }
+    fun setText(newText: String) { searchEditor.setText(newText) }
+    fun getText(): String = searchEditor.getText()
 
-    fun setTextChangedCallback(cb: CommitCallback) {
-        textChangedCallback = cb
-    }
+    fun setKeystrokeCallback(cb: CommitCallback) { keystrokeCallback = cb }
+    fun setTextChangedCallback(cb: CommitCallback) { textChangedCallback = cb }
 
     protected fun onClearButtonClick() {
         setText("")
@@ -138,13 +83,41 @@ open class SearchEditor(
         keystrokeCallback?.invoke(this, getValue())
 
         val key = currentKey()
-        if (key == Key.LEFT || key == Key.RIGHT) return
+        if (key == KEY_LEFT || key == KEY_RIGHT) return
 
         textChangedCallback?.invoke(this, getValue())
     }
 
     open fun onCommit() {}
-    open fun currentKey(): Key = Key.NONE
+    open fun currentKey(): Int = KEY_NONE
 
-    override fun toString(): String = "SearchEditor(text=${searchEditor.getText()})"
+    companion object {
+        const val KEY_NONE = 0
+        const val KEY_LEFT = 0x83
+        const val KEY_RIGHT = 0x84
+    }
 }
+
+private var LineEditor.revertOnEsc: Boolean
+    get() = false
+    set(_) {}
+
+private var LineEditor.commitOnFocusLost: Boolean
+    get() = true
+    set(_) {}
+
+private var LineEditor.commitCallback: (() -> Unit)?
+    get() = null
+    set(v) {}
+
+private var LineEditor.keystrokeCallback: (() -> Unit)?
+    get() = null
+    set(v) {}
+
+private fun LineEditor.setFocus(b: Boolean) {}
+private fun LineEditor.onCommit() {}
+private fun LineEditor.setBgImage(img: Any?) {}
+private fun LineEditor.setBgImageFocused(img: Any?) {}
+private fun LineEditor.setTextArg(key: String, text: String): Boolean = true
+private fun LineEditor.setLabelArg(key: String, text: String): Boolean = true
+private fun LineEditor.clear() { setText("") }

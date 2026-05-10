@@ -40,7 +40,7 @@ class KeywordToken(
     }
 }
 
-data class TextSegment(
+data class SyntaxSegment(
     var start: Int,
     var end: Int,
     val color: UIColor,
@@ -135,7 +135,7 @@ class Keywords {
     }
 
     fun findSegments(
-        segList: MutableList<TextSegment>,
+        segList: MutableList<SyntaxSegment>,
         wtext: String,
         defaultColor: UIColor
     ) {
@@ -143,7 +143,7 @@ class Keywords {
         if (wtext.isEmpty()) return
 
         val textLen = wtext.length + 1
-        segList.add(TextSegment(0, textLen, defaultColor))
+        segList.add(SyntaxSegment(0, textLen, defaultColor))
 
         var cur = 0
         val base = 0
@@ -152,7 +152,7 @@ class Keywords {
             val ch = wtext[cur]
             if (ch == '\n' || cur == base) {
                 if (ch == '\n') {
-                    val lineBreak = TextSegment(cur, cur + 1, defaultColor)
+                    val lineBreak = SyntaxSegment(cur, cur + 1, defaultColor)
                     lineBreak.token = null
                     insertSegment(segList, lineBreak, textLen, defaultColor)
                     cur++
@@ -259,7 +259,7 @@ class Keywords {
 
     private fun insertSegments(
         wtext: String,
-        segList: MutableList<TextSegment>,
+        segList: MutableList<SyntaxSegment>,
         token: KeywordToken,
         textLen: Int,
         segStart: Int,
@@ -271,25 +271,25 @@ class Keywords {
 
         while (pos != -1 && pos < segEnd) {
             if (pos != start) {
-                val seg = TextSegment(start, pos, token.color)
+                val seg = SyntaxSegment(start, pos, token.color)
                 seg.token = token
                 insertSegment(segList, seg, textLen, defaultColor)
             }
-            val lineBreak = TextSegment(pos, pos + 1, token.color)
+            val lineBreak = SyntaxSegment(pos, pos + 1, token.color)
             lineBreak.token = token
             insertSegment(segList, lineBreak, textLen, defaultColor)
             start = pos + 1
             pos = wtext.indexOf('\n', start)
         }
 
-        val finalSeg = TextSegment(start, segEnd, token.color)
+        val finalSeg = SyntaxSegment(start, segEnd, token.color)
         finalSeg.token = token
         insertSegment(segList, finalSeg, textLen, defaultColor)
     }
 
     private fun insertSegment(
-        segList: MutableList<TextSegment>,
-        newSegment: TextSegment,
+        segList: MutableList<SyntaxSegment>,
+        newSegment: SyntaxSegment,
         textLen: Int,
         defaultColor: UIColor
     ) {
@@ -304,7 +304,7 @@ class Keywords {
         segList.add(newSegment)
 
         if (newSegEnd < textLen) {
-            segList.add(TextSegment(newSegEnd, textLen, defaultColor))
+            segList.add(SyntaxSegment(newSegEnd, textLen, defaultColor))
         }
     }
 

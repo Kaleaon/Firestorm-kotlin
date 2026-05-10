@@ -17,7 +17,7 @@ class NotificationContext {
     val id: UUID = UUID.randomUUID()
 }
 
-enum class IgnoreType {
+enum class NotifIgnoreType {
     CHECKBOX_ONLY,
     NO,
     WITH_DEFAULT_RESPONSE,
@@ -26,7 +26,7 @@ enum class IgnoreType {
     SHOW_AGAIN
 }
 
-data class FormElement(
+data class NotifFormElement(
     val type: String,
     val name: String,
     val text: String,
@@ -37,8 +37,8 @@ data class FormElement(
 )
 
 class NotificationForm() {
-    private val formData: MutableList<FormElement> = mutableListOf()
-    var ignoreType: IgnoreType = IgnoreType.NO
+    private val formData: MutableList<NotifFormElement> = mutableListOf()
+    var ignoreType: NotifIgnoreType = NotifIgnoreType.NO
         private set
     var ignoreMessage: String = ""
         private set
@@ -55,11 +55,11 @@ class NotificationForm() {
 
     fun getNumElements(): Int = formData.size
 
-    fun getElement(index: Int): FormElement? = formData.getOrNull(index)
+    fun getElement(index: Int): NotifFormElement? = formData.getOrNull(index)
 
-    fun getElement(elementName: String): FormElement? = formData.find { it.name == elementName }
+    fun getElement(elementName: String): NotifFormElement? = formData.find { it.name == elementName }
 
-    fun getElements(offset: Int = 0): List<FormElement> = formData.drop(offset)
+    fun getElements(offset: Int = 0): List<NotifFormElement> = formData.drop(offset)
 
     fun hasElement(elementName: String): Boolean = formData.any { it.name == elementName }
 
@@ -72,7 +72,7 @@ class NotificationForm() {
 
     fun addElement(type: String, name: String, value: Any? = null, enabled: Boolean = true) {
         formData.add(
-            FormElement(
+            NotifFormElement(
                 type = type,
                 name = name,
                 text = name,
@@ -88,15 +88,18 @@ class NotificationForm() {
             val el = formData[i]
             var text = el.text
             for ((k, v) in substitutions) text = text.replace("[$k]", v)
-            var value = el.value
-            if (el.type == "text" && value is String) {
-                for ((k, v) in substitutions) value = value.replace("[$k]", v)
+            val value: Any? = if (el.type == "text" && el.value is String) {
+                var v: String = el.value
+                for ((k, rep) in substitutions) v = v.replace("[$k]", rep)
+                v
+            } else {
+                el.value
             }
             formData[i] = el.copy(text = text, value = value)
         }
     }
 
-    fun append(subForm: List<FormElement>) {
+    fun append(subForm: List<NotifFormElement>) {
         formData.addAll(subForm)
     }
 
@@ -104,7 +107,7 @@ class NotificationForm() {
         formData.find { it.isDefault }?.name ?: ""
 
     fun getIgnored(): Boolean {
-        if (ignoreType == IgnoreType.NO) return false
+        if (ignoreType == NotifIgnoreType.NO) return false
         return if (invertSetting) ignoreSetting else !ignoreSetting
     }
 
@@ -130,7 +133,7 @@ class NotificationEntry(
     var isDnd: Boolean = false,
     responderName: String = "",
     responder: ResponderInterface? = null,
-    formElements: List<FormElement> = emptyList()
+    formElements: List<NotifFormElement> = emptyList()
 ) {
     private var cancelled: Boolean = false
     private var respondedTo: Boolean = false
@@ -148,7 +151,7 @@ class NotificationEntry(
         initFromTemplate(name, formElements)
     }
 
-    private fun initFromTemplate(templateName: String, extra: List<FormElement>) {
+    private fun initFromTemplate(templateName: String, extra: List<NotifFormElement>) {
         templatep = Notifications.getTemplate(templateName)
         val tmpl = templatep ?: return
 
@@ -220,7 +223,7 @@ class NotificationEntry(
     fun canLogToIM(): Boolean = templatep?.logToIM ?: false
     fun canShowToast(): Boolean = templatep?.showToast ?: true
     fun canFadeToast(): Boolean = templatep?.fadeToast ?: true
-    fun hasFormElements(): Boolean = (templatep?.form?.getNumElements() ?: 0) != 0
+    fun hasNotifFormElements(): Boolean = (templatep?.form?.getNumElements() ?: 0) != 0
     fun getCombineBehavior(): CombineBehavior = templatep?.combineBehavior ?: CombineBehavior.REPLACE_WITH_NEW
     fun getPriority(): NotificationPriority = effectivePriority
     fun getDate(): Instant = timestamp
@@ -711,7 +714,7 @@ object Notifications : NotificationChannelBase(NotificationFilters::includeEvery
     fun getIgnored(name: String): Boolean {
         if (ignoreAllNotifications) return true
         val tmpl = templates[name] ?: return false
-        return tmpl.form.ignoreType != IgnoreType.NO && tmpl.form.getIgnored()
+        return tmpl.form.ignoreType != NotifIgnoreType.NO && tmpl.form.getIgnored()
     }
 
     fun forceResponse(name: String, option: Int) {
@@ -835,11 +838,11 @@ object Notifications : NotificationChannelBase(NotificationFilters::includeEvery
         val pNotif = find(UUID.fromString(payload["id"] as String)) ?: return false
         val form = pNotif.getForm()
         val response: MutableMap<String, Any> = when (form.ignoreType) {
-            IgnoreType.WITH_DEFAULT_RESPONSE, IgnoreType.WITH_DEFAULT_RESPONSE_SESSION_ONLY ->
+            NotifIgnoreType.WITH_DEFAULT_RESPONSE, NotifIgnoreType.WITH_DEFAULT_RESPONSE_SESSION_ONLY ->
                 pNotif.getResponseTemplate(ResponseTemplateType.WITH_DEFAULT_BUTTON)
-            IgnoreType.WITH_LAST_RESPONSE ->
+            NotifIgnoreType.WITH_LAST_RESPONSE ->
                 pNotif.getResponseTemplate()
-            IgnoreType.SHOW_AGAIN -> return false
+            NotifIgnoreType.SHOW_AGAIN -> return false
             else -> return false
         }
         pNotif.setIgnored(true)

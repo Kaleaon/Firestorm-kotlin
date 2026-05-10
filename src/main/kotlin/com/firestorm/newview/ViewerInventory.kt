@@ -46,11 +46,16 @@ open class ViewerInventoryItem(
     )
 
     constructor(other: ViewerInventoryItem) : this(other as InventoryItem) {
-        isComplete  = other.isComplete
+        isComplete    = other.isComplete
         transactionId = other.transactionId
     }
 
     fun copyViewerItem(other: ViewerInventoryItem) {
+        uuid = other.uuid; parentId = other.parentId; thumbnailId = other.thumbnailId
+        type = other.type; name = other.name; creationDate = other.creationDate
+        permissions = other.permissions; assetId = other.assetId
+        inventoryType = other.inventoryType; flags = other.flags
+        saleInfo = other.saleInfo; description = other.description
         isComplete    = other.isComplete
         transactionId = other.transactionId
     }
@@ -63,7 +68,7 @@ open class ViewerInventoryItem(
 
     open fun updateServer(isNew: Boolean) {
         if (!isComplete) return
-        TODO("APR: use JVM equivalent - send UpdateInventoryItem/AIS update to server")
+        TODO("APR: use JVM equivalent - send UpdateInventoryItem or AIS UpdateItem to server")
     }
 
     open fun updateParentOnServer(restamp: Boolean) {
@@ -80,7 +85,7 @@ open class ViewerInventoryItem(
     fun setComplete(complete: Boolean) { isComplete = complete }
 
     fun isBrokenLink(): Boolean {
-        TODO("APR: use JVM equivalent - check if linked item exists in InventoryModel")
+        TODO("APR: use JVM equivalent - check linked item exists in InventoryModel")
     }
 
     fun getLinkedItem(): ViewerInventoryItem? {
@@ -97,7 +102,7 @@ open class ViewerInventoryItem(
     }
 
     companion object {
-        private val SORT_FIELD_PREFIX = Regex("""^\[(\d+)\](.*)$""")
+        private val SORT_FIELD_PREFIX = Regex("""^\[(\d+)\]\s*(.*)$""")
 
         fun extractSortFieldAndDisplayName(
             name: String,
@@ -115,20 +120,20 @@ open class ViewerInventoryItem(
 // ── ViewerInventoryCategory ──────────────────────────────────────────────────
 
 open class ViewerInventoryCategory(
-    uuid: LLUUID          = LLUUID.NULL,
-    parentId: LLUUID      = LLUUID.NULL,
-    preferredType: Int    = FolderType.NONE.value,
-    name: String          = "",
-    val ownerId: LLUUID   = LLUUID.NULL
-) : InventoryCategory(uuid, parentId, preferredType, name) {
-
+    uuid: LLUUID        = LLUUID.NULL,
+    parentId: LLUUID    = LLUUID.NULL,
+    preferredType: Int  = FolderType.NONE.value,
+    name: String        = "",
+    val ownerId: LLUUID = LLUUID.NULL
+) : InventoryCategory(
+    uuid = uuid, parentId = parentId, preferredType = preferredType, name = name
+) {
     enum class FetchType { NONE, NORMAL, RECURSIVE, FAILED }
 
     var version: Int = VERSION_UNKNOWN
     var descendentCount: Int = DESCENDENT_COUNT_UNKNOWN
     private var fetching: FetchType = FetchType.NONE
-    private var descendentsRequestedAt: Long = 0L
-    private var descendentsExpiry: Long = 0L
+    private var descendentsExpiryMs: Long = 0L
 
     constructor(ownerId: LLUUID) : this(
         uuid = LLUUID.NULL, parentId = LLUUID.NULL,
@@ -136,24 +141,19 @@ open class ViewerInventoryCategory(
     )
 
     constructor(other: ViewerInventoryCategory) : this(
-        uuid = other.uuid, parentId = other.parentId,
-        preferredType = other.preferredType, name = other.name, ownerId = other.ownerId
+        uuid = other.uuid, parentId = other.parentId, preferredType = other.preferredType,
+        name = other.name, ownerId = other.ownerId
     ) {
         version = other.version
         descendentCount = other.descendentCount
-        descendentsRequestedAt = other.descendentsRequestedAt
-        descendentsExpiry = other.descendentsExpiry
+        descendentsExpiryMs = other.descendentsExpiryMs
     }
 
     fun copyViewerCategory(other: ViewerInventoryCategory) {
-        uuid = other.uuid
-        parentId = other.parentId
-        preferredType = other.preferredType
-        name = other.name
-        version = other.version
+        uuid = other.uuid; parentId = other.parentId; preferredType = other.preferredType
+        name = other.name; version = other.version
         descendentCount = other.descendentCount
-        descendentsRequestedAt = other.descendentsRequestedAt
-        descendentsExpiry = other.descendentsExpiry
+        descendentsExpiryMs = other.descendentsExpiryMs
     }
 
     fun fetch(expirySeconds: Int = 10): Boolean {
@@ -176,14 +176,14 @@ open class ViewerInventoryCategory(
                 resetDescendentsTimer(FETCH_FAILURE_EXPIRY_MS)
                 fetching = type
             }
-            type > fetching -> {
+            type.ordinal > fetching.ordinal -> {
                 if (isDescendentsTimerExpired() || fetching == FetchType.NONE) {
                     resetDescendentsTimer(FETCH_TIMER_EXPIRY_MS)
                 }
                 fetching = type
             }
             type == FetchType.NONE -> {
-                stopDescendentsTimer()
+                descendentsExpiryMs = 0L
                 fetching = type
             }
         }
@@ -191,6 +191,15 @@ open class ViewerInventoryCategory(
 
     fun getViewerDescendentCount(): Int {
         TODO("APR: use JVM equivalent - call InventoryModel.getDirectDescendentsOf(uuid)")
+    }
+
+    open fun updateParentOnServer(restamp: Boolean) {
+        TODO("APR: use JVM equivalent - send MoveInventoryFolder to server")
+    }
+
+    open fun updateServer(isNew: Boolean) {
+        if (FolderType.fromValue(preferredType) in FolderType.isProtectedTypes) return
+        TODO("APR: use JVM equivalent - send UpdateInventoryFolder or AIS UpdateCategory")
     }
 
     fun acceptItem(item: InventoryItem): Boolean {
@@ -203,7 +212,7 @@ open class ViewerInventoryCategory(
 
     fun changeType(newType: Int) {
         preferredType = newType
-        TODO("APR: use JVM equivalent - send UpdateInventoryFolder/AIS UpdateCategory to server")
+        TODO("APR: use JVM equivalent - send UpdateInventoryFolder or AIS UpdateCategory")
     }
 
     fun localizeName() {
@@ -211,17 +220,12 @@ open class ViewerInventoryCategory(
     }
 
     private fun isDescendentsTimerExpired(): Boolean {
-        if (descendentsExpiry == 0L) return true
-        return System.currentTimeMillis() > descendentsExpiry
+        if (descendentsExpiryMs == 0L) return true
+        return System.currentTimeMillis() > descendentsExpiryMs
     }
 
     private fun resetDescendentsTimer(durationMs: Long) {
-        descendentsRequestedAt = System.currentTimeMillis()
-        descendentsExpiry = descendentsRequestedAt + durationMs
-    }
-
-    private fun stopDescendentsTimer() {
-        descendentsExpiry = 0L
+        descendentsExpiryMs = System.currentTimeMillis() + durationMs
     }
 
     companion object {
@@ -231,15 +235,14 @@ open class ViewerInventoryCategory(
 
         private const val FETCH_FAILURE_EXPIRY_MS = 60_000L
         private const val FETCH_TIMER_EXPIRY_MS   = 30_000L
-
-        private const val PERM_COPY: UInt = 0x00008000u
+        private const val PERM_COPY: UInt          = 0x00008000u
     }
 }
 
-// ── Localized name dictionary (singleton) ────────────────────────────────────
+// ── Localized name dictionary ─────────────────────────────────────────────────
 
 object LocalizedInventoryDictionary {
-    private val dict: MutableMap<String, String> = mutableMapOf(
+    private val dict: Map<String, String> = mapOf(
         "New Shape" to "New Shape", "New Skin" to "New Skin",
         "New Hair" to "New Hair",   "New Eyes" to "New Eyes",
         "New Shirt" to "New Shirt", "New Pants" to "New Pants",
@@ -251,40 +254,40 @@ object LocalizedInventoryDictionary {
         "New Physics" to "New Physics", "Invalid Wearable" to "Invalid Wearable",
         "New Gesture" to "New Gesture", "New Material" to "New Material",
         "New Script" to "New Script", "New Folder" to "New Folder",
-        "New Note" to "New Note",   "Contents" to "Contents"
+        "New Note" to "New Note",   "Contents" to "Contents",
+        "Gesture" to "Gesture", "Male Gestures" to "Male Gestures",
+        "Female Gestures" to "Female Gestures", "Other Gestures" to "Other Gestures",
+        "Speech Gestures" to "Speech Gestures", "Common Gestures" to "Common Gestures"
     )
 
     fun localize(name: String): String? = dict[name]
 }
 
-// ── InventoryCallback ────────────────────────────────────────────────────────
+// ── InventoryCallback ─────────────────────────────────────────────────────────
 
 abstract class InventoryCallback {
     abstract fun fire(itemId: LLUUID)
 }
 
 class FuncInventoryCallback(
-    private val onFire: InventoryFunc,
+    fireFunc: InventoryFunc,
     private val onDestroy: NullaryFunc = ::noOp
 ) : InventoryCallback() {
-    private val fireFuncs: MutableList<InventoryFunc> = mutableListOf(onFire)
+    private val fireFuncs: MutableList<InventoryFunc> = mutableListOf(fireFunc)
 
     fun addOnFireFunc(func: InventoryFunc) { fireFuncs.add(func) }
 
-    override fun fire(itemId: LLUUID) {
-        fireFuncs.forEach { it(itemId) }
-    }
+    override fun fire(itemId: LLUUID) { fireFuncs.forEach { it(itemId) } }
 }
 
 class AddFavoriteLandmarkCallback : InventoryCallback() {
     var targetLandmarkId: LLUUID = LLUUID.NULL
-
     override fun fire(itemId: LLUUID) {
         TODO("APR: use JVM equivalent - handle favorite landmark creation for item $itemId")
     }
 }
 
-// ── InventoryCallbackManager ─────────────────────────────────────────────────
+// ── InventoryCallbackManager ──────────────────────────────────────────────────
 
 object InventoryCallbackManager {
     private val callbackMap: MutableMap<UInt, InventoryCallback> = mutableMapOf()
@@ -302,50 +305,36 @@ object InventoryCallbackManager {
         callbackMap.remove(callbackId)?.fire(itemId)
     }
 
-    fun destroy() {
-        callbackMap.clear()
-    }
+    fun destroy() { callbackMap.clear() }
 }
 
-// ── Top-level inventory operation stubs ──────────────────────────────────────
+// ── Top-level inventory operation stubs ───────────────────────────────────────
 
 const val NO_INV_SUBTYPE: UByte = 0u
 
+private const val AT_GESTURE  = 21
+private const val AT_SETTINGS = 49
+private const val INV_TYPE_WEARABLE  = 18
+private const val INV_TYPE_SETTINGS  = 25
+
 fun createInventoryItem(
-    agentId: LLUUID,
-    sessionId: LLUUID,
-    parentId: LLUUID,
-    transactionId: LLUUID,
-    name: String,
-    desc: String,
-    assetType: Int,
-    invType: Int,
-    subtype: UByte,
-    nextOwnerPerm: UInt,
-    cb: InventoryCallback?
-) {
-    TODO("APR: use JVM equivalent - send CreateInventoryItem message or AIS CreateInventory")
-}
+    agentId: LLUUID, sessionId: LLUUID, parentId: LLUUID, transactionId: LLUUID,
+    name: String, desc: String, assetType: Int, invType: Int, subtype: UByte,
+    nextOwnerPerm: UInt, cb: InventoryCallback?
+) { TODO("APR: use JVM equivalent - send CreateInventoryItem message or AIS CreateInventory") }
 
 fun createInventoryWearable(
     agentId: LLUUID, sessionId: LLUUID, parentId: LLUUID, transactionId: LLUUID,
     name: String, desc: String, assetType: Int, wearableType: Int,
     nextOwnerPerm: UInt, cb: InventoryCallback?
-) {
-    createInventoryItem(agentId, sessionId, parentId, transactionId,
-        name, desc, assetType, INV_TYPE_WEARABLE, wearableType.toUByte(),
-        nextOwnerPerm, cb)
-}
+) { createInventoryItem(agentId, sessionId, parentId, transactionId,
+        name, desc, assetType, INV_TYPE_WEARABLE, wearableType.toUByte(), nextOwnerPerm, cb) }
 
 fun createInventorySettings(
     agentId: LLUUID, sessionId: LLUUID, parentId: LLUUID, transactionId: LLUUID,
-    name: String, desc: String, settingsType: Int, nextOwnerPerm: UInt,
-    cb: InventoryCallback?
-) {
-    createInventoryItem(agentId, sessionId, parentId, transactionId,
-        name, desc, AT_SETTINGS, INV_TYPE_SETTINGS, settingsType.toUByte(),
-        nextOwnerPerm, cb)
-}
+    name: String, desc: String, settingsType: Int, nextOwnerPerm: UInt, cb: InventoryCallback?
+) { createInventoryItem(agentId, sessionId, parentId, transactionId,
+        name, desc, AT_SETTINGS, INV_TYPE_SETTINGS, settingsType.toUByte(), nextOwnerPerm, cb) }
 
 fun createInventoryCallingCard(avatarId: LLUUID, parentId: LLUUID = LLUUID.NULL, cb: InventoryCallback? = null) {
     TODO("APR: use JVM equivalent - look up avatar name then createInventoryItem(AT_CALLINGCARD)")
@@ -354,9 +343,7 @@ fun createInventoryCallingCard(avatarId: LLUUID, parentId: LLUUID = LLUUID.NULL,
 fun copyInventoryItem(
     agentId: LLUUID, currentOwner: LLUUID, itemId: LLUUID,
     parentId: LLUUID, newName: String, cb: InventoryCallback?
-) {
-    TODO("APR: use JVM equivalent - send CopyInventoryItem message")
-}
+) { TODO("APR: use JVM equivalent - send CopyInventoryItem message") }
 
 fun linkInventoryObject(category: LLUUID, baseObjId: LLUUID, cb: InventoryCallback?) {
     TODO("APR: use JVM equivalent - build link payload and call AIS CreateInventory or LinkInventoryItem msg")
@@ -369,9 +356,7 @@ fun linkInventoryArray(category: LLUUID, baseObjIds: List<LLUUID>, cb: Inventory
 fun moveInventoryItem(
     agentId: LLUUID, sessionId: LLUUID, itemId: LLUUID,
     parentId: LLUUID, newName: String, cb: InventoryCallback?
-) {
-    TODO("APR: use JVM equivalent - send MoveInventoryItem message")
-}
+) { TODO("APR: use JVM equivalent - send MoveInventoryItem message") }
 
 fun updateInventoryItem(updateItem: ViewerInventoryItem, cb: InventoryCallback?) {
     TODO("APR: use JVM equivalent - send UpdateInventoryItem or AIS UpdateItem")
@@ -394,8 +379,8 @@ fun removeInventoryCategory(catId: LLUUID, cb: InventoryCallback?) {
 }
 
 fun removeInventoryObject(objectId: LLUUID, cb: InventoryCallback?) {
-    val item = InventoryModel.getItem(objectId)
-    if (item != null) removeInventoryItem(objectId, cb) else removeInventoryCategory(objectId, cb)
+    if (InventoryModel.itemMap.containsKey(objectId)) removeInventoryItem(objectId, cb)
+    else removeInventoryCategory(objectId, cb)
 }
 
 fun purgeDescendentsOf(catId: LLUUID, cb: InventoryCallback?) {
@@ -405,16 +390,14 @@ fun purgeDescendentsOf(catId: LLUUID, cb: InventoryCallback?) {
 fun copyInventoryFromNotecard(
     destinationId: LLUUID, objectId: LLUUID, notecardInvId: LLUUID,
     src: InventoryItem, callbackId: UInt = 0u
-) {
-    TODO("APR: use JVM equivalent - request copy from notecard inventory via HTTP cap")
-}
+) { TODO("APR: use JVM equivalent - request copy from notecard inventory via HTTP cap") }
 
 fun slamInventoryFolder(folderId: LLUUID, contents: List<Map<String, Any>>, cb: InventoryCallback?) {
     TODO("APR: use JVM equivalent - send AIS/HTTP slam folder request")
 }
 
 fun removeFolderContents(folderId: LLUUID, keepOutfitLinks: Boolean, cb: InventoryCallback?) {
-    TODO("APR: use JVM equivalent - remove all contents of folder optionally preserving outfit links")
+    TODO("APR: use JVM equivalent - remove all contents of folder, optionally preserving outfit links")
 }
 
 fun activateGestureCallback(itemId: LLUUID) {
@@ -426,30 +409,24 @@ fun activateGestureCallback(itemId: LLUUID) {
 
 fun createScriptCallback(itemId: LLUUID) {
     if (itemId == LLUUID.NULL) return
-    val item = InventoryModel.getItem(itemId) ?: return
+    InventoryModel.getItem(itemId) ?: return
     TODO("APR: use JVM equivalent - set default permissions for Scripts and notify observers")
 }
 
 fun createGestureCallback(itemId: LLUUID) {
     if (itemId == LLUUID.NULL) return
-    val item = InventoryModel.getItem(itemId) ?: return
+    InventoryModel.getItem(itemId) ?: return
     TODO("APR: use JVM equivalent - activate gesture and set default permissions for Gestures")
 }
 
 fun createNotecardCallback(itemId: LLUUID) {
     if (itemId == LLUUID.NULL) return
-    val item = InventoryModel.getItem(itemId) ?: return
+    InventoryModel.getItem(itemId) ?: return
     TODO("APR: use JVM equivalent - set default permissions for Notecards and notify observers")
 }
 
 fun rezAttachmentCallback(itemId: LLUUID, attachmentPoint: Int, replace: Boolean) {
     if (itemId == LLUUID.NULL) return
-    val item = InventoryModel.getItem(itemId) ?: return
+    InventoryModel.getItem(itemId) ?: return
     TODO("APR: use JVM equivalent - rez attachment via agent/object manager")
 }
-
-// Asset type constants mirroring C++ AT_* and IT_* enums
-private const val AT_GESTURE  = 21
-private const val AT_SETTINGS = 49
-private const val INV_TYPE_WEARABLE  = 18
-private const val INV_TYPE_SETTINGS  = 25

@@ -2,8 +2,15 @@ package com.firestorm.newview
 
 import com.firestorm.llcommon.LLUUID
 import com.firestorm.llinventory.FolderType
-import com.firestorm.llinventory.InventoryCategory
-import com.firestorm.llinventory.InventoryItem
+
+enum class HasChildren { NO, YES, MAYBE }
+enum class AncestorResult { OK, MISSING, LOOP }
+
+data class CategoryUpdate(
+    val categoryId: LLUUID = LLUUID.NULL,
+    val descendentDelta: Int = 0,
+    val changeVersion: Boolean = true
+)
 
 object ChangeType {
     const val NONE: UInt         = 0u
@@ -17,63 +24,53 @@ object ChangeType {
     const val REBUILD: UInt      = 128u
     const val SORT: UInt         = 256u
     const val CREATE: UInt       = 512u
-    const val UPDATE_CREATE: UInt   = 1024u
-    const val UPDATE_FAVORITE: UInt = 2048u
+    const val UPDATE_CREATE: UInt    = 1024u
+    const val UPDATE_FAVORITE: UInt  = 2048u
     const val ALL: UInt          = 0xFFFFFFFFu
 }
 
-enum class HasChildren { NO, YES, MAYBE }
-
-enum class AncestorResult { OK, MISSING, LOOP }
-
-data class CategoryUpdate(
-    val categoryId: LLUUID = LLUUID.NULL,
-    val descendentDelta: Int = 0,
-    val changeVersion: Boolean = true
-)
-
 object InventoryModel {
 
-    val itemMap: MutableMap<LLUUID, ViewerInventoryItem>       = mutableMapOf()
+    val itemMap: MutableMap<LLUUID, ViewerInventoryItem>         = mutableMapOf()
     val categoryMap: MutableMap<LLUUID, ViewerInventoryCategory> = mutableMapOf()
 
-    private val parentChildCategoryTree: MutableMap<LLUUID, MutableList<ViewerInventoryCategory>> = mutableMapOf()
-    private val parentChildItemTree:     MutableMap<LLUUID, MutableList<ViewerInventoryItem>>     = mutableMapOf()
+    private val parentChildCatTree:  MutableMap<LLUUID, MutableList<ViewerInventoryCategory>> = mutableMapOf()
+    private val parentChildItemTree: MutableMap<LLUUID, MutableList<ViewerInventoryItem>>     = mutableMapOf()
+    private val backlinkMap:         MutableMap<LLUUID, MutableSet<LLUUID>>                   = mutableMapOf()
 
-    private val backlinkMap: MutableMap<LLUUID, MutableSet<LLUUID>> = mutableMapOf()
-
-    var rootFolderId: LLUUID        = LLUUID.NULL
+    var rootFolderId:        LLUUID = LLUUID.NULL
     var libraryRootFolderId: LLUUID = LLUUID.NULL
-    var libraryOwnerId: LLUUID      = LLUUID.NULL
+    var libraryOwnerId:      LLUUID = LLUUID.NULL
 
     private var isAgentInvUsable: Boolean = false
 
     private val observers: MutableSet<InventoryObserver> = mutableSetOf()
 
-    private var modifyMask: UInt = ChangeType.NONE
+    var modifyMask: UInt = ChangeType.NONE
+        private set
     val changedItemIds: MutableSet<LLUUID> = mutableSetOf()
     val addedItemIds:   MutableSet<LLUUID> = mutableSetOf()
 
     private var isNotifyingObservers: Boolean = false
 
-    // ── Accessors ────────────────────────────────────────────────────────────
+    // ── Initialization ────────────────────────────────────────────────────────
 
     fun isInventoryUsable(): Boolean = isAgentInvUsable
 
-    fun getRootFolderID(): LLUUID        = rootFolderId
-    fun getLibraryRootFolderID(): LLUUID = libraryRootFolderId
-    fun getLibraryOwnerID(): LLUUID      = libraryOwnerId
     fun setRootFolderID(id: LLUUID)        { rootFolderId = id }
     fun setLibraryRootFolderID(id: LLUUID) { libraryRootFolderId = id }
     fun setLibraryOwnerID(id: LLUUID)      { libraryOwnerId = id }
+    fun getRootFolderID(): LLUUID          = rootFolderId
+    fun getLibraryRootFolderID(): LLUUID   = libraryRootFolderId
+    fun getLibraryOwnerID(): LLUUID        = libraryOwnerId
 
-    fun getItem(id: LLUUID): ViewerInventoryItem?       = itemMap[id]
+    // ── Accessors ─────────────────────────────────────────────────────────────
+
+    fun getItem(id: LLUUID): ViewerInventoryItem?        = itemMap[id]
     fun getCategory(id: LLUUID): ViewerInventoryCategory? = categoryMap[id]
-
+    fun getObject(id: LLUUID): Any? = itemMap[id] ?: categoryMap[id]
     fun getItemCount(): Int     = itemMap.size
     fun getCategoryCount(): Int = categoryMap.size
-
-    fun getObject(id: LLUUID): Any? = itemMap[id] ?: categoryMap[id]
 
     fun getLinkedItemID(objectId: LLUUID): LLUUID {
         val item = itemMap[objectId] ?: return objectId
@@ -82,17 +79,8 @@ object InventoryModel {
 
     fun getLinkedItem(objectId: LLUUID): ViewerInventoryItem? = getItem(getLinkedItemID(objectId))
 
-    fun getDirectDescendentsOf(catId: LLUUID): Pair<List<ViewerInventoryCategory>, List<ViewerInventoryItem>> {
-        val cats  = parentChildCategoryTree[catId] ?: emptyList()
-        val items = parentChildItemTree[catId] ?: emptyList()
-        return Pair(cats, items)
-    }
-
-    fun getItemsByName(name: String): List<ViewerInventoryItem> =
-        itemMap.values.filter { it.name == name }
-
-    fun getCategoriesByName(name: String): List<ViewerInventoryCategory> =
-        categoryMap.values.filter { it.name == name }
+    fun getDirectDescendentsOf(catId: LLUUID): Pair<List<ViewerInventoryCategory>, List<ViewerInventoryItem>> =
+        Pair(parentChildCatTree[catId] ?: emptyList(), parentChildItemTree[catId] ?: emptyList())
 
     fun findCategoryByName(name: String): LLUUID? =
         categoryMap.values.firstOrNull { it.name == name }?.uuid
@@ -115,9 +103,7 @@ object InventoryModel {
         var current = objId
         val visited = mutableSetOf<LLUUID>()
         while (current != LLUUID.NULL && visited.add(current)) {
-            val item = itemMap[current]
-            val cat  = categoryMap[current]
-            val parent = item?.parentId ?: cat?.parentId ?: return false
+            val parent = itemMap[current]?.parentId ?: categoryMap[current]?.parentId ?: return false
             if (parent == catId) return true
             current = parent
         }
@@ -129,9 +115,7 @@ object InventoryModel {
         val visited = mutableSetOf<LLUUID>()
         while (true) {
             if (!visited.add(current)) return Pair(AncestorResult.LOOP, current)
-            val item = itemMap[current]
-            val cat  = categoryMap[current]
-            val parent = item?.parentId ?: cat?.parentId
+            val parent = itemMap[current]?.parentId ?: categoryMap[current]?.parentId
                 ?: return Pair(AncestorResult.MISSING, current)
             if (parent == LLUUID.NULL) return Pair(AncestorResult.OK, current)
             current = parent
@@ -148,39 +132,29 @@ object InventoryModel {
 
     fun categoryHasChildren(catId: LLUUID): HasChildren {
         val cat = categoryMap[catId] ?: return HasChildren.NO
-        return when {
-            cat.descendentCount == ViewerInventoryCategory.DESCENDENT_COUNT_UNKNOWN -> HasChildren.MAYBE
-            cat.descendentCount > 0 -> HasChildren.YES
-            else -> {
-                val (cats, items) = getDirectDescendentsOf(catId)
-                if (cats.isNotEmpty() || items.isNotEmpty()) HasChildren.YES else HasChildren.NO
-            }
-        }
+        if (cat.descendentCount == ViewerInventoryCategory.DESCENDENT_COUNT_UNKNOWN) return HasChildren.MAYBE
+        if (cat.descendentCount > 0) return HasChildren.YES
+        val (cats, items) = getDirectDescendentsOf(catId)
+        return if (cats.isNotEmpty() || items.isNotEmpty()) HasChildren.YES else HasChildren.NO
     }
 
-    fun fetchDescendentsOf(folderId: LLUUID): Boolean {
-        val cat = categoryMap[folderId] ?: return false
-        return cat.fetch()
-    }
+    fun fetchDescendentsOf(folderId: LLUUID): Boolean =
+        categoryMap[folderId]?.fetch() ?: false
 
-    fun collectDescendents(
-        id: LLUUID,
-        includeTrash: Boolean,
-        categories: MutableList<ViewerInventoryCategory> = mutableListOf(),
-        items: MutableList<ViewerInventoryItem> = mutableListOf()
-    ): Pair<List<ViewerInventoryCategory>, List<ViewerInventoryItem>> {
+    fun collectDescendents(id: LLUUID, includeTrash: Boolean): Pair<List<ViewerInventoryCategory>, List<ViewerInventoryItem>> {
         val trashId = findCategoryUUIDForType(FolderType.TRASH)
-        val queue = ArrayDeque<LLUUID>()
-        queue.add(id)
+        val resultCats  = mutableListOf<ViewerInventoryCategory>()
+        val resultItems = mutableListOf<ViewerInventoryItem>()
+        val queue = ArrayDeque<LLUUID>().also { it.add(id) }
         while (queue.isNotEmpty()) {
             val current = queue.removeFirst()
-            if (!includeTrash && trashId != null && current == trashId) continue
+            if (!includeTrash && current == trashId) continue
             val (childCats, childItems) = getDirectDescendentsOf(current)
-            categories.addAll(childCats)
-            items.addAll(childItems)
+            resultCats.addAll(childCats)
+            resultItems.addAll(childItems)
             childCats.forEach { queue.add(it.uuid) }
         }
-        return Pair(categories, items)
+        return Pair(resultCats, resultItems)
     }
 
     fun collectLinksTo(itemId: LLUUID): List<ViewerInventoryItem> =
@@ -192,30 +166,30 @@ object InventoryModel {
         return LLUUID.fromString(hash.toString().padStart(32, '0').take(32))
     }
 
-    // ── Mutators ─────────────────────────────────────────────────────────────
+    // ── Mutators ──────────────────────────────────────────────────────────────
 
     fun updateItem(item: ViewerInventoryItem, mask: UInt = 0u): UInt {
-        val existing = itemMap[item.uuid]
+        val old = itemMap[item.uuid]
         var changeMask = mask
-        if (existing != null && existing.parentId != item.parentId) {
-            parentChildItemTree[existing.parentId]?.remove(existing)
+        if (old != null && old.parentId != item.parentId) {
+            parentChildItemTree[old.parentId]?.remove(old)
             changeMask = changeMask or ChangeType.STRUCTURE
         }
         itemMap[item.uuid] = item
         parentChildItemTree.getOrPut(item.parentId) { mutableListOf() }.let {
-            if (!it.contains(item)) it.add(item)
+            if (item !in it) it.add(item)
         }
         return changeMask or ChangeType.ADD
     }
 
     fun updateCategory(cat: ViewerInventoryCategory, mask: UInt = 0u) {
-        val existing = categoryMap[cat.uuid]
-        if (existing != null && existing.parentId != cat.parentId) {
-            parentChildCategoryTree[existing.parentId]?.remove(existing)
+        val old = categoryMap[cat.uuid]
+        if (old != null && old.parentId != cat.parentId) {
+            parentChildCatTree[old.parentId]?.remove(old)
         }
         categoryMap[cat.uuid] = cat
-        parentChildCategoryTree.getOrPut(cat.parentId) { mutableListOf() }.let {
-            if (!it.contains(cat)) it.add(cat)
+        parentChildCatTree.getOrPut(cat.parentId) { mutableListOf() }.let {
+            if (cat !in it) it.add(cat)
         }
     }
 
@@ -229,9 +203,9 @@ object InventoryModel {
         }
         val cat = categoryMap[objectId]
         if (cat != null) {
-            parentChildCategoryTree[cat.parentId]?.remove(cat)
+            parentChildCatTree[cat.parentId]?.remove(cat)
             cat.parentId = catId
-            parentChildCategoryTree.getOrPut(catId) { mutableListOf() }.add(cat)
+            parentChildCatTree.getOrPut(catId) { mutableListOf() }.add(cat)
         }
     }
 
@@ -247,7 +221,7 @@ object InventoryModel {
         addChangedMask(ChangeType.STRUCTURE, cat.uuid)
     }
 
-    open fun deleteObject(id: LLUUID, fixBrokenLinks: Boolean = true, doNotifyObservers: Boolean = true) {
+    fun deleteObject(id: LLUUID, fixBrokenLinks: Boolean = true, doNotifyObservers: Boolean = true) {
         val item = itemMap.remove(id)
         if (item != null) {
             parentChildItemTree[item.parentId]?.remove(item)
@@ -256,7 +230,7 @@ object InventoryModel {
         }
         val cat = categoryMap.remove(id)
         if (cat != null) {
-            parentChildCategoryTree[cat.parentId]?.remove(cat)
+            parentChildCatTree[cat.parentId]?.remove(cat)
             if (doNotifyObservers) addChangedMask(ChangeType.REMOVE or ChangeType.STRUCTURE, id)
         }
     }
@@ -282,14 +256,12 @@ object InventoryModel {
         fixBrokenLinks: Boolean = true,
         updateParentVersion: Boolean = true,
         doNotifyObservers: Boolean = true
-    ) {
-        deleteObject(itemId, fixBrokenLinks, doNotifyObservers)
-    }
+    ) = deleteObject(itemId, fixBrokenLinks, doNotifyObservers)
 
     fun onDescendentsPurgedFromServer(objectId: LLUUID, fixBrokenLinks: Boolean = true) {
         val (childCats, childItems) = getDirectDescendentsOf(objectId)
         childItems.forEach { deleteObject(it.uuid, fixBrokenLinks, false) }
-        childCats.forEach { deleteObject(it.uuid, fixBrokenLinks, false) }
+        childCats.forEach  { deleteObject(it.uuid, fixBrokenLinks, false) }
         addChangedMask(ChangeType.REMOVE or ChangeType.STRUCTURE, objectId)
     }
 
@@ -305,20 +277,25 @@ object InventoryModel {
         addChangedMask(ChangeType.LABEL, catId)
     }
 
+    // ── Category accounting ───────────────────────────────────────────────────
+
     fun accountForUpdate(update: CategoryUpdate) {
         val cat = categoryMap[update.categoryId] ?: return
-        cat.descendentCount += update.descendentDelta
+        cat.descendentCount = maxOf(0, cat.descendentCount + update.descendentDelta)
         if (update.changeVersion && cat.version != ViewerInventoryCategory.VERSION_UNKNOWN) {
             cat.version++
         }
     }
 
-    fun accountForUpdate(updates: List<CategoryUpdate>) {
-        updates.forEach { accountForUpdate(it) }
-    }
+    fun accountForUpdate(updates: List<CategoryUpdate>) = updates.forEach { accountForUpdate(it) }
+
+    fun accountForUpdate(updates: Map<LLUUID, Int>) =
+        updates.forEach { (id, delta) -> accountForUpdate(CategoryUpdate(id, delta)) }
+
+    // ── Reorder ───────────────────────────────────────────────────────────────
 
     fun rearrangeFavoriteLandmarks(sourceItemId: LLUUID, targetItemId: LLUUID) {
-        val favId = findCategoryUUIDForType(FolderType.FAVORITES) ?: return
+        val favId = findCategoryUUIDForType(FolderType.FAVORITE) ?: return
         val items = parentChildItemTree[favId] ?: return
         val srcItem = items.find { it.uuid == sourceItemId } ?: return
         val tgtIdx  = items.indexOfFirst { it.uuid == targetItemId }
@@ -327,23 +304,40 @@ object InventoryModel {
         items.add(tgtIdx, srcItem)
     }
 
-    fun createNewCategory(
-        parentId: LLUUID,
-        preferredType: FolderType,
-        name: String,
-        callback: InventoryFunc? = null,
-        thumbnailId: LLUUID = LLUUID.NULL
-    ) {
-        TODO("APR: use JVM equivalent - POST to CreateInventoryCategory cap or AIS, then call callback with new UUID")
+    companion object {
+        fun updateItemsOrder(
+            items: MutableList<ViewerInventoryItem>,
+            srcItemId: LLUUID, dstItemId: LLUUID,
+            insertBefore: Boolean = true
+        ) {
+            val srcItem = items.find { it.uuid == srcItemId } ?: return
+            val dstIdx  = items.indexOfFirst { it.uuid == dstItemId }
+            if (dstIdx < 0) return
+            items.remove(srcItem)
+            val insertIdx = if (insertBefore) items.indexOfFirst { it.uuid == dstItemId } else
+                items.indexOfFirst { it.uuid == dstItemId } + 1
+            items.add(insertIdx.coerceAtLeast(0), srcItem)
+        }
     }
 
-    // ── Category accounting ───────────────────────────────────────────────────
+    // ── Creation ──────────────────────────────────────────────────────────────
+
+    fun createNewCategory(
+        parentId: LLUUID, preferredType: FolderType, name: String,
+        callback: InventoryFunc? = null, thumbnailId: LLUUID = LLUUID.NULL
+    ) { TODO("APR: use JVM equivalent - POST to CreateInventoryCategory cap or AIS, then call callback") }
+
+    fun ensureCategoryForTypeExists(preferredType: FolderType) {
+        if (findCategoryUUIDForType(preferredType) == null) {
+            createNewCategory(rootFolderId, preferredType, preferredType.name)
+        }
+    }
 
     fun buildParentChildMap() {
-        parentChildCategoryTree.clear()
+        parentChildCatTree.clear()
         parentChildItemTree.clear()
         categoryMap.values.forEach { cat ->
-            parentChildCategoryTree.getOrPut(cat.parentId) { mutableListOf() }.add(cat)
+            parentChildCatTree.getOrPut(cat.parentId) { mutableListOf() }.add(cat)
         }
         itemMap.values.forEach { item ->
             parentChildItemTree.getOrPut(item.parentId) { mutableListOf() }.add(item)
@@ -355,11 +349,9 @@ object InventoryModel {
     fun addBacklinkInfo(linkId: LLUUID, targetId: LLUUID) {
         backlinkMap.getOrPut(targetId) { mutableSetOf() }.add(linkId)
     }
-
     fun removeBacklinkInfo(linkId: LLUUID, targetId: LLUUID) {
         backlinkMap[targetId]?.remove(linkId)
     }
-
     fun hasBacklinkInfo(linkId: LLUUID, targetId: LLUUID): Boolean =
         backlinkMap[targetId]?.contains(linkId) == true
 
@@ -389,16 +381,12 @@ object InventoryModel {
         if (modifyMask != ChangeType.NONE) notifyObservers()
     }
 
-    fun addObserver(observer: InventoryObserver) {
-        observers.add(observer)
-    }
+    fun addObserver(observer: InventoryObserver)    { observers.add(observer) }
+    fun removeObserver(observer: InventoryObserver) { observers.remove(observer) }
+    fun containsObserver(observer: InventoryObserver): Boolean = observer in observers
 
-    fun removeObserver(observer: InventoryObserver) {
-        observers.remove(observer)
-    }
-
-    fun containsObserver(observer: InventoryObserver): Boolean =
-        observers.contains(observer)
+    fun getAddedIDs(): Set<LLUUID>   = addedItemIds
+    fun getChangedIDs(): Set<LLUUID> = changedItemIds
 
     // ── Persistence stubs ─────────────────────────────────────────────────────
 
@@ -408,33 +396,5 @@ object InventoryModel {
 
     fun cache(parentFolderId: LLUUID, agentId: LLUUID) {
         TODO("APR: use JVM equivalent - serialize inventory to local cache file")
-    }
-
-    fun ensureCategoryForTypeExists(preferredType: FolderType) {
-        if (findCategoryUUIDForType(preferredType) == null) {
-            createNewCategory(rootFolderId, preferredType, preferredType.name)
-        }
-    }
-
-    companion object {
-        fun getIsFirstTimeInViewer2(): Boolean = false
-        fun isSysFoldersReady(): Boolean = true
-    }
-}
-
-open class ViewerInventoryCategory(
-    uuid: LLUUID = LLUUID.NULL,
-    parentId: LLUUID = LLUUID.NULL,
-    preferredType: Int = FolderType.NONE.value,
-    name: String = "",
-    ownerId: LLUUID = LLUUID.NULL
-) : com.firestorm.newview.ViewerInventoryCategory(uuid, parentId, preferredType, name, ownerId) {
-    fun updateParentOnServer(restamp: Boolean) {
-        TODO("APR: use JVM equivalent - send MoveInventoryFolder to server")
-    }
-
-    fun updateServer(isNew: Boolean) {
-        if (FolderType.fromValue(preferredType)?.isProtected == true) return
-        TODO("APR: use JVM equivalent - send UpdateInventoryFolder or AIS UpdateCategory")
     }
 }

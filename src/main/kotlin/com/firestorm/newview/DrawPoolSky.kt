@@ -39,4 +39,3 @@ class DrawPoolSky : FacePool(DrawPool.PoolType.SKY.value.toUInt()) {
     }
 }
 
-class SkyTex

@@ -1,39 +1,40 @@
 package com.firestorm.newview
 
-class DrawPoolMaterials : RenderPass(DrawPool.POOL_MATERIALS) {
+class DrawPoolMaterials : RenderPass(DrawPool.PoolType.MATERIALS.value.toUInt()) {
 
-    private var shader: GlslShader? = null
+    private var shader: GLSLShader? = null
 
     companion object {
         const val VERTEX_DATA_MASK: UInt = (
-            VertexBuffer.MAP_VERTEX or
-            VertexBuffer.MAP_NORMAL or
-            VertexBuffer.MAP_TEXCOORD0 or
-            VertexBuffer.MAP_TEXCOORD1 or
-            VertexBuffer.MAP_TEXCOORD2 or
-            VertexBuffer.MAP_COLOR or
-            VertexBuffer.MAP_TANGENT
+            VertexBufferFlags.MAP_VERTEX or
+            VertexBufferFlags.MAP_NORMAL or
+            VertexBufferFlags.MAP_TEXCOORD0 or
+            VertexBufferFlags.MAP_TEXCOORD1 or
+            VertexBufferFlags.MAP_TEXCOORD2 or
+            VertexBufferFlags.MAP_COLOR or
+            VertexBufferFlags.MAP_TANGENT
         )
 
         private val SHADER_IDX = intArrayOf(0, 2, 3, 4, 6, 7, 8, 10, 11, 12, 14, 15)
 
         private val TYPE_LIST = intArrayOf(
-            RenderPass.PASS_MATERIAL,
-            RenderPass.PASS_MATERIAL_ALPHA_MASK,
-            RenderPass.PASS_MATERIAL_ALPHA_EMISSIVE,
-            RenderPass.PASS_SPECMAP,
-            RenderPass.PASS_SPECMAP_MASK,
-            RenderPass.PASS_SPECMAP_EMISSIVE,
-            RenderPass.PASS_NORMMAP,
-            RenderPass.PASS_NORMMAP_MASK,
-            RenderPass.PASS_NORMMAP_EMISSIVE,
-            RenderPass.PASS_NORMSPEC,
-            RenderPass.PASS_NORMSPEC_MASK,
-            RenderPass.PASS_NORMSPEC_EMISSIVE,
+            RenderPass.PassType.PASS_MATERIAL.value,
+            RenderPass.PassType.PASS_MATERIAL_ALPHA_MASK.value,
+            RenderPass.PassType.PASS_MATERIAL_ALPHA_EMISSIVE.value,
+            RenderPass.PassType.PASS_SPECMAP.value,
+            RenderPass.PassType.PASS_SPECMAP_MASK.value,
+            RenderPass.PassType.PASS_SPECMAP_EMISSIVE.value,
+            RenderPass.PassType.PASS_NORMMAP.value,
+            RenderPass.PassType.PASS_NORMMAP_MASK.value,
+            RenderPass.PassType.PASS_NORMMAP_EMISSIVE.value,
+            RenderPass.PassType.PASS_NORMSPEC.value,
+            RenderPass.PassType.PASS_NORMSPEC_MASK.value,
+            RenderPass.PassType.PASS_NORMSPEC_EMISSIVE.value,
         )
     }
 
     override fun getVertexDataMask(): UInt = VERTEX_DATA_MASK
+    override fun isDead(): Boolean = false
 
     override fun render(pass: Int) {}
 
@@ -49,14 +50,14 @@ class DrawPoolMaterials : RenderPass(DrawPool.POOL_MATERIALS) {
         var p = pass
         val rigged = p >= 12
         if (rigged) p -= 12
-
         val idx = SHADER_IDX[p]
-        TODO("GPU: shader = gDeferredMaterialProgram[idx]; if rigged use mRiggedVariant; " +
+        TODO("GPU: shader = gDeferredMaterialProgram[idx]; " +
+             "if rigged: shader = shader.mRiggedVariant; " +
              "Pipeline.bindDeferredShader(shader)")
     }
 
     override fun endDeferredPass(pass: Int) {
-        TODO("GPU: shader.unbind(); RenderPass.endRenderPass(pass)")
+        TODO("GPU: shader.unbind(); endRenderPass(pass)")
     }
 
     override fun renderDeferred(pass: Int) {
@@ -65,72 +66,18 @@ class DrawPoolMaterials : RenderPass(DrawPool.POOL_MATERIALS) {
         if (rigged) p -= 12
 
         val type = if (rigged) TYPE_LIST[p] + 1 else TYPE_LIST[p]
-
-        TODO("GPU: iterate render map for type; per draw-info: set specular/intensity/minAlpha/brightness/normalMap/" +
-             "specMap/diffuse uniforms lazily; uploadMatrixPalette if rigged; applyModelMatrix; " +
-             "handle texture matrix; drawRange TRIANGLES")
-    }
-
-    fun beginDeferredPassImpl(pass: Int) {
-        var p = pass
-        val rigged = p >= 12
-        if (rigged) p -= 12
-
-        val idx = SHADER_IDX[p]
-        val currentShader = resolveShader(idx, rigged)
-        Pipeline.bindDeferredShader(currentShader)
-        this.shader = currentShader
-    }
-
-    fun endDeferredPassImpl(pass: Int) {
-        shader?.unbind()
-    }
-
-    fun renderDeferredImpl(pass: Int) {
-        var p = pass
-        val rigged = p >= 12
-        if (rigged) p -= 12
-
-        val type = if (rigged) TYPE_LIST[p] + 1 else TYPE_LIST[p]
         val drawShader = shader ?: return
 
-        var lastIntensity = 0f
-        var lastFullbright = 0f
-        var lastMinimumAlpha = 0f
-        var lastSpecular = floatArrayOf(0f, 0f, 0f, 0f)
-        var lastNormalMap: Any? = null
-        var lastSpecMap: Any? = null
-        var lastDiffuse: Any? = null
-        var lastAvatar: Any? = null
-        var lastMeshId: ULong = 0uL
-        var skipLastSkin = false
-
-        val intensityLoc = drawShader.getUniformLocation(ShaderMgr.ENVIRONMENT_INTENSITY)
-        val brightnessLoc = drawShader.getUniformLocation(ShaderMgr.EMISSIVE_BRIGHTNESS)
-        val minAlphaLoc = drawShader.getUniformLocation(ShaderMgr.MINIMUM_ALPHA)
-        val specularLoc = drawShader.getUniformLocation(ShaderMgr.SPECULAR_COLOR)
-
-        TODO("GPU: bind diffuse/specular/normal channels; iterate render map; per draw-info lazy-update " +
-             "uniforms; uploadMatrixPalette if rigged; applyModelMatrix; texture matrix; drawRange TRIANGLES; " +
-             "restore texture matrix")
+        TODO("GPU: enable diffuse/specular/normal texture channels on shader; " +
+             "unbindFast diffuse channel; " +
+             "set initial lastIntensity/lastFullbright/lastMinimumAlpha/lastSpecular uniforms if locations valid; " +
+             "iterate render map for type; per DrawInfo: " +
+             "  lazy-update specular color, env intensity, min alpha, fullbright brightness uniforms; " +
+             "  lazy-bind normalMap, specMap, diffuse texture; " +
+             "  if rigged: uploadMatrixPalette (skip if failed); " +
+             "  applyModelMatrix; " +
+             "  if textureMatrix: activate texunit 0, matrixMode MM_TEXTURE, loadMatrix; " +
+             "  setBuffer; drawRange TRIANGLES; " +
+             "  restore texture matrix to identity if set")
     }
-
-    private fun resolveShader(idx: Int, rigged: Boolean): GlslShader {
-        TODO("GPU: return gDeferredMaterialProgram[idx].mRiggedVariant if rigged else gDeferredMaterialProgram[idx]")
-    }
-}
-
-object ShaderMgr {
-    const val ENVIRONMENT_INTENSITY: Int = 0
-    const val EMISSIVE_BRIGHTNESS: Int = 1
-    const val MINIMUM_ALPHA: Int = 2
-    const val SPECULAR_COLOR: Int = 3
-    const val DIFFUSE_MAP: Int = 4
-    const val SPECULAR_MAP: Int = 5
-    const val BUMP_MAP: Int = 6
-    const val NORMAL_MAP: Int = 7
-    const val EXPOSURE_MAP: Int = 8
-    const val DISPLAY_GAMMA: Int = 9
-    const val WATER_WATERPLANE: Int = 10
-    const val SUN_UP_FACTOR: Int = 11
 }

@@ -36,6 +36,30 @@ abstract class DrawPool(val type: UInt) {
         var numDrawPools: Int = 0
             private set
 
+        // Backwards-compatible constant aliases for code that predates the PoolType enum.
+        val POOL_SKY: UInt get() = PoolType.SKY.value.toUInt()
+        val POOL_WATEREXCLUSION: UInt get() = PoolType.WATEREXCLUSION.value.toUInt()
+        val POOL_WL_SKY: UInt get() = PoolType.WL_SKY.value.toUInt()
+        val POOL_SIMPLE: UInt get() = PoolType.SIMPLE.value.toUInt()
+        val POOL_FULLBRIGHT: UInt get() = PoolType.FULLBRIGHT.value.toUInt()
+        val POOL_BUMP: UInt get() = PoolType.BUMP.value.toUInt()
+        val POOL_MATERIALS: UInt get() = PoolType.MATERIALS.value.toUInt()
+        val POOL_GLTF_PBR: UInt get() = PoolType.GLTF_PBR.value.toUInt()
+        val POOL_TERRAIN: UInt get() = PoolType.TERRAIN.value.toUInt()
+        val POOL_GRASS: UInt get() = PoolType.GRASS.value.toUInt()
+        val POOL_GLTF_PBR_ALPHA_MASK: UInt get() = PoolType.GLTF_PBR_ALPHA_MASK.value.toUInt()
+        val POOL_TREE: UInt get() = PoolType.TREE.value.toUInt()
+        val POOL_ALPHA_MASK: UInt get() = PoolType.ALPHA_MASK.value.toUInt()
+        val POOL_FULLBRIGHT_ALPHA_MASK: UInt get() = PoolType.FULLBRIGHT_ALPHA_MASK.value.toUInt()
+        val POOL_AVATAR: UInt get() = PoolType.AVATAR.value.toUInt()
+        val POOL_CONTROL_AV: UInt get() = PoolType.CONTROL_AV.value.toUInt()
+        val POOL_GLOW: UInt get() = PoolType.GLOW.value.toUInt()
+        val POOL_ALPHA_PRE_WATER: UInt get() = PoolType.ALPHA_PRE_WATER.value.toUInt()
+        val POOL_VOIDWATER: UInt get() = PoolType.VOIDWATER.value.toUInt()
+        val POOL_WATER: UInt get() = PoolType.WATER.value.toUInt()
+        val POOL_ALPHA_POST_WATER: UInt get() = PoolType.ALPHA_POST_WATER.value.toUInt()
+        val POOL_ALPHA: UInt get() = PoolType.ALPHA.value.toUInt()
+
         fun createPool(type: UInt, tex0: ViewerTexture? = null): DrawPool {
             return when (type.toInt()) {
                 PoolType.SIMPLE.value -> DrawPoolSimple()
@@ -430,7 +454,10 @@ open class FacePool(type: UInt) : DrawPool(type) {
 
     class OverrideFaceColor(
         val pool: DrawPool,
-        r: Float? = null, g: Float? = null, b: Float? = null, a: Float? = null
+        r: Float? = null,
+        g: Float? = null,
+        b: Float? = null,
+        a: Float? = null
     ) : AutoCloseable {
 
         private val prevOverride: Boolean = sOverrideFaceColor
@@ -465,58 +492,42 @@ open class FacePool(type: UInt) : DrawPool(type) {
 }
 
 
-// Stub forward-declaration types referenced by DrawPool.createPool and RenderPass methods.
-// These are defined in their own files; the stubs here prevent unresolved-reference compile errors
-// when DrawPool.kt is compiled in isolation.
+// Types not yet defined elsewhere in the codebase — keep here to avoid unresolved-reference errors.
 
-class DrawInfo {
-    var count: Int = 0
-    var start: Int = 0
-    var end: Int = 0
-    var offset: Int = 0
-    var alphaMaskCutoff: Float = 0f
-    var avatar: VOAvatar? = null
-    var skinInfo: MeshSkinInfo? = null
-    var modelMatrix: FloatArray? = null
-    var textureMatrix: FloatArray? = null
-    var texture: ViewerTexture? = null
-    val textureList: MutableList<ViewerTexture?> = mutableListOf()
-    var gltfMaterial: GLTFMaterial? = null
-    var vertexBuffer: VertexBuffer? = null
-
-    var fullbright: Boolean = false
-    var material: Any? = null
-    var normalMap: ViewerTexture? = null
-    var specularMap: ViewerTexture? = null
-    var blendFuncSrc: Int = 0
-    var blendFuncDst: Int = 0
-    var specColor: FloatArray = floatArrayOf(1f, 1f, 1f, 1f)
-    var envIntensity: Float = 0f
-    var shaderMask: UInt = 0u
-    var bump: UByte = 0u
-    var group: SpatialGroup? = null
-}
-
-open class ViewerTexture
-open class ViewerFetchedTexture : ViewerTexture()
-open class Face {
-    var pool: FacePool? = null
-    var referenceIndex: Int = -1
-    fun renderIndexed() { TODO("GPU: render face indexed geometry") }
-    fun verify(): Boolean = true
-    fun getPool(): FacePool? = pool
-}
-open class SpatialGroup
-open class VOAvatar
 open class MeshSkinInfo { var hash: ULong = 0u }
-open class GLSLShader
-open class GLTFMaterial { var doubleSided: Boolean = false }
-open class VertexBuffer {
-    fun setBuffer() { TODO("GPU: bind vertex buffer") }
-    fun drawRange(mode: Int, start: Int, end: Int, count: Int, offset: Int) { TODO("GPU: drawRange") }
+
+open class GLSLShader {
+    var mRiggedVariant: GLSLShader? = null
+
+    fun bind(rigged: Boolean = false) { TODO("GPU: GLSLShader.bind") }
+    fun unbind() { TODO("GPU: GLSLShader.unbind") }
+    fun uniform1f(name: Any, value: Float) { TODO("GPU: uniform1f") }
+    fun uniform1i(name: Any, value: Int) { TODO("GPU: uniform1i") }
+    fun uniform4f(name: Any, x: Float, y: Float, z: Float, w: Float) { TODO("GPU: uniform4f") }
+    fun uniform4fv(name: Any, count: Int, values: FloatArray) { TODO("GPU: uniform4fv") }
+    fun setMinimumAlpha(alpha: Float) { TODO("GPU: setMinimumAlpha") }
+    fun enableTexture(channel: Int): Int { TODO("GPU: enableTexture") }
+    fun disableTexture(channel: Int) { TODO("GPU: disableTexture") }
+    fun bindTexture(channel: Int, texture: Any?) { TODO("GPU: bindTexture") }
+
+    companion object {
+        var sCurBoundShaderPtr: GLSLShader? = null
+    }
 }
 
-// Stub pool types for classes NOT yet implemented in their own files.
+open class GLTFMaterial {
+    var doubleSided: Boolean = false
+    var alphaMode: Int = ALPHA_MODE_BLEND
+    fun bind(texture: ViewerTexture?) { TODO("GPU: GLTFMaterial.bind") }
+
+    companion object {
+        const val ALPHA_MODE_BLEND: Int = 0
+        const val ALPHA_MODE_MASK: Int = 1
+        const val ALPHA_MODE_OPAQUE: Int = 2
+    }
+}
+
+// Stub pool types that have no full-implementation file yet.
 class DrawPoolWLSky : RenderPass(DrawPool.PoolType.WL_SKY.value.toUInt()) { override fun isDead() = false }
 class DrawPoolGLTFPBR(type: UInt = DrawPool.PoolType.GLTF_PBR.value.toUInt()) : RenderPass(type) { override fun isDead() = false }
 class DrawPoolWaterExclusion : RenderPass(DrawPool.PoolType.WATEREXCLUSION.value.toUInt()) { override fun isDead() = false }

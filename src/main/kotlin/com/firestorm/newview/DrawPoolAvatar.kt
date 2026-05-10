@@ -8,23 +8,23 @@ class DrawPoolAvatar(type: UInt) : FacePool(type) {
         var sShadowPass: Int = -1
         var sDiffuseChannel: Int = 0
         var sMinimumAlpha: Float = 0.2f
-        var sVertexProgram: GlslShader? = null
+        var sVertexProgram: GLSLShader? = null
 
         const val VERTEX_DATA_MASK: UInt = (
-            VertexBuffer.MAP_VERTEX or
-            VertexBuffer.MAP_NORMAL or
-            VertexBuffer.MAP_TEXCOORD0 or
-            VertexBuffer.MAP_WEIGHT or
-            VertexBuffer.MAP_CLOTHWEIGHT
+            VertexBufferFlags.MAP_VERTEX or
+            VertexBufferFlags.MAP_NORMAL or
+            VertexBufferFlags.MAP_TEXCOORD0 or
+            VertexBufferFlags.MAP_WEIGHT or
+            VertexBufferFlags.MAP_CLOTHWEIGHT
         )
 
         const val AVATAR_BUFFER_ELEMENTS: Int = 8192
 
-        var avatarOffsetPos: Int = 0
-        var avatarOffsetNormal: Int = 16
-        var avatarOffsetTex0: Int = 32
-        var avatarOffsetTex1: Int = 40
-        var avatarVertexBytes: Int = 48
+        val avatarOffsetPos: Int = 0
+        val avatarOffsetNormal: Int = 16
+        val avatarOffsetTex0: Int = 32
+        val avatarOffsetTex1: Int = 40
+        val avatarVertexBytes: Int = 48
 
         var gAvatarEmbossBumpMap: Boolean = false
 
@@ -34,10 +34,9 @@ class DrawPoolAvatar(type: UInt) : FacePool(type) {
         private var isRenderingSkinned: Boolean = false
         private var normalChannel: Int = -1
         private var specularChannel: Int = -1
-        private var cubeChannel: Int = -1
 
         fun getModelView(): FloatArray {
-            TODO("GPU: build LLMatrix4 from gGLModelView rows")
+            TODO("GPU: build matrix from gGLModelView rows 0,4,8,12")
         }
     }
 
@@ -61,115 +60,136 @@ class DrawPoolAvatar(type: UInt) : FacePool(type) {
         TODO("GPU: mShaderLevel = ViewerShaderMgr.instance().getShaderLevel(SHADER_AVATAR)")
     }
 
-    override fun isDead(): Boolean {
-        return super.isDead()
-    }
-
     override fun getNumPasses(): Int = 3
 
     override fun beginRenderPass(pass: Int) {
-        TODO("GPU: VertexBuffer.unbind(); route to beginImpostor/beginRigid/beginSkinned")
+        TODO("GPU: VertexBuffer.unbindAll(); if impostorRender ++pass; " +
+             "route pass 0→beginImpostor, 1→beginRigid, 2→beginSkinned; " +
+             "if pass==0: diffuseColor4f(1,1,1,1)")
     }
 
     override fun endRenderPass(pass: Int) {
-        TODO("GPU: route to endImpostor/endRigid/endSkinned")
+        TODO("GPU: if impostorRender ++pass; route pass 0→endImpostor, 1→endRigid, 2→endSkinned")
     }
 
     override fun render(pass: Int) {
-        TODO("GPU: renderAvatars(null, pass)")
+        TODO("GPU: if impostorRender: renderAvatars(null, pass+1) return; else renderAvatars(null, pass)")
     }
 
     override fun getNumDeferredPasses(): Int = 3
 
     fun beginDeferredPass(pass: Int) {
-        TODO("GPU: sSkipTransparent=true; route to beginDeferredImpostor/Rigid/Skinned")
+        TODO("GPU: sSkipTransparent=true; isDeferredRender=true; if impostorRender ++pass; " +
+             "route pass 0→beginDeferredImpostor, 1→beginDeferredRigid, 2→beginDeferredSkinned")
     }
 
     fun endDeferredPass(pass: Int) {
-        TODO("GPU: sSkipTransparent=false; route to endDeferredImpostor/Rigid/Skinned")
+        TODO("GPU: sSkipTransparent=false; isDeferredRender=false; if impostorRender ++pass; " +
+             "route pass 0→endDeferredImpostor, 1→endDeferredRigid, 2→endDeferredSkinned")
     }
 
-    fun renderDeferred(pass: Int) {
+    override fun renderDeferred(pass: Int) {
         render(pass)
     }
 
     override fun getNumPostDeferredPasses(): Int = 1
 
     fun beginPostDeferredPass(pass: Int) {
-        TODO("GPU: sSkipOpaque=true; bind gDeferredAvatarAlphaProgram; setMinimumAlpha; enableTexture DIFFUSE_MAP")
+        TODO("GPU: sSkipOpaque=true; sVertexProgram=gDeferredAvatarAlphaProgram; isRenderingSkinned=true; " +
+             "bindDeferredShader; setMinimumAlpha(sMinimumAlpha); sDiffuseChannel=enableTexture(DIFFUSE_MAP)")
     }
 
     fun endPostDeferredPass(pass: Int) {
-        TODO("GPU: sRenderingSkinned=false; sSkipOpaque=false; unbindDeferredShader; sDiffuseChannel=0")
+        TODO("GPU: isRenderingSkinned=false; sSkipOpaque=false; " +
+             "unbindDeferredShader(sVertexProgram); sDiffuseChannel=0; shaderLevel=mShaderLevel")
     }
 
     override fun renderPostDeferred(pass: Int) {
-        TODO("GPU: isPostDeferredRender=true; render(0 or 2 based on impostor); isPostDeferredRender=false")
+        TODO("GPU: isPostDeferredRender=true; if impostorRender: render(0) else render(2); isPostDeferredRender=false")
     }
 
     override fun getNumShadowPasses(): Int = ShadowPass.NUM_SHADOW_PASSES
 
     override fun beginShadowPass(pass: Int) {
-        TODO("GPU: bind shadow shader per pass (opaque/alpha-blend/alpha-mask), set diffuseChannel")
+        TODO("GPU: OPAQUE: bind gDeferredAvatarShadowProgram; " +
+             "ALPHA_BLEND: bind gDeferredAvatarAlphaShadowProgram, enable DIFFUSE_MAP; " +
+             "ALPHA_MASK: bind gDeferredAvatarAlphaMaskShadowProgram, enable DIFFUSE_MAP; " +
+             "all passes: if shaderLevel>0: isRenderingSkinned=true; bind; diffuseColor4f(1,1,1,1)")
     }
 
     override fun endShadowPass(pass: Int) {
-        TODO("GPU: unbind sVertexProgram; sShadowPass=-1")
+        TODO("GPU: if shaderLevel>0: sVertexProgram.unbind(); sVertexProgram=null; isRenderingSkinned=false; sShadowPass=-1")
     }
 
     override fun renderShadow(pass: Int) {
-        TODO("GPU: validate avatar liveness/visibility; delegate renderSkinned with skip flags")
+        TODO("GPU: check drawFace not empty; get avatarp from first face; " +
+             "guard: isDead, isUIAvatar, mDrawable.isNull, isTooSlow, impostor, AOA_INVISIBLE → return; " +
+             "check friends_only setting; sShadowPass=pass; " +
+             "OPAQUE: sSkipTransparent=true, renderSkinned, sSkipTransparent=false; " +
+             "ALPHA_BLEND/ALPHA_MASK: sSkipOpaque=true, renderSkinned, sSkipOpaque=false")
     }
 
     fun beginImpostor() {
-        TODO("GPU: bind gImpostorProgram; setMinimumAlpha(0.01); enableLightsFullbright")
+        TODO("GPU: if !sReflectionRender: sNumVisibleAvatars=0; " +
+             "gImpostorProgram.bind(); setMinimumAlpha(0.01f); enableLightsFullbright(); sDiffuseChannel=0")
     }
 
     fun endImpostor() {
-        TODO("GPU: unbind gImpostorProgram; enableLightsDynamic")
+        TODO("GPU: gImpostorProgram.unbind(); enableLightsDynamic()")
     }
 
     fun beginRigid() {
-        TODO("GPU: bind gObjectAlphaMaskNoColorProgram; setMinimumAlpha(sMinimumAlpha)")
+        TODO("GPU: if shadersLoaded: sVertexProgram=gObjectAlphaMaskNoColorProgram; " +
+             "sVertexProgram.bind(); setMinimumAlpha(sMinimumAlpha)")
     }
 
     fun endRigid() {
-        TODO("GPU: shaderLevel=mShaderLevel; unbind sVertexProgram")
+        TODO("GPU: shaderLevel=mShaderLevel; sVertexProgram?.unbind()")
     }
 
     fun beginSkinned() {
-        TODO("GPU: bind gAvatarProgram; sRenderingSkinned=true; setMinimumAlpha")
+        TODO("GPU: sVertexProgram=gAvatarProgram; isRenderingSkinned=true; " +
+             "sVertexProgram.bind(); setMinimumAlpha(sMinimumAlpha)")
     }
 
     fun endSkinned() {
-        TODO("GPU: sRenderingSkinned=false; disableTexture BUMP_MAP; unbind; activate texunit 0")
+        TODO("GPU: isRenderingSkinned=false; if shaderLevel>0: disableTexture(BUMP_MAP); " +
+             "activate texunit 0; unbind; shaderLevel=mShaderLevel; else if shadersLoaded: unbind; " +
+             "activate texunit 0")
     }
 
     fun beginDeferredImpostor() {
-        TODO("GPU: bind gDeferredImpostorProgram; enable specular/normal/diffuse channels; setMinimumAlpha(0.01)")
+        TODO("GPU: if !sReflectionRender: sNumVisibleAvatars=0; " +
+             "sVertexProgram=gDeferredImpostorProgram; " +
+             "specularChannel=enableTexture(SPECULAR_MAP); normalChannel=enableTexture(NORMAL_MAP); " +
+             "sDiffuseChannel=enableTexture(DIFFUSE_MAP); bind; setMinimumAlpha(0.01f)")
     }
 
     fun endDeferredImpostor() {
-        TODO("GPU: disableTexture normal/specular/diffuse; unbindDeferredShader; sDiffuseChannel=0")
+        TODO("GPU: shaderLevel=mShaderLevel; disableTexture(NORMAL_MAP, SPECULAR_MAP, DIFFUSE_MAP); " +
+             "unbindDeferredShader(sVertexProgram); sVertexProgram=null; sDiffuseChannel=0")
     }
 
     fun beginDeferredRigid() {
-        TODO("GPU: bind gDeferredNonIndexedDiffuseAlphaMaskNoColorProgram; enable DIFFUSE_MAP; setMinimumAlpha")
+        TODO("GPU: sVertexProgram=gDeferredNonIndexedDiffuseAlphaMaskNoColorProgram; " +
+             "sDiffuseChannel=enableTexture(DIFFUSE_MAP); bind; setMinimumAlpha(sMinimumAlpha)")
     }
 
     fun endDeferredRigid() {
-        TODO("GPU: disableTexture DIFFUSE_MAP; unbind; activate texunit 0")
+        TODO("GPU: shaderLevel=mShaderLevel; disableTexture(DIFFUSE_MAP); unbind; activate texunit 0")
     }
 
     fun beginDeferredSkinned() {
-        TODO("GPU: bind gDeferredAvatarProgram; sRenderingSkinned=true; enable DIFFUSE_MAP; activate texunit 0")
+        TODO("GPU: shaderLevel=mShaderLevel; sVertexProgram=gDeferredAvatarProgram; isRenderingSkinned=true; " +
+             "bind; setMinimumAlpha(sMinimumAlpha); sDiffuseChannel=enableTexture(DIFFUSE_MAP); activate texunit 0")
     }
 
     fun endDeferredSkinned() {
-        TODO("GPU: sRenderingSkinned=false; unbind; disableTexture DIFFUSE_MAP; activate texunit 0")
+        TODO("GPU: isRenderingSkinned=false; unbind; disableTexture(DIFFUSE_MAP); " +
+             "shaderLevel=mShaderLevel; activate texunit 0")
     }
 
-    fun renderAvatars(singleAvatar: VoAvatar?, pass: Int = -1) {
+    fun renderAvatars(singleAvatar: VOAvatar?, pass: Int = -1) {
         if (pass == -1) {
             for (i in 1 until getNumPasses()) {
                 prerender()
@@ -180,76 +200,19 @@ class DrawPoolAvatar(type: UInt) : FacePool(type) {
             return
         }
 
-        TODO("GPU: resolve avatarp from drawFace or singleAvatar; " +
-             "pass 0: impostors; pass 1: rigid eyeballs; pass 2+: skinned with cloth wind shader")
+        TODO("GPU: if drawFace.empty && !singleAvatar: return; resolve avatarp from drawFace[0] or singleAvatar; " +
+             "guard null/dead/mDrawable.isNull; " +
+             "if DebugRenderHitboxes && pass==2 && !controlAvatar: draw hitbox wireframe with gDebugProgram; " +
+             "if !isFullyLoaded && pass==0 && !particles: draw placeholder sphere; return; " +
+             "check friends_only; " +
+             "pass 0: sNumVisibleAvatars++; if impostor/non-normal: bind impostor textures; renderImpostor; return; " +
+             "pass 1: avatarp.renderRigid(); return; " +
+             "pass 2+: if RenderAvatarCloth: compute wind/gravity/sinwave uniforms; avatarp.renderSkinned()")
     }
 
-    fun getDebugTexture(): Any? {
-        TODO("GPU: return first reference face's TE image 0")
+    override fun getDebugTexture(): ViewerTexture? {
+        TODO("GPU: return references[0] face drawable vobj TE image 0")
     }
 
     fun getDebugColor(): FloatArray = floatArrayOf(0f, 1f, 0f)
-}
-
-abstract class FacePool(type: UInt) : RenderPass(type) {
-    val mDrawFace: MutableList<Face> = mutableListOf()
-    val mReferences: MutableList<Face> = mutableListOf()
-
-    open fun isDead(): Boolean = mDrawFace.isEmpty()
-    override fun getNumDeferredPasses(): Int = 0
-}
-
-class Face {
-    fun getDrawable(): Drawable? { TODO("GPU: Face.getDrawable") }
-    fun getVertexBuffer(): VertexBuffer? { TODO("GPU: Face.getVertexBuffer") }
-    fun getTextureEntry(): TextureEntry? { TODO("GPU: Face.getTextureEntry") }
-    fun getTexture(): Any? { TODO("GPU: Face.getTexture") }
-}
-
-class Drawable {
-    fun getVObj(): Any? { TODO("GPU: Drawable.getVObj") }
-    fun getRegion(): Region? { TODO("GPU: Drawable.getRegion") }
-    fun isNull(): Boolean = false
-}
-
-class Region {
-    val mRenderMatrix: FloatArray = FloatArray(16)
-}
-
-class TextureEntry {
-    fun getBumpmap(): UByte { TODO("GPU: TextureEntry.getBumpmap") }
-}
-
-class VoAvatar {
-    var mDrawable: Drawable? = null
-    var mWindVec: FloatArray = FloatArray(4)
-    var mRipplePhase: Float = 0f
-    var mImpostor: Any? = null
-
-    fun isDead(): Boolean { TODO("GPU: VoAvatar.isDead") }
-    fun isUIAvatar(): Boolean { TODO("GPU: VoAvatar.isUIAvatar") }
-    fun isControlAvatar(): Boolean { TODO("GPU: VoAvatar.isControlAvatar") }
-    fun isSelf(): Boolean { TODO("GPU: VoAvatar.isSelf") }
-    fun isBuddy(): Boolean { TODO("GPU: VoAvatar.isBuddy") }
-    fun isImpostor(): Boolean { TODO("GPU: VoAvatar.isImpostor") }
-    fun isFullyLoaded(): Boolean { TODO("GPU: VoAvatar.isFullyLoaded") }
-    fun isTooSlow(): Boolean { TODO("GPU: VoAvatar.isTooSlow") }
-    fun needsImpostorUpdate(): Boolean { TODO("GPU: VoAvatar.needsImpostorUpdate") }
-    fun getOverallAppearance(): Int { TODO("GPU: VoAvatar.getOverallAppearance") }
-    fun getAttachedAvatar(): VoAvatar? { TODO("GPU: VoAvatar.getAttachedAvatar") }
-    fun getID(): String { TODO("GPU: VoAvatar.getID") }
-    fun getPositionAgent(): FloatArray { TODO("GPU: VoAvatar.getPositionAgent") }
-    fun getRotationRegion(): FloatArray { TODO("GPU: VoAvatar.getRotationRegion") }
-    fun getScale(): FloatArray { TODO("GPU: VoAvatar.getScale") }
-    fun getMutedAVColor(): FloatArray { TODO("GPU: VoAvatar.getMutedAVColor") }
-    fun renderImpostor(color: FloatArray, diffuseChannel: Int) { TODO("GPU: VoAvatar.renderImpostor") }
-    fun renderRigid() { TODO("GPU: VoAvatar.renderRigid") }
-    fun renderSkinned() { TODO("GPU: VoAvatar.renderSkinned") }
-
-    companion object {
-        var sNumVisibleAvatars: Int = 0
-        const val AOA_NORMAL: Int = 0
-        const val AOA_JELLYDOLL: Int = 1
-        const val AOA_INVISIBLE: Int = 2
-    }
 }

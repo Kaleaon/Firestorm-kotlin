@@ -54,36 +54,40 @@ open class ModalDialog(
     }
 
     open fun reshape(width: Int, height: Int, fromParent: Boolean = true) {
-        TODO("GPU: Floater.reshape($width, $height, $fromParent); then centerOnScreen()")
+        // GPU: super.reshape(width, height, fromParent)
+        centerOnScreen()
     }
 
     open fun handleMouseDown(x: Int, y: Int, mask: UInt): Boolean {
-        TODO("APR: check visible popup menu; hide if click is outside; delegate to super if modal, play UISndInvalidOp if unhandled")
+        // APR: if visible popup menu and click is outside, hideMenus()
+        // APR: if modal, delegate to super; if unhandled play UISndInvalidOp
+        // APR: if non-modal, delegate to super
         return true
     }
 
     open fun handleMouseUp(x: Int, y: Int, mask: UInt): Boolean {
-        TODO("APR: childrenHandleMouseUp($x, $y, $mask)")
+        // APR: childrenHandleMouseUp(x, y, mask)
         return true
     }
 
     open fun handleHover(x: Int, y: Int, mask: UInt): Boolean {
-        TODO("GPU: set arrow cursor; delegate hover to children; route hover into visible popup menu when mouse is over it, releasing capture")
+        // GPU: if no child handles hover, set arrow cursor
+        // APR: if popup menu is under mouse, route hover into it and release mouse capture
         return true
     }
 
     open fun handleScrollWheel(x: Int, y: Int, clicks: Int): Boolean {
-        TODO("APR: childrenHandleScrollWheel($x, $y, $clicks)")
+        // APR: childrenHandleScrollWheel(x, y, clicks)
         return true
     }
 
     open fun handleDoubleClick(x: Int, y: Int, mask: UInt): Boolean {
-        TODO("APR: super.handleDoubleClick; play UISndInvalidOp if unhandled")
+        // APR: if super.handleDoubleClick returns false, play UISndInvalidOp
         return true
     }
 
     open fun handleRightMouseDown(x: Int, y: Int, mask: UInt): Boolean {
-        TODO("APR: hideMenus(); childrenHandleRightMouseDown($x, $y, $mask)")
+        // APR: hideMenus(); childrenHandleRightMouseDown(x, y, mask)
         return true
     }
 
@@ -115,11 +119,12 @@ open class ModalDialog(
     }
 
     open fun draw() {
-        TODO("GPU: gl_drop_shadow(0, rect.height, rect.width, 0, shadowColor, DROP_SHADOW_FLOATER); super.draw()")
+        // GPU: gl_drop_shadow(0, rect.height, rect.width, 0, ColorDropShadow, DROP_SHADOW_FLOATER)
+        // GPU: super.draw()
     }
 
     fun centerOnScreen() {
-        TODO("GPU: center this dialog within the current window bounds using LLUI.getWindowSize()")
+        // GPU: centerWithin(Rect(0, 0, round(windowSize.x), round(windowSize.y)))
     }
 
     companion object {

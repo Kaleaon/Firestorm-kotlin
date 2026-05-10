@@ -4,16 +4,16 @@ import java.util.UUID
 
 object NotificationsUtilUI {
 
-    fun add(name: String): Notification =
+    fun add(name: String): NotificationEntry =
         Notifications.add(name)
 
-    fun add(name: String, substitutions: Map<String, Any>): Notification =
+    fun add(name: String, substitutions: Map<String, Any>): NotificationEntry =
         Notifications.add(name, substitutions)
 
-    fun add(name: String, substitutions: Map<String, Any>, payload: Map<String, Any>): Notification =
+    fun add(name: String, substitutions: Map<String, Any>, payload: Map<String, Any>): NotificationEntry =
         Notifications.add(name, substitutions, payload)
 
-    fun add(name: String, substitutions: Map<String, Any>, payload: Map<String, Any>, functorName: String): Notification =
+    fun add(name: String, substitutions: Map<String, Any>, payload: Map<String, Any>, functorName: String): NotificationEntry =
         Notifications.add(name, substitutions, payload, functorName)
 
     fun add(
@@ -21,15 +21,15 @@ object NotificationsUtilUI {
         substitutions: Map<String, Any>,
         payload: Map<String, Any>,
         functor: Responder
-    ): Notification = Notifications.add(name, substitutions, payload, functor)
+    ): NotificationEntry = Notifications.add(name, substitutions, payload, functor)
 
     fun getSelectedOption(notification: Map<String, Any>, response: Map<String, Any>): Int =
-        Notification.getSelectedOption(notification, response)
+        NotificationEntry.getSelectedOption(notification, response)
 
-    fun cancel(pNotif: Notification) {
+    fun cancel(pNotif: NotificationEntry) {
         Notifications.cancel(pNotif)
     }
 
-    fun find(uuid: UUID): Notification? =
+    fun find(uuid: UUID): NotificationEntry? =
         Notifications.find(uuid)
 }

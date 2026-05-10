@@ -4,7 +4,7 @@ import com.firestorm.llmath.Rect
 import java.util.UUID
 
 enum class NotificationPriority {
-    LOW, NORMAL, HIGH, CRITICAL
+    UNSPECIFIED, LOW, NORMAL, HIGH, CRITICAL
 }
 
 data class Notification(

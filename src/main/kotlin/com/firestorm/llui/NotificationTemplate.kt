@@ -1,13 +1,5 @@
 package com.firestorm.llui
 
-enum class NotificationPriority {
-    UNSPECIFIED,
-    LOW,
-    NORMAL,
-    HIGH,
-    CRITICAL
-}
-
 enum class CombineBehavior {
     REPLACE_WITH_NEW,
     COMBINE_WITH_NEW,

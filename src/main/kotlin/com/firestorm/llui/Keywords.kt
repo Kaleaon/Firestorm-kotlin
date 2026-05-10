@@ -1,6 +1,6 @@
 package com.firestorm.llui
 
-data class UIColor(val r: Float, val g: Float, val b: Float, val a: Float = 1f)
+import java.awt.Color
 
 enum class TokenType {
     UNKNOWN,

@@ -88,7 +88,7 @@ class NotificationForm() {
             val el = formData[i]
             var text = el.text
             for ((k, v) in substitutions) text = text.replace("[$k]", v)
-            var value = if (el.type == "text" && el.value is String) el.value else el.value
+            var value = el.value
             if (el.type == "text" && value is String) {
                 for ((k, v) in substitutions) value = value.replace("[$k]", v)
             }
@@ -118,7 +118,7 @@ enum class ResponseTemplateType {
     WITH_DEFAULT_BUTTON
 }
 
-class Notification(
+class NotificationEntry(
     val name: String,
     val id: UUID = UUID.randomUUID(),
     val substitutions: MutableMap<String, Any> = mutableMapOf(),
@@ -141,7 +141,7 @@ class Notification(
     private var responseFunctorName: String = responderName
     private var temporaryResponder: Boolean = false
     private var responderObj: ResponderInterface? = responder
-    private val combinedNotifications: MutableList<Notification> = mutableListOf()
+    val combinedNotifications: MutableList<NotificationEntry> = mutableListOf()
     private var templatep: NotificationTemplate? = null
 
     init {
@@ -182,31 +182,37 @@ class Notification(
     fun getIcon(): String = templatep?.icon ?: ""
     fun isPersistent(): Boolean = templatep?.persist ?: false
     fun getType(): String = templatep?.type ?: ""
+
     fun getMessage(): String {
         val tmpl = templatep ?: return ""
         var msg = tmpl.message
         for ((k, v) in substitutions) msg = msg.replace("[$k]", v.toString())
         return msg
     }
+
     fun getFooter(): String {
         val tmpl = templatep ?: return ""
         var footer = tmpl.footer
         for ((k, v) in substitutions) footer = footer.replace("[$k]", v.toString())
         return footer
     }
+
     fun getLabel(): String {
         val tmpl = templatep ?: return ""
         var label = tmpl.label
         for ((k, v) in substitutions) label = label.replace("[$k]", v.toString())
         return label
     }
+
     fun hasLabel(): Boolean = templatep?.label?.isNotEmpty() ?: false
+
     fun getUrl(): String {
         val tmpl = templatep ?: return ""
         var url = tmpl.url
         for ((k, v) in substitutions) url = url.replace("[$k]", v.toString())
         return url
     }
+
     fun getUrlOption(): Int = templatep?.urlOption?.toInt() ?: -1
     fun getUrlOpenExternally(): Boolean = templatep?.urlTarget == "_external"
     fun getForceUrlsExternal(): Boolean = templatep?.forceUrlsExternal ?: false
@@ -226,8 +232,7 @@ class Notification(
         return Instant.now().isAfter(expiresAt)
     }
 
-    fun matchesTag(tag: String): Boolean =
-        templatep?.tags?.contains(tag) ?: false
+    fun matchesTag(tag: String): Boolean = templatep?.tags?.contains(tag) ?: false
 
     fun setIgnored(ignore: Boolean) { ignored = ignore }
 
@@ -251,10 +256,11 @@ class Notification(
         respondedTo = true
         response = sd.toMutableMap()
 
-        responderObj?.handleRespond(asMap(), sd)
-            ?: if (responseFunctorName.isNotEmpty()) {
-                Notifications.invokeFunctor(responseFunctorName, asMap(), sd)
-            }
+        if (responderObj != null) {
+            responderObj!!.handleRespond(asMap(), sd)
+        } else if (responseFunctorName.isNotEmpty()) {
+            Notifications.invokeFunctor(responseFunctorName, asMap(), sd)
+        }
 
         if (temporaryResponder) {
             Notifications.unregisterFunctor(responseFunctorName)
@@ -282,7 +288,7 @@ class Notification(
         Notifications.update(this)
     }
 
-    fun updateFrom(other: Notification) {
+    fun updateFrom(other: NotificationEntry) {
         if (templatep?.name != other.templatep?.name) return
         payload.clear(); payload.putAll(other.payload)
         substitutions.clear(); substitutions.putAll(other.substitutions)
@@ -298,9 +304,9 @@ class Notification(
         update()
     }
 
-    fun cancel() { cancelled = true }
+    internal fun cancel() { cancelled = true }
 
-    fun isEquivalentTo(that: Notification): Boolean {
+    fun isEquivalentTo(that: NotificationEntry): Boolean {
         val tmpl = templatep ?: return false
         if (tmpl.name != that.templatep?.name) return false
         if (!tmpl.unique) return false
@@ -331,7 +337,7 @@ class Notification(
         return map
     }
 
-    override fun equals(other: Any?): Boolean = other is Notification && id == other.id
+    override fun equals(other: Any?): Boolean = other is NotificationEntry && id == other.id
     override fun hashCode(): Int = id.hashCode()
 
     companion object {
@@ -364,15 +370,15 @@ class Notification(
     }
 }
 
-typealias NotificationFilter = (Notification) -> Boolean
+typealias NotificationFilter = (NotificationEntry) -> Boolean
 
 object NotificationFilters {
-    fun includeEverything(p: Notification): Boolean = true
+    fun includeEverything(p: NotificationEntry): Boolean = true
 
     enum class Comparison { EQUAL, LESS, GREATER, LESS_EQUAL, GREATER_EQUAL }
 
     fun <T : Comparable<T>> filterBy(
-        field: (Notification) -> T,
+        field: (NotificationEntry) -> T,
         value: T,
         comparison: Comparison = Comparison.EQUAL
     ): NotificationFilter = { p ->
@@ -388,7 +394,7 @@ object NotificationFilters {
 }
 
 abstract class NotificationChannelBase(protected var filter: NotificationFilter) {
-    protected val items: MutableList<Notification> = mutableListOf()
+    protected val items: MutableList<NotificationEntry> = mutableListOf()
     protected val itemsMutex = ReentrantLock()
     protected val changedListeners: MutableList<(Map<String, Any>) -> Boolean> = mutableListOf()
     protected val passedFilterListeners: MutableList<(Map<String, Any>) -> Boolean> = mutableListOf()
@@ -426,7 +432,7 @@ abstract class NotificationChannelBase(protected var filter: NotificationFilter)
         return updateItem(payload, pNotification)
     }
 
-    fun updateItem(payload: Map<String, Any>, pNotification: Notification): Boolean {
+    fun updateItem(payload: Map<String, Any>, pNotification: NotificationEntry): Boolean {
         val cmd = payload["sigtype"] as? String ?: return false
         val wasFound = items.contains(pNotification)
         val passesFilter = filter(pNotification)
@@ -488,16 +494,16 @@ abstract class NotificationChannelBase(protected var filter: NotificationFilter)
         return abortProcessing
     }
 
-    protected open fun onLoad(p: Notification) {}
-    protected open fun onAdd(p: Notification) {}
-    protected open fun onDelete(p: Notification) {}
-    protected open fun onChange(p: Notification) {}
-    protected open fun onFilterPass(p: Notification) {}
-    protected open fun onFilterFail(p: Notification) {}
+    protected open fun onLoad(p: NotificationEntry) {}
+    protected open fun onAdd(p: NotificationEntry) {}
+    protected open fun onDelete(p: NotificationEntry) {}
+    protected open fun onChange(p: NotificationEntry) {}
+    protected open fun onFilterPass(p: NotificationEntry) {}
+    protected open fun onFilterFail(p: NotificationEntry) {}
 }
 
 open class NotificationChannel(
-    val name: String,
+    val channelName: String,
     parentName: String,
     filter: NotificationFilter
 ) : NotificationChannelBase(filter) {
@@ -510,12 +516,12 @@ open class NotificationChannel(
     fun isEmpty(): Boolean = items.isEmpty()
     fun size(): Int = items.size
 
-    fun forEachNotification(process: (Notification) -> Unit) {
+    fun forEachNotification(process: (NotificationEntry) -> Unit) {
         itemsMutex.withLock { items.forEach(process) }
     }
 
     fun summarize(): String {
-        val sb = StringBuilder("Channel '$name'\n  ")
+        val sb = StringBuilder("Channel '$channelName'\n  ")
         itemsMutex.withLock { items.forEach { sb.append(it.summarize()).append("\n  ") } }
         return sb.toString()
     }
@@ -536,18 +542,26 @@ class PersistentNotificationChannel : NotificationChannel(
     "Persistent", "Visible",
     { it.isPersistent() && !it.isCancelled() }
 ) {
-    private val history: MutableList<Notification> = mutableListOf()
+    private val history: MutableList<NotificationEntry> = mutableListOf()
 
-    fun history(): List<Notification> = history.sortedBy { it.getDate() }
+    fun history(): List<NotificationEntry> = history.sortedBy { it.getDate() }
 
-    override fun onAdd(p: Notification) { history.add(p) }
-    override fun onLoad(p: Notification) { history.add(p) }
+    override fun onAdd(p: NotificationEntry) { history.add(p) }
+    override fun onLoad(p: NotificationEntry) { history.add(p) }
 }
+
+data class VisibilityRule(
+    val type: String = "",
+    val tag: String = "",
+    val name: String = "",
+    val visible: Boolean = true,
+    val response: String = ""
+)
 
 object Notifications : NotificationChannelBase(NotificationFilters::includeEverything) {
     private val templates: MutableMap<String, NotificationTemplate> = mutableMapOf()
     private val visibilityRules: MutableList<VisibilityRule> = mutableListOf()
-    private val uniqueNotifications: MutableMap<String, MutableList<Notification>> = mutableMapOf()
+    private val uniqueNotifications: MutableMap<String, MutableList<NotificationEntry>> = mutableMapOf()
     private val globalStrings: MutableMap<String, String> = mutableMapOf()
     private var ignoreAllNotifications: Boolean = false
     private val channels: MutableMap<String, NotificationChannel> = mutableMapOf()
@@ -574,7 +588,7 @@ object Notifications : NotificationChannelBase(NotificationFilters::includeEvery
 
     fun createDefaultChannels() {
         fun addChannel(ch: NotificationChannel) {
-            channels[ch.name] = ch
+            channels[ch.channelName] = ch
             defaultChannels.add(ch)
         }
 
@@ -586,7 +600,7 @@ object Notifications : NotificationChannelBase(NotificationFilters::includeEvery
         addChannel(NotificationChannel("VisibilityRules", "Ignore") { isVisibleByRules(it) })
         addChannel(NotificationChannel("Visible", "VisibilityRules") { true })
         val persistent = PersistentNotificationChannel()
-        channels[persistent.name] = persistent
+        channels[persistent.channelName] = persistent
         defaultChannels.add(persistent)
 
         getChannel("Enabled")?.connectFailedFilter { defaultResponse(it) }
@@ -597,37 +611,51 @@ object Notifications : NotificationChannelBase(NotificationFilters::includeEvery
         getChannel("VisibilityRules")?.connectFailedFilter { true }
     }
 
-    fun add(name: String, substitutions: Map<String, Any> = emptyMap(), payload: Map<String, Any> = emptyMap()): Notification {
-        val n = Notification(name, substitutions = substitutions.toMutableMap(), payload = payload.toMutableMap())
+    fun add(
+        name: String,
+        substitutions: Map<String, Any> = emptyMap(),
+        payload: Map<String, Any> = emptyMap()
+    ): NotificationEntry {
+        val n = NotificationEntry(name, substitutions = substitutions.toMutableMap(), payload = payload.toMutableMap())
         add(n)
         return n
     }
 
-    fun add(name: String, substitutions: Map<String, Any>, payload: Map<String, Any>, functorName: String): Notification {
-        val n = Notification(name, substitutions = substitutions.toMutableMap(), payload = payload.toMutableMap(), responderName = functorName)
+    fun add(
+        name: String,
+        substitutions: Map<String, Any>,
+        payload: Map<String, Any>,
+        functorName: String
+    ): NotificationEntry {
+        val n = NotificationEntry(name, substitutions = substitutions.toMutableMap(), payload = payload.toMutableMap(), responderName = functorName)
         add(n)
         return n
     }
 
-    fun add(name: String, substitutions: Map<String, Any>, payload: Map<String, Any>, functor: Responder): Notification {
+    fun add(
+        name: String,
+        substitutions: Map<String, Any>,
+        payload: Map<String, Any>,
+        functor: Responder
+    ): NotificationEntry {
         val key = UUID.randomUUID().toString()
         registerFunctor(key, functor)
-        val n = Notification(name, substitutions = substitutions.toMutableMap(), payload = payload.toMutableMap(), responderName = key)
+        val n = NotificationEntry(name, substitutions = substitutions.toMutableMap(), payload = payload.toMutableMap(), responderName = key)
         add(n)
         return n
     }
 
-    fun add(pNotif: Notification) {
+    fun add(pNotif: NotificationEntry) {
         if (items.contains(pNotif)) return
         updateItem(mapOf("sigtype" to "add", "id" to pNotif.id.toString()), pNotif)
     }
 
-    fun load(pNotif: Notification) {
+    fun load(pNotif: NotificationEntry) {
         if (items.contains(pNotif)) return
         updateItem(mapOf("sigtype" to "load", "id" to pNotif.id.toString()), pNotif)
     }
 
-    fun cancel(pNotif: Notification?) {
+    fun cancel(pNotif: NotificationEntry?) {
         pNotif ?: return
         if (pNotif.isCancelled()) return
         if (items.contains(pNotif)) {
@@ -654,13 +682,13 @@ object Notifications : NotificationChannelBase(NotificationFilters::includeEvery
         }
     }
 
-    fun update(pNotif: Notification) {
+    fun update(pNotif: NotificationEntry) {
         if (items.contains(pNotif)) {
             updateItem(mapOf("sigtype" to "change", "id" to pNotif.id.toString()), pNotif)
         }
     }
 
-    fun find(uuid: UUID): Notification? = items.find { it.id == uuid }
+    fun find(uuid: UUID): NotificationEntry? = items.find { it.id == uuid }
 
     fun getTemplate(name: String): NotificationTemplate? =
         templates[name] ?: templates["MissingAlert"]
@@ -687,7 +715,7 @@ object Notifications : NotificationChannelBase(NotificationFilters::includeEvery
     }
 
     fun forceResponse(name: String, option: Int) {
-        val tmpNotif = Notification(name)
+        val tmpNotif = NotificationEntry(name)
         val form = tmpNotif.getForm()
         val response = tmpNotif.getResponseTemplate()
         val element = form.getElement(option) ?: return
@@ -695,7 +723,7 @@ object Notifications : NotificationChannelBase(NotificationFilters::includeEvery
         tmpNotif.respond(response)
     }
 
-    fun isVisibleByRules(n: Notification): Boolean {
+    fun isVisibleByRules(n: NotificationEntry): Boolean {
         if (n.isRespondedTo()) return true
 
         for (rule in visibilityRules) {
@@ -730,7 +758,7 @@ object Notifications : NotificationChannelBase(NotificationFilters::includeEvery
         functorRegistry[name]?.invoke(notification, response)
     }
 
-    private fun expirationFilter(p: Notification): Boolean =
+    private fun expirationFilter(p: NotificationEntry): Boolean =
         p.isCancelled() || p.isRespondedTo()
 
     private fun expirationHandler(payload: Map<String, Any>): Boolean {
@@ -741,7 +769,7 @@ object Notifications : NotificationChannelBase(NotificationFilters::includeEvery
         return false
     }
 
-    private fun uniqueFilter(pNotif: Notification): Boolean {
+    private fun uniqueFilter(pNotif: NotificationEntry): Boolean {
         if (!pNotif.hasUniquenessConstraints()) return true
         val existing = uniqueNotifications[pNotif.getName()] ?: return true
         for (existingNotif in existing) {
@@ -787,6 +815,8 @@ object Notifications : NotificationChannelBase(NotificationFilters::includeEvery
                 val existing = uniqueNotifications[pNotif.getName()] ?: return false
                 for (existingNotif in existing) {
                     if (pNotif != existingNotif && pNotif.isEquivalentTo(existingNotif)) {
+                        existingNotif.combinedNotifications.add(pNotif)
+                        existingNotif.combinedNotifications.addAll(pNotif.combinedNotifications)
                         existingNotif.update()
                     }
                 }
@@ -797,7 +827,7 @@ object Notifications : NotificationChannelBase(NotificationFilters::includeEvery
         return false
     }
 
-    private fun filterIgnoredNotifications(notification: Notification): Boolean =
+    private fun filterIgnoredNotifications(notification: NotificationEntry): Boolean =
         !notification.getForm().getIgnored()
 
     private fun handleIgnoredNotification(payload: Map<String, Any>): Boolean {
@@ -825,14 +855,6 @@ object Notifications : NotificationChannelBase(NotificationFilters::includeEvery
         return false
     }
 }
-
-data class VisibilityRule(
-    val type: String = "",
-    val tag: String = "",
-    val name: String = "",
-    val visible: Boolean = true,
-    val response: String = ""
-)
 
 abstract class PostponedNotification {
     protected var notificationName: String = ""

@@ -66,7 +66,9 @@ object IMModel {
         if (oldSessionId != newSessionId) {
             IMMgr.notifyObserverSessionIDUpdated(oldSessionId, newSessionId)
         }
-        if (session.startCallOnInitialize) IMMgr.startCall(newSessionId)
+        if (session.startCallOnInitialize) {
+            TODO("APR: use JVM equivalent - IMMgr.startCall(newSessionId)")
+        }
     }
 
     fun newSession(
@@ -207,11 +209,11 @@ object IMModel {
     fun addNewMsgCallback(callback: (Map<String, Any>) -> Unit) { newMsgListeners += callback }
     fun addNoUnreadMsgsCallback(callback: (Map<String, Any>) -> Unit) { noUnreadMsgListeners += callback }
 
-    static fun sendLeaveSession(sessionId: UUID, otherParticipantId: UUID) {
+    fun sendLeaveSession(sessionId: UUID, otherParticipantId: UUID) {
         TODO("APR: use JVM equivalent - send ImprovedInstantMessage leave-session packet for $sessionId")
     }
 
-    static fun sendStartSession(
+    fun sendStartSession(
         tempSessionId: UUID,
         otherParticipantId: UUID,
         ids: List<UUID>,
@@ -221,15 +223,15 @@ object IMModel {
         TODO("APR: use JVM equivalent - HTTP POST to capability to start IM/conference session; return true if async wait needed")
     }
 
-    static fun sendTypingState(sessionId: UUID, otherParticipantId: UUID, typing: Boolean) {
+    fun sendTypingState(sessionId: UUID, otherParticipantId: UUID, typing: Boolean) {
         TODO("APR: use JVM equivalent - send TypingStart or TypingStop instant-message packet for $sessionId")
     }
 
-    static fun sendMessage(utf8Text: String, imSessionId: UUID, otherParticipantId: UUID, dialog: InstantMessageType) {
+    fun sendMessage(utf8Text: String, imSessionId: UUID, otherParticipantId: UUID, dialog: InstantMessageType) {
         TODO("APR: use JVM equivalent - send ImprovedInstantMessage with text=$utf8Text to session=$imSessionId")
     }
 
-    static fun addSpeakersToRecent(imSessionId: UUID) {
+    fun addSpeakersToRecent(imSessionId: UUID) {
         TODO("APR: use JVM equivalent - add all speakers in session $imSessionId to recent people list")
     }
 
@@ -854,7 +856,7 @@ object CallDialogManager {
     private var previousSessionName: String = ""
     private var currentSessionName: String = ""
     private var currentSession: IMModel.IMSession? = null
-    private var oldState: VoiceChannelState = VoiceChannelState.STATE_NO_CHANNEL
+    private var oldState: VoiceChannelState? = null
 
     fun onVoiceChannelChanged(sessionId: UUID) {
         val session = IMModel.findIMSession(sessionId)

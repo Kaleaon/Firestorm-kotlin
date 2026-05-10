@@ -330,7 +330,7 @@ object AssetBlacklistMenu {
 
     fun onContextMenuItemClick(param: String) {
         if (param == "remove") {
-            val floater = FloaterReg.findTypedInstance<FSFloaterAssetBlacklist>("fs_asset_blacklist")
+            val floater = FloaterReg.findInstance("fs_asset_blacklist") as? FSFloaterAssetBlacklist
             floater?.removeElements()
         }
     }

@@ -114,7 +114,7 @@ class FSFloaterVoiceControls(val key: Any) : VoiceParticipantObserver {
         fun onCurrentChannelChanged(sessionId: LLUUID) {
             val channel = VCVoiceChannel.currentChannel
             if (channel == currentVoiceChannel) return
-            val floater = FloaterReg.findTypedInstance<FSFloaterVoiceControls>("fs_voice_controls")
+            val floater = FloaterReg.findInstance("fs_voice_controls") as? FSFloaterVoiceControls
             floater?.connectToChannel(channel)
         }
     }
@@ -124,7 +124,7 @@ class FSFloaterVoiceControls(val key: Any) : VoiceParticipantObserver {
     // -------------------------------------------------------------------------
 
     init {
-        val leftRemoveDelaySecs = SavedSettings.getFloat("VoiceParticipantLeftRemoveDelay", 10.0f)
+        val leftRemoveDelaySecs = SavedSettings.getFloat("VoiceParticipantLeftRemoveDelay")
         speakerDelayRemover = SpeakersDelayActionsStorage(
             mActionCallback = { id -> removeVoiceLeftParticipant(id) },
             mActionDelay = leftRemoveDelaySecs,
@@ -270,7 +270,7 @@ class FSFloaterVoiceControls(val key: Any) : VoiceParticipantObserver {
                 voiceType != VoiceControlType.AD_HOC_CHAT,
         ).also { pl ->
             pl.validateSpeakerCallback = { id -> validateSpeaker(id) }
-            pl.sortOrder = SavedSettings.getInt("SpeakerParticipantDefaultOrder")
+            pl.sortOrder = SavedSettings.getFloat("SpeakerParticipantDefaultOrder").toInt()
         }
 
         if (speakerManager == LocalSpeakerMgr) {

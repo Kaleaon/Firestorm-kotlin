@@ -85,9 +85,9 @@ class MediaCtrl(
                 if (errorPageUrl.isNotEmpty()) navigateTo(errorPageUrl, "text/html")
             }
             MediaEvent.CLICK_LINK_HREF -> {
-                val url    = plugin.clickUrl
-                val t      = if (plugin.clickEnforceTarget) plugin.getOverrideClickTarget() else plugin.clickTarget
-                val uuid   = plugin.clickUuid
+                val url  = plugin.clickUrl
+                val t    = if (plugin.clickEnforceTarget) plugin.getOverrideClickTarget() else plugin.clickTarget
+                val uuid = plugin.clickUuid
                 TODO("GPU: dispatch SLURL or call Web.loadUrl($url, $t, $uuid)")
             }
             MediaEvent.AUTH_REQUEST -> {
@@ -194,6 +194,7 @@ class MediaCtrl(
     }
 
     fun unloadMediaSource() {
+        mediaSource?.let { TODO("GPU: it.remObserver(this)") }
         mediaSource = null
     }
 
@@ -214,11 +215,11 @@ class MediaCtrl(
     }
 
     fun setAllowFileDownload(allow: Boolean) { allowFileDownload = allow }
-    fun setBorderVisible(visible: Boolean) { borderVisible = visible }
+    fun setBorderVisible(visible: Boolean)   { borderVisible = visible; TODO("GPU: mBorder?.setVisible(visible)") }
     fun setTakeFocusOnClick(takeFocus: Boolean) { takeFocusOnClick = takeFocus }
     fun setFrequentUpdates(frequent: Boolean) { frequentUpdates = frequent }
-    fun setAlwaysRefresh(refresh: Boolean) { alwaysRefresh = refresh }
-    fun setForceUpdate(force: Boolean) { forceUpdate = force }
+    fun setAlwaysRefresh(refresh: Boolean)   { alwaysRefresh = refresh }
+    fun setForceUpdate(force: Boolean)       { forceUpdate = force }
     fun setDecoupleTextureSize(decouple: Boolean) { decoupleTextureSize = decouple }
 
     fun wantsKeyUpKeyDown(): Boolean = true
@@ -226,16 +227,27 @@ class MediaCtrl(
     fun acceptsTextInput(): Boolean  = true
 
     fun onFocusReceived() {
-        TODO("GPU: mediaSource?.focus(true)")
+        mediaSource?.focus(true)
+        TODO("GPU: LLEditMenuHandler.gEditMenuHandler = mediaSource; LLPanel.onFocusReceived()")
     }
 
     fun onFocusLost() {
-        TODO("GPU: mediaSource?.focus(false)")
+        mediaSource?.focus(false)
+        TODO("GPU: clear LLEditMenuHandler.gEditMenuHandler if it was mediaSource; viewerWindow.focusClient(); LLPanel.onFocusLost()")
     }
 
     fun setFocus(hasFocus: Boolean) {
         TODO("APR: SDL2 IME position update if hasFocus")
         if (hasFocus) onFocusReceived() else onFocusLost()
+    }
+
+    fun handleToolTip(x: Int, y: Int, modifiers: Int): Boolean {
+        val hoverText = mediaSource?.let {
+            TODO("GPU: if it.hasMedia() it.getMediaPlugin()?.hoverText else null") as? String
+        } ?: return false
+        if (hoverText.isEmpty()) return false
+        TODO("GPU: show tooltip with message=$hoverText at screen coords converted from ($x,$y)")
+        return true
     }
 
     fun onVisibilityChange(visible: Boolean) {
@@ -254,10 +266,10 @@ class MediaCtrl(
 
     fun handleHover(x: Int, y: Int, modifiers: Int): Boolean {
         val (mx, my) = convertInputCoords(x, y)
-        mediaSource?.let { TODO("GPU: mediaSource.mouseMove($mx, $my, $modifiers)") }
+        mediaSource?.let { TODO("GPU: mediaSource.mouseMove($mx, $my, $modifiers); viewerWindow.setCursor(mediaSource.getLastSetCursor())") }
         if (hoverTextChanged) {
             hoverTextChanged = false
-            TODO("GPU: show tooltip from plugin.hoverText")
+            handleToolTip(x, y, modifiers)
         }
         return true
     }
@@ -265,6 +277,7 @@ class MediaCtrl(
     fun handleMouseDown(x: Int, y: Int, modifiers: Int): Boolean {
         val (mx, my) = convertInputCoords(x, y)
         mediaSource?.let { TODO("GPU: mediaSource.mouseDown($mx, $my, $modifiers)") }
+        TODO("GPU: focusMgr.setMouseCapture(this)")
         if (takeFocusOnClick) setFocus(true)
         return true
     }
@@ -272,12 +285,14 @@ class MediaCtrl(
     fun handleMouseUp(x: Int, y: Int, modifiers: Int): Boolean {
         val (mx, my) = convertInputCoords(x, y)
         mediaSource?.let { TODO("GPU: mediaSource.mouseUp($mx, $my, $modifiers)") }
+        TODO("GPU: focusMgr.setMouseCapture(null)")
         return true
     }
 
     fun handleRightMouseDown(x: Int, y: Int, modifiers: Int): Boolean {
         val (mx, my) = convertInputCoords(x, y)
         mediaSource?.let { TODO("GPU: mediaSource.mouseDown($mx, $my, $modifiers, button=1)") }
+        TODO("GPU: focusMgr.setMouseCapture(this)")
         if (takeFocusOnClick) setFocus(true)
         TODO("GPU: build and show context menu with debug items gated by MediaPluginDebugging setting")
         return true
@@ -289,12 +304,14 @@ class MediaCtrl(
             TODO("GPU: mediaSource.mouseUp($mx, $my, $modifiers, button=1)")
             if (!takeFocusOnClick) TODO("GPU: mediaSource.focus(false); viewerWindow.focusClient()")
         }
+        TODO("GPU: focusMgr.setMouseCapture(null)")
         return true
     }
 
     fun handleDoubleClick(x: Int, y: Int, modifiers: Int): Boolean {
         val (mx, my) = convertInputCoords(x, y)
         mediaSource?.let { TODO("GPU: mediaSource.mouseDoubleClick($mx, $my, $modifiers)") }
+        TODO("GPU: focusMgr.setMouseCapture(this)")
         if (takeFocusOnClick) setFocus(true)
         return true
     }
@@ -373,16 +390,10 @@ class MediaCtrl(
         val layout = calcOffsetsAndSize()
         val ax = x - layout.xOffset
         val ay = y - layout.yOffset
-        val scaleX = 1.0f
-        val scaleY = 1.0f
         val plugin = getMediaPlugin()
         val coordsOpenGl = plugin?.textureCoordsOpenGL ?: false
-        val mx = (ax * scaleX).roundToInt()
-        val my = if (!coordsOpenGl) {
-            (ay * scaleY).roundToInt()
-        } else {
-            ((panelHeight - ay) * scaleY).roundToInt()
-        }
+        val mx = ax
+        val my = if (!coordsOpenGl) ay else (panelHeight - ay)
         return mx to my
     }
 

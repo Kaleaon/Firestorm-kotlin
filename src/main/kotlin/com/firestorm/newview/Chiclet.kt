@@ -374,7 +374,7 @@ abstract class SysWellChiclet(sessionId: LLUUID) : Chiclet(sessionId) {
         // TODO("GL: update button label with capped counter text (e.g. '9+')")
     }
 
-    fun setToggleState(toggled: Boolean) {
+    override fun setToggleState(toggled: Boolean) {
         isActive = toggled
         // TODO("GL: update mButton toggle visual")
     }

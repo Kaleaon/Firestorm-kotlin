@@ -59,7 +59,7 @@ open class VOPartGroup {
         TODO("GPU: compute AABB from posAgent +/- scale + boxSide*0.5")
     }
 
-    fun getPartitionType(): UInt = TODO("GPU: return PARTITION_PARTICLE")
+    open fun getPartitionType(): UInt = TODO("GPU: return PARTITION_PARTICLE")
 
     fun idleUpdate() {}
 
@@ -69,7 +69,7 @@ open class VOPartGroup {
 
     fun updateTextures() {}
 
-    fun createDrawable() {
+    open fun createDrawable() {
         TODO("GPU: allocDrawable, setLit(false), setRenderType(PARTICLES)")
     }
 
@@ -146,9 +146,9 @@ class VOHUDPartGroup : VOPartGroup() {
 
     override fun getCameraPosition(): Vector3 = Vector3(-1f, 0f, 0f)
 
-    fun createDrawable() {
+    override fun createDrawable() {
         TODO("GPU: allocDrawable, setLit(false), setRenderType(HUD_PARTICLES)")
     }
 
-    fun getPartitionType(): UInt = TODO("GPU: return PARTITION_HUD_PARTICLE")
+    override fun getPartitionType(): UInt = TODO("GPU: return PARTITION_HUD_PARTICLE")
 }

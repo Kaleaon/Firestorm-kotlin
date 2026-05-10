@@ -9,7 +9,7 @@ import kotlin.test.assertTrue
 
 class KotlinTranspilerTest {
     @Test
-    fun `transpiles native file and emits stub signatures`() {
+    fun `transpiles native file and emits native signatures`() {
         val sourceRoot = kotlin.io.path.createTempDirectory("firestorm-source")
         val outputRoot = kotlin.io.path.createTempDirectory("firestorm-output")
         val inputFile = sourceRoot.resolve("llrender/ll_draw_pool.cpp")

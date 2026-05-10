@@ -65,8 +65,9 @@ object ExperienceCache {
         val now = System.currentTimeMillis() / 1000.0
         val expiration = if (experience[EXPIRES].asReal() == 0.0) now + DEFAULT_EXPIRATION
                          else experience[EXPIRES].asReal()
-        val entry = LLSD(experience)
-        entry[EXPIRES] = LLSD(expiration)
+        val entryMap = (experience as? LLSD.LLSDMap)?.value?.toMutableMap() ?: mutableMapOf()
+        entryMap[EXPIRES] = LLSD.of(expiration)
+        val entry = LLSD.ofMap(entryMap)
         cache[id] = entry
         pendingQueue.remove(id)
         requestQueue.remove(id)
@@ -88,9 +89,9 @@ object ExperienceCache {
     fun isRequestPending(experienceId: LLUUID): Boolean = pendingQueue.containsKey(experienceId)
 
     fun addPermission(experienceId: LLUUID, agentId: LLUUID) {
-        val entry = cache[experienceId] ?: LLSD()
-        entry[AGENT_ID] = LLSD(agentId.toString())
-        cache[experienceId] = entry
+        val existing = (cache[experienceId] as? LLSD.LLSDMap)?.value?.toMutableMap() ?: mutableMapOf()
+        existing[AGENT_ID] = LLSD.of(agentId.toString())
+        cache[experienceId] = LLSD.ofMap(existing)
     }
 
     fun eraseExpired() {

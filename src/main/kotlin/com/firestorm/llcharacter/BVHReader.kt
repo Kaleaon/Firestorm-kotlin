@@ -293,9 +293,6 @@ class BVHLoader(buffer: String, jointAliasMap: Map<String, String> = emptyMap())
 
     fun getLineNumber(): Int = lineNumber
     fun isInitialized(): Boolean = initialized
-    fun getStatus(): LoadStatus = status
-    fun getDuration(): Float = duration
-    fun getNumFrames(): Int = numFrames
 
     fun reset() {
         joints.clear()

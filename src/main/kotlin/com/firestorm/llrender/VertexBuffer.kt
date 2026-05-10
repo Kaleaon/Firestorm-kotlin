@@ -11,21 +11,30 @@ class VertexBuffer(
     private val numVerts: Int,
     private val numIndices: Int
 ) {
+    data class UploadSnapshot(
+        val typeMask: UInt,
+        val vertexBytes: ByteArray?,
+        val normalBytes: ByteArray?,
+        val texCoordBytes: List<ByteArray?>,
+        val colorBytes: ByteArray?,
+        val indexBytes: ByteArray?
+    )
+
     companion object {
-        const val MAP_VERTEX: UInt        = (1u shl 0)
-        const val MAP_NORMAL: UInt        = (1u shl 1)
-        const val MAP_TEXCOORD0: UInt     = (1u shl 2)
-        const val MAP_TEXCOORD1: UInt     = (1u shl 3)
-        const val MAP_TEXCOORD2: UInt     = (1u shl 4)
-        const val MAP_TEXCOORD3: UInt     = (1u shl 5)
-        const val MAP_COLOR: UInt         = (1u shl 6)
-        const val MAP_EMISSIVE: UInt      = (1u shl 7)
-        const val MAP_TANGENT: UInt       = (1u shl 8)
-        const val MAP_WEIGHT: UInt        = (1u shl 9)
-        const val MAP_WEIGHT4: UInt       = (1u shl 10)
-        const val MAP_CLOTHWEIGHT: UInt   = (1u shl 11)
-        const val MAP_JOINT: UInt         = (1u shl 12)
-        const val MAP_TEXTURE_INDEX: UInt = (1u shl 13)
+        val MAP_VERTEX: UInt        = (1u shl 0)
+        val MAP_NORMAL: UInt        = (1u shl 1)
+        val MAP_TEXCOORD0: UInt     = (1u shl 2)
+        val MAP_TEXCOORD1: UInt     = (1u shl 3)
+        val MAP_TEXCOORD2: UInt     = (1u shl 4)
+        val MAP_TEXCOORD3: UInt     = (1u shl 5)
+        val MAP_COLOR: UInt         = (1u shl 6)
+        val MAP_EMISSIVE: UInt      = (1u shl 7)
+        val MAP_TANGENT: UInt       = (1u shl 8)
+        val MAP_WEIGHT: UInt        = (1u shl 9)
+        val MAP_WEIGHT4: UInt       = (1u shl 10)
+        val MAP_CLOTHWEIGHT: UInt   = (1u shl 11)
+        val MAP_JOINT: UInt         = (1u shl 12)
+        val MAP_TEXTURE_INDEX: UInt = (1u shl 13)
 
         private const val VERTEX_STRIDE = 12    // 3 × F32
         private const val NORMAL_STRIDE = 12    // 3 × F32
@@ -50,6 +59,9 @@ class VertexBuffer(
 
     private val indexData: ByteBuffer? =
         if (numIndices > 0) allocDirect(numIndices * INDEX_STRIDE) else null
+
+    private var uploadedSnapshot: UploadSnapshot? = null
+    private var isCurrentlyBound: Boolean = false
 
     private fun allocDirect(bytes: Int): ByteBuffer =
         ByteBuffer.allocateDirect(bytes).order(ByteOrder.nativeOrder())
@@ -131,7 +143,38 @@ class VertexBuffer(
     fun getNumIndices(): Int = numIndices
     fun getTypeMask(): UInt = typeMask
 
-    fun flush() { TODO("Upload vertex/index data to GPU") }
-    fun bind() { TODO("Bind GL VBO/IBO") }
-    fun unbind() { TODO("Unbind GL VBO/IBO") }
+    fun flush() {
+        uploadedSnapshot = UploadSnapshot(
+            typeMask = typeMask,
+            vertexBytes = vertexData?.copyBytes(),
+            normalBytes = normalData?.copyBytes(),
+            texCoordBytes = texCoordData.map { it?.copyBytes() },
+            colorBytes = colorData?.copyBytes(),
+            indexBytes = indexData?.copyBytes()
+        )
+    }
+
+    fun bind() {
+        if (uploadedSnapshot == null) {
+            flush()
+        }
+        isCurrentlyBound = true
+    }
+
+    fun unbind() {
+        isCurrentlyBound = false
+    }
+
+    fun isBound(): Boolean = isCurrentlyBound
+
+    fun getUploadedSnapshot(): UploadSnapshot? = uploadedSnapshot
+
+    private fun ByteBuffer.copyBytes(): ByteArray {
+        val copy = ByteArray(capacity())
+        val src = duplicate()
+        src.position(0)
+        src.limit(capacity())
+        src.get(copy)
+        return copy
+    }
 }

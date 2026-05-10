@@ -88,8 +88,6 @@ class CircuitData(
 
     fun nextPingId(): UByte { lastPingId++; return lastPingId }
 
-    fun getPingDelay(): UInt = pingDelay
-
     fun getAgeInSeconds(): Float =
         (System.currentTimeMillis() - lastPacketInTimeMs) / 1000f
 

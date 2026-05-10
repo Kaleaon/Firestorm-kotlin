@@ -1,5 +1,7 @@
 package com.firestorm.newview
 
+import com.firestorm.llcommon.LLUUID
+
 const val PARCEL_GRID_STEP_METERS: Float = 4f
 const val DWELL_NAN: Float = -1f
 
@@ -40,8 +42,6 @@ class Parcel {
         println("Parcel: id=$localId name=$name area=$area forSale=$forSale")
     }
 }
-
-typealias LLUUID = com.firestorm.llcommon.LLUUID
 
 class ParcelSelection(parcel: Parcel? = null) {
     private var parcel: Parcel? = parcel

@@ -89,7 +89,7 @@ object LLMaterialMgr {
         }
     }
 
-    fun getAll(regionId: UUID, cb: (UUID, MaterialMap) -> Unit): (() -> Unit)? {
+    fun getAll(regionId: UUID, cb: (UUID, MutableMap<LLMaterialID, LLMaterialPtr>) -> Unit): (() -> Unit)? {
         if (!isGetAllPending(regionId)) {
             mGetAllQueue.add(regionId)
         }

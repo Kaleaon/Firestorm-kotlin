@@ -1,8 +1,23 @@
+/**
+ * LLFileSystem.kt
+ * Cached-asset file I/O — converted from llfilesystem.h / llfilesystem.cpp
+ *
+ * Original: Second Life Viewer Source Code
+ * Copyright (C) 2010, Linden Research, Inc.
+ * LGPL v2.1
+ *
+ * Simulates random-access file operations against files stored in the disk
+ * cache.  File paths are resolved via [LLDiskCache.metaDataToFilepath].
+ * The position cursor is maintained in-memory; actual I/O uses
+ * [java.io.RandomAccessFile] or [java.io.FileOutputStream].
+ */
+
 package com.firestorm.llfilesystem
 
+import com.firestorm.llcommon.*
 import java.io.File
+import java.io.FileOutputStream
 import java.io.RandomAccessFile
-import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.nio.file.StandardCopyOption

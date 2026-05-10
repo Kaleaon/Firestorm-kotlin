@@ -1,6 +1,8 @@
 package com.firestorm.newview
 
-// Report-type identifiers stored in the database – do NOT renumber.
+import com.firestorm.llui.Floater
+
+// Report-type identifiers stored in the database – values are fixed; do NOT renumber.
 enum class ReportType(val id: Int) {
     NULL_REPORT(0),
     UNKNOWN_REPORT(1),
@@ -8,37 +10,36 @@ enum class ReportType(val id: Int) {
     CS_REQUEST_REPORT(4),
 }
 
-// Request-flag bits sent to the server along with object-info requests.
+// Request-flag bits sent alongside object-info requests to the sim.
 const val COMPLAINT_REPORT_REQUEST: UInt = 0x01u shl 1
 const val OBJECT_PAY_REQUEST: UInt = 0x01u shl 2
 
-// Filename used for the cached pre-report screenshot on disk.
 private const val SCREEN_PREV_FILENAME = "screen_report_last.png"
-
 private const val IP_CONTENT_REMOVAL = 66
 private const val IP_PERMISSIONS_EXPLOIT = 37
 private const val IMAGE_WIDTH = 1024
 private const val IMAGE_HEIGHT = 768
 
-// ARScreenShotUploader: bundles the pre-built LLSD report with the screenshot asset
-// so both can be sent together to the SendUserReportWithScreenshot capability.
+// Bundles a pre-built report payload with a screenshot asset for the
+// SendUserReportWithScreenshot capability endpoint.
 class ARScreenShotUploader(
     private val report: Map<String, Any?>,
     private val assetId: String,
-    private val assetType: Int,
+    @Suppress("unused") private val assetType: Int,
 ) {
     fun prepareUpload(): Map<String, Any?> = mapOf("success" to true)
     fun generatePostBody(): Map<String, Any?> = report
+    @Suppress("UNUSED_PARAMETER")
     fun finishUpload(result: Map<String, Any?>): String = ""
     fun showInventoryPanel(): Boolean = false
     fun getDisplayName(): String = "Abuse Report"
 }
 
-class FloaterReporter(key: Any) : Floater(key) {
+class FloaterReporter(key: String) : Floater(key) {
 
     private var reportType: ReportType = ReportType.COMPLAINT_REPORT
     private var objectId: String = ""
-    private var screenId: String = ""
+    @Suppress("unused") private var screenId: String = ""
     private var abuserId: String = ""
     private var experienceId: String = ""
     private var ownerName: String = ""
@@ -55,51 +56,50 @@ class FloaterReporter(key: Any) : Floater(key) {
 
     fun setReportType(type: ReportType) { reportType = type }
 
-    override fun postBuild(): Boolean {
+    fun postBuild(): Boolean {
         val slurl: String = TODO("APR: LLAgentUI.buildSLURL()") as String
         TODO("APR: getChild<LLUICtrl>(\"abuse_location_edit\").setValue(slurl)")
         enableControls(true)
 
-        val pos: Triple<Double, Double, Double> = TODO("APR: gAgent.getPositionGlobal()") as Triple<Double, Double, Double>
+        val pos = TODO("APR: gAgent.getPositionGlobal()") as Triple<Double, Double, Double>
         val regionName: String = TODO("APR: gAgent.getRegion()?.getName() ?: \"\"") as String
         TODO("APR: getChild<LLUICtrl>(\"sim_field\").setValue(regionName)")
-        TODO("APR: subtract regionOrigin from pos, then setPosBox(pos)")
+        TODO("APR: subtract regionOriginGlobal from pos; call setPosBox(pos)")
 
-        TODO("APR: clear object_name and owner_name fields")
-        ownerName = ""
+        TODO("APR: clear object_name and owner_name fields; ownerName = \"\"")
         TODO("APR: getChild<LLUICtrl>(\"summary_edit\").setFocus(true)")
         defaultSummary = TODO("APR: getChild<LLUICtrl>(\"details_edit\").getValue().asString()") as String
 
         TODO("APR: getChild<LLUICtrl>(\"abuser_name_edit\").setEnabled(false)")
-        TODO("APR: wire pick_btn images and click callbacks to onClickObjPicker / onClickSelectAbuser / onClickSend / onClickCancel")
+        TODO("APR: wire pick_btn, select_abuser, send_btn, cancel_btn, refresh_screenshot callbacks")
 
         val reporter: String = TODO("APR: LLSLURL(\"agent\", gAgent.getID(), \"inspect\").getSLURLString()") as String
         TODO("APR: getChild<LLUICtrl>(\"reporter_field\").setValue(reporter)")
-        TODO("APR: wire refresh_screenshot button to onUpdateScreenshot")
 
         requestAbuseCategories()
         TODO("APR: center()")
         return true
     }
 
-    override fun onOpen(key: Any) {
+    fun onOpen(key: Any) {
         TODO("APR: getChildView(\"send_btn\").setEnabled(false)")
         snapshotTimerStarted = true
         snapshotTimerElapsed = 0f
     }
 
-    override fun onClose(appQuitting: Boolean) {
+    fun onClose(appQuitting: Boolean) {
         if (avatarNameCacheConnected) TODO("APR: disconnect avatarNameCacheConnection")
         TODO("APR: gIdleCallbacks.deleteFunction(::onIdle, this)")
         objectId = ""
         if (picking) closePickTool()
         position = Triple(0f, 0f, 0f)
-        TODO("APR: delete mResourceDatap equivalent")
+        TODO("APR: free mResourceDatap")
     }
 
-    // Called each idle tick; fires takeNewSnapshot when the delay has elapsed.
+    // Called each idle tick; fires takeNewSnapshot once the configured delay has elapsed.
     fun onIdle() {
-        val screenshotDelay: Float = TODO("APR: gSavedSettings.getF32(\"AbuseReportScreenshotDelay\")") as Float
+        val screenshotDelay: Float =
+            TODO("APR: gSavedSettings.getF32(\"AbuseReportScreenshotDelay\")") as Float
         if (snapshotTimerStarted && snapshotTimerElapsed > screenshotDelay) {
             snapshotTimerStarted = false
             takeNewSnapshot(refresh = false)
@@ -107,14 +107,14 @@ class FloaterReporter(key: Any) : Floater(key) {
     }
 
     private fun enableControls(enable: Boolean) {
-        TODO("APR: toggle enabled state on category_combo, chat_check, pick_btn, summary_edit, details_edit, send_btn, cancel_btn")
-        TODO("APR: screenshot control always disabled here (upload-only)")
+        TODO("APR: set enabled state on category_combo, chat_check, pick_btn, summary_edit, details_edit, send_btn, cancel_btn; screenshot always disabled here")
     }
 
     fun getExperienceInfo(expId: String) {
         experienceId = expId
         if (expId.isEmpty()) return
-        val experience: Map<String, Any?>? = TODO("APR: LLExperienceCache.instance().get(experienceId)") as Map<String, Any?>?
+        val experience: Map<String, Any?>? =
+            TODO("APR: LLExperienceCache.instance().get(experienceId)") as Map<String, Any?>?
         val desc = if (experience != null) {
             val agentId: String = experience["agent_id"] as? String ?: ""
             setFromAvatarID(agentId)
@@ -140,18 +140,18 @@ class FloaterReporter(key: Any) : Floater(key) {
 
         val regionName: String = TODO("APR: rootObj.getRegion()?.getName() ?: \"\"") as String
         TODO("APR: getChild<LLUICtrl>(\"sim_field\").setValue(regionName)")
-        val globalPos: Triple<Double, Double, Double> = TODO("APR: rootObj.getPositionRegion() as global") as Triple<Double, Double, Double>
-        TODO("APR: setPosBox(globalPos)")
+        TODO("APR: setPosBox(rootObj.getPositionRegion() as global)")
 
         if (rootObj.isAvatar()) {
             setFromAvatarID(objectId)
         } else {
-            TODO("APR: send RequestObjectPropertiesFamily message via gMessageSystem")
+            // Query the sim for object properties (name/owner) to populate the form.
+            TODO("APR: send RequestObjectPropertiesFamily UDP message via gMessageSystem with COMPLAINT_REPORT_REQUEST flag")
         }
     }
 
     fun onClickSelectAbuser() {
-        TODO("APR: show LLFloaterAvatarPicker with callbackAvatarID callback")
+        TODO("APR: show LLFloaterAvatarPicker with ::callbackAvatarID callback")
     }
 
     private fun callbackAvatarID(ids: List<String>, names: List<String>) {
@@ -164,7 +164,8 @@ class FloaterReporter(key: Any) : Floater(key) {
     private fun setFromAvatarID(avatarId: String) {
         abuserId = avatarId
         objectId = avatarId
-        val avatarLink: String = TODO("APR: LLSLURL(\"agent\", objectId, \"inspect\").getSLURLString()") as String
+        val avatarLink: String =
+            TODO("APR: LLSLURL(\"agent\", objectId, \"inspect\").getSLURLString()") as String
         TODO("APR: getChild<LLUICtrl>(\"owner_name\").setValue(avatarLink)")
         if (avatarNameCacheConnected) TODO("APR: disconnect previous avatarNameCacheConnection")
         avatarNameCacheConnected = true
@@ -175,11 +176,11 @@ class FloaterReporter(key: Any) : Floater(key) {
         avatarNameCacheConnected = false
         if (objectId == avatarId) {
             ownerName = completeName
-            TODO("APR: set object_name, object_name tooltip, and abuser_name_edit to completeName")
+            TODO("APR: set object_name (value + tooltip) and abuser_name_edit to completeName")
         }
     }
 
-    // ---- Static factory / show helpers --------------------------------------
+    // ---- Static factory / show methods --------------------------------------
 
     companion object {
         fun showFromMenu(reportType: ReportType) {
@@ -195,17 +196,27 @@ class FloaterReporter(key: Any) : Floater(key) {
             show(avatarId, avatarName)
         }
 
-        fun showFromChat(avatarId: String, avatarName: String, time: String, description: String) {
+        fun showFromChat(
+            avatarId: String,
+            avatarName: String,
+            time: String,
+            description: String,
+        ) {
             show(avatarId, avatarName)
-            TODO("APR: format chat_report_format string and set details_edit")
+            TODO("APR: format chat_report_format string with time/description and set details_edit")
         }
 
         fun showFromExperience(experienceId: String) {
-            TODO("APR: FloaterReg.showTypedInstance<FloaterReporter>(\"reporter\").getExperienceInfo(experienceId)")
+            val reporter: FloaterReporter =
+                TODO("APR: FloaterReg.showTypedInstance<FloaterReporter>(\"reporter\")") as FloaterReporter
+            reporter.getExperienceInfo(experienceId)
+            reporter.deselectOnClose = true
         }
 
         private fun show(objectId: String, avatarName: String = "", experienceId: String = "") {
-            val reporter: FloaterReporter = TODO("APR: FloaterReg.showTypedInstance<FloaterReporter>(\"reporter\")") as FloaterReporter
+            TODO("APR: clear PreviousScreenshotForReport pref if floater already visible")
+            val reporter: FloaterReporter =
+                TODO("APR: FloaterReg.showTypedInstance<FloaterReporter>(\"reporter\")") as FloaterReporter
             if (avatarName.isEmpty()) {
                 reporter.getObjectInfo(objectId)
             } else {
@@ -217,21 +228,24 @@ class FloaterReporter(key: Any) : Floater(key) {
     }
 
     fun setPickedObjectProperties(objectName: String, ownerNameParam: String, ownerId: String) {
-        TODO("APR: set object_name, owner_name (as SLURL link), and abuser_name_edit fields")
+        TODO("APR: set object_name field, owner_name as SLURL link, and abuser_name_edit")
         abuserId = ownerId
         ownerName = ownerNameParam
     }
 
-    // ---- Send/Cancel/Pick buttons -------------------------------------------
+    // ---- Button handlers ----------------------------------------------------
 
     fun onClickSend() {
         if (picking) closePickTool()
         if (!validateReport()) return
 
-        val categoryValue: Int = TODO("APR: category_combo.getSelectedValue().asInteger()") as Int
+        val categoryValue: Int =
+            TODO("APR: category_combo.getSelectedValue().asInteger()") as Int
         if (!copyrightWarningSeen) {
-            val detailsLc: String = TODO("APR: details_edit.getValue().asString().lowercase()") as String
-            val summaryLc: String = TODO("APR: summary_edit.getValue().asString().lowercase()") as String
+            val detailsLc: String =
+                TODO("APR: details_edit.getValue().asString().lowercase()") as String
+            val summaryLc: String =
+                TODO("APR: summary_edit.getValue().asString().lowercase()") as String
             if (detailsLc.contains("copyright") || summaryLc.contains("copyright") ||
                 categoryValue == IP_CONTENT_REMOVAL || categoryValue == IP_PERMISSIONS_EXPLOIT
             ) {
@@ -240,33 +254,35 @@ class FloaterReporter(key: Any) : Floater(key) {
                 return
             }
         } else if (categoryValue == IP_CONTENT_REMOVAL) {
+            // IP_CONTENT_REMOVAL always triggers the dialog; report cannot be sent for this category.
             TODO("APR: LLNotificationsUtil.add(\"HelpReportAbuseContainsCopyright\")")
             return
         }
 
-        TODO("APR: LLUploadDialog.modalUploadDialog(\"uploading_abuse_report\")")
+        TODO("APR: LLUploadDialog.modalUploadDialog(getString(\"uploading_abuse_report\"))")
         val url: String = TODO("APR: gAgent.getRegionCapability(\"SendUserReport\")") as String
-        val sshotUrl: String = TODO("APR: gAgent.getRegionCapability(\"SendUserReportWithScreenshot\")") as String
+        val sshotUrl: String =
+            TODO("APR: gAgent.getRegionCapability(\"SendUserReportWithScreenshot\")") as String
         if (url.isNotEmpty() || sshotUrl.isNotEmpty()) {
             sendReportViaCaps(url, sshotUrl, gatherReport())
             TODO("APR: LLNotificationsUtil.add(\"HelpReportAbuseConfirm\")")
-            closeFloater()
+            TODO("APR: closeFloater()")
         } else {
-            TODO("APR: disable send_btn and cancel_btn; uploadImage()")
+            TODO("APR: disable send_btn and cancel_btn; call uploadImage()")
         }
     }
 
     fun onClickCancel() {
         copyrightWarningSeen = false
         if (picking) closePickTool()
-        closeFloater()
+        TODO("APR: closeFloater()")
     }
 
     fun onClickObjPicker() {
         TODO("APR: ToolObjPicker.getInstance().setExitCallback(::closePickTool)")
         ToolMgr.setTransientTool(TODO("APR: ToolObjPicker.getInstance()") as Tool)
         picking = true
-        TODO("APR: clear object_name and owner_name fields; toggle pick_btn state")
+        TODO("APR: clear object_name and owner_name; toggle pick_btn on")
     }
 
     private fun closePickTool() {
@@ -280,7 +296,8 @@ class FloaterReporter(key: Any) : Floater(key) {
     // ---- Validation ---------------------------------------------------------
 
     private fun validateReport(): Boolean {
-        val category: UByte = TODO("APR: category_combo.getValue().asInteger().toUByte()") as UByte
+        val category: UByte =
+            TODO("APR: category_combo.getValue().asInteger().toUByte()") as UByte
         if (category == 0u.toUByte()) {
             TODO("APR: LLNotificationsUtil.add(\"HelpReportAbuseSelectCategory\")")
             return false
@@ -314,20 +331,16 @@ class FloaterReporter(key: Any) : Floater(key) {
 
         val isBeta: Boolean = TODO("APR: LLGridManager.getInstance().isInSLBeta()") as Boolean
         val prefix = if (isBeta) "Preview " else ""
-
         val categoryName: String = TODO("APR: category_combo.getSelectedItemLabel()") as String
-
-        val platform = when {
-            TODO("APR: System.getProperty(\"os.name\").lowercase().startsWith(\"win\")") as Boolean -> "Win"
-            TODO("APR: System.getProperty(\"os.name\").lowercase().startsWith(\"mac\")") as Boolean -> "Mac"
-            TODO("APR: System.getProperty(\"os.name\").lowercase().startsWith(\"lin\")") as Boolean -> "Lnx"
-            else -> "JVM"
-        }
+        val platform = "JVM"  // Kotlin/JVM replaces the C++ platform-detection macros
 
         val regionName: String = TODO("APR: region.getName()") as String
-        val abuseLocation: String = TODO("APR: abuse_location_edit.getValue().asString()") as String
-        val abuserName: String = TODO("APR: abuser_name_edit.getValue().asString()") as String
-        val summaryText: String = TODO("APR: summary_edit.getValue().asString()") as String
+        val abuseLocation: String =
+            TODO("APR: abuse_location_edit.getValue().asString()") as String
+        val abuserName: String =
+            TODO("APR: abuser_name_edit.getValue().asString()") as String
+        val summaryText: String =
+            TODO("APR: summary_edit.getValue().asString()") as String
 
         val summary = "$prefix |$regionName| ($abuseLocation) [$categoryName]  {$abuserName}  \"$summaryText\""
 
@@ -351,7 +364,7 @@ class FloaterReporter(key: Any) : Floater(key) {
         val driverVersion: String = TODO("GPU: gGLManager.mDriverVersionVendorString") as String
         val versionString = "$shortVersion $platform $cpuFamily $glRenderer $driverVersion"
 
-        val screenshotId: String = TODO("APR: screenshot.getValue() as uuid string") as String
+        val screenshotId: String = TODO("APR: screenshot ctrl getValue() as UUID string") as String
 
         return mapOf(
             "report-type" to reportType.id,
@@ -383,6 +396,7 @@ class FloaterReporter(key: Any) : Floater(key) {
         }
     }
 
+    @Suppress("UNUSED_PARAMETER")
     private fun finishedARPost(result: Map<String, Any?>) {
         TODO("APR: LLUploadDialog.modalUploadFinished()")
     }
@@ -393,18 +407,21 @@ class FloaterReporter(key: Any) : Floater(key) {
         TODO("APR: getChildView(\"send_btn\").setEnabled(true)")
         imageRaw = TODO("APR: LLImageRaw()")
 
-        setVisible(false)
-        val ok: Boolean = TODO("APR: gViewerWindow.rawSnapshot(imageRaw, IMAGE_WIDTH, IMAGE_HEIGHT, true, false, true, true, false)") as Boolean
-        setVisible(true)
+        TODO("APR: setVisible(false)")
+        val ok: Boolean = TODO("APR: gViewerWindow.rawSnapshot(imageRaw, IMAGE_WIDTH, IMAGE_HEIGHT, keepAspect=true, noDither=false, includeUI=true, rawSnapshot=true, cropToAspect=false)") as Boolean
+        TODO("APR: setVisible(true)")
         if (!ok) return
 
-        val prevExists: Boolean = TODO("APR: gSavedPerAccountSettings.getBOOL(\"PreviousScreenshotForReport\")") as Boolean
+        val prevExists: Boolean =
+            TODO("APR: gSavedPerAccountSettings.getBOOL(\"PreviousScreenshotForReport\")") as Boolean
         if (prevExists && !refresh) {
-            val screenshotFilename: String = TODO("APR: gDirUtilp.getLindenUserDir() + getDirDelimiter() + SCREEN_PREV_FILENAME") as String
+            val screenshotFilename: String =
+                TODO("APR: gDirUtilp.getLindenUserDir() + getDirDelimiter() + SCREEN_PREV_FILENAME") as String
             prevImageRaw = TODO("APR: LLImageRaw()")
-            val loaded: Boolean = TODO("APR: LLImagePNG.load(screenshotFilename).decode(prevImageRaw)") as Boolean
+            val loaded: Boolean =
+                TODO("APR: LLImagePNG.load(screenshotFilename) && decode(prevImageRaw)") as Boolean
             if (loaded) {
-                TODO("APR: LLNotificationsUtil.add(\"LoadPreviousReportScreenshot\", handler = ::onLoadScreenshotDialog)")
+                TODO("APR: LLNotificationsUtil.add(\"LoadPreviousReportScreenshot\", handler=::onLoadScreenshotDialog)")
                 return
             }
         }
@@ -414,15 +431,18 @@ class FloaterReporter(key: Any) : Floater(key) {
     private fun takeScreenshot(usePrevScreenshot: Boolean) {
         TODO("APR: gSavedPerAccountSettings.setBOOL(\"PreviousScreenshotForReport\", true)")
         if (!usePrevScreenshot) {
-            val screenshotFilename: String = TODO("APR: build SCREEN_PREV_FILENAME path") as String
-            TODO("APR: LLImagePNG.encode(imageRaw).save(screenshotFilename)")
+            val screenshotFilename: String =
+                TODO("APR: build SCREEN_PREV_FILENAME path in lindenUserDir") as String
+            TODO("APR: LLImagePNG.encode(imageRaw, 0f).save(screenshotFilename)")
         } else {
             imageRaw = prevImageRaw
         }
 
-        TODO("APR: convert imageRaw to J2C upload data; populate mResourceDatap; write to LLFileSystem cache")
-        TODO("APR: register image in texture list; set screenshot texture ctrl to asset UUID")
-        TODO("GPU: image_in_list.createGLTexture(0, imageRaw, 0, true, LLGLTexture.OTHER)")
+        TODO("APR: LLViewerTextureList.convertToUploadFile(imageRaw) → upload_data (J2C)")
+        TODO("APR: populate mResourceDatap: inventoryType=IT_NONE, nextOwnerPerm=0, expectedUploadCost=0, generate transaction/asset IDs, set type=AT_TEXTURE")
+        TODO("APR: write upload_data to LLFileSystem cache")
+        TODO("GPU: image_in_list = LLViewerTextureManager.getFetchedTexture(assetUuid); image_in_list.createGLTexture(0, imageRaw, 0, true, OTHER)")
+        TODO("APR: set screenshot TextureCtrl imageAssetID and defaultImageAssetID to assetUuid")
     }
 
     fun onLoadScreenshotDialog(selectedOption: Int) {
@@ -436,27 +456,30 @@ class FloaterReporter(key: Any) : Floater(key) {
     private fun uploadDoneCallback(uuid: String, result: Int) {
         TODO("APR: LLUploadDialog.modalUploadFinished()")
         if (result < 0) {
-            TODO("APR: show ErrorUploadingReportScreenshot notification with error reason")
+            TODO("APR: show ErrorUploadingReportScreenshot notification with error reason string")
             return
         }
         screenId = uuid
         sendReportViaLegacy(gatherReport())
         TODO("APR: LLNotificationsUtil.add(\"HelpReportAbuseConfirm\")")
-        closeFloater()
+        TODO("APR: closeFloater()")
     }
 
     // ---- Helpers ------------------------------------------------------------
 
     private fun setPosBox(pos: Triple<Double, Double, Double>) {
-        TODO("APR: format pos as region-local x/y/z string and set position field")
+        TODO("APR: format pos as region-local x/y/z and set position field text")
     }
 
     private fun requestAbuseCategories() {
-        val capUrl: String = TODO("APR: gAgent.getRegion()?.getCapability(\"AbuseCategories\") ?: \"\"") as String
+        val region: Any? = TODO("APR: gAgent.getRegion()")
+        region ?: return
+        val capUrl: String =
+            TODO("APR: region.getCapability(\"AbuseCategories\") ?: \"\"") as String
         if (capUrl.isEmpty()) return
         val lang: String = TODO("APR: gSavedSettings.getString(\"Language\")") as String
         val fullUrl = if (lang != "default" && lang.isNotEmpty()) "$capUrl?lc=$lang" else capUrl
-        TODO("APR: launch coroutine requestAbuseCategoriesCoro(fullUrl, getHandle())")
+        TODO("APR: launch coroutine requestAbuseCategoriesCoro(fullUrl, getHandle()); on success populate category_combo keeping first 'Select category' entry")
     }
 
     private fun onUpdateScreenshot() {
@@ -464,10 +487,6 @@ class FloaterReporter(key: Any) : Floater(key) {
     }
 
     private fun refresh() {
-        TODO("APR: rebuild UI from current report state")
+        TODO("APR: rebuild UI fields from current report state")
     }
-
-    // ---- Floater base stubs (provided by the real Floater class) ------------
-    private fun closeFloater() { TODO("APR: Floater.closeFloater()") }
-    private fun setVisible(visible: Boolean) { TODO("APR: Floater.setVisible(visible)") }
 }

@@ -1,9 +1,9 @@
 package com.firestorm.newview
 
 import com.firestorm.llcommon.LLUUID
-import com.firestorm.llui.LLPanel
-import com.firestorm.llui.LLUICtrl
-import com.firestorm.llui.LLRect
+import com.firestorm.llmath.Rect
+import com.firestorm.llmessage.IMType
+import com.firestorm.llui.View
 
 // Corresponds to: llchiclet.h / llchiclet.cpp
 // Small notification widgets shown in the chiclet bar for IM/group chats,
@@ -37,7 +37,7 @@ fun interface ChicletSizeChangedListener {
 /**
  * Base class for all chiclets.
  *
- * Mirrors C++ [LLChiclet] (extends LLUICtrl).
+ * Mirrors C++ [LLChiclet] (extends LLUICtrl → View here).
  *
  * @param sessionId the chat/notification session this chiclet represents.
  */
@@ -65,7 +65,7 @@ open class Chiclet(sessionId: LLUUID) {
     private val sizeChangedListeners: MutableList<ChicletSizeChangedListener> = mutableListOf()
     private val clickListeners: MutableList<() -> Unit> = mutableListOf()
 
-    // ── Counter ──────────────────────────────────────────────────────────────
+    // ── Counter ───────────────────────────────────────────────────────────────
 
     /** Sets the number of unread notifications. Subclasses override to resize. */
     open fun setCounter(n: Int) {
@@ -83,7 +83,7 @@ open class Chiclet(sessionId: LLUUID) {
         counterEnabled = enable
     }
 
-    // ── Flash ────────────────────────────────────────────────────────────────
+    // ── Flash ─────────────────────────────────────────────────────────────────
 
     /**
      * Briefly flashes the chiclet to draw the user's attention.
@@ -93,14 +93,14 @@ open class Chiclet(sessionId: LLUUID) {
         // TODO("GL: start LLFlashTimer for this chiclet button")
     }
 
-    // ── Toggle / activation ──────────────────────────────────────────────────
+    // ── Toggle / activation ───────────────────────────────────────────────────
 
     open fun setToggleState(toggle: Boolean) {
         isActive = toggle
         // TODO("GL: update mChicletButton toggle state")
     }
 
-    // ── Click callbacks ──────────────────────────────────────────────────────
+    // ── Click callbacks ───────────────────────────────────────────────────────
 
     fun addClickListener(listener: () -> Unit) {
         clickListeners.add(listener)
@@ -120,7 +120,7 @@ open class Chiclet(sessionId: LLUUID) {
         sizeChangedListeners.forEach { it.onChicletSizeChanged(this) }
     }
 
-    // ── Draw ─────────────────────────────────────────────────────────────────
+    // ── Draw ──────────────────────────────────────────────────────────────────
 
     open fun draw() {
         TODO("GL: render chiclet icon, counter badge, and new-message overlay")
@@ -134,9 +134,9 @@ open class Chiclet(sessionId: LLUUID) {
  *
  * Mirrors C++ [LLIMChiclet] (extends LLChiclet).
  */
-abstract class IMChiclet(sessionId: LLUUID) : Chiclet(sessionId) {
+abstract class IMChicletBase(sessionId: LLUUID) : Chiclet(sessionId) {
 
-    var otherParticipantId: LLUUID = LLUUID.NULL
+    var otherParticipantId: LLUUID = LLUUID()
         protected set
 
     var sessionName: String = ""
@@ -152,7 +152,7 @@ abstract class IMChiclet(sessionId: LLUUID) : Chiclet(sessionId) {
     var showNewMessagesIcon: Boolean = false
         private set
 
-    // ── Participant / session ────────────────────────────────────────────────
+    // ── Participant / session ─────────────────────────────────────────────────
 
     open fun setOtherParticipantId(id: LLUUID) {
         otherParticipantId = id
@@ -163,7 +163,7 @@ abstract class IMChiclet(sessionId: LLUUID) : Chiclet(sessionId) {
         // TODO("GL: set tooltip text to name")
     }
 
-    // ── Speaker control ──────────────────────────────────────────────────────
+    // ── Speaker control ───────────────────────────────────────────────────────
 
     open fun setShowSpeaker(show: Boolean) {
         showSpeaker = show
@@ -178,7 +178,7 @@ abstract class IMChiclet(sessionId: LLUUID) : Chiclet(sessionId) {
         // TODO("GL: bind mSpeakerCtrl to otherParticipantId voice channel")
     }
 
-    // ── New-message overlay ──────────────────────────────────────────────────
+    // ── New-message overlay ───────────────────────────────────────────────────
 
     open fun setShowNewMessagesIcon(show: Boolean) {
         showNewMessagesIcon = show
@@ -187,7 +187,7 @@ abstract class IMChiclet(sessionId: LLUUID) : Chiclet(sessionId) {
 
     open fun getShowNewMessagesIcon(): Boolean = showNewMessagesIcon
 
-    // ── Counter (override for width reflow) ──────────────────────────────────
+    // ── Counter (override for width reflow) ───────────────────────────────────
 
     override fun setCounter(n: Int) {
         super.setCounter(n)
@@ -208,7 +208,7 @@ abstract class IMChiclet(sessionId: LLUUID) : Chiclet(sessionId) {
         // TODO("GL: measure counter + speaker widths and resize chiclet rect")
     }
 
-    // ── Popup menu ───────────────────────────────────────────────────────────
+    // ── Popup menu ────────────────────────────────────────────────────────────
 
     protected abstract fun createPopupMenu()
 
@@ -224,19 +224,18 @@ abstract class IMChiclet(sessionId: LLUUID) : Chiclet(sessionId) {
 
     companion object {
         /**
-         * Determines session type from [sessionId] by consulting LLIMMgr.
+         * Determines session type from [sessionId] by consulting IMMgr.
          * Mirrors C++ [LLIMChiclet::getIMSessionType].
          */
         fun getIMSessionType(sessionId: LLUUID): IMSessionType {
-            // TODO("lookup session type in IMMgr.sessions")
             val session = IMMgr.getSession(sessionId) ?: return IMSessionType.UNKNOWN
             return when (session.type) {
-                com.firestorm.llmessage.IMType.NOTHING        -> IMSessionType.UNKNOWN
-                com.firestorm.llmessage.IMType.MESSAGE_FROM_AGENT,
-                com.firestorm.llmessage.IMType.NOTHING_SPECIAL -> IMSessionType.IM
-                com.firestorm.llmessage.IMType.SESSION_GROUP_START -> IMSessionType.GROUP
-                com.firestorm.llmessage.IMType.SESSION_CONFERENCE_START -> IMSessionType.AD_HOC
-                else -> IMSessionType.UNKNOWN
+                IMType.SESSION_GROUP_START      -> IMSessionType.GROUP
+                IMType.SESSION_CONFERENCE_START -> IMSessionType.AD_HOC
+                IMType.SESSION_P2P_INVITE,
+                IMType.SESSION_SEND,
+                IMType.SESSION_INVITE           -> IMSessionType.IM
+                else                            -> IMSessionType.IM
             }
         }
     }
@@ -248,11 +247,7 @@ abstract class IMChiclet(sessionId: LLUUID) : Chiclet(sessionId) {
  * Person-to-person IM chiclet.
  * Mirrors C++ [LLIMP2PChiclet].
  */
-class IMChiclet(sessionId: LLUUID) : IMChiclet(sessionId) {
-
-    override fun createPopupMenu() {
-        // TODO("GL: build P2P context menu — View Profile, IM, Block, etc.")
-    }
+class P2PChiclet(sessionId: LLUUID) : IMChicletBase(sessionId) {
 
     override fun setOtherParticipantId(id: LLUUID) {
         super.setOtherParticipantId(id)
@@ -262,15 +257,19 @@ class IMChiclet(sessionId: LLUUID) : IMChiclet(sessionId) {
     override fun initSpeakerControl() {
         // TODO("GL: bind mSpeakerCtrl to otherParticipantId")
     }
+
+    override fun createPopupMenu() {
+        // TODO("GL: build P2P context menu — View Profile, IM, Block, etc.")
+    }
 }
 
 /**
  * Group chat chiclet.
  * Mirrors C++ [LLIMGroupChiclet] (also implements LLGroupMgrObserver).
  */
-class GroupChiclet(sessionId: LLUUID) : IMChiclet(sessionId) {
+class GroupChiclet(sessionId: LLUUID) : IMChicletBase(sessionId) {
 
-    override fun setSessionId(id: LLUUID) {
+    fun setGroupSessionId(id: LLUUID) {
         this.sessionId = id
         // TODO("GL: subscribe to LLGroupMgr for group data changes (icon, name)")
     }
@@ -285,7 +284,6 @@ class GroupChiclet(sessionId: LLUUID) : IMChiclet(sessionId) {
 
     override fun draw() {
         // TODO("GL: track current speaker and update speaker control before drawing")
-        super.draw()
     }
 
     /** Called by LLGroupMgr when group data (e.g. icon) changes. */
@@ -298,7 +296,7 @@ class GroupChiclet(sessionId: LLUUID) : IMChiclet(sessionId) {
  * Ad-hoc (conference) chat chiclet.
  * Mirrors C++ [LLAdHocChiclet].
  */
-class AdHocChiclet(sessionId: LLUUID) : IMChiclet(sessionId) {
+class AdHocChiclet(sessionId: LLUUID) : IMChicletBase(sessionId) {
 
     override fun initSpeakerControl() {
         // TODO("GL: bind mSpeakerCtrl to current conference speaker")
@@ -310,7 +308,6 @@ class AdHocChiclet(sessionId: LLUUID) : IMChiclet(sessionId) {
 
     override fun draw() {
         // TODO("GL: switchToCurrentSpeaker() then render")
-        super.draw()
     }
 }
 
@@ -320,7 +317,7 @@ class AdHocChiclet(sessionId: LLUUID) : IMChiclet(sessionId) {
  * Chiclet for script-floater notifications.
  * Mirrors C++ [LLScriptChiclet].
  */
-class ScriptChiclet(sessionId: LLUUID) : IMChiclet(sessionId) {
+class ScriptChiclet(sessionId: LLUUID) : IMChicletBase(sessionId) {
 
     override fun setCounter(n: Int) {
         // Script chiclets don't show a count badge — intentionally no-op.
@@ -342,7 +339,7 @@ class ScriptChiclet(sessionId: LLUUID) : IMChiclet(sessionId) {
  * Chiclet for inventory-offer notifications.
  * Mirrors C++ [LLInvOfferChiclet].
  */
-class InvOfferChiclet(sessionId: LLUUID) : IMChiclet(sessionId) {
+class InvOfferChiclet(sessionId: LLUUID) : IMChicletBase(sessionId) {
 
     override fun setCounter(n: Int) {
         // Inv-offer chiclets don't show a count badge — intentionally no-op.
@@ -392,6 +389,7 @@ abstract class SysWellChiclet(sessionId: LLUUID) : Chiclet(sessionId) {
         // TODO("GL: switch between 'lit' and 'unlit' button states")
     }
 
+    @Suppress("UnusedParameter")
     protected fun changeLitState(blink: Boolean) {
         // TODO("GL: toggle lit/unlit visual for flash effect")
     }
@@ -432,7 +430,8 @@ class IMWellChiclet(sessionId: LLUUID) : SysWellChiclet(sessionId) {
     }
 
     fun messageCountChanged() {
-        val total = IMMgr.sessions.values.sumOf { 0 }  // TODO("sum participant unread counts")
+        // TODO("sum unread participant message counts across IMMgr.sessions")
+        val total = 0
         setCounter(total)
         // TODO("GL: updateApplicationWindowTitle() with unread badge")
     }
@@ -459,14 +458,14 @@ class ChicletPanel {
     // ── Factory ───────────────────────────────────────────────────────────────
 
     /**
-     * Creates a [Chiclet] of type [type] for [sessionId] and inserts at [index].
-     * Pass [index] = -1 to append at the end (mirrors C++ createChiclet<T>(session_id)).
+     * Creates a [Chiclet] of [type] for [sessionId] and inserts at [index].
+     * Pass [index] = -1 to append at the end (mirrors C++ createChiclet<T>).
      */
     fun createChiclet(sessionId: LLUUID, type: IMSessionType, index: Int = -1): Chiclet {
         val chiclet: Chiclet = when (type) {
-            IMSessionType.IM     -> IMChiclet(sessionId)
-            IMSessionType.GROUP  -> GroupChiclet(sessionId)
-            IMSessionType.AD_HOC -> AdHocChiclet(sessionId)
+            IMSessionType.IM      -> P2PChiclet(sessionId)
+            IMSessionType.GROUP   -> GroupChiclet(sessionId)
+            IMSessionType.AD_HOC  -> AdHocChiclet(sessionId)
             IMSessionType.UNKNOWN -> Chiclet(sessionId)
         }
         val insertAt = if (index < 0 || index > chiclets.size) chiclets.size else index
@@ -509,13 +508,11 @@ class ChicletPanel {
     }
 
     fun removeChiclet(chiclet: Chiclet) {
-        chiclets.remove(chiclet)
-        arrange()
+        if (chiclets.remove(chiclet)) arrange()
     }
 
     fun removeChiclet(sessionId: LLUUID) {
-        chiclets.removeAll { it.sessionId == sessionId }
-        arrange()
+        if (chiclets.removeAll { it.sessionId == sessionId }) arrange()
     }
 
     fun removeAll() {
@@ -527,8 +524,8 @@ class ChicletPanel {
 
     /** Activates chiclet for [sessionId] and deactivates all others. */
     fun setChicletToggleState(sessionId: LLUUID, toggle: Boolean) {
-        chiclets.forEach {
-            it.setToggleState(it.sessionId == sessionId && toggle)
+        chiclets.forEach { c ->
+            c.setToggleState(c.sessionId == sessionId && toggle)
         }
     }
 
@@ -542,12 +539,17 @@ class ChicletPanel {
         // TODO("GL: scroll mScrollArea so that chiclet is visible")
     }
 
-    fun scrollLeft()  { TODO("GL: shift chiclets right by scrollingOffset") }
-    fun scrollRight() { TODO("GL: shift chiclets left by scrollingOffset") }
+    fun scrollLeft() {
+        // TODO("GL: shift chiclets right by scrollingOffset")
+    }
+
+    fun scrollRight() {
+        // TODO("GL: shift chiclets left by scrollingOffset")
+    }
 
     fun onCurrentVoiceChannelChanged(sessionId: LLUUID) {
         chiclets.forEach { c ->
-            if (c is IMChiclet) c.setShowSpeaker(c.sessionId == sessionId)
+            if (c is IMChicletBase) c.setShowSpeaker(c.sessionId == sessionId)
         }
     }
 
@@ -563,9 +565,3 @@ class ChicletPanel {
         TODO("GL: render scroll area, chiclet buttons, and scroll arrows")
     }
 }
-
-// ── Companion open class alias ────────────────────────────────────────────────
-// Allow callers to refer to the open base as `Chiclet` while subclasses can
-// be used polymorphically.  The open Chiclet constructor is already the base.
-
-private fun Chiclet.setSessionId(id: LLUUID) { this.sessionId = id }

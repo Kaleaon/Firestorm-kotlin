@@ -1,31 +1,36 @@
 package com.firestorm.newview
 
 import com.firestorm.llcommon.LLUUID
-import com.firestorm.llui.LLPanel
-import com.firestorm.llui.LLRect
+import com.firestorm.llmath.Rect
+import com.firestorm.llui.Panel
 
 // Corresponds to: llstatusbar.h / llstatusbar.cpp
 // Bottom status bar of the Firestorm viewer. Displays balance, health,
 // FPS, bandwidth, clock, parcel info, and various icon controls.
 
+// ── Supporting types ──────────────────────────────────────────────────────────
+
 /** Mirrors C++ LLRegionDetails — per-region/parcel metadata cached by the status bar. */
 data class RegionDetails(
-    var regionName: String  = "Unknown",
-    var parcelName: String  = "Unknown",
+    var regionName: String   = "Unknown",
+    var parcelName: String   = "Unknown",
     var accessString: String = "Unknown",
-    var x: Int              = 0,
-    var y: Int              = 0,
-    var z: Int              = 0,
-    var area: Int           = 0,
-    var forSale: Boolean    = false,
-    var owner: String       = "Unknown",
-    var traffic: Float      = 0f,
-    var balance: Int        = 0,
-    var time: String        = "",
-    var ping: UInt          = 0u,
+    var x: Int               = 0,
+    var y: Int               = 0,
+    var z: Int               = 0,
+    var area: Int            = 0,
+    var forSale: Boolean     = false,
+    var owner: String        = "Unknown",
+    var traffic: Float       = 0f,
+    var balance: Int         = 0,
+    var time: String         = "",
+    var ping: UInt           = 0u,
 )
 
-/** Parcel permission icons shown in the right section of the status bar. */
+/**
+ * Parcel permission icons shown in the right section of the status bar.
+ * Mirrors C++ LLStatusBar::EParcelIcon (order also defines reverse display order).
+ */
 enum class ParcelIcon {
     VOICE,
     FLY,
@@ -38,17 +43,19 @@ enum class ParcelIcon {
     DAMAGE,
 }
 
+// ── StatusBar ─────────────────────────────────────────────────────────────────
+
 /**
  * Bottom status bar of the viewer.
  *
- * Mirrors C++ [LLStatusBar] (extends LLPanel). Shows balance, health,
- * FPS, bandwidth, location, clock, and parcel restriction icons.
+ * Mirrors C++ [LLStatusBar] (extends LLPanel → Panel here).
+ * Shows balance, health, FPS, bandwidth, location, clock, and parcel icons.
  *
  * Complex GL rendering stubs are marked TODO("GL: ...").
  */
-class StatusBar(rect: LLRect) : LLPanel(rect) {
+class StatusBar(rect: Rect = Rect()) : Panel("status_bar", rect) {
 
-    // ── Core display state ──────────────────────────────────────────────────
+    // ── Core display state ────────────────────────────────────────────────────
 
     var balance: Int = 0
         private set
@@ -69,8 +76,8 @@ class StatusBar(rect: LLRect) : LLPanel(rect) {
         private set
 
     // Land credit / committed tracking (used to derive "land left")
-    private var squareMetersCredit: Int     = 0
-    private var squareMetersCommitted: Int  = 0
+    private var squareMetersCredit: Int    = 0
+    private var squareMetersCommitted: Int = 0
 
     private var audioStreamEnabled: Boolean = false
     private var balanceVisible: Boolean     = true
@@ -81,10 +88,10 @@ class StatusBar(rect: LLRect) : LLPanel(rect) {
     /** Per-region detail cache, publicly writable (mirrors C++ public field). */
     val regionDetails: RegionDetails = RegionDetails()
 
-    // ── Lifecycle ───────────────────────────────────────────────────────────
+    // ── Lifecycle ─────────────────────────────────────────────────────────────
 
     /** Called after UI is built from XML (mirrors C++ postBuild). */
-    fun postBuild(): Boolean {
+    override fun postBuild(): Boolean {
         initParcelIcons()
         return true
     }
@@ -95,7 +102,7 @@ class StatusBar(rect: LLRect) : LLPanel(rect) {
         updateParcelIcons()
     }
 
-    // ── Manipulators ────────────────────────────────────────────────────────
+    // ── Manipulators ──────────────────────────────────────────────────────────
 
     fun setBalance(balance: Int) {
         this.balance = balance
@@ -158,7 +165,7 @@ class StatusBar(rect: LLRect) : LLPanel(rect) {
         // TODO("GL: update mSGBandwidth / mSGPacketLoss graphs")
     }
 
-    // ── Accessors ───────────────────────────────────────────────────────────
+    // ── Accessors ─────────────────────────────────────────────────────────────
 
     fun getBalance(): Int = balance
     fun getHealth(): Int  = health
@@ -170,7 +177,7 @@ class StatusBar(rect: LLRect) : LLPanel(rect) {
 
     fun getAudioStreamEnabled(): Boolean = audioStreamEnabled
 
-    // ── Internal helpers ────────────────────────────────────────────────────
+    // ── Internal helpers ──────────────────────────────────────────────────────
 
     private fun initParcelIcons() {
         // TODO("GL: bind mParcelIcon[] controls from XML")
@@ -197,7 +204,7 @@ class StatusBar(rect: LLRect) : LLPanel(rect) {
     }
 
     private fun updateClockDisplay() {
-        // TODO("GL: format current UTC/local time using mClockFormat and push to mTextTime")
+        // TODO("GL: format current UTC/local time and push to mTextTime")
     }
 
     private fun onClickBuyCurrency() {
@@ -213,10 +220,6 @@ class StatusBar(rect: LLRect) : LLPanel(rect) {
     }
 
     private fun onAgentParcelChange() {
-        update()
-    }
-
-    private fun update() {
         updateParcelInfoText()
         updateParcelIcons()
     }
@@ -225,13 +228,13 @@ class StatusBar(rect: LLRect) : LLPanel(rect) {
         rebakeStuck = stuck
     }
 
-    // ── Draw ────────────────────────────────────────────────────────────────
+    // ── Draw ──────────────────────────────────────────────────────────────────
 
     override fun draw() {
         TODO("GL: render status bar panel — super.draw() then overlay stat graphs")
     }
 
-    // ── Singleton / global accessor ─────────────────────────────────────────
+    // ── Singleton / global accessor ───────────────────────────────────────────
 
     companion object {
         private var instance: StatusBar? = null
@@ -252,6 +255,5 @@ class StatusBar(rect: LLRect) : LLPanel(rect) {
 }
 
 /** Mirrors C++ can_afford_transaction(). Returns true if the agent can pay [cost]. */
-fun canAffordTransaction(cost: Int): Boolean {
-    return (StatusBar.getInstance()?.getBalance() ?: 0) >= cost
-}
+fun canAffordTransaction(cost: Int): Boolean =
+    (StatusBar.getInstance()?.getBalance() ?: 0) >= cost

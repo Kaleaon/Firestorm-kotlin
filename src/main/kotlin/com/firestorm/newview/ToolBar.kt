@@ -1,13 +1,13 @@
 package com.firestorm.newview
 
 import com.firestorm.llcommon.LLUUID
-import com.firestorm.llui.LLUICtrl
-import com.firestorm.llui.LLRect
+import com.firestorm.llmath.Rect
+import com.firestorm.llui.View
 
 // Corresponds to: lltoolbarview.h / lltoolbarview.cpp  (and lltoolbar.h)
 // User-customisable toolbar view that manages up to four positional toolbars.
 
-// ── Enumerations ─────────────────────────────────────────────────────────────
+// ── Enumerations ──────────────────────────────────────────────────────────────
 
 /**
  * Mirrors C++ [LLToolBarEnums::EToolBarLocation].
@@ -18,7 +18,6 @@ enum class ToolBarLocation(val index: Int) {
     LEFT(0),
     RIGHT(1),
     BOTTOM(2),
-    // TOP is not in the C++ enum but kept for completeness
     TOP(3);
 
     companion object {
@@ -39,7 +38,6 @@ enum class ButtonDisplayMode {
 
 /**
  * Mirrors C++ [LLToolBarEnums::Alignment].
- * Horizontal or vertical alignment of buttons within the toolbar.
  */
 enum class ToolBarAlignment {
     LEFT,
@@ -49,19 +47,16 @@ enum class ToolBarAlignment {
 
 /**
  * Mirrors C++ [LLToolBarEnums::LayoutStyle].
- * How excess space is distributed between buttons.
  */
 enum class ToolBarLayoutStyle {
     NONE,
     WRAP,
 }
 
-// ── Data model ───────────────────────────────────────────────────────────────
+// ── Data model ────────────────────────────────────────────────────────────────
 
 /**
  * Represents a single toolbar command / button.
- *
- * Mirrors the command-id / LLCommand pairing managed by LLCommandManager.
  *
  * @param commandId  Stable string identifier (e.g. "build", "chat").
  * @param label      Localised display label.
@@ -99,25 +94,26 @@ data class ToolBarStrip(
 /**
  * Viewer toolbar view — singleton that owns and coordinates all toolbar strips.
  *
- * Mirrors C++ [LLToolBarView] (extends LLUICtrl).
+ * Mirrors C++ [LLToolBarView] (extends LLUICtrl → View here).
  * The C++ class is accessed globally via [gToolBarView]; here we use an
  * `object` singleton and expose [getInstance] for compatibility.
  */
 object ToolBarView {
 
-    // One strip per location slot (indexed by ToolBarLocation.index)
+    // One strip per location slot (indexed by ToolBarLocation.index 0–3)
     private val toolbars: Array<ToolBarStrip> = Array(ToolBarLocation.COUNT) { i ->
-        ToolBarStrip(location = ToolBarLocation.entries.first { it.index == i })
+        val loc = ToolBarLocation.entries.first { it.index == i }
+        ToolBarStrip(location = loc)
     }
 
     /** Registry of all known commands (commandId → ToolbarCommand). */
     val commandRegistry: MutableMap<String, ToolbarCommand> = mutableMapOf()
 
-    private var toolbarsLoaded: Boolean = false
-    private var showToolbars: Boolean   = true
+    private var toolbarsLoaded: Boolean    = false
+    private var showToolbars: Boolean      = true
     private var hideBottomOnEmpty: Boolean = false
 
-    // ── Command queries ──────────────────────────────────────────────────────
+    // ── Command queries ───────────────────────────────────────────────────────
 
     /**
      * Returns the [ToolBarLocation] index where [commandId] lives,
@@ -132,7 +128,7 @@ object ToolBarView {
 
     /**
      * Adds [commandId] to [location] at [rank] (position).
-     * Returns the [ToolBarLocation] index of where it was placed.
+     * Returns the [ToolBarLocation] index where it was placed.
      * Mirrors C++ LLToolBarView::addCommand().
      */
     fun addCommand(
@@ -142,8 +138,8 @@ object ToolBarView {
     ): Int {
         if (location == ToolBarLocation.NONE) return ToolBarLocation.NONE.index
         val strip = toolbars[location.index]
-        // Remove from any existing strip first
-        removeCommandInternal(commandId)
+        // Remove from any current strip first
+        removeFromAllStrips(commandId)
         if (rank == ToolBarStrip.RANK_NONE || rank >= strip.commands.size) {
             strip.commands.add(commandId)
         } else {
@@ -155,7 +151,8 @@ object ToolBarView {
 
     /**
      * Removes [commandId] from whichever toolbar currently holds it.
-     * Returns the location index it was removed from, and sets [rank] output.
+     * Returns a pair of (locationIndex, rank) where rank is the former position,
+     * or (NONE.index, RANK_NONE) if not found.
      * Mirrors C++ LLToolBarView::removeCommand().
      */
     fun removeCommand(commandId: String): Pair<Int, Int> {
@@ -172,7 +169,7 @@ object ToolBarView {
 
     /**
      * Enables or disables [commandId] wherever it lives.
-     * Returns location index, or NONE if not found.
+     * Returns location index, or NONE.index if not found.
      */
     fun enableCommand(commandId: String, enabled: Boolean): Int {
         commandRegistry[commandId]?.isEnabled = enabled
@@ -181,10 +178,11 @@ object ToolBarView {
     }
 
     /**
-     * Stops an in-progress command (e.g. cancels a drag). Mirrors C++ stopCommandInProgress().
+     * Stops an in-progress command (e.g. cancels a drag).
+     * Mirrors C++ stopCommandInProgress().
      */
     fun stopCommandInProgress(commandId: String): Int {
-        // TODO("GL: stop any running animation / state for commandId")
+        // TODO("GL: stop any running animation/state for commandId")
         return hasCommand(commandId)
     }
 
@@ -198,7 +196,7 @@ object ToolBarView {
         return hasCommand(commandId)
     }
 
-    // ── Persistence ──────────────────────────────────────────────────────────
+    // ── Persistence ───────────────────────────────────────────────────────────
 
     /**
      * Loads toolbar layout from user or default settings file.
@@ -220,7 +218,7 @@ object ToolBarView {
         return true
     }
 
-    // ── Visibility ───────────────────────────────────────────────────────────
+    // ── Visibility ────────────────────────────────────────────────────────────
 
     fun setToolBarsVisible(visible: Boolean) {
         showToolbars = visible
@@ -242,7 +240,7 @@ object ToolBarView {
         return toolbars[location.index]
     }
 
-    // ── Drag-and-drop ────────────────────────────────────────────────────────
+    // ── Drag-and-drop ─────────────────────────────────────────────────────────
 
     fun startDragTool(x: Int, y: Int, commandId: String) {
         // TODO("GL: begin drag of toolbar button commandId")
@@ -262,7 +260,7 @@ object ToolBarView {
         // TODO("GL: cancel drag and restore button to original strip")
     }
 
-    // ── Draw ─────────────────────────────────────────────────────────────────
+    // ── Draw ──────────────────────────────────────────────────────────────────
 
     fun draw() {
         TODO("GL: render all toolbar strips and their buttons")
@@ -275,4 +273,10 @@ object ToolBarView {
 
     /** Global accessor matching C++ [gToolBarView] pattern. */
     fun getInstance(): ToolBarView = this
+
+    // ── Private helpers ───────────────────────────────────────────────────────
+
+    private fun removeFromAllStrips(commandId: String) {
+        toolbars.forEach { it.commands.remove(commandId) }
+    }
 }

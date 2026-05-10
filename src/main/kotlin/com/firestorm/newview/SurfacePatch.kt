@@ -482,7 +482,6 @@ class SurfacePatch {
     fun clearDirty() { dirty = false }
 
     fun setHasReceivedData() { hasReceivedData = true }
-    fun getHasReceivedData(): Boolean = hasReceivedData
 
     fun getVisible(): Boolean = visInfo.isVisible
     fun getRenderStride(): UInt = visInfo.renderStride

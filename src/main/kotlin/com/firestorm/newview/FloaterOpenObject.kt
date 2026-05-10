@@ -1,9 +1,6 @@
 package com.firestorm.newview
 
 import com.firestorm.floater.Floater
-import com.firestorm.inventory.InventoryPanel
-import com.firestorm.objects.ObjectSelection
-import com.firestorm.objects.SafeHandle
 import com.firestorm.ui.LLSD
 import java.util.UUID
 
@@ -16,8 +13,8 @@ class FloaterOpenObject(key: LLSD) : Floater(key) {
         val replace: Boolean
     )
 
-    private var panelInventoryObject: PanelObjectInventory? = null
-    private var objectSelection: SafeHandle<ObjectSelection> = SafeHandle()
+    private var panelInventoryObject: Any? = null
+    private var objectSelection: Any? = null
     private var dirty: Boolean = true
 
     init {
@@ -26,38 +23,40 @@ class FloaterOpenObject(key: LLSD) : Floater(key) {
     }
 
     override fun postBuild(): Boolean {
-        getChild<UICtrl>("object_name").setTextArg("[DESC]", "Object")
-        panelInventoryObject = getChild("object_contents")
+        getChild<Any>("object_name").let {
+            TODO("APR: setTextArg [DESC] = 'Object'")
+        }
+        panelInventoryObject = getChild<Any>("object_contents")
         refresh()
         return true
     }
 
     override fun onOpen(key: LLSD) {
-        val objectSelection = SelectMgr.instance.selection
-        if (objectSelection.rootObjectCount != 1) {
+        val sel = SelectMgr.instance.selection
+        if (sel.rootObjectCount != 1) {
             NotificationsUtil.add("UnableToViewContentsMoreThanOne")
             closeFloater()
             return
         }
-        if (objectSelection.primaryObject == null) {
+        if (sel.primaryObject == null) {
             closeFloater()
             return
         }
-        this.objectSelection = SelectMgr.instance.editSelection
+        objectSelection = SelectMgr.instance.editSelection
         refresh()
     }
 
     fun refresh() {
-        panelInventoryObject?.refresh()
+        (panelInventoryObject as? PanelObjectInventory)?.refresh()
 
-        val node = objectSelection.firstRootNode
+        val node = (objectSelection as? ObjectSelection)?.firstRootNode
         if (node != null && RlvActions.isRlvEnabled() && !RlvActions.canEdit(node.`object`)) {
             closeFloater()
             return
         }
 
         val (name, enabled) = if (node != null) node.name to true else "" to false
-        getChild<UICtrl>("object_name").setTextArg("[DESC]", name)
+        getChild<Any>("object_name").let { TODO("APR: setTextArg [DESC] = name") }
         getChildView("copy_flyout").setEnabled(enabled)
     }
 
@@ -74,33 +73,32 @@ class FloaterOpenObject(key: LLSD) : Floater(key) {
     }
 
     private fun moveToInventory(wear: Boolean, replace: Boolean = false) {
-        if (objectSelection.rootObjectCount != 1) {
+        val sel = objectSelection as? ObjectSelection
+        if (sel == null || sel.rootObjectCount != 1) {
             NotificationsUtil.add("OnlyCopyContentsOfSingleItem")
             return
         }
 
-        val node = objectSelection.firstRootNode ?: return
-        val obj  = node.`object` ?: return
-        val objectId = obj.id
-        val name = node.name
+        val node   = sel.firstRootNode ?: return
+        val obj    = node.`object` ?: return
+        val objId  = obj.id
+        val name   = node.name
 
-        val parentCategoryId =
+        val parentCatId =
             if (wear) Inventory.findCategoryUUIDForType(FolderType.CLOTHING)
             else      Inventory.rootFolderId
 
-        Inventory.createNewCategory(parentCategoryId, FolderType.NONE, name) { categoryId ->
-            callbackCreateInventoryCategory(categoryId, objectId, wear, replace)
+        Inventory.createNewCategory(parentCatId, FolderType.NONE, name) { categoryId ->
+            callbackCreateInventoryCategory(categoryId, objId, wear, replace)
         }
     }
 
-    private fun onClickCancel() {
-        closeFloater()
-    }
+    private fun onClickCancel() = closeFloater()
 
     fun onClickCopy(value: LLSD) {
         when (value.asString()) {
-            "replace" -> moveToInventory(wear = true, replace = true)
-            "add"     -> moveToInventory(wear = true, replace = false)
+            "replace" -> moveToInventory(wear = true,  replace = true)
+            "add"     -> moveToInventory(wear = true,  replace = false)
             else      -> moveToInventory(wear = false)
         }
         closeFloater()
@@ -114,27 +112,25 @@ class FloaterOpenObject(key: LLSD) : Floater(key) {
             replace: Boolean = false
         ) {
             val wearData = CatAndWear(
-                catId = categoryId,
-                wear = wear,
+                catId          = categoryId,
+                wear           = wear,
                 folderResponded = true,
-                replace = replace
+                replace        = replace
             )
 
             val success = moveInvCategoryWorldToAgent(
                 objectId, categoryId, ignoreWarnings = true
-            ) { result, data ->
-                callbackMoveInventory(result, data)
+            ) { result, _ ->
+                callbackMoveInventory(result, wearData)
             }
 
-            if (!success) {
-                NotificationsUtil.add("OpenObjectCannotCopy")
-            }
+            if (!success) NotificationsUtil.add("OpenObjectCannotCopy")
         }
 
-        fun callbackMoveInventory(result: Int, data: CatAndWear?) {
+        fun callbackMoveInventory(result: Int, cat: CatAndWear?) {
             if (result == 0) {
                 val activePanel = InventoryPanel.activeInventoryPanel
-                activePanel?.setSelection(data?.catId, takeFocus = false)
+                activePanel?.setSelection(cat?.catId, takeFocus = false)
             }
         }
     }

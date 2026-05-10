@@ -99,7 +99,7 @@ open class Surface(val type: UInt, var region: ViewerRegion? = null) {
 
         fun initClasses() {}
 
-        fun setTextureSize(size: Int) { textureSize = size }
+        fun applyTextureSize(size: Int) { textureSize = size }
     }
 
     var gridsPerEdge: Int = 0
@@ -174,8 +174,8 @@ open class Surface(val type: UInt, var region: ViewerRegion? = null) {
         createPatchData()
     }
 
-    fun setRegion(regionp: ViewerRegion?) {
-        region = regionp
+    fun assignRegion(regionp: ViewerRegion?) {
+        region   = regionp
         waterObj = null
     }
 
@@ -368,8 +368,6 @@ open class Surface(val type: UInt, var region: ViewerRegion? = null) {
     fun getOriginGlobal(): Vector3d = originGlobal
 
     fun getMetersPerGrid(): Float = metersPerGrid
-    fun getGridsPerEdge(): Int = gridsPerEdge
-    fun getPatchesPerEdge(): Int = patchesPerEdge
     fun getGridsPerPatchEdge(): Int = gridsPerPatchEdge.toInt()
 
     fun getRenderStride(renderLevel: UInt): UInt = pvArray.renderStridep[renderLevel.toInt()].toUInt()
@@ -480,9 +478,6 @@ open class Surface(val type: UInt, var region: ViewerRegion? = null) {
     fun moveZ(x: Int, y: Int, delta: Float) {
         surfaceZ[x + y * gridsPerEdge] += delta
     }
-
-    fun getMinZ(): Float = minZ
-    fun getMaxZ(): Float = maxZ
 
     fun setWaterHeight(height: Float) {
         val wo = waterObj ?: return

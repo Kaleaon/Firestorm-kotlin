@@ -19,15 +19,15 @@ private const val MAX_MOTION_INSTANCES = 32
 
 class MotionRegistry {
 
-    private val table: MutableMap<LLUUID, ((LLUUID) -> Motion)?> = mutableMapOf()
+    private val table: MutableMap<LLUUID, ((LLUUID) -> LLMotion)?> = mutableMapOf()
 
-    fun registerMotion(id: LLUUID, factory: (LLUUID) -> Motion): Boolean {
+    fun registerMotion(id: LLUUID, factory: (LLUUID) -> LLMotion): Boolean {
         if (table.containsKey(id)) return false
         table[id] = factory
         return true
     }
 
-    fun createMotion(id: LLUUID): Motion? {
+    fun createMotion(id: LLUUID): LLMotion? {
         return when {
             !table.containsKey(id) -> KeyframeMotion.create(id)   // default: treat as keyframe asset
             else -> table[id]?.invoke(id)                          // null entry → bad, returns null
@@ -42,11 +42,11 @@ class MotionRegistry {
 // ---------------------------------------------------------------------------
 // MotionController
 //
-// Manages the full lifecycle of Motion instances for one character.
+// Manages the full lifecycle of LLMotion instances for one character.
 // Mirrors C++ LLMotionController (llmotioncontroller.cpp).
 //
 // Animation lifecycle (mirrors C++ comments):
-//   allMotions     – owns every Motion for its entire lifetime
+//   allMotions     – owns every LLMotion for its entire lifetime
 //   loadingMotions – waiting for async asset data
 //   loadedMotions  – asset loaded, not yet / no longer active
 //   activeMotions  – currently playing (chronological order, oldest first)
@@ -93,11 +93,11 @@ class MotionController {
 
     // ---- collections --------------------------------------------------------
 
-    private val allMotions:        MutableMap<LLUUID, Motion> = mutableMapOf()
-    private val loadingMotions:    MutableSet<Motion>          = mutableSetOf()
-    private val loadedMotions:     MutableSet<Motion>          = mutableSetOf()
-    private val activeMotions:     ArrayDeque<Motion>          = ArrayDeque()   // front = newest
-    private val deprecatedMotions: MutableSet<Motion>          = mutableSetOf()
+    private val allMotions:        MutableMap<LLUUID, LLMotion> = mutableMapOf()
+    private val loadingMotions:    MutableSet<LLMotion>          = mutableSetOf()
+    private val loadedMotions:     MutableSet<LLMotion>          = mutableSetOf()
+    private val activeMotions:     ArrayDeque<LLMotion>          = ArrayDeque()   // front = newest
+    private val deprecatedMotions: MutableSet<LLMotion>          = mutableSetOf()
 
     private var lastCountAfterPurge: Int = 0
 
@@ -107,12 +107,12 @@ class MotionController {
 
     // ---- registration / lookup ----------------------------------------------
 
-    fun registerMotion(id: LLUUID, factory: (LLUUID) -> Motion): Boolean =
+    fun registerMotion(id: LLUUID, factory: (LLUUID) -> LLMotion): Boolean =
         sRegistry.registerMotion(id, factory)
 
-    fun findMotion(id: LLUUID): Motion? = allMotions[id]
+    fun findMotion(id: LLUUID): LLMotion? = allMotions[id]
 
-    fun createMotion(id: LLUUID): Motion? {
+    fun createMotion(id: LLUUID): LLMotion? {
         if (id == LLUUID.NULL) return null
 
         allMotions[id]?.let { return it }
@@ -139,7 +139,7 @@ class MotionController {
         removeMotionInstance(motion)
     }
 
-    private fun removeMotionInstance(motion: Motion?) {
+    private fun removeMotionInstance(motion: LLMotion?) {
         motion ?: return
         if (motion.isActive) motion.deactivate()
         loadingMotions.remove(motion)
@@ -175,7 +175,7 @@ class MotionController {
         return stopMotionInstance(motion, stopImmediate || paused)
     }
 
-    private fun stopMotionInstance(motion: Motion?, stopImmediate: Boolean): Boolean {
+    private fun stopMotionInstance(motion: LLMotion?, stopImmediate: Boolean): Boolean {
         motion ?: return false
         return if (isMotionActive(motion) && !motion.isStopped) {
             motion.setStopTime(animTime)
@@ -293,10 +293,10 @@ class MotionController {
 
     // ---- queries ------------------------------------------------------------
 
-    fun isMotionActive(motion: Motion): Boolean  = motion.isActive
-    fun isMotionLoading(motion: Motion): Boolean = motion in loadingMotions
+    fun isMotionActive(motion: LLMotion): Boolean  = motion.isActive
+    fun isMotionLoading(motion: LLMotion): Boolean = motion in loadingMotions
 
-    fun getActiveMotions(): List<Motion> = activeMotions.toList()
+    fun getActiveMotions(): List<LLMotion> = activeMotions.toList()
 
     fun incMotionCounts(
         numMotions: Int, numLoading: Int, numLoaded: Int, numActive: Int, numDeprecated: Int
@@ -383,7 +383,7 @@ class MotionController {
     private fun updateRegularMotions()  = updateMotionsByType(MotionBlendType.NORMAL_BLEND)
     private fun updateAdditiveMotions() = updateMotionsByType(MotionBlendType.ADDITIVE_BLEND)
 
-    private fun updateIdleMotion(motion: Motion) {
+    private fun updateIdleMotion(motion: LLMotion) {
         when {
             motion.isStopped && animTime > motion.stopTimestamp + motion.getEaseOutDuration() ->
                 deactivateMotionInstance(motion)
@@ -470,7 +470,7 @@ class MotionController {
             val activeTimeSinceActivation = animTime - motion.activationTimestamp
 
             when {
-                // Motion inactive — deactivate with one final pose sample
+                // LLMotion inactive — deactivate with one final pose sample
                 motion.isStopped && animTime > motion.stopTimestamp + motion.getEaseOutDuration() -> {
                     if (lastTime <= motion.stopTimestamp) {
                         pose.weight = motion.fadeWeight
@@ -536,8 +536,8 @@ class MotionController {
     }
 
     private fun updateLoadingMotions() {
-        val toPromote = mutableListOf<Motion>()
-        val toRemove  = mutableListOf<Motion>()
+        val toPromote = mutableListOf<LLMotion>()
+        val toRemove  = mutableListOf<LLMotion>()
 
         for (motion in loadingMotions.toList()) {
             val ch = character ?: continue
@@ -558,7 +558,7 @@ class MotionController {
         }
     }
 
-    private fun activateMotionInstance(motion: Motion, time: Float): Boolean {
+    private fun activateMotionInstance(motion: LLMotion, time: Float): Boolean {
         val pose = motion.getPose() ?: return false
 
         if (motion in loadingMotions) {
@@ -590,7 +590,7 @@ class MotionController {
         return true
     }
 
-    private fun deactivateMotionInstance(motion: Motion): Boolean {
+    private fun deactivateMotionInstance(motion: LLMotion): Boolean {
         motion.deactivate()
 
         if (motion in deprecatedMotions) {
@@ -602,7 +602,7 @@ class MotionController {
         return true
     }
 
-    private fun deprecateMotionInstance(motion: Motion) {
+    private fun deprecateMotionInstance(motion: LLMotion) {
         deprecatedMotions.add(motion)
         stopMotionInstance(motion, false)
         allMotions.remove(motion.id)
@@ -640,7 +640,3 @@ class MotionController {
     }
 }
 
-// PoseBlender and the Motion base class are defined in Pose.kt and LLMotion.kt respectively.
-// MotionController uses LLMotion throughout; the typealias below keeps older call sites
-// in this file from needing renaming.
-internal typealias Motion = LLMotion

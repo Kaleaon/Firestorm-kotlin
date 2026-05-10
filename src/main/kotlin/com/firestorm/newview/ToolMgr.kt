@@ -1,32 +1,34 @@
 package com.firestorm.newview
 
-// Key-modifier mask constants mirroring MASK_* from llkeyboard.h
+// Key-modifier mask constants mirroring MASK_* from llkeyboard.h.
+// Redeclared here rather than relying on ToolComp to avoid circular dependency;
+// ToolComp already declares identical values but only within its own file scope.
 const val MASK_NONE: Int = 0x0000
-const val MASK_CONTROL: Int = 0x0001
-const val MASK_SHIFT: Int = 0x0002
-const val MASK_ALT: Int = 0x0004
+const val MASK_CTRL: Int = 0x0001
+const val MASK_SH: Int = 0x0002
+const val MASK_A: Int = 0x0004
 
-const val MASK_VERTICAL: Int = MASK_CONTROL
-const val MASK_SPIN: Int = MASK_CONTROL or MASK_SHIFT
+const val MASK_VERTICAL: Int = MASK_CTRL
+const val MASK_SPIN: Int = MASK_CTRL or MASK_SH
 const val MASK_ZOOM: Int = MASK_NONE
-const val MASK_ORBIT: Int = MASK_CONTROL
-const val MASK_PAN: Int = MASK_CONTROL or MASK_SHIFT
-const val MASK_COPY: Int = MASK_SHIFT
+const val MASK_ORBIT_KEY: Int = MASK_CTRL
+const val MASK_PAN_KEY: Int = MASK_CTRL or MASK_SH
+const val MASK_COPY: Int = MASK_SH
 
-// Global toolset references – populated during ToolMgr initialisation.
+// Global toolset singletons – populated during ToolMgr.init().
 var gBasicToolset: Toolset? = null
 var gCameraToolset: Toolset? = null
 var gMouselookToolset: Toolset? = null
 var gFaceEditToolset: Toolset? = null
 var gPoserToolset: Toolset? = null
 
-// Null tool used when the application is not active to suppress hover processing.
+// Null tool: absorbs all events when the application is not focused.
 var gToolNull: Tool? = null
 
 object ToolMgr {
 
     private var baseTool: Tool? = null
-    private var savedTool: Tool? = null
+    @Suppress("unused") private var savedTool: Tool? = null
     private var transientTool: Tool? = null
     private var overrideTool: Tool? = null
     private var selectedTool: Tool? = null
@@ -38,13 +40,12 @@ object ToolMgr {
 
         gBasicToolset = Toolset()
         gCameraToolset = Toolset()
-        gMouselookToolset = Toolset().apply { showFloaterTools = false }
-        gFaceEditToolset = Toolset().apply { showFloaterTools = false }
-        gPoserToolset = Toolset().apply { showFloaterTools = false }
+        gMouselookToolset = Toolset().also { it.showFloaterTools = false }
+        gFaceEditToolset = Toolset().also { it.showFloaterTools = false }
+        gPoserToolset = Toolset().also { it.showFloaterTools = false }
     }
 
     fun initTools() {
-        // Guard: only run once.
         if (gBasicToolset!!.toolList.isNotEmpty()) return
 
         gBasicToolset!!.apply {
@@ -52,7 +53,7 @@ object ToolMgr {
             addTool(ToolCamera)
         }
         gCameraToolset!!.addTool(ToolCamera)
-        gMouselookToolset!!.addTool(TODO("GPU: add ToolCompGun singleton") as Tool)
+        gMouselookToolset!!.addTool(TODO("APR: ToolCompGun singleton") as Tool)
         gFaceEditToolset!!.addTool(ToolCamera)
 
         setCurrentToolset(gBasicToolset!!)
@@ -60,13 +61,10 @@ object ToolMgr {
     }
 
     fun getCurrentTool(): Tool? {
-        val overrideMask: Int = TODO("APR: query keyboard current mask") as Int
+        val overrideMask: Int = TODO("APR: gKeyboard?.currentMask(true) ?: 0") as Int
 
         val curTool: Tool? = when {
-            transientTool != null -> {
-                overrideTool = null
-                transientTool
-            }
+            transientTool != null -> { overrideTool = null; transientTool }
             selectedTool?.hasMouseCapture() == true -> selectedTool
             else -> {
                 overrideTool = baseTool?.getOverrideTool(overrideMask)
@@ -80,13 +78,13 @@ object ToolMgr {
         if (prevTool != curTool) {
             prevTool?.handleDeselect()
             if (curTool != null) {
-                // When returning from Camera to Pie while the inspect floater is open,
-                // re-activate the inspect composite tool rather than plain Pie.
-                val inspectInstance: Any? = TODO("APR: FloaterReg.getTypedInstance(\"inspect\")")
+                // When returning from Camera to Pie while FloaterInspect is open,
+                // restore the inspect composite rather than plain Pie.
+                val inspectInstance: FloaterInspect? = TODO("APR: FloaterReg.getTypedInstance(\"inspect\")") as FloaterInspect?
                 if (ToolComp.isToolCameraActive() &&
                     prevTool === ToolCamera &&
                     curTool === ToolPie &&
-                    inspectInstance != null
+                    inspectInstance?.isVisible() == true
                 ) {
                     setTransientTool(ToolComp.inspectInstance())
                 } else {
@@ -103,7 +101,7 @@ object ToolMgr {
     fun inEdit(): Boolean = baseTool !== ToolPie && baseTool !== gToolNull
 
     fun canEdit(): Boolean {
-        TODO("APR: ViewerParcelMgr.allowAgentBuild() && RlvActions.canBuild()")
+        TODO("APR: ViewerParcelMgr.getInstance().allowAgentBuild() && RlvActions.canBuild()")
     }
 
     fun buildEnabledOrActive(): Boolean {
@@ -115,19 +113,19 @@ object ToolMgr {
     }
 
     fun toggleBuildMode(paramName: String) {
-        TODO("APR: toggle build floater / enter-leave build mode")
+        TODO("APR: show/hide build floater; call enterBuildMode or leaveBuildMode")
     }
 
     fun enterBuildMode(verifyCanedit: Boolean = false) {
-        TODO("APR: show build floater, reset camera, select create tool")
+        TODO("APR: show build floater, pull out of mouselook/appearance, zoom in, reset view, set create tool")
     }
 
     fun leaveBuildMode() {
-        TODO("APR: hide build floater, reset camera")
+        TODO("APR: close build floater, reset camera view")
     }
 
     fun canAccessMarketplace(): Boolean {
-        TODO("APR: MarketplaceData.getSLMStatus() != MARKET_PLACE_NOT_MIGRATED_MERCHANT")
+        TODO("APR: MarketplaceData.instance().getSLMStatus() != MARKET_PLACE_NOT_MIGRATED_MERCHANT")
     }
 
     fun toggleMarketplace(paramName: String) {
@@ -136,10 +134,7 @@ object ToolMgr {
     }
 
     fun setTransientTool(tool: Tool?) {
-        if (tool == null) {
-            clearTransientTool()
-            return
-        }
+        if (tool == null) { clearTransientTool(); return }
         transientTool = tool
         updateToolStatus()
     }
@@ -187,6 +182,41 @@ object ToolMgr {
 
     private fun updateToolStatus() {
         getCurrentTool()
+    }
+}
+
+// Base class for all interactive viewer tools.  Mirrors LLTool from lltool.h.
+open class Tool(private val name: String) {
+
+    private var mouseCapture: Boolean = false
+
+    open fun getName(): String = name
+
+    open fun handleMouseDown(x: Int, y: Int, mask: Int): Boolean = false
+    open fun handleMouseUp(x: Int, y: Int, mask: Int): Boolean = false
+    open fun handleRightMouseDown(x: Int, y: Int, mask: Int): Boolean = false
+    open fun handleRightMouseUp(x: Int, y: Int, mask: Int): Boolean = false
+    open fun handleHover(x: Int, y: Int, mask: Int): Boolean = false
+    open fun handleDoubleClick(x: Int, y: Int, mask: Int): Boolean = false
+    open fun handleScrollWheel(x: Int, y: Int, clicks: Int): Boolean = false
+    open fun handleScrollHWheel(x: Int, y: Int, clicks: Int): Boolean = false
+    open fun handleToolTip(x: Int, y: Int, mask: Int): Boolean = false
+    open fun handleAnyMouseClick(x: Int, y: Int, mask: Int, clickType: Int, down: Boolean): Boolean = false
+
+    open fun handleSelect() {}
+    open fun handleDeselect() {}
+    open fun onMouseCaptureLost() {}
+    open fun stopEditing() {}
+    open fun render() {}
+
+    open fun getOverrideTool(mask: Int): Tool? = null
+
+    fun hasMouseCapture(): Boolean = mouseCapture
+
+    fun setMouseCapture(capture: Boolean) {
+        if (capture == mouseCapture) return
+        mouseCapture = capture
+        if (!capture) onMouseCaptureLost()
     }
 }
 

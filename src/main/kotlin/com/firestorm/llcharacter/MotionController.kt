@@ -1,30 +1,40 @@
-// Converted from llmotioncontroller.h / llmotioncontroller.cpp — Linden Research, Inc.
-// LGPL 2.1; see original source for full license text.
 package com.firestorm.llcharacter
 
 import com.firestorm.llcommon.LLUUID
+import com.firestorm.llmath.F_PI
+import com.firestorm.llmath.cubicStep
+import com.firestorm.llmath.llFloor
+import com.firestorm.llmath.llMax
+import kotlin.math.abs
+
+private const val NUM_JOINT_SIGNATURE_STRIDES = CharacterConstants.MAX_ANIMATED_JOINTS.toInt() / 4
+private const val MAX_MOTION_INSTANCES = 32
 
 // ---------------------------------------------------------------------------
 // MotionRegistry
 //
-// Maps UUIDs to factory lambdas, mirroring C++ LLMotionRegistry.
+// Maps UUIDs to factory lambdas.  Null factory means "marked bad".
+// Mirrors C++ LLMotionRegistry.
 // ---------------------------------------------------------------------------
 
 class MotionRegistry {
-    private val table: MutableMap<LLUUID, (LLUUID) -> Motion> = mutableMapOf()
 
-    /** Register a factory for [id]; returns false if [id] is already registered. */
+    private val table: MutableMap<LLUUID, ((LLUUID) -> Motion)?> = mutableMapOf()
+
     fun registerMotion(id: LLUUID, factory: (LLUUID) -> Motion): Boolean {
         if (table.containsKey(id)) return false
         table[id] = factory
         return true
     }
 
-    /** Create a new instance for [id], or null if unregistered / marked bad. */
-    fun createMotion(id: LLUUID): Motion? = table[id]?.invoke(id)
+    fun createMotion(id: LLUUID): Motion? {
+        return when {
+            !table.containsKey(id) -> KeyframeMotion.create(id)   // default: treat as keyframe asset
+            else -> table[id]?.invoke(id)                          // null entry → bad, returns null
+        }
+    }
 
-    /** Prevent future instantiation of a broken motion (maps id to null). */
-    fun markBad(id: LLUUID) { table[id] = { _ -> throw IllegalStateException("Motion $id marked bad") } }
+    fun markBad(id: LLUUID) { table[id] = null }
 
     fun clear() = table.clear()
 }
@@ -33,243 +43,645 @@ class MotionRegistry {
 // MotionController
 //
 // Manages the full lifecycle of Motion instances for one character.
-// Mirrors C++ LLMotionController.
+// Mirrors C++ LLMotionController (llmotioncontroller.cpp).
+//
+// Animation lifecycle (mirrors C++ comments):
+//   allMotions     – owns every Motion for its entire lifetime
+//   loadingMotions – waiting for async asset data
+//   loadedMotions  – asset loaded, not yet / no longer active
+//   activeMotions  – currently playing (chronological order, oldest first)
+//   deprecatedMotions – fading out so a new instance can take over
 // ---------------------------------------------------------------------------
 
 class MotionController {
 
-    // ---- public flags ------------------------------------------------------
-
     var isSelf: Boolean = false
 
-    // ---- time --------------------------------------------------------------
+    // ---- time ---------------------------------------------------------------
 
-    var timeFactor: Float = 1f
-    var timeStep: Float   = 0f
-    var animTime: Float   = 0f
+    /** Scales real time; 1.0 = normal speed. */
+    var timeFactor: Float = sCurrentTimeFactor
+        private set
+
+    /** Optional fixed time-step quantum (0 = disabled). */
+    var timeStep: Float = 0f
+
+    /** Accumulated animation clock. */
+    var animTime: Float = 0f
+        private set
 
     private var prevTimerElapsed: Float = 0f
-    private var lastTime: Float         = 0f
-    private var hasRunOnce: Boolean     = false
-    private var timeStepCount: Int      = 0
-    private var lastInterp: Float       = 0f
+    private var lastTime: Float = 0f
+    private var hasRunOnce: Boolean = false
+    private var timeStepCount: Int = 0
+    private var lastInterp: Float = 0f
 
-    // ---- pause state -------------------------------------------------------
+    /** Multiplier for impostor avatars — allows separate speed adjustment.  Default 1. */
+    var updateFactor: Float = 1f
+
+    // ---- pause state --------------------------------------------------------
 
     private var paused: Boolean = false
     private var pausedFrame: Int = 0
-    val isPaused: Boolean get() = paused
-    val pausedFrameNum: Int get() = pausedFrame
+    val isPaused: Boolean   get() = paused
+    val pausedFrame_: Int   get() = pausedFrame
 
-    // ---- character link ----------------------------------------------------
+    // ---- character link -----------------------------------------------------
 
     var character: LLCharacter? = null
+    fun setCharacter(c: LLCharacter) { character = c }
 
-    fun setCharacter(character: LLCharacter) { this.character = character }
+    // ---- collections --------------------------------------------------------
 
-    // ---- motion lifecycle sets (mirrors C++ comments) ----------------------
-    //
-    //  mAllMotions     – owns every Motion for its entire lifetime
-    //  mLoadingMotions – waiting for async asset data
-    //  mLoadedMotions  – asset loaded, not yet / no longer active
-    //  mActiveMotions  – currently playing (ordered list for blend priority)
-    //  mDeprecatedMotions – fading out so a new instance can take over
-
-    private val allMotions:        MutableMap<LLUUID, Motion>  = mutableMapOf()
+    private val allMotions:        MutableMap<LLUUID, Motion> = mutableMapOf()
     private val loadingMotions:    MutableSet<Motion>          = mutableSetOf()
     private val loadedMotions:     MutableSet<Motion>          = mutableSetOf()
-    private val activeMotions:     ArrayDeque<Motion>          = ArrayDeque()
+    private val activeMotions:     ArrayDeque<Motion>          = ArrayDeque()   // front = newest
     private val deprecatedMotions: MutableSet<Motion>          = mutableSetOf()
 
-    private val registry: MotionRegistry = MotionRegistry()
+    private var lastCountAfterPurge: Int = 0
 
-    companion object {
-        var currentTimeFactor: Float = 1f
-    }
+    // ---- timer stub (mirrors LLFrameTimer) ----------------------------------
+    // In the JVM port, we drive time externally via updateMotions(dt).
+    private var timerElapsed: Float = 0f
 
-    // ---- registration / creation -------------------------------------------
+    // ---- registration / lookup ----------------------------------------------
 
     fun registerMotion(id: LLUUID, factory: (LLUUID) -> Motion): Boolean =
-        registry.registerMotion(id, factory)
+        sRegistry.registerMotion(id, factory)
+
+    fun findMotion(id: LLUUID): Motion? = allMotions[id]
 
     fun createMotion(id: LLUUID): Motion? {
+        if (id == LLUUID.NULL) return null
+
         allMotions[id]?.let { return it }
-        val motion = registry.createMotion(id) ?: return null
+
+        val motion = sRegistry.createMotion(id) ?: return null
+
+        val status = motion.onInitialize(character ?: return null)
+        when (status) {
+            MotionInitStatus.FAILURE -> {
+                sRegistry.markBad(id)
+                return null
+            }
+            MotionInitStatus.HOLD    -> loadingMotions.add(motion)
+            MotionInitStatus.SUCCESS -> loadedMotions.add(motion)
+        }
+
         allMotions[id] = motion
         return motion
     }
 
     fun removeMotion(id: LLUUID) {
-        val motion = allMotions.remove(id) ?: return
+        val motion = findMotion(id)
+        allMotions.remove(id)
+        removeMotionInstance(motion)
+    }
+
+    private fun removeMotionInstance(motion: Motion?) {
+        motion ?: return
+        if (motion.isActive) motion.deactivate()
         loadingMotions.remove(motion)
         loadedMotions.remove(motion)
         activeMotions.remove(motion)
-        deprecatedMotions.remove(motion)
     }
 
-    fun findMotion(id: LLUUID): Motion? = allMotions[id]
-
-    // ---- start / stop ------------------------------------------------------
+    // ---- start / stop -------------------------------------------------------
 
     fun startMotion(id: LLUUID, startOffset: Float = 0f): Boolean {
-        val motion = createMotion(id) ?: return false
-        return activateMotionInstance(motion, animTime + startOffset)
+        var motion = findMotion(id)
+
+        // If the motion is blending/stopping and supports deprecation, replace it.
+        if (motion != null
+            && !paused
+            && motion.canDeprecate()
+            && motion.fadeWeight > 0.01f
+            && (motion.isBlending() || motion.stopTimestamp != 0f)) {
+            deprecateMotionInstance(motion)
+            motion = null
+        }
+
+        if (motion == null) motion = createMotion(id)
+        motion ?: return false
+
+        if (motion.canDeprecate() && isMotionActive(motion)) return true
+
+        return activateMotionInstance(motion, animTime - startOffset)
     }
 
     fun stopMotion(id: LLUUID, stopImmediate: Boolean = false): Boolean {
-        val motion = allMotions[id] ?: return false
-        return stopMotionInstance(motion, stopImmediate)
+        val motion = findMotion(id)
+        return stopMotionInstance(motion, stopImmediate || paused)
     }
 
-    // ---- update ------------------------------------------------------------
+    private fun stopMotionInstance(motion: Motion?, stopImmediate: Boolean): Boolean {
+        motion ?: return false
+        return if (isMotionActive(motion) && !motion.isStopped) {
+            motion.setStopTime(animTime)
+            if (stopImmediate) deactivateMotionInstance(motion)
+            true
+        } else if (isMotionLoading(motion)) {
+            motion.isStopped = true
+            true
+        } else false
+    }
+
+    // ---- update -------------------------------------------------------------
 
     /**
-     * Main per-frame update.  [dt] is the real elapsed seconds (before time scaling).
+     * Full per-frame update.  [dt] is real elapsed seconds (wall clock delta).
      * Pass [forceUpdate] = true to step even while paused.
      */
     fun updateMotions(dt: Float, forceUpdate: Boolean = false) {
-        if (paused && !forceUpdate) return
-        val scaled = dt * timeFactor
-        animTime += scaled
-        updateLoadingMotions()
-        updateActiveMotions()
-        deactivateStoppedMotions()
+        val useQuantum = timeStep != 0f
+
+        timerElapsed += dt
+        val curTime   = timerElapsed
+        val deltaTime = dt
+        lastTime      = animTime
+
         purgeExcessMotions()
-    }
 
-    /** Minimal update while the character is hidden — only advances loading state. */
-    fun updateMotionsMinimal() = updateLoadingMotions()
+        if (!paused) {
+            val updateTime = animTime + deltaTime * timeFactor * updateFactor
 
-    private fun updateLoadingMotions() {
-        val promoted = mutableListOf<Motion>()
-        val iter = loadingMotions.iterator()
-        while (iter.hasNext()) {
-            val m = iter.next()
-            if (m.isLoaded()) { iter.remove(); promoted.add(m) }
+            if (useQuantum) {
+                val timeInterval  = updateTime % timeStep
+                val quantumCount  = llMax(0, llFloor((updateTime - timeInterval) / timeStep)) + 1
+
+                if (quantumCount == timeStepCount) {
+                    // still in same quantum — just interpolate
+                    val interp = timeInterval / timeStep
+                    poseBlender.interpolate(interp - lastInterp)
+                    lastInterp = interp
+                    updateLoadingMotions()
+                    return
+                }
+
+                poseBlender.interpolate(1f)
+                clearBlenders()
+
+                timeStepCount = quantumCount
+                animTime      = quantumCount.toFloat() * timeStep
+                lastInterp    = 0f
+            } else {
+                animTime = updateTime
+            }
         }
-        loadedMotions.addAll(promoted)
-    }
 
-    private fun updateActiveMotions() {
-        val toDeactivate = mutableListOf<Motion>()
-        for (motion in activeMotions) {
-            val still = motion.onUpdate(animTime - motion.activationTimestamp)
-            if (!still) toDeactivate.add(motion)
+        updateLoadingMotions()
+        resetJointSignatures()
+
+        if (paused && !forceUpdate) {
+            updateIdleActiveMotions()
+        } else {
+            updateAdditiveMotions()
+            resetJointSignatures()
+            updateRegularMotions()
+
+            if (useQuantum) poseBlender.blendAndCache(true)
+            else            poseBlender.blendAndApply()
         }
-        toDeactivate.forEach { deactivateMotionInstance(it) }
+
+        hasRunOnce = true
     }
 
-    private fun activateMotionInstance(motion: Motion, time: Float): Boolean {
-        if (motion in activeMotions) return true
-        motion.activate(time)
-        if (!motion.isActive()) return false   // onActivate returned false
-        activeMotions.add(motion)
-        loadedMotions.remove(motion)
-        return true
+    /** Minimal update while the avatar is hidden — deactivates stopped motions. */
+    fun updateMotionsMinimal() {
+        purgeExcessMotions()
+        updateLoadingMotions()
+        resetJointSignatures()
+        deactivateStoppedMotions()
+        hasRunOnce = true
     }
 
-    private fun stopMotionInstance(motion: Motion, stopImmediate: Boolean): Boolean {
-        motion.setStopped(true)
-        if (stopImmediate) deactivateMotionInstance(motion)
-        return true
-    }
+    fun clearBlenders() { poseBlender.clearBlenders() }
 
-    private fun deactivateMotionInstance(motion: Motion): Boolean {
-        activeMotions.remove(motion)
-        deprecatedMotions.remove(motion)
-        motion.deactivate()
-        loadedMotions.add(motion)
-        return true
-    }
-
-    private fun deprecateMotionInstance(motion: Motion) {
-        activeMotions.remove(motion)
-        deprecatedMotions.add(motion)
-    }
-
-    private fun deactivateStoppedMotions() {
-        val toDeactivate = activeMotions.filter { m ->
-            m.isStopped && m.getEaseOutDuration() <= 0f
-        }
-        toDeactivate.forEach { deactivateMotionInstance(it) }
-    }
-
-    private fun purgeExcessMotions() {
-        val stale = allMotions.values.filter { m ->
-            !m.isActive() &&
-            m !in loadingMotions &&
-            m !in loadedMotions &&
-            m !in activeMotions &&
-            m !in deprecatedMotions
-        }
-        stale.forEach { allMotions.remove(it.id) }
-    }
-
-    // ---- bulk operations ---------------------------------------------------
+    // ---- bulk operations ----------------------------------------------------
 
     fun deactivateAllMotions() {
-        activeMotions.toList().forEach { deactivateMotionInstance(it) }
+        for ((_, motion) in allMotions.toMap()) {
+            deactivateMotionInstance(motion)
+        }
     }
 
     fun flushAllMotions() {
-        deactivateAllMotions()
-        allMotions.clear()
-        loadingMotions.clear()
-        loadedMotions.clear()
-        deprecatedMotions.clear()
+        // Record what was active so we can restart it.
+        val activeSnapshot = activeMotions.map { it.id to (animTime - it.activationTimestamp) }
+        activeMotions.forEach { it.deactivate() }
+        activeMotions.clear()
+
+        deleteAllMotions()
+        character?.removeAnimationData("Hand Pose")
+
+        for ((id, dtime) in activeSnapshot) startMotion(id, dtime)
     }
 
-    // ---- pause / unpause ---------------------------------------------------
+    // ---- pause / unpause ----------------------------------------------------
 
-    fun pauseAllMotions()   { paused = true  }
-    fun unpauseAllMotions() { paused = false }
+    fun pauseAllMotions() {
+        if (!paused) {
+            paused       = true
+            pausedFrame  = currentFrame
+        }
+    }
 
-    // ---- queries -----------------------------------------------------------
+    fun unpauseAllMotions() {
+        if (paused) paused = false
+    }
 
-    fun isMotionActive(motion: Motion): Boolean  = motion in activeMotions
+    // ---- queries ------------------------------------------------------------
+
+    fun isMotionActive(motion: Motion): Boolean  = motion.isActive
     fun isMotionLoading(motion: Motion): Boolean = motion in loadingMotions
 
     fun getActiveMotions(): List<Motion> = activeMotions.toList()
 
+    fun incMotionCounts(
+        numMotions: Int, numLoading: Int, numLoaded: Int, numActive: Int, numDeprecated: Int
+    ): MotionCounts = MotionCounts(
+        numMotions   + allMotions.size,
+        numLoading   + loadingMotions.size,
+        numLoaded    + loadedMotions.size,
+        numActive    + activeMotions.size,
+        numDeprecated + deprecatedMotions.size
+    )
+
     data class MotionCounts(
-        val numMotions: Int,
-        val numLoading: Int,
-        val numLoaded: Int,
-        val numActive: Int,
+        val numMotions:    Int,
+        val numLoading:    Int,
+        val numLoaded:     Int,
+        val numActive:     Int,
         val numDeprecated: Int
     )
 
-    fun getMotionCounts(): MotionCounts = MotionCounts(
-        numMotions   = allMotions.size,
-        numLoading   = loadingMotions.size,
-        numLoaded    = loadedMotions.size,
-        numActive    = activeMotions.size,
-        numDeprecated = deprecatedMotions.size
-    )
+    fun dumpMotions() {
+        for ((id, motion) in allMotions) {
+            var state = ""
+            if (motion in loadingMotions)  state += "l"
+            if (motion in loadedMotions)   state += "L"
+            if (motion in activeMotions)   state += "A"
+            if (motion in deprecatedMotions) state += "D"
+            println("${motion.name.ifEmpty { id.toString() }} $state")
+        }
+    }
+
+    fun setTimeFactor(factor: Float) { timeFactor = factor }
+    fun getTimeFactor(): Float = timeFactor
+    fun getAnimTime(): Float   = animTime
+
+    fun setTimeStep(step: Float) {
+        timeStep = step
+        if (step != 0f) {
+            for (motion in activeMotions) {
+                val at = motion.activationTimestamp
+                motion.activationTimestamp = llFloor(at / step).toFloat() * step
+                val wasStopped = motion.isStopped
+                motion.setStopTime(llFloor(motion.stopTimestamp / step).toFloat() * step)
+                motion.isStopped = wasStopped
+                motion.sendStopTimestamp = llFloor(motion.sendStopTimestamp / step).toFloat() * step
+            }
+        }
+    }
+
+    // ---- companion ----------------------------------------------------------
+
+    companion object {
+        var sCurrentTimeFactor: Float = 1f
+        private val sRegistry: MotionRegistry = MotionRegistry()
+
+        // Frame counter stub — real viewer increments this per frame.
+        private var currentFrame: Int = 0
+        fun tickFrame() { currentFrame++ }
+    }
+
+    // =========================================================================
+    // Internal implementation
+    // =========================================================================
+
+    // Joint signature arrays: [layer][joint] bitmask tracking which joints are
+    // touched by active motions, so redundant re-evaluation can be skipped.
+    private val jointSignature: Array<UByteArray> = Array(2) {
+        UByteArray(CharacterConstants.MAX_ANIMATED_JOINTS.toInt())
+    }
+
+    private val poseBlender = PoseBlender()
+
+    private fun deleteAllMotions() {
+        loadingMotions.clear()
+        loadedMotions.clear()
+        activeMotions.clear()
+        allMotions.clear()
+        deprecatedMotions.clear()
+    }
+
+    private fun resetJointSignatures() {
+        for (layer in jointSignature) layer.fill(0u)
+    }
+
+    private fun updateRegularMotions()  = updateMotionsByType(MotionBlendType.NORMAL_BLEND)
+    private fun updateAdditiveMotions() = updateMotionsByType(MotionBlendType.ADDITIVE_BLEND)
+
+    private fun updateIdleMotion(motion: Motion) {
+        when {
+            motion.isStopped && animTime > motion.stopTimestamp + motion.getEaseOutDuration() ->
+                deactivateMotionInstance(motion)
+
+            motion.isStopped && animTime > motion.stopTimestamp -> {
+                if (lastTime <= motion.stopTimestamp)
+                    motion.residualWeight = motion.getPose()?.weight ?: 0f
+            }
+
+            animTime > motion.sendStopTimestamp -> {
+                if (lastTime <= motion.sendStopTimestamp) {
+                    character?.requestStopMotion(motion)
+                    stopMotionInstance(motion, false)
+                }
+            }
+
+            animTime >= motion.activationTimestamp -> {
+                if (lastTime < motion.activationTimestamp)
+                    motion.residualWeight = motion.getPose()?.weight ?: 0f
+            }
+        }
+    }
+
+    private fun updateIdleActiveMotions() {
+        val snapshot = activeMotions.toList()
+        for (motion in snapshot) updateIdleMotion(motion)
+    }
+
+    private fun updateMotionsByType(animType: MotionBlendType) {
+        val ch = character ?: return
+        val lastJointSig = UByteArray(CharacterConstants.MAX_ANIMATED_JOINTS.toInt())
+
+        val snapshot = activeMotions.toList()
+        for (motion in snapshot) {
+            if (!motion.isActive || motion.getBlendType() != animType) continue
+
+            val pose = motion.getPose() ?: continue
+
+            var updateMotion = pose.weight < 1f
+            if (!updateMotion) {
+                for (i in 0 until NUM_JOINT_SIGNATURE_STRIDES) {
+                    val idx = i * 4
+                    for (k in 0 until 4) {
+                        val cur0 = jointSignature[0][idx + k]
+                        val test0 = motion.jointSignature[0].getOrElse(idx + k) { 0u }
+                        if ((cur0 or test0) > cur0) {
+                            jointSignature[0][idx + k] = (cur0 or test0)
+                            updateMotion = true
+                        }
+                        lastJointSig[idx + k] = jointSignature[1][idx + k]
+                        val cur1 = jointSignature[1][idx + k]
+                        val test1 = motion.jointSignature[1].getOrElse(idx + k) { 0u }
+                        if ((cur1 or test1) > cur1) {
+                            jointSignature[1][idx + k] = (cur1 or test1)
+                            updateMotion = true
+                        }
+                    }
+                }
+            }
+
+            if (!updateMotion) {
+                updateIdleMotion(motion)
+                continue
+            }
+
+            // LOD culling after first frame
+            if (hasRunOnce && motion.getMinPixelArea() > ch.getPixelArea()) {
+                motion.fadeOut()
+                if (animTime > motion.sendStopTimestamp && lastTime <= motion.sendStopTimestamp) {
+                    ch.requestStopMotion(motion)
+                    stopMotionInstance(motion, false)
+                }
+                if (motion.fadeWeight < 0.01f) {
+                    if (motion.isStopped && animTime > motion.stopTimestamp + motion.getEaseOutDuration()) {
+                        pose.weight = 0f
+                        deactivateMotionInstance(motion)
+                    }
+                    continue
+                }
+            } else {
+                motion.fadeIn()
+            }
+
+            val activeTimeSinceActivation = animTime - motion.activationTimestamp
+
+            when {
+                // Motion inactive — deactivate with one final pose sample
+                motion.isStopped && animTime > motion.stopTimestamp + motion.getEaseOutDuration() -> {
+                    if (lastTime <= motion.stopTimestamp) {
+                        pose.weight = motion.fadeWeight
+                        motion.onUpdate(motion.stopTimestamp - motion.activationTimestamp)
+                    } else {
+                        pose.weight = 0f
+                        deactivateMotionInstance(motion)
+                        continue
+                    }
+                }
+
+                // Ease out
+                motion.isStopped && animTime > motion.stopTimestamp -> {
+                    if (lastTime <= motion.stopTimestamp)
+                        motion.residualWeight = pose.weight
+
+                    pose.weight = if (motion.getEaseOutDuration() == 0f) 0f
+                    else {
+                        val easeRatio = 1f - (animTime - motion.stopTimestamp) / motion.getEaseOutDuration()
+                        motion.fadeWeight * motion.residualWeight * cubicStep(easeRatio)
+                    }
+                    motion.onUpdate(activeTimeSinceActivation)
+                }
+
+                // Fully active
+                animTime > motion.activationTimestamp + motion.getEaseInDuration() -> {
+                    pose.weight = motion.fadeWeight
+
+                    if (animTime > motion.sendStopTimestamp && lastTime <= motion.sendStopTimestamp) {
+                        ch.requestStopMotion(motion)
+                        stopMotionInstance(motion, false)
+                    }
+                    motion.onUpdate(activeTimeSinceActivation)
+                }
+
+                // Ease in
+                animTime >= motion.activationTimestamp -> {
+                    if (lastTime < motion.activationTimestamp) motion.residualWeight = pose.weight
+
+                    pose.weight = if (motion.getEaseInDuration() == 0f) {
+                        motion.fadeWeight
+                    } else {
+                        val easeRatio = (animTime - motion.activationTimestamp) / motion.getEaseInDuration()
+                        motion.fadeWeight * motion.residualWeight + (1f - motion.residualWeight) * cubicStep(easeRatio)
+                    }
+                    motion.onUpdate(activeTimeSinceActivation)
+                }
+
+                else -> {
+                    pose.weight = 0f
+                    motion.onUpdate(0f)
+                }
+            }
+
+            // If motion returned false from onUpdate, stop it
+            if (!motion.isActive && !motion.isStopped || motion.stopTimestamp > animTime) {
+                ch.requestStopMotion(motion)
+                stopMotionInstance(motion, false)
+            }
+
+            poseBlender.addMotion(motion)
+        }
+    }
+
+    private fun updateLoadingMotions() {
+        val toPromote = mutableListOf<Motion>()
+        val toRemove  = mutableListOf<Motion>()
+
+        for (motion in loadingMotions.toList()) {
+            val ch = character ?: continue
+            when (val status = motion.onInitialize(ch)) {
+                MotionInitStatus.SUCCESS -> {
+                    loadingMotions.remove(motion)
+                    loadedMotions.add(motion)
+                    if (!motion.isStopped) activateMotionInstance(motion, animTime)
+                }
+                MotionInitStatus.FAILURE -> {
+                    sRegistry.markBad(motion.id)
+                    loadingMotions.remove(motion)
+                    deprecatedMotions.remove(motion)
+                    allMotions.remove(motion.id)
+                }
+                MotionInitStatus.HOLD -> { /* still waiting */ }
+            }
+        }
+    }
+
+    private fun activateMotionInstance(motion: Motion, time: Float): Boolean {
+        val pose = motion.getPose() ?: return false
+
+        if (motion in loadingMotions) {
+            motion.isStopped = false
+            return true
+        }
+
+        motion.residualWeight = pose.weight
+
+        if (motion.getDuration() != 0f && !motion.getLoop()) {
+            val easeOutTime = motion.getEaseOutDuration()
+            val motionDur   = llMax(motion.getDuration() - easeOutTime, 0f)
+            motion.sendStopTimestamp = time + motionDur
+        } else {
+            motion.sendStopTimestamp = Float.MAX_VALUE
+        }
+
+        if (motion.isActive) activeMotions.remove(motion)
+        activeMotions.addFirst(motion)   // newest at front, mirrors C++ push_front
+
+        motion.activate(time)
+        motion.onUpdate(0f)
+
+        if (animTime >= motion.sendStopTimestamp) {
+            motion.setStopTime(motion.sendStopTimestamp)
+            if (motion.residualWeight == 0f) motion.residualWeight = 1f
+        }
+
+        return true
+    }
+
+    private fun deactivateMotionInstance(motion: Motion): Boolean {
+        motion.deactivate()
+
+        if (motion in deprecatedMotions) {
+            removeMotionInstance(motion)
+            deprecatedMotions.remove(motion)
+        } else {
+            activeMotions.remove(motion)
+        }
+        return true
+    }
+
+    private fun deprecateMotionInstance(motion: Motion) {
+        deprecatedMotions.add(motion)
+        stopMotionInstance(motion, false)
+        allMotions.remove(motion.id)
+    }
+
+    private fun purgeExcessMotions() {
+        if (loadedMotions.size > MAX_MOTION_INSTANCES) {
+            for (motion in deprecatedMotions.toList()) {
+                if (!isMotionActive(motion)) {
+                    removeMotionInstance(motion)
+                    deprecatedMotions.remove(motion)
+                }
+            }
+        }
+
+        if (loadedMotions.size > MAX_MOTION_INSTANCES) {
+            poseBlender.clearBlenders()
+            val toKill = mutableSetOf<LLUUID>()
+            for (motion in loadedMotions) {
+                if (!isMotionActive(motion)) toKill.add(motion.id)
+            }
+            for (id in toKill) {
+                val m = findMotion(id)
+                if (m != null && !isMotionActive(m)) removeMotion(id)
+            }
+        }
+
+        lastCountAfterPurge = loadedMotions.size
+    }
+
+    private fun deactivateStoppedMotions() {
+        for (motion in activeMotions.toList()) {
+            if (motion.isStopped) deactivateMotionInstance(motion)
+        }
+    }
 }
 
 // ---------------------------------------------------------------------------
-// Motion — abstract base class used by MotionController
-//
-// Kept here (rather than in LLMotion.kt) so that MotionController.kt compiles
-// stand-alone while LLMotion provides the richer abstract-class hierarchy.
+// PoseBlender — stub matching C++ LLPoseBlender interface used above.
+// A full port is deferred to Pose.kt / the rendering pipeline.
+// ---------------------------------------------------------------------------
+
+class PoseBlender {
+    fun addMotion(motion: Motion) { /* TODO: blend motion pose into the final avatar pose */ }
+    fun blendAndApply()           { /* TODO: apply blended result to skeleton */ }
+    fun blendAndCache(cache: Boolean) { /* TODO: calculate and cache interpolation frame */ }
+    fun interpolate(delta: Float) { /* TODO: interpolate between cached frames */ }
+    fun clearBlenders()           { /* TODO: reset all blender state */ }
+}
+
+// ---------------------------------------------------------------------------
+// Motion — abstract base class (referenced by MotionController above)
+// The full interface is defined here so MotionController.kt is self-contained;
+// LLMotion.kt provides the richer subclass hierarchy for animation authors.
 // ---------------------------------------------------------------------------
 
 abstract class Motion(val id: LLUUID) {
 
     var name: String = ""
-    protected var stopped: Boolean = false
-    protected var active: Boolean  = false
+    var isStopped: Boolean = false
+    var isActive: Boolean = false
+        internal set
     var activationTimestamp: Float = 0f
-    var stopTimestamp: Float       = 0f
-    var residualWeight: Float      = 0f
-    var fadeWeight: Float          = 1f
+    var stopTimestamp: Float = 0f
+    var sendStopTimestamp: Float = 0f
+    var residualWeight: Float = 0f
+    var fadeWeight: Float = 1f
+
+    // Per-motion joint signature bitmask arrays, indexed [layer][jointIndex].
+    val jointSignature: Array<UByteArray> = Array(2) {
+        UByteArray(CharacterConstants.MAX_ANIMATED_JOINTS.toInt())
+    }
 
     abstract fun getLoop(): Boolean
     abstract fun getDuration(): Float
     abstract fun getEaseInDuration(): Float
     abstract fun getEaseOutDuration(): Float
     abstract fun getPriority(): JointPriority
+    abstract fun getBlendType(): MotionBlendType
     abstract fun getMinPixelArea(): Float
 
     abstract fun onInitialize(character: LLCharacter): MotionInitStatus
@@ -279,26 +691,32 @@ abstract class Motion(val id: LLUUID) {
 
     open fun canDeprecate(): Boolean = true
 
-    /** Returns true once asset data is available (override in asset-backed motions). */
-    open fun isLoaded(): Boolean = true
+    /** Returns the pose associated with this motion (for weight / blending). */
+    open fun getPose(): MotionPose? = null
 
-    fun isStopped(): Boolean = stopped
-    fun isActive(): Boolean  = active
-
-    fun setStopped(s: Boolean) { stopped = s }
+    fun isBlending(): Boolean = fadeWeight in 0f..1f && fadeWeight != 1f
 
     fun activate(time: Float) {
         activationTimestamp = time
-        active = onActivate()
+        isStopped = false
+        isActive  = onActivate()
     }
 
-    fun deactivate() {
-        active = false
+    internal fun deactivate() {
+        isActive = false
         onDeactivate()
     }
 
     open fun setStopTime(time: Float) {
         stopTimestamp = time
-        stopped = true
+        isStopped = true
     }
+
+    open fun fadeOut() { fadeWeight = (fadeWeight - 0.01f).coerceAtLeast(0f) }
+    open fun fadeIn()  { fadeWeight = (fadeWeight + 0.01f).coerceAtMost(1f)  }
+}
+
+/** Minimal pose record used to carry the blend weight for a motion. */
+class MotionPose {
+    var weight: Float = 0f
 }

@@ -1,17 +1,18 @@
 package com.firestorm.newview
 
 import kotlin.math.abs
-import kotlin.math.pow
 
-// Exported globals used by other systems to reflect active camera-button state.
+// Exported globals – reflect which camera-mode button is active in the toolbar.
 var gCameraBtnZoom: Boolean = true
 var gCameraBtnOrbit: Boolean = false
 var gCameraBtnPan: Boolean = false
 
 private const val SLOP_RANGE = 4
 
-// True while the user is holding the right mouse button for mouse-steering forward movement.
+// True while the user holds the right mouse button for forward mouse-steering.
 private var rightHoldMouseWalk: Boolean = false
+
+private const val CAMERA_MODE_CUSTOMIZE_AVATAR = 4
 
 object ToolCamera : Tool("Camera") {
 
@@ -37,7 +38,10 @@ object ToolCamera : Tool("Camera") {
 
     override fun handleDeselect() {
         val overrideMask: Int = TODO("APR: gKeyboard?.currentMask(true) ?: 0") as Int
-        if (!validSelection && (overrideMask != MASK_NONE || TODO("APR: gFloaterTools?.getVisible()") as Boolean)) {
+        // Only clear selection on deselect when there is a keyboard override or tools floater is visible.
+        if (!validSelection && (overrideMask != MASK_NONE ||
+                    TODO("APR: gFloaterTools?.getVisible() ?: false") as Boolean)
+        ) {
             TODO("APR: LLMenuGL.sMenuContainer.hideMenus(); SelectMgr.getInstance().validateSelection()")
         }
     }
@@ -53,13 +57,14 @@ object ToolCamera : Tool("Camera") {
         validClickPoint = false
         clickPickPending = true
 
-        // Cache mouse-down position so releaseMouse() can replay it if capture is lost before a pick arrives.
+        // Cache mouse-down position so releaseMouse() can replay the up-event
+        // if capture is lost before the async pick arrives.
         mouseUpX = x
         mouseUpY = y
         mouseUpMask = mask
 
         TODO("APR: gViewerWindow.hideCursor()")
-        TODO("APR: gViewerWindow.pickAsync(x, y, mask, ::pickCallback, false, false, true)")
+        TODO("APR: gViewerWindow.pickAsync(x, y, mask, ToolCamera::pickCallback, pickTransparent=false, pickRigged=false, pickUnselectable=true)")
         return true
     }
 
@@ -76,16 +81,16 @@ object ToolCamera : Tool("Camera") {
 
         TODO("APR: gViewerWindow.moveCursorToCenter()")
 
-        val hitObj = pickInfo.getObject()
+        val hitObj: ViewerObjectStub? = pickInfo.getObject()
 
         if (hitObj == null && pickInfo.isPosGlobalZero()) {
             validClickPoint = false
             return
         }
 
-        if (hitObj != null && hitObj.isHUDAttachment()) {
-            val selection = TODO("APR: SelectMgr.getInstance().getSelection()") as Any?
-            if (selection == null || TODO("APR: selection.getObjectCount() == 0 || selection.getSelectType() != SELECT_TYPE_HUD") as Boolean) {
+        if (hitObj?.isHUDAttachment() == true) {
+            val selection = TODO("APR: SelectMgr.getInstance().getSelection()")
+            if (TODO("APR: selection.getObjectCount() == 0 || selection.getSelectType() != SELECT_TYPE_HUD") as Boolean) {
                 validClickPoint = false
                 return
             }
@@ -93,32 +98,29 @@ object ToolCamera : Tool("Camera") {
 
         val cameraMode: Int = TODO("APR: gAgentCamera.getCameraMode()") as Int
         if (cameraMode == CAMERA_MODE_CUSTOMIZE_AVATAR) {
-            val goodHit = hitObj != null && (hitObj.isAgentAvatar() || (hitObj.isAttachment() && hitObj.permYouOwner()))
-            if (!goodHit) {
-                validClickPoint = false
-                return
-            }
+            val goodHit = hitObj != null &&
+                    (hitObj.isAgentAvatar() || (hitObj.isAttachment() && hitObj.permYouOwner()))
+            if (!goodHit) { validClickPoint = false; return }
             TODO("APR: gMorphView?.setCameraDrivenByKeys(false)")
-        } else if (pickInfo.keyMask and MASK_ALT != 0 ||
+        } else if (pickInfo.keyMask and MASK_A != 0 ||
             ToolMgr.getCurrentTool()?.getName() == "Camera"
         ) {
-            if (hitObj != null) {
-                if (!hitObj.isHUDAttachment()) {
-                    TODO("APR: gAgentCamera.setFocusOnAvatar(false, ANIMATE); gAgentCamera.setFocusGlobal(pickInfo)")
-                }
+            if (hitObj != null && !hitObj.isHUDAttachment()) {
+                TODO("APR: gAgentCamera.setFocusOnAvatar(false, ANIMATE); gAgentCamera.setFocusGlobal(pickInfo)")
             } else if (!pickInfo.isPosGlobalZero()) {
                 TODO("APR: gAgentCamera.setFocusOnAvatar(false, ANIMATE); gAgentCamera.setFocusGlobal(pickInfo)")
             }
 
             val zoomTool = gCameraBtnZoom && ToolMgr.getBaseTool() === ToolCamera
             val freezeTime: Boolean = TODO("APR: gSavedSettings.getBOOL(\"FreezeTime\")") as Boolean
-            if (pickInfo.keyMask and MASK_ALT == 0 &&
+            if (pickInfo.keyMask and MASK_A == 0 &&
                 !freezeTime &&
                 !zoomTool &&
                 TODO("APR: !FloaterCamera.inFreeCameraMode()") as Boolean &&
                 TODO("APR: gAgentCamera.cameraThirdPerson()") as Boolean &&
                 TODO("APR: gViewerWindow.getLeftMouseDown()") as Boolean &&
-                (hitObj?.isAgentAvatar() == true || (hitObj?.isAttachment() == true && hitObj.isSelf()))
+                (hitObj?.isAgentAvatar() == true ||
+                        (hitObj?.isAttachment() == true && hitObj.isSelf()))
             ) {
                 mouseSteering = true
             }
@@ -127,7 +129,7 @@ object ToolCamera : Tool("Camera") {
         validClickPoint = true
 
         if (cameraMode == CAMERA_MODE_CUSTOMIZE_AVATAR) {
-            TODO("APR: gAgentCamera.setFocusOnAvatar(false, false); gAgentCamera.setCameraPosAndFocusGlobal(...)")
+            TODO("APR: gAgentCamera.setFocusOnAvatar(false, false); gAgentCamera.setCameraPosAndFocusGlobal(camPos, pickInfo.mPosGlobal, pickInfo.mObjectID)")
         }
     }
 
@@ -153,13 +155,12 @@ object ToolCamera : Tool("Camera") {
                 if (validClickPoint) {
                     val cameraMode: Int = TODO("APR: gAgentCamera.getCameraMode()") as Int
                     when {
-                        cameraMode == CAMERA_MODE_CUSTOMIZE_AVATAR -> {
-                            TODO("APR: project focus pos to screen and warp cursor there")
-                        }
-                        mouseSteering -> {
+                        cameraMode == CAMERA_MODE_CUSTOMIZE_AVATAR ->
+                            TODO("APR: project focus global pos to screen, warp cursor there")
+                        mouseSteering ->
                             TODO("APR: LLUI.getInstance().setMousePositionScreen(mouseDownX, mouseDownY)")
-                        }
-                        else -> TODO("APR: gViewerWindow.moveCursorToCenter()")
+                        else ->
+                            TODO("APR: gViewerWindow.moveCursorToCenter()")
                     }
                 } else {
                     TODO("APR: LLUI.getInstance().setMousePositionScreen(mouseDownX, mouseDownY)")
@@ -194,11 +195,11 @@ object ToolCamera : Tool("Camera") {
             }
 
             val isOrbit = gCameraBtnOrbit ||
-                    mask == MASK_ORBIT ||
-                    mask == (MASK_ALT or MASK_ORBIT)
+                    mask == MASK_ORBIT_KEY ||
+                    mask == (MASK_A or MASK_ORBIT_KEY)
             val isPan = gCameraBtnPan ||
-                    mask == MASK_PAN ||
-                    mask == (MASK_PAN or MASK_ALT)
+                    mask == MASK_PAN_KEY ||
+                    mask == (MASK_PAN_KEY or MASK_A)
 
             when {
                 isOrbit && hasMouseCapture() -> {
@@ -209,7 +210,7 @@ object ToolCamera : Tool("Camera") {
                     TODO("APR: gViewerWindow.moveCursorToCenter()")
                 }
                 isPan && hasMouseCapture() -> {
-                    val dist: Float = TODO("APR: camera-to-focus distance") as Float
+                    val dist: Float = TODO("APR: normVec of camera-to-focus vector") as Float
                     val metersPerPixel = 3f * dist / (TODO("APR: gViewerWindow.getWorldViewWidthScaled()") as Float)
                     if (dx != 0) TODO("APR: gAgentCamera.cameraPanLeft(dx * metersPerPixel)")
                     if (dy != 0) TODO("APR: gAgentCamera.cameraPanUp(-dy * metersPerPixel)")
@@ -224,7 +225,7 @@ object ToolCamera : Tool("Camera") {
                         if (mouseSteering) {
                             TODO("APR: gAgentCamera.cameraOrbitOver(-dy * radiansPerPixel)")
                         } else {
-                            TODO("APR: gAgentCamera.cameraZoomIn(inFactor.pow(dy))")
+                            TODO("APR: gAgentCamera.cameraZoomIn(inFactor.pow(dy.toFloat()))")
                         }
                     }
                     TODO("APR: gViewerWindow.moveCursorToCenter()")
@@ -232,8 +233,8 @@ object ToolCamera : Tool("Camera") {
             }
         }
 
-        val isOrbit = gCameraBtnOrbit || mask == MASK_ORBIT || mask == (MASK_ALT or MASK_ORBIT)
-        val isPan = gCameraBtnPan || mask == MASK_PAN || mask == (MASK_PAN or MASK_ALT)
+        val isOrbit = gCameraBtnOrbit || mask == MASK_ORBIT_KEY || mask == (MASK_A or MASK_ORBIT_KEY)
+        val isPan = gCameraBtnPan || mask == MASK_PAN_KEY || mask == (MASK_PAN_KEY or MASK_A)
         when {
             isOrbit -> TODO("APR: gViewerWindow.setCursor(UI_CURSOR_TOOLCAMERA)")
             isPan -> TODO("APR: gViewerWindow.setCursor(UI_CURSOR_TOOLPAN)")
@@ -242,6 +243,7 @@ object ToolCamera : Tool("Camera") {
         return true
     }
 
+    // Firestorm: right-click while mouse-steering starts forward movement.
     override fun handleRightMouseDown(x: Int, y: Int, mask: Int): Boolean {
         if (mouseSteering) {
             TODO("APR: agent_push_forward(KEYSTATE_DOWN)")
@@ -267,7 +269,3 @@ object ToolCamera : Tool("Camera") {
 
     fun mouseSteerMode(): Boolean = mouseSteering
 }
-
-// ---- Stubs for platform constants referenced above ---------------------------
-private const val CAMERA_MODE_CUSTOMIZE_AVATAR = 4
-private const val MASK_ORBIT = MASK_CONTROL

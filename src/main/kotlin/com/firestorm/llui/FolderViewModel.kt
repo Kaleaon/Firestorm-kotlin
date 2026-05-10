@@ -350,8 +350,7 @@ class UIImage(val name: String, val width: Int = 0, val height: Int = 0) {
 }
 
 // FolderView, FolderViewFolder, FolderViewItem are defined in FolderViewItem.kt
-
-class MenuGL(val name: String)
+// MenuGL is defined in LLMenuGL.kt
 
 enum class DragAndDropType {
     NONE, CATEGORY, OBJECT, SCRIPT, TEXTURE, SOUND, LANDMARK, CLOTHING,

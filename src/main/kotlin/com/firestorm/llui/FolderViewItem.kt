@@ -601,6 +601,16 @@ open class FolderViewFolder(
 
     override fun openItem() { setOpen(!isOpenState) }
 
+    fun getViewModelItem(): FolderViewModelItem = viewModelItem
+
+    fun sortFolders(comparator: Comparator<FolderViewModelItem>) {
+        folders.sortWith { a, b -> comparator.compare(a.viewModelItem, b.viewModelItem) }
+    }
+
+    fun sortItems(comparator: Comparator<FolderViewModelItem>) {
+        items.sortWith { a, b -> comparator.compare(a.viewModelItem, b.viewModelItem) }
+    }
+
     fun addItem(item: FolderViewItem) { item.parentFolder = this; items.add(item) }
     fun addFolder(folder: FolderViewFolder) { folder.parentFolder = this; folders.add(folder) }
 
@@ -685,6 +695,7 @@ open class FolderViewFolder(
 abstract class FolderView {
     abstract val rect: Rect
     abstract fun getFolderViewModel(): FolderViewModelInterface
+    abstract fun getViewModelItem(): FolderViewModelItem
     abstract fun removeFromSelectionList(item: FolderViewItem)
     abstract fun setSelection(item: FolderViewItem, openItem: Boolean, takeKeyboardFocus: Boolean = false)
     abstract fun changeSelection(item: FolderViewItem, selected: Boolean)

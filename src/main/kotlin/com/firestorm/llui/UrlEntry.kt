@@ -456,7 +456,7 @@ abstract class UrlEntryAgentName : UrlEntryBase() {
 
     override fun getStyle(url: String): StyleParams = StyleParams(isLink = false)
 
-    protected abstract fun getName(displayName: String, accountName: String, completeName: String, legacyName: String): String
+    protected abstract fun getName(avatarDisplayName: String, avatarAccountName: String, avatarCompleteName: String, avatarLegacyName: String): String
 }
 
 class UrlEntryAgentCompleteName : UrlEntryAgentName() {
@@ -464,8 +464,8 @@ class UrlEntryAgentCompleteName : UrlEntryAgentName() {
         pattern = Regex("""$APP_HEADER_REGEX/agent/[\da-f-]+/completename""", setOf(RegexOption.IGNORE_CASE))
     }
 
-    override fun getName(displayName: String, accountName: String, completeName: String, legacyName: String): String =
-        completeName
+    override fun getName(avatarDisplayName: String, avatarAccountName: String, avatarCompleteName: String, avatarLegacyName: String): String =
+        avatarCompleteName
 }
 
 class UrlEntryAgentLegacyName : UrlEntryAgentName() {
@@ -473,8 +473,8 @@ class UrlEntryAgentLegacyName : UrlEntryAgentName() {
         pattern = Regex("""$APP_HEADER_REGEX/agent/[\da-f-]+/legacyname""", setOf(RegexOption.IGNORE_CASE))
     }
 
-    override fun getName(displayName: String, accountName: String, completeName: String, legacyName: String): String =
-        legacyName
+    override fun getName(avatarDisplayName: String, avatarAccountName: String, avatarCompleteName: String, avatarLegacyName: String): String =
+        avatarLegacyName
 }
 
 class UrlEntryAgentDisplayName : UrlEntryAgentName() {
@@ -482,8 +482,8 @@ class UrlEntryAgentDisplayName : UrlEntryAgentName() {
         pattern = Regex("""$APP_HEADER_REGEX/agent/[\da-f-]+/displayname""", setOf(RegexOption.IGNORE_CASE))
     }
 
-    override fun getName(displayName: String, accountName: String, completeName: String, legacyName: String): String =
-        displayName
+    override fun getName(avatarDisplayName: String, avatarAccountName: String, avatarCompleteName: String, avatarLegacyName: String): String =
+        avatarDisplayName
 }
 
 class UrlEntryAgentUserName : UrlEntryAgentName() {
@@ -491,8 +491,8 @@ class UrlEntryAgentUserName : UrlEntryAgentName() {
         pattern = Regex("""$APP_HEADER_REGEX/agent/[\da-f-]+/username""", setOf(RegexOption.IGNORE_CASE))
     }
 
-    override fun getName(displayName: String, accountName: String, completeName: String, legacyName: String): String =
-        accountName
+    override fun getName(avatarDisplayName: String, avatarAccountName: String, avatarCompleteName: String, avatarLegacyName: String): String =
+        avatarAccountName
 }
 
 class UrlEntryAgentRlvAnonymizedName : UrlEntryAgentName() {
@@ -500,7 +500,7 @@ class UrlEntryAgentRlvAnonymizedName : UrlEntryAgentName() {
         pattern = Regex("""$APP_HEADER_REGEX/agent/[\da-f-]+/rlvanonym""", setOf(RegexOption.IGNORE_CASE))
     }
 
-    override fun getName(displayName: String, accountName: String, completeName: String, legacyName: String): String =
+    override fun getName(avatarDisplayName: String, avatarAccountName: String, avatarCompleteName: String, avatarLegacyName: String): String =
         "An individual"
 }
 

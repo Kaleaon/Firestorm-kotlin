@@ -207,18 +207,6 @@ class EditingMotion(id: LLUUID) : LLMotion(id) {
 // Helpers
 // ---------------------------------------------------------------------------
 
-private operator fun Quaternion.times(v: Vector3): Vector3 {
-    val rw = -x * v.x - y * v.y - z * v.z
-    val rx =  w * v.x + y * v.z - z * v.y
-    val ry =  w * v.y + z * v.x - x * v.z
-    val rz =  w * v.z + x * v.y - y * v.x
-    return Vector3(
-        -rw * x + rx * w - ry * z + rz * y,
-        -rw * y + ry * w - rz * x + rx * z,
-        -rw * z + rz * w - rx * y + ry * x
-    )
-}
-
 private fun Vector3.length(): Float = kotlin.math.sqrt(x * x + y * y + z * z)
 
 private fun Vector3.isFinite(): Boolean = x.isFinite() && y.isFinite() && z.isFinite()

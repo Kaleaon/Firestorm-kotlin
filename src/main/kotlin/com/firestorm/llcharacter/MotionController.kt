@@ -88,7 +88,7 @@ class MotionController {
 
     // ---- character link -----------------------------------------------------
 
-    var character: LLCharacter? = null
+    var character: Character? = null
     fun setCharacter(c: LLCharacter) { character = c }
 
     // ---- collections --------------------------------------------------------

@@ -7,23 +7,25 @@ open class ModalDialog(
 
     private var visibleTimeStart: Long = 0L
 
+    val closeSignals: MutableList<() -> Unit> = mutableListOf()
+
     init {
         if (isModal) {
             minimizable = false
             closeable = false
         }
         visible = false
-        closeCallbacks.add { stopModal() }
+        closeSignals.add { stopModal() }
         centerOnScreen()
     }
 
     open fun postBuild(): Boolean = true
 
     open fun openFloater(key: Any? = null) {
-        val savedHost = floaterHost
-        floaterHost = null
+        val savedHost = currentFloaterHost
+        currentFloaterHost = null
         super.open_()
-        floaterHost = savedHost
+        currentFloaterHost = savedHost
     }
 
     override fun open_() = openFloater()
@@ -34,10 +36,8 @@ open class ModalDialog(
             if (front != null && front !== this) {
                 front.visible = false
             }
-            TODO("APR: setMouseCapture(this)")
-            TODO("APR: addPopup(this)")
+            TODO("APR: setMouseCapture(this); addPopup(this)")
             setFocusModal(true)
-
             sModalStack.remove(this)
             sModalStack.addFirst(this)
         }
@@ -60,18 +60,7 @@ open class ModalDialog(
     }
 
     open fun handleMouseDown(x: Int, y: Int, mask: UInt): Boolean {
-        val popupMenu = MenuGL.sMenuContainer?.getVisibleMenu()
-        if (popupMenu != null) {
-            TODO("APR: check if click is inside popup menu; hide if outside")
-        }
-        if (isModal) {
-            val handled = super.handleMouseDownBase(x, y, mask)
-            if (!handled) {
-                TODO("APR: play UISndInvalidOp sound")
-            }
-        } else {
-            super.handleMouseDownBase(x, y, mask)
-        }
+        TODO("APR: check visible popup menu; hide if click is outside; delegate to super if modal, play UISndInvalidOp if unhandled")
         return true
     }
 
@@ -81,7 +70,7 @@ open class ModalDialog(
     }
 
     open fun handleHover(x: Int, y: Int, mask: UInt): Boolean {
-        TODO("GPU: set arrow cursor; delegate hover to children and visible popup menu")
+        TODO("GPU: set arrow cursor; delegate hover to children; route hover into visible popup menu when mouse is over it, releasing capture")
         return true
     }
 
@@ -91,36 +80,35 @@ open class ModalDialog(
     }
 
     open fun handleDoubleClick(x: Int, y: Int, mask: UInt): Boolean {
-        TODO("APR: childrenHandleDoubleClick($x, $y, $mask); play UISndInvalidOp if unhandled")
+        TODO("APR: super.handleDoubleClick; play UISndInvalidOp if unhandled")
         return true
     }
 
     open fun handleRightMouseDown(x: Int, y: Int, mask: UInt): Boolean {
-        MenuGL.sMenuContainer?.hideMenus()
-        TODO("APR: childrenHandleRightMouseDown($x, $y, $mask)")
+        TODO("APR: hideMenus(); childrenHandleRightMouseDown($x, $y, $mask)")
         return true
     }
 
     open fun handleKeyHere(key: Int, mask: UInt): Boolean {
         TODO("APR: delegate to super.handleKeyHere($key, $mask)")
-        if (isModal) {
+        return if (isModal) {
             val isQuit = key == KEY_Q && mask == MASK_CONTROL
-            return !isQuit
+            !isQuit
         } else {
             val elapsedMs = System.currentTimeMillis() - visibleTimeStart
             if (elapsedMs > 1000L && key == KEY_ESCAPE) {
                 close()
-                return true
+                true
+            } else {
+                false
             }
-            return false
         }
     }
 
     open fun setVisible(vis: Boolean) {
         if (isModal) {
             if (vis) {
-                MenuGL.sMenuContainer?.hideMenus()
-                TODO("APR: hideEmojiHelper(); setMouseCapture(this); addPopup(this)")
+                TODO("APR: hideMenus(); hideEmojiHelper(); setMouseCapture(this); addPopup(this)")
                 setFocusModal(true)
             } else {
                 TODO("APR: releaseFocusIfNeeded(this)")
@@ -130,11 +118,11 @@ open class ModalDialog(
     }
 
     open fun draw() {
-        TODO("GPU: gl_drop_shadow(); super.draw()")
+        TODO("GPU: gl_drop_shadow(0, rect.height, rect.width, 0, shadowColor, DROP_SHADOW_FLOATER); super.draw()")
     }
 
     fun centerOnScreen() {
-        TODO("GPU: center this dialog within the current window bounds")
+        TODO("GPU: center this dialog within the current window bounds using LLUI.getWindowSize()")
     }
 
     private fun setFocusModal(focus: Boolean) {
@@ -144,14 +132,16 @@ open class ModalDialog(
     companion object {
         val sModalStack: ArrayDeque<ModalDialog> = ArrayDeque()
 
+        var currentFloaterHost: Any? = null
+
         fun onAppFocusLost() {
             val instance = sModalStack.firstOrNull() ?: return
-            TODO("APR: release mouse capture from instance; instance.setFocus(false)")
+            TODO("APR: if instance has mouse capture, release it; instance.setFocus(false)")
         }
 
         fun onAppFocusGained() {
             val instance = sModalStack.firstOrNull() ?: return
-            TODO("APR: setMouseCapture(instance); instance.setFocus(true); addPopup(instance); centerOnScreen")
+            TODO("APR: setMouseCapture(instance); instance.setFocus(true); addPopup(instance); instance.centerOnScreen()")
         }
 
         fun activeCount(): Int = sModalStack.size
@@ -163,12 +153,3 @@ open class ModalDialog(
         private const val MASK_CONTROL: UInt = 0x01u
     }
 }
-
-private var floaterHost: Any? = null
-
-private fun Floater.handleMouseDownBase(x: Int, y: Int, mask: UInt): Boolean {
-    TODO("APR: delegate mouse down to floater base implementation")
-}
-
-val Floater.closeCallbacks: MutableList<() -> Unit>
-    get() = TODO("APR: get close callbacks list for floater")

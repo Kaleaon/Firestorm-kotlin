@@ -11,13 +11,14 @@ import java.util.UUID
  * Floater that displays and manages the asset blacklist / derender list.
  *
  * Mirrors `FSFloaterAssetBlacklist` from `fsfloaterassetblacklist.h/.cpp`.
- * Periodic tick (every 250 ms) is used to detect when a previewed sound finishes.
+ * Periodic tick (every 250 ms in C++) is used to detect when a previewed
+ * sound finishes playing.
  *
  * @param key LLSD construction key from the floater registry.
  */
 class FSFloaterAssetBlacklist(val key: Any) {
 
-    private var resultList: BLScrollListCtrl? = null
+    private var resultList: ABScrollListCtrl? = null
     private var filterSubString: String = ""
     private var filterSubStringOrig: String = ""
     var audioSourceId: UUID = NULL_UUID
@@ -31,21 +32,21 @@ class FSFloaterAssetBlacklist(val key: Any) {
 
     fun postBuild(): Boolean {
         resultList = getChild("result_list")
-        resultList?.contextMenu = AssetBlacklistMenu
+        resultList?.contextMenu = FSAssetBlacklistMenu
         resultList?.filterColumn = 0
         resultList?.commitOnSelectionChange = true
         resultList?.onSelectionChanged = { onSelectionChanged() }
 
-        setChildAction("remove_btn") { onRemoveBtn() }
+        setChildAction("remove_btn")      { onRemoveBtn() }
         setChildAction("remove_temp_btn") { onRemoveAllTemporaryBtn() }
-        setChildAction("play_btn") { onPlayBtn() }
-        setChildAction("stop_btn") { onStopBtn() }
-        setChildAction("close_btn") { onCloseBtn() }
+        setChildAction("play_btn")        { onPlayBtn() }
+        setChildAction("stop_btn")        { onStopBtn() }
+        setChildAction("close_btn")       { onCloseBtn() }
 
-        setFilterEditorCallback("filter_input") { searchString -> onFilterEdit(searchString) }
+        setFilterEditorCallback("filter_input") { search -> onFilterEdit(search) }
 
-        blacklistCallbackHandle = FSAssetBlacklist.addChangeCallback { events, op ->
-            onBlacklistChanged(events, op)
+        blacklistCallbackHandle = FSAssetBlacklist.setBlacklistChangedCallback { data, op ->
+            onBlacklistChanged(data, op)
         }
 
         setChildEnabled("play_btn", false)
@@ -66,20 +67,16 @@ class FSFloaterAssetBlacklist(val key: Any) {
         TODO("Platform: LLFloater::closeFloater()")
     }
 
+    fun hasAccelerators(): Boolean = true
+
     // -------------------------------------------------------------------------
-    // Tick — detect sound playback completion
+    // Tick — detect sound playback completion (~250 ms period)
     // -------------------------------------------------------------------------
 
-    /**
-     * Called on a ~250 ms timer.  Hides the Stop button and restores Play once
-     * the audio source reports it has finished.
-     *
-     * @return `false` to keep the timer alive (mirrors C++ LLEventTimer semantics).
-     */
     fun tick(): Boolean {
         if (audioSourceId == NULL_UUID) return false
 
-        val source = BLAudioEngine.findAudioSource(audioSourceId)
+        val source = ABLAudioEngine.findAudioSource(audioSourceId)
         if (source == null || source.isDone) {
             setChildVisible("play_btn", true)
             setChildVisible("stop_btn", false)
@@ -92,9 +89,10 @@ class FSFloaterAssetBlacklist(val key: Any) {
 
     fun handleKeyHere(key: Char, mask: Int): Boolean {
         if (FSCommon.isFilterEditorKeyCombo(key, mask)) {
-            getChild<BLFilterEditor>("filter_input")?.requestFocus()
+            getChild<ABFilterEditor>("filter_input")?.requestFocus()
             return true
         }
+        TODO("Platform: return LLFloater::handleKeyHere(key, mask)")
         return false
     }
 
@@ -113,33 +111,33 @@ class FSFloaterAssetBlacklist(val key: Any) {
     }
 
     /**
-     * Add one blacklist entry to the scroll list, expanding flag bits into
-     * separate rows when the entry carries multiple flags.
+     * Adds one blacklist entry to the scroll list, expanding multi-flag entries
+     * into separate rows so each flag bit appears on its own line.
      */
     fun addElementToList(id: LLUUID, data: BlacklistEntry) {
         val dateStr = formatDate(data.date)
-        val lastFlagValue = BlacklistFlag.GESTURE   // highest single bit
+        val lastFlagValue = BlacklistFlag.GESTURE
 
         var flagValue = 1
         while (flagValue <= lastFlagValue) {
             if ((data.flags and flagValue) != 0 || data.flags == BlacklistFlag.NONE) {
                 val flag = if (data.flags == BlacklistFlag.NONE) BlacklistFlag.NONE else flagValue
 
-                val row = BLScrollListRow(
+                val row = ABScrollListRow(
                     id = id,
                     columns = listOf(
-                        BLScrollListColumn("name",
+                        ABScrollListColumn("name",
                             data.name.ifEmpty { getString("unknown_object") }),
-                        BLScrollListColumn("region",
+                        ABScrollListColumn("region",
                             data.region.ifEmpty { getString("unknown_region") }),
-                        BLScrollListColumn("type",      getTypeString(data.assetType.typeCode)),
-                        BLScrollListColumn("flags",     getFlagString(flag)),
-                        BLScrollListColumn("date",      dateStr),
-                        BLScrollListColumn("permanent",
+                        ABScrollListColumn("type",      getTypeString(data.assetType.typeCode)),
+                        ABScrollListColumn("flags",     getFlagString(flag)),
+                        ABScrollListColumn("date",      dateStr),
+                        ABScrollListColumn("permanent",
                             if (data.permanent) getString("asset_permanent") else "",
                             halign = "center"),
-                        BLScrollListColumn("date_sort", data.date.toString()),
-                        BLScrollListColumn("asset_type", data.assetType.typeCode.toString()),
+                        ABScrollListColumn("date_sort", data.date.toString()),
+                        ABScrollListColumn("asset_type", data.assetType.typeCode.toString()),
                     ),
                     altValue = mapOf("flag" to flag),
                 )
@@ -160,15 +158,15 @@ class FSFloaterAssetBlacklist(val key: Any) {
 
         resultList?.allSelected()?.forEach { item ->
             val flag = (item.altValue["flag"] as? Int) ?: 0
-            flagsToRemoveById[item.id] = (flagsToRemoveById[item.id] ?: 0) or flag
+            if (flag == 0) {
+                FSAssetBlacklist.removeItemsFromBlacklist(listOf(item.id))
+            } else {
+                flagsToRemoveById[item.id] = (flagsToRemoveById[item.id] ?: 0) or flag
+            }
         }
 
         for ((id, flags) in flagsToRemoveById) {
-            if (flags == 0) {
-                FSAssetBlacklist.removeFromBlacklist(id)
-            } else {
-                TODO("Platform: FSAssetBlacklist.removeFlagsFromItem(id, flags)")
-            }
+            FSAssetBlacklist.removeFlagsFromItem(id, flags)
         }
     }
 
@@ -176,18 +174,21 @@ class FSFloaterAssetBlacklist(val key: Any) {
     // Blacklist change callback
     // -------------------------------------------------------------------------
 
-    private fun onBlacklistChanged(events: List<BlacklistChangeEvent>, op: BlacklistOperation) {
+    private fun onBlacklistChanged(
+        data: List<BlacklistChangeEvent>,
+        op: BlacklistOperation,
+    ) {
         if (op == BlacklistOperation.ADD) {
             val needsSort = resultList?.isSorted ?: false
             resultList?.isSorted = false
-            for (event in events) {
+            for (event in data) {
                 resultList?.deleteRows(event.id)
                 if (event.entry != null) addElementToList(event.id, event.entry)
             }
             resultList?.isSorted = needsSort
             resultList?.updateSort()
         } else {
-            for (event in events) {
+            for (event in data) {
                 resultList?.deleteRows(event.id)
             }
             resultList?.updateLayout()
@@ -198,47 +199,45 @@ class FSFloaterAssetBlacklist(val key: Any) {
     // Button handlers
     // -------------------------------------------------------------------------
 
-    private fun onRemoveBtn() { removeElements() }
+    protected fun onRemoveBtn() { removeElements() }
 
-    private fun onRemoveAllTemporaryBtn() {
+    protected fun onRemoveAllTemporaryBtn() {
         TODO("Platform: gObjectList.resetDerenderList(true)")
     }
 
-    private fun onPlayBtn() {
+    protected fun onPlayBtn() {
         val item = resultList?.firstSelected() ?: return
         val assetTypeColIdx = resultList?.columnIndex("asset_type") ?: return
+        val typeCode = item.columns.getOrNull(assetTypeColIdx)?.value?.toIntOrNull() ?: return
+
         if (item.id.uuid.toString() == NULL_UUID.toString() ||
-            item.columns[assetTypeColIdx].value.toIntOrNull() != AssetType.SOUND.typeCode
+            typeCode != AssetType.SOUND.typeCode
         ) return
 
         onStopBtn()
         audioSourceId = UUID.randomUUID()
-        BLAudioEngine.triggerSound(
-            soundId = item.id,
-            ownerId = TODO("Platform: gAgentID"),
-            gain = 1.0f,
-            audioType = BLAudioType.UI,
+        ABLAudioEngine.triggerSound(
+            soundId  = item.id,
+            ownerId  = TODO("Platform: gAgentID as LLUUID") as LLUUID,
+            gain     = 1.0f,
+            audioType = ABLAudioType.UI,
             sourceId = audioSourceId,
         )
         setChildVisible("stop_btn", true)
         setChildVisible("play_btn", false)
     }
 
-    private fun onStopBtn() {
+    protected fun onStopBtn() {
         if (audioSourceId == NULL_UUID) return
-        val source = BLAudioEngine.findAudioSource(audioSourceId)
+        val source = ABLAudioEngine.findAudioSource(audioSourceId)
         if (source != null && !source.isDone) {
             source.stop()
         }
     }
 
-    private fun onCloseBtn() { closeFloater() }
+    protected fun onCloseBtn() { closeFloater() }
 
-    // -------------------------------------------------------------------------
-    // Filter
-    // -------------------------------------------------------------------------
-
-    private fun onFilterEdit(searchString: String) {
+    protected fun onFilterEdit(searchString: String) {
         filterSubStringOrig = searchString.trimStart()
         val upper = filterSubStringOrig.uppercase()
         if (filterSubString == upper) return
@@ -247,16 +246,12 @@ class FSFloaterAssetBlacklist(val key: Any) {
         onSelectionChanged()
     }
 
-    // -------------------------------------------------------------------------
-    // Selection state
-    // -------------------------------------------------------------------------
-
-    private fun onSelectionChanged() {
+    protected fun onSelectionChanged() {
         val selected = resultList?.allSelected() ?: emptyList()
         val enable = selected.size == 1 && run {
             val item = resultList?.firstSelected() ?: return@run false
-            val col = resultList?.columnIndex("asset_type") ?: return@run false
-            item.columns[col].value.toIntOrNull() == AssetType.SOUND.typeCode
+            val colIdx = resultList?.columnIndex("asset_type") ?: return@run false
+            item.columns.getOrNull(colIdx)?.value?.toIntOrNull() == AssetType.SOUND.typeCode
         }
         setChildEnabled("play_btn", enable)
     }
@@ -265,7 +260,7 @@ class FSFloaterAssetBlacklist(val key: Any) {
     // String helpers
     // -------------------------------------------------------------------------
 
-    private fun getTypeString(typeCode: Int): String = when (typeCode) {
+    protected fun getTypeString(typeCode: Int): String = when (typeCode) {
         AssetType.TEXTURE.typeCode   -> getString("asset_texture")
         AssetType.OBJECT.typeCode    -> getString("asset_object")
         AssetType.ANIMATION.typeCode -> getString("asset_animation")
@@ -274,12 +269,21 @@ class FSFloaterAssetBlacklist(val key: Any) {
         else                         -> getString("asset_unknown")
     }
 
-    private fun getFlagString(flag: Int): String = when (flag) {
+    protected fun getFlagString(flag: Int): String = when (flag) {
         BlacklistFlag.NONE    -> getString("blacklist_flag_none")
         BlacklistFlag.WORN    -> getString("blacklist_flag_mute_avatar_worn_objects_sounds")
         BlacklistFlag.REZZED  -> getString("blacklist_flag_mute_avatar_rezzed_objects_sounds")
         BlacklistFlag.GESTURE -> getString("blacklist_flag_mute_avatar_gestures_sounds")
         else                  -> getString("blacklist_flag_unknown")
+    }
+
+    companion object {
+        val NULL_UUID: UUID = UUID.fromString("00000000-0000-0000-0000-000000000000")
+
+        fun getFlagFromLLSD(data: Map<String, Any>): Int {
+            val raw = data["asset_blacklist_flag"] as? Int ?: return BlacklistFlag.NONE
+            return raw
+        }
     }
 
     // -------------------------------------------------------------------------
@@ -306,14 +310,10 @@ class FSFloaterAssetBlacklist(val key: Any) {
 
     private fun setChildVisible(name: String, visible: Boolean): Unit =
         TODO("Platform: childSetVisible(\"$name\", $visible)")
-
-    companion object {
-        private val NULL_UUID: UUID = UUID.fromString("00000000-0000-0000-0000-000000000000")
-    }
 }
 
 // =============================================================================
-// AssetBlacklistMenu — right-click context menu
+// FSAssetBlacklistMenu — right-click context menu
 // =============================================================================
 
 /**
@@ -321,7 +321,7 @@ class FSFloaterAssetBlacklist(val key: Any) {
  *
  * Mirrors `FSFloaterAssetBlacklistMenu::FSAssetBlacklistMenu`.
  */
-object AssetBlacklistMenu {
+object FSAssetBlacklistMenu {
 
     fun createMenu(): Any {
         TODO("Platform: register Blacklist.Remove callback; " +
@@ -337,26 +337,25 @@ object AssetBlacklistMenu {
 }
 
 // =============================================================================
-// Stub types that are local to this floater and not redeclaring anything
-// (prefixed "BL" to avoid any collision)
+// Stub types local to this file (prefixed "AB" to avoid collision)
 // =============================================================================
 
 /** Stub: scroll-list column descriptor. */
-data class BLScrollListColumn(
+data class ABScrollListColumn(
     val column: String,
     val value: String,
     val halign: String = "left",
 )
 
 /** Stub: scroll-list row descriptor. */
-data class BLScrollListRow(
+data class ABScrollListRow(
     val id: LLUUID,
-    val columns: List<BLScrollListColumn>,
+    val columns: List<ABScrollListColumn>,
     val altValue: Map<String, Any> = emptyMap(),
 )
 
 /** Stub: the FSScrollListCtrl widget as used by this floater. */
-class BLScrollListCtrl {
+class ABScrollListCtrl {
     var contextMenu: Any? = null
     var filterColumn: Int = 0
     var commitOnSelectionChange: Boolean = false
@@ -364,36 +363,37 @@ class BLScrollListCtrl {
     var onSelectionChanged: (() -> Unit)? = null
 
     fun clearRows(): Unit = TODO("Platform: mResultList->clearRows()")
-    fun addRow(row: BLScrollListRow): Unit = TODO("Platform: mResultList->addElement(element, ADD_BOTTOM)")
+    fun addRow(row: ABScrollListRow): Unit = TODO("Platform: mResultList->addElement(element, ADD_BOTTOM)")
     fun deleteRows(id: LLUUID): Unit = TODO("Platform: mResultList->deleteItems(id)")
-    fun allSelected(): List<BLScrollListRow> = TODO("Platform: mResultList->getAllSelected()")
-    fun firstSelected(): BLScrollListRow? = TODO("Platform: mResultList->getFirstSelected()")
+    fun allSelected(): List<ABScrollListRow> = TODO("Platform: mResultList->getAllSelected()")
+    fun firstSelected(): ABScrollListRow? = TODO("Platform: mResultList->getFirstSelected()")
     fun columnIndex(name: String): Int? = TODO("Platform: mResultList->getColumn(\"$name\")->mIndex")
     fun setFilterString(filter: String): Unit = TODO("Platform: mResultList->setFilterString(filter)")
     fun updateSort(): Unit = TODO("Platform: mResultList->updateSort()")
     fun updateLayout(): Unit = TODO("Platform: mResultList->updateLayout()")
+    fun setNeedsSort(value: Boolean): Unit = TODO("Platform: mResultList->setNeedsSort($value)")
 }
 
 /** Stub: filter editor widget. */
-class BLFilterEditor {
+class ABFilterEditor {
     fun requestFocus(): Unit = TODO("Platform: filter_input->setFocus(true)")
 }
 
 /** Stub: audio engine as used by this floater. */
-object BLAudioEngine {
-    fun findAudioSource(id: java.util.UUID): BLAudioSource? =
+object ABLAudioEngine {
+    fun findAudioSource(id: UUID): ABLAudioSource? =
         TODO("Platform: gAudiop->findAudioSource(id)")
     fun triggerSound(
         soundId: LLUUID, ownerId: LLUUID, gain: Float,
-        audioType: BLAudioType, sourceId: java.util.UUID,
+        audioType: ABLAudioType, sourceId: UUID,
     ): Unit =
         TODO("Platform: gAudiop->triggerSound(soundId, ownerId, gain, audioType, LLVector3d::zero, LLUUID::null, sourceId)")
 }
 
 /** Stub: audio source. */
-class BLAudioSource {
+class ABLAudioSource {
     val isDone: Boolean get() = TODO("Platform: audio_source->isDone()")
     fun stop(): Unit = TODO("Platform: audio_source->play(LLUUID::null)")
 }
 
-enum class BLAudioType { UI, AMBIENT, OBJECT_MEDIA }
+enum class ABLAudioType { UI, AMBIENT, OBJECT_MEDIA }

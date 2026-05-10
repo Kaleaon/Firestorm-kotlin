@@ -18,29 +18,6 @@ fun llsdsAreEqual(a: LlsdValue, b: LlsdValue): Boolean {
     return a.toString() == b.toString()
 }
 
-abstract class Panel {
-    var visible: Boolean = true
-    var parent: Panel? = null
-    var tabStop: Boolean = true
-
-    open fun notify(action: Map<String, Any?>): Int = 0
-    open fun setValue(event: Map<String, Any?>) {}
-    fun getVisible(): Boolean = visible
-    fun setVisible(v: Boolean) { visible = v }
-    abstract fun getRect(): Rect
-    abstract fun reshape(width: Int, height: Int)
-}
-
-data class Rect(val left: Int = 0, val top: Int = 0, val right: Int = 0, val bottom: Int = 0) {
-    val width get() = right - left
-    val height get() = top - bottom
-    fun isValid() = width > 0 && height > 0
-    fun stretch(delta: Int) = copy(left = left - delta, top = top + delta, right = right + delta, bottom = bottom - delta)
-    companion object {
-        val NULL = Rect()
-    }
-}
-
 enum class AddPosition { TOP, BOTTOM, DEFAULT }
 
 abstract class ItemComparator {
@@ -78,16 +55,10 @@ open class FlatListView(
 
     var noItemsCommentText: String = noItemsText
 
-    private var prevNotifyParentRect: Rect = Rect.NULL
-
     var onReturnSignal: (() -> Unit)? = null
     var onCommitCallback: (() -> Unit)? = null
 
     open fun canFocusChildren(): Boolean = false
-
-    fun getItemsRect(): Rect = TODO("APR: use JVM equivalent for rect from items panel")
-
-    fun getItemsPad(): Int = itemPad
 
     open fun addItem(item: Panel, value: LlsdValue = null, pos: AddPosition = AddPosition.BOTTOM, rearrange: Boolean = true): Boolean {
         if (value == null) return false
@@ -98,7 +69,6 @@ open class FlatListView(
             AddPosition.TOP -> itemPairs.add(0, pair)
             AddPosition.BOTTOM, AddPosition.DEFAULT -> itemPairs.add(pair)
         }
-
         item.tabStop = false
 
         if (rearrange) {
@@ -115,7 +85,6 @@ open class FlatListView(
 
         val afterPair = getItemPair(afterItem) ?: return false
         val newPair = ItemPair(itemToAdd, value)
-
         val idx = itemPairs.indexOf(afterPair)
         if (idx == -1) return false
         itemPairs.add(idx + 1, newPair)
@@ -167,10 +136,7 @@ open class FlatListView(
 
     open fun getSelectedValues(): List<LlsdValue> = selectedItemPairs.map { it.value }
 
-    open fun getSelectedUUID(): UUID? {
-        val v = getSelectedValue()
-        return v as? UUID
-    }
+    open fun getSelectedUUID(): UUID? = getSelectedValue() as? UUID
 
     open fun getSelectedUUIDs(): List<UUID> =
         selectedItemPairs.mapNotNull { it.value as? UUID }
@@ -181,30 +147,20 @@ open class FlatListView(
 
     open fun resetSelection(noCommitOnDeselection: Boolean = false) {
         if (selectedItemPairs.isEmpty()) return
-
         for (pair in selectedItemPairs) {
             pair.panel.setValue(mapOf("selected" to false))
         }
         selectedItemPairs.clear()
-
-        if (commitOnSelectionChange && !noCommitOnDeselection) {
-            onCommit()
-        }
+        if (commitOnSelectionChange && !noCommitOnDeselection) onCommit()
     }
 
-    fun setNoItemsCommentText(text: String) {
-        noItemsCommentText = text
-    }
+    fun setNoItemsCommentText(text: String) { noItemsCommentText = text }
 
     fun numSelected(): UInt = selectedItemPairs.size.toUInt()
 
-    fun size(onlyVisibleItems: Boolean = true): UInt {
-        return if (onlyVisibleItems) {
-            itemPairs.count { it.panel.getVisible() }.toUInt()
-        } else {
-            itemPairs.size.toUInt()
-        }
-    }
+    fun size(onlyVisibleItems: Boolean = true): UInt =
+        if (onlyVisibleItems) itemPairs.count { it.panel.visible }.toUInt()
+        else itemPairs.size.toUInt()
 
     open fun clear() {
         resetSelection()
@@ -212,9 +168,7 @@ open class FlatListView(
         notifyParentItemsRectChanged()
     }
 
-    fun setComparator(comp: ItemComparator) {
-        itemComparator = comp
-    }
+    fun setComparator(comp: ItemComparator) { itemComparator = comp }
 
     fun sort() {
         val comp = itemComparator ?: return
@@ -233,22 +187,19 @@ open class FlatListView(
 
     fun scrollToShowFirstSelectedItem() {
         if (selectedItemPairs.isEmpty()) return
-        val rect = selectedItemPairs.first().panel.getRect()
-        if (rect.isValid()) {
-            TODO("APR: use JVM equivalent for scrollToShowRect($rect)")
-        }
+        TODO("APR: use JVM equivalent for scrollToShowRect of first selected item")
     }
 
     fun selectFirstItem() {
         if (size() == 0u) return
-        val first = itemPairs.firstOrNull { it.panel.getVisible() } ?: return
+        val first = itemPairs.firstOrNull { it.panel.visible } ?: return
         selectItemPair(first, true)
         ensureSelectedVisible()
     }
 
     fun selectLastItem() {
         if (size() == 0u) return
-        val last = itemPairs.lastOrNull { it.panel.getVisible() } ?: return
+        val last = itemPairs.lastOrNull { it.panel.visible } ?: return
         selectItemPair(last, true)
         ensureSelectedVisible()
     }
@@ -286,13 +237,12 @@ open class FlatListView(
                 itemPairs.clear()
             } else {
                 detachedItems.forEach { detached ->
-                    itemPairs.removeAll { it.panel == detached }
+                    itemPairs.removeAll { it.panel === detached }
                 }
                 rearrangeItems()
             }
             notifyParentItemsRectChanged()
         }
-
         return detachedItems
     }
 
@@ -310,46 +260,37 @@ open class FlatListView(
         if (!allowSelection && select) return false
         if (isSelected(pair) == select) return true
 
-        if (select) {
-            selectedItemPairs.add(pair)
-        } else {
-            selectedItemPairs.remove(pair)
-        }
+        if (select) selectedItemPairs.add(pair)
+        else selectedItemPairs.remove(pair)
 
         pair.panel.setValue(mapOf("selected" to select))
-
         if (commitOnSelectionChange) onCommit()
-
         isConsecutiveSelection = false
         return true
     }
 
-    protected open fun selectNextItemPair(isUpDirection: Boolean, resetSelection: Boolean): Boolean {
+    protected open fun selectNextItemPair(isUpDirection: Boolean, resetSel: Boolean): Boolean {
         if (size() == 0u) return false
 
-        if (!isConsecutiveSelection) {
-            if (selectedItemPairs.isNotEmpty() && !resetSelection) {
-                val cur = selectedItemPairs.last()
-                resetSelection()
-                selectItemPair(cur, true)
-            }
+        if (!isConsecutiveSelection && selectedItemPairs.isNotEmpty() && !resetSel) {
+            val cur = selectedItemPairs.last()
+            resetSelection()
+            selectItemPair(cur, true)
         }
 
         if (selectedItemPairs.isNotEmpty()) {
             val curSel = selectedItemPairs.last()
-            val toPair: ItemPair?
-
-            if (isUpDirection) {
+            val toPair: ItemPair? = if (isUpDirection) {
                 val idx = itemPairs.indexOf(curSel)
-                toPair = itemPairs.take(idx).lastOrNull { it.panel.getVisible() }
+                itemPairs.take(idx).lastOrNull { it.panel.visible }
             } else {
                 val idx = itemPairs.indexOf(curSel)
-                toPair = itemPairs.drop(idx + 1).firstOrNull { it.panel.getVisible() }
+                itemPairs.drop(idx + 1).firstOrNull { it.panel.visible }
             }
 
             if (toPair != null) {
                 val doSelect: Boolean
-                if (resetSelection) {
+                if (resetSel) {
                     resetSelection()
                     doSelect = true
                 } else {
@@ -364,7 +305,6 @@ open class FlatListView(
             isConsecutiveSelection = true
             return true
         }
-
         return false
     }
 
@@ -372,13 +312,11 @@ open class FlatListView(
 
     open fun selectAll() {
         if (!allowSelection || !multipleSelection) return
-
         selectedItemPairs.clear()
         for (pair in itemPairs) {
             selectedItemPairs.add(pair)
             pair.panel.setValue(mapOf("selected" to true))
         }
-
         if (commitOnSelectionChange) onCommit()
     }
 
@@ -387,83 +325,53 @@ open class FlatListView(
     protected open fun removeItemPair(pair: ItemPair, rearrange: Boolean): Boolean {
         val removed = itemPairs.remove(pair)
         if (!removed) return false
-
         val selectionChanged = selectedItemPairs.remove(pair)
-
         if (rearrange) {
             rearrangeItems()
             notifyParentItemsRectChanged()
         }
-
         if (selectionChanged && commitOnSelectionChange) onCommit()
-
         return true
     }
 
     protected fun notifyParentItemsRectChanged() {
-        TODO("APR: use JVM equivalent for notifying parent of size_changes")
+        TODO("APR: use JVM equivalent for notifying parent of size_changes dimensions")
     }
 
-    protected fun getLastSelectedItemRect(): Rect =
-        selectedItemPairs.lastOrNull()?.panel?.getRect() ?: Rect.NULL
+    protected fun getLastSelectedItemRect(): com.firestorm.llmath.Rect =
+        selectedItemPairs.lastOrNull()?.panel?.rect
+            ?: com.firestorm.llmath.Rect(0, 0, 0, 0)
 
     protected fun ensureSelectedVisible() {
-        val rect = getLastSelectedItemRect()
-        if (rect.isValid()) {
-            TODO("APR: use JVM equivalent for scrollToShowRect($rect)")
-        }
+        TODO("APR: use JVM equivalent for scrollToShowRect of last selected item")
     }
 
-    protected fun onFocusReceived() {}
-
-    protected fun onFocusLost() {}
-
     fun handleKeyHere(key: Int, mask: Int): Boolean {
-        val KEY_RETURN = 0x0D
-        val KEY_UP = 0x26
-        val KEY_DOWN = 0x28
-        val KEY_ESCAPE = 0x1B
-        val MASK_SHIFT = 0x01
-        val MASK_NONE = 0x00
+        val KEY_RETURN = 0x0D; val KEY_UP = 0x26; val KEY_DOWN = 0x28; val KEY_ESCAPE = 0x1B
+        val MASK_SHIFT = 0x01; val MASK_NONE = 0x00
 
-        val resetSelection = mask != MASK_SHIFT
+        val resetSel = mask != MASK_SHIFT
         var handled = false
-
         when (key) {
             KEY_RETURN -> {
                 if (selectedItemPairs.isNotEmpty() && mask == MASK_NONE) {
-                    onReturnSignal?.invoke()
-                    handled = true
+                    onReturnSignal?.invoke(); handled = true
                 }
             }
-            KEY_UP -> {
-                if (!selectNextItemPair(true, resetSelection) && resetSelection) {
-                    resetSelection()
-                }
-            }
-            KEY_DOWN -> {
-                if (!selectNextItemPair(false, resetSelection) && resetSelection) {
-                    resetSelection()
-                }
-            }
-            KEY_ESCAPE -> {
-                if (mask == MASK_NONE) {
-                    TODO("APR: use JVM equivalent for setFocus(false)")
-                }
-            }
+            KEY_UP -> { if (!selectNextItemPair(true, resetSel) && resetSel) resetSelection() }
+            KEY_DOWN -> { if (!selectNextItemPair(false, resetSel) && resetSel) resetSelection() }
+            KEY_ESCAPE -> { if (mask == MASK_NONE) TODO("APR: use JVM equivalent for setFocus(false)") }
         }
-
         if ((key == KEY_UP || key == KEY_DOWN) && selectedItemPairs.isNotEmpty()) {
-            ensureSelectedVisible()
-            handled = true
+            ensureSelectedVisible(); handled = true
         }
-
         return handled
     }
 
-    private fun onCommit() {
-        onCommitCallback?.invoke()
-    }
+    protected fun onFocusReceived() {}
+    protected fun onFocusLost() {}
+
+    private fun onCommit() { onCommitCallback?.invoke() }
 }
 
 open class FlatListViewEx(
@@ -516,13 +424,10 @@ open class FlatListViewEx(
 
         hasMatchedItems = false
         var visibilityChanged = false
-
         for (pair in itemPairs) {
             visibilityChanged = visibilityChanged or updateItemVisibility(pair.panel, action)
         }
-
         if (reSortItems) sort()
-
         if (visibilityChanged && notifyParent) {
             rearrangeItems()
             notifyParentItemsRectChanged()
@@ -544,7 +449,6 @@ open class FlatListViewEx(
 
     protected fun updateItemVisibility(item: Panel, action: Map<String, Any?>): Boolean {
         var visible = true
-
         if (item.notify(action) == 0) {
             hasMatchedItems = true
         } else {
@@ -553,9 +457,8 @@ open class FlatListViewEx(
                 visible = false
             }
         }
-
-        if (item.getVisible() != visible) {
-            item.setVisible(visible)
+        if (item.visible != visible) {
+            item.visible = visible
             return true
         }
         return false

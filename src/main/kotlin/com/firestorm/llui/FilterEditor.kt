@@ -1,35 +1,17 @@
 package com.firestorm.llui
 
+import com.firestorm.llmath.Rect
+
 typealias TransparencyType = Int
 typealias TransparencyOverrideCallback = (type: TransparencyType, defaultValue: Float) -> Float
 
-open class SearchEditor {
-    var commitOnFocusLost: Boolean = true
-    protected var transparencyOverride: TransparencyOverrideCallback? = null
-    protected var onCommitCallback: (() -> Unit)? = null
-    protected var onKeystrokeCallback: (() -> Unit)? = null
-
-    open fun setTransparencyOverrideCallback(cb: TransparencyOverrideCallback) {
-        transparencyOverride = cb
-    }
-
-    open fun handleKeystroke() {
-        onKeystrokeCallback?.invoke()
-    }
-
-    fun onCommit() {
-        onCommitCallback?.invoke()
-    }
-
-    fun setOnCommit(cb: () -> Unit) { onCommitCallback = cb }
-    fun setOnKeystroke(cb: () -> Unit) { onKeystrokeCallback = cb }
-}
-
-class FilterEditor : SearchEditor() {
-    val searchEditor: SearchEditor = SearchEditor()
+open class FilterEditor(
+    name: String,
+    rect: Rect = Rect(),
+) : SearchEditor(name, rect) {
 
     init {
-        commitOnFocusLost = false
+        setCommitOnFocusLost(false)
     }
 
     override fun handleKeystroke() {
@@ -37,7 +19,7 @@ class FilterEditor : SearchEditor() {
         onCommit()
     }
 
-    override fun setTransparencyOverrideCallback(cb: TransparencyOverrideCallback) {
-        searchEditor.setTransparencyOverrideCallback(cb)
+    open fun setTransparencyOverrideCallback(cb: TransparencyOverrideCallback) {
+        TODO("APR: use JVM equivalent for routing transparency override to inner search editor widget")
     }
 }

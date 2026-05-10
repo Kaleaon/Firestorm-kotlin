@@ -99,7 +99,7 @@ class GLSPipelineSelection {
     }
 }
 
-class GLSPipelineSkyBox {
+open class GLSPipelineSkyBox {
     private val cullFace = GLDisable(GLSDefault.GL_CULL_FACE)
 
     init {
@@ -112,7 +112,7 @@ class GLSPipelineSkyBox {
     }
 }
 
-class GLSPipelineDepthTestSkyBox(depthTest: Boolean, depthWrite: Boolean) : GLSPipelineSkyBox() {
+open class GLSPipelineDepthTestSkyBox(depthTest: Boolean, depthWrite: Boolean) : GLSPipelineSkyBox() {
     val depth = GLDepthTest(depthTest, writeEnabled = depthWrite, depthFunc = GLDepthTest.GL_LEQUAL)
 }
 

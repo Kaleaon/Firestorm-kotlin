@@ -85,14 +85,14 @@ abstract class LLCharacter {
 
     // ---- motion management -------------------------------------------------
 
-    fun registerMotion(id: LLUUID, factory: (LLUUID) -> Motion): Boolean =
+    fun registerMotion(id: LLUUID, factory: (LLUUID) -> LLMotion): Boolean =
         motionController.registerMotion(id, factory)
 
     fun removeMotion(id: LLUUID) = motionController.removeMotion(id)
 
-    fun createMotion(id: LLUUID): Motion? = motionController.createMotion(id)
+    fun createMotion(id: LLUUID): LLMotion? = motionController.createMotion(id)
 
-    fun findMotion(id: LLUUID): Motion? = motionController.findMotion(id)
+    fun findMotion(id: LLUUID): LLMotion? = motionController.findMotion(id)
 
     open fun startMotion(id: LLUUID, startOffset: Float = 0f): Boolean =
         motionController.startMotion(id, startOffset)
@@ -106,7 +106,7 @@ abstract class LLCharacter {
     }
 
     /** Called when a motion fully stops. Override to react (default: no-op). */
-    open fun requestStopMotion(motion: Motion) {}
+    open fun requestStopMotion(motion: LLMotion) {}
 
     enum class UpdateType { NORMAL, HIDDEN, FORCE }
 

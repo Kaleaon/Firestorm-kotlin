@@ -23,6 +23,8 @@ object Notifications {
     val pending: MutableList<Notification> = mutableListOf()
     private val channels: MutableMap<String, NotificationCallback> = mutableMapOf()
     private val responses: MutableMap<LLUUID, LLSD> = mutableMapOf()
+    private val functors: MutableMap<LLUUID, (LLSD, LLSD) -> Unit> = mutableMapOf()
+    private val namedFunctors: MutableMap<String, (LLSD, LLSD) -> Unit> = mutableMapOf()
 
     fun add(
         name: String,
@@ -39,20 +41,55 @@ object Notifications {
         return notification
     }
 
+    fun add(
+        name: String,
+        subs: LLSD,
+        payload: LLSD,
+        functorName: String,
+    ): Notification {
+        val notification = add(name, subs, payload)
+        namedFunctors[functorName]?.let { functors[notification.id] = it }
+        return notification
+    }
+
+    fun add(
+        name: String,
+        subs: LLSD,
+        payload: LLSD,
+        functor: (LLSD, LLSD) -> Unit,
+    ): Notification {
+        val notification = add(name, subs, payload)
+        functors[notification.id] = functor
+        return notification
+    }
+
     fun cancel(id: LLUUID) {
         pending.removeAll { it.id == id }
+        functors.remove(id)
     }
 
     fun find(id: LLUUID): Notification? = pending.firstOrNull { it.id == id }
 
     fun respond(notification: Notification, response: LLSD) {
         responses[notification.id] = response
+        functors[notification.id]?.invoke(LLSD.emptyMap(), response)
         channels.values.forEach { handler -> handler(notification, response) }
         cancel(notification.id)
     }
 
     fun addChannel(name: String, handler: NotificationCallback) {
         channels[name] = handler
+    }
+
+    fun registerFunctor(name: String, functor: (LLSD, LLSD) -> Unit) {
+        namedFunctors[name] = functor
+    }
+
+    fun getSelectedOption(notification: LLSD, response: LLSD): Int {
+        response.asMap().entries.forEachIndexed { index, entry ->
+            if (entry.value.asBoolean()) return index
+        }
+        return -1
     }
 
     private fun resolveType(name: String): NotificationType = when {

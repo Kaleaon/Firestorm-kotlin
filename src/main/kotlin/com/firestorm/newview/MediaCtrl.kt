@@ -1,38 +1,10 @@
-/**
- * MediaCtrl.kt
- * Converted from llmediactrl.h / llmediactrl.cpp
- *
- * In-world media browser control — hosts a web/media plugin surface inside a
- * viewer UI panel.  Equivalent to LLMediaCtrl in the C++ viewer.
- */
-
 package com.firestorm.newview
 
 import com.firestorm.llcommon.LLUUID
-import com.firestorm.llmath.*
+import kotlin.math.max
+import kotlin.math.min
+import kotlin.math.roundToInt
 
-/**
- * Represents a media event that the control can receive from the underlying
- * plugin (mirrors EMediaEvent from the C++ side).
- */
-enum class MediaEvent {
-    NAVIGATE_BEGIN,
-    NAVIGATE_COMPLETE,
-    NAVIGATE_ERROR,
-    LOAD_STARTED,
-    LOAD_FINISHED,
-    LINK_HOVERED,
-    NAVIGATE_TO_PAGE_COMPLETE,
-}
-
-/**
- * In-world browser / media control panel.
- *
- * Lifecycle: create with [MediaCtrl], set [homeUrl], call [navigateTo] or
- * [navigateHome].  Poll events via [onMediaEvent].
- *
- * C++ lineage: LLMediaCtrl : LLPanel, LLViewerMediaObserver, LLInstanceTracker
- */
 class MediaCtrl(
     startUrl: String = "",
     trustedContent: Boolean = false,
@@ -44,24 +16,15 @@ class MediaCtrl(
     hideLoading: Boolean = false,
     initialMimeType: String = "",
     errorPageUrl: String = "",
-) {
+) : PluginClassMediaOwner {
 
-    // ── Navigation state ──────────────────────────────────────────────────
+    val id: LLUUID = LLUUID.generateNewID()
 
-    /** URL the control navigates to on [navigateHome]. */
     var homeUrl: String = startUrl
-
-    /** MIME type hint associated with [homeUrl]. */
-    var homeMimeType: String = ""
-
-    /** The URL currently loaded / being loaded. */
+    var homeMimeType: String = initialMimeType
     var currentNavUrl: String = ""
         private set
-
-    /** URL shown when a navigation error occurs. */
     var errorPageUrl: String = errorPageUrl
-
-    // ── Display flags ─────────────────────────────────────────────────────
 
     var trusted: Boolean = trustedContent
     var borderVisible: Boolean = borderVisible
@@ -72,163 +35,357 @@ class MediaCtrl(
     var stretchToFill: Boolean = true
     var maintainAspectRatio: Boolean = true
     var hideLoading: Boolean = hideLoading
+    var hidingInitialLoad: Boolean = false
     var decoupleTextureSize: Boolean = decoupleTextureSize
     var allowFileDownload: Boolean = false
 
-    // ── Texture / plugin metadata ─────────────────────────────────────────
+    private var clearCacheOnCreate: Boolean = false
+    private var hoverTextChanged: Boolean   = false
+    private var updateScrolls: Boolean      = false
 
     var textureWidth: Int = textureWidth
         private set
     var textureHeight: Int = textureHeight
         private set
 
-    val mediaTextureId: LLUUID = LLUUID.generateNewID()
-
-    // ── Zoom / caret ──────────────────────────────────────────────────────
-
-    /** Current zoom level applied to the rendered media surface. */
-    var zoom: Float = 1.0f
-        private set
-
-    // ── History ───────────────────────────────────────────────────────────
-
-    private val navHistory: ArrayDeque<String> = ArrayDeque()
-    private var historyPos: Int = -1
+    val mediaTextureId: LLUUID = id
 
     private var target: String = ""
-    private var initialMimeType: String = initialMimeType
+    private var mediaSource: MediaImpl? = null
 
-    // ── Event callback ────────────────────────────────────────────────────
+    var panelWidth: Int  = 0
+    var panelHeight: Int = 0
 
-    /** Invoked whenever the underlying media plugin fires an event. */
-    var onMediaEvent: ((event: MediaEvent, url: String) -> Unit)? = null
+    private val observers: MutableList<PluginClassMediaOwner> = mutableListOf()
 
-    // ── Navigation ────────────────────────────────────────────────────────
+    init {
+        if (homeUrl.isNotEmpty()) navigateHome()
+    }
 
-    /**
-     * Navigate to [url] with an optional [mimeType] hint.
-     * If [cleanBrowser] is true the browsing history is cleared first.
-     */
+    fun addObserver(obs: PluginClassMediaOwner): Boolean {
+        if (observers.contains(obs)) return false
+        observers.add(obs)
+        return true
+    }
+
+    fun remObserver(obs: PluginClassMediaOwner): Boolean = observers.remove(obs)
+
+    override fun handleMediaEvent(plugin: PluginClassMedia, event: MediaEvent) {
+        when (event) {
+            MediaEvent.SIZE_CHANGED -> {
+                TODO("GPU: reshape to new plugin dimensions")
+            }
+            MediaEvent.NAVIGATE_BEGIN -> {
+                hideNotification()
+            }
+            MediaEvent.NAVIGATE_COMPLETE -> {
+                hidingInitialLoad = false
+            }
+            MediaEvent.NAVIGATE_ERROR_PAGE -> {
+                if (errorPageUrl.isNotEmpty()) navigateTo(errorPageUrl, "text/html")
+            }
+            MediaEvent.CLICK_LINK_HREF -> {
+                val url    = plugin.clickUrl
+                val t      = if (plugin.clickEnforceTarget) plugin.getOverrideClickTarget() else plugin.clickTarget
+                val uuid   = plugin.clickUuid
+                TODO("GPU: dispatch SLURL or call Web.loadUrl($url, $t, $uuid)")
+            }
+            MediaEvent.AUTH_REQUEST -> {
+                TODO("GPU: show AuthRequest notification with host=${plugin.authUrl} realm=${plugin.authRealm}")
+            }
+            MediaEvent.LINK_HOVERED -> {
+                hoverTextChanged = true
+            }
+            MediaEvent.FILE_DOWNLOAD -> {
+                if (allowFileDownload) {
+                    TODO("GPU: open save-file dialog for ${plugin.fileDownloadFilename}")
+                } else {
+                    plugin.sendPickFileResponse(emptyList())
+                    TODO("GPU: show MediaFileDownloadUnsupported notification")
+                }
+            }
+            else -> Unit
+        }
+        observers.forEach { it.handleMediaEvent(plugin, event) }
+    }
+
     fun navigateTo(url: String, mimeType: String = "", cleanBrowser: Boolean = false) {
-        if (cleanBrowser) {
-            navHistory.clear()
-            historyPos = -1
-        }
-        // Trim history forward of current position on new navigation
-        if (historyPos < navHistory.size - 1) {
-            repeat(navHistory.size - 1 - historyPos) { navHistory.removeLast() }
-        }
-        navHistory.addLast(url)
-        historyPos = navHistory.size - 1
+        if (url.startsWith("secondlife://") || url.startsWith("hop://")) return
+        val src = ensureMediaSourceInternal() ?: return
         currentNavUrl = url
-        onMediaEvent?.invoke(MediaEvent.NAVIGATE_BEGIN, url)
+        src.navigateTo(url, mimeType)
     }
 
-    /** Navigate to a local viewer page identified by [subdir] and [filename]. */
     fun navigateToLocalPage(subdir: String, filename: String) {
-        navigateTo("file://$subdir/$filename")
+        val src = ensureMediaSourceInternal() ?: return
+        val path = "$subdir/$filename"
+        currentNavUrl = path
+        src.navigateTo(path, "text/html")
     }
 
-    /** Navigate to [homeUrl]. */
     fun navigateHome() {
-        if (homeUrl.isNotEmpty()) navigateTo(homeUrl, homeMimeType)
+        val src = ensureMediaSourceInternal() ?: return
+        if (homeUrl.isNotEmpty()) src.navigateTo(homeUrl, homeMimeType)
     }
 
-    /** Step backward in history if possible. */
     fun navigateBack() {
-        if (canNavigateBack()) {
-            historyPos--
-            currentNavUrl = navHistory[historyPos]
-            onMediaEvent?.invoke(MediaEvent.NAVIGATE_BEGIN, currentNavUrl)
-        }
+        mediaSource?.let { TODO("GPU: plugin.browse_back()") }
     }
 
-    /** Step forward in history if possible. */
     fun navigateForward() {
-        if (canNavigateForward()) {
-            historyPos++
-            currentNavUrl = navHistory[historyPos]
-            onMediaEvent?.invoke(MediaEvent.NAVIGATE_BEGIN, currentNavUrl)
-        }
+        mediaSource?.let { TODO("GPU: plugin.browse_forward()") }
     }
 
-    /** Abort the current in-flight navigation. */
     fun navigateStop() {
-        onMediaEvent?.invoke(MediaEvent.NAVIGATE_ERROR, currentNavUrl)
+        mediaSource?.let { TODO("GPU: plugin.browse_stop()") }
     }
 
-    fun canNavigateBack(): Boolean = historyPos > 0
-    fun canNavigateForward(): Boolean = historyPos < navHistory.size - 1
+    fun canNavigateBack(): Boolean    = mediaSource?.let { TODO("GPU: plugin.historyBackAvailable") as Boolean } ?: false
+    fun canNavigateForward(): Boolean = mediaSource?.let { TODO("GPU: plugin.historyForwardAvailable") as Boolean } ?: false
 
-    // ── Zoom ─────────────────────────────────────────────────────────────
-
-    fun setZoom(f: Float) {
-        zoom = f.coerceIn(0.1f, 8.0f)
-    }
-
-    // ── Navigation helpers ────────────────────────────────────────────────
+    fun getCurrentNavUrl(): String = currentNavUrl
 
     fun setHomePageUrl(url: String, mimeType: String = "") {
         homeUrl = url
         homeMimeType = mimeType
+        mediaSource?.homeUrl = url
     }
+
     fun getHomePageUrl(): String = homeUrl
 
-    fun setTarget(t: String) { target = t }
+    fun setTarget(t: String) {
+        target = t
+        mediaSource?.let { TODO("GPU: impl.setTarget(target)") }
+    }
 
     fun setErrorPageUrl(url: String) { errorPageUrl = url }
-    fun getErrorPageUrl(): String = errorPageUrl
+    fun getErrorPageUrl(): String    = errorPageUrl
 
-    // ── Texture size ──────────────────────────────────────────────────────
+    fun clearCache() {
+        if (mediaSource != null) {
+            TODO("GPU: mediaSource.clearCache()")
+        } else {
+            clearCacheOnCreate = true
+        }
+    }
+
+    fun reload() {
+        TODO("GPU: plugin.browse_reload(ignoreCache=true) or navigateTo(currentNavUrl)")
+    }
+
+    fun getMediaPlugin(): PluginClassMedia? {
+        TODO("GPU: return mediaSource?.getMediaPlugin()")
+    }
+
+    fun ensureMediaSourceExists(): Boolean = ensureMediaSourceInternal() != null
+
+    private fun ensureMediaSourceInternal(): MediaImpl? {
+        if (mediaSource == null) {
+            val impl = ViewerMedia.newMediaImpl(mediaTextureId, textureWidth, textureHeight)
+            impl.homeUrl = homeUrl
+            impl.isTrustedBrowser = trusted
+            if (clearCacheOnCreate) {
+                TODO("GPU: impl.clearCache()")
+                clearCacheOnCreate = false
+            }
+            mediaSource = impl
+        }
+        return mediaSource
+    }
+
+    fun unloadMediaSource() {
+        mediaSource = null
+    }
+
+    fun setCaretColor(red: UInt, green: UInt, blue: UInt): Boolean = false
 
     fun setTextureSize(width: Int, height: Int) {
-        textureWidth = width
+        textureWidth  = width
         textureHeight = height
+        if (mediaSource != null) {
+            TODO("GPU: mediaSource.setSize($width, $height)")
+            forceUpdate = true
+        }
     }
 
-    // ── Trust ─────────────────────────────────────────────────────────────
-
-    fun setTrustedContent(trusted: Boolean) { this.trusted = trusted }
-
-    // ── Cache ─────────────────────────────────────────────────────────────
-
-    /** Signal that the browser cache should be cleared on next load. */
-    fun clearCache() { /* implementation delegates to plugin layer */ }
-
-    // ── Focus ─────────────────────────────────────────────────────────────
-
-    fun onFocusReceived() { /* forward key events to plugin */ }
-    fun onFocusLost()     { /* stop forwarding key events  */ }
-
-    // ── Reload / stop ─────────────────────────────────────────────────────
-
-    /** Reload the current page. */
-    fun reload() {
-        if (currentNavUrl.isNotEmpty()) navigateTo(currentNavUrl)
+    fun setTrustedContent(trusted: Boolean) {
+        this.trusted = trusted
+        mediaSource?.isTrustedBrowser = trusted
     }
 
-    /** Stop media playback (alias for [navigateStop]). */
-    fun stop() = navigateStop()
-
-    // ── Source management ─────────────────────────────────────────────────
-
-    fun ensureMediaSourceExists(): Boolean = true   // stub; real impl talks to plugin
-    fun unloadMediaSource() { /* release plugin handle */ }
-
-    // ── Caret color ───────────────────────────────────────────────────────
-
-    fun setCaretColor(red: UInt, green: UInt, blue: UInt): Boolean = true
-
-    // ── Misc ──────────────────────────────────────────────────────────────
-
+    fun setAllowFileDownload(allow: Boolean) { allowFileDownload = allow }
     fun setBorderVisible(visible: Boolean) { borderVisible = visible }
     fun setTakeFocusOnClick(takeFocus: Boolean) { takeFocusOnClick = takeFocus }
     fun setFrequentUpdates(frequent: Boolean) { frequentUpdates = frequent }
     fun setAlwaysRefresh(refresh: Boolean) { alwaysRefresh = refresh }
     fun setForceUpdate(force: Boolean) { forceUpdate = force }
     fun setDecoupleTextureSize(decouple: Boolean) { decoupleTextureSize = decouple }
-    fun setAllowFileDownload(allow: Boolean) { allowFileDownload = allow }
+
+    fun wantsKeyUpKeyDown(): Boolean = true
+    fun wantsReturnKey(): Boolean    = true
+    fun acceptsTextInput(): Boolean  = true
+
+    fun onFocusReceived() {
+        TODO("GPU: mediaSource?.focus(true)")
+    }
+
+    fun onFocusLost() {
+        TODO("GPU: mediaSource?.focus(false)")
+    }
+
+    fun setFocus(hasFocus: Boolean) {
+        TODO("APR: SDL2 IME position update if hasFocus")
+        if (hasFocus) onFocusReceived() else onFocusLost()
+    }
+
+    fun onVisibilityChange(visible: Boolean) {
+        frequentUpdates = visible
+        mediaSource?.visible = visible
+    }
+
+    fun reshape(width: Int, height: Int) {
+        panelWidth  = width
+        panelHeight = height
+        if (!decoupleTextureSize && width > 0 && height > 0) {
+            setTextureSize(width, height)
+        }
+        TODO("GPU: forward reshape to UI panel super")
+    }
+
+    fun handleHover(x: Int, y: Int, modifiers: Int): Boolean {
+        val (mx, my) = convertInputCoords(x, y)
+        mediaSource?.let { TODO("GPU: mediaSource.mouseMove($mx, $my, $modifiers)") }
+        if (hoverTextChanged) {
+            hoverTextChanged = false
+            TODO("GPU: show tooltip from plugin.hoverText")
+        }
+        return true
+    }
+
+    fun handleMouseDown(x: Int, y: Int, modifiers: Int): Boolean {
+        val (mx, my) = convertInputCoords(x, y)
+        mediaSource?.let { TODO("GPU: mediaSource.mouseDown($mx, $my, $modifiers)") }
+        if (takeFocusOnClick) setFocus(true)
+        return true
+    }
+
+    fun handleMouseUp(x: Int, y: Int, modifiers: Int): Boolean {
+        val (mx, my) = convertInputCoords(x, y)
+        mediaSource?.let { TODO("GPU: mediaSource.mouseUp($mx, $my, $modifiers)") }
+        return true
+    }
+
+    fun handleRightMouseDown(x: Int, y: Int, modifiers: Int): Boolean {
+        val (mx, my) = convertInputCoords(x, y)
+        mediaSource?.let { TODO("GPU: mediaSource.mouseDown($mx, $my, $modifiers, button=1)") }
+        if (takeFocusOnClick) setFocus(true)
+        TODO("GPU: build and show context menu with debug items gated by MediaPluginDebugging setting")
+        return true
+    }
+
+    fun handleRightMouseUp(x: Int, y: Int, modifiers: Int): Boolean {
+        val (mx, my) = convertInputCoords(x, y)
+        mediaSource?.let {
+            TODO("GPU: mediaSource.mouseUp($mx, $my, $modifiers, button=1)")
+            if (!takeFocusOnClick) TODO("GPU: mediaSource.focus(false); viewerWindow.focusClient()")
+        }
+        return true
+    }
+
+    fun handleDoubleClick(x: Int, y: Int, modifiers: Int): Boolean {
+        val (mx, my) = convertInputCoords(x, y)
+        mediaSource?.let { TODO("GPU: mediaSource.mouseDoubleClick($mx, $my, $modifiers)") }
+        if (takeFocusOnClick) setFocus(true)
+        return true
+    }
+
+    fun handleScrollWheel(x: Int, y: Int, clicks: Int): Boolean {
+        val (mx, my) = convertInputCoords(x, y)
+        mediaSource?.let { TODO("GPU: mediaSource.scrollWheel($mx, $my, clicksX=0, clicksY=$clicks)") }
+        return true
+    }
+
+    fun handleScrollHWheel(x: Int, y: Int, clicks: Int): Boolean {
+        val (mx, my) = convertInputCoords(x, y)
+        mediaSource?.let { TODO("GPU: mediaSource.scrollWheel($mx, $my, clicksX=$clicks, clicksY=0)") }
+        return true
+    }
+
+    fun handleKeyHere(key: Int, modifiers: Int): Boolean {
+        return mediaSource?.let { TODO("GPU: mediaSource.handleKeyHere($key, $modifiers)") as? Boolean } ?: false
+    }
+
+    fun handleKeyUpHere(key: Int, modifiers: Int): Boolean {
+        return mediaSource?.let { TODO("GPU: mediaSource.handleKeyUpHere($key, $modifiers)") as? Boolean } ?: false
+    }
+
+    fun handleUnicodeCharHere(unicodeChar: Int): Boolean {
+        return mediaSource?.let { TODO("GPU: mediaSource.handleUnicodeCharHere($unicodeChar)") as? Boolean } ?: false
+    }
+
+    fun showNotification(notifyName: String, icon: String, canClose: Boolean) {
+        TODO("GPU: configure and show window-shade notification overlay")
+    }
+
+    fun hideNotification() {
+        TODO("GPU: hide window-shade notification overlay")
+    }
+
+    fun onOpenWebInspector() {
+        TODO("GPU: plugin.showWebInspector(true)")
+    }
+
+    fun onShowSource() {
+        TODO("GPU: plugin.showPageSource()")
+    }
+
+    fun draw(alpha: Float = 1f) {
+        TODO("GPU: bind media texture, compute quad offsets via calcOffsetsAndSize, emit triangle pair with correct UV orientation based on plugin.textureCoordsOpenGL")
+    }
+
+    data class QuadLayout(val xOffset: Int, val yOffset: Int, val width: Int, val height: Int)
+
+    fun calcOffsetsAndSize(): QuadLayout {
+        val plugin = getMediaPlugin()
+        if (stretchToFill) {
+            if (maintainAspectRatio && plugin != null && plugin.mediaHeight > 0) {
+                val mediaAspect = plugin.mediaWidth.toFloat() / plugin.mediaHeight.toFloat()
+                val viewAspect  = panelWidth.toFloat() / panelHeight.toFloat().coerceAtLeast(1f)
+                val w: Int
+                val h: Int
+                if (mediaAspect > viewAspect) {
+                    w = panelWidth
+                    h = min(max((w / mediaAspect).roundToInt(), 0), panelHeight)
+                } else {
+                    h = panelHeight
+                    w = min(max((h * mediaAspect).roundToInt(), 0), panelWidth)
+                }
+                return QuadLayout((panelWidth - w) / 2, (panelHeight - h) / 2, w, h)
+            }
+            return QuadLayout(0, 0, panelWidth, panelHeight)
+        }
+        val pw = if (plugin != null) min(plugin.mediaWidth,  panelWidth)  else panelWidth
+        val ph = if (plugin != null) min(plugin.mediaHeight, panelHeight) else panelHeight
+        return QuadLayout((panelWidth - pw) / 2, (panelHeight - ph) / 2, pw, ph)
+    }
+
+    private fun convertInputCoords(x: Int, y: Int): Pair<Int, Int> {
+        val layout = calcOffsetsAndSize()
+        val ax = x - layout.xOffset
+        val ay = y - layout.yOffset
+        val scaleX = 1.0f
+        val scaleY = 1.0f
+        val plugin = getMediaPlugin()
+        val coordsOpenGl = plugin?.textureCoordsOpenGL ?: false
+        val mx = (ax * scaleX).roundToInt()
+        val my = if (!coordsOpenGl) {
+            (ay * scaleY).roundToInt()
+        } else {
+            ((panelHeight - ay) * scaleY).roundToInt()
+        }
+        return mx to my
+    }
 
     override fun toString(): String =
-        "MediaCtrl(url='$currentNavUrl', trusted=$trusted, zoom=$zoom)"
+        "MediaCtrl(url='$currentNavUrl', trusted=$trusted, id=$id)"
 }

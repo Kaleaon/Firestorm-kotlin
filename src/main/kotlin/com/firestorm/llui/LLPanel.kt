@@ -11,6 +11,10 @@ open class Panel(
     var label: String = ""
     var backgroundVisible: Boolean = false
     var backgroundColor: UIColor = UIColor(Color4.TRANSPARENT)
+    var tabStop: Boolean = true
+
+    open fun notify(action: Map<String, Any?>): Int = 0
+    open fun setValue(event: Map<String, Any?>) {}
 
     override fun draw() {
         if (!visible) return

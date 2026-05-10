@@ -185,8 +185,15 @@ object LLApr {
             TODO("APR File.open: use java.nio.file.Files.newInputStream / newOutputStream")
         }
 
-        /** JVM replacement: channel.close() / stream.close() */
-        fun close(): Int {
+        /**
+         * Close the APR file handle.  Returns an APR status code.
+         *
+         * JVM replacement: use try-with-resources or Kotlin's [AutoCloseable.use]
+         * extension on [java.io.InputStream] / [java.io.OutputStream].
+         *
+         * Named `closeFile` to avoid conflicting with [AutoCloseable.close].
+         */
+        fun closeFile(): Int {
             TODO("APR File.close: use try-with-resources or .use { } in Kotlin")
         }
 
@@ -210,7 +217,8 @@ object LLApr {
             TODO("APR File.flush: use OutputStream.flush() or FileChannel.force(true)")
         }
 
-        override fun close() = Unit // explicit close() above handles cleanup
+        /** Release the resource; GC reclaims underlying JVM streams automatically. */
+        override fun close() = Unit
     }
 
     // =========================================================================

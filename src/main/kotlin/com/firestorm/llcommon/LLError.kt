@@ -203,7 +203,7 @@ inline fun llInfo(tag: String, block: () -> String)  = llinfos(tag, block)
 inline fun llWarn(tag: String, block: () -> String)  = llwarns(tag, block)
 
 @Deprecated("Use llerrs()", ReplaceWith("llerrs(tag, block)"))
-inline fun llError(tag: String, block: () -> String) = llerrs(tag, block)
+inline fun llError(tag: String, block: () -> String): Nothing = llerrs(tag, block)
 
 @Deprecated("Use lldebug()", ReplaceWith("lldebug(tag, block)"))
 inline fun llDebug(tag: String, block: () -> String) = lldebug(tag, block)

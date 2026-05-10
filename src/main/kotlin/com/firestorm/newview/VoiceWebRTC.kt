@@ -655,10 +655,6 @@ object WebRTCVoiceClient : VoiceModuleInterface {
         WebRTCSessionState.forEach { it.setUserVolume(id, volume) }
     }
 
-    override fun isSessionTextIMPossible(id: LLUUID): Boolean = true
-
-    override fun isSessionCallBackPossible(id: LLUUID): Boolean = true
-
     override fun userAuthorized(userId: String, agentId: LLUUID) {
         TODO("IPC: store agentId; launch voiceConnectionCoro if not already running")
     }

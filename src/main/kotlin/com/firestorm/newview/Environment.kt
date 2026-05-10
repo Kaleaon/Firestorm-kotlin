@@ -1,8 +1,6 @@
 package com.firestorm.newview
 
-import com.firestorm.llmath.*
-import com.firestorm.llcommon.*
-import com.firestorm.llrender.Shader
+import kotlin.math.*
 
 enum class EnvSelection(val id: Int) {
     EDIT(0),
@@ -17,22 +15,25 @@ enum class EnvSelection(val id: Int) {
     companion object { val END = DEFAULT.id + 1 }
 }
 
-typealias AltitudeList = FloatArray
+typealias AltitudeList       = FloatArray
+typealias FixedEnvironment   = Pair<SettingsSky?, SettingsWater?>
 typealias EnvChangedCallback = (EnvSelection, Int) -> Unit
+typealias EnvApplyFn         = (Int, EnvironmentInfo) -> Unit
 
 data class EnvironmentInfo(
-    val parcelId: Int = 0,
-    val regionId: LLUUID = LLUUID.NULL,
-    val dayLength: Long = 0L,
-    val dayOffset: Long = 0L,
-    val dayHash: Int = 0,
-    val dayCycleName: String = "",
-    val altitudes: FloatArray = FloatArray(4),
-    val isDefault: Boolean = false,
-    val assetId: LLUUID = LLUUID.NULL,
-    val isLegacy: Boolean = false,
-    val nameList: List<String> = emptyList(),
-    val envVersion: Int = 0
+    val parcelId: Int                  = 0,
+    val regionId: LLUUID               = LLUUID.NULL,
+    val dayLength: Long                = 0L,
+    val dayOffset: Long                = 0L,
+    val dayHash: Int                   = 0,
+    val dayCycle: SettingsDayCycle?    = null,
+    val dayCycleName: String           = "",
+    val altitudes: FloatArray          = FloatArray(4),
+    val isDefault: Boolean             = false,
+    val assetId: LLUUID                = LLUUID.NULL,
+    val isLegacy: Boolean              = false,
+    val nameList: List<String>         = emptyList(),
+    val envVersion: Int                = 0
 )
 
 class DayInstance(val envSelection: EnvSelection) {
@@ -42,36 +43,141 @@ class DayInstance(val envSelection: EnvSelection) {
         const val NO_ANIMATE_WATER: UInt = 0x02u
     }
 
-    var sky: Any?    = null
-    var water: Any?  = null
-    var dayCycle: Any? = null
-    var dayLength: Double = 14400.0
-    var dayOffset: Double = 0.0
-    var skyTrack: Int = 1
-    var animateFlags: UInt = 0u
+    var sky: SettingsSky?            = null
+    var water: SettingsWater?        = null
+    var dayCycle: SettingsDayCycle?  = null
+    var dayLength: Long              = 14400L
+    var dayOffset: Long              = 0L
+    var skyTrack: Int                = 1
+    var animateFlags: UInt           = 0u
+    var initialized: Boolean         = false
 
-    fun getProgress(): Float = TODO("calculate normalized day position [0,1]")
+    protected var blenderSky: SettingsBlender?   = null
+    protected var blenderWater: SettingsBlender? = null
+    protected var lastTrackAltitude: Int         = 1
 
-    fun applyTimeDelta(deltaSeconds: Double): Boolean =
-        TODO("advance blenders by deltaSeconds, return true when track boundary crossed")
+    open fun clone(): DayInstance {
+        val c = DayInstance(envSelection)
+        c.sky          = sky
+        c.water        = water
+        c.dayCycle     = dayCycle
+        c.dayLength    = dayLength
+        c.dayOffset    = dayOffset
+        c.skyTrack     = skyTrack
+        c.animateFlags = animateFlags
+        return c
+    }
 
-    fun setSky(pSky: Any?) { sky = pSky }
-    fun setWater(pWater: Any?) { water = pWater }
-    fun setSkyTrack(trackNo: Int) { skyTrack = trackNo }
-    fun animate() { TODO("rebuild blenders for current dayCycle track and offset") }
-    fun initialize() { TODO("set up sky/water from dayCycle at current offset") }
-    fun clear() { sky = null; water = null; dayCycle = null }
+    open fun applyTimeDelta(deltaSeconds: Double): Boolean {
+        var changed = false
+        if (animateFlags and NO_ANIMATE_SKY == 0u)   changed = blenderSky?.applyTimeDelta(deltaSeconds) == true || changed
+        if (animateFlags and NO_ANIMATE_WATER == 0u) changed = blenderWater?.applyTimeDelta(deltaSeconds) == true || changed
+        return changed
+    }
+
+    open fun setDay(pDay: SettingsDayCycle, dayLen: Long, dayOff: Long) {
+        dayCycle  = pDay
+        dayLength = dayLen
+        dayOffset = dayOff
+        animate()
+    }
+
+    fun setSky(pSky: SettingsSky?) { sky = pSky }
+
+    open fun setWater(pWater: SettingsWater?) { water = pWater }
+
+    fun initialize() {
+        if (dayCycle != null) animate()
+        initialized = dayCycle != null || sky != null || water != null
+    }
+
+    fun isInitialized(): Boolean = initialized
+    open fun isTransition(): Boolean = false
+
+    fun clear() { sky = null; water = null; dayCycle = null; initialized = false }
+
+    fun setSkyTrack(trackNo: Int) { skyTrack = trackNo; animate() }
+
+    fun getDayCycle(): SettingsDayCycle? = dayCycle
+    fun getSky(): SettingsSky?           = sky
+    fun getWater(): SettingsWater?       = water
+    fun getDayLength(): Long             = dayLength
+    fun getDayOffset(): Long             = dayOffset
+    fun getSkyTrack(): Int               = skyTrack
+
+    fun setDayOffset(offset: Long) { dayOffset = offset; animate() }
+
+    open fun animate() {
+        TODO("build TrackBlenderLoopingTime blenders for sky/water tracks using dayCycle, dayLength, dayOffset")
+    }
+
+    fun setBlenders(skyBlend: SettingsBlender?, waterBlend: SettingsBlender?) {
+        blenderSky   = skyBlend
+        blenderWater = waterBlend
+    }
+
+    fun getEnvironmentSelection(): EnvSelection = envSelection
+
+    fun getProgress(): Float {
+        val day = dayCycle ?: return -1f
+        TODO("compute normalized position within day cycle using current time and dayOffset/dayLength")
+    }
+
+    fun setFlags(flag: UInt)  { animateFlags = animateFlags or flag }
+    fun clearFlags(flag: UInt) { animateFlags = animateFlags and flag.inv() }
+    fun getFlags(): UInt = animateFlags
+
+    protected fun secondsToKeyframe(seconds: Long): Float {
+        if (dayLength == 0L) return 1f
+        return ((seconds % dayLength).toFloat() / dayLength.toFloat()).coerceIn(0f, 1f)
+    }
 }
 
-class DayTransition(
-    val startSky: Any?,
-    val startWater: Any?,
+open class DayTransition(
+    val startSky: SettingsSky?,
+    val startWater: SettingsWater?,
     val nextInstance: DayInstance,
-    val transitionSeconds: Double
+    val transitionTime: Long
 ) : DayInstance(nextInstance.envSelection) {
 
-    fun applyTimeDelta(deltaSeconds: Double): Boolean =
-        TODO("blend startSky→next.sky and startWater→next.water over transitionSeconds")
+    override fun isTransition(): Boolean = true
+
+    override fun applyTimeDelta(deltaSeconds: Double): Boolean {
+        TODO("blend startSky→nextInstance.sky and startWater→nextInstance.water over transitionTime seconds")
+    }
+
+    override fun animate() {
+        TODO("set up transition blenders from startSky/startWater toward nextInstance sky/water")
+    }
+}
+
+class TrackBlenderLoopingManual(
+    target: SettingsBase?,
+    val day: SettingsDayCycle,
+    private var trackNo: Int
+) : SettingsBlender(target, null, null) {
+
+    private var position: Double = 0.0
+
+    fun setPosition(pos: Float): Double {
+        position = pos.toDouble()
+        TODO("update blender initial/final from track bounding entries at pos, return blend factor")
+    }
+
+    override fun switchTrack(trackNo: Int, position: Float) {
+        this.trackNo = trackNo
+        TODO("rebuild bounding entries for new track at given position")
+    }
+
+    fun getTrack(): Int = trackNo
+
+    private fun getBoundingEntries(pos: Double): Pair<Float, Float> {
+        TODO("return (lowerBoundFrame, upperBoundFrame) from day track at pos")
+    }
+
+    private fun getSpanLength(bounds: Pair<Float, Float>): Double {
+        TODO("compute wrapped distance between bounds.first and bounds.second")
+    }
 }
 
 object Environment {
@@ -83,17 +189,37 @@ object Environment {
         const val TRANSITION_SLOW: Double     = 10.0
         const val TRANSITION_ALTITUDE: Double = 5.0
 
-        val KNOWN_SKY_SUNRISE      = LLUUID("01e41537-ff51-2f1f-8ef7-17e4df760bfb")
-        val KNOWN_SKY_MIDDAY       = LLUUID("c46226b4-0e43-5a56-9708-d27ca1df3292")
+        val KNOWN_SKY_SUNRISE       = LLUUID("01e41537-ff51-2f1f-8ef7-17e4df760bfb")
+        val KNOWN_SKY_MIDDAY        = LLUUID("c46226b4-0e43-5a56-9708-d27ca1df3292")
         val KNOWN_SKY_LEGACY_MIDDAY = LLUUID("6c83e853-e7f8-cad7-8ee6-5f31c453721c")
-        val KNOWN_SKY_SUNSET       = LLUUID("084e26cd-a900-28e8-08d0-64a9de5c15e2")
-        val KNOWN_SKY_MIDNIGHT     = LLUUID("8a01b97a-cb20-c1ea-ac63-f7ea84ad0090")
+        val KNOWN_SKY_SUNSET        = LLUUID("084e26cd-a900-28e8-08d0-64a9de5c15e2")
+        val KNOWN_SKY_MIDNIGHT      = LLUUID("8a01b97a-cb20-c1ea-ac63-f7ea84ad0090")
 
         const val NO_TRACK: Int        = -1
         const val NO_VERSION: Int      = -3
         const val VERSION_CLEANUP: Int = -4
 
-        private const val SUN_DELTA_YAW: Float = Math.PI.toFloat()
+        private const val SUN_DELTA_YAW: Float = PI.toFloat()
+
+        fun updateGLVariablesForSettings(settings: SettingsBase) {
+            TODO("GPU: push all setting uniforms to shader uniform block")
+        }
+
+        fun logEnvironment(env: EnvSelection, settings: SettingsBase, envVersion: Int = NO_VERSION) {
+            TODO("APR: log environment selection event for debugging")
+        }
+
+        fun createWaterFromLegacyPreset(filename: String): SettingsWater? {
+            TODO("APR: parse legacy XML water preset file, call translateLegacySettings")
+        }
+
+        fun createSkyFromLegacyPreset(filename: String): SettingsSky? {
+            TODO("APR: parse legacy XML sky preset file, call translateLegacySettings")
+        }
+
+        fun createDayCycleFromLegacyPreset(filename: String): SettingsDayCycle? {
+            TODO("APR: parse legacy XML day cycle file, build SettingsDayCycle")
+        }
     }
 
     private val environments = arrayOfNulls<DayInstance>(EnvSelection.END)
@@ -111,16 +237,20 @@ object Environment {
     private var lastCamYaw: Float = 0f
     private val envChangedListeners: MutableList<EnvChangedCallback> = mutableListOf()
 
-    fun getCurrentSky(): Any?   = currentEnvironment?.sky
-    fun getCurrentWater(): Any? = currentEnvironment?.water
-    fun getCurrentDay(): Any?   = currentEnvironment?.dayCycle
+    private var skyOverrides: LLSD   = llsdEmptyMap()
+    private var waterOverrides: LLSD = llsdEmptyMap()
+    private val experienceOverrides: MutableMap<String, LLUUID> = mutableMapOf()
+
+    fun getCurrentDay(): SettingsDayCycle?   = currentEnvironment?.getDayCycle()
+    fun getCurrentSky(): SettingsSky?        = currentEnvironment?.getSky()
+    fun getCurrentWater(): SettingsWater?    = currentEnvironment?.getWater()
 
     fun getProgress(): Float        = currentEnvironment?.getProgress() ?: -1f
     fun getRegionProgress(): Float  = environments[EnvSelection.REGION.id]?.getProgress() ?: -1f
 
-    fun canEdit(): Boolean              = TODO("check agent capabilities for edit permission")
-    fun isExtendedEnvironmentEnabled(): Boolean = TODO("check region capability 'ExtendedEnvironment'")
-    fun isInventoryEnabled(): Boolean   = TODO("check agent inventory capability")
+    fun canEdit(): Boolean                        = TODO("check agent capabilities for edit permission")
+    fun isExtendedEnvironmentEnabled(): Boolean   = TODO("check region capability 'ExtendedEnvironment'")
+    fun isInventoryEnabled(): Boolean             = TODO("check agent inventory capability")
     fun canAgentUpdateParcelEnvironment(): Boolean = TODO("check parcel flags and agent group/owner status")
     fun canAgentUpdateRegionEnvironment(): Boolean = TODO("check region estate manager/owner status")
 
@@ -130,13 +260,27 @@ object Environment {
         TODO("activate env slot, build DayTransition if needed, fire envChangedListeners")
     }
 
-    fun setEnvironment(env: EnvSelection, assetId: LLUUID, transition: Double = TRANSITION_DEFAULT, envVersion: Int = NO_VERSION) {
-        TODO("async-load asset then call recordEnvironment")
+    fun setEnvironment(env: EnvSelection, pDay: SettingsDayCycle, dayLength: Long, dayOffset: Long, envVersion: Int = NO_VERSION) {
+        val inst = getOrCreateInstance(env)
+        inst.setDay(pDay, dayLength, dayOffset)
+        TODO("store envVersion, call updateEnvironment")
     }
 
-    fun setEnvironment(env: EnvSelection, dayCycle: Any?, dayLength: Long, dayOffset: Long, envVersion: Int = NO_VERSION) {
+    fun setEnvironment(env: EnvSelection, fixed: FixedEnvironment, envVersion: Int = NO_VERSION) {
         val inst = getOrCreateInstance(env)
-        TODO("configure inst with dayCycle, dayLength, dayOffset; call updateEnvironment")
+        fixed.first?.let  { inst.setSky(it) }
+        fixed.second?.let { inst.setWater(it) }
+        TODO("store envVersion, call updateEnvironment")
+    }
+
+    fun setEnvironment(env: EnvSelection, sky: SettingsSky, envVersion: Int = NO_VERSION) =
+        setEnvironment(env, FixedEnvironment(sky, null), envVersion)
+
+    fun setEnvironment(env: EnvSelection, water: SettingsWater, envVersion: Int = NO_VERSION) =
+        setEnvironment(env, FixedEnvironment(null, water), envVersion)
+
+    fun setEnvironment(env: EnvSelection, assetId: LLUUID, transition: Double = TRANSITION_DEFAULT, envVersion: Int = NO_VERSION) {
+        TODO("APR: async load asset by ID, then call setEnvironment with loaded settings")
     }
 
     fun clearEnvironment(env: EnvSelection) {
@@ -148,24 +292,36 @@ object Environment {
         TODO("resolve highest-priority active env slot, apply transition blender")
     }
 
-    fun update(cam: ViewerCamera) {
-        lastCamYaw = cam.yaw + SUN_DELTA_YAW
-        if (!isCloudScrollPaused) updateCloudScroll()
-        currentEnvironment?.applyTimeDelta(0.0)
-        TODO("compute per-frame sky/water blend, update light direction cache")
+    fun setCurrentEnvironmentSelection(env: EnvSelection) {
+        TODO("update currentEnvironment to point at env slot instance")
     }
 
-    fun updateShaderUniforms(shader: Shader) {
+    fun getEnvironmentDay(env: EnvSelection): SettingsDayCycle?     = environments[env.id]?.getDayCycle()
+    fun getEnvironmentDayLength(env: EnvSelection): Long            = environments[env.id]?.getDayLength() ?: SettingsDayCycle.DEFAULT_DAYLENGTH.toLong()
+    fun getEnvironmentDayOffset(env: EnvSelection): Long            = environments[env.id]?.getDayOffset() ?: SettingsDayCycle.DEFAULT_DAYOFFSET.toLong()
+    fun getEnvironmentFixed(env: EnvSelection, resolve: Boolean = false): FixedEnvironment =
+        FixedEnvironment(environments[env.id]?.getSky(), environments[env.id]?.getWater())
+    fun getEnvironmentFixedSky(env: EnvSelection, resolve: Boolean = false): SettingsSky?   = getEnvironmentFixed(env, resolve).first
+    fun getEnvironmentFixedWater(env: EnvSelection, resolve: Boolean = false): SettingsWater? = getEnvironmentFixed(env, resolve).second
+
+    fun update(camYaw: Float) {
+        lastCamYaw = camYaw + SUN_DELTA_YAW
+        if (!isCloudScrollPaused) updateCloudScroll()
+        currentEnvironment?.applyTimeDelta(0.0)
+        TODO("GPU: compute per-frame sky/water blend, update light direction cache")
+    }
+
+    fun updateShaderUniforms() {
         TODO("GPU: push sky and water uniforms to shader")
     }
 
     fun updateSettingsUniforms() {
-        TODO("GPU: snapshot current sky/water into mSkyUniforms/mWaterUniforms arrays")
+        TODO("GPU: snapshot current sky/water into uniform arrays for all shader groups")
     }
 
-    fun getLightDirection(): Vector3  = TODO("return sun or moon direction (whichever is above horizon)")
-    fun getSunDirection(): Vector3    = TODO("return sun direction in viewer +x right +z up coords")
-    fun getMoonDirection(): Vector3   = TODO("return moon direction in viewer coords")
+    fun getLightDirection(): Vector3    = TODO("return sun or moon direction (whichever is above horizon)")
+    fun getSunDirection(): Vector3      = TODO("return sun direction in viewer +x right +z up coords")
+    fun getMoonDirection(): Vector3     = TODO("return moon direction in viewer coords")
 
     fun getLightDirectionCFR(): Vector4 = TODO("convert getLightDirection() to Camera-Frame-Right coords")
     fun getSunDirectionCFR(): Vector4   = TODO("convert getSunDirection() to CFR")
@@ -177,8 +333,8 @@ object Environment {
 
     fun getCamHeight(): Float   = TODO("return camera altitude above terrain")
     fun getWaterHeight(): Float = TODO("return current region water level")
-    fun getIsSunUp(): Boolean   = TODO("return sunDirection.z > 0")
-    fun getIsMoonUp(): Boolean  = TODO("return moonDirection.z > 0")
+    fun getIsSunUp(): Boolean   = getCurrentSky()?.getIsSunUp() ?: false
+    fun getIsMoonUp(): Boolean  = getCurrentSky()?.getIsMoonUp() ?: false
     fun getCloudScrollDelta(): Vector2 = cloudScrollDelta
     fun pauseCloudScroll()  { isCloudScrollPaused = true }
     fun resumeCloudScroll() { isCloudScrollPaused = false }
@@ -194,23 +350,80 @@ object Environment {
         TODO("shift region DayInstance offset by adjust seconds (legacy region sync)")
     }
 
-    fun requestRegion(callback: ((Int, EnvironmentInfo) -> Unit)? = null) {
-        TODO("HTTP GET region environment, call recordEnvironment on response")
+    fun createDayCycleFromEnvironment(env: EnvSelection, settings: SettingsBase): SettingsDayCycle? {
+        TODO("build a new day cycle from env slot, replacing sky or water track with settings")
     }
 
-    fun requestParcel(parcelId: Int, callback: ((Int, EnvironmentInfo) -> Unit)? = null) {
-        TODO("HTTP GET parcel environment, call recordEnvironment on response")
+    fun requestRegion(callback: EnvApplyFn? = null) {
+        TODO("APR: HTTP GET region environment, call recordEnvironment on response")
     }
+
+    fun updateRegion(assetId: LLUUID, displayName: String, trackNum: Int, dayLength: Int, dayOffset: Int,
+                     flags: UInt, altitudes: List<Float> = emptyList(), callback: EnvApplyFn? = null) {
+        TODO("APR: HTTP PUT region environment settings")
+    }
+
+    fun updateRegion(pDay: SettingsDayCycle, dayLength: Int, dayOffset: Int,
+                     altitudes: List<Float> = emptyList(), callback: EnvApplyFn? = null) {
+        TODO("APR: HTTP PUT region environment from day cycle object")
+    }
+
+    fun resetRegion(callback: EnvApplyFn? = null) {
+        TODO("APR: HTTP DELETE region environment override")
+    }
+
+    fun requestParcel(parcelId: Int, callback: EnvApplyFn? = null) {
+        TODO("APR: HTTP GET parcel environment, call recordEnvironment on response")
+    }
+
+    fun updateParcel(parcelId: Int, assetId: LLUUID, displayName: String, trackNum: Int,
+                     dayLength: Int, dayOffset: Int, flags: UInt,
+                     altitudes: List<Float> = emptyList(), callback: EnvApplyFn? = null) {
+        TODO("APR: HTTP PUT parcel environment settings")
+    }
+
+    fun updateParcel(parcelId: Int, pDay: SettingsDayCycle, trackNum: Int, dayLength: Int, dayOffset: Int,
+                     altitudes: List<Float> = emptyList(), callback: EnvApplyFn? = null) {
+        TODO("APR: HTTP PUT parcel environment from day cycle object")
+    }
+
+    fun resetParcel(parcelId: Int, callback: EnvApplyFn? = null) {
+        TODO("APR: HTTP DELETE parcel environment override")
+    }
+
+    fun selectAgentEnvironment() {
+        TODO("select correct env slot based on agent altitude vs trackAltitudes")
+    }
+
+    fun handleEnvironmentPush(message: LLSD) {
+        TODO("APR: dispatch PushExpEnvironment action to clear/full/partial handlers")
+    }
+
+    fun saveToSettings()    { TODO("APR: serialise local environment overrides to disk") }
+    fun loadFromSettings(): Boolean = TODO("APR: deserialise local environment overrides from disk")
+
+    fun getSelectedEnvironmentInstance(): DayInstance? = currentEnvironment
+    fun getSharedEnvironmentInstance(): DayInstance? = environments[EnvSelection.REGION.id]
 
     fun addEnvironmentChangedListener(cb: EnvChangedCallback) { envChangedListeners += cb }
-    fun saveToSettings()    { TODO("serialise local environment overrides to disk") }
-    fun loadFromSettings(): Boolean = TODO("deserialise local environment overrides from disk")
 
     private fun updateCloudScroll() {
-        TODO("accumulate cloud scroll delta from sky wind speed settings")
+        TODO("accumulate cloud scroll delta from sky scroll rate settings each frame")
     }
 
     private fun getOrCreateInstance(env: EnvSelection): DayInstance {
         return environments[env.id] ?: DayInstance(env).also { environments[env.id] = it }
+    }
+
+    private fun recordEnvironment(parcelId: Int, info: EnvironmentInfo, transition: Double) {
+        TODO("store EnvironmentInfo, call setEnvironment with info.dayCycle and transition")
+    }
+
+    private fun toCFR(vec: Vector3): Vector4 {
+        TODO("GPU: convert viewer-space vec to Camera-Frame-Right (CFR) coord system Vector4")
+    }
+
+    private fun toLightNorm(vec: Vector3): Vector4 {
+        TODO("GPU: convert light direction to OGL coords, clamp Y above -0.1")
     }
 }

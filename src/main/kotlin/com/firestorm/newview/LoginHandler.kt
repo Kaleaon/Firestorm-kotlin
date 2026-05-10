@@ -1,186 +1,110 @@
-/**
- * LoginHandler.kt
- * Converted from llloginhandler.h / llloginhandler.cpp
- *
- * Handles filling in the login panel information from a SLURL such as
- * secondlife:///app/login?first=Bob&last=Dobbs
- *
- * Original: Copyright (C) 2010, Linden Research, Inc. (LGPL v2.1)
- */
-
 package com.firestorm.newview
 
-import com.firestorm.llcommon.*
-import com.firestorm.llmath.*
-
-// ---------------------------------------------------------------------------
-// LoginStatus — mirrors the viewer's startup-state concept for login flow
-// ---------------------------------------------------------------------------
-
-enum class LoginStatus {
-    NOT_STARTED,
-    IN_PROGRESS,
-    SUCCEEDED,
-    FAILED
-}
-
-// ---------------------------------------------------------------------------
-// LoginCredential — thin wrapper for identifier + authenticator LLSD maps
-// ---------------------------------------------------------------------------
+import java.security.MessageDigest
 
 data class LoginCredential(
     val identifier: MutableMap<String, String> = mutableMapOf(),
     val authenticator: MutableMap<String, String> = mutableMapOf()
-)
-
-// ---------------------------------------------------------------------------
-// LoginHandler — singleton (maps to the C++ global gLoginHandler instance)
-//
-// In C++ this is a LLCommandHandler subclass that auto-registers with the
-// LLCommandDispatcher for the "login" SLURL app.  Here it is an object that
-// provides the same surface area without the registration machinery.
-// ---------------------------------------------------------------------------
+) {
+    fun userID(): String {
+        return when (identifier["type"]) {
+            "agent" -> {
+                val first = identifier["first_name"] ?: ""
+                val last  = identifier["last_name"] ?: ""
+                "${first}_$last".lowercase()
+            }
+            "account" -> identifier["account_name"] ?: ""
+            else -> ""
+        }
+    }
+}
 
 object LoginHandler {
 
-    // Current login status — consumers can observe this property.
-    var loginStatus: LoginStatus = LoginStatus.NOT_STARTED
-        private set
-
-    // Last failure reason, set by handleLoginFailed().
-    var lastFailureReason: String = ""
-        private set
-
-    // -----------------------------------------------------------------------
-    // Public API
-    // -----------------------------------------------------------------------
-
-    /**
-     * Handle an incoming "login" SLURL command dispatched from an external
-     * browser or the OS URL-handler.  Mirrors LLLoginHandler::handle().
-     *
-     * @param queryMap  parsed query parameters from the SLURL
-     * @param grid      grid identifier string (may be empty)
-     * @return true if the command was consumed
-     */
-    fun handle(queryMap: MutableMap<String, String>, grid: String): Boolean {
-        if (loginStatus == LoginStatus.SUCCEEDED) {
-            // Already logged in — ignore the request.
+    fun handle(queryMap: Map<String, String>, grid: String): Boolean {
+        if (LoginInstance.authSuccess()) {
             return true
         }
-        parse(queryMap)
-        TODO("Integrate with startup-state machine and login panel")
-    }
 
-    /**
-     * Parse a direct-login URL of the form
-     * secondlife:///app/login?first=Bob&last=Dobbs
-     * and extract login credentials / start location from it.
-     *
-     * Mirrors LLLoginHandler::parseDirectLogin().
-     */
-    fun parseDirectLogin(url: String): Boolean {
-        val queryParams = parseQueryString(url)
-        parse(queryParams)
-        // NOTE: identity-evolution direct-login token parsing goes here.
+        TODO("GPU: restore window if minimized")
+
+        parse(queryMap)
+
+        if (Startup.startupState == StartupState.STATE_FIRST) {
+            return true
+        }
+
+        if (Startup.startupState < StartupState.STATE_LOGIN_CLEANUP) {
+            PanelLogin.loadLoginPage()
+            Startup.setStartupState(StartupState.STATE_LOGIN_CLEANUP)
+        }
         return true
     }
 
-    /**
-     * Called by the login subsystem when authentication completes
-     * successfully.  Mirrors the success path in the C++ login flow.
-     */
-    fun handleLoginComplete() {
-        loginStatus = LoginStatus.SUCCEEDED
-        lastFailureReason = ""
-        TODO("Notify UI / startup-state machine of successful login")
+    fun parseDirectLogin(url: String): Boolean {
+        parse(parseQueryString(url))
+        return true
     }
 
-    /**
-     * Called by the login subsystem when authentication fails.
-     * Mirrors the failure path in the C++ login flow.
-     *
-     * @param reason human-readable failure description
-     */
-    fun handleLoginFailed(reason: String) {
-        loginStatus = LoginStatus.FAILED
-        lastFailureReason = reason
-        TODO("Notify UI / startup-state machine of failed login")
-    }
-
-    /**
-     * Dispatch a secondlife:// (SLurl) to the appropriate handler.
-     * Mirrors the LLCommandDispatcher routing that the C++ LLCommandHandler
-     * base class provides automatically.
-     *
-     * @param url the raw secondlife:// URL
-     */
-    fun dispatchSLURL(url: String) {
-        if (!url.startsWith("secondlife://")) {
-            return
-        }
-        // Delegate to handle() after parsing the query map.
-        val queryParams = parseQueryString(url)
-        val grid = queryParams.getOrDefault("grid", "")
-        handle(queryParams, grid)
-    }
-
-    /**
-     * Load the saved user login info (e.g. from command-line flags or the
-     * protected credential store) and return it as a [LoginCredential].
-     * Mirrors LLLoginHandler::loadSavedUserLoginInfo().
-     */
     fun loadSavedUserLoginInfo(): LoginCredential? {
-        TODO("Read UserLoginInfoCmdLine setting; MD5-hash password; build credential")
+        val cmdLineLogin = savedSettings("UserLoginInfoCmdLine") as? List<*>
+        if (cmdLineLogin != null && cmdLineLogin.size == 3) {
+            val password = cmdLineLogin[2].toString()
+            val md5pass  = md5Hex(password)
+
+            val identifier = mutableMapOf(
+                "type"       to "agent",
+                "first_name" to cmdLineLogin[0].toString(),
+                "last_name"  to cmdLineLogin[1].toString()
+            )
+            val authenticator = mutableMapOf(
+                "type"      to "hash",
+                "algorithm" to "md5",
+                "secret"    to md5pass
+            )
+            TODO("APR: use JVM equivalent - set AutoLogin = true, call secApiHandler.createCredential")
+            @Suppress("UNREACHABLE_CODE")
+            return LoginCredential(identifier, authenticator)
+        }
+        TODO("APR: use JVM equivalent - call secApiHandler.loadCredential(gSavedSettings[UserLoginInfo])")
     }
 
-    /**
-     * Initialize login info from URL / command-line / credential store.
-     * Always returns a [LoginCredential] (possibly empty).
-     * Mirrors LLLoginHandler::initializeLoginInfo().
-     */
-    fun initializeLoginInfo(): LoginCredential {
-        return loadSavedUserLoginInfo() ?: LoginCredential()
-    }
+    fun initializeLoginInfo(): LoginCredential = loadSavedUserLoginInfo() ?: LoginCredential()
 
-    // -----------------------------------------------------------------------
-    // Private helpers
-    // -----------------------------------------------------------------------
-
-    /**
-     * Extract grid choice and start-location from a parsed query map and
-     * apply them to the startup state.
-     * Mirrors LLLoginHandler::parse().
-     */
-    private fun parse(queryMap: MutableMap<String, String>) {
+    private fun parse(queryMap: Map<String, String>) {
         queryMap["grid"]?.let { grid ->
-            TODO("Call GridManager.setGridChoice($grid)")
+            TODO("APR: use JVM equivalent - GridManager.setGridChoice($grid)")
         }
 
         when (queryMap["location"]) {
             "specify" -> {
                 val region = queryMap.getOrDefault("region", "")
-                TODO("Call StartUp.setStartSLURL(SLURL(gridLoginId, region=$region))")
+                TODO("APR: use JVM equivalent - Startup.setStartSLURL(SLURL(gridLoginId, region=$region))")
             }
-            "home"    -> TODO("Call StartUp.setStartSLURL(SLURL(SIM_LOCATION_HOME))")
-            "last"    -> TODO("Call StartUp.setStartSLURL(SLURL(SIM_LOCATION_LAST))")
+            "home" -> TODO("APR: use JVM equivalent - Startup.setStartSLURL(SLURL(SIM_LOCATION_HOME))")
+            "last" -> TODO("APR: use JVM equivalent - Startup.setStartSLURL(SLURL(SIM_LOCATION_LAST))")
         }
     }
 
-    /**
-     * Minimal query-string parser.  Splits on '?' then '&' and '='.
-     * The C++ code delegates this to LLURI::queryMap().
-     */
-    private fun parseQueryString(url: String): MutableMap<String, String> {
+    private fun parseQueryString(url: String): Map<String, String> {
         val result = mutableMapOf<String, String>()
         val queryPart = url.substringAfter('?', "")
         if (queryPart.isBlank()) return result
         queryPart.split('&').forEach { pair ->
-            val (key, value) = pair.split('=', limit = 2).let {
-                it[0] to (it.getOrNull(1) ?: "")
-            }
-            result[key] = value
+            val parts = pair.split('=', limit = 2)
+            result[parts[0]] = parts.getOrElse(1) { "" }
         }
         return result
     }
+
+    private fun md5Hex(input: String): String {
+        val bytes = MessageDigest.getInstance("MD5").digest(input.toByteArray(Charsets.UTF_8))
+        return bytes.joinToString("") { "%02x".format(it) }
+    }
+
+    private fun savedSettings(key: String): Any? = TODO("APR: use JVM equivalent - gSavedSettings[$key]")
+}
+
+object LoginInstance {
+    fun authSuccess(): Boolean = TODO("APR: use JVM equivalent - LLLoginInstance.authSuccess()")
 }

@@ -1,66 +1,119 @@
 package com.firestorm.newview
 
-import com.firestorm.llmath.*
-import com.firestorm.llcommon.*
-import com.firestorm.llinventory.*
-
 const val N_RES: UInt = 16u
 const val WAVE_STEP: UByte = 8u
 
-enum class WaterPartitionType {
-    WATER, VOID_WATER
-}
-
-open class VOWater(id: LLUUID, localId: UInt, pCode: UInt) : ViewerObject(id, localId, pCode) {
+open class VOWater(
+    id: String,
+    pCode: UByte,
+    region: ViewerRegion?,
+) : StaticViewerObject(id, pCode, region) {
 
     companion object {
-        const val RENDER_TYPE_WATER = 0
-        const val RENDER_TYPE_VOID_WATER = 1
+        const val VERTEX_DATA_MASK_WATER: UInt =
+            (1u shl 0) or   // TYPE_VERTEX
+            (1u shl 1) or   // TYPE_NORMAL
+            (1u shl 3)      // TYPE_TEXCOORD0
 
         fun initClass() {}
         fun cleanupClass() {}
     }
 
-    protected var isEdgePatch: Boolean = false
-    protected var renderType: Int = RENDER_TYPE_WATER
+    var isEdgePatch: Boolean = false
+        private set
+
+    protected var renderType: Int = 0   // LLPipeline.RENDER_TYPE_WATER
 
     init {
         canSelect = false
+        // Aurora-sim compatible: use actual region width rather than hardcoded 256
+        TODO("APR: setScale(Vector3(region.getWidth(), region.getWidth(), 0f))")
     }
 
-    override fun markDead() {
-        super.markDead()
+    open fun markDead() {
+        TODO("GPU: LLViewerObject.markDead()")
     }
 
-    override fun isActive(): Boolean = false
+    open fun isActive(): Boolean = false
 
-    fun setPixelAreaAndAngle(agent: Any?) {
+    fun setPixelAreaAndAngle() {
         appAngle = 50f
         pixelArea = 500f * 500f
     }
 
-    fun updateTextures(): Unit {}
+    open fun updateTextures() {}
 
-    fun idleUpdate(agent: Any?, time: Double): Unit {}
+    open fun idleUpdate(time: Double) {}
 
-    fun createDrawable(pipeline: Any?): Any? = TODO("GPU: createDrawable water")
-
-    fun updateGeometry(drawable: Drawable): Boolean = TODO("GPU: updateGeometry water quads")
-
-    fun updateSpatialExtents(newMin: Vector4, newMax: Vector4): Unit = TODO("GPU: updateSpatialExtents")
-
-    open fun getPartitionType(): WaterPartitionType =
-        if (isEdgePatch) WaterPartitionType.VOID_WATER else WaterPartitionType.WATER
-
-    fun setIsEdgePatch(edgePatch: Boolean) { isEdgePatch = edgePatch }
-    fun getIsEdgePatch(): Boolean = isEdgePatch
-}
-
-class VOVoidWater(id: LLUUID, localId: UInt, pCode: UInt) : VOWater(id, localId, pCode) {
-
-    init {
-        renderType = RENDER_TYPE_VOID_WATER
+    open fun createDrawable(pipeline: Any?): Any? {
+        TODO("GPU: pipeline.allocDrawable(this); mDrawable.setLit(false); mDrawable.setRenderType(renderType); attach pool + face")
     }
 
-    override fun getPartitionType(): WaterPartitionType = WaterPartitionType.VOID_WATER
+    open fun updateGeometry(drawable: Any?): Boolean {
+        // Water surface is a regular grid of quads.
+        // Resolution is scaled by the region size and the RenderTransparentWater setting.
+        // Each cell: 4 vertices, 6 indices (2 triangles).
+        TODO("GPU: build water quad mesh; fill vertex/normal/texcoord/index buffers; unmapBuffer(); movePartition(); sCompiles++")
+    }
+
+    open fun updateSpatialExtents(newMin: FloatArray, newMax: FloatArray) {
+        TODO("GPU: compute AABB from positionAgent ± scale*0.5; setPositionGroup(centre)")
+    }
+
+    open fun updateTextures() {}
+
+    open fun getPartitionType(): Int =
+        if (isEdgePatch) PARTITION_VOIDWATER else PARTITION_WATER
+
+    fun setIsEdgePatch(edgePatch: Boolean) {
+        isEdgePatch = edgePatch
+    }
+
+    var appAngle: Float = 0f
+    var pixelArea: Float = 0f
+    var canSelect: Boolean = false
+
+    private companion object {
+        const val PARTITION_WATER = 0
+        const val PARTITION_VOIDWATER = 1
+    }
+}
+
+class VOVoidWater(
+    id: String,
+    pCode: UByte,
+    region: ViewerRegion?,
+) : VOWater(id, pCode, region) {
+
+    init {
+        renderType = RENDER_TYPE_VOIDWATER
+    }
+
+    override fun getPartitionType(): Int = PARTITION_VOIDWATER
+
+    private companion object {
+        const val RENDER_TYPE_VOIDWATER = 1
+        const val PARTITION_VOIDWATER = 1
+    }
+}
+
+// Spatial partition types — mirrors LLWaterPartition / LLVoidWaterPartition
+class WaterPartition(region: ViewerRegion?) {
+    var infiniteFarClip: Boolean = true
+    var drawableType: Int = 0   // RENDER_TYPE_WATER
+    var partitionType: Int = 0  // PARTITION_WATER
+
+    init {
+        TODO("GPU: LLSpatialPartition(0, false, regionp)")
+    }
+}
+
+class VoidWaterPartition(region: ViewerRegion?) : WaterPartition(region) {
+    var occlusionEnabled: Boolean = false
+
+    init {
+        drawableType = 1    // RENDER_TYPE_VOIDWATER
+        partitionType = 1   // PARTITION_VOIDWATER
+        occlusionEnabled = false
+    }
 }

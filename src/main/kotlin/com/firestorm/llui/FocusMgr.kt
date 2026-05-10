@@ -5,6 +5,7 @@ import kotlin.math.roundToInt
 private const val FOCUS_FADE_TIME = 0.3f
 
 fun lerpFloat(a: Float, b: Float, t: Float): Float = a + t * (b - a)
+
 fun clampRescale(value: Float, from0: Float, from1: Float, to0: Float, to1: Float): Float {
     val t = if (from1 == from0) 0f else ((value - from0) / (from1 - from0)).coerceIn(0f, 1f)
     return lerpFloat(to0, to1, t)
@@ -43,20 +44,20 @@ abstract class FocusableElement {
         focusLostCallback?.invoke(this)
         focusChangedCallback?.invoke(this)
     }
-}
 
-abstract class View : FocusableElement() {
-    abstract fun getParent(): View?
-    abstract fun hasAncestor(ancestor: View): Boolean
-    abstract fun isFocusRoot(): Boolean
-    abstract fun hasAccelerators(): Boolean
-    open fun onFocusReceivedPublic() = onFocusReceived()
-    open fun onFocusLostPublic() = onFocusLost()
-}
+    open fun onFocusReceivedInternal() = onFocusReceived()
+    open fun onFocusLostInternal() = onFocusLost()
 
-abstract class UiCtrl : View() {
-    override fun onTopLost() {
-        super.onTopLost()
+    abstract fun getFocusParent(): FocusableElement?
+    open fun isFocusRoot(): Boolean = false
+    open fun hasAccelerators(): Boolean = false
+    open fun hasAncestor(ancestor: FocusableElement): Boolean {
+        var p = getFocusParent()
+        while (p != null) {
+            if (p === ancestor) return true
+            p = p.getFocusParent()
+        }
+        return false
     }
 }
 
@@ -66,19 +67,19 @@ abstract class MouseHandler {
 }
 
 class FocusMgr {
-    private var lockedView: UiCtrl? = null
+    private var lockedView: FocusableElement? = null
     private var mouseCaptor: MouseHandler? = null
     private var keyboardFocus: FocusableElement? = null
     private var lastKeyboardFocus: FocusableElement? = null
     private var defaultKeyboardFocus: FocusableElement? = null
     private var keystrokesOnly: Boolean = false
-    private var topCtrl: UiCtrl? = null
+    private var topCtrl: FocusableElement? = null
     private var appHasFocus: Boolean = true
 
     private var focusFlashStartTime: Long = System.nanoTime()
 
-    private val cachedKeyboardFocusList: ArrayDeque<View> = ArrayDeque()
-    private val focusHistory: MutableMap<View, View?> = mutableMapOf()
+    private val cachedKeyboardFocusList: ArrayDeque<FocusableElement> = ArrayDeque()
+    private val focusHistory: MutableMap<FocusableElement, FocusableElement?> = mutableMapOf()
 
     fun setMouseCapture(newCaptor: MouseHandler?) {
         if (newCaptor !== mouseCaptor) {
@@ -94,11 +95,11 @@ class FocusMgr {
         if (mouseCaptor === captor) mouseCaptor = null
     }
 
-    fun childHasMouseCapture(parent: View): Boolean {
-        var captorView = mouseCaptor as? View
-        while (captorView != null) {
-            if (captorView === parent) return true
-            captorView = captorView.getParent()
+    fun childHasMouseCapture(parent: FocusableElement): Boolean {
+        var captor = mouseCaptor as? FocusableElement
+        while (captor != null) {
+            if (captor === parent) return true
+            captor = captor.getFocusParent()
         }
         return false
     }
@@ -108,8 +109,7 @@ class FocusMgr {
 
         val locked = lockedView
         if (locked != null && newFocus !== locked) {
-            val focusView = newFocus as? View
-            if (focusView == null || !focusView.hasAncestor(locked)) {
+            if (newFocus == null || !newFocus.hasAncestor(locked)) {
                 return
             }
         }
@@ -118,39 +118,38 @@ class FocusMgr {
             lastKeyboardFocus = keyboardFocus
             keyboardFocus = newFocus
 
-            val oldFocusBranch = cachedKeyboardFocusList.toList()
-            val newFocusBranch = mutableListOf<View>()
-            var v = newFocus as? View
+            val oldBranch = cachedKeyboardFocusList.toList()
+            val newBranch = mutableListOf<FocusableElement>()
+            var v = newFocus
             while (v != null) {
-                newFocusBranch.add(v)
-                v = v.getParent()
+                newBranch.add(v)
+                v = v.getFocusParent()
             }
 
-            val (trimmedNew, trimmedOld) = pruneCommonAncestors(newFocusBranch, oldFocusBranch)
+            val (trimmedNew, trimmedOld) = pruneCommonAncestors(newBranch, oldBranch)
 
-            for (oldView in trimmedOld) {
+            for (old in trimmedOld) {
                 cachedKeyboardFocusList.removeFirst()
-                oldView.onFocusLostPublic()
+                old.onFocusLostInternal()
             }
 
-            for (newView in trimmedNew.asReversed()) {
-                cachedKeyboardFocusList.addFirst(newView)
-                newView.onFocusReceivedPublic()
+            for (nw in trimmedNew.asReversed()) {
+                cachedKeyboardFocusList.addFirst(nw)
+                nw.onFocusReceivedInternal()
             }
 
             if (defaultKeyboardFocus != null && keyboardFocus == null) {
                 defaultKeyboardFocus?.setFocus(true)
             }
 
-            val focusView = newFocus as? View
-            var subtree = focusView
-            var walker = focusView
+            var subtree = newFocus
+            var walker = newFocus
             while (walker != null) {
                 if (walker.isFocusRoot()) subtree = walker
-                walker = walker.getParent()
+                walker = walker.getFocusParent()
             }
             if (subtree != null) {
-                focusHistory[subtree] = focusView
+                focusHistory[subtree] = newFocus
             }
         }
 
@@ -161,11 +160,11 @@ class FocusMgr {
 
     fun getLastKeyboardFocus(): FocusableElement? = lastKeyboardFocus
 
-    fun childHasKeyboardFocus(parent: View): Boolean {
-        var focusView = keyboardFocus as? View
-        while (focusView != null) {
-            if (focusView === parent) return true
-            focusView = focusView.getParent()
+    fun childHasKeyboardFocus(parent: FocusableElement): Boolean {
+        var focus = keyboardFocus
+        while (focus != null) {
+            if (focus === parent) return true
+            focus = focus.getFocusParent()
         }
         return false
     }
@@ -185,8 +184,8 @@ class FocusMgr {
 
     fun getFocusFlashWidth(): Int = lerpFloat(1f, 3f, getFocusFlashAmt()).roundToInt()
 
-    fun getFocusColor(): FloatArray {
-        TODO("GPU: look up FocusColor from UI color table and lerp toward white by getFocusFlashAmt()")
+    fun getFocusColor(): Color4 {
+        TODO("GPU: look up FocusColor from UI color table, lerp toward white by getFocusFlashAmt(), apply alpha dim if !appHasFocus")
     }
 
     fun triggerFocusFlash() {
@@ -196,15 +195,14 @@ class FocusMgr {
     fun getAppHasFocus(): Boolean = appHasFocus
 
     fun setAppHasFocus(focus: Boolean) {
-        if (!appHasFocus && focus) {
-            triggerFocusFlash()
-        }
+        if (!appHasFocus && focus) triggerFocusFlash()
         appHasFocus = focus
     }
 
-    fun getLastFocusForGroup(subtreeRoot: View): View? = focusHistory[subtreeRoot]
+    fun getLastFocusForGroup(subtreeRoot: FocusableElement): FocusableElement? =
+        focusHistory[subtreeRoot]
 
-    fun clearLastFocusForGroup(subtreeRoot: View) {
+    fun clearLastFocusForGroup(subtreeRoot: FocusableElement) {
         focusHistory.remove(subtreeRoot)
     }
 
@@ -214,7 +212,7 @@ class FocusMgr {
 
     fun getDefaultKeyboardFocus(): FocusableElement? = defaultKeyboardFocus
 
-    fun setTopCtrl(newTop: UiCtrl?) {
+    fun setTopCtrl(newTop: FocusableElement?) {
         val oldTop = topCtrl
         if (newTop !== oldTop) {
             topCtrl = newTop
@@ -222,24 +220,23 @@ class FocusMgr {
         }
     }
 
-    fun getTopCtrl(): UiCtrl? = topCtrl
+    fun getTopCtrl(): FocusableElement? = topCtrl
 
-    fun removeTopCtrlWithoutCallback(topView: UiCtrl) {
+    fun removeTopCtrlWithoutCallback(topView: FocusableElement) {
         if (topCtrl === topView) topCtrl = null
     }
 
-    fun childIsTopCtrl(parent: View): Boolean {
-        var topView = topCtrl as? View
-        while (topView != null) {
-            if (topView === parent) return true
-            topView = topView.getParent()
+    fun childIsTopCtrl(parent: FocusableElement): Boolean {
+        var top = topCtrl
+        while (top != null) {
+            if (top === parent) return true
+            top = top.getFocusParent()
         }
         return false
     }
 
-    fun releaseFocusIfNeeded(view: View) {
+    fun releaseFocusIfNeeded(view: FocusableElement) {
         if (childHasMouseCapture(view)) setMouseCapture(null)
-
         if (childHasKeyboardFocus(view)) {
             if (view === lockedView) {
                 lockedView = null
@@ -251,7 +248,7 @@ class FocusMgr {
     }
 
     fun lockFocus() {
-        lockedView = keyboardFocus as? UiCtrl
+        lockedView = keyboardFocus
     }
 
     fun unlockFocus() {
@@ -261,18 +258,18 @@ class FocusMgr {
     fun focusLocked(): Boolean = lockedView != null
 
     fun keyboardFocusHasAccelerators(): Boolean {
-        var focusView = keyboardFocus as? View
-        while (focusView != null) {
-            if (focusView.hasAccelerators()) return true
-            focusView = focusView.getParent()
+        var focus = keyboardFocus
+        while (focus != null) {
+            if (focus.hasAccelerators()) return true
+            focus = focus.getFocusParent()
         }
         return false
     }
 
     private fun pruneCommonAncestors(
-        newBranch: MutableList<View>,
-        oldBranch: List<View>,
-    ): Pair<MutableList<View>, List<View>> {
+        newBranch: MutableList<FocusableElement>,
+        oldBranch: List<FocusableElement>,
+    ): Pair<MutableList<FocusableElement>, List<FocusableElement>> {
         val oldMutable = oldBranch.toMutableList()
         while (newBranch.isNotEmpty() && oldMutable.isNotEmpty() &&
             newBranch.last() === oldMutable.last()

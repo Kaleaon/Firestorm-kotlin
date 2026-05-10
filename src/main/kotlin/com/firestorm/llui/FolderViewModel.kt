@@ -349,24 +349,7 @@ class UIImage(val name: String, val width: Int = 0, val height: Int = 0) {
     }
 }
 
-class FolderView {
-    private lateinit var viewModelItem: FolderViewModelItem
-    fun getViewModelItem(): FolderViewModelItem = viewModelItem
-    fun requestArrange() {}
-}
-
-class FolderViewFolder {
-    private lateinit var viewModelItem: FolderViewModelItem
-    fun getViewModelItem(): FolderViewModelItem = viewModelItem
-    fun sortFolders(comparator: Comparator<FolderViewModelItem>) {}
-    fun sortItems(comparator: Comparator<FolderViewModelItem>) {}
-    fun requestArrange() {}
-}
-
-class FolderViewItem {
-    private lateinit var viewModelItem: FolderViewModelItem
-    fun getViewModelItem(): FolderViewModelItem = viewModelItem
-}
+// FolderView, FolderViewFolder, FolderViewItem are defined in FolderViewItem.kt
 
 class MenuGL(val name: String)
 

@@ -30,7 +30,7 @@ class SurfacePatch {
 
     private val visInfo = PatchVisibilityInfo()
 
-    private var originGlobal: Vector3d  = Vector3d(0.0, 0.0, 0.0)
+    internal var originGlobal: Vector3d  = Vector3d(0.0, 0.0, 0.0)
     private var originRegion: Vector3   = Vector3(0f, 0f, 0f)
 
     var centerRegion: Vector3           = Vector3(0f, 0f, 0f)
@@ -311,7 +311,7 @@ class SurfacePatch {
 
     fun updateNormals(pbr: Boolean = false) {
         val s = surface ?: return
-        if (s.type == 'w'.code.toUInt()) return
+        if (s.type == 'w'.toInt().toUInt()) return
         val gppe = s.getGridsPerPatchEdge().toUInt()
         var dirtyPatch = false
 

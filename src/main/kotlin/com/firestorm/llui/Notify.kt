@@ -177,8 +177,3 @@ class IMToastNotifyPanel(
         TODO("GPU: draw IM toast notify panel and snap to message height")
     }
 }
-
-open class Panel(
-    name: String,
-    rect: Rect = Rect()
-) : View(name, rect)

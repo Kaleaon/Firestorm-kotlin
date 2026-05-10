@@ -85,6 +85,16 @@ abstract class LLMotion(val id: LLUUID) {
     /** Override to prevent crossfade with a new instance (default: allowed). */
     open fun canDeprecate(): Boolean = true
 
+    // ---- joint signature (used by MotionController for LOD skip logic) -----
+    // Two layers: [0] = current-frame signature, [1] = previous-frame signature.
+    val jointSignature: Array<UByteArray> = Array(2) {
+        UByteArray(LL_CHARACTER_MAX_ANIMATED_JOINTS.toInt())
+    }
+
+    /** Returns the pose weight record for this motion (used by MotionController blending). */
+    open fun getPose(): MotionPoseWeight? = null
+
+
     // ---- lifecycle helpers called by MotionController ---------------------
 
     open fun setStopTime(time: Float) {
@@ -110,6 +120,15 @@ abstract class LLMotion(val id: LLUUID) {
 
     fun fadeOut() { /* TODO: step fadeWeight toward 0 over easeOutDuration */ }
     fun fadeIn()  { /* TODO: step fadeWeight toward 1 over easeInDuration  */ }
+}
+
+// ---------------------------------------------------------------------------
+// MotionPoseWeight — blend weight record returned by Motion.getPose()
+// ---------------------------------------------------------------------------
+
+/** Carries the blend weight used by MotionController during pose blending. */
+class MotionPoseWeight {
+    var weight: Float = 0f
 }
 
 // ---------------------------------------------------------------------------

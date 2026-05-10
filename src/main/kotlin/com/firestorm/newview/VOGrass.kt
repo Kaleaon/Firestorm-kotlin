@@ -1,148 +1,188 @@
-// Converted from llvograss.h / llvograss.cpp (Firestorm / Linden Research)
-// LGPL-2.1-only — see project root for full license text.
-
 package com.firestorm.newview
 
-import com.firestorm.llmath.*
-import com.firestorm.llcommon.*
+import kotlin.math.*
 
-/** Species constants for grass rendering. */
-enum class GrassSpecies(val id: UInt) {
-    GRASS_MEADOW_GRASS(0u),
-    GRASS_ROUGH(1u),
-    GRASS_GOLDEN(2u),
-    GRASS_DOGBANE(3u),
-    GRASS_JUNGLE(4u),
-    GRASS_SEAGRASS(5u),
-    GRASS_KELP(6u),
-}
+private const val GRASS_MAX_BLADES: Int = 32
+private const val GRASS_BLADE_BASE: Float = 0.25f
+private const val GRASS_BLADE_HEIGHT: Float = 0.5f
+private const val GRASS_DISTRIBUTION_SD: Float = 0.15f
 
-/** Per-species static data loaded from grass.xml. */
 data class GrassSpeciesData(
-    val textureId: LLUUID,
+    val textureId: String,
     val bladeSizeX: Float,
     val bladeSizeY: Float,
     val name: String,
 )
 
-/**
- * Viewer object representing a clump of grass.
- *
- * Mirrors [LLVOGrass] from llvograss.h.
- * All GPU/geometry calls are stubbed with [TODO].
- */
 open class VOGrass(
-    id: LLUUID,
-    localId: UInt,
-    pCode: UInt,
-) : ViewerObject(id, localId, pCode) {
-
-    // ---- per-instance state ----
+    id: String,
+    pCode: UByte,
+    region: ViewerRegion?,
+) : AlphaObject(id, pCode, region) {
 
     var species: UByte = 0u
     var bladeSizeX: Float = 0f
     var bladeSizeY: Float = 0f
-
-    /** Land-surface patch where this grass clump is centred. */
-    var patch: Any? = null           // typed as LLSurfacePatch in C++
-
-    var lastPatchUpdateTime: Long = 0L
-
-    // Wind-driven animation accumulators
-    var grassBend: Vector3 = Vector3.ZERO
-    var grassVel: Vector3 = Vector3.ZERO
-    var wind: Vector3 = Vector3.ZERO
+    var patch: SurfacePatch? = null
+    var lastPatchUpdateTime: ULong = 0uL
+    var grassBend: FloatArray = floatArrayOf(0f, 0f, 0f)
+    var grassVel: FloatArray = floatArrayOf(0f, 0f, 0f)
+    var wind: FloatArray = floatArrayOf(0f, 0f, 0f)
     var bladeWindAngle: Float = 35f
     var bwaOverlap: Float = 2f
 
     private var lastHeight: Float = 0f
-    private var numBlades: Int = MAX_BLADES
+    private var numBlades: Int = GRASS_MAX_BLADES
 
-    // ---- public API ----
-
-    /** Returns true; grass always runs idle updates. */
-    fun isActive(): Boolean = true
-
-    /** Per-frame idle update: checks patch age and requests geometry rebuild if stale. */
-    fun idleUpdate(time: Double) {
-        TODO("GPU: markRebuild when patch timestamp changes")
+    init {
+        canSelect = true
+        TODO("APR: setNumTEs(1); setTEColor(0, Color4(1,1,1,1))")
     }
 
-    /** Update apparent angle and pixel area from camera distance. */
+    open fun isActive(): Boolean = true
+
+    open fun idleUpdate(time: Double) {
+        // Rebuilds geometry when the terrain patch under this grass clump changes.
+        TODO("GPU: check mDead, hasRenderType(GRASS); if patch update time changed markRebuild(VOLUME)")
+    }
+
+    open fun createDrawable(pipeline: Any?): Any? {
+        TODO("GPU: pipeline.allocDrawable(this); mDrawable.setRenderType(RENDER_TYPE_GRASS); return mDrawable")
+    }
+
+    open fun updateGeometry(drawable: Any?): Boolean {
+        TODO("GPU: dirtySpatialGroup(); if numBlades==0 setSize(0,0) else plantBlades(); return true")
+    }
+
+    open fun getGeometry(
+        idx: Int,
+        verticesp: Any,
+        normalsp: Any,
+        texcoordsp: Any,
+        colorsp: Any,
+        emissivep: Any,
+        indicesp: Any,
+    ) {
+        // Generates numBlades grass quads using Gaussian-distributed positions and
+        // pre-baked wind-rotation tables (expX/expY/rotX/rotY/dzX/dzY/wMod).
+        // Each blade = 8 vertices, 12 indices (4 back-to-back triangles for double-sided rendering).
+        TODO("GPU: fill vertex/normal/texcoord/color/index streams from speciesTable and blade tables")
+    }
+
+    fun updateFaceSize(idx: Int) {}
+
+    open fun updateTextures() {
+        TODO("GPU: getTEImage(0).addTextureStats(mPixelArea)")
+    }
+
+    open fun updateLOD(): Boolean {
+        // LOD = number of blades, scaled by (scale.x*scale.y / distanceToCamera).
+        // Doubles or halves numBlades when distance changes enough; rebuilds geometry.
+        TODO("GPU: compute tan_angle, num_blades; markRebuild(ALL) if numBlades changes")
+    }
+
     fun setPixelAreaAndAngle() {
-        TODO("GPU: compute mAppAngle / mPixelArea from camera distance")
+        TODO("APR: compute range from agent camera; appAngle = atan2(maxScale, range)*RAD_TO_DEG; pixelArea = pixels_per_meter^2 * 25")
     }
 
-    /** Resolve species from attachment state and load the correct texture. */
-    fun updateSpecies() {
-        val entry = companion.speciesTable[species.toUInt()]
-            ?: companion.speciesTable.values.firstOrNull()
-            ?: return
-        bladeSizeX = entry.bladeSizeX
-        bladeSizeY = entry.bladeSizeY
-        TODO("GPU: setTEImage from entry.textureId")
-    }
-
-    /** Allocate the draw face and populate blade geometry. */
-    fun updateGeometry(): Boolean {
-        if (numBlades == 0) {
-            TODO("GPU: set face size to 0,0 to suppress rendering")
-        } else {
-            plantBlades()
-        }
-        return true
-    }
-
-    /** Update discrete LOD blade count based on camera-distance tangent. */
-    fun updateLOD(): Boolean {
-        TODO("GPU: adjust numBlades via doubling/halving against tangent ratio")
-    }
-
-    /**
-     * Write per-blade quads into the vertex buffer.
-     * Each blade is 8 vertices / 12 indices using a gaussian positional spread.
-     */
     fun plantBlades() {
-        TODO("GPU: fill LLVertexBuffer with grass blade quads from exp_x/exp_y tables")
+        // Sets up the face's size, position, and extents but does not push any
+        // geometry; actual vertex data is filled by getGeometry().
+        TODO("GPU: face.setSize(numBlades*8, numBlades*12); face.setState(GLOBAL); mDrawable.movePartition()")
     }
 
-    /** Ray-intersection test against all grass blade quads. */
-    fun lineSegmentIntersect(start: Vector3, end: Vector3): Boolean {
-        TODO("GPU: triangle ray-intersect per blade using blade geometry")
+    fun updateDrawable(forceDamped: Boolean) {
+        TODO("GPU: if drawable.notNull updateXform(true); markRebuild(ALL); clearChanged(SHIFTED)")
     }
 
-    // ---- companion (static) ----
+    open fun lineSegmentIntersect(
+        start: FloatArray,
+        end: FloatArray,
+        face: Int = -1,
+        pickTransparent: Boolean = false,
+        pickRigged: Boolean = false,
+        pickUnselectable: Boolean = true,
+        faceHit: IntArray? = null,
+        intersection: FloatArray? = null,
+        texCoord: FloatArray? = null,
+        normal: FloatArray? = null,
+        tangent: FloatArray? = null,
+    ): Boolean {
+        // Ray-triangle test for each blade using the same blade geometry as getGeometry().
+        // Returns true at the closest transparent (or opaque if pickTransparent) hit.
+        TODO("GPU: per-blade LLTriangleRayIntersect on 4 triangles; barycentric tex-coord lookup for alpha test")
+    }
+
+    open fun processUpdateMessage(
+        blockNum: UInt,
+        updateType: Int,
+        dp: Any?,
+    ): UInt {
+        TODO("APR: LLViewerObject.processUpdateMessage; updateSpecies(); zero out any accidental velocity")
+    }
+
+    open fun exportFile(position: FloatArray) {
+        TODO("APR: write grass state to file")
+    }
+
+    open fun getPartitionType(): Int = PARTITION_GRASS
+
+    private fun updateSpecies() {
+        TODO("APR: species = getAttachmentState(); resolve unknown species; setTEImage from speciesTable")
+    }
+
+    var canSelect: Boolean = false
+    var appAngle: Float = 0f
+    var pixelArea: Float = 0f
+
+    private companion object {
+        const val PARTITION_GRASS = 0
+    }
 
     companion object {
-        const val MAX_BLADES = 32
-        const val BLADE_BASE = 0.25f
-        const val BLADE_HEIGHT = 0.5f
-        const val DISTRIBUTION_SD = 0.15f
-
-        /** Loaded from grass.xml at startup. Key = species id. */
-        val speciesTable: MutableMap<UInt, GrassSpeciesData> = mutableMapOf()
         var maxGrassSpecies: Int = 0
+        val speciesTable: MutableMap<UInt, GrassSpeciesData> = mutableMapOf()
 
-        // Per-blade randomised offset / rotation / wind-mod arrays (size MAX_BLADES)
-        internal val expX = FloatArray(MAX_BLADES)
-        internal val expY = FloatArray(MAX_BLADES)
-        internal val rotX = FloatArray(MAX_BLADES)
-        internal val rotY = FloatArray(MAX_BLADES)
-        internal val dzX  = FloatArray(MAX_BLADES)
-        internal val dzY  = FloatArray(MAX_BLADES)
-        internal val wMod = FloatArray(MAX_BLADES)   // wind-movement factor per blade
+        // Per-blade layout tables initialised by initClass() from a Gaussian distribution.
+        val expX: FloatArray = FloatArray(GRASS_MAX_BLADES)
+        val expY: FloatArray = FloatArray(GRASS_MAX_BLADES)
+        val rotX: FloatArray = FloatArray(GRASS_MAX_BLADES)
+        val rotY: FloatArray = FloatArray(GRASS_MAX_BLADES)
+        val dzX: FloatArray = FloatArray(GRASS_MAX_BLADES)
+        val dzY: FloatArray = FloatArray(GRASS_MAX_BLADES)
+        val wMod: FloatArray = FloatArray(GRASS_MAX_BLADES)
 
-        /**
-         * One-time class initialisation: parse grass.xml and fill [speciesTable].
-         * Also pre-computes the gaussian blade distribution tables.
-         */
         fun initClass() {
-            TODO("parse grass.xml into speciesTable; fill expX/expY/rotX/rotY/dzX/dzY/wMod")
+            TODO("APR: parse grass.xml; fill speciesTable and per-blade layout tables")
+            // For each blade i:
+            //   u = sqrt(-2 * ln(rand)); v = 2*PI*rand
+            //   x = u*sin(v)*SD; y = u*cos(v)*SD; rot = rand(PI)
+            //   expX[i]=x; expY[i]=y; rotX[i]=sin(rot); rotY[i]=cos(rot)
+            //   dzX[i]=rand(BASE*0.25); dzY[i]=rand(BASE*0.25); wMod[i]=0.5+rand
         }
 
-        /** Release all species data. Call on viewer shutdown. */
         fun cleanupClass() {
             speciesTable.clear()
         }
+    }
+}
+
+// Spatial partition for grass — groups alpha blades into a single VBO per group.
+class GrassPartition(region: ViewerRegion?) {
+    var drawableType: Int = 0   // RENDER_TYPE_GRASS
+    var partitionType: Int = 0  // PARTITION_GRASS
+    var lodPeriod: Int = 16
+    var depthMask: Boolean = true
+    var slopRatio: Float = 0.1f
+    var renderPass: Int = 0     // PASS_GRASS
+
+    private val faceList: MutableList<Any> = mutableListOf()
+
+    fun addGeometryCount(group: Any?, vertexCount: UInt, indexCount: UInt) {
+        TODO("GPU: iterate drawables in group; accumulate face geometry counts; skip faces that exceed 65536 vertex budget")
+    }
+
+    fun getGeometry(group: Any?) {
+        TODO("GPU: sort faceList back-to-front; fill shared VBO; build LLDrawInfo batches by texture")
     }
 }

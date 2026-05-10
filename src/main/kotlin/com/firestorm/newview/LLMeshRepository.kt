@@ -1,7 +1,7 @@
 package com.firestorm.newview
 
 import java.util.UUID
-import java.util.concurrent.ArrayDeque
+import java.util.LinkedList
 import java.util.concurrent.atomic.AtomicInteger
 
 // ---- Enumerations ----
@@ -279,8 +279,8 @@ abstract class LLPhysicsDecompRequest {
 }
 
 class LLPhysicsDecomp {
-    private val mRequestQ: ArrayDeque<LLPhysicsDecompRequest> = ArrayDeque()
-    private val mCompletedQ: ArrayDeque<LLPhysicsDecompRequest> = ArrayDeque()
+    private val mRequestQ: LinkedList<LLPhysicsDecompRequest> = LinkedList()
+    private val mCompletedQ: LinkedList<LLPhysicsDecompRequest> = LinkedList()
     var mCurRequest: LLPhysicsDecompRequest? = null
     val mStageID: MutableMap<String, Int> = mutableMapOf()
 
@@ -336,7 +336,7 @@ class LLMeshCostData {
     fun getSizeByLOD(lod: Int): Int = mSizeByLOD[lod]
     fun getSizeTotal(): Int = mSizeByLOD.sum()
     fun getEstTrisByLOD(lod: Int): Float = mEstTrisByLOD[lod]
-    fun getEstTrisMax(): Float = mEstTrisByLOD.max()
+    fun getEstTrisMax(): Float = mEstTrisByLOD.max() ?: 0f
 
     fun getRadiusWeightedTris(radius: Float): Float {
         val weightedArea = mEstTrisByLOD[3] + mEstTrisByLOD[2] / 3f + mEstTrisByLOD[1] / 9f + mEstTrisByLOD[0] / 27f
@@ -362,17 +362,17 @@ class LLMeshRepoThread {
 
     // Per-type queues (guarded by their respective mutexes in C++; here represented as simple collections)
     val mMeshHeader: MutableMap<UUID, LLMeshHeader> = mutableMapOf()
-    val mSkinRequests: ArrayDeque<UUIDBasedRequest> = ArrayDeque()
-    val mSkinInfoQ: ArrayDeque<LLMeshSkinInfo> = ArrayDeque()
-    val mSkinUnavailableQ: ArrayDeque<UUIDBasedRequest> = ArrayDeque()
+    val mSkinRequests: LinkedList<UUIDBasedRequest> = LinkedList()
+    val mSkinInfoQ: LinkedList<LLMeshSkinInfo> = LinkedList()
+    val mSkinUnavailableQ: LinkedList<UUIDBasedRequest> = LinkedList()
     val mDecompositionRequests: MutableSet<UUIDBasedRequest> = mutableSetOf()
     val mPhysicsShapeRequests: MutableSet<UUIDBasedRequest> = mutableSetOf()
     val mDecompositionQ: MutableList<LLModel.Decomposition> = mutableListOf()
     val mPhysicsQ: MutableList<LLModel.Decomposition> = mutableListOf()
-    val mHeaderReqQ: ArrayDeque<HeaderRequest> = ArrayDeque()
-    val mLODReqQ: ArrayDeque<LODRequest> = ArrayDeque()
-    val mUnavailableQ: ArrayDeque<LODRequest> = ArrayDeque()
-    val mLoadedQ: ArrayDeque<LoadedMesh> = ArrayDeque()
+    val mHeaderReqQ: LinkedList<HeaderRequest> = LinkedList()
+    val mLODReqQ: LinkedList<LODRequest> = LinkedList()
+    val mUnavailableQ: LinkedList<LODRequest> = LinkedList()
+    val mLoadedQ: LinkedList<LoadedMesh> = LinkedList()
     val mPendingLOD: MutableMap<UUID, IntArray> = mutableMapOf()
     val mSkinMap: MutableMap<UUID, LLMeshSkinInfo> = mutableMapOf()
 
@@ -669,9 +669,9 @@ class LLMeshRepository {
     val mPendingRequests: MutableList<PendingRequestBase> = mutableListOf()
     val mLoadingSkins: MutableMap<UUID, MeshLoadData> = mutableMapOf()
     val mLoadingDecompositions: MutableSet<UUID> = mutableSetOf()
-    val mPendingDecompositionRequests: ArrayDeque<UUID> = ArrayDeque()
+    val mPendingDecompositionRequests: LinkedList<UUID> = LinkedList()
     val mLoadingPhysicsShapes: MutableSet<UUID> = mutableSetOf()
-    val mPendingPhysicsShapeRequests: ArrayDeque<UUID> = ArrayDeque()
+    val mPendingPhysicsShapeRequests: LinkedList<UUID> = LinkedList()
     var mMeshThreadCount: UInt = 0u
     var mThread: LLMeshRepoThread? = null
     val mUploads: MutableList<LLMeshUploadThread> = mutableListOf()
@@ -681,8 +681,8 @@ class LLMeshRepository {
 
     data class InventoryData(val mPostData: Map<String, Any>, val mResponse: Map<String, Any>)
 
-    val mInventoryQ: ArrayDeque<InventoryData> = ArrayDeque()
-    val mUploadErrorQ: ArrayDeque<Map<String, Any>> = ArrayDeque()
+    val mInventoryQ: LinkedList<InventoryData> = LinkedList()
+    val mUploadErrorQ: LinkedList<Map<String, Any>> = LinkedList()
 
     fun init() {
         TODO("APR: use JVM equivalent — start LLMeshRepoThread and LLPhysicsDecomp thread")

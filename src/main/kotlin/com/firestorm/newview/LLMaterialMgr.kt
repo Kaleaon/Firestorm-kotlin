@@ -21,29 +21,23 @@ object LLMaterialMgr {
     private const val MATERIALS_GET_MAX_ENTRIES = 50
     private const val MATERIALS_PUT_MAX_ENTRIES = 50
 
-    typealias MaterialMap = MutableMap<LLMaterialID, LLMaterialPtr>
-    typealias GetCallback = MutableList<(LLMaterialID, LLMaterialPtr) -> Unit>
-    typealias GetCallbackTE = MutableList<(LLMaterialID, LLMaterialPtr, UInt) -> Unit>
-    typealias GetAllCallback = MutableList<(UUID, MaterialMap) -> Unit>
-
     private data class TEMaterialPair(val te: UInt, val materialID: LLMaterialID)
 
-    private val mMaterials: MaterialMap = mutableMapOf(UUID(0, 0) to null)
+    private val mMaterials: MutableMap<LLMaterialID, LLMaterialPtr> = mutableMapOf(UUID(0, 0) to null)
 
     private val mGetQueue: MutableMap<UUID, MutableSet<LLMaterialID>> = mutableMapOf()
     private val mRegionGets: MutableSet<UUID> = mutableSetOf()
     private val mGetPending: MutableMap<Pair<UUID, LLMaterialID>, Double> = mutableMapOf()
-    private val mGetCallbacks: MutableMap<LLMaterialID, GetCallback> = mutableMapOf()
-    private val mGetTECallbacks: MutableMap<TEMaterialPair, GetCallbackTE> = mutableMapOf()
+    private val mGetCallbacks: MutableMap<LLMaterialID, MutableList<(LLMaterialID, LLMaterialPtr) -> Unit>> = mutableMapOf()
+    private val mGetTECallbacks: MutableMap<TEMaterialPair, MutableList<(LLMaterialID, LLMaterialPtr, UInt) -> Unit>> = mutableMapOf()
     private val mGetAllQueue: MutableSet<UUID> = mutableSetOf()
     private val mGetAllRequested: MutableSet<UUID> = mutableSetOf()
     private val mGetAllPending: MutableMap<UUID, Double> = mutableMapOf()
-    private val mGetAllCallbacks: MutableMap<UUID, GetAllCallback> = mutableMapOf()
+    private val mGetAllCallbacks: MutableMap<UUID, MutableList<(UUID, MutableMap<LLMaterialID, LLMaterialPtr>) -> Unit>> = mutableMapOf()
     private val mPutQueue: MutableMap<UUID, MutableMap<UByte, LLMaterial>> = mutableMapOf()
 
     fun get(regionId: UUID, materialId: LLMaterialID): LLMaterialPtr {
-        val existing = mMaterials[materialId]
-        if (existing !== Unit) return mMaterials.getOrDefault(materialId, null)
+        if (mMaterials.containsKey(materialId)) return mMaterials[materialId]
         if (!isGetPending(regionId, materialId)) {
             mGetQueue.getOrPut(regionId) { mutableSetOf() }.add(materialId)
             markGetPending(regionId, materialId)

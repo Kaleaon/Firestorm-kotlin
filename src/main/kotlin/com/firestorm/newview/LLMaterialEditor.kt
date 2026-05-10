@@ -4,23 +4,21 @@ import java.util.UUID
 
 // Dirty flags for tracking which material properties have unsaved changes.
 object MaterialDirtyFlags {
-    const val MATERIAL_BASE_COLOR_DIRTY: UInt                   = 0x1u shl 0
-    const val MATERIAL_BASE_COLOR_TEX_DIRTY: UInt               = 0x1u shl 1
-    const val MATERIAL_NORMAL_TEX_DIRTY: UInt                   = 0x1u shl 2
-    const val MATERIAL_METALLIC_ROUGHTNESS_TEX_DIRTY: UInt      = 0x1u shl 3
-    const val MATERIAL_METALLIC_ROUGHTNESS_METALNESS_DIRTY: UInt = 0x1u shl 4
-    const val MATERIAL_METALLIC_ROUGHTNESS_ROUGHNESS_DIRTY: UInt = 0x1u shl 5
-    const val MATERIAL_EMISIVE_COLOR_DIRTY: UInt                = 0x1u shl 6
-    const val MATERIAL_EMISIVE_TEX_DIRTY: UInt                  = 0x1u shl 7
-    const val MATERIAL_DOUBLE_SIDED_DIRTY: UInt                 = 0x1u shl 8
-    const val MATERIAL_ALPHA_MODE_DIRTY: UInt                   = 0x1u shl 9
-    const val MATERIAL_ALPHA_CUTOFF_DIRTY: UInt                 = 0x1u shl 10
+    val MATERIAL_BASE_COLOR_DIRTY: UInt                    = 0x1u shl 0
+    val MATERIAL_BASE_COLOR_TEX_DIRTY: UInt                = 0x1u shl 1
+    val MATERIAL_NORMAL_TEX_DIRTY: UInt                    = 0x1u shl 2
+    val MATERIAL_METALLIC_ROUGHTNESS_TEX_DIRTY: UInt       = 0x1u shl 3
+    val MATERIAL_METALLIC_ROUGHTNESS_METALNESS_DIRTY: UInt = 0x1u shl 4
+    val MATERIAL_METALLIC_ROUGHTNESS_ROUGHNESS_DIRTY: UInt = 0x1u shl 5
+    val MATERIAL_EMISIVE_COLOR_DIRTY: UInt                 = 0x1u shl 6
+    val MATERIAL_EMISIVE_TEX_DIRTY: UInt                   = 0x1u shl 7
+    val MATERIAL_DOUBLE_SIDED_DIRTY: UInt                  = 0x1u shl 8
+    val MATERIAL_ALPHA_MODE_DIRTY: UInt                    = 0x1u shl 9
+    val MATERIAL_ALPHA_CUTOFF_DIRTY: UInt                  = 0x1u shl 10
 }
 
 class LLFloaterComboOptions {
-    typealias ComboCallback = (String, Int) -> Unit
-
-    private var mCallback: ComboCallback? = null
+    private var mCallback: ((String, Int) -> Unit)? = null
     private var mTitle: String = ""
     private var mDescription: String = ""
     private val mOptions: MutableList<String> = mutableListOf()
@@ -29,7 +27,7 @@ class LLFloaterComboOptions {
 
     companion object {
         fun showUI(
-            callback: ComboCallback,
+            callback: (String, Int) -> Unit,
             title: String,
             description: String,
             options: List<String>
@@ -42,7 +40,7 @@ class LLFloaterComboOptions {
         }
 
         fun showUI(
-            callback: ComboCallback,
+            callback: (String, Int) -> Unit,
             title: String,
             description: String,
             okText: String,
@@ -220,9 +218,7 @@ class LLMaterialEditor(private val key: Any) {
         TODO("APR: use JVM equivalent — handle inventory change notification")
     }
 
-    typealias UploadCallbackF = (UUID, Any) -> Unit
-
-    fun saveTexture(name: String, assetId: UUID, cb: UploadCallbackF) {
+    fun saveTexture(name: String, assetId: UUID, cb: (UUID, Any) -> Unit) {
         TODO("APR: use JVM equivalent — encode J2C texture and upload to asset service")
     }
 

@@ -19,7 +19,7 @@ class LLLocalGLTFMaterial(filename: String, index: Int) : LLFetchedGLTFMaterial(
     private var mMaterialIndex: Int = index
 
     init {
-        mExtension = when (File(filename).extension.lowercase()) {
+        mExtension = when (File(filename).extension.toLowerCase()) {
             "gltf" -> Extension.ET_MATERIAL_GLTF
             "glb"  -> Extension.ET_MATERIAL_GLB
             else   -> throw IllegalArgumentException("No valid GLTF extension for file: $filename")
@@ -101,7 +101,7 @@ object LLLocalGLTFMaterialMgr {
     private val mTimer = LLLocalGLTFMaterialTimer()
 
     fun addUnit(filenames: MutableList<String>): Int =
-        filenames.filter { it.isNotEmpty() }.sumOf { addUnit(it) }
+        filenames.filter { it.isNotEmpty() }.fold(0) { acc, f -> acc + addUnit(f) }
 
     fun addUnit(filename: String): Int {
         TODO("APR: use JVM equivalent — LLTinyGLTFHelper.loadModel($filename) to count materials, then addUnit per index")

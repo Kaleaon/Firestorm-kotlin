@@ -8,13 +8,13 @@ import com.firestorm.llcommon.LLUUID
 object LLPathfindingManager {
 
     // ---- capability service name constants ----
-    private const val CAP_RETRIEVE_NAVMESH        = "RetrieveNavMeshSrc"
-    private const val CAP_NAVMESH_STATUS          = "NavMeshGenerationStatus"
-    private const val CAP_GET_OBJECT_LINKSETS     = "RegionObjects"
-    private const val CAP_SET_OBJECT_LINKSETS     = "ObjectNavMeshProperties"
-    private const val CAP_TERRAIN_LINKSETS        = "TerrainNavMeshProperties"
-    private const val CAP_CHARACTERS              = "CharacterProperties"
-    private const val CAP_AGENT_STATE             = "AgentState"
+    private const val CAP_RETRIEVE_NAVMESH         = "RetrieveNavMeshSrc"
+    private const val CAP_NAVMESH_STATUS           = "NavMeshGenerationStatus"
+    private const val CAP_GET_OBJECT_LINKSETS      = "RegionObjects"
+    private const val CAP_SET_OBJECT_LINKSETS      = "ObjectNavMeshProperties"
+    private const val CAP_TERRAIN_LINKSETS         = "TerrainNavMeshProperties"
+    private const val CAP_CHARACTERS               = "CharacterProperties"
+    private const val CAP_AGENT_STATE              = "AgentState"
     private const val AGENT_STATE_CAN_REBAKE_FIELD = "can_modify_navmesh"
 
     // ---- public type aliases ----
@@ -55,7 +55,7 @@ object LLPathfindingManager {
     fun isPathfindingEnabledForCurrentRegion(): Boolean =
         isPathfindingEnabledForRegion(getCurrentRegion())
 
-    fun isPathfindingEnabledForRegion(region: LLViewerRegion?): Boolean =
+    fun isPathfindingEnabledForRegion(region: ViewerRegion?): Boolean =
         getRetrieveNavMeshURLForRegion(region).isNotEmpty()
 
     fun isAllowViewTerrainProperties(): Boolean {
@@ -65,18 +65,18 @@ object LLPathfindingManager {
     // ---- nav mesh ----
 
     fun registerNavMeshListenerForRegion(
-        region: LLViewerRegion?,
+        region: ViewerRegion?,
         callback: LLPathfindingNavMesh.NavMeshCallback
     ): LLPathfindingNavMesh.NavMeshCallback =
         getNavMeshForRegion(region).registerNavMeshListener(callback)
 
-    fun requestGetNavMeshForRegion(region: LLViewerRegion?, isGetStatusOnly: Boolean) {
+    fun requestGetNavMeshForRegion(region: ViewerRegion?, isGetStatusOnly: Boolean) {
         val navMesh = getNavMeshForRegion(region)
         when {
             region == null -> navMesh.handleNavMeshNotEnabled()
             !region.capabilitiesReceived() -> {
                 navMesh.handleNavMeshWaitForRegionLoad()
-                region.setCapabilitiesReceivedCallback { regionUUID ->
+                region.addCapsReceivedCallback { regionUUID, _ ->
                     handleDeferredGetNavMeshForRegion(regionUUID, isGetStatusOnly)
                 }
             }
@@ -85,8 +85,7 @@ object LLPathfindingManager {
                 val statusUrl = getNavMeshStatusURLForRegion(region)
                 check(statusUrl.isNotEmpty())
                 navMesh.handleNavMeshCheckVersion()
-                val regionHandle = region.handle
-                navMeshStatusRequestCoro(statusUrl, regionHandle, isGetStatusOnly)
+                navMeshStatusRequestCoro(statusUrl, region.handle, isGetStatusOnly)
             }
         }
     }
@@ -99,7 +98,7 @@ object LLPathfindingManager {
             currentRegion == null -> callback(requestId, ERequestStatus.REQUEST_NOT_ENABLED, null)
             !currentRegion.capabilitiesReceived() -> {
                 callback(requestId, ERequestStatus.REQUEST_STARTED, null)
-                currentRegion.setCapabilitiesReceivedCallback { regionUUID ->
+                currentRegion.addCapsReceivedCallback { regionUUID, _ ->
                     handleDeferredGetLinksetsForRegion(regionUUID, requestId, callback)
                 }
             }
@@ -162,7 +161,7 @@ object LLPathfindingManager {
             currentRegion == null -> callback(requestId, ERequestStatus.REQUEST_NOT_ENABLED, null)
             !currentRegion.capabilitiesReceived() -> {
                 callback(requestId, ERequestStatus.REQUEST_STARTED, null)
-                currentRegion.setCapabilitiesReceivedCallback { regionUUID ->
+                currentRegion.addCapsReceivedCallback { regionUUID, _ ->
                     handleDeferredGetCharactersForRegion(regionUUID, requestId, callback)
                 }
             }
@@ -194,7 +193,7 @@ object LLPathfindingManager {
         when {
             currentRegion == null -> fireAgentStateSignal(false)
             !currentRegion.capabilitiesReceived() ->
-                currentRegion.setCapabilitiesReceivedCallback { regionUUID ->
+                currentRegion.addCapsReceivedCallback { regionUUID, _ ->
                     handleDeferredGetAgentStateForRegion(regionUUID)
                 }
             !isPathfindingEnabledForRegion(currentRegion) -> fireAgentStateSignal(false)
@@ -249,7 +248,7 @@ object LLPathfindingManager {
 
     // ---- coroutine stubs (replace with JVM async HTTP) ----
 
-    private fun navMeshStatusRequestCoro(url: String, regionHandle: Long, isGetStatusOnly: Boolean) {
+    private fun navMeshStatusRequestCoro(url: String, regionHandle: ULong, isGetStatusOnly: Boolean) {
         TODO("APR: use JVM equivalent — GET $url, parse LLPathfindingNavMeshStatus, call navMesh handle* methods")
     }
 
@@ -276,7 +275,7 @@ object LLPathfindingManager {
         TODO("APR: use JVM equivalent — GET $url, wrap result in LLPathfindingCharacterList, call callback")
     }
 
-    // ---- internal state updates (called from sim-push message handlers) ----
+    // ---- internal state updates (invoked from sim-push message handlers) ----
 
     internal fun handleNavMeshStatusUpdate(navMeshStatus: LLPathfindingNavMeshStatus) {
         val navMesh = getNavMeshForRegion(navMeshStatus.regionUUID)
@@ -297,7 +296,7 @@ object LLPathfindingManager {
     private fun getNavMeshForRegion(regionUUID: LLUUID): LLPathfindingNavMesh =
         navMeshMap.getOrPut(regionUUID) { LLPathfindingNavMesh(regionUUID) }
 
-    private fun getNavMeshForRegion(region: LLViewerRegion?): LLPathfindingNavMesh =
+    private fun getNavMeshForRegion(region: ViewerRegion?): LLPathfindingNavMesh =
         getNavMeshForRegion(region?.regionId ?: LLUUID.NULL)
 
     // ---- capability URL helpers ----
@@ -305,10 +304,10 @@ object LLPathfindingManager {
     private fun getNavMeshStatusURLForCurrentRegion(): String =
         getNavMeshStatusURLForRegion(getCurrentRegion())
 
-    private fun getNavMeshStatusURLForRegion(region: LLViewerRegion?): String =
+    private fun getNavMeshStatusURLForRegion(region: ViewerRegion?): String =
         getCapabilityURLForRegion(region, CAP_NAVMESH_STATUS)
 
-    private fun getRetrieveNavMeshURLForRegion(region: LLViewerRegion?): String =
+    private fun getRetrieveNavMeshURLForRegion(region: ViewerRegion?): String =
         getCapabilityURLForRegion(region, CAP_RETRIEVE_NAVMESH)
 
     private fun getRetrieveObjectLinksetsURLForCurrentRegion(): String =
@@ -323,13 +322,13 @@ object LLPathfindingManager {
     private fun getCharactersURLForCurrentRegion(): String =
         getCapabilityURLForCurrentRegion(CAP_CHARACTERS)
 
-    private fun getAgentStateURLForRegion(region: LLViewerRegion?): String =
+    private fun getAgentStateURLForRegion(region: ViewerRegion?): String =
         getCapabilityURLForRegion(region, CAP_AGENT_STATE)
 
     private fun getCapabilityURLForCurrentRegion(capabilityName: String): String =
         getCapabilityURLForRegion(getCurrentRegion(), capabilityName)
 
-    private fun getCapabilityURLForRegion(region: LLViewerRegion?, capabilityName: String): String {
+    private fun getCapabilityURLForRegion(region: ViewerRegion?, capabilityName: String): String {
         if (region != null) {
             val url = region.getCapability(capabilityName)
             if (url.isNotEmpty()) return url
@@ -337,7 +336,7 @@ object LLPathfindingManager {
         return ""
     }
 
-    private fun getCurrentRegion(): LLViewerRegion? {
+    private fun getCurrentRegion(): ViewerRegion? {
         TODO("APR: use JVM equivalent of gAgent.getRegion()")
     }
 

@@ -1,10 +1,7 @@
 package com.firestorm.llui
 
-import kotlin.math.min
-import kotlin.math.max
+import com.firestorm.llmath.Rect
 import kotlin.math.roundToLong
-
-private const val MAX_STRING_LENGTH = 255
 
 private fun clampPrecision(value: Float, decimalPrecision: Int): Float {
     var v = value.toDouble()
@@ -14,50 +11,54 @@ private fun clampPrecision(value: Float, decimalPrecision: Int): Float {
     return v.toFloat()
 }
 
-open class TextBox(var text: String = "", var color: Any? = null) {
-    fun setText(t: String) { text = t }
-    fun setTextArg(key: String, replacement: String) {}
-    fun setColor(c: Any?) { color = c }
-}
-
 open class SpinCtrl(
+    name: String,
+    rect: Rect = Rect(),
     var minValue: Float = 0f,
     var maxValue: Float = 1f,
     var increment: Float = 0.1f,
     var precision: Int = 3,
-    var labelWidth: Int = 0,
-    allowTextEntry: Boolean = true,
     allowDigitsOnly: Boolean = false,
-    dynamicButtonHeight: Boolean = false,
     textEnabledColor: Any? = null,
     textDisabledColor: Any? = null,
-    labelText: String = "",
-    editorFactory: () -> LineEditor = { LineEditor() },
-    upButtonFactory: () -> Button = { Button("up") },
-    downButtonFactory: () -> Button = { Button("down") },
-    labelBoxFactory: ((String) -> TextBox)? = null
-) : UiCtrl() {
+    labelText: String = ""
+) : View(name, rect) {
 
     private var currentValue: Float = minValue
     var initialValue: Float = minValue
-    private var hasBeenSet: Boolean = false
-    private var allowEdit: Boolean = allowTextEntry
+        private set
 
-    private val labelBox: TextBox? = if (labelText.isNotEmpty()) labelBoxFactory?.invoke(labelText) ?: TextBox(labelText) else null
-    private val editor: LineEditor = editorFactory()
-    private val upBtn: Button = upButtonFactory()
-    private val downBtn: Button = downButtonFactory()
+    private var hasBeenSet: Boolean = false
+
+    val labelBox: TextBox? = if (labelText.isNotEmpty()) TextBox("SpinCtrl Label") else null
+    val editor: LineEditor = LineEditor("SpinCtrl Editor")
+    val upBtn: Button = Button("up_btn")
+    val downBtn: Button = Button("down_btn")
+
     private var textEnabledColor: Any? = textEnabledColor
     private var textDisabledColor: Any? = textDisabledColor
 
     init {
-        editor.commitCallback = { _, _ -> onEditorCommit() }
-        editor.setSelectAllOnCommit(false)
+        labelBox?.let { addChild(it) }
+        addChild(upBtn)
+        addChild(downBtn)
+        addChild(editor)
+
+        upBtn.clickCallback = { onUpBtn() }
+        downBtn.clickCallback = { onDownBtn() }
+        editor.commitCallback = { onEditorCommit() }
         updateEditor()
     }
 
+    fun get(): Float = currentValue
+
+    fun set(value: Float) {
+        setValue(value)
+        initialValue = value
+    }
+
     open fun getValue(): Any? = currentValue
-    open fun getValueF32(): Float = currentValue
+    fun getValueF32(): Float = currentValue
 
     open fun setValue(value: Any?) {
         val v = value?.toString()?.toFloatOrNull() ?: return
@@ -67,6 +68,8 @@ open class SpinCtrl(
             if (!editor.hasFocus()) updateEditor()
         }
     }
+
+    fun setValue(v: Float) = setValue(v as Any?)
 
     open fun forceSetValue(value: Any?) {
         val v = value?.toString()?.toFloatOrNull() ?: return
@@ -78,45 +81,45 @@ open class SpinCtrl(
         }
     }
 
-    fun get(): Float = getValueF32()
-    fun set(value: Float) {
-        setValue(value)
-        initialValue = value
-    }
-
     fun isMouseHeldDown(): Boolean = downBtn.isHeld() || upBtn.isHeld()
 
-    open fun setEnabled(b: Boolean) {
-        editor.setEnabled(b)
+    override fun setEnabled(enabled: Boolean) {
+        super.setEnabled(enabled)
+        editor.enabled = enabled
         updateLabelColor()
     }
 
     open fun setFocus(b: Boolean) {
+        super.setEnabled(b)
         editor.setFocus(b)
     }
 
     open fun clear() {
         setValue(minValue)
-        editor.clear()
+        editor.setText("")
         hasBeenSet = false
     }
 
-    open fun isDirty(): Boolean = getValueF32() != initialValue
-    open fun resetDirty() { initialValue = getValueF32() }
+    fun isDirty(): Boolean = currentValue != initialValue
+    fun resetDirty() { initialValue = currentValue }
 
     open fun setPrecision(p: Int) {
-        require(p in 0..10) { "Precision out of range: $p" }
+        require(p in 0..10) { "SpinCtrl precision out of range: $p" }
         precision = p
         updateEditor()
     }
 
     fun setLabel(label: String) {
-        labelBox?.setText(label) ?: run { /* no label box, warn */ }
+        labelBox?.setText(label) ?: run {
+            TODO("GPU: warn — no label box present for setLabel on $name")
+        }
         updateLabelColor()
     }
 
     open fun setLabelArg(key: String, text: String): Boolean {
-        labelBox?.setTextArg(key, text) ?: run { /* no label box, warn */ }
+        labelBox?.setTextArg(key, text) ?: run {
+            TODO("GPU: warn — no label box present for setLabelArg on $name")
+        }
         updateLabelColor()
         return true
     }
@@ -124,14 +127,9 @@ open class SpinCtrl(
     fun setLabelColor(c: Any?) { textEnabledColor = c; updateLabelColor() }
     fun setDisabledLabelColor(c: Any?) { textDisabledColor = c; updateLabelColor() }
 
-    fun setAllowEdit(allowEdit: Boolean) {
-        editor.setEnabled(allowEdit)
-        this.allowEdit = allowEdit
-    }
+    fun setAllowEdit(allowEdit: Boolean) { editor.enabled = allowEdit }
 
-    open fun onTabInto() {
-        editor.onTabInto()
-    }
+    open fun onTabInto() { editor.onTabInto() }
 
     open fun setTentative(b: Boolean) {
         editor.setTentative(b)
@@ -139,34 +137,27 @@ open class SpinCtrl(
 
     open fun onCommit() {
         setTentative(false)
-        setControlValue(getValueF32())
+        setControlValue(currentValue)
     }
 
-    fun forceEditorCommit() {
-        onEditorCommit()
-    }
+    fun forceEditorCommit() { onEditorCommit() }
 
     open fun handleScrollWheel(x: Int, y: Int, clicks: Int): Boolean {
         var c = clicks
-        if (c > 0) {
-            while (c-- > 0) onDownBtn()
-        } else {
-            while (c++ < 0) onUpBtn()
-        }
+        if (c > 0) while (c-- > 0) onDownBtn()
+        else while (c++ < 0) onUpBtn()
         return true
     }
 
-    open fun handleKeyHere(key: Key, mask: Int): Boolean {
+    open fun handleKeyHere(key: Int, mask: UInt): Boolean {
+        val KEY_ESCAPE = 0x1B; val KEY_UP = 0x81; val KEY_DOWN = 0x82
         if (editor.hasFocus()) {
             return when (key) {
-                Key.ESCAPE -> {
-                    updateEditor()
-                    editor.resetScrollPosition()
-                    editor.setFocus(false)
-                    true
+                KEY_ESCAPE -> {
+                    updateEditor(); editor.resetScrollPosition(); editor.setFocus(false); true
                 }
-                Key.UP -> { onUpBtn(); true }
-                Key.DOWN -> { onDownBtn(); true }
+                KEY_UP -> { onUpBtn(); true }
+                KEY_DOWN -> { onDownBtn(); true }
                 else -> false
             }
         }
@@ -174,89 +165,56 @@ open class SpinCtrl(
     }
 
     fun onUpBtn() {
-        if (!isEnabled()) return
-        val text = editor.getText()
-        val curVal = text.toFloatOrNull() ?: return
+        if (!enabled) return
+        val curVal = editor.getText().toFloatOrNull() ?: return
         val inc = increment * modifiedIncrement()
-        var v = clampPrecision(curVal + inc, precision)
-        v = v.coerceIn(minValue, maxValue)
-
-        val savedVal = getValueF32()
+        var v = clampPrecision(curVal + inc, precision).coerceIn(minValue, maxValue)
+        val saved = currentValue
         setValue(v)
-        if (!validateValue(v)) {
-            setValue(savedVal)
-            reportInvalidData()
-            updateEditor()
-            return
-        }
-        updateEditor()
-        onCommit()
+        if (!validateValue(v)) { setValue(saved); reportInvalidData(); updateEditor(); return }
+        updateEditor(); onCommit()
     }
 
     fun onDownBtn() {
-        if (!isEnabled()) return
-        val text = editor.getText()
-        val curVal = text.toFloatOrNull() ?: return
+        if (!enabled) return
+        val curVal = editor.getText().toFloatOrNull() ?: return
         val inc = increment * modifiedIncrement()
-        var v = clampPrecision(curVal - inc, precision)
-        v = v.coerceIn(minValue, maxValue)
-
-        val savedVal = getValueF32()
+        var v = clampPrecision(curVal - inc, precision).coerceIn(minValue, maxValue)
+        val saved = currentValue
         setValue(v)
-        if (!validateValue(v)) {
-            setValue(savedVal)
-            reportInvalidData()
-            updateEditor()
-            return
-        }
-        updateEditor()
-        onCommit()
+        if (!validateValue(v)) { setValue(saved); reportInvalidData(); updateEditor(); return }
+        updateEditor(); onCommit()
     }
 
-    fun onEditorGainFocus() {
-        onFocusReceived()
-    }
+    fun onEditorGainFocus() { onFocusReceived() }
 
     fun onEditorLostFocus() {
         onFocusLost()
-        val text = editor.getText()
-        val v = text.toFloatOrNull() ?: return
-        val savedVal = getValueF32()
-        if (savedVal != v && !editor.isDirty()) {
-            updateEditor()
-        }
+        val v = editor.getText().toFloatOrNull() ?: return
+        if (currentValue != v && !editor.isDirty()) updateEditor()
     }
 
     private fun onEditorCommit() {
         var success = false
         if (editor.evaluateFloat()) {
-            val text = editor.getText()
-            var v = text.toFloatOrNull() ?: getValueF32()
-            v = v.coerceIn(minValue, maxValue)
-            val savedVal = getValueF32()
+            var v = editor.getText().toFloatOrNull()?.coerceIn(minValue, maxValue) ?: currentValue
+            val saved = currentValue
             setValue(v)
-            if (validateValue(v)) {
-                success = true
-                onCommit()
-            } else {
-                setValue(savedVal)
-            }
+            if (validateValue(v)) { success = true; onCommit() } else setValue(saved)
         }
         updateEditor()
-        if (success) {
-            editor.resetScrollPosition()
-        } else {
-            reportInvalidData()
-        }
+        if (success) editor.resetScrollPosition() else reportInvalidData()
     }
 
     private fun updateLabelColor() {
-        labelBox?.setColor(if (isEnabled()) textEnabledColor else textDisabledColor)
+        labelBox?.setColor(if (enabled) textEnabledColor else textDisabledColor)
     }
 
     private fun updateEditor() {
-        val displayed = clampPrecision(getValueF32(), precision)
-        editor.setText(displayed.toBigDecimal().setScale(precision, java.math.RoundingMode.HALF_UP).toPlainString())
+        val displayed = clampPrecision(currentValue, precision)
+        editor.setText(displayed.toBigDecimal()
+            .setScale(precision, java.math.RoundingMode.HALF_UP)
+            .toPlainString())
     }
 
     private fun reportInvalidData() {
@@ -265,16 +223,19 @@ open class SpinCtrl(
 
     open fun validateValue(v: Float): Boolean = true
     open fun modifiedIncrement(): Float = 1f
-    open fun isEnabled(): Boolean = true
     open fun setControlValue(v: Float) {}
-    open fun makeUiSound(name: String) {}
+    open fun makeUiSound(sound: String) {}
     open fun onFocusReceived() {}
     open fun onFocusLost() {}
-    open fun setEnabled2(b: Boolean) {}
 }
 
-private fun LineEditor.setSelectAllOnCommit(b: Boolean) {}
-private fun LineEditor.setEnabled(b: Boolean) {}
+private fun Button.isHeld(): Boolean = false
+private fun LineEditor.hasFocus(): Boolean = false
+private fun LineEditor.setFocus(b: Boolean) {}
+private fun LineEditor.isDirty(): Boolean = false
+private fun LineEditor.evaluateFloat(): Boolean = getText().toFloatOrNull() != null
+private fun LineEditor.resetScrollPosition() {}
 private fun LineEditor.setTentative(b: Boolean) {}
 private fun LineEditor.onTabInto() {}
-private fun Button.isHeld(): Boolean = false
+private fun TextBox.setColor(c: Any?) {}
+private fun TextBox.setTextArg(key: String, text: String) {}

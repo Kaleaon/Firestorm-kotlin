@@ -73,7 +73,6 @@ open class ScrollContainer(
     init {
         border.visible = borderVisible
         innerRect = localRect().stretch(-getBorderWidth())
-        addChild(border)
         addChild(scrollbar[ScrollOrientation.VERTICAL.ordinal])
         addChild(scrollbar[ScrollOrientation.HORIZONTAL.ordinal])
     }

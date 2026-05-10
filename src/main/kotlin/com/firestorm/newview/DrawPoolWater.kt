@@ -18,13 +18,11 @@ class DrawPoolWater : FacePool(DrawPool.PoolType.WATER.value.toUInt()) {
     private val waterNormp: Array<ViewerTexture?> = arrayOfNulls(2)
     private var opaqueWaterImagep: ViewerTexture? = null
 
-    // Cached setting to avoid per-frame setting lookup.
+    // Cached to avoid per-frame settings lookup — updated via settings signal.
     private var renderWaterMipNormal: Boolean = false
 
     init {
         onRenderWaterMipNormalChanged()
-        // Registering the settings change listener uses platform signal machinery.
-        // Attach via your settings-change mechanism to call onRenderWaterMipNormalChanged().
     }
 
     override fun getVertexDataMask(): UInt = VERTEX_DATA_MASK
@@ -50,22 +48,15 @@ class DrawPoolWater : FacePool(DrawPool.PoolType.WATER.value.toUInt()) {
     }
 
     override fun beginPostDeferredPass(pass: Int) {
-        TODO("GPU: setColorMask true/true; if transparent water: copy framebuffer to water distortion render target using gCopyDepthProgram and screen triangle VB")
+        TODO("GPU: setColorMask true/true; if transparent water: copy framebuffer to water distortion render target via gCopyDepthProgram and screen triangle VB")
     }
 
     override fun renderPostDeferred(pass: Int) {
-        TODO("GPU: disable blend; collect environment light/sky/water settings; select underwater or surface water shader; bind deferred shader with water distortion target; bind normal map textures with blend factor; set all water uniforms (fog, wave dirs, specular, refraction scale, exposure, tonemap); disable cull face; pushWaterPlanes(0); unbind deferred shader; restore color mask")
+        TODO("GPU: disable blend; collect environment light/sky/water settings; select underwater or surface shader; bind deferred shader with water distortion target; bind normal map textures with blend factor; set water uniforms (fog, wave dirs, specular, refraction scale, exposure, tonemap); disable cull face; pushWaterPlanes(0); unbind deferred shader; restore color mask")
     }
 
     fun pushWaterPlanes(pass: Int) {
-        for (face in drawFace) {
-            val water = face.getViewerObject() as? WaterObject
-            face.renderIndexed()
-            if (water != null && !water.isEdgePatch) {
-                needsReflectionUpdate = true
-                needsDistortionUpdate = true
-            }
-        }
+        TODO("GPU: for each face in drawFace: cast viewer object to VOWater; renderIndexed; if !isEdgePatch: set needsReflectionUpdate and needsDistortionUpdate")
     }
 
     override fun getDebugTexture(): ViewerTexture? {
@@ -81,17 +72,4 @@ class DrawPoolWater : FacePool(DrawPool.PoolType.WATER.value.toUInt()) {
     private fun renderOpaqueLegacyWater() {
         TODO("GPU: render opaque water surface using legacy shader path")
     }
-}
-
-
-open class WaterObject : ViewerObject() {
-    open val isEdgePatch: Boolean = false
-}
-
-open class ViewerObject {
-    open fun getRegion(): Any? = null
-}
-
-fun Face.getViewerObject(): ViewerObject? {
-    TODO("GPU: return the viewer object associated with this face's drawable")
 }

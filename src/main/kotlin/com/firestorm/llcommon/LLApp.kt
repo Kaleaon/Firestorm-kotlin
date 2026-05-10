@@ -2,107 +2,149 @@ package com.firestorm.llcommon
 
 import java.util.concurrent.atomic.AtomicReference
 
+/**
+ * Application lifecycle base class, translated from llapp.h / llapp.cpp.
+ *
+ * Subclasses must implement [init], [mainLoop], and [cleanup].  The static
+ * helper methods on [LLApp.Companion] mirror the C++ static API so that any
+ * thread can query or change the global application status without holding a
+ * reference to the concrete instance.
+ *
+ * Signal handling is mapped to JVM shutdown hooks and a simple handler map;
+ * the POSIX signal numbers are preserved as Int keys for source compatibility.
+ *
+ * C++ counterpart: indra/llcommon/llapp.h + llapp.cpp
+ */
 abstract class LLApp {
 
-    enum class AppStatus { RUNNING, QUITTING, STOPPED, ERROR }
+    // -------------------------------------------------------------------------
+    // Status enum – matches EAppStatus in the C++ source exactly, plus
+    // UNINITIALIZED which is used before the app has been started.
+    // -------------------------------------------------------------------------
+    enum class AppStatus {
+        UNINITIALIZED,  // Before init() has been called
+        RUNNING,        // Normal operation
+        QUITTING,       // Clean shutdown in progress
+        STOPPED,        // Fully stopped
+        ERROR           // Fatal error; error handler should run
+    }
 
-    private val status: AtomicReference<AppStatus> = AtomicReference(AppStatus.STOPPED)
+    // -------------------------------------------------------------------------
+    // Per-instance status (kept in sync with the global companion status)
+    // -------------------------------------------------------------------------
+    private val _status: AtomicReference<AppStatus> = AtomicReference(AppStatus.UNINITIALIZED)
 
+    val status: AppStatus get() = _status.get()
+
+    val isRunning: Boolean  get() = _status.get() == AppStatus.RUNNING
+    val isQuitting: Boolean get() = _status.get() == AppStatus.QUITTING
+    val isStopped: Boolean  get() = _status.get() == AppStatus.STOPPED
+    val isError: Boolean    get() = _status.get() == AppStatus.ERROR
+    val isExiting: Boolean  get() = isQuitting || isError
+
+    // -------------------------------------------------------------------------
+    // Abstract lifecycle methods (override in concrete subclasses)
+    // -------------------------------------------------------------------------
     abstract fun init(): Boolean
     abstract fun mainLoop(): Boolean
     abstract fun cleanup(): Boolean
 
-    fun getStatus(): AppStatus = status.get()
+    // -------------------------------------------------------------------------
+    // Signal handling
+    // JVM does not expose raw POSIX signals, so we store user-supplied handlers
+    // keyed by signal number and register a single JVM shutdown hook the first
+    // time any signal handler is installed.  The shutdown hook fires SIGTERM (15)
+    // semantics by calling every registered handler.
+    // -------------------------------------------------------------------------
+    private val signalHandlers: MutableMap<Int, (Int) -> Unit> = mutableMapOf()
 
-    fun setStatus(s: AppStatus) {
-        status.set(s)
-        companion.statusRef.set(s)
+    fun setSignal(signal: Int, handler: (Int) -> Unit) {
+        signalHandlers[signal] = handler
+        // Register a JVM shutdown hook that will invoke this handler so that
+        // Ctrl-C / SIGTERM from the OS triggers the registered logic.
+        Runtime.getRuntime().addShutdownHook(Thread({
+            signalHandlers[signal]?.invoke(signal)
+        }, "LLApp-signal-$signal").also { it.isDaemon = false })
     }
 
-    fun isRunning(): Boolean = status.get() == AppStatus.RUNNING
-    fun isQuitting(): Boolean = status.get() == AppStatus.QUITTING
-    fun isError(): Boolean = status.get() == AppStatus.ERROR
-    fun isStopped(): Boolean = status.get() == AppStatus.STOPPED
-    fun isExiting(): Boolean = isQuitting() || isError()
-
-    // Runs the full application lifecycle. Blocks until the app exits.
+    // -------------------------------------------------------------------------
+    // Full run loop – blocks until the app exits.
+    // -------------------------------------------------------------------------
     fun run() {
-        setStatus(AppStatus.RUNNING)
-        startShutdownWatcher()
+        Companion.setStatus(AppStatus.RUNNING)
+        _status.set(AppStatus.RUNNING)
         try {
             if (!init()) {
-                setStatus(AppStatus.ERROR)
+                Companion.setStatus(AppStatus.ERROR)
+                _status.set(AppStatus.ERROR)
                 return
             }
-            while (isRunning()) {
-                if (!mainLoop()) {
-                    break
-                }
+            while (isRunning) {
+                if (!mainLoop()) break
             }
         } catch (t: Throwable) {
-            setStatus(AppStatus.ERROR)
-            LLError.Log.error("LLApp", "Unhandled exception in run(): ${t.message}")
+            Companion.setStatus(AppStatus.ERROR)
+            _status.set(AppStatus.ERROR)
             throw t
         } finally {
             try {
                 cleanup()
             } finally {
-                setStatus(AppStatus.STOPPED)
+                Companion.setStatus(AppStatus.STOPPED)
+                _status.set(AppStatus.STOPPED)
             }
         }
     }
 
-    // Starts a daemon thread that watches for the QUITTING signal and logs it.
-    private fun startShutdownWatcher() {
-        val app = this
-        Thread(null, {
-            while (app.isRunning()) {
-                Thread.sleep(100)
-            }
-            if (app.isQuitting()) {
-                LLError.Log.info("LLApp", "Application is quitting — shutdown watcher notified")
-            }
-        }, "LLApp-shutdown-watcher").also { it.isDaemon = true }.start()
-    }
-
+    // -------------------------------------------------------------------------
+    // Companion – mirrors C++ static LLApp members
+    // -------------------------------------------------------------------------
     companion object {
-        internal val statusRef: AtomicReference<AppStatus> = AtomicReference(AppStatus.STOPPED)
+        private val globalStatus: AtomicReference<AppStatus> =
+            AtomicReference(AppStatus.UNINITIALIZED)
 
         @Volatile private var instance: LLApp? = null
 
-        @JvmStatic
-        fun getInstance(): LLApp? = instance
+        // --- Static status helpers -------------------------------------------
 
-        @JvmStatic
-        fun setInstance(app: LLApp) {
-            instance = app
-        }
+        @JvmStatic fun getStatus(): AppStatus = globalStatus.get()
 
-        @JvmStatic
-        fun isRunning(): Boolean = statusRef.get() == AppStatus.RUNNING
+        @JvmStatic fun setStatus(s: AppStatus) { globalStatus.set(s) }
 
-        @JvmStatic
-        fun isQuitting(): Boolean = statusRef.get() == AppStatus.QUITTING
+        @JvmStatic fun isRunning():  Boolean = globalStatus.get() == AppStatus.RUNNING
+        @JvmStatic fun isQuitting(): Boolean = globalStatus.get() == AppStatus.QUITTING
+        @JvmStatic fun isStopped():  Boolean = globalStatus.get() == AppStatus.STOPPED
+        @JvmStatic fun isError():    Boolean = globalStatus.get() == AppStatus.ERROR
+        @JvmStatic fun isExiting():  Boolean = isQuitting() || isError()
 
-        @JvmStatic
-        fun isError(): Boolean = statusRef.get() == AppStatus.ERROR
+        @JvmStatic fun setQuitting() { globalStatus.set(AppStatus.QUITTING) }
+        @JvmStatic fun setStopped()  { globalStatus.set(AppStatus.STOPPED) }
+        @JvmStatic fun setError()    { globalStatus.set(AppStatus.ERROR) }
 
-        @JvmStatic
-        fun isStopped(): Boolean = statusRef.get() == AppStatus.STOPPED
+        @JvmStatic fun getPid(): Int = ProcessHandle.current().pid().toInt()
 
-        @JvmStatic
-        fun isExiting(): Boolean = isQuitting() || isError()
+        // --- Singleton instance management ------------------------------------
 
-        @JvmStatic
-        fun setQuitting() { statusRef.set(AppStatus.QUITTING) }
+        @JvmStatic fun getInstance(): LLApp? = instance
 
-        @JvmStatic
-        fun setStopped() { statusRef.set(AppStatus.STOPPED) }
+        @JvmStatic fun setInstance(app: LLApp) { instance = app }
 
-        @JvmStatic
-        fun setError() { statusRef.set(AppStatus.ERROR) }
+        // --- Crash-logger flag (stub; JVM crash handling differs from C++) ---
+        @Volatile private var crashloggerDisabled: Boolean = false
 
-        @JvmStatic
-        fun getPid(): Int = ProcessHandle.current().pid().toInt()
+        @JvmStatic fun isCrashloggerDisabled(): Boolean = crashloggerDisabled
+
+        @JvmStatic fun disableCrashlogger() { crashloggerDisabled = true }
+    }
+
+    // -------------------------------------------------------------------------
+    // Singleton placeholder object (required by spec, analogous to the C++
+    // static sApplication pointer exposed for global access).
+    // Concrete apps should replace this by calling setInstance().
+    // -------------------------------------------------------------------------
+    object App : LLApp() {
+        override fun init():     Boolean { TODO("Override App.init() in a concrete subclass") }
+        override fun mainLoop(): Boolean { TODO("Override App.mainLoop() in a concrete subclass") }
+        override fun cleanup():  Boolean { TODO("Override App.cleanup() in a concrete subclass") }
     }
 }

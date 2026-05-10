@@ -1,93 +1,46 @@
 package com.firestorm.llui
 
-data class Rect(
-    var left: Int = 0,
-    var top: Int = 0,
-    var right: Int = 0,
-    var bottom: Int = 0
-) {
-    val width: Int get() = right - left
-    val height: Int get() = top - bottom
-    fun translate(dx: Int, dy: Int) {
-        left += dx; right += dx; top += dy; bottom += dy
-    }
-}
+import com.firestorm.llmath.Rect
 
-data class CoordGL(val x: Int = 0, val y: Int = 0)
-
-enum class Side { LEFT, TOP, RIGHT, BOTTOM }
-
-enum class SnapEdge { SNAP_LEFT, SNAP_TOP, SNAP_RIGHT, SNAP_BOTTOM }
-
-enum class UiCursor { SIZE_WE, SIZE_NS }
-
-open class View(val name: String = "view") {
-    open fun getRect(): Rect = Rect()
-    open fun setRect(r: Rect) {}
-    open fun setShape(r: Rect, userOp: Boolean) {}
-    open fun translate(dx: Int, dy: Int) {}
-    open fun findSnapEdge(
-        edge: Int,
-        mouseDir: CoordGL,
-        snapEdge: SnapEdge,
-        snapMode: Int,
-        margin: Int
-    ): View? = null
-    open fun setSnappedTo(v: View?) {}
-    open fun getName(): String = name
-    open fun getRootView(): View = this
-    open fun getLocalRect(): Rect = getRect()
-    fun localPointInRect(rect: Rect, x: Int, y: Int): Boolean =
-        x in rect.left..rect.right && y in rect.bottom..rect.top
-}
-
-open class Panel(name: String = "panel") : View(name)
+enum class ResizeSide { LEFT, TOP, RIGHT, BOTTOM }
 
 open class ResizeBar(
+    name: String,
+    rect: Rect = Rect(),
     private val resizingView: View,
-    val side: Side,
+    val side: ResizeSide,
     var minSize: Int = 0,
     var maxSize: Int = Int.MAX_VALUE,
     var snappingEnabled: Boolean = true,
     var allowDoubleClickSnapping: Boolean = true
-) : View("resize_bar") {
+) : View(name, rect) {
 
     private var dragLastScreenX = 0
     private var dragLastScreenY = 0
     private var lastMouseScreenX = 0
     private var lastMouseScreenY = 0
-    private var lastMouseDir = CoordGL(0, 0)
+    private var lastMouseDirX = 0
+    private var lastMouseDirY = 0
     private var resizeListener: ((Any?) -> Unit)? = null
     private var imagePanel: Panel? = null
 
-    init {
-        // follow rules are platform-layout concerns; stub follows the C++ logic
-    }
+    fun canResize(): Boolean = enabled && maxSize > minSize
 
-    open fun isEnabled(): Boolean = true
-    fun canResize(): Boolean = isEnabled() && maxSize > minSize
-
-    open fun hasMouseCapture(): Boolean = false
-    open fun captureMouseTo(target: ResizeBar?) {}
-    open fun localPointToScreen(x: Int, y: Int): Pair<Int, Int> = Pair(x, y)
-    open fun setCursor(cursor: UiCursor) {}
-    open fun getSnapMargin(): Int = 0
-
-    open fun handleMouseDown(x: Int, y: Int, mask: Int): Boolean {
+    override fun handleMouseDown(x: Int, y: Int, mask: UInt): Boolean {
         if (!canResize()) return false
-        captureMouseTo(this)
+        TODO("APR: use JVM equivalent for gFocusMgr.setMouseCapture(this)")
         val (sx, sy) = localPointToScreen(x, y)
         dragLastScreenX = sx; dragLastScreenY = sy
         lastMouseScreenX = sx; lastMouseScreenY = sy
         return true
     }
 
-    open fun handleMouseUp(x: Int, y: Int, mask: Int): Boolean {
-        if (hasMouseCapture()) captureMouseTo(null)
+    override fun handleMouseUp(x: Int, y: Int, mask: UInt): Boolean {
+        if (hasMouseCapture()) TODO("APR: use JVM equivalent for gFocusMgr.setMouseCapture(null)")
         return true
     }
 
-    open fun handleHover(x: Int, y: Int, mask: Int): Boolean {
+    override fun handleHover(x: Int, y: Int, mask: UInt): Boolean {
         var handled = false
 
         if (hasMouseCapture()) {
@@ -95,14 +48,14 @@ open class ResizeBar(
             val deltaX = screenX - dragLastScreenX
             val deltaY = screenY - dragLastScreenY
 
-            val mouseDirX = if (screenX == lastMouseScreenX) lastMouseDir.x else screenX - lastMouseScreenX
-            val mouseDirY = if (screenY == lastMouseScreenY) lastMouseDir.y else screenY - lastMouseScreenY
-            lastMouseDir = CoordGL(mouseDirX, mouseDirY)
+            val mouseDirX = if (screenX == lastMouseScreenX) lastMouseDirX else screenX - lastMouseScreenX
+            val mouseDirY = if (screenY == lastMouseScreenY) lastMouseDirY else screenY - lastMouseScreenY
+            lastMouseDirX = mouseDirX; lastMouseDirY = mouseDirY
             lastMouseScreenX = screenX; lastMouseScreenY = screenY
 
-            val validRect = getRootView().getRect()
-            if (localPointInRect(validRect, screenX, screenY)) {
-                val origRect = resizingView.getRect()
+            val validRect = getRootView().rect
+            if (validRect.pointInRect(screenX, screenY)) {
+                val origRect = resizingView.rect.copy()
                 var scaledRect = origRect.copy()
                 var newWidth = origRect.width
                 var newHeight = origRect.height
@@ -110,74 +63,73 @@ open class ResizeBar(
                 var adjDy = deltaY
 
                 when (side) {
-                    Side.LEFT -> {
+                    ResizeSide.LEFT -> {
                         newWidth = (origRect.width - adjDx).coerceIn(minSize, maxSize)
                         adjDx = origRect.width - newWidth
-                        scaledRect.translate(adjDx, 0)
+                        scaledRect = scaledRect.translate(adjDx, 0)
                     }
-                    Side.TOP -> {
+                    ResizeSide.TOP -> {
                         newHeight = (origRect.height + adjDy).coerceIn(minSize, maxSize)
                         adjDy = newHeight - origRect.height
                     }
-                    Side.RIGHT -> {
+                    ResizeSide.RIGHT -> {
                         newWidth = (origRect.width + adjDx).coerceIn(minSize, maxSize)
                         adjDx = newWidth - origRect.width
                     }
-                    Side.BOTTOM -> {
+                    ResizeSide.BOTTOM -> {
                         newHeight = (origRect.height - adjDy).coerceIn(minSize, maxSize)
                         adjDy = origRect.height - newHeight
-                        scaledRect.translate(0, adjDy)
+                        scaledRect = scaledRect.translate(0, adjDy)
                     }
                 }
 
-                notifyParentResize(resizingView.getName(), newHeight, newWidth)
+                notifyParentResize(resizingView.name, newHeight, newWidth)
 
-                scaledRect.top = scaledRect.bottom + newHeight
-                scaledRect.right = scaledRect.left + newWidth
-                resizingView.setRect(scaledRect)
+                scaledRect = scaledRect.copy(
+                    top = scaledRect.bottom + newHeight,
+                    right = scaledRect.left + newWidth
+                )
+                resizingView.rect = scaledRect
 
+                var snapView: View? = null
                 if (snappingEnabled) {
-                    val snapMargin = getSnapMargin()
-                    val snapView = when (side) {
-                        Side.LEFT -> resizingView.findSnapEdge(scaledRect.left, lastMouseDir, SnapEdge.SNAP_LEFT, 0, snapMargin)
-                        Side.TOP -> resizingView.findSnapEdge(scaledRect.top, lastMouseDir, SnapEdge.SNAP_TOP, 0, snapMargin)
-                        Side.RIGHT -> resizingView.findSnapEdge(scaledRect.right, lastMouseDir, SnapEdge.SNAP_RIGHT, 0, snapMargin)
-                        Side.BOTTOM -> resizingView.findSnapEdge(scaledRect.bottom, lastMouseDir, SnapEdge.SNAP_BOTTOM, 0, snapMargin)
+                    val margin = snapMargin()
+                    snapView = when (side) {
+                        ResizeSide.LEFT -> resizingView.findSnapEdge(scaledRect.left, mouseDirX, mouseDirY, margin)
+                        ResizeSide.TOP -> resizingView.findSnapEdge(scaledRect.top, mouseDirX, mouseDirY, margin)
+                        ResizeSide.RIGHT -> resizingView.findSnapEdge(scaledRect.right, mouseDirX, mouseDirY, margin)
+                        ResizeSide.BOTTOM -> resizingView.findSnapEdge(scaledRect.bottom, mouseDirX, mouseDirY, margin)
                     }
-                    resizingView.setSnappedTo(snapView)
                 }
+                resizingView.setSnappedTo(snapView)
 
-                resizingView.setRect(origRect)
-                resizingView.setShape(scaledRect, true)
+                resizingView.rect = origRect
+                resizingView.setShape(scaledRect, userOp = true)
 
-                val newRect = resizingView.getRect()
+                val newRect = resizingView.rect
                 when (side) {
-                    Side.LEFT -> {
-                        val actualDx = newRect.left - origRect.left
-                        if (actualDx != adjDx) {
-                            resizingView.setShape(newRect.copy(bottom = origRect.bottom, top = origRect.top, right = origRect.right), true)
-                        }
-                        dragLastScreenX += actualDx
+                    ResizeSide.LEFT -> {
+                        val actual = newRect.left - origRect.left
+                        if (actual != adjDx) resizingView.setShape(
+                            newRect.copy(bottom = origRect.bottom, top = origRect.top, right = origRect.right), true)
+                        dragLastScreenX += actual
                     }
-                    Side.RIGHT -> {
-                        val actualDx = newRect.right - origRect.right
-                        if (actualDx != adjDx) {
-                            resizingView.setShape(newRect.copy(bottom = origRect.bottom, top = origRect.top, left = origRect.left), true)
-                        }
+                    ResizeSide.RIGHT -> {
+                        val actual = newRect.right - origRect.right
+                        if (actual != adjDx) resizingView.setShape(
+                            newRect.copy(bottom = origRect.bottom, top = origRect.top, left = origRect.left), true)
                         dragLastScreenX += newRect.right - origRect.right
                     }
-                    Side.TOP -> {
-                        val actualDy = newRect.top - origRect.top
-                        if (actualDy != adjDy) {
-                            resizingView.setShape(newRect.copy(bottom = origRect.bottom, left = origRect.left, right = origRect.right), true)
-                        }
+                    ResizeSide.TOP -> {
+                        val actual = newRect.top - origRect.top
+                        if (actual != adjDy) resizingView.setShape(
+                            newRect.copy(bottom = origRect.bottom, left = origRect.left, right = origRect.right), true)
                         dragLastScreenY += newRect.top - origRect.top
                     }
-                    Side.BOTTOM -> {
-                        val actualDy = newRect.bottom - origRect.bottom
-                        if (actualDy != adjDy) {
-                            resizingView.setShape(newRect.copy(top = origRect.top, left = origRect.left, right = origRect.right), true)
-                        }
+                    ResizeSide.BOTTOM -> {
+                        val actual = newRect.bottom - origRect.bottom
+                        if (actual != adjDy) resizingView.setShape(
+                            newRect.copy(top = origRect.top, left = origRect.left, right = origRect.right), true)
                         dragLastScreenY += newRect.bottom - origRect.bottom
                     }
                 }
@@ -189,8 +141,8 @@ open class ResizeBar(
 
         if (handled && canResize()) {
             when (side) {
-                Side.LEFT, Side.RIGHT -> setCursor(UiCursor.SIZE_WE)
-                Side.TOP, Side.BOTTOM -> setCursor(UiCursor.SIZE_NS)
+                ResizeSide.LEFT, ResizeSide.RIGHT -> TODO("GPU: set cursor to SIZE_WE")
+                ResizeSide.TOP, ResizeSide.BOTTOM -> TODO("GPU: set cursor to SIZE_NS")
             }
         }
 
@@ -198,55 +150,56 @@ open class ResizeBar(
         return handled
     }
 
-    open fun handleDoubleClick(x: Int, y: Int, mask: Int): Boolean {
+    fun handleDoubleClick(x: Int, y: Int, mask: UInt): Boolean {
         if (!snappingEnabled || !allowDoubleClickSnapping) return true
-        val origRect = resizingView.getRect()
-        val scaledRect = origRect.copy()
+        val origRect = resizingView.rect.copy()
+        var scaledRect = origRect.copy()
 
         when (side) {
-            Side.LEFT -> {
-                resizingView.findSnapEdge(scaledRect.left, CoordGL(0, 0), SnapEdge.SNAP_LEFT, 0, Int.MAX_VALUE)
-                scaledRect.left = scaledRect.right - scaledRect.width.coerceIn(minSize, maxSize)
+            ResizeSide.LEFT -> {
+                resizingView.findSnapEdge(scaledRect.left, 0, 0, Int.MAX_VALUE)
+                scaledRect = scaledRect.copy(left = scaledRect.right - scaledRect.width.coerceIn(minSize, maxSize))
             }
-            Side.TOP -> {
-                resizingView.findSnapEdge(scaledRect.top, CoordGL(0, 0), SnapEdge.SNAP_TOP, 0, Int.MAX_VALUE)
-                scaledRect.top = scaledRect.bottom + scaledRect.height.coerceIn(minSize, maxSize)
+            ResizeSide.TOP -> {
+                resizingView.findSnapEdge(scaledRect.top, 0, 0, Int.MAX_VALUE)
+                scaledRect = scaledRect.copy(top = scaledRect.bottom + scaledRect.height.coerceIn(minSize, maxSize))
             }
-            Side.RIGHT -> {
-                resizingView.findSnapEdge(scaledRect.right, CoordGL(0, 0), SnapEdge.SNAP_RIGHT, 0, Int.MAX_VALUE)
-                scaledRect.right = scaledRect.left + scaledRect.width.coerceIn(minSize, maxSize)
+            ResizeSide.RIGHT -> {
+                resizingView.findSnapEdge(scaledRect.right, 0, 0, Int.MAX_VALUE)
+                scaledRect = scaledRect.copy(right = scaledRect.left + scaledRect.width.coerceIn(minSize, maxSize))
             }
-            Side.BOTTOM -> {
-                resizingView.findSnapEdge(scaledRect.bottom, CoordGL(0, 0), SnapEdge.SNAP_BOTTOM, 0, Int.MAX_VALUE)
-                scaledRect.bottom = scaledRect.top - scaledRect.height.coerceIn(minSize, maxSize)
+            ResizeSide.BOTTOM -> {
+                resizingView.findSnapEdge(scaledRect.bottom, 0, 0, Int.MAX_VALUE)
+                scaledRect = scaledRect.copy(bottom = scaledRect.top - scaledRect.height.coerceIn(minSize, maxSize))
             }
         }
 
-        resizingView.setShape(scaledRect, true)
+        resizingView.setShape(scaledRect, userOp = true)
         return true
     }
 
-    fun setResizeLimits(min: Int, max: Int) {
-        minSize = min; maxSize = max
-    }
-
-    fun setEnableSnapping(enable: Boolean) {
-        snappingEnabled = enable
-    }
-
-    fun setAllowDoubleClickSnapping(allow: Boolean) {
-        allowDoubleClickSnapping = allow
-    }
-
-    fun setResizeListener(listener: (Any?) -> Unit) {
-        resizeListener = listener
-    }
+    fun setResizeLimits(min: Int, max: Int) { minSize = min; maxSize = max }
+    fun setEnableSnapping(enable: Boolean) { snappingEnabled = enable }
+    fun setAllowDoubleClickSnapping(allow: Boolean) { allowDoubleClickSnapping = allow }
+    fun setResizeListener(listener: (Any?) -> Unit) { resizeListener = listener }
 
     fun setImagePanel(panel: Panel) {
+        imagePanel?.let { removeChild(it) }
         imagePanel = panel
+        addChild(panel)
+        sendChildToBack(panel)
     }
 
     fun getImagePanel(): Panel? = imagePanel
 
+    open fun getRootView(): View = this
+    open fun localPointToScreen(x: Int, y: Int): Pair<Int, Int> = Pair(x, y)
+    open fun hasMouseCapture(): Boolean = false
+    open fun snapMargin(): Int = 0
     open fun notifyParentResize(viewName: String, newHeight: Int, newWidth: Int) {}
+    open fun sendChildToBack(child: View) {}
 }
+
+private fun View.findSnapEdge(edge: Int, dirX: Int, dirY: Int, margin: Int): View? = null
+private fun View.setSnappedTo(v: View?) {}
+private fun View.setShape(r: Rect, userOp: Boolean) { rect = r }

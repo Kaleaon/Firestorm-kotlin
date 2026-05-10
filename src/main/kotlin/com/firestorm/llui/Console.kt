@@ -4,36 +4,22 @@ import java.util.UUID
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
 import kotlin.math.max
-import kotlin.math.min
+
+var gConsole: Console? = null
 
 private const val FADE_DURATION = 2f
 private const val PADDING_HORIZONTAL = 15f
 private const val PADDING_VERTICAL = 8f
 
-var gConsole: Console? = null
-
-enum class FontSizeIndex(val index: Int) {
-    MONOSPACE(-1),
-    SMALL(0),
-    BIG(1),
-    BIGGER(2),
-}
-
-data class Color4(val r: Float, val g: Float, val b: Float, val a: Float) {
-    companion object {
-        val WHITE = Color4(1f, 1f, 1f, 1f)
-    }
-}
-
-enum class FontStyleFlags { NORMAL, BOLD, ITALIC, UNDERLINE, DROP_SHADOW }
+enum class FontStyleFlag { NORMAL, BOLD, ITALIC, UNDERLINE }
 
 data class ParagraphColorSegment(val numChars: Int, val color: Color4)
 
 data class LineColorSegment(val text: String, val color: Color4, val xPosition: Float)
 
-data class Line(
+data class ConsoleLine(
     val colorSegments: MutableList<LineColorSegment> = mutableListOf(),
-    var styleFlags: FontStyleFlags = FontStyleFlags.NORMAL,
+    var styleFlag: FontStyleFlag = FontStyleFlag.NORMAL,
 )
 
 class Paragraph(
@@ -41,14 +27,14 @@ class Paragraph(
     color: Color4,
     val addTime: Float,
     screenWidth: Float,
-    val styleFlags: FontStyleFlags,
+    val styleFlag: FontStyleFlag,
     val sessionId: UUID,
     parseUrls: Boolean,
 ) {
     var paragraphText: String = text
     val colorSegments: MutableList<ParagraphColorSegment> = mutableListOf()
     var maxWidth: Float = -1f
-    val lines: MutableList<Line> = mutableListOf()
+    val lines: MutableList<ConsoleLine> = mutableListOf()
 
     val id: UUID = UUID.randomUUID()
     val sourceText: String = text
@@ -56,10 +42,10 @@ class Paragraph(
 
     init {
         if (parseUrls) {
-            TODO("APR: use JVM equivalent for URL parsing / SLURL registry")
+            TODO("APR: use JVM equivalent for URL/SLURL parsing via URL registry")
         }
         makeParagraphColorSegments(color)
-        updateLines(screenWidth, styleFlags)
+        updateLines(screenWidth, styleFlag)
     }
 
     fun makeParagraphColorSegments(color: Color4) {
@@ -67,17 +53,14 @@ class Paragraph(
         colorSegments.add(ParagraphColorSegment(paragraphText.length, color))
     }
 
-    fun updateLines(screenWidth: Float, styleFlags: FontStyleFlags, forceResize: Boolean = false) {
+    fun updateLines(screenWidth: Float, styleFlag: FontStyleFlag, forceResize: Boolean = false) {
         if (!forceResize && maxWidth >= 0f && maxWidth < screenWidth) return
-
-        val effectiveWidth = screenWidth - 30f
-
         if (paragraphText.isEmpty() || colorSegments.isEmpty()) return
 
         lines.clear()
         maxWidth = 0f
 
-        TODO("GPU: measure and wrap text using font metrics, then populate lines")
+        TODO("GPU: word-wrap paragraphText using font metrics and populate lines list")
     }
 }
 
@@ -116,19 +99,14 @@ class Console(
 
     private val pendingLines: ArrayDeque<String> = ArrayDeque()
     private val pendingColors: ArrayDeque<Color4> = ArrayDeque()
-    private val pendingStyles: ArrayDeque<FontStyleFlags> = ArrayDeque()
+    private val pendingStyles: ArrayDeque<FontStyleFlag> = ArrayDeque()
     private val pendingSessionIds: ArrayDeque<UUID> = ArrayDeque()
     private val pendingAddTimes: ArrayDeque<Float> = ArrayDeque()
-
-    val lineColors: ArrayDeque<Color4> = ArrayDeque()
-    val lineStyles: ArrayDeque<FontStyleFlags> = ArrayDeque()
-    val sessionIds: ArrayDeque<UUID> = ArrayDeque()
 
     private val currentSessions: MutableSet<UUID> = mutableSetOf()
 
     private var consoleWidth: Int = 0
     private var consoleHeight: Int = 0
-
     private var elapsedTime: Float = 0f
 
     init {
@@ -136,20 +114,17 @@ class Console(
     }
 
     fun setFontSize(sizeIndex: Int) {
-        TODO("GPU: select appropriate font from font table for sizeIndex=$sizeIndex")
+        TODO("GPU: select appropriate font from font registry for sizeIndex=$sizeIndex and re-wrap paragraphs")
     }
 
     fun reshape(width: Int, height: Int, calledFromParent: Boolean = true) {
         val newWidth = max(50, width)
         val newHeight = max(15, height)
-
         if (consoleWidth == newWidth && consoleHeight == newHeight) return
-
         consoleWidth = newWidth
         consoleHeight = newHeight
-
         for (paragraph in paragraphs) {
-            paragraph.updateLines(newWidth.toFloat(), paragraph.styleFlags, forceResize = true)
+            paragraph.updateLines(newWidth.toFloat(), paragraph.styleFlag, forceResize = true)
         }
     }
 
@@ -157,17 +132,15 @@ class Console(
         line: String,
         color: Color4,
         sessionId: UUID = UUID(0, 0),
-        styleFlags: FontStyleFlags = FontStyleFlags.NORMAL,
+        styleFlag: FontStyleFlag = FontStyleFlag.NORMAL,
     ) {
         if (line.isEmpty()) return
-
         if (!sessionSupport) removeExtraLines()
-
         mutex.withLock {
             pendingLines.addLast(line)
             pendingAddTimes.addLast(elapsedTime)
             pendingColors.addLast(color)
-            pendingStyles.addLast(styleFlags)
+            pendingStyles.addLast(styleFlag)
             pendingSessionIds.addLast(sessionId)
         }
     }
@@ -197,13 +170,8 @@ class Console(
 
     fun draw(currentTime: Float) {
         elapsedTime = currentTime
-
         if (paragraphs.isEmpty()) return
-
-        val skipTime = currentTime - linePersistTime
-        val fadeTime = currentTime - fadeTime
-
-        TODO("GPU: render paragraphs with alpha fading, background image, and per-line color segments")
+        TODO("GPU: render paragraphs bottom-to-top with alpha fade, per-line color segments, and background image")
     }
 
     fun onUrlLabelCallback(paragraphId: UUID, url: String, label: String) {
@@ -215,27 +183,24 @@ class Console(
             newText = newText.replace(u, l)
         }
         paragraph.paragraphText = newText
-        val firstColor = paragraph.lines.firstOrNull()?.colorSegments?.firstOrNull()?.color ?: Color4.WHITE
+
+        val firstColor = paragraph.lines.firstOrNull()?.colorSegments?.firstOrNull()?.color
+            ?: Color4(1f, 1f, 1f, 1f)
         paragraph.makeParagraphColorSegments(firstColor)
-        val firstStyle = paragraph.lines.firstOrNull()?.styleFlags ?: FontStyleFlags.NORMAL
+        val firstStyle = paragraph.lines.firstOrNull()?.styleFlag ?: FontStyleFlag.NORMAL
         paragraph.updateLines(consoleWidth.toFloat(), firstStyle, forceResize = true)
     }
 
-    fun addSession(sessionId: UUID) {
-        currentSessions.add(sessionId)
-    }
-
-    fun removeSession(sessionId: UUID) {
-        currentSessions.remove(sessionId)
-    }
+    fun addSession(sessionId: UUID) { currentSessions.add(sessionId) }
+    fun removeSession(sessionId: UUID) { currentSessions.remove(sessionId) }
 
     private fun update() {
         mutex.withLock {
             while (pendingLines.isNotEmpty()) {
                 val line = pendingLines.removeFirst()
-                val color = pendingColors.removeFirstOrNull() ?: Color4.WHITE
+                val color = pendingColors.removeFirstOrNull() ?: Color4(1f, 1f, 1f, 1f)
                 val time = pendingAddTimes.removeFirstOrNull() ?: elapsedTime
-                val style = pendingStyles.removeFirstOrNull() ?: FontStyleFlags.NORMAL
+                val style = pendingStyles.removeFirstOrNull() ?: FontStyleFlag.NORMAL
                 val session = pendingSessionIds.removeFirstOrNull() ?: UUID(0, 0)
 
                 paragraphs.addLast(
@@ -244,7 +209,7 @@ class Console(
                         color = color,
                         addTime = time,
                         screenWidth = consoleWidth.toFloat(),
-                        styleFlags = style,
+                        styleFlag = style,
                         sessionId = session,
                         parseUrls = parseUrls,
                     )
@@ -253,22 +218,17 @@ class Console(
         }
 
         if (!sessionSupport) {
-            while (paragraphs.size > max(0, maxLines)) {
-                paragraphs.removeFirst()
-            }
+            while (paragraphs.size > max(0, maxLines)) paragraphs.removeFirst()
         } else {
             val skipTime = elapsedTime - linePersistTime
             val kept = ArrayDeque<Paragraph>()
             val sessionLineCounts = mutableMapOf<UUID, Int>()
-
-            for (para in paragraphs.asReversed()) {
+            for (para in paragraphs.reversed()) {
                 val count = sessionLineCounts.getOrDefault(para.sessionId, 0) + para.lines.size
                 sessionLineCounts[para.sessionId] = count
                 val expired = linePersistTime > 0f &&
                     (para.addTime - skipTime) / (linePersistTime - fadeTime) <= 0f
-                if (count <= maxLines && !expired) {
-                    kept.addFirst(para)
-                }
+                if (count <= maxLines && !expired) kept.addFirst(para)
             }
             paragraphs.clear()
             paragraphs.addAll(kept)

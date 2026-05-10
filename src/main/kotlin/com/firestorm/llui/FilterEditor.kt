@@ -21,13 +21,8 @@ open class SearchEditor {
         onCommitCallback?.invoke()
     }
 
-    fun setOnCommit(cb: () -> Unit) {
-        onCommitCallback = cb
-    }
-
-    fun setOnKeystroke(cb: () -> Unit) {
-        onKeystrokeCallback = cb
-    }
+    fun setOnCommit(cb: () -> Unit) { onCommitCallback = cb }
+    fun setOnKeystroke(cb: () -> Unit) { onKeystrokeCallback = cb }
 }
 
 class FilterEditor : SearchEditor() {

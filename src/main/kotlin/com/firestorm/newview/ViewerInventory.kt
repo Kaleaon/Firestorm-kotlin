@@ -126,7 +126,8 @@ open class ViewerInventoryCategory(
     name: String        = "",
     val ownerId: LLUUID = LLUUID.NULL
 ) : InventoryCategory(
-    uuid = uuid, parentId = parentId, preferredType = preferredType, name = name
+    uuid = uuid, parentId = parentId, preferredType = preferredType,
+    name = name, thumbnailId = LLUUID.NULL
 ) {
     enum class FetchType { NONE, NORMAL, RECURSIVE, FAILED }
 

@@ -5,7 +5,7 @@ import com.firestorm.llcommon.LLUUID
 private const val MAX_GROUP_INVITES = 100
 
 // ---------------------------------------------------------------------------
-// Shared implementation object (mirrors LLPanelGroupBulkImpl)
+// PanelGroupBulkImpl  (mirrors LLPanelGroupBulkImpl)
 // ---------------------------------------------------------------------------
 
 class PanelGroupBulkImpl(val groupId: LLUUID) {
@@ -22,12 +22,10 @@ class PanelGroupBulkImpl(val groupId: LLUUID) {
 
     var closeCallback: (() -> Unit)? = null
 
-    // avatarNameCacheConnections: in C++ these are boost signals connections;
-    // represented here as a set of pending-lookup IDs.
     private val pendingNameLookups: MutableSet<LLUUID> = mutableSetOf()
 
     fun callbackClickAdd(panel: PanelGroupBulk) {
-        TODO("APR: open avatar picker floater; on selection call addUsers(agentIds)")
+        TODO("APR: open LLFloaterAvatarPicker; on selection call addUsers(agentIds); send group members cap request")
     }
 
     fun callbackClickRemove() {
@@ -48,14 +46,16 @@ class PanelGroupBulkImpl(val groupId: LLUUID) {
             if (cachedName != null) {
                 onAvatarNameCache(agentId, cachedName)
             } else {
-                pendingNameLookups.add(agentId)
-                TODO("APR: LLAvatarNameCache::get($agentId) async; on result call onAvatarNameCache")
+                if (!pendingNameLookups.contains(agentId)) {
+                    pendingNameLookups.add(agentId)
+                    TODO("APR: LLAvatarNameCache::get($agentId) async; on result call onAvatarNameCache($agentId, name)")
+                }
             }
         }
     }
 
     private fun lookupCachedAvatarName(agentId: LLUUID): String? {
-        TODO("APR: query avatar-name cache for $agentId; return null if not cached")
+        TODO("APR: return cached avatar display/account name for $agentId, or null if not cached")
     }
 
     fun onAvatarNameCache(agentId: LLUUID, fullName: String) {
@@ -68,33 +68,33 @@ class PanelGroupBulkImpl(val groupId: LLUUID) {
 
         if (names.size + inviteeIds.size > MAX_GROUP_INVITES) {
             listFullNotificationSent = true
-            TODO("APR: show GenericAlert notification: tooManySelected")
+            TODO("APR: LLNotificationsUtil.add(\"GenericAlert\", message=tooManySelected)")
         }
 
         for (i in names.indices) {
             val id = agentIds[i]
             if (inviteeIds.contains(id)) continue
             inviteeIds.add(id)
-            TODO("APR: add row [id=$id, name=${names[i]}] to bulk agent list UI")
+            TODO("APR: add row id=$id name=${names[i]} to bulk agent list UI; enable OK button if it was disabled")
         }
     }
 
     fun setGroupName(name: String) {
         groupName = name
-        TODO("APR: update group-name text widget to '$name'")
+        TODO("APR: update group-name label widget to '$name'")
     }
 
     private fun handleRemove() {
-        TODO("APR: remove selected items from bulk agent list; update OK button state")
+        TODO("APR: for each selected item remove its UUID from inviteeIds; delete selected items from bulk list; disable remove button; disable OK button if list is now empty")
     }
 
     private fun handleSelection() {
-        TODO("APR: enable remove button if any item is selected in bulk agent list")
+        TODO("APR: enable remove button iff any item is selected in bulk agent list")
     }
 }
 
 // ---------------------------------------------------------------------------
-// PanelGroupBulk — base panel for bulk invite / ban (mirrors LLPanelGroupBulk)
+// PanelGroupBulk  (mirrors LLPanelGroupBulk)
 // ---------------------------------------------------------------------------
 
 abstract class PanelGroupBulk(groupId: LLUUID) {
@@ -116,7 +116,7 @@ abstract class PanelGroupBulk(groupId: LLUUID) {
     open fun clear() {
         mImplementation.inviteeIds.clear()
         mImplementation.listFullNotificationSent = false
-        TODO("APR: clear bulk agent list UI; disable OK button")
+        TODO("APR: clear bulk agent list UI widget; disable OK button")
     }
 
     open fun update() {
@@ -146,21 +146,21 @@ abstract class PanelGroupBulk(groupId: LLUUID) {
             pendingGroupPropertiesUpdate = false
         } else if (!pendingGroupPropertiesUpdate) {
             pendingGroupPropertiesUpdate = true
-            GroupMgr.sendGroupPropertiesRequest(mImplementation.groupId)
+            GroupMgr.requestGroupData(mImplementation.groupId)
         }
 
-        if (gdata?.roles != null) {
+        if (GroupMgr.getGroupRoles(mImplementation.groupId) != null) {
             pendingRoleDataUpdate = false
         } else if (!pendingRoleDataUpdate) {
             pendingRoleDataUpdate = true
-            GroupMgr.sendGroupRoleDataRequest(mImplementation.groupId)
+            GroupMgr.requestGroupRoleData(mImplementation.groupId)
         }
 
-        if (gdata?.members != null) {
+        if (GroupMgr.getGroupMembers(mImplementation.groupId) != null) {
             pendingMemberDataUpdate = false
         } else if (!pendingMemberDataUpdate) {
             pendingMemberDataUpdate = true
-            GroupMgr.sendCapGroupMembersRequest(mImplementation.groupId)
+            GroupMgr.requestGroupMembers(mImplementation.groupId)
         }
     }
 
@@ -182,9 +182,9 @@ abstract class PanelGroupBulk(groupId: LLUUID) {
                 names.add(name)
                 i++
             } else {
-                // offline buddy without cached name — fetch async
+                // offline buddy without a cached name — fetch asynchronously
                 agentIds.removeAt(i)
-                TODO("APR: LLAvatarNameCache::get($agentId) async; on result call addUserCallback")
+                TODO("APR: LLAvatarNameCache::get($agentId) async; on result call addUserCallback($agentId, name)")
             }
         }
         mImplementation.listFullNotificationSent = false
@@ -192,24 +192,6 @@ abstract class PanelGroupBulk(groupId: LLUUID) {
     }
 
     private fun resolveAvatarName(agentId: LLUUID): String? {
-        TODO("APR: look up avatar name from object list / name cache for $agentId; return null if unavailable")
+        TODO("APR: look up avatar name from viewer object list or name cache for $agentId; return null if unavailable")
     }
-}
-
-// ---------------------------------------------------------------------------
-// GroupMgr stubs used by updateGroupData (companion to the real GroupMgr object)
-// ---------------------------------------------------------------------------
-
-private fun GroupMgr.getGroupData(groupId: LLUUID): GroupDataExtended? {
-    TODO("APR: retrieve GroupDataExtended from GroupMgr cache for $groupId")
-}
-
-private data class GroupDataExtended(
-    val name: String,
-    val roles: Any?,
-    val members: Any?
-)
-
-private fun Any.sendGroupRoleDataRequest(groupId: LLUUID) {
-    TODO("APR: GroupMgr.sendGroupRoleDataRequest($groupId)")
 }

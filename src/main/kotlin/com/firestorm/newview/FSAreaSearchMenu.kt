@@ -1,7 +1,5 @@
 package com.firestorm.newview
 
-import java.util.UUID
-
 open class LLListContextMenu {
     open fun createMenu(): LLContextMenu? = null
 }
@@ -11,22 +9,22 @@ class LLContextMenu
 class FSAreaSearchMenu : LLListContextMenu() {
 
     override fun createMenu(): LLContextMenu? {
-        TODO("UI: register AreaSearch.Action, AreaSearch.Enable, AreaSearch.RLV callbacks and load menu_fs_area_search.xml")
+        TODO("UI: register AreaSearch.Action → onContextMenuItemClick, AreaSearch.Enable → onContextMenuItemEnable, AreaSearch.RLV → onContextMenuItemVisibleRLV, then load menu_fs_area_search.xml")
     }
 
     private fun onContextMenuItemClick(userdata: Any?) {
         val search = FloaterReg.findTypedInstance<FSAreaSearch>("area_search") ?: return
-        search.getPanelList()?.onContextMenuItemClick(userdata)
+        search.panelList?.onContextMenuItemClick(userdata)
     }
 
     private fun onContextMenuItemEnable(userdata: Any?): Boolean {
         val search = FloaterReg.findTypedInstance<FSAreaSearch>("area_search") ?: return false
-        return search.getPanelList()?.onContextMenuItemEnable(userdata) ?: false
+        return search.panelList?.onContextMenuItemEnable(userdata) ?: false
     }
 
     private fun onContextMenuItemVisibleRLV(userdata: Any?): Boolean {
         val search = FloaterReg.findTypedInstance<FSAreaSearch>("area_search") ?: return false
-        return search.getPanelList()?.onContextMenuItemVisibleRLV(userdata) ?: false
+        return search.panelList?.onContextMenuItemVisibleRLV(userdata) ?: false
     }
 
     companion object {
@@ -34,4 +32,4 @@ class FSAreaSearchMenu : LLListContextMenu() {
     }
 }
 
-val gFSAreaSearchMenu = FSAreaSearchMenu.instance
+val gFSAreaSearchMenu: FSAreaSearchMenu = FSAreaSearchMenu.instance

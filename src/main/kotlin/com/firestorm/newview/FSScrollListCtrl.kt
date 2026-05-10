@@ -2,8 +2,11 @@ package com.firestorm.newview
 
 import java.util.UUID
 
-interface LLListContextMenu {
-    fun show(parent: Any, uuids: List<UUID>, x: Int, y: Int)
+open class LLListContextMenu {
+    protected val mUUIDs: MutableList<UUID> = mutableListOf()
+    open fun show(parent: Any, uuids: List<UUID>, x: Int, y: Int) {
+        TODO("APR: use JVM equivalent - show context menu at screen position")
+    }
 }
 
 enum class EDragAndDropType {

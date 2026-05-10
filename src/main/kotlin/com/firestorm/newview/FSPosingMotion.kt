@@ -68,7 +68,8 @@ class FSPosingMotion(private val motionId: UUID) {
 
         const val POSER_CHANGE_ROTATION = 2
 
-        val POSER_JOINT_STATE: UInt = TODO("APR: use JVM equivalent - LLJointState.POS | ROT | SCALE flags")
+        // LLJointState.POS | LLJointState.ROT | LLJointState.SCALE combined flags
+        const val POSER_JOINT_STATE: UInt = 7u
 
         fun create(id: UUID): FSPosingMotion = FSPosingMotion(id)
     }
@@ -184,6 +185,15 @@ class FSPosingMotion(private val motionId: UUID) {
         joint.zeroBaseRotation(lockInBvh)
     }
 
+    data class JointStateAtTime(
+        val hasRotation: Boolean = false,
+        val rotation: Quaternion = Quaternion(),
+        val hasPosition: Boolean = false,
+        val position: Vector3 = Vector3(),
+        val hasScale: Boolean = false,
+        val scale: Vector3 = Vector3(),
+    )
+
     fun loadOtherMotionToBaseOfThisMotion(motionToLoad: FSPosingMotion, timeToLoadAt: Float, selectedJointNumbers: List<Int>): Boolean {
         val motionIsForAllJoints = selectedJointNumbers.isEmpty()
         val priority = motionToLoad.getPriority()
@@ -194,35 +204,16 @@ class FSPosingMotion(private val motionId: UUID) {
 
             if (!motionIsForAllJoints && jointNumber !in selectedJointNumbers) continue
 
-            var hasRotation = false
-            var hasPosition = false
-            var hasScale = false
-            val rot = Quaternion()
-            var position = Vector3()
-            var scale = Vector3()
+            val state = motionToLoad.getJointStateAtTime(jointName, timeToLoadAt)
 
-            motionToLoad.getJointStateAtTime(jointName, timeToLoadAt,
-                { hasRotation = it }, rot,
-                { hasPosition = it }, { position = it },
-                { hasScale = it }, { scale = it })
-
-            if (hasRotation && !pose.userHasSetBaseRotationToZero()) pose.setBaseRotation(rot, priority)
-            if (hasPosition) pose.setBasePosition(position, priority)
-            if (hasScale) pose.setBaseScale(scale, priority)
+            if (state.hasRotation && !pose.userHasSetBaseRotationToZero()) pose.setBaseRotation(state.rotation, priority)
+            if (state.hasPosition) pose.setBasePosition(state.position, priority)
+            if (state.hasScale) pose.setBaseScale(state.scale, priority)
         }
         return true
     }
 
-    fun getJointStateAtTime(
-        jointPoseName: String,
-        timeToLoadAt: Float,
-        outHasRotation: (Boolean) -> Unit,
-        outRotation: Quaternion,
-        outHasPosition: (Boolean) -> Unit,
-        outPosition: (Vector3) -> Unit,
-        outHasScale: (Boolean) -> Unit,
-        outScale: (Vector3) -> Unit,
-    ) {
+    fun getJointStateAtTime(jointPoseName: String, timeToLoadAt: Float): JointStateAtTime {
         TODO("APR: use JVM equivalent - iterate joint motion list, match name case-insensitively, evaluate rotation/position/scale curves at timeToLoadAt")
     }
 

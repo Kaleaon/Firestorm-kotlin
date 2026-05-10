@@ -4,10 +4,10 @@ import com.firestorm.llui.CheckBoxCtrl
 import com.firestorm.llui.Floater
 
 const val PERM_NONE:     UInt = 0x00000000u
-const val PERM_COPY:     UInt = 0x00008000u
-const val PERM_MODIFY:   UInt = 0x00004000u
-const val PERM_MOVE:     UInt = 0x00002000u
-const val PERM_TRANSFER: UInt = 0x00002000u shr 1  // 0x00001000
+const val PERM_TRANSFER: UInt = 1u shl 13   // 0x00002000
+const val PERM_MODIFY:   UInt = 1u shl 14   // 0x00004000
+const val PERM_COPY:     UInt = 1u shl 15   // 0x00008000
+const val PERM_MOVE:     UInt = 1u shl 19   // 0x00080000
 
 class FloaterPerms(seed: Any?) : Floater(seed) {
 

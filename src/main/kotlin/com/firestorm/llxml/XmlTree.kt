@@ -72,9 +72,7 @@ class XmlTreeNode internal constructor(
     var contents: String = contents
         private set
 
-    fun getName(): String = name
     fun hasName(n: String): Boolean = name == n
-    fun getContents(): String = contents
 
     fun getTextContents(): String {
         val sb = StringBuilder()
@@ -92,7 +90,6 @@ class XmlTreeNode internal constructor(
         return attributes.containsKey(canonical)
     }
 
-    fun getParent(): XmlTreeNode? = parent
     fun getChildCount(): Int = children.size
 
     fun getFirstChild(): XmlTreeNode? {

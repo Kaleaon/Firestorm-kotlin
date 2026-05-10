@@ -7,6 +7,8 @@ data class LLUUID(val uuid: UUID) : Comparable<LLUUID> {
 
     constructor() : this(UUID(0L, 0L))
 
+    constructor(s: String) : this(UUID.fromString(s))
+
     fun isNull(): Boolean = uuid.mostSignificantBits == 0L && uuid.leastSignificantBits == 0L
 
     fun notNull(): Boolean = !isNull()
@@ -15,7 +17,7 @@ data class LLUUID(val uuid: UUID) : Comparable<LLUUID> {
 
     override fun compareTo(other: LLUUID): Int = uuid.compareTo(other.uuid)
 
-    operator fun xor(other: LLUUID): LLUUID {
+    fun xor(other: LLUUID): LLUUID {
         val msnBits = uuid.mostSignificantBits xor other.uuid.mostSignificantBits
         val lsnBits = uuid.leastSignificantBits xor other.uuid.leastSignificantBits
         return LLUUID(UUID(msnBits, lsnBits))
@@ -33,7 +35,7 @@ data class LLUUID(val uuid: UUID) : Comparable<LLUUID> {
         return LLUUID(UUID(msb, lsb))
     }
 
-    private fun toBytes(): ByteArray {
+    internal fun toBytes(): ByteArray {
         val msb = uuid.mostSignificantBits
         val lsb = uuid.leastSignificantBits
         return ByteArray(16) { i ->
@@ -50,5 +52,14 @@ data class LLUUID(val uuid: UUID) : Comparable<LLUUID> {
         fun fromString(s: String): LLUUID? = runCatching { LLUUID(UUID.fromString(s)) }.getOrNull()
 
         fun combine(id1: LLUUID, id2: LLUUID): LLUUID = id1.combine(id2)
+
+        fun fromBytes(bytes: ByteArray): LLUUID? {
+            if (bytes.size < 16) return null
+            var msb = 0L
+            var lsb = 0L
+            for (i in 0..7) msb = (msb shl 8) or (bytes[i].toLong() and 0xffL)
+            for (i in 8..15) lsb = (lsb shl 8) or (bytes[i].toLong() and 0xffL)
+            return LLUUID(java.util.UUID(msb, lsb))
+        }
     }
 }

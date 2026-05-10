@@ -191,6 +191,7 @@ open class MultiFloater(
     open fun removeFloater(floaterp: Floater?) {
         floaterp ?: return
         if (floaterp.host !== this) return
+        val tc = tabContainer ?: return
 
         if (!hostedFloaterShowTitlebar) {
             TODO("GPU: floaterp.getDragHandle().setTitleVisible(true); grow rect by headerHeight")

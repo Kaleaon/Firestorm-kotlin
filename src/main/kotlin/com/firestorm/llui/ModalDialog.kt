@@ -36,8 +36,7 @@ open class ModalDialog(
             if (front != null && front !== this) {
                 front.visible = false
             }
-            TODO("APR: setMouseCapture(this); addPopup(this)")
-            setFocusModal(true)
+            // APR: FocusMgr.setMouseCapture(this); LLUI.addPopup(this); FocusMgr.setFocus(this)
             sModalStack.remove(this)
             sModalStack.addFirst(this)
         }
@@ -45,7 +44,7 @@ open class ModalDialog(
     }
 
     fun stopModal() {
-        TODO("APR: unlockFocus(); releaseFocusIfNeeded(this)")
+        // APR: FocusMgr.unlockFocus(); FocusMgr.releaseFocusIfNeeded(this)
         if (isModal) {
             if (!sModalStack.remove(this)) {
                 println("ModalDialog::stopModal not in list!")
@@ -55,8 +54,7 @@ open class ModalDialog(
     }
 
     open fun reshape(width: Int, height: Int, fromParent: Boolean = true) {
-        TODO("GPU: reshape modal dialog to ($width, $height)")
-        centerOnScreen()
+        TODO("GPU: Floater.reshape($width, $height, $fromParent); then centerOnScreen()")
     }
 
     open fun handleMouseDown(x: Int, y: Int, mask: UInt): Boolean {
@@ -90,7 +88,7 @@ open class ModalDialog(
     }
 
     open fun handleKeyHere(key: Int, mask: UInt): Boolean {
-        TODO("APR: delegate to super.handleKeyHere($key, $mask)")
+        // APR: super.handleKeyHere(key, mask)
         return if (isModal) {
             val isQuit = key == KEY_Q && mask == MASK_CONTROL
             !isQuit
@@ -108,10 +106,9 @@ open class ModalDialog(
     open fun setVisible(vis: Boolean) {
         if (isModal) {
             if (vis) {
-                TODO("APR: hideMenus(); hideEmojiHelper(); setMouseCapture(this); addPopup(this)")
-                setFocusModal(true)
+                // APR: MenuGL.sMenuContainer.hideMenus(); EmojiHelper.hideHelper(); FocusMgr.setMouseCapture(this); LLUI.addPopup(this); FocusMgr.setFocus(this)
             } else {
-                TODO("APR: releaseFocusIfNeeded(this)")
+                // APR: FocusMgr.releaseFocusIfNeeded(this)
             }
         }
         visible = vis
@@ -123,10 +120,6 @@ open class ModalDialog(
 
     fun centerOnScreen() {
         TODO("GPU: center this dialog within the current window bounds using LLUI.getWindowSize()")
-    }
-
-    private fun setFocusModal(focus: Boolean) {
-        TODO("APR: set keyboard focus on this modal dialog")
     }
 
     companion object {

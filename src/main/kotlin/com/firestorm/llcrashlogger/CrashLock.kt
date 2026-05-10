@@ -1,7 +1,6 @@
 package com.firestorm.llcrashlogger
 
 import java.io.File
-import java.nio.file.Files
 
 class CrashLock {
     private var cleanUp: Boolean = true

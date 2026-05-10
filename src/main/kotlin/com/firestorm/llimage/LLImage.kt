@@ -206,7 +206,7 @@ abstract class ImageFormatted(val codec: ImageCodecType) {
         fun createFromType(codec: ImageCodecType): ImageFormatted? = when (codec) {
             ImageCodecType.J2C  -> ImageJ2C()
             ImageCodecType.TGA  -> ImageTGA()
-            ImageCodecType.PNG  -> PNGWrapper()
+            ImageCodecType.PNG  -> PNGWrapper().asImageFormatted()
             else                -> null
         }
 

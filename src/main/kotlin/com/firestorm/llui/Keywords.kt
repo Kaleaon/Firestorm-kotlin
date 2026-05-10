@@ -76,7 +76,7 @@ class Keywords {
             "constants-rotation", "constants-vector" -> "SyntaxLslCompoundConstant"
             else -> "ScriptText"
         }
-        return colorGroupMap[groupName] ?: UIColor(1f, 1f, 1f)
+        return colorGroupMap[groupName] ?: UIColor(Color.WHITE)
     }
 
     fun initialize(syntaxData: Map<String, Any>) {
@@ -88,10 +88,12 @@ class Keywords {
         if (!loaded) return
 
         val noDelim = ""
+        val commentColor = UIColor(Color(128, 128, 128))
+        val stringLiteralColor = UIColor(Color(204, 102, 102))
         addToken(TokenType.LABEL, "@", getColorGroup("misc-flow-label"), "Label\nTarget for jump statement", noDelim)
-        addToken(TokenType.ONE_SIDED_DELIMITER, "//", UIColor(0.5f, 0.5f, 0.5f), "Comment (single-line)\nNon-functional commentary or disabled code", noDelim)
-        addToken(TokenType.TWO_SIDED_DELIMITER, "/*", UIColor(0.5f, 0.5f, 0.5f), "Comment (multi-line)\nNon-functional commentary or disabled code", "*/")
-        addToken(TokenType.DOUBLE_QUOTATION_MARKS, "\"", UIColor(0.8f, 0.4f, 0.4f), "String literal", "\"")
+        addToken(TokenType.ONE_SIDED_DELIMITER, "//", commentColor, "Comment (single-line)\nNon-functional commentary or disabled code", noDelim)
+        addToken(TokenType.TWO_SIDED_DELIMITER, "/*", commentColor, "Comment (multi-line)\nNon-functional commentary or disabled code", "*/")
+        addToken(TokenType.DOUBLE_QUOTATION_MARKS, "\"", stringLiteralColor, "String literal", "\"")
 
         for ((key, value) in syntax) {
             if (key == "llsd-lsl-syntax-version") continue

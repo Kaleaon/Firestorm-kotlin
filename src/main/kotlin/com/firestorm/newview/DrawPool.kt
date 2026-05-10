@@ -48,6 +48,7 @@ abstract class DrawPool(val type: UInt) {
                 PoolType.ALPHA_POST_WATER.value -> DrawPoolAlpha(PoolType.ALPHA_POST_WATER.value.toUInt())
                 PoolType.AVATAR.value, PoolType.CONTROL_AV.value -> DrawPoolAvatar(type)
                 PoolType.TERRAIN.value -> DrawPoolTerrain(tex0 ?: error("tex0 required for POOL_TERRAIN"))
+                PoolType.TREE.value -> DrawPoolTree(tex0 ?: error("tex0 required for POOL_TREE"))
                 PoolType.SKY.value -> DrawPoolSky()
                 PoolType.VOIDWATER.value, PoolType.WATER.value -> DrawPoolWater()
                 PoolType.BUMP.value -> DrawPoolBump()
@@ -482,6 +483,18 @@ class DrawInfo {
     val textureList: MutableList<ViewerTexture?> = mutableListOf()
     var gltfMaterial: GLTFMaterial? = null
     var vertexBuffer: VertexBuffer? = null
+
+    var fullbright: Boolean = false
+    var material: Any? = null
+    var normalMap: ViewerTexture? = null
+    var specularMap: ViewerTexture? = null
+    var blendFuncSrc: Int = 0
+    var blendFuncDst: Int = 0
+    var specColor: FloatArray = floatArrayOf(1f, 1f, 1f, 1f)
+    var envIntensity: Float = 0f
+    var shaderMask: UInt = 0u
+    var bump: UByte = 0u
+    var group: SpatialGroup? = null
 }
 
 open class ViewerTexture

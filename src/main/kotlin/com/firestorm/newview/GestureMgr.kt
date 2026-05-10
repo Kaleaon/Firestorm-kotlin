@@ -1,9 +1,21 @@
 package com.firestorm.newview
 
-import java.util.UUID
+import com.firestorm.llcharacter.GestureStep
+import com.firestorm.llcharacter.GestureStepAnimation
+import com.firestorm.llcharacter.GestureStepSound
+import com.firestorm.llcharacter.GestureStepWait
+import com.firestorm.llcharacter.GestureStepChat
+import com.firestorm.llcharacter.Key
+import com.firestorm.llcharacter.Mask
+import com.firestorm.llcharacter.KEY_NONE
+import com.firestorm.llcharacter.MultiGesture
+import com.firestorm.llcharacter.StepType
+import com.firestorm.llcharacter.WaitFlags
+import com.firestorm.llcharacter.ANIM_FLAG_STOP
+import com.firestorm.llcommon.LLUUID
 
-const val MAX_WAIT_ANIM_SECS: Float = 60.0f
-const val MAX_WAIT_KEY_SECS: Float = 60.0f * 10.0f
+private const val MAX_WAIT_ANIM_SECS: Float = 60.0f
+private const val MAX_WAIT_KEY_SECS: Float = 60.0f * 10.0f
 
 interface GestureManagerObserver {
     fun changed()
@@ -11,17 +23,16 @@ interface GestureManagerObserver {
 
 object GestureMgr {
 
-    val active: MutableMap<UUID, MultiGesture?> = mutableMapOf()
+    val active: MutableMap<LLUUID, MultiGesture?> = mutableMapOf()
     private val playing: MutableList<MultiGesture> = mutableListOf()
     private val observers: MutableList<GestureManagerObserver> = mutableListOf()
-    private val callbackMap: MutableMap<UUID, (MultiGesture) -> Unit> = mutableMapOf()
-    private val loadingAssets: MutableSet<UUID> = mutableSetOf()
+    private val callbackMap: MutableMap<LLUUID, (MultiGesture) -> Unit> = mutableMapOf()
+    private val loadingAssets: MutableSet<LLUUID> = mutableSetOf()
     private var loadingCount: Int = 0
     private var deactivateSimilarNames: String = ""
-    private var valid: Boolean = false
 
     fun init() {
-        TODO("APR: use JVM equivalent — hook inventory observer registration")
+        TODO("APR: use JVM equivalent — register as inventory observer")
     }
 
     fun update() {
@@ -35,24 +46,23 @@ object GestureMgr {
             stepGesture(playing[i])
         }
 
-        val newEnd = playing.partition { it.playing }
-        val done = newEnd.second
+        val (stillPlaying, done) = playing.partition { it.isPlaying }
         playing.clear()
-        playing.addAll(newEnd.first)
+        playing.addAll(stillPlaying)
 
         if (done.isNotEmpty()) {
             for (gesture in done) {
-                gesture.doneCallback?.invoke(gesture, gesture.callbackData)
+                gesture.doneCallback?.invoke(gesture)
             }
             notifyObservers()
         }
     }
 
-    fun activateGesture(itemId: UUID) {
+    fun activateGesture(itemId: LLUUID) {
         TODO("APR: look up inventory item by itemId to get assetId, then call activateGestureWithAsset")
     }
 
-    fun activateGestures(items: List<InventoryItem>) {
+    fun activateGestures(items: List<ViewerInventoryItemRef>) {
         var count = 0
         for (item in items) {
             if (isGestureActive(item.uuid)) continue
@@ -68,43 +78,38 @@ object GestureMgr {
             activateGestureWithAsset(item.uuid, item.assetUuid, informServer = false, deactivateSimilar = true)
         }
 
-        TODO("APR: send ActivateGestures bulk message to server")
+        TODO("APR: send bulk ActivateGestures message to server for all newly active items")
     }
 
-    fun activateGestureWithAsset(itemId: UUID, assetId: UUID, informServer: Boolean, deactivateSimilar: Boolean) {
+    fun activateGestureWithAsset(itemId: LLUUID, assetId: LLUUID, informServer: Boolean, deactivateSimilar: Boolean) {
         val baseItemId = linkedItemId(itemId)
-
-        if (isGestureActive(itemId)) {
-            return
-        }
+        if (isGestureActive(itemId)) return
 
         active[baseItemId] = null
 
-        if (assetId != UUID(0, 0)) {
-            TODO("APR: fetch asset data for assetId, then call onLoadComplete with LoadInfo(baseItemId, informServer, deactivateSimilar)")
+        if (assetId != LLUUID.NULL) {
+            TODO("APR: fetch asset data for assetId (AT_GESTURE), pass LoadInfo(baseItemId, informServer, deactivateSimilar) to onLoadComplete callback")
         } else {
             notifyObservers()
         }
     }
 
-    fun deactivateGesture(itemId: UUID) {
+    fun deactivateGesture(itemId: LLUUID) {
         val baseItemId = linkedItemId(itemId)
-        val gesture = active[baseItemId]
-        if (!active.containsKey(baseItemId)) {
-            return
-        }
+        if (!active.containsKey(baseItemId)) return
 
+        val gesture = active[baseItemId]
         gesture?.let { stopGesture(it) }
         active.remove(baseItemId)
 
-        TODO("APR: send DeactivateGestures message to server and remove COF item link")
+        TODO("APR: send DeactivateGestures message to server, then call AppearanceMgr.removeCOFItemLinks for baseItemId")
     }
 
-    fun deactivateSimilarGestures(inGesture: MultiGesture, inItemId: UUID) {
+    fun deactivateSimilarGestures(inGesture: MultiGesture, inItemId: LLUUID) {
         val baseInItemId = linkedItemId(inItemId)
-        val gestureItemIds = mutableListOf<UUID>()
+        val gestureItemIds = mutableListOf<LLUUID>()
 
-        val iter = active.iterator()
+        val iter = active.entries.iterator()
         while (iter.hasNext()) {
             val entry = iter.next()
             val itemId = entry.key
@@ -119,7 +124,7 @@ object GestureMgr {
                 gestureItemIds.add(itemId)
                 stopGesture(gest)
                 iter.remove()
-                TODO("APR: mark inventory label changed for itemId")
+                TODO("APR: mark inventory LABEL changed for itemId")
             }
         }
 
@@ -133,19 +138,14 @@ object GestureMgr {
         notifyObservers()
     }
 
-    fun isGestureActive(itemId: UUID): Boolean {
-        val baseItemId = linkedItemId(itemId)
-        return active.containsKey(baseItemId)
-    }
+    fun isGestureActive(itemId: LLUUID): Boolean = active.containsKey(linkedItemId(itemId))
 
-    fun isGesturePlaying(itemId: UUID): Boolean {
-        val baseItemId = linkedItemId(itemId)
-        return active[baseItemId]?.playing ?: false
-    }
+    fun isGesturePlaying(itemId: LLUUID): Boolean =
+        active[linkedItemId(itemId)]?.isPlaying ?: false
 
-    fun isGesturePlaying(gesture: MultiGesture?): Boolean = gesture?.playing ?: false
+    fun isGesturePlaying(gesture: MultiGesture?): Boolean = gesture?.isPlaying ?: false
 
-    fun replaceGesture(itemId: UUID, newGesture: MultiGesture, assetId: UUID) {
+    fun replaceGesture(itemId: LLUUID, newGesture: MultiGesture, assetId: LLUUID) {
         val baseItemId = linkedItemId(itemId)
         val oldGesture = active[baseItemId] ?: return
 
@@ -153,24 +153,22 @@ object GestureMgr {
         active.remove(baseItemId)
         active[baseItemId] = newGesture
 
-        if (oldGesture !== newGesture) {
-            // oldGesture is no longer needed
-        }
-
-        if (assetId != UUID(0, 0)) {
+        if (assetId != LLUUID.NULL) {
             loadingCount = 1
             deactivateSimilarNames = ""
-            TODO("APR: fetch asset data for assetId, then call onLoadComplete")
+            TODO("APR: fetch asset data for assetId (AT_GESTURE) and call onLoadComplete")
         }
 
         notifyObservers()
     }
 
-    fun replaceGesture(itemId: UUID, newAssetId: UUID) {
+    fun replaceGesture(itemId: LLUUID, newAssetId: LLUUID) {
         val baseItemId = linkedItemId(itemId)
         val gesture = active[baseItemId] ?: return
         replaceGesture(baseItemId, gesture, newAssetId)
     }
+
+    fun getActiveGestures(): Map<LLUUID, MultiGesture?> = active
 
     fun playGesture(gesture: MultiGesture, fromKeyPress: Boolean = false) {
         if (!areGesturesEnabled()) return
@@ -178,25 +176,25 @@ object GestureMgr {
 
         gesture.reset()
         gesture.triggeredByKey = fromKeyPress
-        gesture.playing = true
+        gesture.start()
         playing.add(gesture)
 
         for (step in gesture.steps) {
-            when (step.getType()) {
-                StepType.STEP_ANIMATION -> {
+            when (step.type) {
+                StepType.ANIMATION -> {
                     val animStep = step as GestureStepAnimation
-                    val animId = animStep.animAssetID
-                    if (animId != UUID(0, 0) && (animStep.flags and ANIM_FLAG_STOP) == 0) {
+                    val animId = animStep.animAssetId
+                    if (animId != LLUUID.NULL && (animStep.flags and ANIM_FLAG_STOP) == 0u) {
                         loadingAssets.add(animId)
-                        TODO("APR: fetch AT_ANIMATION asset for animId via asset storage, remove from loadingAssets on complete")
+                        TODO("APR: fetch AT_ANIMATION asset for animId, call onAssetLoadComplete when done")
                     }
                 }
-                StepType.STEP_SOUND -> {
+                StepType.SOUND -> {
                     val soundStep = step as GestureStepSound
-                    val soundId = soundStep.soundAssetID
-                    if (soundId != UUID(0, 0)) {
+                    val soundId = soundStep.soundAssetId
+                    if (soundId != LLUUID.NULL) {
                         loadingAssets.add(soundId)
-                        TODO("APR: fetch AT_SOUND asset for soundId via asset storage, remove from loadingAssets on complete")
+                        TODO("APR: fetch AT_SOUND asset for soundId, call onAssetLoadComplete when done")
                     }
                 }
                 else -> {}
@@ -207,43 +205,39 @@ object GestureMgr {
         notifyObservers()
     }
 
-    fun playGesture(itemId: UUID) {
+    fun playGesture(itemId: LLUUID) {
         if (!areGesturesEnabled()) return
-        val baseItemId = linkedItemId(itemId)
-        val gesture = active[baseItemId] ?: return
+        val gesture = active[linkedItemId(itemId)] ?: return
         playGesture(gesture)
     }
 
     fun stopGesture(gesture: MultiGesture?) {
         gesture ?: return
 
-        for (animId in gesture.requestedAnimIDs) {
+        for (animId in gesture.requestedAnimIds) {
             TODO("APR: send ANIM_REQUEST_STOP for animId via agent")
         }
-        for (animId in gesture.playingAnimIDs) {
+        for (animId in gesture.playingAnimIds) {
             TODO("APR: send ANIM_REQUEST_STOP for animId via agent")
         }
 
         playing.removeAll { it === gesture }
-
         gesture.reset()
-
-        gesture.doneCallback?.invoke(gesture, gesture.callbackData)
+        gesture.doneCallback?.invoke(gesture)
 
         notifyObservers()
     }
 
-    fun stopGesture(itemId: UUID) {
-        val baseItemId = linkedItemId(itemId)
-        val gesture = active[baseItemId] ?: return
+    fun stopGesture(itemId: LLUUID) {
+        val gesture = active[linkedItemId(itemId)] ?: return
         stopGesture(gesture)
     }
 
-    fun setGestureLoadedCallback(invItemId: UUID, cb: (MultiGesture) -> Unit) {
+    fun setGestureLoadedCallback(invItemId: LLUUID, cb: (MultiGesture) -> Unit) {
         callbackMap[invItemId] = cb
     }
 
-    fun triggerGesture(key: Int, mask: Int): Boolean {
+    fun triggerGesture(key: Key, mask: Mask): Boolean {
         if (!areGesturesEnabled()) return false
 
         val matching = active.values.filterNotNull().filter {
@@ -258,7 +252,7 @@ object GestureMgr {
         return false
     }
 
-    fun triggerGestureRelease(key: Int, mask: Int): Boolean {
+    fun triggerGestureRelease(key: Key, mask: Mask): Boolean {
         if (!areGesturesEnabled()) return false
 
         val matching = active.values.filterNotNull().filter {
@@ -294,11 +288,10 @@ object GestureMgr {
 
                     if (gesture.replaceText.isNotEmpty()) {
                         if (!firstToken) revisedString?.append(" ")
-                        if (gesture.replaceText.equals(token, ignoreCase = true)) {
-                            revisedString?.append(token)
-                        } else {
-                            revisedString?.append(gesture.replaceText)
-                        }
+                        revisedString?.append(
+                            if (gesture.replaceText.equals(token, ignoreCase = true)) token
+                            else gesture.replaceText
+                        )
                     }
                     foundGestures = true
                 }
@@ -314,39 +307,32 @@ object GestureMgr {
         return foundGestures
     }
 
-    fun isKeyBound(key: Int, mask: Int): Boolean {
-        return active.values.filterNotNull().any { it.key == key && it.mask == mask }
-    }
+    fun isKeyBound(key: Key, mask: Mask): Boolean =
+        active.values.filterNotNull().any { it.key == key && it.mask == mask }
 
     fun getPlayingCount(): Int = playing.size
 
-    fun addObserver(observer: GestureManagerObserver) {
-        observers.add(observer)
-    }
+    fun addObserver(observer: GestureManagerObserver) { observers.add(observer) }
 
-    fun removeObserver(observer: GestureManagerObserver) {
-        observers.remove(observer)
-    }
+    fun removeObserver(observer: GestureManagerObserver) { observers.remove(observer) }
 
     fun notifyObservers() {
-        for (observer in observers.toList()) {
-            observer.changed()
-        }
+        for (observer in observers.toList()) observer.changed()
     }
 
     fun onInventoryChanged(mask: UInt) {
-        val GESTURE = 0x40u
-        val LABEL = 0x2u
-        val ADD = 0x4u
-        val REMOVE = 0x8u
-        val STRUCTURE = 0x10u
+        val GESTURE: UInt = 0x40u
+        val LABEL: UInt = 0x2u
+        val ADD: UInt = 0x4u
+        val REMOVE: UInt = 0x8u
+        val STRUCTURE: UInt = 0x10u
 
         if (mask and GESTURE != 0u) {
             if (mask and LABEL != 0u) {
                 for ((itemId, gesture) in active) {
                     if (gesture != null) {
-                        val name = inventoryItemName(itemId)
-                        if (name != null) gesture.name = name
+                        val itemName = inventoryItemName(itemId)
+                        if (itemName != null) gesture.name = itemName
                     }
                 }
                 notifyObservers()
@@ -363,9 +349,8 @@ object GestureMgr {
 
         for ((_, gesture) in active) {
             gesture ?: continue
-            val trigger = gesture.trigger
-            if (inStr.equals(trigger, ignoreCase = true)) {
-                outStr.append(trigger)
+            if (inStr.equals(gesture.trigger, ignoreCase = true)) {
+                outStr.append(gesture.trigger)
                 return true
             }
         }
@@ -380,9 +365,7 @@ object GestureMgr {
             if (!inStr.equals(triggerTrunc, ignoreCase = true)) continue
 
             val curRest = trigger.substring(inLen)
-            if (restOfMatch.isEmpty()) {
-                restOfMatch = curRest
-            }
+            if (restOfMatch.isEmpty()) restOfMatch = curRest
 
             var buf = ""
             var i = 0
@@ -390,9 +373,7 @@ object GestureMgr {
                 if (restOfMatch[i] == curRest[i]) {
                     buf += restOfMatch[i]
                 } else {
-                    if (i == 0) {
-                        restOfMatch = ""
-                    }
+                    if (i == 0) restOfMatch = ""
                     break
                 }
                 i++
@@ -409,7 +390,7 @@ object GestureMgr {
         return false
     }
 
-    fun getItemIDs(ids: MutableList<UUID>) {
+    fun getItemIDs(ids: MutableList<LLUUID>) {
         ids.addAll(active.keys)
     }
 
@@ -417,9 +398,9 @@ object GestureMgr {
         var notify = false
         for ((itemId, gesture) in active) {
             if (gesture != null && gesture.name.isEmpty()) {
-                val name = inventoryItemName(itemId)
-                if (name != null) {
-                    gesture.name = name
+                val itemName = inventoryItemName(itemId)
+                if (itemName != null) {
+                    gesture.name = itemName
                     notify = true
                 }
             }
@@ -431,10 +412,10 @@ object GestureMgr {
         if (!isAgentAvatarValid()) return
         if (hasLoadingAssets(gesture)) return
 
-        TODO("APR: sync gesture.playingAnimIDs and gesture.requestedAnimIDs against avatar's signaled animations")
+        TODO("APR: sync gesture.playingAnimIds and gesture.requestedAnimIds against avatar's signaledAnimations map")
 
         var waiting = false
-        while (!waiting && gesture.playing) {
+        while (!waiting && gesture.isPlaying) {
             val step: GestureStep? = if (gesture.currentStep < gesture.steps.size) {
                 gesture.steps[gesture.currentStep]
             } else {
@@ -443,9 +424,9 @@ object GestureMgr {
             }
 
             if (gesture.waitingAtEnd) {
-                if (gesture.requestedAnimIDs.isEmpty() && gesture.playingAnimIDs.isEmpty()) {
+                if (gesture.requestedAnimIds.isEmpty() && gesture.playingAnimIds.isEmpty()) {
                     gesture.waitingAtEnd = false
-                    gesture.playing = false
+                    gesture.stop()
                 } else {
                     waiting = true
                 }
@@ -453,34 +434,38 @@ object GestureMgr {
             }
 
             if (gesture.waitingKeyRelease) {
-                if (gesture.keyReleased) {
-                    gesture.waitingKeyRelease = false
-                    gesture.currentStep++
-                } else if (elapsedSeconds(gesture.waitTimerStart) > MAX_WAIT_KEY_SECS) {
-                    gesture.waitingKeyRelease = false
-                    gesture.currentStep++
-                } else {
-                    waiting = true
+                when {
+                    gesture.keyReleased -> {
+                        gesture.waitingKeyRelease = false
+                        gesture.currentStep++
+                    }
+                    gesture.waitElapsed > MAX_WAIT_KEY_SECS -> {
+                        gesture.waitingKeyRelease = false
+                        gesture.currentStep++
+                    }
+                    else -> waiting = true
                 }
                 continue
             }
 
             if (gesture.waitingAnimations) {
-                if (gesture.requestedAnimIDs.isEmpty() && gesture.playingAnimIDs.isEmpty()) {
-                    gesture.waitingAnimations = false
-                    gesture.currentStep++
-                } else if (elapsedSeconds(gesture.waitTimerStart) > MAX_WAIT_ANIM_SECS) {
-                    gesture.waitingAnimations = false
-                    gesture.currentStep++
-                } else {
-                    waiting = true
+                when {
+                    gesture.requestedAnimIds.isEmpty() && gesture.playingAnimIds.isEmpty() -> {
+                        gesture.waitingAnimations = false
+                        gesture.currentStep++
+                    }
+                    gesture.waitElapsed > MAX_WAIT_ANIM_SECS -> {
+                        gesture.waitingAnimations = false
+                        gesture.currentStep++
+                    }
+                    else -> waiting = true
                 }
                 continue
             }
 
             if (gesture.waitingTimer) {
                 val waitStep = step as GestureStepWait
-                if (elapsedSeconds(gesture.waitTimerStart) > waitStep.waitSeconds) {
+                if (gesture.waitElapsed > waitStep.waitSeconds) {
                     gesture.waitingTimer = false
                     gesture.currentStep++
                 } else {
@@ -494,48 +479,48 @@ object GestureMgr {
     }
 
     private fun runStep(gesture: MultiGesture, step: GestureStep) {
-        when (step.getType()) {
-            StepType.STEP_ANIMATION -> {
+        when (step.type) {
+            StepType.ANIMATION -> {
                 val animStep = step as GestureStepAnimation
-                if (animStep.animAssetID == UUID(0, 0)) {
+                if (animStep.animAssetId == LLUUID.NULL) {
                     gesture.currentStep++
                     return
                 }
-                if (animStep.flags and ANIM_FLAG_STOP != 0) {
-                    TODO("APR: send ANIM_REQUEST_STOP for animStep.animAssetID")
-                    gesture.requestedAnimIDs.remove(animStep.animAssetID)
+                if (animStep.flags and ANIM_FLAG_STOP != 0u) {
+                    TODO("APR: send ANIM_REQUEST_STOP for animStep.animAssetId via agent")
+                    gesture.requestedAnimIds.remove(animStep.animAssetId)
                 } else {
-                    TODO("APR: send ANIM_REQUEST_START for animStep.animAssetID")
-                    gesture.requestedAnimIDs.add(animStep.animAssetID)
+                    TODO("APR: send ANIM_REQUEST_START for animStep.animAssetId via agent")
+                    gesture.requestedAnimIds.add(animStep.animAssetId)
                 }
                 gesture.currentStep++
             }
-            StepType.STEP_SOUND -> {
+            StepType.SOUND -> {
                 val soundStep = step as GestureStepSound
-                TODO("APR: trigger sound ${soundStep.soundAssetID} at volume 1.0f")
+                TODO("APR: call send_sound_trigger for ${soundStep.soundAssetId} at volume 1.0f")
                 gesture.currentStep++
             }
-            StepType.STEP_CHAT -> {
+            StepType.CHAT -> {
                 val chatStep = step as GestureStepChat
-                TODO("APR: send chat message '${chatStep.chatText}' as CHAT_TYPE_NORMAL (no animate)")
+                TODO("APR: send chat '${chatStep.chatText}' as CHAT_TYPE_NORMAL via FSNearbyChat (no animate); check cmd_line_chat first")
                 gesture.currentStep++
             }
-            StepType.STEP_WAIT -> {
+            StepType.WAIT -> {
                 val waitStep = step as GestureStepWait
                 when {
                     gesture.triggeredByKey && !gesture.waitingKeyRelease &&
-                            (waitStep.flags and WAIT_FLAG_KEY_RELEASE != 0) -> {
+                            (waitStep.flags and WaitFlags.KEY_RELEASE != 0u) -> {
                         gesture.waitingKeyRelease = true
                         gesture.keyReleased = false
-                        gesture.waitTimerStart = currentTimeSeconds()
+                        gesture.waitElapsed = 0f
                     }
-                    (waitStep.flags and WAIT_FLAG_TIME != 0) -> {
+                    (waitStep.flags and WaitFlags.TIME != 0u) -> {
                         gesture.waitingTimer = true
-                        gesture.waitTimerStart = currentTimeSeconds()
+                        gesture.waitElapsed = 0f
                     }
-                    (waitStep.flags and WAIT_FLAG_ALL_ANIM != 0) -> {
+                    (waitStep.flags and WaitFlags.ALL_ANIM != 0u) -> {
                         gesture.waitingAnimations = true
-                        gesture.waitTimerStart = currentTimeSeconds()
+                        gesture.waitElapsed = 0f
                     }
                     else -> gesture.currentStep++
                 }
@@ -544,46 +529,44 @@ object GestureMgr {
         }
     }
 
-    fun onLoadComplete(assetUuid: UUID, itemId: UUID, informServer: Boolean, deactivateSimilar: Boolean, status: Int) {
+    fun onLoadComplete(
+        assetUuid: LLUUID,
+        itemId: LLUUID,
+        informServer: Boolean,
+        deactivateSimilar: Boolean,
+        status: Int
+    ) {
         loadingCount--
-
         if (status == 0) {
-            TODO("APR: read gesture asset from file system for assetUuid and deserialize into MultiGesture")
+            TODO("APR: read and deserialize gesture asset from file system for assetUuid; update active[itemId], send ActivateGestures if informServer, invoke callbackMap entry if present")
         } else {
-            TODO("APR: handle load error status $status, show delayed gesture error notification, clean up active[itemId]")
+            TODO("APR: handle load error (status $status) — show delayed gesture error notification, clean up active[itemId]")
         }
     }
 
-    fun onAssetLoadComplete(assetUuid: UUID, type: AssetType, status: Int) {
-        when (type) {
-            AssetType.AT_ANIMATION -> {
-                TODO("APR: call KeyframeMotion.onLoadComplete for assetUuid")
-                loadingAssets.remove(assetUuid)
-            }
-            AssetType.AT_SOUND -> {
-                TODO("APR: call AudioEngine.assetCallback for assetUuid")
-                loadingAssets.remove(assetUuid)
-            }
-            else -> throw IllegalArgumentException("Unexpected asset type: $type")
+    fun onAssetLoadComplete(assetUuid: LLUUID, isAnimation: Boolean, status: Int) {
+        if (isAnimation) {
+            TODO("APR: call KeyframeMotion.onLoadComplete for assetUuid")
+        } else {
+            TODO("APR: call AudioEngine.assetCallback for assetUuid")
         }
+        loadingAssets.remove(assetUuid)
     }
 
     private fun hasLoadingAssets(gesture: MultiGesture): Boolean {
         for (step in gesture.steps) {
-            when (step.getType()) {
-                StepType.STEP_ANIMATION -> {
+            when (step.type) {
+                StepType.ANIMATION -> {
                     val animStep = step as GestureStepAnimation
-                    val animId = animStep.animAssetID
-                    if (animId != UUID(0, 0) && (animStep.flags and ANIM_FLAG_STOP) == 0 && animId in loadingAssets) {
+                    val animId = animStep.animAssetId
+                    if (animId != LLUUID.NULL && (animStep.flags and ANIM_FLAG_STOP) == 0u && animId in loadingAssets)
                         return true
-                    }
                 }
-                StepType.STEP_SOUND -> {
+                StepType.SOUND -> {
                     val soundStep = step as GestureStepSound
-                    val soundId = soundStep.soundAssetID
-                    if (soundId != UUID(0, 0) && soundId in loadingAssets) {
+                    val soundId = soundStep.soundAssetId
+                    if (soundId != LLUUID.NULL && soundId in loadingAssets)
                         return true
-                    }
                 }
                 else -> {}
             }
@@ -592,123 +575,38 @@ object GestureMgr {
     }
 
     private fun areGesturesEnabled(): Boolean {
-        TODO("APR: read FSGesturesEnabled from saved per-account settings")
+        TODO("APR: read FSGesturesEnabled from saved per-account settings (gSavedPerAccountSettings)")
         @Suppress("UNREACHABLE_CODE")
         return true
     }
 
     private fun canPlayGestures(): Boolean {
-        TODO("APR: check RLVa sendgesture restriction")
+        TODO("APR: check RLVa @sendgesture restriction via RlvActions.canPlayGestures()")
         @Suppress("UNREACHABLE_CODE")
         return true
     }
 
     private fun isAgentAvatarValid(): Boolean {
-        TODO("APR: check if agent avatar is valid/loaded")
+        TODO("APR: check isAgentAvatarValid() / gAgentAvatarp != null")
         @Suppress("UNREACHABLE_CODE")
         return false
     }
 
-    private fun linkedItemId(itemId: UUID): UUID {
-        TODO("APR: resolve linked inventory item ID for $itemId")
+    private fun linkedItemId(itemId: LLUUID): LLUUID {
+        TODO("APR: call gInventory.getLinkedItemID(itemId)")
         @Suppress("UNREACHABLE_CODE")
         return itemId
     }
 
-    private fun inventoryItemName(itemId: UUID): String? {
-        TODO("APR: look up inventory item name for $itemId")
+    private fun inventoryItemName(itemId: LLUUID): String? {
+        TODO("APR: call gInventory.getItem(itemId)?.getName()")
         @Suppress("UNREACHABLE_CODE")
         return null
     }
-
-    private fun elapsedSeconds(startTime: Long): Float {
-        return (System.currentTimeMillis() - startTime) / 1000.0f
-    }
-
-    private fun currentTimeSeconds(): Long = System.currentTimeMillis()
 }
 
-const val KEY_NONE: Int = 0
-const val ANIM_FLAG_STOP: Int = 0x01
-const val WAIT_FLAG_KEY_RELEASE: Int = 0x01
-const val WAIT_FLAG_ALL_ANIM: Int = 0x02
-const val WAIT_FLAG_TIME: Int = 0x04
-
-enum class StepType { STEP_ANIMATION, STEP_SOUND, STEP_CHAT, STEP_WAIT, STEP_EOF }
-enum class AssetType { AT_ANIMATION, AT_SOUND, AT_GESTURE }
-
-interface GestureStep {
-    fun getType(): StepType
-}
-
-data class GestureStepAnimation(
-    var animAssetID: UUID = UUID(0, 0),
-    var animName: String = "",
-    var flags: Int = 0
-) : GestureStep {
-    override fun getType() = StepType.STEP_ANIMATION
-}
-
-data class GestureStepSound(
-    var soundAssetID: UUID = UUID(0, 0),
-    var soundName: String = "",
-    var flags: Int = 0
-) : GestureStep {
-    override fun getType() = StepType.STEP_SOUND
-}
-
-data class GestureStepChat(
-    var chatText: String = "",
-    var flags: Int = 0
-) : GestureStep {
-    override fun getType() = StepType.STEP_CHAT
-}
-
-data class GestureStepWait(
-    var waitSeconds: Float = 0.0f,
-    var flags: Int = 0
-) : GestureStep {
-    override fun getType() = StepType.STEP_WAIT
-}
-
-class MultiGesture {
-    var name: String = ""
-    var trigger: String = ""
-    var replaceText: String = ""
-    var key: Int = KEY_NONE
-    var mask: Int = 0
-    var playing: Boolean = false
-    var triggeredByKey: Boolean = false
-    var waitingAtEnd: Boolean = false
-    var waitingKeyRelease: Boolean = false
-    var waitingAnimations: Boolean = false
-    var waitingTimer: Boolean = false
-    var keyReleased: Boolean = false
-    var currentStep: Int = 0
-    var waitTimerStart: Long = 0L
-    val steps: MutableList<GestureStep> = mutableListOf()
-    val requestedAnimIDs: MutableSet<UUID> = mutableSetOf()
-    val playingAnimIDs: MutableSet<UUID> = mutableSetOf()
-    var doneCallback: ((MultiGesture, Any?) -> Unit)? = null
-    var callbackData: Any? = null
-
-    fun reset() {
-        currentStep = 0
-        playing = false
-        waitingAtEnd = false
-        waitingKeyRelease = false
-        waitingAnimations = false
-        waitingTimer = false
-        keyReleased = false
-        requestedAnimIDs.clear()
-        playingAnimIDs.clear()
-    }
-
-    fun getTrigger(): String = trigger
-}
-
-interface InventoryItem {
-    val uuid: UUID
-    val assetUuid: UUID
+interface ViewerInventoryItemRef {
+    val uuid: LLUUID
+    val assetUuid: LLUUID
     val name: String
 }

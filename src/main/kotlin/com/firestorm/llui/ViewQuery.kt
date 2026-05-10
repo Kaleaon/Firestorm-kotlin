@@ -33,14 +33,14 @@ object EnabledFilter : QueryFilter() {
 
 object TabStopFilter : QueryFilter() {
     override fun invoke(view: View, children: ViewList): FilterResult {
-        val isTabStop = view.isCtrl() && (view as? UICtrl)?.hasTabStop() == true
+        val isTabStop = view is UICtrl && (view as UICtrl).hasTabStop()
         return FilterResult(isTabStop, view.canFocusChildren())
     }
 }
 
 object CtrlFilter : QueryFilter() {
     override fun invoke(view: View, children: ViewList): FilterResult =
-        FilterResult(view.isCtrl(), true)
+        FilterResult(view is UICtrl, true)
 }
 
 class WidgetTypeFilter<T : View>(private val type: Class<T>) : QueryFilter() {
@@ -69,7 +69,7 @@ open class ViewQuery {
     fun run(view: View): ViewList {
         val result: ViewList = mutableListOf()
 
-        val pre = runFilters(view, view.getChildList().toMutableList(), preFilters)
+        val pre = runFilters(view, view.children.toMutableList(), preFilters)
         if (!pre.first && !pre.second) return result
 
         val filteredChildren: ViewList = mutableListOf()
@@ -89,9 +89,9 @@ open class ViewQuery {
     }
 
     open fun filterChildren(parentView: View, filteredChildren: ViewList) {
-        val children = parentView.getChildList().toMutableList()
-        sorter?.sort(parentView, children)
-        for (child in children) {
+        val childSnapshot = parentView.children.toMutableList()
+        sorter?.sort(parentView, childSnapshot)
+        for (child in childSnapshot) {
             filteredChildren.addAll(run(child))
         }
     }
@@ -108,16 +108,4 @@ open class ViewQuery {
     }
 }
 
-fun View.isCtrl(): Boolean = this is UICtrl
-
-fun View.canFocusChildren(): Boolean = TODO("APR: return whether this view's children can receive focus")
-
-abstract class UICtrl : View() {
-    abstract fun hasTabStop(): Boolean
-}
-
-fun View.getChildList(): List<View> = TODO("APR: return this view's immediate child list")
-
-var View.enabled: Boolean
-    get() = TODO("APR: return enabled state of this view")
-    set(_) { TODO("APR: set enabled state of this view") }
+fun View.canFocusChildren(): Boolean = TODO("APR: return whether this view allows children to receive keyboard focus")

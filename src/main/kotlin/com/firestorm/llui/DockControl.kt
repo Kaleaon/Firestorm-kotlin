@@ -1,9 +1,11 @@
 package com.firestorm.llui
 
+import com.firestorm.llmath.Rect
+
 class DockControl(
     dockWidget: View?,
     private val dockableFloater: Floater,
-    private val dockTongue: UIImage,
+    private val dockTongue: DockTongueImage,
     private val dockAt: DocAt,
     getAllowedRectCallback: ((Rect) -> Unit)? = null
 ) {
@@ -74,13 +76,13 @@ class DockControl(
     fun repositionDockable() {
         val dock = getDock() ?: return
         val dockRect = dock.calcScreenRect()
-        val rootRect = Rect()
+        val currentRootRect = Rect()
         val floaterRect = dockableFloater.calcScreenRect()
-        getAllowedRect(rootRect)
+        getAllowedRect(currentRootRect)
 
         val needsRecalc = prevDockRect != dockRect
             || dockWidgetVisible != isDockVisible()
-            || this.rootRect != rootRect
+            || this.rootRect != currentRootRect
             || this.floaterRect != floaterRect
             || recalculateDockablePosition
 
@@ -96,7 +98,7 @@ class DockControl(
         }
 
         prevDockRect = dockRect
-        this.rootRect = rootRect
+        this.rootRect = currentRootRect
         this.floaterRect = floaterRect
         recalculateDockablePosition = false
         dockWidgetVisible = isDockVisible()
@@ -126,8 +128,8 @@ class DockControl(
     private fun moveDockable() {
         val dock = getDock() ?: return
         val dockRect = dock.calcScreenRect()
-        val rootRect = Rect()
-        getAllowedRect(rootRect)
+        val currentRootRect = Rect()
+        getAllowedRect(currentRootRect)
 
         val useTongue = (dockableFloater as? DockableFloater)?.getUseTongue() ?: false
         val dockableRect = dockableFloater.calcScreenRect()
@@ -137,99 +139,77 @@ class DockControl(
 
         when (dockAt) {
             DocAt.LEFT -> {
-                x = dockRect.left - dockableRect.width()
-                y = dockRect.centerY() + dockableRect.height() / 2
+                x = dockRect.left - dockableRect.width
+                y = dockRect.centerY + dockableRect.height / 2
                 if (useTongue) x -= dockTongue.getWidth()
                 dockTongueX = dockableRect.right
-                dockTongueY = dockableRect.centerY() - dockTongue.getHeight() / 2
+                dockTongueY = dockableRect.centerY - dockTongue.getHeight() / 2
             }
             DocAt.RIGHT -> {
                 x = dockRect.right
-                y = dockRect.centerY() + dockableRect.height() / 2
+                y = dockRect.centerY + dockableRect.height / 2
                 if (useTongue) x += dockTongue.getWidth()
                 dockTongueX = dockRect.right
-                dockTongueY = dockableRect.centerY() - dockTongue.getHeight() / 2
+                dockTongueY = dockableRect.centerY - dockTongue.getHeight() / 2
             }
             DocAt.TOP -> {
-                x = dockRect.centerX() - dockableRect.width() / 2
-                y = dockRect.top + dockableRect.height()
+                x = dockRect.centerX - dockableRect.width / 2
+                y = dockRect.top + dockableRect.height
                 if (useTongue) {
                     y += dockTongue.getHeight()
-                    if (y > rootRect.top) y = rootRect.top
+                    if (y > currentRootRect.top) y = currentRootRect.top
                 }
-                x = x.coerceIn(rootRect.left, rootRect.right - dockableRect.width())
+                x = x.coerceIn(currentRootRect.left, currentRootRect.right - dockableRect.width)
 
-                val dockParentRect = dock.getParent()!!.calcScreenRect()
+                val dockParentRect = dock.parent!!.calcScreenRect()
                 dockTongueX = when {
-                    dockRect.centerX() < dockParentRect.left  -> dockParentRect.left  - dockTongue.getWidth() / 2
-                    dockRect.centerX() > dockParentRect.right -> dockParentRect.right - dockTongue.getWidth() / 2
-                    else                                       -> dockRect.centerX()   - dockTongue.getWidth() / 2
+                    dockRect.centerX < dockParentRect.left  -> dockParentRect.left  - dockTongue.getWidth() / 2
+                    dockRect.centerX > dockParentRect.right -> dockParentRect.right - dockTongue.getWidth() / 2
+                    else                                     -> dockRect.centerX     - dockTongue.getWidth() / 2
                 }
                 dockTongueY = dockRect.top
             }
             DocAt.BOTTOM -> {
-                x = dockRect.centerX() - dockableRect.width() / 2
+                x = dockRect.centerX - dockableRect.width / 2
                 y = dockRect.bottom
                 if (useTongue) y -= dockTongue.getHeight()
 
-                x = x.coerceIn(rootRect.left, rootRect.right - dockableRect.width())
+                x = x.coerceIn(currentRootRect.left, currentRootRect.right - dockableRect.width)
 
-                val dockParentRect = dock.getParent()!!.calcScreenRect()
+                val dockParentRect = dock.parent!!.calcScreenRect()
                 dockTongueX = when {
-                    dockRect.centerX() < dockParentRect.left  -> dockParentRect.left  - dockTongue.getWidth() / 2
-                    dockRect.centerX() > dockParentRect.right -> dockParentRect.right - dockTongue.getWidth() / 2
-                    else                                       -> dockRect.centerX()   - dockTongue.getWidth() / 2
+                    dockRect.centerX < dockParentRect.left  -> dockParentRect.left  - dockTongue.getWidth() / 2
+                    dockRect.centerX > dockParentRect.right -> dockParentRect.right - dockTongue.getWidth() / 2
+                    else                                     -> dockRect.centerX     - dockTongue.getWidth() / 2
                 }
                 dockTongueY = dockRect.bottom - dockTongue.getHeight()
             }
         }
 
         if (useTongue) {
-            val maxAvailableHeight = rootRect.height() - (rootRect.bottom - dockTongueY) - dockTongue.getHeight()
-            if (dockableRect.height() >= maxAvailableHeight) {
-                TODO("GPU: dockableFloater.reshape(dockableRect.width(), maxAvailableHeight); set position to ($x, $y)")
+            val maxAvailableHeight =
+                currentRootRect.height - (currentRootRect.bottom - dockTongueY) - dockTongue.getHeight()
+            if (dockableRect.height >= maxAvailableHeight) {
+                TODO("GPU: dockableFloater.reshape(dockableRect.width, maxAvailableHeight); then position to ($x, $y)")
             }
         }
 
-        TODO("GPU: convert screen rect ($x, $y, width, height) to parent-local coords; dockableFloater.setRect(localRect); convert tongue position to floater-local coords")
+        TODO("GPU: convert screen ($x, $y, dockableRect.width, dockableRect.height) to parent-local coords; dockableFloater.setRect(localRect); convert tongue ($dockTongueX, $dockTongueY) to floater-local coords")
     }
 
     private fun getAllowedRectDefault(rect: Rect) {
         val panel = nonToolbarPanelHandle?.get() ?: return
-        TODO("APR: rect = panel.getRect()")
+        TODO("APR: copy panel.rect into rect")
     }
-}
-
-data class Rect(
-    val left: Int = 0,
-    val top: Int = 0,
-    val right: Int = 0,
-    val bottom: Int = 0
-) {
-    fun width(): Int = right - left
-    fun height(): Int = top - bottom
-    fun centerX(): Int = (left + right) / 2
-    fun centerY(): Int = (top + bottom) / 2
 }
 
 class ViewHandle(private val view: View) {
     fun get(): View? = view
 }
 
-abstract class View {
-    abstract fun getHandle(): ViewHandle
-    abstract fun calcScreenRect(): Rect
-    abstract fun getRect(): Rect
-    abstract fun getRootView(): View
-    abstract fun getParent(): View?
-    abstract fun isInVisibleChain(): Boolean
-    abstract fun findChild(name: String): View?
-    var visible: Boolean = true
-}
-
-class UIImage {
-    fun getWidth(): Int = TODO("GPU: return image pixel width")
-    fun getHeight(): Int = TODO("GPU: return image pixel height")
+class DockTongueImage {
+    fun getWidth(): Int = TODO("GPU: return tongue image pixel width")
+    fun getHeight(): Int = TODO("GPU: return tongue image pixel height")
 }
 
 abstract class DockableFloater : Floater("") {
@@ -240,7 +220,20 @@ abstract class DockableFloater : Floater("") {
     open fun onDockShown() {}
 }
 
+fun View.getHandle(): ViewHandle = ViewHandle(this)
+
+fun View.calcScreenRect(): Rect = TODO("GPU: compute screen-space bounding rect for this view")
+
+fun View.getRootView(): View = TODO("APR: traverse parent chain to find root view")
+
+fun View.isInVisibleChain(): Boolean = TODO("APR: walk parent chain checking visibility at each level")
+
+fun View.findChild(name: String): View? = getChildByName(name, recurse = true)
+
 fun Floater.getRootView(): View = TODO("APR: return the root view for this floater")
+
 fun Floater.calcScreenRect(): Rect = TODO("GPU: return screen-space rect for this floater")
-fun Floater.setDocked(docked: Boolean) { TODO("APR: set docked state on dockable floater") }
-fun Floater.isDocked(): Boolean = TODO("APR: return docked state of this floater")
+
+fun Floater.setDocked(docked: Boolean) { TODO("APR: set docked state on this floater") }
+
+fun Floater.isDocked(): Boolean = TODO("APR: return whether this floater is currently docked")

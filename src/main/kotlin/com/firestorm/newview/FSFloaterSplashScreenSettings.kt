@@ -16,14 +16,14 @@ package com.firestorm.newview
  */
 class FSFloaterSplashScreenSettings(val key: Any) {
 
-    private var hideTopBarCheck: CheckBoxCtrl? = null
-    private var hideBlogsCheck: CheckBoxCtrl? = null
-    private var hideDestinationsCheck: CheckBoxCtrl? = null
-    private var useGrayModeCheck: CheckBoxCtrl? = null
-    private var useHighContrastCheck: CheckBoxCtrl? = null
-    private var useAllCapsCheck: CheckBoxCtrl? = null
-    private var useLargerFontsCheck: CheckBoxCtrl? = null
-    private var noTransparencyCheck: CheckBoxCtrl? = null
+    private var hideTopBarCheck: SSCheckBoxCtrl? = null
+    private var hideBlogsCheck: SSCheckBoxCtrl? = null
+    private var hideDestinationsCheck: SSCheckBoxCtrl? = null
+    private var useGrayModeCheck: SSCheckBoxCtrl? = null
+    private var useHighContrastCheck: SSCheckBoxCtrl? = null
+    private var useAllCapsCheck: SSCheckBoxCtrl? = null
+    private var useLargerFontsCheck: SSCheckBoxCtrl? = null
+    private var noTransparencyCheck: SSCheckBoxCtrl? = null
 
     // -------------------------------------------------------------------------
     // Lifecycle
@@ -92,6 +92,7 @@ class FSFloaterSplashScreenSettings(val key: Any) {
     // Platform stubs
     // -------------------------------------------------------------------------
 
+    @Suppress("UNCHECKED_CAST")
     private fun <T> getChild(name: String): T? =
         TODO("Platform: getChild<LLCheckBoxCtrl>(\"$name\")")
 }
@@ -101,7 +102,7 @@ class FSFloaterSplashScreenSettings(val key: Any) {
 // =============================================================================
 
 /** Stub for LLCheckBoxCtrl as used in this floater. */
-class CheckBoxCtrl {
+class SSCheckBoxCtrl {
     var value: Boolean = false
     var onCommit: (() -> Unit)? = null
 }

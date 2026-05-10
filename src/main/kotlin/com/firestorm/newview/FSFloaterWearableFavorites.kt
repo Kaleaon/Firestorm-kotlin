@@ -19,10 +19,10 @@ enum class WearableItemsSortOrder(val code: Int) {
 }
 
 // =============================================================================
-// DragAndDropType — mirrors EDragAndDropType values used here
+// WFDragAndDropType — mirrors EWFDragAndDropType values used here
 // =============================================================================
 
-enum class DragAndDropType { BODYPART, CLOTHING, OBJECT, OTHER }
+enum class WFWFDragAndDropType { BODYPART, CLOTHING, OBJECT, OTHER }
 
 // =============================================================================
 // FSWearableFavoritesItemsList
@@ -81,12 +81,12 @@ open class FSWearableFavoritesItemsList {
     open fun handleDragAndDrop(
         x: Int, y: Int, mask: Int,
         drop: Boolean,
-        cargoType: DragAndDropType,
+        cargoType: WFDragAndDropType,
         cargoData: Any?,
     ): Boolean {
-        if (cargoType == DragAndDropType.BODYPART ||
-            cargoType == DragAndDropType.CLOTHING  ||
-            cargoType == DragAndDropType.OBJECT
+        if (cargoType == WFDragAndDropType.BODYPART ||
+            cargoType == WFDragAndDropType.CLOTHING  ||
+            cargoType == WFDragAndDropType.OBJECT
         ) {
             if (drop && cargoData != null) {
                 val itemId = getUuidFromCargoData(cargoData)

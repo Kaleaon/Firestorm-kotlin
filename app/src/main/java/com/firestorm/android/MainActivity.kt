@@ -6,6 +6,7 @@ import com.firestorm.android.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
+    private val glSurfaceView get() = binding.glSurface
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -14,7 +15,18 @@ class MainActivity : AppCompatActivity() {
 
         binding.appSummary.text = buildString {
             appendLine("Firestorm Kotlin conversion")
-            appendLine("Android starter app is now configured.")
+            appendLine("OpenGL ES 3.2 renderer enabled for graphics baseline.")
+            appendLine("LLSD formatting aligned with Libremetaverse / python-llsd conventions.")
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        glSurfaceView.onResume()
+    }
+
+    override fun onPause() {
+        glSurfaceView.onPause()
+        super.onPause()
     }
 }

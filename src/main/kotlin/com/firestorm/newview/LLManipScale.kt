@@ -54,7 +54,7 @@ class LLManipScale(composite: LLToolComposite?) : LLManip("Scale", composite) {
         }
 
         fun getUniform(): Boolean {
-            return scaleUniform.xor(mInvertUniform)
+            return scaleUniform xor mInvertUniform
         }
 
         fun setStretchTextures(b: Boolean) {
@@ -235,6 +235,7 @@ class LLManipScale(composite: LLToolComposite?) : LLManip("Scale", composite) {
     }
 
     private fun revert() {
+        // Transform-restore plumbing is not yet wired in this JVM placeholder.
         mSendUpdateOnMouseUp = false
     }
 

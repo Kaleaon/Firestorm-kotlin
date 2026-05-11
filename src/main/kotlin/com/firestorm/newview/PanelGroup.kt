@@ -144,7 +144,6 @@ class PanelGroup : GroupMgrObserver, VoiceClientStatusObserver {
             skipRefresh = true
             true
         } else {
-            if (applyMesg.isNotEmpty()) Unit
             false
         }
     }
@@ -244,9 +243,7 @@ class PanelGroup : GroupMgrObserver, VoiceClientStatusObserver {
             hasInventory: Boolean,
             inventoryName: String,
             inventoryOffer: Any?
-        ) {
-            Unit
-        }
+        ) {}
     }
 }
 

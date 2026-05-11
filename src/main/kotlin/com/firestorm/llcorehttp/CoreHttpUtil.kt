@@ -11,6 +11,7 @@ import java.net.http.HttpRequest
 import java.net.http.HttpResponse
 import java.time.Duration
 import java.util.concurrent.Executors
+import java.util.concurrent.atomic.AtomicLong
 
 const val HTTP_REQUEST_EXPIRY_SECS: Float = 60.0f
 
@@ -22,6 +23,9 @@ private const val HTTP_LOGBODY_KEY = "HTTPLogBodyOnError"
 
 private var boolSettingGet: BoolSettingQuery? = null
 private var boolSettingPut: BoolSettingUpdate? = null
+
+/** Monotonically increasing request ID counter used by fire-and-forget HTTP methods. */
+private val requestIdCounter = AtomicLong(0)
 
 /** Shared HTTP client used for all blocking requests. */
 private val httpClient: HttpClient = HttpClient.newBuilder()
@@ -118,7 +122,8 @@ fun requestPostWithLLSD(
     options: Map<String, Any?> = emptyMap(),
     handler: ((Map<String, Any?>) -> Unit)? = null
 ): Long {
-    val future = httpExecutor.submit {
+    val id = requestIdCounter.incrementAndGet()
+    httpExecutor.submit {
         try {
             var reqBuilder = HttpRequest.newBuilder(URI.create(url))
                 .header("Content-Type", "application/llsd+xml")
@@ -131,7 +136,7 @@ fun requestPostWithLLSD(
             llwarns("CoreHttpUtil") { "requestPostWithLLSD failed for $url: ${e.message}" }
         }
     }
-    return System.identityHashCode(future).toLong()
+    return id
 }
 
 fun requestPutWithLLSD(
@@ -141,7 +146,8 @@ fun requestPutWithLLSD(
     options: Map<String, Any?> = emptyMap(),
     handler: ((Map<String, Any?>) -> Unit)? = null
 ): Long {
-    val future = httpExecutor.submit {
+    val id = requestIdCounter.incrementAndGet()
+    httpExecutor.submit {
         try {
             var reqBuilder = HttpRequest.newBuilder(URI.create(url))
                 .header("Content-Type", "application/llsd+xml")
@@ -154,7 +160,7 @@ fun requestPutWithLLSD(
             llwarns("CoreHttpUtil") { "requestPutWithLLSD failed for $url: ${e.message}" }
         }
     }
-    return System.identityHashCode(future).toLong()
+    return id
 }
 
 fun requestPatchWithLLSD(
@@ -164,7 +170,8 @@ fun requestPatchWithLLSD(
     options: Map<String, Any?> = emptyMap(),
     handler: ((Map<String, Any?>) -> Unit)? = null
 ): Long {
-    val future = httpExecutor.submit {
+    val id = requestIdCounter.incrementAndGet()
+    httpExecutor.submit {
         try {
             var reqBuilder = HttpRequest.newBuilder(URI.create(url))
                 .header("Content-Type", "application/llsd+xml")
@@ -177,7 +184,7 @@ fun requestPatchWithLLSD(
             llwarns("CoreHttpUtil") { "requestPatchWithLLSD failed for $url: ${e.message}" }
         }
     }
-    return System.identityHashCode(future).toLong()
+    return id
 }
 
 data class HttpStatus(
@@ -257,6 +264,12 @@ class HttpCoroutineAdapter(
             return HttpStatus(type, status, message, success)
         }
 
+        private fun buildErrorResult(url: String, message: String): Map<String, Any?> = mapOf(
+            HTTP_RESULTS_URL to url,
+            HTTP_RESULTS_SUCCESS to false,
+            HTTP_RESULTS_MESSAGE to message
+        )
+
         fun callbackHttpGet(
             url: String,
             policyId: Int = 0,
@@ -275,7 +288,7 @@ class HttpCoroutineAdapter(
                     if (status.success) success?.invoke(result) else failure?.invoke(result)
                 } catch (e: Exception) {
                     llwarns("CoreHttpUtil") { "callbackHttpGet failed for $url: ${e.message}" }
-                    failure?.invoke(mapOf(HTTP_RESULTS_URL to url, HTTP_RESULTS_SUCCESS to false, HTTP_RESULTS_MESSAGE to (e.message ?: "")))
+                    failure?.invoke(buildErrorResult(url, e.message ?: ""))
                 }
             }
         }
@@ -300,7 +313,7 @@ class HttpCoroutineAdapter(
                     if (status.success) success?.invoke(result) else failure?.invoke(result)
                 } catch (e: Exception) {
                     llwarns("CoreHttpUtil") { "callbackHttpPost failed for $url: ${e.message}" }
-                    failure?.invoke(mapOf(HTTP_RESULTS_URL to url, HTTP_RESULTS_SUCCESS to false, HTTP_RESULTS_MESSAGE to (e.message ?: "")))
+                    failure?.invoke(buildErrorResult(url, e.message ?: ""))
                 }
             }
         }
@@ -323,7 +336,7 @@ class HttpCoroutineAdapter(
                     if (status.success) success?.invoke(result) else failure?.invoke(result)
                 } catch (e: Exception) {
                     llwarns("CoreHttpUtil") { "callbackHttpDel failed for $url: ${e.message}" }
-                    failure?.invoke(mapOf(HTTP_RESULTS_URL to url, HTTP_RESULTS_SUCCESS to false, HTTP_RESULTS_MESSAGE to (e.message ?: "")))
+                    failure?.invoke(buildErrorResult(url, e.message ?: ""))
                 }
             }
         }
@@ -640,7 +653,7 @@ private fun jsonEscape(s: String): String = buildString {
         '\n' -> append("\\n")
         '\r' -> append("\\r")
         '\t' -> append("\\t")
-        else -> if (c.code < 0x20) append("\\u%04X".format(c.code)) else append(c)
+        else -> if (c.code < 0x20) append("\\u%04x".format(c.code)) else append(c)
     }
 }
 

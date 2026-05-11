@@ -121,7 +121,7 @@ abstract class LLMotion(val id: LLUUID) {
 
     fun fadeOut() {
         if (fadeWeight > 0.01f) {
-            fadeWeight -= fadeWeight * CriticalDamp.getInterpolant(0.2f)
+            fadeWeight -= fadeWeight * CriticalDamp.getInterpolant(FADE_INTERPOLANT_RATE)
         } else {
             fadeWeight = 0f
         }
@@ -129,10 +129,15 @@ abstract class LLMotion(val id: LLUUID) {
 
     fun fadeIn() {
         if (fadeWeight < 0.99f) {
-            fadeWeight += (1f - fadeWeight) * CriticalDamp.getInterpolant(0.2f)
+            fadeWeight += (1f - fadeWeight) * CriticalDamp.getInterpolant(FADE_INTERPOLANT_RATE)
         } else {
             fadeWeight = 1f
         }
+    }
+
+    companion object {
+        /** Fractional interpolation rate used by fadeIn/fadeOut per frame. Mirrors C++ FADE_ALPHA. */
+        private const val FADE_INTERPOLANT_RATE = 0.2f
     }
 }
 

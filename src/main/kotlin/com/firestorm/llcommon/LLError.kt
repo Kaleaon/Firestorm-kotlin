@@ -222,6 +222,12 @@ object LLError {
         applyEntries("files")     { name, lvl -> setFileLevel(name, lvl) }
     }
 
+    /**
+     * Map a log-level string from logcontrol.xml to an [ELevel] value.
+     *
+     * Supported values (case-insensitive): `DEBUG`, `INFO`, `WARN`, `WARNING` (alias for WARN),
+     * `ERROR`, `NONE`.  Returns `null` for unrecognised strings.
+     */
     private fun levelFromString(s: String): ELevel? = when {
         s.equals("DEBUG", ignoreCase = true)   -> ELevel.DEBUG
         s.equals("INFO", ignoreCase = true)    -> ELevel.INFO

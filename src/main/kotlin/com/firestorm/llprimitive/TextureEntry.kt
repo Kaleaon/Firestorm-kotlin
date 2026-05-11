@@ -245,7 +245,7 @@ data class TextureEntry(
          * Parse a media version string of the form `x-mv:<version>/<agent-uuid>` into its
          * two parts.  Returns `null` if the string is not a valid media version string.
          */
-        private fun parseMediaVersion(versionString: String): Pair<UInt, LLUUID>? {
+        private fun parseMediaVersionString(versionString: String): Pair<UInt, LLUUID>? {
             if (!versionString.startsWith("x-mv:")) return null
             val payload = versionString.removePrefix("x-mv:")
             val slashIdx = payload.indexOf('/')
@@ -257,21 +257,21 @@ data class TextureEntry(
 
         /** Emit a media version string touched by the given agent. */
         fun touchMediaVersionString(inVersion: String, agentId: LLUUID): String {
-            val currentVersion = parseMediaVersion(inVersion)?.first ?: 0u
+            val currentVersion = parseMediaVersionString(inVersion)?.first ?: 0u
             return "x-mv:${currentVersion + 1u}/$agentId"
         }
 
         /** Parse the version number from a media-version string. */
         fun getVersionFromMediaVersionString(versionString: String): UInt =
-            parseMediaVersion(versionString)?.first ?: 0u
+            parseMediaVersionString(versionString)?.first ?: 0u
 
         /** Parse the agent UUID from a media-version string. */
         fun getAgentIDFromMediaVersionString(versionString: String): LLUUID =
-            parseMediaVersion(versionString)?.second ?: LLUUID.NULL
+            parseMediaVersionString(versionString)?.second ?: LLUUID.NULL
 
         /** Return whether a string is a valid media-version string. */
         fun isMediaVersionString(versionString: String): Boolean =
-            parseMediaVersion(versionString) != null
+            parseMediaVersionString(versionString) != null
     }
 
     /**

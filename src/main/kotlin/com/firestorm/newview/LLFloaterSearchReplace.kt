@@ -7,21 +7,21 @@ class LLFloaterSearchReplace(sdKey: Any) : LLFloater(sdKey) {
     private var mCaseInsensitiveCheck: LLCheckBoxCtrl? = null
     private var mSearchUpCheck: LLCheckBoxCtrl? = null
 
-    // Nullable handle; set when a text editor is bound to this floater
+    // Nullable direct reference; cleared when the bound editor is destroyed
     private var mEditorHandle: LLTextEditor? = null
 
-    override fun postBuild(): Boolean {
-        mSearchEditor = getChild<LLLineEditor>("search_text")
+    open fun postBuild(): Boolean {
+        mSearchEditor = getChild("search_text")
         mSearchEditor?.setCommitCallback { onSearchClick() }
         mSearchEditor?.setCommitOnFocusLost(false)
         mSearchEditor?.setKeystrokeCallback { refreshHighlight() }
 
-        mReplaceEditor = getChild<LLLineEditor>("replace_text")
+        mReplaceEditor = getChild("replace_text")
 
-        mCaseInsensitiveCheck = getChild<LLCheckBoxCtrl>("case_text")
+        mCaseInsensitiveCheck = getChild("case_text")
         mCaseInsensitiveCheck?.setCommitCallback { refreshHighlight() }
 
-        mSearchUpCheck = getChild<LLCheckBoxCtrl>("find_previous")
+        mSearchUpCheck = getChild("find_previous")
 
         val pSearchBtn = getChild<LLButton>("search_btn")
         pSearchBtn?.setCommitCallback { onSearchClick() }
@@ -36,6 +36,7 @@ class LLFloaterSearchReplace(sdKey: Any) : LLFloater(sdKey) {
     open fun onOpen(sdKey: Any) {
         val pEditor = getEditor()
         if (pEditor != null) {
+            // canCopy() is used as a synonym for hasSelection() since hasSelection() is inaccessible
             if (pEditor.canCopy()) {
                 mSearchEditor?.setText(pEditor.getSelectionString())
                 mSearchEditor?.setCursorToEnd()
@@ -55,7 +56,7 @@ class LLFloaterSearchReplace(sdKey: Any) : LLFloater(sdKey) {
     }
 
     open fun hasAccelerators(): Boolean {
-        var pView: LLView? = mEditorHandle
+        var pView: LLViewBase? = mEditorHandle
         while (pView != null) {
             if (pView.hasAccelerators()) return true
             pView = pView.getParent()
@@ -64,17 +65,16 @@ class LLFloaterSearchReplace(sdKey: Any) : LLFloater(sdKey) {
     }
 
     open fun handleKeyHere(key: Int, mask: Int): Boolean {
-        // Pass keys to the bound editor hierarchy so that Ctrl-F works when this floater has focus
+        // Pass unhandled keys up through the bound editor hierarchy so Ctrl-F still works when this floater has focus
         var handled = super_handleKeyHere(key, mask)
         if (!handled) {
             if (gFocusMgr.childHasKeyboardFocus(this)) {
-                val pEditView = LLEditMenuHandler.gEditMenuHandler as? LLView
-                if (pEditView != null && pEditView.hasAncestor(this) && gEditMenu?.handleAcceleratorKey(key, mask) == true) {
+                val pEditView = LLEditMenuHandler.gEditMenuHandler as? LLViewBase
+                if (pEditView != null && pEditView.hasAncestor(this) && gEditMenu.handleAcceleratorKey(key, mask)) {
                     return true
                 }
             }
-
-            var pView: LLView? = mEditorHandle
+            var pView: LLViewBase? = mEditorHandle
             while (pView != null) {
                 if (pView.hasAccelerators() && pView.handleKeyHere(key, mask)) return true
                 pView = pView.getParent()
@@ -97,8 +97,8 @@ class LLFloaterSearchReplace(sdKey: Any) : LLFloater(sdKey) {
 
     protected fun onSearchClick() {
         getEditor()?.selectNext(
-            mSearchEditor?.getText() ?: "",
-            mCaseInsensitiveCheck?.get() ?: false,
+            search = mSearchEditor?.getText() ?: "",
+            caseInsensitive = mCaseInsensitiveCheck?.get() ?: false,
             wrap = true,
             searchUp = mSearchUpCheck?.get() ?: false
         )
@@ -106,9 +106,9 @@ class LLFloaterSearchReplace(sdKey: Any) : LLFloater(sdKey) {
 
     protected fun onReplaceClick() {
         getEditor()?.replaceText(
-            mSearchEditor?.getText() ?: "",
-            mReplaceEditor?.getText() ?: "",
-            mCaseInsensitiveCheck?.get() ?: false,
+            search = mSearchEditor?.getText() ?: "",
+            replace = mReplaceEditor?.getText() ?: "",
+            caseInsensitive = mCaseInsensitiveCheck?.get() ?: false,
             wrap = true,
             searchUp = mSearchUpCheck?.get() ?: false
         )
@@ -116,9 +116,9 @@ class LLFloaterSearchReplace(sdKey: Any) : LLFloater(sdKey) {
 
     protected fun onReplaceAllClick() {
         getEditor()?.replaceTextAll(
-            mSearchEditor?.getText() ?: "",
-            mReplaceEditor?.getText() ?: "",
-            mCaseInsensitiveCheck?.get() ?: false
+            search = mSearchEditor?.getText() ?: "",
+            replace = mReplaceEditor?.getText() ?: "",
+            caseInsensitive = mCaseInsensitiveCheck?.get() ?: false
         )
     }
 
@@ -127,13 +127,11 @@ class LLFloaterSearchReplace(sdKey: Any) : LLFloater(sdKey) {
             val pSelf = LLFloaterReg.findTypedInstance<LLFloaterSearchReplace>("search_replace")
             if (pSelf == null || pEditor == null) return null
 
-            var pDependeeNew: LLFloater? = null
             val pDependeeOld = pSelf.getDependee()
-            var pView: LLView? = pEditor.getParent()
+            var pView: LLViewBase? = pEditor.getParent()
             while (pView != null) {
                 val candidate = pView as? LLFloater
                 if (candidate != null) {
-                    pDependeeNew = candidate
                     if (candidate != pDependeeOld) {
                         if (pDependeeOld != null) {
                             pSelf.getEditor()?.clearHighlights()
@@ -157,29 +155,33 @@ class LLFloaterSearchReplace(sdKey: Any) : LLFloater(sdKey) {
         }
 
         fun findInstance(): LLFloaterSearchReplace? =
-            LLFloaterReg.findTypedInstance<LLFloaterSearchReplace>("search_replace")
+            LLFloaterReg.findTypedInstance("search_replace")
     }
 
+    @Suppress("UNCHECKED_CAST")
     private fun <T> getChild(name: String): T? = TODO("UI: resolve child widget '$name'")
     private fun setDefaultBtn(btn: LLButton?) { TODO("UI: set default button") }
     private fun getDependee(): LLFloater? = TODO("UI: getDependee")
     private fun openFloater() { TODO("UI: openFloater") }
     private fun super_handleKeyHere(key: Int, mask: Int): Boolean = TODO("UI: LLFloater base handleKeyHere")
+    private fun removeDependentFloater(floater: LLFloater) { TODO("UI: removeDependentFloater") }
+    private fun addDependentFloater(floater: LLFloater) { TODO("UI: addDependentFloater") }
+    private fun getHost(): LLFloater? = TODO("UI: getHost")
 }
 
 // ============================================================================
-// Stub types for referenced UI / focus-manager APIs
-//
+// Stubs not defined elsewhere in the package
+// ============================================================================
 
-open class LLView {
-    fun getParent(): LLView? = TODO("UI: getParent")
-    fun hasAccelerators(): Boolean = TODO("UI: hasAccelerators")
-    fun hasAncestor(view: LLView): Boolean = TODO("UI: hasAncestor")
+open class LLViewBase {
+    open fun getParent(): LLViewBase? = TODO("UI: getParent")
+    open fun hasAccelerators(): Boolean = TODO("UI: hasAccelerators")
+    fun hasAncestor(view: LLViewBase): Boolean = TODO("UI: hasAncestor")
     fun handleKeyHere(key: Int, mask: Int): Boolean = TODO("UI: handleKeyHere")
 }
 
-open class LLTextEditor : LLView() {
-    fun canCopy(): Boolean = TODO("UI: canCopy")
+open class LLTextEditor : LLViewBase() {
+    fun canCopy(): Boolean = TODO("UI: canCopy (used as synonym for hasSelection)")
     fun getSelectionString(): String = TODO("UI: getSelectionString")
     fun getReadOnly(): Boolean = TODO("UI: getReadOnly")
     fun clearHighlights() { TODO("UI: clearHighlights") }
@@ -189,20 +191,13 @@ open class LLTextEditor : LLView() {
     fun replaceTextAll(search: String, replace: String, caseInsensitive: Boolean) { TODO("UI: replaceTextAll") }
 }
 
-class LLCheckBoxCtrl : LLView() {
+class LLCheckBoxCtrl : LLViewBase() {
     fun get(): Boolean = TODO("UI: get checkbox value")
     fun setCommitCallback(cb: () -> Unit) { TODO("UI: setCommitCallback on checkbox") }
 }
 
-open class LLFloaterBase : LLView() {
-    fun getDependee(): LLFloater? = TODO("UI: getDependee")
-    fun removeDependentFloater(floater: LLFloater) { TODO("UI: removeDependentFloater") }
-    fun addDependentFloater(floater: LLFloater) { TODO("UI: addDependentFloater") }
-    fun getHost(): LLFloater? = TODO("UI: getHost")
-}
-
 object gFocusMgr {
-    fun childHasKeyboardFocus(view: LLView): Boolean = TODO("UI: childHasKeyboardFocus")
+    fun childHasKeyboardFocus(view: Any): Boolean = TODO("UI: childHasKeyboardFocus")
 }
 
 object LLEditMenuHandler {

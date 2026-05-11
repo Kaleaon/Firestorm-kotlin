@@ -206,7 +206,14 @@ class WalkAdjustMotion(id: LLUUID) : LLMotion(id) {
             //
             //   directional_factor = (avatarMovDir rotated into avatar space).x
             //   animSpeed = adjustedSpeed * directional_factor
-            TODO("Implement foot-slip speed-adjustment logic (requires LLVector3d global coords)")
+            // Simplified: use character's float velocity for speed adjustment.
+            // Full double-precision foot tracking requires Vector3d (not yet ported).
+            val velocityDir = ch.getCharacterVelocity().let { v ->
+                val len = v.length()
+                if (len > 0.01f) Vector3(v.x / len, v.y / len, v.z / len) else Vector3(1f, 0f, 0f)
+            }
+            // velocityDir will be used for directional_factor once foot tracking is ported
+            animSpeed = (speed / SPEED_ADJUST_TIME_CONSTANT).coerceIn(0.5f, ANIM_SPEED_MAX)
         } else {
             // Standing/turning: damp animation speed back toward 1
             // TODO: animSpeed = lerp(animSpeed, 1f, 0.2f) via SmoothInterpolation
@@ -295,9 +302,9 @@ class FlyAdjustMotion(id: LLUUID) : LLMotion(id) {
         //       requires the critically-damped interpolation helper
         roll += (targetRoll - roll) * 0.1f   // approximate first-order damp
 
-        // TODO: pelvisState.rotation = Quaternion(roll, Vector3(0f, 0f, 1f))
-        //       requires Quaternion.fromAxisAngle
-        TODO("Set pelvisState.rotation from roll angle around Z axis (requires Quaternion.fromAxisAngle)")
+        val rollQuat = Quaternion().apply { setAngleAxis(roll, 0f, 0f, 1f) }
+        pelvisState.rotation = rollQuat
+        return true
     }
 
     override fun onDeactivate() {

@@ -6,10 +6,10 @@ import com.firestorm.llmath.Vector3
 
 object CharacterConstants {
     const val MAX_JOINTS_PER_MESH = 15
-    const val MAX_ANIMATED_JOINTS = 216u
-    const val MAX_JOINTS_PER_MESH_OBJECT = 110u
-    const val HAND_JOINT_NUM = MAX_ANIMATED_JOINTS - 1u
-    const val FACE_JOINT_NUM = MAX_ANIMATED_JOINTS - 2u
+    val MAX_ANIMATED_JOINTS = 216u
+    val MAX_JOINTS_PER_MESH_OBJECT = 110u
+    val HAND_JOINT_NUM = MAX_ANIMATED_JOINTS - 1u
+    val FACE_JOINT_NUM = MAX_ANIMATED_JOINTS - 2u
     const val MAX_PRIORITY = 7
     const val MAX_PELVIS_OFFSET = 5f
     const val JOINT_THRESHOLD_POS_OFFSET = 0.0001f
@@ -95,8 +95,6 @@ abstract class Character {
     fun getAnimationData(name: String): Any? = animationData[name]
 
     fun removeAnimationData(name: String) { animationData.remove(name) }
-
-    open fun getPreferredPelvisHeight(): Float = preferredPelvisHeight
 
     open fun getVolumePos(jointIndex: Int, volumeOffset: Vector3): Vector3 = Vector3()
 

@@ -2,6 +2,7 @@
 // LGPL 2.1; see original source for full license text.
 package com.firestorm.llcharacter
 
+import com.firestorm.llcommon.CriticalDamp
 import com.firestorm.llcommon.LLUUID
 
 // ---------------------------------------------------------------------------
@@ -118,8 +119,21 @@ abstract class LLMotion(val id: LLUUID) {
     /** True while the motion is blending in or out (fade weight between 0 and 1). */
     fun isBlending(): Boolean = fadeWeight in 0f..1f && fadeWeight != 1f
 
-    fun fadeOut() { /* TODO: step fadeWeight toward 0 over easeOutDuration */ }
-    fun fadeIn()  { /* TODO: step fadeWeight toward 1 over easeInDuration  */ }
+    fun fadeOut() {
+        if (fadeWeight > 0.01f) {
+            fadeWeight -= fadeWeight * CriticalDamp.getInterpolant(0.2f)
+        } else {
+            fadeWeight = 0f
+        }
+    }
+
+    fun fadeIn() {
+        if (fadeWeight < 0.99f) {
+            fadeWeight += (1f - fadeWeight) * CriticalDamp.getInterpolant(0.2f)
+        } else {
+            fadeWeight = 1f
+        }
+    }
 }
 
 // ---------------------------------------------------------------------------

@@ -242,20 +242,44 @@ data class TextureEntry(
         }
 
         /** Emit a media version string touched by the given agent. */
-        fun touchMediaVersionString(inVersion: String, agentId: LLUUID): String =
-            TODO("TextureEntry.touchMediaVersionString not yet implemented")
+        fun touchMediaVersionString(inVersion: String, agentId: LLUUID): String {
+            val currentVersion = if (isMediaVersionString(inVersion)) {
+                getVersionFromMediaVersionString(inVersion)
+            } else {
+                0u
+            }
+            return "x-mv:${currentVersion + 1u}/$agentId"
+        }
 
         /** Parse the version number from a media-version string. */
-        fun getVersionFromMediaVersionString(versionString: String): UInt =
-            TODO("TextureEntry.getVersionFromMediaVersionString not yet implemented")
+        fun getVersionFromMediaVersionString(versionString: String): UInt {
+            if (!isMediaVersionString(versionString)) return 0u
+            // Format: x-mv:<version>/<agent-uuid>
+            val payload = versionString.removePrefix("x-mv:")
+            val slashIdx = payload.indexOf('/')
+            if (slashIdx < 0) return 0u
+            return payload.substring(0, slashIdx).toUIntOrNull() ?: 0u
+        }
 
         /** Parse the agent UUID from a media-version string. */
-        fun getAgentIDFromMediaVersionString(versionString: String): LLUUID =
-            TODO("TextureEntry.getAgentIDFromMediaVersionString not yet implemented")
+        fun getAgentIDFromMediaVersionString(versionString: String): LLUUID {
+            if (!isMediaVersionString(versionString)) return LLUUID.NULL
+            val payload = versionString.removePrefix("x-mv:")
+            val slashIdx = payload.indexOf('/')
+            if (slashIdx < 0) return LLUUID.NULL
+            return LLUUID.fromString(payload.substring(slashIdx + 1)) ?: LLUUID.NULL
+        }
 
         /** Return whether a string is a valid media-version string. */
-        fun isMediaVersionString(versionString: String): Boolean =
-            TODO("TextureEntry.isMediaVersionString not yet implemented")
+        fun isMediaVersionString(versionString: String): Boolean {
+            if (!versionString.startsWith("x-mv:")) return false
+            val payload = versionString.removePrefix("x-mv:")
+            val slashIdx = payload.indexOf('/')
+            if (slashIdx < 0) return false
+            if (payload.substring(0, slashIdx).toUIntOrNull() == null) return false
+            if (LLUUID.fromString(payload.substring(slashIdx + 1)) == null) return false
+            return true
+        }
     }
 
     /**

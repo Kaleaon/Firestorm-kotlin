@@ -1,5 +1,6 @@
 package com.firestorm.llcommon
 
+import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStreamWriter
 import java.io.PrintWriter
@@ -163,8 +164,71 @@ object LLError {
 
         if (logToStderr) logToStderr()
 
-        // In C++ a live LogControlFile is loaded here; stub with TODO.
-        TODO("APR: load logcontrol.xml from $userDir or $appDir and apply configure()")
+        // Try to load logcontrol.xml from userDir, then appDir.
+        // If neither exists the defaults configured above remain in effect.
+        val logControlFile = listOf(
+            File(userDir, "logcontrol.xml"),
+            File(appDir, "logcontrol.xml")
+        ).firstOrNull { it.exists() && it.isFile }
+
+        if (logControlFile != null) {
+            try {
+                applyLogControlFile(logControlFile.readText())
+            } catch (e: Exception) {
+                // Best-effort: an invalid or unreadable logcontrol.xml is silently ignored.
+            }
+        }
+    }
+
+    /**
+     * Parse and apply a logcontrol.xml LLSD document.
+     *
+     * The expected format mirrors the Second Life logcontrol.xml:
+     * ```
+     * <llsd><map>
+     *   <key>default</key><string>DEBUG</string>
+     *   <key>classes</key><array><map>
+     *     <key>name</key><string>MyClass</string>
+     *     <key>level</key><string>INFO</string>
+     *   </map></array>
+     *   <key>tags</key><array>…</array>
+     *   <key>functions</key><array>…</array>
+     *   <key>files</key><array>…</array>
+     * </map></llsd>
+     * ```
+     */
+    private fun applyLogControlFile(xml: String) {
+        val sd = LLSDSerialize.fromXML(xml)
+        if (sd !is LLSD.LLSDMap) return
+        val map = sd.value
+
+        map["default"]?.asString()?.let { lvl ->
+            levelFromString(lvl)?.let { setDefaultLevel(it) }
+        }
+
+        fun applyEntries(key: String, setter: (String, ELevel) -> Unit) {
+            val entries = (map[key] as? LLSD.LLSDArray) ?: return
+            for (entry in entries.value) {
+                val entryMap = (entry as? LLSD.LLSDMap)?.value ?: continue
+                val name  = entryMap["name"]?.asString()  ?: continue
+                val level = entryMap["level"]?.asString()?.let { levelFromString(it) } ?: continue
+                setter(name, level)
+            }
+        }
+
+        applyEntries("classes")   { name, lvl -> setClassLevel(name, lvl) }
+        applyEntries("tags")      { name, lvl -> setTagLevel(name, lvl) }
+        applyEntries("functions") { name, lvl -> setFunctionLevel(name, lvl) }
+        applyEntries("files")     { name, lvl -> setFileLevel(name, lvl) }
+    }
+
+    private fun levelFromString(s: String): ELevel? = when (s.uppercase()) {
+        "DEBUG" -> ELevel.DEBUG
+        "INFO"  -> ELevel.INFO
+        "WARN", "WARNING" -> ELevel.WARN
+        "ERROR" -> ELevel.ERROR
+        "NONE"  -> ELevel.NONE
+        else    -> null
     }
 
     fun setFatalFunction(f: (String) -> Unit) { settings.crashFunction = f }

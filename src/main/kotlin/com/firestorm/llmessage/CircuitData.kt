@@ -54,8 +54,10 @@ class CircuitData(
         private set
 
     private var lastPacketLog: Long = 0L
-    private var unackedPacketCount: Int = 0
-    private var unackedPacketBytes: Int = 0
+    var unackedPacketCount: Int = 0
+        private set
+    var unackedPacketBytes: Int = 0
+        private set
 
     fun pingTimerStart() {
         pingStartTimeMs = System.currentTimeMillis()
@@ -102,5 +104,16 @@ class CircuitData(
         packetsOutId = (packetsOutId + 1u) and 0x00FFFFFFu
         if (packetsOutId == 0u) packetsOutId = 1u
         return packetsOutId
+    }
+
+    /**
+     * Log the current unacked-packet stats and reset the counters.
+     * Mirrors C++ CircuitData::dumpResendCountAndReset().
+     */
+    fun dumpResendCountAndReset(): String {
+        val msg = "Circuit ${host}: unacked packets=$unackedPacketCount bytes=$unackedPacketBytes"
+        unackedPacketCount = 0
+        unackedPacketBytes = 0
+        return msg
     }
 }

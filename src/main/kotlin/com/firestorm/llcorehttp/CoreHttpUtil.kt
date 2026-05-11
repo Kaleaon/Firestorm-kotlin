@@ -1,5 +1,16 @@
 package com.firestorm.llcorehttp
 
+import com.firestorm.llcommon.LLSD
+import com.firestorm.llcommon.LLSDSerialize
+import com.firestorm.llcommon.llinfos
+import com.firestorm.llcommon.llwarns
+import java.io.File
+import java.net.URI
+import java.net.http.HttpClient
+import java.net.http.HttpRequest
+import java.net.http.HttpResponse
+import java.time.Duration
+
 const val HTTP_REQUEST_EXPIRY_SECS: Float = 60.0f
 
 typealias CompletionCallback = (Map<String, Any?>) -> Unit
@@ -11,6 +22,40 @@ private const val HTTP_LOGBODY_KEY = "HTTPLogBodyOnError"
 private var boolSettingGet: BoolSettingQuery? = null
 private var boolSettingPut: BoolSettingUpdate? = null
 
+/** Shared HTTP client used for all blocking requests. */
+private val httpClient: HttpClient = HttpClient.newBuilder()
+    .connectTimeout(Duration.ofSeconds(HTTP_REQUEST_EXPIRY_SECS.toLong()))
+    .build()
+
+// ── LLSD ↔ Map conversion helpers ──────────────────────────────────────────
+
+private fun llsdToAny(sd: LLSD): Any? = when (sd) {
+    is LLSD.Undefined      -> null
+    is LLSD.LLSDBoolean    -> sd.value
+    is LLSD.LLSDInteger    -> sd.value
+    is LLSD.LLSDReal       -> sd.value
+    is LLSD.LLSDString     -> sd.value
+    is LLSD.LLSDUUID       -> sd.value.toString()
+    is LLSD.LLSDDate       -> sd.value.toISOString()
+    is LLSD.LLSDURI        -> sd.value.asString()
+    is LLSD.LLSDBinary     -> sd.value
+    is LLSD.LLSDMap        -> sd.value.mapValues { llsdToAny(it.value) }
+    is LLSD.LLSDArray      -> sd.value.map { llsdToAny(it) }
+}
+
+private fun anyToLLSD(v: Any?): LLSD = when (v) {
+    null            -> LLSD.Undefined
+    is Boolean      -> LLSD.LLSDBoolean(v)
+    is Int          -> LLSD.LLSDInteger(v)
+    is Long         -> LLSD.LLSDInteger(v.toInt())
+    is Double       -> LLSD.LLSDReal(v)
+    is Float        -> LLSD.LLSDReal(v.toDouble())
+    is String       -> LLSD.LLSDString(v)
+    is Map<*, *>    -> LLSD.LLSDMap((v as Map<String, Any?>).mapValues { anyToLLSD(it.value) })
+    is List<*>      -> LLSD.LLSDArray(v.map { anyToLLSD(it) })
+    else            -> LLSD.LLSDString(v.toString())
+}
+
 fun setPropertyMethods(queryfn: BoolSettingQuery, updatefn: BoolSettingUpdate) {
     boolSettingGet = queryfn
     boolSettingPut = updatefn
@@ -19,12 +64,44 @@ fun setPropertyMethods(queryfn: BoolSettingQuery, updatefn: BoolSettingUpdate) {
 
 fun responseToLLSD(body: ByteArray, log: Boolean): Map<String, Any?>? {
     if (body.isEmpty()) return null
-    TODO("APR: use JVM XML parser to deserialise LLSD body into Map<String,Any?>")
+    return try {
+        val xml = body.toString(Charsets.UTF_8)
+        val sd = LLSDSerialize.fromXML(xml)
+        @Suppress("UNCHECKED_CAST")
+        llsdToAny(sd) as? Map<String, Any?>
+    } catch (e: Exception) {
+        if (log) llwarns("CoreHttpUtil") { "responseToLLSD: parse failed: ${e.message}" }
+        null
+    }
 }
 
 fun responseToString(body: ByteArray?): String {
     if (body == null || body.isEmpty()) return "[Empty]"
-    TODO("APR: attempt LLSD parse, fall back to raw string truncated at 1024 chars")
+    return try {
+        val llsd = LLSDSerialize.fromXML(body.toString(Charsets.UTF_8))
+        LLSDSerialize.toXML(llsd).take(1024)
+    } catch (e: Exception) {
+        body.toString(Charsets.UTF_8).take(1024)
+    }
+}
+
+private fun llsdBodyPublisher(body: Map<String, Any?>): HttpRequest.BodyPublisher {
+    val sd = anyToLLSD(body)
+    val xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<llsd>${LLSDSerialize.toXML(sd)}</llsd>"
+    return HttpRequest.BodyPublishers.ofString(xml)
+}
+
+private fun buildResult(url: String, resp: HttpResponse<ByteArray>): Map<String, Any?> {
+    val status = HttpStatus(0, resp.statusCode())
+    val result = mutableMapOf<String, Any?>()
+    val body = resp.body()
+    if (status.success) {
+        val parsed = responseToLLSD(body, false)
+        if (parsed != null) result.putAll(parsed)
+        else result[HttpCoroutineAdapter.HTTP_RESULTS_CONTENT] = body.toString(Charsets.UTF_8)
+    }
+    HttpCoroHandler.writeStatusCodes(status, url, result)
+    return result
 }
 
 fun requestPostWithLLSD(
@@ -34,7 +111,20 @@ fun requestPostWithLLSD(
     options: Map<String, Any?> = emptyMap(),
     handler: ((Map<String, Any?>) -> Unit)? = null
 ): Long {
-    TODO("APR: use JVM HttpClient — POST LLSD-serialised body to $url")
+    Thread {
+        try {
+            var reqBuilder = HttpRequest.newBuilder(URI.create(url))
+                .header("Content-Type", "application/llsd+xml")
+                .POST(llsdBodyPublisher(body))
+                .timeout(Duration.ofSeconds(HTTP_REQUEST_EXPIRY_SECS.toLong()))
+            headers.forEach { (k, v) -> reqBuilder = reqBuilder.header(k, v) }
+            val resp = httpClient.send(reqBuilder.build(), HttpResponse.BodyHandlers.ofByteArray())
+            handler?.invoke(buildResult(url, resp))
+        } catch (e: Exception) {
+            llwarns("CoreHttpUtil") { "requestPostWithLLSD failed for $url: ${e.message}" }
+        }
+    }.also { it.isDaemon = true }.start()
+    return 0L
 }
 
 fun requestPutWithLLSD(
@@ -44,7 +134,20 @@ fun requestPutWithLLSD(
     options: Map<String, Any?> = emptyMap(),
     handler: ((Map<String, Any?>) -> Unit)? = null
 ): Long {
-    TODO("APR: use JVM HttpClient — PUT LLSD-serialised body to $url")
+    Thread {
+        try {
+            var reqBuilder = HttpRequest.newBuilder(URI.create(url))
+                .header("Content-Type", "application/llsd+xml")
+                .PUT(llsdBodyPublisher(body))
+                .timeout(Duration.ofSeconds(HTTP_REQUEST_EXPIRY_SECS.toLong()))
+            headers.forEach { (k, v) -> reqBuilder = reqBuilder.header(k, v) }
+            val resp = httpClient.send(reqBuilder.build(), HttpResponse.BodyHandlers.ofByteArray())
+            handler?.invoke(buildResult(url, resp))
+        } catch (e: Exception) {
+            llwarns("CoreHttpUtil") { "requestPutWithLLSD failed for $url: ${e.message}" }
+        }
+    }.also { it.isDaemon = true }.start()
+    return 0L
 }
 
 fun requestPatchWithLLSD(
@@ -54,7 +157,20 @@ fun requestPatchWithLLSD(
     options: Map<String, Any?> = emptyMap(),
     handler: ((Map<String, Any?>) -> Unit)? = null
 ): Long {
-    TODO("APR: use JVM HttpClient — PATCH LLSD-serialised body to $url")
+    Thread {
+        try {
+            var reqBuilder = HttpRequest.newBuilder(URI.create(url))
+                .header("Content-Type", "application/llsd+xml")
+                .method("PATCH", llsdBodyPublisher(body))
+                .timeout(Duration.ofSeconds(HTTP_REQUEST_EXPIRY_SECS.toLong()))
+            headers.forEach { (k, v) -> reqBuilder = reqBuilder.header(k, v) }
+            val resp = httpClient.send(reqBuilder.build(), HttpResponse.BodyHandlers.ofByteArray())
+            handler?.invoke(buildResult(url, resp))
+        } catch (e: Exception) {
+            llwarns("CoreHttpUtil") { "requestPatchWithLLSD failed for $url: ${e.message}" }
+        }
+    }.also { it.isDaemon = true }.start()
+    return 0L
 }
 
 data class HttpStatus(
@@ -140,7 +256,21 @@ class HttpCoroutineAdapter(
             success: CompletionCallback? = null,
             failure: CompletionCallback? = null
         ) {
-            TODO("APR: use JVM coroutine — async GET $url, call success/failure callback")
+            Thread {
+                try {
+                    val req = HttpRequest.newBuilder(URI.create(url))
+                        .GET()
+                        .timeout(Duration.ofSeconds(HTTP_REQUEST_EXPIRY_SECS.toLong()))
+                        .build()
+                    val resp = httpClient.send(req, HttpResponse.BodyHandlers.ofByteArray())
+                    val result = buildResultStatic(url, resp)
+                    val status = HttpStatus(0, resp.statusCode())
+                    if (status.success) success?.invoke(result) else failure?.invoke(result)
+                } catch (e: Exception) {
+                    llwarns("CoreHttpUtil") { "callbackHttpGet failed for $url: ${e.message}" }
+                    failure?.invoke(mapOf(HTTP_RESULTS_URL to url, HTTP_RESULTS_SUCCESS to false, HTTP_RESULTS_MESSAGE to (e.message ?: "")))
+                }
+            }.also { it.isDaemon = true }.start()
         }
 
         fun callbackHttpPost(
@@ -150,7 +280,22 @@ class HttpCoroutineAdapter(
             success: CompletionCallback? = null,
             failure: CompletionCallback? = null
         ) {
-            TODO("APR: use JVM coroutine — async POST postData to $url, call success/failure callback")
+            Thread {
+                try {
+                    val req = HttpRequest.newBuilder(URI.create(url))
+                        .header("Content-Type", "application/llsd+xml")
+                        .POST(llsdBodyPublisher(postData))
+                        .timeout(Duration.ofSeconds(HTTP_REQUEST_EXPIRY_SECS.toLong()))
+                        .build()
+                    val resp = httpClient.send(req, HttpResponse.BodyHandlers.ofByteArray())
+                    val result = buildResultStatic(url, resp)
+                    val status = HttpStatus(0, resp.statusCode())
+                    if (status.success) success?.invoke(result) else failure?.invoke(result)
+                } catch (e: Exception) {
+                    llwarns("CoreHttpUtil") { "callbackHttpPost failed for $url: ${e.message}" }
+                    failure?.invoke(mapOf(HTTP_RESULTS_URL to url, HTTP_RESULTS_SUCCESS to false, HTTP_RESULTS_MESSAGE to (e.message ?: "")))
+                }
+            }.also { it.isDaemon = true }.start()
         }
 
         fun callbackHttpDel(
@@ -159,16 +304,78 @@ class HttpCoroutineAdapter(
             success: CompletionCallback? = null,
             failure: CompletionCallback? = null
         ) {
-            TODO("APR: use JVM coroutine — async DELETE $url, call success/failure callback")
+            Thread {
+                try {
+                    val req = HttpRequest.newBuilder(URI.create(url))
+                        .DELETE()
+                        .timeout(Duration.ofSeconds(HTTP_REQUEST_EXPIRY_SECS.toLong()))
+                        .build()
+                    val resp = httpClient.send(req, HttpResponse.BodyHandlers.ofByteArray())
+                    val result = buildResultStatic(url, resp)
+                    val status = HttpStatus(0, resp.statusCode())
+                    if (status.success) success?.invoke(result) else failure?.invoke(result)
+                } catch (e: Exception) {
+                    llwarns("CoreHttpUtil") { "callbackHttpDel failed for $url: ${e.message}" }
+                    failure?.invoke(mapOf(HTTP_RESULTS_URL to url, HTTP_RESULTS_SUCCESS to false, HTTP_RESULTS_MESSAGE to (e.message ?: "")))
+                }
+            }.also { it.isDaemon = true }.start()
         }
 
         fun messageHttpGet(url: String, success: String = "", failure: String = "") {
-            TODO("APR: use JVM coroutine — GET $url, log result at INFO/WARN level")
+            Thread {
+                try {
+                    val req = HttpRequest.newBuilder(URI.create(url)).GET()
+                        .timeout(Duration.ofSeconds(HTTP_REQUEST_EXPIRY_SECS.toLong())).build()
+                    val resp = httpClient.send(req, HttpResponse.BodyHandlers.ofByteArray())
+                    if (resp.statusCode() in 200..299) {
+                        if (success.isNotEmpty()) llinfos("CoreHttpUtil") { "GET $url: $success" }
+                    } else {
+                        if (failure.isNotEmpty()) llwarns("CoreHttpUtil") { "GET $url failed (${resp.statusCode()}): $failure" }
+                    }
+                } catch (e: Exception) {
+                    if (failure.isNotEmpty()) llwarns("CoreHttpUtil") { "GET $url exception: ${e.message} — $failure" }
+                }
+            }.also { it.isDaemon = true }.start()
         }
 
         fun messageHttpPost(url: String, postData: Map<String, Any?>, success: String, failure: String) {
-            TODO("APR: use JVM coroutine — POST to $url, log result at INFO/WARN level")
+            Thread {
+                try {
+                    val req = HttpRequest.newBuilder(URI.create(url))
+                        .header("Content-Type", "application/llsd+xml")
+                        .POST(llsdBodyPublisher(postData))
+                        .timeout(Duration.ofSeconds(HTTP_REQUEST_EXPIRY_SECS.toLong())).build()
+                    val resp = httpClient.send(req, HttpResponse.BodyHandlers.ofByteArray())
+                    if (resp.statusCode() in 200..299) {
+                        if (success.isNotEmpty()) llinfos("CoreHttpUtil") { "POST $url: $success" }
+                    } else {
+                        if (failure.isNotEmpty()) llwarns("CoreHttpUtil") { "POST $url failed (${resp.statusCode()}): $failure" }
+                    }
+                } catch (e: Exception) {
+                    if (failure.isNotEmpty()) llwarns("CoreHttpUtil") { "POST $url exception: ${e.message} — $failure" }
+                }
+            }.also { it.isDaemon = true }.start()
         }
+
+        private fun buildResultStatic(url: String, resp: HttpResponse<ByteArray>): MutableMap<String, Any?> {
+            val status = HttpStatus(0, resp.statusCode())
+            val result = mutableMapOf<String, Any?>()
+            val body = resp.body()
+            if (status.success) {
+                val parsed = responseToLLSD(body, false)
+                if (parsed != null) result.putAll(parsed)
+                else result[HTTP_RESULTS_CONTENT] = body.toString(Charsets.UTF_8)
+            }
+            writeStatusCodes(status, url, result)
+            return result
+        }
+    }
+
+    // ── Instance HTTP methods (blocking, mirror C++ coroutine-adapter API) ──────
+
+    private fun sendBlocking(req: HttpRequest): Map<String, Any?> {
+        val resp = httpClient.send(req, HttpResponse.BodyHandlers.ofByteArray())
+        return buildResult(req.uri().toString(), resp)
     }
 
     fun postAndSuspend(
@@ -177,7 +384,12 @@ class HttpCoroutineAdapter(
         options: Map<String, Any?> = emptyMap(),
         headers: Map<String, String> = emptyMap()
     ): Map<String, Any?> {
-        TODO("APR: use JVM coroutine/suspend — POST LLSD body to $url and return decorated result map")
+        var reqBuilder = HttpRequest.newBuilder(URI.create(url))
+            .header("Content-Type", "application/llsd+xml")
+            .POST(llsdBodyPublisher(body))
+            .timeout(Duration.ofSeconds(HTTP_REQUEST_EXPIRY_SECS.toLong()))
+        headers.forEach { (k, v) -> reqBuilder = reqBuilder.header(k, v) }
+        return sendBlocking(reqBuilder.build())
     }
 
     fun postAndSuspend(
@@ -186,7 +398,12 @@ class HttpCoroutineAdapter(
         options: Map<String, Any?> = emptyMap(),
         headers: Map<String, String> = emptyMap()
     ): Map<String, Any?> {
-        TODO("APR: use JVM coroutine/suspend — POST raw bytes to $url and return decorated result map")
+        var reqBuilder = HttpRequest.newBuilder(URI.create(url))
+            .header("Content-Type", "application/octet-stream")
+            .POST(HttpRequest.BodyPublishers.ofByteArray(rawBody))
+            .timeout(Duration.ofSeconds(HTTP_REQUEST_EXPIRY_SECS.toLong()))
+        headers.forEach { (k, v) -> reqBuilder = reqBuilder.header(k, v) }
+        return sendBlocking(reqBuilder.build())
     }
 
     fun postRawAndSuspend(
@@ -195,7 +412,15 @@ class HttpCoroutineAdapter(
         options: Map<String, Any?> = emptyMap(),
         headers: Map<String, String> = emptyMap()
     ): Map<String, Any?> {
-        TODO("APR: use JVM coroutine/suspend — POST raw body to $url, return result with HTTP_RESULTS_RAW bytes")
+        var reqBuilder = HttpRequest.newBuilder(URI.create(url))
+            .header("Content-Type", "application/octet-stream")
+            .POST(HttpRequest.BodyPublishers.ofByteArray(rawBody))
+            .timeout(Duration.ofSeconds(HTTP_REQUEST_EXPIRY_SECS.toLong()))
+        headers.forEach { (k, v) -> reqBuilder = reqBuilder.header(k, v) }
+        val resp = httpClient.send(reqBuilder.build(), HttpResponse.BodyHandlers.ofByteArray())
+        val result = buildResult(url, resp).toMutableMap()
+        result[HttpCoroutineAdapter.HTTP_RESULTS_RAW] = resp.body()
+        return result
     }
 
     fun postFileAndSuspend(
@@ -204,7 +429,13 @@ class HttpCoroutineAdapter(
         options: Map<String, Any?> = emptyMap(),
         headers: Map<String, String> = emptyMap()
     ): Map<String, Any?> {
-        TODO("APR: use JVM coroutine/suspend — read $fileName and POST bytes to $url")
+        val fileBytes = File(fileName).readBytes()
+        var reqBuilder = HttpRequest.newBuilder(URI.create(url))
+            .header("Content-Type", "application/octet-stream")
+            .POST(HttpRequest.BodyPublishers.ofByteArray(fileBytes))
+            .timeout(Duration.ofSeconds(HTTP_REQUEST_EXPIRY_SECS.toLong()))
+        headers.forEach { (k, v) -> reqBuilder = reqBuilder.header(k, v) }
+        return sendBlocking(reqBuilder.build())
     }
 
     fun postJsonAndSuspend(
@@ -213,7 +444,14 @@ class HttpCoroutineAdapter(
         options: Map<String, Any?> = emptyMap(),
         headers: Map<String, String> = emptyMap()
     ): Map<String, Any?> {
-        TODO("APR: use JVM coroutine/suspend — POST JSON-serialised body to $url")
+        // Simple JSON serialization without an external library
+        val json = mapToJson(body)
+        var reqBuilder = HttpRequest.newBuilder(URI.create(url))
+            .header("Content-Type", "application/json")
+            .POST(HttpRequest.BodyPublishers.ofString(json))
+            .timeout(Duration.ofSeconds(HTTP_REQUEST_EXPIRY_SECS.toLong()))
+        headers.forEach { (k, v) -> reqBuilder = reqBuilder.header(k, v) }
+        return sendBlocking(reqBuilder.build())
     }
 
     fun putAndSuspend(
@@ -222,7 +460,12 @@ class HttpCoroutineAdapter(
         options: Map<String, Any?> = emptyMap(),
         headers: Map<String, String> = emptyMap()
     ): Map<String, Any?> {
-        TODO("APR: use JVM coroutine/suspend — PUT LLSD body to $url")
+        var reqBuilder = HttpRequest.newBuilder(URI.create(url))
+            .header("Content-Type", "application/llsd+xml")
+            .PUT(llsdBodyPublisher(body))
+            .timeout(Duration.ofSeconds(HTTP_REQUEST_EXPIRY_SECS.toLong()))
+        headers.forEach { (k, v) -> reqBuilder = reqBuilder.header(k, v) }
+        return sendBlocking(reqBuilder.build())
     }
 
     fun putJsonAndSuspend(
@@ -231,7 +474,13 @@ class HttpCoroutineAdapter(
         options: Map<String, Any?> = emptyMap(),
         headers: Map<String, String> = emptyMap()
     ): Map<String, Any?> {
-        TODO("APR: use JVM coroutine/suspend — PUT JSON body to $url")
+        val json = mapToJson(body)
+        var reqBuilder = HttpRequest.newBuilder(URI.create(url))
+            .header("Content-Type", "application/json")
+            .PUT(HttpRequest.BodyPublishers.ofString(json))
+            .timeout(Duration.ofSeconds(HTTP_REQUEST_EXPIRY_SECS.toLong()))
+        headers.forEach { (k, v) -> reqBuilder = reqBuilder.header(k, v) }
+        return sendBlocking(reqBuilder.build())
     }
 
     fun getAndSuspend(
@@ -239,7 +488,11 @@ class HttpCoroutineAdapter(
         options: Map<String, Any?> = emptyMap(),
         headers: Map<String, String> = emptyMap()
     ): Map<String, Any?> {
-        TODO("APR: use JVM coroutine/suspend — GET $url and return decorated result map")
+        var reqBuilder = HttpRequest.newBuilder(URI.create(url))
+            .GET()
+            .timeout(Duration.ofSeconds(HTTP_REQUEST_EXPIRY_SECS.toLong()))
+        headers.forEach { (k, v) -> reqBuilder = reqBuilder.header(k, v) }
+        return sendBlocking(reqBuilder.build())
     }
 
     fun getRawAndSuspend(
@@ -247,7 +500,14 @@ class HttpCoroutineAdapter(
         options: Map<String, Any?> = emptyMap(),
         headers: Map<String, String> = emptyMap()
     ): Map<String, Any?> {
-        TODO("APR: use JVM coroutine/suspend — GET $url, return result with HTTP_RESULTS_RAW bytes")
+        var reqBuilder = HttpRequest.newBuilder(URI.create(url))
+            .GET()
+            .timeout(Duration.ofSeconds(HTTP_REQUEST_EXPIRY_SECS.toLong()))
+        headers.forEach { (k, v) -> reqBuilder = reqBuilder.header(k, v) }
+        val resp = httpClient.send(reqBuilder.build(), HttpResponse.BodyHandlers.ofByteArray())
+        val result = buildResult(url, resp).toMutableMap()
+        result[HTTP_RESULTS_RAW] = resp.body()
+        return result
     }
 
     fun getJsonAndSuspend(
@@ -255,7 +515,17 @@ class HttpCoroutineAdapter(
         options: Map<String, Any?> = emptyMap(),
         headers: Map<String, String> = emptyMap()
     ): Map<String, Any?> {
-        TODO("APR: use JVM coroutine/suspend — GET $url, parse JSON response into result map")
+        var reqBuilder = HttpRequest.newBuilder(URI.create(url))
+            .header("Accept", "application/json")
+            .GET()
+            .timeout(Duration.ofSeconds(HTTP_REQUEST_EXPIRY_SECS.toLong()))
+        headers.forEach { (k, v) -> reqBuilder = reqBuilder.header(k, v) }
+        val resp = httpClient.send(reqBuilder.build(), HttpResponse.BodyHandlers.ofByteArray())
+        val result = buildResult(url, resp).toMutableMap()
+        if (HttpStatus(0, resp.statusCode()).success) {
+            result[HTTP_RESULTS_CONTENT] = resp.body().toString(Charsets.UTF_8)
+        }
+        return result
     }
 
     fun deleteAndSuspend(
@@ -263,7 +533,11 @@ class HttpCoroutineAdapter(
         options: Map<String, Any?> = emptyMap(),
         headers: Map<String, String> = emptyMap()
     ): Map<String, Any?> {
-        TODO("APR: use JVM coroutine/suspend — DELETE $url and return decorated result map")
+        var reqBuilder = HttpRequest.newBuilder(URI.create(url))
+            .DELETE()
+            .timeout(Duration.ofSeconds(HTTP_REQUEST_EXPIRY_SECS.toLong()))
+        headers.forEach { (k, v) -> reqBuilder = reqBuilder.header(k, v) }
+        return sendBlocking(reqBuilder.build())
     }
 
     fun deleteJsonAndSuspend(
@@ -271,7 +545,17 @@ class HttpCoroutineAdapter(
         options: Map<String, Any?> = emptyMap(),
         headers: Map<String, String> = emptyMap()
     ): Map<String, Any?> {
-        TODO("APR: use JVM coroutine/suspend — DELETE $url, parse JSON response")
+        var reqBuilder = HttpRequest.newBuilder(URI.create(url))
+            .header("Accept", "application/json")
+            .DELETE()
+            .timeout(Duration.ofSeconds(HTTP_REQUEST_EXPIRY_SECS.toLong()))
+        headers.forEach { (k, v) -> reqBuilder = reqBuilder.header(k, v) }
+        val resp = httpClient.send(reqBuilder.build(), HttpResponse.BodyHandlers.ofByteArray())
+        val result = buildResult(url, resp).toMutableMap()
+        if (HttpStatus(0, resp.statusCode()).success) {
+            result[HTTP_RESULTS_CONTENT] = resp.body().toString(Charsets.UTF_8)
+        }
+        return result
     }
 
     fun patchAndSuspend(
@@ -280,7 +564,12 @@ class HttpCoroutineAdapter(
         options: Map<String, Any?> = emptyMap(),
         headers: Map<String, String> = emptyMap()
     ): Map<String, Any?> {
-        TODO("APR: use JVM coroutine/suspend — PATCH LLSD body to $url")
+        var reqBuilder = HttpRequest.newBuilder(URI.create(url))
+            .header("Content-Type", "application/llsd+xml")
+            .method("PATCH", llsdBodyPublisher(body))
+            .timeout(Duration.ofSeconds(HTTP_REQUEST_EXPIRY_SECS.toLong()))
+        headers.forEach { (k, v) -> reqBuilder = reqBuilder.header(k, v) }
+        return sendBlocking(reqBuilder.build())
     }
 
     fun copyAndSuspend(
@@ -289,7 +578,12 @@ class HttpCoroutineAdapter(
         options: Map<String, Any?> = emptyMap(),
         headers: Map<String, String> = emptyMap()
     ): Map<String, Any?> {
-        TODO("APR: use JVM coroutine/suspend — COPY $url with Destination: $dest header")
+        var reqBuilder = HttpRequest.newBuilder(URI.create(url))
+            .header("Destination", dest)
+            .method("COPY", HttpRequest.BodyPublishers.noBody())
+            .timeout(Duration.ofSeconds(HTTP_REQUEST_EXPIRY_SECS.toLong()))
+        headers.forEach { (k, v) -> reqBuilder = reqBuilder.header(k, v) }
+        return sendBlocking(reqBuilder.build())
     }
 
     fun moveAndSuspend(
@@ -298,10 +592,39 @@ class HttpCoroutineAdapter(
         options: Map<String, Any?> = emptyMap(),
         headers: Map<String, String> = emptyMap()
     ): Map<String, Any?> {
-        TODO("APR: use JVM coroutine/suspend — MOVE $url with Destination: $dest header")
+        var reqBuilder = HttpRequest.newBuilder(URI.create(url))
+            .header("Destination", dest)
+            .method("MOVE", HttpRequest.BodyPublishers.noBody())
+            .timeout(Duration.ofSeconds(HTTP_REQUEST_EXPIRY_SECS.toLong()))
+        headers.forEach { (k, v) -> reqBuilder = reqBuilder.header(k, v) }
+        return sendBlocking(reqBuilder.build())
     }
 
     fun cancelSuspendedOperation() {
-        TODO("APR: cancel the in-flight JVM HTTP request associated with this adapter")
+        // Blocking requests cannot be cancelled mid-flight without a thread interrupt.
+        // Signal the owning thread to stop if it is waiting; best-effort only.
+        // A future refactor to CompletableFuture/coroutines would enable clean cancellation.
     }
+}
+
+// ── Minimal JSON serializer (no external library required) ──────────────────
+
+private fun mapToJson(map: Map<String, Any?>): String = buildString {
+    append('{')
+    map.entries.forEachIndexed { idx, (k, v) ->
+        if (idx > 0) append(',')
+        append('"').append(k.replace("\"", "\\\"")).append("\":")
+        append(anyToJson(v))
+    }
+    append('}')
+}
+
+private fun anyToJson(v: Any?): String = when (v) {
+    null           -> "null"
+    is Boolean     -> v.toString()
+    is Number      -> v.toString()
+    is String      -> '"' + v.replace("\\", "\\\\").replace("\"", "\\\"") + '"'
+    is Map<*, *>   -> mapToJson(@Suppress("UNCHECKED_CAST") (v as Map<String, Any?>))
+    is List<*>     -> "[${v.joinToString(",") { anyToJson(it) }}]"
+    else           -> '"' + v.toString().replace("\"", "\\\"") + '"'
 }

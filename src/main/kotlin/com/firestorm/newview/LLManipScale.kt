@@ -188,7 +188,12 @@ class LLManipScale(composite: LLToolComposite?) : LLManip("Scale", composite) {
     }
 
     override fun canAffectSelection(): Boolean {
-        return mObjectSelection?.isEmpty() != true
+        val selection = mObjectSelection ?: return false
+        if (selection.isEmpty()) return false
+        return selection.rootNodes.all { node ->
+            val obj = node.obj
+            obj.permModify() && !obj.isPermanentEnforced()
+        }
     }
 
     fun handleMiddleMouseDown(x: Int, y: Int, mask: Int): Boolean {
@@ -230,7 +235,7 @@ class LLManipScale(composite: LLToolComposite?) : LLManip("Scale", composite) {
     }
 
     private fun revert() {
-        LLSelectMgr.getInstance().saveSelectedObjectTransform(LLSelectMgr.SELECT_ACTION_TYPE_PICK)
+        mSendUpdateOnMouseUp = false
     }
 
     private fun conditionalHighlight(part: UInt, highlight: FloatArray? = null, normal: FloatArray? = null) {

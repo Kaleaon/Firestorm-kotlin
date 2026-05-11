@@ -146,6 +146,7 @@ open class PanelGroupLandMoney : PanelGroupTab() {
         var needsSendGroupLandRequest: Boolean = true
         var needsApply: Boolean = false
         var storedContribution: Int = 0
+        var pendingContribution: Int = 0
 
         var cantViewParcelsText: String = ""
         var cantViewAccountsText: String = ""
@@ -157,6 +158,11 @@ open class PanelGroupLandMoney : PanelGroupTab() {
 
         fun getStoredContribution(): Int {
             return storedContribution
+        }
+
+        fun setPendingContribution(newContribution: Int) {
+            pendingContribution = newContribution
+            needsApply = pendingContribution != storedContribution
         }
 
         fun requestGroupLandInfo() {
@@ -171,6 +177,7 @@ open class PanelGroupLandMoney : PanelGroupTab() {
         fun applyContribution(newContribution: Int): Boolean {
             if (newContribution < 0) return false
             storedContribution = newContribution
+            pendingContribution = newContribution
             needsApply = false
             return true
         }
@@ -209,6 +216,7 @@ open class PanelGroupLandMoney : PanelGroupTab() {
     override fun activate() {
         if (!impl.beenActivated) {
             impl.beenActivated = true
+            impl.pendingContribution = impl.getStoredContribution()
             impl.moneyDetailsTabHandler?.onClickTab()
         }
         update(GroupChange.GC_ALL)
@@ -217,12 +225,16 @@ open class PanelGroupLandMoney : PanelGroupTab() {
     override fun needsApply(mesg: StringBuilder): Boolean = impl.needsApply
 
     override fun apply(mesg: StringBuilder): Boolean {
-        return impl.applyContribution(impl.getStoredContribution())
+        if (!impl.applyContribution(impl.pendingContribution)) {
+            mesg.append("Invalid group land contribution.")
+            return false
+        }
+        return true
     }
 
     override fun cancel() {
         impl.needsApply = false
-        impl.storedContribution = impl.getStoredContribution()
+        impl.pendingContribution = impl.getStoredContribution()
     }
 
     override fun update(gc: GroupChange) {

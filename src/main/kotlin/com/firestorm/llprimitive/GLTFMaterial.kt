@@ -416,9 +416,10 @@ open class GLTFMaterial {
 
     /** Produce the delta LLSD between this material and an override. */
     /**
-     * Encode overrides (deltas from [this] base towards [overrideMat]) into
-     * [data].  Because [LLSD] is immutable in this Kotlin codebase the
-     * result is returned as a new LLSD map rather than mutating the parameter.
+     * Encode overrides (deltas from [this] base towards [overrideMat]).
+     * Because [LLSD] is immutable in this Kotlin codebase the result is
+     * returned as a new LLSD map.  The [data] parameter is kept only for
+     * C++ API compatibility but is not mutated.
      *
      * The returned value contains the delta LLSD; [data] is kept for API
      * compatibility.

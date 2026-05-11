@@ -5,19 +5,20 @@ import java.util.UUID
 private const val NEW_LSL_NAME = "New Script"
 
 private fun fixNewScriptDefaultName(scriptName: String): String {
+    // The default new-script name contains a space that breaks the upload API; replace with underscore
     return if (scriptName == NEW_LSL_NAME) scriptName.replace(' ', '_') else scriptName
 }
 
 // ============================================================================
 // LLFloaterScriptRecover
-//
+// ============================================================================
 
 class LLFloaterScriptRecover private constructor(sdKey: Any) : LLFloater(sdKey) {
 
     open fun onOpen(sdKey: Any) {
         val pListCtrl = findChild<LLScrollListCtrl>("script_list")
-
         pListCtrl?.clearRows()
+
         val files = (sdKey as? Map<*, *>)?.get("files") as? List<*> ?: return
         for (sdFile in files) {
             val fileMap = sdFile as? Map<*, *> ?: continue
@@ -30,7 +31,7 @@ class LLFloaterScriptRecover private constructor(sdKey: Any) : LLFloater(sdKey) 
         }
     }
 
-    override fun postBuild(): Boolean {
+    open fun postBuild(): Boolean {
         findChild<LLUICtrl>("recover_btn")?.setCommitCallback { onBtnRecover() }
         findChild<LLUICtrl>("cancel_btn")?.setCommitCallback { onBtnCancel() }
         return true
@@ -52,7 +53,7 @@ class LLFloaterScriptRecover private constructor(sdKey: Any) : LLFloater(sdKey) 
 
         for (item in items) {
             val checkColumn = item.getColumn(0) as? LLScrollListCheck ?: continue
-            val sdFile = item.getValue()
+            val sdFile = item.getValueObject()
             if (checkColumn.getCheckBox().getValue()) {
                 sdFiles.add(sdFile)
             } else {
@@ -64,7 +65,6 @@ class LLFloaterScriptRecover private constructor(sdKey: Any) : LLFloater(sdKey) 
         if (sdFiles.isNotEmpty()) {
             LLScriptRecoverQueue(sdFiles)
         }
-
         closeFloater()
     }
 
@@ -72,13 +72,14 @@ class LLFloaterScriptRecover private constructor(sdKey: Any) : LLFloater(sdKey) 
         fun create(sdKey: Any): LLFloaterScriptRecover = LLFloaterScriptRecover(sdKey)
     }
 
+    @Suppress("UNCHECKED_CAST")
     private fun <T> findChild(name: String): T? = TODO("UI: findChild '$name'")
     private fun closeFloater() { TODO("UI: close this floater") }
 }
 
 // ============================================================================
 // LLScriptRecoverQueue
-//
+// ============================================================================
 
 class LLScriptRecoverQueue(sdFiles: List<Any>) {
 
@@ -110,13 +111,12 @@ class LLScriptRecoverQueue(sdFiles: List<Any>) {
                     val fileAgentIdStr = strName.substring(0, agentDelimOffset)
                     if (fileAgentIdStr != agentIdStr) {
                         continue
-                    } else {
-                        strName = strName.substring(agentDelimOffset + 1)
                     }
+                    strName = strName.substring(agentDelimOffset + 1)
                 }
 
                 val offset = strName.lastIndexOf('-')
-                if (offset != -1 && offset != 0 && offset == strName.length - 9) {
+                if (offset > 0 && offset == strName.length - 9) {
                     strName = strName.substring(0, strName.length - 9)
                 }
 
@@ -135,19 +135,19 @@ class LLScriptRecoverQueue(sdFiles: List<Any>) {
     }
 
     fun recoverNext(): Boolean {
-        val idFNF = gInventory.findCategoryUUIDForType(LLFolderType.LOST_AND_FOUND)
+        val idFNF = gInventoryModel.findCategoryUUIDForType(LLFolderType.LOST_AND_FOUND)
 
-        val itFile = fileQueue.entries.firstOrNull { entry ->
-            val fileData = entry.value as? Map<*, *>
-            !(fileData?.containsKey("item") == true && fileData["item"] != null)
+        val itFile = fileQueue.entries.firstOrNull { (_, value) ->
+            val fileData = value as? Map<*, *>
+            fileData?.get("item") == null
         }
 
         if (itFile == null) {
-            val pInvPanel = LLInventoryPanel.getActiveInventoryPanel(true)
+            val pInvPanel = LLInventoryPanel.getActiveInventoryPanel(createIfNeeded = true)
             val pFVF = pInvPanel?.getItemByID(idFNF) as? LLFolderViewFolder
             if (pFVF != null) {
-                pFVF.setOpenArrangeRecursively(true, RecurseMode.UP)
-                pInvPanel?.setSelection(idFNF, true)
+                pFVF.setOpenArrangeRecursively(open = true, mode = RecurseMode.UP)
+                pInvPanel?.setSelection(idFNF, focus = true)
             }
             return false
         }
@@ -169,24 +169,21 @@ class LLScriptRecoverQueue(sdFiles: List<Any>) {
     }
 
     fun onCreateScript(idItem: UUID) {
-        val pItem = gInventory.getItem(idItem) ?: return
+        val pItem = gInventoryModel.getItem(idItem) ?: return
 
-        var strFileName = ""
         var strFilePath = ""
         for ((path, value) in fileQueue) {
             val fileData = value as? Map<*, *> ?: continue
             if (fixNewScriptDefaultName(fileData["name"]?.toString() ?: "") != pItem.getName()) continue
-            strFileName = fileData["path"]?.toString() ?: ""
-            (fileQueue as MutableMap<String, Any>)[path] = buildFileDataWithItem(fileData, idItem)
+            fileQueue[path] = buildFileDataWithItem(fileData, idItem)
             strFilePath = path
             break
         }
 
         val strCapsUrl = gAgent.getRegionCapability("UpdateScriptAgent")
         if (strCapsUrl.isNotEmpty()) {
-            val buffer = TODO("APR: use JVM equivalent - read file bytes from '$strFilePath' using java.io.File")
-            @Suppress("UNREACHABLE_CODE")
-            LLViewerAssetUpload.enqueueInventoryUpload(strCapsUrl, idItem, buffer as ByteArray) { itemId, newAssetId, newItemId, response ->
+            val buffer = readFileBytes(strFilePath)
+            LLViewerAssetUpload.enqueueInventoryUpload(strCapsUrl, idItem, buffer) { itemId, newAssetId, newItemId, response ->
                 onSavedScript(itemId, newAssetId, newItemId, response)
             }
         }
@@ -195,124 +192,88 @@ class LLScriptRecoverQueue(sdFiles: List<Any>) {
     fun onSavedScript(itemId: UUID, newAssetId: UUID, newItemId: UUID, response: Any) {
         val httpOk = LLCoreHttpUtil.isHttpOk(response)
 
-        val itFile = fileQueue.entries.firstOrNull { entry ->
-            val fileData = entry.value as? Map<*, *>
+        val itFile = fileQueue.entries.firstOrNull { (_, value) ->
+            val fileData = value as? Map<*, *>
             fileData?.get("item")?.let { it as? UUID } == itemId
-        }
-
-        if (itFile == null) {
-            return
-        }
+        } ?: return
 
         if (httpOk) {
-            val pItem = gInventory.getItem(itemId)
+            val pItem = gInventoryModel.getItem(itemId)
             if (pItem != null) {
                 val fileData = itFile.value as? Map<*, *>
                 val strScriptName = fileData?.get("name")?.toString() ?: ""
                 if (strScriptName == NEW_LSL_NAME) {
-                    // Rename back scripts that were created with a sanitised default name
-                    val pNewItem = LLViewerInventoryItem(pItem)
+                    // Rename back: the item was created with the underscore-sanitised name
+                    val pNewItem = LLViewerInventoryItemWrapper(pItem)
                     pNewItem.rename(strScriptName)
                     pNewItem.updateServer(false)
-                    gInventory.updateItem(pNewItem)
-                    gInventory.notifyObservers()
+                    gInventoryModel.updateItem(pNewItem)
+                    gInventoryModel.notifyObservers()
                 }
                 LLFile.remove(itFile.key)
                 fileQueue.remove(itFile.key)
             }
         } else {
-            val pItem = gInventory.getItem(itemId)
+            val pItem = gInventoryModel.getItem(itemId)
             if (pItem != null) {
-                gInventory.changeItemParent(pItem, gInventory.findCategoryUUIDForType(LLFolderType.TRASH), false)
+                gInventoryModel.changeItemParent(pItem, gInventoryModel.findCategoryUUIDForType(LLFolderType.TRASH), restamp = false)
             }
             fileQueue.remove(itFile.key)
         }
         recoverNext()
     }
 
-    private fun buildFileDataWithItem(original: Map<*, *>, idItem: UUID): Map<String, Any> {
+    private fun buildFileDataWithItem(original: Map<*, *>, idItem: UUID): MutableMap<String, Any> {
         val result = mutableMapOf<String, Any>()
         for ((k, v) in original) { if (k != null && v != null) result[k.toString()] = v }
         result["item"] = idItem
         return result
     }
+
+    private fun readFileBytes(path: String): ByteArray {
+        TODO("APR: use JVM equivalent - java.io.File(path).readBytes()")
+    }
 }
 
 // ============================================================================
-// Stub types for referenced platform / inventory APIs
-//
+// Stubs not defined elsewhere in the package
+// ============================================================================
 
 object LLFile {
     fun remove(path: String) { TODO("APR: use JVM equivalent - java.io.File(path).delete()") }
     fun isFile(path: String): Boolean { TODO("APR: use JVM equivalent - java.io.File(path).isFile") }
     fun tmpdir(): String { TODO("APR: use JVM equivalent - System.getProperty(\"java.io.tmpdir\")") }
-    fun listFiles(dir: String, glob: String): List<String> { TODO("APR: use JVM equivalent - list files matching glob") }
+    fun listFiles(dir: String, glob: String): List<String> { TODO("APR: use JVM equivalent - list files matching glob in dir") }
     fun getBaseFileName(path: String, stripExtension: Boolean): String { TODO("APR: derive base filename from path") }
 }
+
+enum class LLFolderType { LOST_AND_FOUND, TRASH }
+enum class AddPosition { BOTTOM }
+enum class RecurseMode { UP }
 
 object LLViewerAssetType {
     fun generateDescriptionFor(assetType: LLAssetType): String { TODO("Asset: generate description for $assetType") }
 }
 
-enum class LLAssetType { LSL_TEXT }
-
-enum class LLFolderType { LOST_AND_FOUND, TRASH }
-
-enum class AddPosition { BOTTOM }
-
-enum class RecurseMode { UP }
-
 val gAgentID: UUID get() = TODO("Agent: global agent UUID")
-val gInventory: Any get() = TODO("Inventory: global inventory model")
 
-fun createInventoryItem(
-    agentId: UUID,
-    sessionId: UUID,
-    parentId: UUID,
-    name: String,
-    description: String,
-    assetType: LLAssetType,
-    callback: (UUID) -> Unit
-) { TODO("Inventory: create_inventory_item") }
-
-object LLViewerAssetUpload {
-    fun enqueueInventoryUpload(capsUrl: String, itemId: UUID, buffer: ByteArray, cb: (UUID, UUID, UUID, Any) -> Unit) {
-        TODO("APR: use JVM equivalent - HTTP upload to caps URL")
-    }
+object gInventoryModel {
+    fun getItem(id: UUID): Any? = TODO("Inventory: getItem")
+    fun findCategoryUUIDForType(type: LLFolderType): UUID = TODO("Inventory: findCategoryUUIDForType")
+    fun changeItemParent(item: Any, parentId: UUID, restamp: Boolean) { TODO("Inventory: changeItemParent") }
+    fun updateItem(item: Any) { TODO("Inventory: updateItem") }
+    fun notifyObservers() { TODO("Inventory: notifyObservers") }
 }
 
-object LLCoreHttpUtil {
-    fun isHttpOk(response: Any): Boolean { TODO("HTTP: extract status from response") }
-}
-
-class LLScrollListCtrl {
-    fun clearRows() { TODO("UI: clear scroll list rows") }
-    fun addElement(row: LLScrollListRow, pos: AddPosition) { TODO("UI: add row to scroll list") }
-    fun getAllData(): List<LLScrollListItem> { TODO("UI: get all scroll list items") }
-}
-
-data class LLScrollListRow(val checkValue: Boolean, val nameValue: String, val rowValue: Any)
-
-class LLScrollListItem {
-    fun getValue(): String = TODO("UI: get scroll list item value")
-    fun getColumn(index: Int): Any? = TODO("UI: get scroll list item column")
-}
-
-class LLScrollListCheck {
-    fun getCheckBox(): LLCheckBox = TODO("UI: get check box from scroll list check column")
-}
-
-class LLCheckBox {
-    fun getValue(): Boolean = TODO("UI: get check box value")
-}
-
-class LLUICtrl {
-    fun setCommitCallback(cb: () -> Unit) { TODO("UI: setCommitCallback") }
+class LLViewerInventoryItemWrapper(source: Any) {
+    fun getName(): String = TODO("Inventory: get item name")
+    fun rename(name: String) { TODO("Inventory: rename item") }
+    fun updateServer(isNew: Boolean) { TODO("Inventory: updateServer") }
 }
 
 object LLInventoryPanel {
-    fun getActiveInventoryPanel(create: Boolean): LLInventoryPanel? = TODO("Inventory: get active inventory panel")
-    fun getItemByID(id: UUID): Any? = TODO("Inventory: get item by UUID")
+    fun getActiveInventoryPanel(createIfNeeded: Boolean): LLInventoryPanel? = TODO("Inventory: get active inventory panel")
+    fun getItemByID(id: UUID): Any? = TODO("Inventory: getItemByID")
     fun setSelection(id: UUID, focus: Boolean) { TODO("Inventory: setSelection") }
 }
 
@@ -320,17 +281,36 @@ class LLFolderViewFolder {
     fun setOpenArrangeRecursively(open: Boolean, mode: RecurseMode) { TODO("UI: setOpenArrangeRecursively") }
 }
 
-class LLViewerInventoryItem(source: Any) {
-    fun getName(): String = TODO("Inventory: get item name")
-    fun rename(name: String) { TODO("Inventory: rename item") }
-    fun updateServer(isNew: Boolean) { TODO("Inventory: updateServer") }
+object LLViewerAssetUpload {
+    fun enqueueInventoryUpload(capsUrl: String, itemId: UUID, buffer: ByteArray, cb: (UUID, UUID, UUID, Any) -> Unit) {
+        TODO("APR: use JVM equivalent - HTTP multipart upload to caps URL")
+    }
+}
+
+object LLCoreHttpUtil {
+    fun isHttpOk(response: Any): Boolean { TODO("HTTP: extract HTTP status from LLSD response") }
+}
+
+class LLUICtrl {
+    fun setCommitCallback(cb: () -> Unit) { TODO("UI: setCommitCallback") }
+}
+
+data class LLScrollListRow(val checkValue: Boolean, val nameValue: String, val rowValue: Any)
+
+class LLScrollListItem {
+    fun getValue(): String = TODO("UI: get scroll list item string value")
+    fun getValueObject(): Any = TODO("UI: get scroll list item value object")
+    fun getColumn(index: Int): Any? = TODO("UI: get scroll list column at index")
+}
+
+class LLScrollListCheck {
+    fun getCheckBox(): LLCheckBoxWidget = TODO("UI: get check box from scroll list check column")
+}
+
+class LLCheckBoxWidget {
+    fun getValue(): Boolean = TODO("UI: get check box value")
 }
 
 fun Any.getID(): UUID = TODO("Agent: getID")
 fun Any.getSessionID(): UUID = TODO("Agent: getSessionID")
 fun Any.getRegionCapability(cap: String): String = TODO("Agent: getRegionCapability '$cap'")
-fun Any.getItem(id: UUID): LLViewerInventoryItem? = TODO("Inventory: getItem")
-fun Any.findCategoryUUIDForType(type: LLFolderType): UUID = TODO("Inventory: findCategoryUUIDForType")
-fun Any.changeItemParent(item: LLViewerInventoryItem, parentId: UUID, restamp: Boolean) { TODO("Inventory: changeItemParent") }
-fun Any.updateItem(item: LLViewerInventoryItem) { TODO("Inventory: updateItem") }
-fun Any.notifyObservers() { TODO("Inventory: notifyObservers") }

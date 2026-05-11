@@ -2,7 +2,49 @@ package com.firestorm.newview
 
 import java.util.UUID
 
-open class LLModalDialog(val key: Any)
+// ============================================================================
+// Shared stubs used by save-preset floaters (not defined elsewhere in package)
+// ============================================================================
+
+open class LLModalDialog(key: Any) : LLFloater(key)
+
+class LLRadioGroup {
+    fun getSelectedIndex(): Int = TODO("UI: get selected radio index")
+    fun setSelectedIndex(index: Int) { TODO("UI: set selected radio index") }
+    fun setCommitCallback(cb: () -> Unit) { TODO("UI: setCommitCallback on radio group") }
+}
+
+class LLComboBox {
+    fun getSimple(): String = TODO("UI: getSimple on combo box")
+    fun setEnabled(enabled: Boolean) { TODO("UI: setEnabled on combo box") }
+    fun setTextEntryCallback(cb: () -> Unit) { TODO("UI: setTextEntryCallback on combo box") }
+    fun setCommitCallback(cb: () -> Unit) { TODO("UI: setCommitCallback on combo box") }
+}
+
+enum class DefaultOptions { HIDE, BOTTOM }
+
+const val PRESETS_CAMERA = "camera"
+const val PRESETS_DEFAULT = "default"
+const val PRESETS_DEFAULT_UPPER = "DEFAULT"
+
+object LLPresetsManager {
+    fun setPresetListChangeCallback(cb: () -> Unit) { TODO("PresetsManager: register preset list change callback") }
+    fun setPresetNamesInComboBox(subdir: String, combo: LLComboBox?, option: DefaultOptions) { TODO("PresetsManager: populate combo box from '$subdir'") }
+    fun loadPresetNamesFromDir(subdir: String, names: MutableList<String>, option: DefaultOptions) { TODO("PresetsManager: load preset names from '$subdir'") }
+    fun savePreset(subdir: String, name: String): Boolean { TODO("PresetsManager: save preset '$name' to '$subdir'") }
+    val instance: LLPresetsManager get() = this
+}
+
+object LLNotificationsUtil {
+    fun add(name: String, args: Map<String, Any> = emptyMap()) { TODO("Notifications: show '$name'") }
+}
+
+val gAgentAvatarp: Any? get() = TODO("Agent: global avatar pointer")
+fun isAgentAvatarValid(): Boolean { TODO("Agent: check avatar validity") }
+
+// ============================================================================
+// LLFloaterSaveCameraPreset
+// ============================================================================
 
 class LLFloaterSaveCameraPreset(key: Any) : LLModalDialog(key) {
 
@@ -12,22 +54,22 @@ class LLFloaterSaveCameraPreset(key: Any) : LLModalDialog(key) {
     private var mSaveButton: LLButton? = null
 
     open fun postBuild(): Boolean {
-        mPresetCombo = getChild<LLComboBox>("preset_combo")
+        mPresetCombo = getChild("preset_combo")
 
-        mNameEditor = getChild<LLLineEditor>("preset_txt_editor")
+        mNameEditor = getChild("preset_txt_editor")
         mNameEditor?.setKeystrokeCallback { onPresetNameEdited() }
         // Save on pressing enter in the name field
         mNameEditor?.setCommitCallback { onBtnSave() }
 
-        mSaveButton = getChild<LLButton>("save")
+        mSaveButton = getChild("save")
         mSaveButton?.setCommitCallback { onBtnSave() }
 
-        mSaveRadioGroup = getChild<LLRadioGroup>("radio_save_preset")
+        mSaveRadioGroup = getChild("radio_save_preset")
         mSaveRadioGroup?.setCommitCallback { onSwitchSaveReplace() }
 
         getChild<LLButton>("cancel")?.setCommitCallback { onBtnCancel() }
 
-        LLPresetsManager.instance.setPresetListChangeCallback { onPresetsListChange() }
+        LLPresetsManager.setPresetListChangeCallback { onPresetsListChange() }
 
         return true
     }
@@ -39,8 +81,7 @@ class LLFloaterSaveCameraPreset(key: Any) : LLModalDialog(key) {
             index = (key["index"] as? Int) ?: 0
         }
 
-        LLPresetsManager.instance.setPresetNamesInComboBox(PRESETS_CAMERA, mPresetCombo, DefaultOptions.BOTTOM)
-
+        LLPresetsManager.setPresetNamesInComboBox(PRESETS_CAMERA, mPresetCombo, DefaultOptions.BOTTOM)
         mSaveRadioGroup?.setSelectedIndex(index)
         onPresetNameEdited()
         onSwitchSaveReplace()
@@ -57,7 +98,7 @@ class LLFloaterSaveCameraPreset(key: Any) : LLModalDialog(key) {
         if (name == LLTrans.getString(PRESETS_DEFAULT) || name == PRESETS_DEFAULT) {
             LLNotificationsUtil.add("DefaultPresetNotSaved")
         } else {
-            if (isAgentAvatarValid() && gAgentAvatarp?.getParent() != null) {
+            if (isAgentAvatarValid() && gAgentAvatarp?.let { it::class.java.getMethod("getParent").invoke(it) } != null) {
                 gSavedSettings.setQuaternion("AvatarSitRotation", gAgent.getFrameAgent().getQuaternion())
             }
             if (gAgentCamera.isJoystickCameraUsed()) {
@@ -73,14 +114,14 @@ class LLFloaterSaveCameraPreset(key: Any) : LLModalDialog(key) {
 
             if (isSavingNew) {
                 val presetNames = mutableListOf<String>()
-                LLPresetsManager.instance.loadPresetNamesFromDir(PRESETS_CAMERA, presetNames, DefaultOptions.HIDE)
+                LLPresetsManager.loadPresetNamesFromDir(PRESETS_CAMERA, presetNames, DefaultOptions.HIDE)
                 if (presetNames.contains(name)) {
                     LLNotificationsUtil.add("PresetAlreadyExists", mapOf("NAME" to name))
                     return
                 }
             }
 
-            if (!LLPresetsManager.instance.savePreset(PRESETS_CAMERA, name)) {
+            if (!LLPresetsManager.savePreset(PRESETS_CAMERA, name)) {
                 LLNotificationsUtil.add("PresetNotSaved", mapOf("NAME" to name))
             }
         }
@@ -106,7 +147,7 @@ class LLFloaterSaveCameraPreset(key: Any) : LLModalDialog(key) {
     }
 
     private fun onPresetsListChange() {
-        LLPresetsManager.instance.setPresetNamesInComboBox(PRESETS_CAMERA, mPresetCombo, DefaultOptions.BOTTOM)
+        LLPresetsManager.setPresetNamesInComboBox(PRESETS_CAMERA, mPresetCombo, DefaultOptions.BOTTOM)
     }
 
     private fun onPresetNameEdited() {
@@ -116,66 +157,26 @@ class LLFloaterSaveCameraPreset(key: Any) : LLModalDialog(key) {
         }
     }
 
-    private fun super_onOpen(key: Any) { TODO("LLModalDialog: forward to base onOpen") }
+    private fun super_onOpen(key: Any) { TODO("LLModalDialog: delegate to base onOpen") }
+    @Suppress("UNCHECKED_CAST")
     private fun <T> getChild(name: String): T? = TODO("UI: resolve child widget '$name'")
     private fun getString(key: String): String = TODO("UI: getString '$key'")
     private fun closeFloater() { TODO("UI: close this floater") }
-}
 
-enum class DefaultOptions { HIDE, BOTTOM }
-
-const val PRESETS_CAMERA = "camera"
-const val PRESETS_DEFAULT = "default"
-
-object LLPresetsManager {
-    val instance: LLPresetsManager = this
-    fun setPresetListChangeCallback(cb: () -> Unit) { TODO("PresetsManager: register preset list change callback") }
-    fun setPresetNamesInComboBox(subdir: String, combo: LLComboBox?, option: DefaultOptions) { TODO("PresetsManager: populate combo box from '$subdir'") }
-    fun loadPresetNamesFromDir(subdir: String, names: MutableList<String>, option: DefaultOptions) { TODO("PresetsManager: load preset names from '$subdir'") }
-    fun savePreset(subdir: String, name: String): Boolean { TODO("PresetsManager: save preset '$name' to '$subdir'") }
-}
-
-object LLTrans {
-    fun getString(key: String): String { TODO("Trans: translate '$key'") }
-}
-
-object LLNotificationsUtil {
-    fun add(name: String, args: Map<String, Any> = emptyMap()) { TODO("Notifications: show '$name'") }
-}
-
-val gAgent: Any get() = TODO("Agent: global agent")
-val gAgentAvatarp: Any? get() = TODO("Agent: global avatar pointer")
-val gAgentCamera: Any get() = TODO("Agent: global camera")
-val gSavedSettings: Any get() = TODO("Settings: global saved settings")
-fun isAgentAvatarValid(): Boolean { TODO("Agent: check avatar validity") }
-
-class LLRadioGroup {
-    fun getSelectedIndex(): Int = TODO("UI: get selected radio index")
-    fun setSelectedIndex(index: Int) { TODO("UI: set selected radio index") }
-    fun setCommitCallback(cb: () -> Unit) { TODO("UI: setCommitCallback on radio group") }
-}
-
-class LLLineEditor {
-    fun getValue(): String = TODO("UI: get line editor value")
-    fun getText(): String = TODO("UI: get line editor text")
-    fun setEnabled(enabled: Boolean) { TODO("UI: setEnabled on line editor") }
-    fun setKeystrokeCallback(cb: () -> Unit) { TODO("UI: setKeystrokeCallback on line editor") }
-    fun setCommitCallback(cb: () -> Unit) { TODO("UI: setCommitCallback on line editor") }
-    fun setText(text: String) { TODO("UI: setText on line editor") }
-    fun setCursorToEnd() { TODO("UI: setCursorToEnd on line editor") }
-    fun setFocus(focus: Boolean) { TODO("UI: setFocus on line editor") }
-    fun setCommitOnFocusLost(commit: Boolean) { TODO("UI: setCommitOnFocusLost on line editor") }
-}
-
-class LLComboBox {
-    fun getSimple(): String = TODO("UI: getSimple on combo box")
-    fun setEnabled(enabled: Boolean) { TODO("UI: setEnabled on combo box") }
-    fun setTextEntryCallback(cb: () -> Unit) { TODO("UI: setTextEntryCallback on combo box") }
-    fun setCommitCallback(cb: () -> Unit) { TODO("UI: setCommitCallback on combo box") }
-}
-
-class LLButton {
-    fun setCommitCallback(cb: () -> Unit) { TODO("UI: setCommitCallback on button") }
-    fun setEnabled(enabled: Boolean) { TODO("UI: setEnabled on button") }
-    fun setLabel(label: String) { TODO("UI: setLabel on button") }
+    // Extension helpers for gAgent / gAgentCamera / gSavedSettings typed calls.
+    // The real globals are already typed in Agent.kt, AgentCamera.kt, ViewerControl.kt.
+    private fun Any.getFrameAgent(): Any = TODO("Agent: getFrameAgent")
+    private fun Any.getQuaternion(): Any = TODO("Agent: getQuaternion")
+    private fun Any.isJoystickCameraUsed(): Boolean = TODO("AgentCamera: isJoystickCameraUsed")
+    private fun Any.getCurrentCameraOffset(): Any = TODO("AgentCamera: getCurrentCameraOffset")
+    private fun Any.getCurrentFocusOffset(): Any = TODO("AgentCamera: getCurrentFocusOffset")
+    private fun Any.getCurrentCameraZoomFraction(): Float = TODO("AgentCamera: getCurrentCameraZoomFraction")
+    private fun Any.resetCameraZoomFraction() { TODO("AgentCamera: resetCameraZoomFraction") }
+    private fun Any.setFocusOnAvatar(b1: Boolean, b2: Boolean, b3: Boolean) { TODO("AgentCamera: setFocusOnAvatar") }
+    private fun Any.getVector3(key: String): Any = TODO("Settings: getVector3 '$key'")
+    private fun Any.setVector3(key: String, value: Any) { TODO("Settings: setVector3 '$key'") }
+    private fun Any.setVector3d(key: String, value: Any) { TODO("Settings: setVector3d '$key'") }
+    private fun Any.setQuaternion(key: String, value: Any) { TODO("Settings: setQuaternion '$key'") }
+    @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
+    private operator fun Any.times(f: Float): Any = TODO("Math: vector scale")
 }

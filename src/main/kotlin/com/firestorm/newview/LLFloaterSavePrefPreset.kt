@@ -1,7 +1,5 @@
 package com.firestorm.newview
 
-open class LLFloater(val key: Any)
-
 class LLFloaterSavePrefPreset(key: Any) : LLFloater(key) {
 
     private var mPresetCombo: LLComboBox? = null
@@ -18,17 +16,17 @@ class LLFloaterSavePrefPreset(key: Any) : LLFloater(key) {
         getChild<LLButton>("save")?.setCommitCallback { onBtnSave() }
         getChild<LLButton>("cancel")?.setCommitCallback { onBtnCancel() }
 
-        LLPresetsManager.instance.setPresetListChangeCallback { onPresetsListChange() }
+        LLPresetsManager.setPresetListChangeCallback { onPresetsListChange() }
 
-        mSaveButton = getChild<LLButton>("save")
-        mPresetCombo = getChild<LLComboBox>("preset_combo")
+        mSaveButton = getChild("save")
+        mPresetCombo = getChild("preset_combo")
 
         return true
     }
 
     open fun onOpen(key: Any) {
         mSubdirectory = key.toString()
-        LLPresetsManager.instance.setPresetNamesInComboBox(mSubdirectory, mPresetCombo, DefaultOptions.HIDE)
+        LLPresetsManager.setPresetNamesInComboBox(mSubdirectory, mPresetCombo, DefaultOptions.HIDE)
         onPresetNameEdited()
     }
 
@@ -43,7 +41,7 @@ class LLFloaterSavePrefPreset(key: Any) : LLFloater(key) {
 
         if (name == LLTrans.getString(PRESETS_DEFAULT) || upperName == PRESETS_DEFAULT_UPPER) {
             LLNotificationsUtil.add("DefaultPresetNotSaved")
-        } else if (!LLPresetsManager.instance.savePreset(mSubdirectory, name)) {
+        } else if (!LLPresetsManager.savePreset(mSubdirectory, name)) {
             LLNotificationsUtil.add("PresetNotSaved", mapOf("NAME" to name))
         }
 
@@ -55,7 +53,7 @@ class LLFloaterSavePrefPreset(key: Any) : LLFloater(key) {
     }
 
     private fun onPresetsListChange() {
-        LLPresetsManager.instance.setPresetNamesInComboBox(mSubdirectory, mPresetCombo, DefaultOptions.HIDE)
+        LLPresetsManager.setPresetNamesInComboBox(mSubdirectory, mPresetCombo, DefaultOptions.HIDE)
     }
 
     private fun onPresetNameEdited() {
@@ -63,18 +61,17 @@ class LLFloaterSavePrefPreset(key: Any) : LLFloater(key) {
         mSaveButton?.setEnabled(name.isNotEmpty())
     }
 
+    @Suppress("UNCHECKED_CAST")
     private fun <T> getChild(name: String): T? = TODO("UI: resolve child widget '$name'")
     private fun closeFloater() { TODO("UI: close this floater") }
 }
 
-const val PRESETS_DEFAULT_UPPER = "DEFAULT"
+// ============================================================================
+// Stubs not defined elsewhere in the package
+// ============================================================================
 
 object LLFloaterReg {
-    inline fun <reified T> getTypedInstance(name: String): T? { TODO("FloaterReg: getTypedInstance '$name'") }
-    inline fun <reified T> findTypedInstance(name: String): T? { TODO("FloaterReg: findTypedInstance '$name'") }
+    inline fun <reified T> getTypedInstance(name: String): T? = TODO("FloaterReg: getTypedInstance '$name'")
+    inline fun <reified T> findTypedInstance(name: String): T? = TODO("FloaterReg: findTypedInstance '$name'")
     fun showInstance(name: String, data: Any? = null) { TODO("FloaterReg: showInstance '$name'") }
-}
-
-class LLFloaterPreference(key: Any) : LLFloater(key) {
-    fun addDependentFloater(floater: LLFloater) { TODO("FloaterPreference: addDependentFloater") }
 }

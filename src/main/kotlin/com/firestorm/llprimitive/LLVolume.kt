@@ -227,15 +227,17 @@ open class LLVolume(
     // ------------------------------------------------------------------
     // LOD triangle count helper  (stubbed — mirrors static getLoDTriangleCounts)
     // ------------------------------------------------------------------
-    fun getNumTriangles(): Int {
-        TODO("Port LLVolume::getNumTriangles() — sum triangle count over all faces.")
-    }
+    fun getNumTriangles(): Int = faces.sumOf { it.indices.size / 3 }
 
     // ------------------------------------------------------------------
     // Face-mask generation  (mirrors generateFaceMask / isFaceMaskValid)
     // ------------------------------------------------------------------
     fun generateFaceMask(): UShort {
-        TODO("Port LLVolume::generateFaceMask() — walk faces and set FaceId bits.")
+        var mask: UShort = 0u
+        for (face in faces) {
+            mask = (mask or face.id).toUShort()
+        }
+        return mask
     }
 
     // ------------------------------------------------------------------

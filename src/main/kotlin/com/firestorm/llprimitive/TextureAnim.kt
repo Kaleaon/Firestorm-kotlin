@@ -157,8 +157,8 @@ data class TextureAnim(
         rate   = buf.float
         // Clamp tile sizes: must be >= 1 unless TAM_SMOOTH is set
         if (!isSmooth()) {
-            if (sizeX == 0u.toUByte()) sizeX = 1u
-            if (sizeY == 0u.toUByte()) sizeY = 1u
+            if (sizeX.toUInt() == 0u) sizeX = 1u
+            if (sizeY.toUInt() == 0u) sizeY = 1u
         }
     }
 }

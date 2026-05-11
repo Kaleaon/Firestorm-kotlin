@@ -222,13 +222,13 @@ object LLError {
         applyEntries("files")     { name, lvl -> setFileLevel(name, lvl) }
     }
 
-    private fun levelFromString(s: String): ELevel? = when (s.uppercase()) {
-        "DEBUG" -> ELevel.DEBUG
-        "INFO"  -> ELevel.INFO
-        "WARN", "WARNING" -> ELevel.WARN
-        "ERROR" -> ELevel.ERROR
-        "NONE"  -> ELevel.NONE
-        else    -> null
+    private fun levelFromString(s: String): ELevel? = when {
+        s.equals("DEBUG", ignoreCase = true)   -> ELevel.DEBUG
+        s.equals("INFO", ignoreCase = true)    -> ELevel.INFO
+        s.equals("WARN", ignoreCase = true) || s.equals("WARNING", ignoreCase = true) -> ELevel.WARN
+        s.equals("ERROR", ignoreCase = true)   -> ELevel.ERROR
+        s.equals("NONE", ignoreCase = true)    -> ELevel.NONE
+        else -> null
     }
 
     fun setFatalFunction(f: (String) -> Unit) { settings.crashFunction = f }

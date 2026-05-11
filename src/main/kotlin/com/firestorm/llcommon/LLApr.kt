@@ -201,6 +201,10 @@ object LLApr {
         fun open(filename: String, flags: Int, pool: VolatilePool? = null): Int {
             return try {
                 appendMode = (flags and APR_APPEND != 0)
+                if (flags and APR_CREATE != 0) {
+                    val f = java.io.File(filename)
+                    if (!f.exists()) f.createNewFile()
+                }
                 val mode = if (flags and (APR_WRITE or APR_CREATE or APR_TRUNCATE or APR_APPEND) != 0) "rw" else "r"
                 val f = RandomAccessFile(filename, mode)
                 if (flags and APR_TRUNCATE != 0) f.setLength(0)

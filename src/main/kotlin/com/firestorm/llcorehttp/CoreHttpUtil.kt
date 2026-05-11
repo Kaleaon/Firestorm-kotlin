@@ -10,6 +10,7 @@ import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
 import java.time.Duration
+import java.util.concurrent.Executors
 
 const val HTTP_REQUEST_EXPIRY_SECS: Float = 60.0f
 
@@ -26,6 +27,11 @@ private var boolSettingPut: BoolSettingUpdate? = null
 private val httpClient: HttpClient = HttpClient.newBuilder()
     .connectTimeout(Duration.ofSeconds(HTTP_REQUEST_EXPIRY_SECS.toLong()))
     .build()
+
+/** Shared thread pool for fire-and-forget async HTTP requests. */
+private val httpExecutor = Executors.newCachedThreadPool { r ->
+    Thread(r).also { it.isDaemon = true }
+}
 
 // ── LLSD ↔ Map conversion helpers ──────────────────────────────────────────
 
@@ -112,7 +118,7 @@ fun requestPostWithLLSD(
     options: Map<String, Any?> = emptyMap(),
     handler: ((Map<String, Any?>) -> Unit)? = null
 ): Long {
-    val t = Thread {
+    val future = httpExecutor.submit {
         try {
             var reqBuilder = HttpRequest.newBuilder(URI.create(url))
                 .header("Content-Type", "application/llsd+xml")
@@ -124,9 +130,8 @@ fun requestPostWithLLSD(
         } catch (e: Exception) {
             llwarns("CoreHttpUtil") { "requestPostWithLLSD failed for $url: ${e.message}" }
         }
-    }.also { it.isDaemon = true }
-    t.start()
-    return t.id
+    }
+    return System.identityHashCode(future).toLong()
 }
 
 fun requestPutWithLLSD(
@@ -136,7 +141,7 @@ fun requestPutWithLLSD(
     options: Map<String, Any?> = emptyMap(),
     handler: ((Map<String, Any?>) -> Unit)? = null
 ): Long {
-    val t = Thread {
+    val future = httpExecutor.submit {
         try {
             var reqBuilder = HttpRequest.newBuilder(URI.create(url))
                 .header("Content-Type", "application/llsd+xml")
@@ -148,9 +153,8 @@ fun requestPutWithLLSD(
         } catch (e: Exception) {
             llwarns("CoreHttpUtil") { "requestPutWithLLSD failed for $url: ${e.message}" }
         }
-    }.also { it.isDaemon = true }
-    t.start()
-    return t.id
+    }
+    return System.identityHashCode(future).toLong()
 }
 
 fun requestPatchWithLLSD(
@@ -160,7 +164,7 @@ fun requestPatchWithLLSD(
     options: Map<String, Any?> = emptyMap(),
     handler: ((Map<String, Any?>) -> Unit)? = null
 ): Long {
-    val t = Thread {
+    val future = httpExecutor.submit {
         try {
             var reqBuilder = HttpRequest.newBuilder(URI.create(url))
                 .header("Content-Type", "application/llsd+xml")
@@ -172,9 +176,8 @@ fun requestPatchWithLLSD(
         } catch (e: Exception) {
             llwarns("CoreHttpUtil") { "requestPatchWithLLSD failed for $url: ${e.message}" }
         }
-    }.also { it.isDaemon = true }
-    t.start()
-    return t.id
+    }
+    return System.identityHashCode(future).toLong()
 }
 
 data class HttpStatus(
@@ -260,7 +263,7 @@ class HttpCoroutineAdapter(
             success: CompletionCallback? = null,
             failure: CompletionCallback? = null
         ) {
-            Thread {
+            httpExecutor.submit {
                 try {
                     val req = HttpRequest.newBuilder(URI.create(url))
                         .GET()
@@ -274,7 +277,7 @@ class HttpCoroutineAdapter(
                     llwarns("CoreHttpUtil") { "callbackHttpGet failed for $url: ${e.message}" }
                     failure?.invoke(mapOf(HTTP_RESULTS_URL to url, HTTP_RESULTS_SUCCESS to false, HTTP_RESULTS_MESSAGE to (e.message ?: "")))
                 }
-            }.also { it.isDaemon = true }.start()
+            }
         }
 
         fun callbackHttpPost(
@@ -284,7 +287,7 @@ class HttpCoroutineAdapter(
             success: CompletionCallback? = null,
             failure: CompletionCallback? = null
         ) {
-            Thread {
+            httpExecutor.submit {
                 try {
                     val req = HttpRequest.newBuilder(URI.create(url))
                         .header("Content-Type", "application/llsd+xml")
@@ -299,7 +302,7 @@ class HttpCoroutineAdapter(
                     llwarns("CoreHttpUtil") { "callbackHttpPost failed for $url: ${e.message}" }
                     failure?.invoke(mapOf(HTTP_RESULTS_URL to url, HTTP_RESULTS_SUCCESS to false, HTTP_RESULTS_MESSAGE to (e.message ?: "")))
                 }
-            }.also { it.isDaemon = true }.start()
+            }
         }
 
         fun callbackHttpDel(
@@ -308,7 +311,7 @@ class HttpCoroutineAdapter(
             success: CompletionCallback? = null,
             failure: CompletionCallback? = null
         ) {
-            Thread {
+            httpExecutor.submit {
                 try {
                     val req = HttpRequest.newBuilder(URI.create(url))
                         .DELETE()
@@ -322,11 +325,11 @@ class HttpCoroutineAdapter(
                     llwarns("CoreHttpUtil") { "callbackHttpDel failed for $url: ${e.message}" }
                     failure?.invoke(mapOf(HTTP_RESULTS_URL to url, HTTP_RESULTS_SUCCESS to false, HTTP_RESULTS_MESSAGE to (e.message ?: "")))
                 }
-            }.also { it.isDaemon = true }.start()
+            }
         }
 
         fun messageHttpGet(url: String, success: String = "", failure: String = "") {
-            Thread {
+            httpExecutor.submit {
                 try {
                     val req = HttpRequest.newBuilder(URI.create(url)).GET()
                         .timeout(Duration.ofSeconds(HTTP_REQUEST_EXPIRY_SECS.toLong())).build()
@@ -339,11 +342,11 @@ class HttpCoroutineAdapter(
                 } catch (e: Exception) {
                     if (failure.isNotEmpty()) llwarns("CoreHttpUtil") { "GET $url exception: ${e.message} — $failure" }
                 }
-            }.also { it.isDaemon = true }.start()
+            }
         }
 
         fun messageHttpPost(url: String, postData: Map<String, Any?>, success: String, failure: String) {
-            Thread {
+            httpExecutor.submit {
                 try {
                     val req = HttpRequest.newBuilder(URI.create(url))
                         .header("Content-Type", "application/llsd+xml")
@@ -358,7 +361,7 @@ class HttpCoroutineAdapter(
                 } catch (e: Exception) {
                     if (failure.isNotEmpty()) llwarns("CoreHttpUtil") { "POST $url exception: ${e.message} — $failure" }
                 }
-            }.also { it.isDaemon = true }.start()
+            }
         }
 
         private fun buildResultStatic(url: String, resp: HttpResponse<ByteArray>): MutableMap<String, Any?> {
@@ -637,7 +640,7 @@ private fun jsonEscape(s: String): String = buildString {
         '\n' -> append("\\n")
         '\r' -> append("\\r")
         '\t' -> append("\\t")
-        else -> if (c.code < 0x20) append("\\u%04x".format(c.code)) else append(c)
+        else -> if (c.code < 0x20) append("\\u%04X".format(c.code)) else append(c)
     }
 }
 

@@ -135,11 +135,10 @@ class LLCircuit(
      * message system.
      */
     fun updateWatchDogTimers() {
-        val timeoutMs = heartbeatTimeout * 1000f
         for (cd in circuitData.values) {
             if (!cd.isAlive || !cd.allowTimeout) continue
             val ageSec = cd.getAgeInSeconds()
-            if (ageSec * 1000f >= timeoutMs) {
+            if (ageSec >= heartbeatTimeout) {
                 llwarns("LLCircuit") { "Circuit ${cd.host} timed out after ${ageSec}s — marking dead" }
                 cd.setAlive(false)
             }

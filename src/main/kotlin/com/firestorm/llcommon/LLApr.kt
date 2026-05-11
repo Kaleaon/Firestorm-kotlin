@@ -127,9 +127,11 @@ object LLApr {
         val maxSizeBytes: Int = 0,
         val releaseOnClose: Boolean = true,
     ) : AutoCloseable {
+        private val buffer: java.nio.ByteBuffer =
+            java.nio.ByteBuffer.allocateDirect(maxSizeBytes.coerceAtLeast(0))
+
         /** JVM replacement: java.nio.ByteBuffer.allocateDirect(maxSizeBytes) */
-        fun getBuffer(): Nothing =
-            TODO("APR Pool: use java.nio.ByteBuffer.allocateDirect(maxSizeBytes) or ByteArray")
+        fun getBuffer(): java.nio.ByteBuffer = buffer
 
         override fun close() {
             // JVM replacement: de-reference the ByteBuffer; GC handles the rest.
@@ -148,23 +150,28 @@ object LLApr {
      */
     class VolatilePool(
         isLocal: Boolean = true,
-        maxSizeBytes: Int = 0,
+        val maxSizeBytes: Int = 0,
         releaseOnClose: Boolean = true,
     ) : AutoCloseable {
         private var activeRefs: Int = 0
         private var totalRefs:  Int = 0
+        private val buffer: java.nio.ByteBuffer =
+            java.nio.ByteBuffer.allocateDirect(maxSizeBytes.coerceAtLeast(0))
 
         /** JVM replacement: ByteBuffer.clear() to reuse a buffer. */
-        fun getVolatilePool(): Nothing =
-            TODO("APR VolatilePool: use a pooled ByteBuffer and call ByteBuffer.clear() to reset")
+        fun getVolatilePool(): java.nio.ByteBuffer {
+            activeRefs++
+            totalRefs++
+            return buffer
+        }
 
         fun clearVolatilePool() {
-            // JVM replacement: call buffer.clear() on the backing ByteBuffer.
-            TODO("APR VolatilePool.clear: call ByteBuffer.clear() on the backing buffer")
+            buffer.clear()
+            activeRefs = 0
         }
 
         fun isFull(): Boolean =
-            TODO("APR VolatilePool.isFull: track reference count against a configured cap")
+            activeRefs > 0 && maxSizeBytes > 0 && activeRefs >= maxSizeBytes / 64
 
         override fun close() { /* GC reclaims the ByteBuffer */ }
     }

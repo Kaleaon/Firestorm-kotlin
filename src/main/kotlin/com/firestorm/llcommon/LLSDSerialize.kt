@@ -16,11 +16,15 @@ object LLSDSerialize {
 
     // ── XML ──────────────────────────────────────────────────────────────────
 
-    fun toXML(sd: LLSD): String {
+    fun toXML(sd: LLSD): String = toXML(sd, canonical = false)
+
+    fun toCanonicalXML(sd: LLSD): String = toXML(sd, canonical = true)
+
+    private fun toXML(sd: LLSD, canonical: Boolean): String {
         val doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument()
         val root = doc.createElement("llsd")
         doc.appendChild(root)
-        root.appendChild(xmlElement(doc, sd))
+        root.appendChild(xmlElement(doc, sd, canonical))
 
         val tf = TransformerFactory.newInstance().newTransformer()
         tf.setOutputProperty(OutputKeys.INDENT, "no")
@@ -30,7 +34,7 @@ object LLSDSerialize {
         return sw.toString()
     }
 
-    private fun xmlElement(doc: Document, sd: LLSD): Element = when (sd) {
+    private fun xmlElement(doc: Document, sd: LLSD, canonical: Boolean): Element = when (sd) {
         is LLSD.Undefined -> doc.createElement("undef")
         is LLSD.LLSDBoolean -> doc.createElement("boolean").also {
             it.textContent = if (sd.value) "true" else "false"
@@ -48,13 +52,13 @@ object LLSDSerialize {
             it.textContent = Base64.getEncoder().encodeToString(sd.value)
         }
         is LLSD.LLSDMap -> doc.createElement("map").also { el ->
-            sd.value.forEach { (k, v) ->
+            mapEntries(sd.value, canonical).forEach { (k, v) ->
                 el.appendChild(doc.createElement("key").also { it.textContent = k })
-                el.appendChild(xmlElement(doc, v))
+                el.appendChild(xmlElement(doc, v, canonical))
             }
         }
         is LLSD.LLSDArray -> doc.createElement("array").also { el ->
-            sd.value.forEach { el.appendChild(xmlElement(doc, it)) }
+            sd.value.forEach { el.appendChild(xmlElement(doc, it, canonical)) }
         }
     }
 
@@ -123,9 +127,11 @@ object LLSDSerialize {
 
     // ── Notation ─────────────────────────────────────────────────────────────
 
-    fun toNotation(sd: LLSD): String = buildString { appendNotation(sd) }
+    fun toNotation(sd: LLSD): String = buildString { appendNotation(sd, canonical = false) }
 
-    private fun StringBuilder.appendNotation(sd: LLSD) {
+    fun toCanonicalNotation(sd: LLSD): String = buildString { appendNotation(sd, canonical = true) }
+
+    private fun StringBuilder.appendNotation(sd: LLSD, canonical: Boolean) {
         when (sd) {
             is LLSD.Undefined -> append('!')
             is LLSD.LLSDBoolean -> append(if (sd.value) "true" else "false")
@@ -146,10 +152,10 @@ object LLSDSerialize {
             }
             is LLSD.LLSDMap -> {
                 append('{')
-                sd.value.entries.forEachIndexed { idx, (k, v) ->
+                mapEntries(sd.value, canonical).entries.forEachIndexed { idx, (k, v) ->
                     if (idx > 0) append(',')
                     append('\'').append(k.replace("'", "\\'")).append("':")
-                    appendNotation(v)
+                    appendNotation(v, canonical)
                 }
                 append('}')
             }
@@ -157,7 +163,7 @@ object LLSDSerialize {
                 append('[')
                 sd.value.forEachIndexed { idx, v ->
                     if (idx > 0) append(',')
-                    appendNotation(v)
+                    appendNotation(v, canonical)
                 }
                 append(']')
             }
@@ -347,7 +353,7 @@ object LLSDSerialize {
             is LLSD.LLSDMap -> {
                 dos.writeByte('{'.code)
                 dos.writeInt(sd.value.size)
-                sd.value.forEach { (k, v) ->
+                mapEntries(sd.value, true).forEach { (k, v) ->
                     val kb = k.toByteArray(Charsets.UTF_8)
                     dos.writeByte('k'.code)
                     dos.writeInt(kb.size)
@@ -422,9 +428,11 @@ object LLSDSerialize {
 
     // ── JSON ─────────────────────────────────────────────────────────────────
 
-    fun toJSON(sd: LLSD): String = buildString { appendJSON(sd) }
+    fun toJSON(sd: LLSD): String = buildString { appendJSON(sd, canonical = false) }
 
-    private fun StringBuilder.appendJSON(sd: LLSD) {
+    fun toCanonicalJSON(sd: LLSD): String = buildString { appendJSON(sd, canonical = true) }
+
+    private fun StringBuilder.appendJSON(sd: LLSD, canonical: Boolean) {
         when (sd) {
             is LLSD.Undefined -> append("null")
             is LLSD.LLSDBoolean -> append(sd.value)
@@ -439,9 +447,9 @@ object LLSDSerialize {
             }
             is LLSD.LLSDMap -> {
                 append('{')
-                sd.value.entries.forEachIndexed { idx, (k, v) ->
+                mapEntries(sd.value, canonical).entries.forEachIndexed { idx, (k, v) ->
                     if (idx > 0) append(',')
-                    appendJSONString(k); append(':'); appendJSON(v)
+                    appendJSONString(k); append(':'); appendJSON(v, canonical)
                 }
                 append('}')
             }
@@ -449,7 +457,7 @@ object LLSDSerialize {
                 append('[')
                 sd.value.forEachIndexed { idx, v ->
                     if (idx > 0) append(',')
-                    appendJSON(v)
+                    appendJSON(v, canonical)
                 }
                 append(']')
             }
@@ -470,6 +478,11 @@ object LLSDSerialize {
             else -> append(c)
         }
     }
+
+    
+
+    private fun mapEntries(value: Map<String, LLSD>, canonical: Boolean): Map<String, LLSD> =
+        if (canonical) value.toSortedMap() else value
 
     fun fromJSON(json: String): LLSD = JSONParser(json.trim()).parse()
 

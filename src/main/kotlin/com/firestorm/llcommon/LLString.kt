@@ -21,8 +21,6 @@ object LLString {
     fun truncate(s: String, maxLen: Int): String =
         if (s.length <= maxLen) s else s.substring(0, maxLen)
 
-    fun containsNonprintable(s: String): Boolean = s.any { it.code < 32 || it.code == 127 }
-
     fun stripNonprintable(s: String): String =
         s.filter { it.code >= 32 && it.code != 127 }
 
@@ -113,7 +111,6 @@ fun toUpper(s: String): String = LLString.toUpper(s)
 fun toLower(s: String): String = LLString.toLower(s)
 fun isValidIndex(s: String, i: Int): Boolean = LLString.isValidIndex(s, i)
 fun truncate(s: String, maxLen: Int): String = LLString.truncate(s, maxLen)
-fun containsNonprintable(s: String): Boolean = LLString.containsNonprintable(s)
 fun stripNonprintable(s: String): String = LLString.stripNonprintable(s)
 fun compareInsensitive(a: String, b: String): Int = LLString.compareInsensitive(a, b)
 fun startsWith(s: String, prefix: String, caseSensitive: Boolean = true): Boolean =

@@ -11,6 +11,15 @@ class VertexBuffer(
     private val numVerts: Int,
     private val numIndices: Int
 ) {
+    data class UploadSnapshot(
+        val typeMask: UInt,
+        val vertexBytes: ByteArray?,
+        val normalBytes: ByteArray?,
+        val texCoordBytes: List<ByteArray?>,
+        val colorBytes: ByteArray?,
+        val indexBytes: ByteArray?
+    )
+
     companion object {
         const val MAP_VERTEX: UInt        = (1u shl 0)
         const val MAP_NORMAL: UInt        = (1u shl 1)
@@ -50,6 +59,9 @@ class VertexBuffer(
 
     private val indexData: ByteBuffer? =
         if (numIndices > 0) allocDirect(numIndices * INDEX_STRIDE) else null
+
+    private var uploadedSnapshot: UploadSnapshot? = null
+    private var isCurrentlyBound: Boolean = false
 
     private fun allocDirect(bytes: Int): ByteBuffer =
         ByteBuffer.allocateDirect(bytes).order(ByteOrder.nativeOrder())
@@ -131,7 +143,38 @@ class VertexBuffer(
     fun getNumIndices(): Int = numIndices
     fun getTypeMask(): UInt = typeMask
 
-    fun flush() { TODO("Upload vertex/index data to GPU") }
-    fun bind() { TODO("Bind GL VBO/IBO") }
-    fun unbind() { TODO("Unbind GL VBO/IBO") }
+    fun flush() {
+        uploadedSnapshot = UploadSnapshot(
+            typeMask = typeMask,
+            vertexBytes = vertexData?.copyBytes(),
+            normalBytes = normalData?.copyBytes(),
+            texCoordBytes = texCoordData.map { it?.copyBytes() },
+            colorBytes = colorData?.copyBytes(),
+            indexBytes = indexData?.copyBytes()
+        )
+    }
+
+    fun bind() {
+        if (uploadedSnapshot == null) {
+            flush()
+        }
+        isCurrentlyBound = true
+    }
+
+    fun unbind() {
+        isCurrentlyBound = false
+    }
+
+    fun isBound(): Boolean = isCurrentlyBound
+
+    fun getUploadedSnapshot(): UploadSnapshot? = uploadedSnapshot
+
+    private fun ByteBuffer.copyBytes(): ByteArray {
+        val copy = ByteArray(capacity())
+        val src = duplicate()
+        src.position(0)
+        src.limit(capacity())
+        src.get(copy)
+        return copy
+    }
 }

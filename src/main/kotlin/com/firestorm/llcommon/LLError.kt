@@ -175,7 +175,7 @@ object LLError {
             try {
                 applyLogControlFile(logControlFile.readText())
             } catch (e: Exception) {
-                // Best-effort: an invalid or unreadable logcontrol.xml is silently ignored.
+                llwarns("LLError") { "Failed to parse ${logControlFile.path}: ${e.message}" }
             }
         }
     }

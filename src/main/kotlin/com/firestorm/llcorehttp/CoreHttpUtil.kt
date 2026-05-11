@@ -87,7 +87,8 @@ fun responseToString(body: ByteArray?): String {
 
 private fun llsdBodyPublisher(body: Map<String, Any?>): HttpRequest.BodyPublisher {
     val sd = anyToLLSD(body)
-    val xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<llsd>${LLSDSerialize.toXML(sd)}</llsd>"
+    // LLSDSerialize.toXML already produces the full <llsd>…</llsd> document.
+    val xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n${LLSDSerialize.toXML(sd)}"
     return HttpRequest.BodyPublishers.ofString(xml)
 }
 
@@ -111,7 +112,7 @@ fun requestPostWithLLSD(
     options: Map<String, Any?> = emptyMap(),
     handler: ((Map<String, Any?>) -> Unit)? = null
 ): Long {
-    Thread {
+    val t = Thread {
         try {
             var reqBuilder = HttpRequest.newBuilder(URI.create(url))
                 .header("Content-Type", "application/llsd+xml")
@@ -123,8 +124,9 @@ fun requestPostWithLLSD(
         } catch (e: Exception) {
             llwarns("CoreHttpUtil") { "requestPostWithLLSD failed for $url: ${e.message}" }
         }
-    }.also { it.isDaemon = true }.start()
-    return 0L
+    }.also { it.isDaemon = true }
+    t.start()
+    return t.id
 }
 
 fun requestPutWithLLSD(
@@ -134,7 +136,7 @@ fun requestPutWithLLSD(
     options: Map<String, Any?> = emptyMap(),
     handler: ((Map<String, Any?>) -> Unit)? = null
 ): Long {
-    Thread {
+    val t = Thread {
         try {
             var reqBuilder = HttpRequest.newBuilder(URI.create(url))
                 .header("Content-Type", "application/llsd+xml")
@@ -146,8 +148,9 @@ fun requestPutWithLLSD(
         } catch (e: Exception) {
             llwarns("CoreHttpUtil") { "requestPutWithLLSD failed for $url: ${e.message}" }
         }
-    }.also { it.isDaemon = true }.start()
-    return 0L
+    }.also { it.isDaemon = true }
+    t.start()
+    return t.id
 }
 
 fun requestPatchWithLLSD(
@@ -157,7 +160,7 @@ fun requestPatchWithLLSD(
     options: Map<String, Any?> = emptyMap(),
     handler: ((Map<String, Any?>) -> Unit)? = null
 ): Long {
-    Thread {
+    val t = Thread {
         try {
             var reqBuilder = HttpRequest.newBuilder(URI.create(url))
                 .header("Content-Type", "application/llsd+xml")
@@ -169,8 +172,9 @@ fun requestPatchWithLLSD(
         } catch (e: Exception) {
             llwarns("CoreHttpUtil") { "requestPatchWithLLSD failed for $url: ${e.message}" }
         }
-    }.also { it.isDaemon = true }.start()
-    return 0L
+    }.also { it.isDaemon = true }
+    t.start()
+    return t.id
 }
 
 data class HttpStatus(
@@ -600,11 +604,16 @@ class HttpCoroutineAdapter(
         return sendBlocking(reqBuilder.build())
     }
 
-    fun cancelSuspendedOperation() {
-        // Blocking requests cannot be cancelled mid-flight without a thread interrupt.
-        // Signal the owning thread to stop if it is waiting; best-effort only.
-        // A future refactor to CompletableFuture/coroutines would enable clean cancellation.
-    }
+    /**
+     * Cancels an in-flight HTTP operation associated with this adapter.
+     *
+     * **Note:** The current synchronous [java.net.http.HttpClient] implementation does not
+     * support mid-flight cancellation without interrupting the calling thread.
+     * This method is a no-op placeholder. A future migration to
+     * [java.util.concurrent.CompletableFuture] or Kotlin coroutines would enable
+     * clean cancellation via `CompletableFuture.cancel()` or coroutine job cancellation.
+     */
+    fun cancelSuspendedOperation() = Unit
 }
 
 // ── Minimal JSON serializer (no external library required) ──────────────────
@@ -613,18 +622,31 @@ private fun mapToJson(map: Map<String, Any?>): String = buildString {
     append('{')
     map.entries.forEachIndexed { idx, (k, v) ->
         if (idx > 0) append(',')
-        append('"').append(k.replace("\"", "\\\"")).append("\":")
+        append('"').append(jsonEscape(k)).append("\":")
         append(anyToJson(v))
     }
     append('}')
+}
+
+private fun jsonEscape(s: String): String = buildString {
+    for (c in s) when (c) {
+        '"'  -> append("\\\"")
+        '\\' -> append("\\\\")
+        '\b' -> append("\\b")
+        '\u000C' -> append("\\f")
+        '\n' -> append("\\n")
+        '\r' -> append("\\r")
+        '\t' -> append("\\t")
+        else -> if (c.code < 0x20) append("\\u%04x".format(c.code)) else append(c)
+    }
 }
 
 private fun anyToJson(v: Any?): String = when (v) {
     null           -> "null"
     is Boolean     -> v.toString()
     is Number      -> v.toString()
-    is String      -> '"' + v.replace("\\", "\\\\").replace("\"", "\\\"") + '"'
+    is String      -> '"' + jsonEscape(v) + '"'
     is Map<*, *>   -> mapToJson(@Suppress("UNCHECKED_CAST") (v as Map<String, Any?>))
     is List<*>     -> "[${v.joinToString(",") { anyToJson(it) }}]"
-    else           -> '"' + v.toString().replace("\"", "\\\"") + '"'
+    else           -> '"' + jsonEscape(v.toString()) + '"'
 }

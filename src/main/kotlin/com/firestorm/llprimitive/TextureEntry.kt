@@ -241,45 +241,37 @@ data class TextureEntry(
             )
         }
 
+        /**
+         * Parse a media version string of the form `x-mv:<version>/<agent-uuid>` into its
+         * two parts.  Returns `null` if the string is not a valid media version string.
+         */
+        private fun parseMediaVersion(versionString: String): Pair<UInt, LLUUID>? {
+            if (!versionString.startsWith("x-mv:")) return null
+            val payload = versionString.removePrefix("x-mv:")
+            val slashIdx = payload.indexOf('/')
+            if (slashIdx < 0) return null
+            val version = payload.substring(0, slashIdx).toUIntOrNull() ?: return null
+            val uuid = LLUUID.fromString(payload.substring(slashIdx + 1)) ?: return null
+            return version to uuid
+        }
+
         /** Emit a media version string touched by the given agent. */
         fun touchMediaVersionString(inVersion: String, agentId: LLUUID): String {
-            val currentVersion = if (isMediaVersionString(inVersion)) {
-                getVersionFromMediaVersionString(inVersion)
-            } else {
-                0u
-            }
+            val currentVersion = parseMediaVersion(inVersion)?.first ?: 0u
             return "x-mv:${currentVersion + 1u}/$agentId"
         }
 
         /** Parse the version number from a media-version string. */
-        fun getVersionFromMediaVersionString(versionString: String): UInt {
-            if (!isMediaVersionString(versionString)) return 0u
-            // Format: x-mv:<version>/<agent-uuid>
-            val payload = versionString.removePrefix("x-mv:")
-            val slashIdx = payload.indexOf('/')
-            if (slashIdx < 0) return 0u
-            return payload.substring(0, slashIdx).toUIntOrNull() ?: 0u
-        }
+        fun getVersionFromMediaVersionString(versionString: String): UInt =
+            parseMediaVersion(versionString)?.first ?: 0u
 
         /** Parse the agent UUID from a media-version string. */
-        fun getAgentIDFromMediaVersionString(versionString: String): LLUUID {
-            if (!isMediaVersionString(versionString)) return LLUUID.NULL
-            val payload = versionString.removePrefix("x-mv:")
-            val slashIdx = payload.indexOf('/')
-            if (slashIdx < 0) return LLUUID.NULL
-            return LLUUID.fromString(payload.substring(slashIdx + 1)) ?: LLUUID.NULL
-        }
+        fun getAgentIDFromMediaVersionString(versionString: String): LLUUID =
+            parseMediaVersion(versionString)?.second ?: LLUUID.NULL
 
         /** Return whether a string is a valid media-version string. */
-        fun isMediaVersionString(versionString: String): Boolean {
-            if (!versionString.startsWith("x-mv:")) return false
-            val payload = versionString.removePrefix("x-mv:")
-            val slashIdx = payload.indexOf('/')
-            if (slashIdx < 0) return false
-            if (payload.substring(0, slashIdx).toUIntOrNull() == null) return false
-            if (LLUUID.fromString(payload.substring(slashIdx + 1)) == null) return false
-            return true
-        }
+        fun isMediaVersionString(versionString: String): Boolean =
+            parseMediaVersion(versionString) != null
     }
 
     /**

@@ -195,14 +195,16 @@ object LLApr {
         }
 
         private var raf: RandomAccessFile? = null
+        private var appendMode: Boolean = false
 
         /** Opens the file using [java.io.RandomAccessFile]. */
         fun open(filename: String, flags: Int, pool: VolatilePool? = null): Int {
             return try {
-                val mode = if (flags and APR_WRITE != 0) "rw" else "r"
+                appendMode = (flags and APR_APPEND != 0)
+                val mode = if (flags and (APR_WRITE or APR_CREATE or APR_TRUNCATE or APR_APPEND) != 0) "rw" else "r"
                 val f = RandomAccessFile(filename, mode)
                 if (flags and APR_TRUNCATE != 0) f.setLength(0)
-                if (flags and APR_APPEND != 0) f.seek(f.length())
+                if (appendMode) f.seek(f.length())
                 raf = f
                 0 // APR_SUCCESS
             } catch (e: Exception) {
@@ -219,6 +221,7 @@ object LLApr {
             return try {
                 raf?.close()
                 raf = null
+                appendMode = false
                 0
             } catch (e: Exception) {
                 -1
@@ -255,6 +258,7 @@ object LLApr {
         fun write(buf: ByteArray, nbytes: Int): Int {
             val f = raf ?: return -1
             return try {
+                if (appendMode) f.seek(f.length())
                 f.write(buf, 0, nbytes)
                 nbytes
             } catch (e: Exception) {
@@ -271,6 +275,7 @@ object LLApr {
         override fun close() {
             raf?.close()
             raf = null
+            appendMode = false
         }
     }
 

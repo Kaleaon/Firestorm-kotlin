@@ -16,6 +16,205 @@ object ImageConstants {
 
     const val TYPE_NORMAL = 0
     const val TYPE_AVATAR_BAKE = 1
+
+    // JPEG2000 size / quality constraints (from llimage.h)
+    const val MAX_DECOMPOSITION_LEVELS = 32   // JPEG2000 spec maximum
+    const val MIN_DECOMPOSITION_LEVELS = 5    // SL viewer minimum (crash below this)
+    const val MAX_PRECINCT_SIZE = 4096        // bounded by MAX_IMAGE_SIZE
+    const val MIN_PRECINCT_SIZE = 4           // must be >= MIN_BLOCK_SIZE
+    const val MAX_BLOCK_SIZE = 64             // 64×64 max square block (4096 total)
+    const val MIN_BLOCK_SIZE = 4              // JPEG2000 spec minimum
+    const val MIN_LAYER_SIZE = 2000           // first quality layer size (> FIRST_PACKET_SIZE)
+    const val MAX_NB_LAYERS = 64             // practical SL layer limit
+}
+
+// ---------------------------------------------------------------------------
+// LLImage — library-level singleton (corresponds to the C++ class LLImage)
+// ---------------------------------------------------------------------------
+
+/**
+ * Library-wide initialisation state for the image subsystem.
+ *
+ * Not a Kotlin `object` singleton because image operations are used on worker
+ * threads — matches the C++ comment "do not convert to LLSingleton".
+ */
+object LLImage {
+    @Volatile var useNewByteRange: Boolean = false
+        private set
+    @Volatile var reverseByteRangePercent: Int = 75
+        private set
+
+    private val lastThreadError = ThreadLocal<String>()
+
+    fun initClass(useNewByteRange: Boolean = false, minimalReverseByteRangePercent: Int = 75) {
+        this.useNewByteRange = useNewByteRange
+        this.reverseByteRangePercent = minimalReverseByteRangePercent
+    }
+
+    fun cleanupClass() {
+        useNewByteRange = false
+        reverseByteRangePercent = 75
+    }
+
+    fun getLastThreadError(): String = lastThreadError.get() ?: ""
+    fun setLastError(message: String) { lastThreadError.set(message) }
+}
+
+// ---------------------------------------------------------------------------
+// ImageFormatted — abstract base for codec-specific formatted images
+// (corresponds to LLImageFormatted in the C++ source)
+// ---------------------------------------------------------------------------
+
+/**
+ * Abstract base for images that carry a specific compressed encoding.
+ *
+ * Subclasses implement [encode], [decode], and [updateData].
+ * Factory helpers in the companion object mirror the static
+ * `LLImageFormatted::createFromType` / `createFromExtension` methods.
+ *
+ * @param codec The [ImageCodecType] that identifies this subclass.
+ */
+abstract class ImageFormatted(val codec: ImageCodecType) {
+
+    // ---- raw byte buffer for the compressed stream ---------------------------
+
+    /** Compressed bytes as read from disk or a network packet. */
+    var data: ByteArray = ByteArray(0)
+        protected set
+    val dataSize: Int get() = data.size
+
+    // ---- resolution tracking ------------------------------------------------
+
+    /**
+     * Current discard level being worked on.
+     *  - 0 = full resolution
+     *  - 1 = half resolution (each dimension halved)
+     *  - [ImageConstants.MAX_DISCARD_LEVEL] = minimum resolution
+     */
+    var discardLevel: Byte = -1
+
+    /**
+     * Total number of resolution levels in the stream.
+     * 0 means unknown (not yet parsed).
+     */
+    var levels: Byte = 0
+
+    // ---- decode state -------------------------------------------------------
+
+    var isDecoding: Boolean = false
+        protected set
+    var isDecoded: Boolean = false
+        protected set
+
+    // ---- global stats -------------------------------------------------------
+
+    // ---- abstract interface -------------------------------------------------
+
+    /** File extension for this format, lower-case without leading dot. */
+    abstract val extension: String
+
+    /**
+     * Parse stream metadata (dimensions, components, level count) from [data].
+     * Must be called before [decode] or any size queries.
+     */
+    abstract fun updateData(): Boolean
+
+    /**
+     * Decode the first 4 channels of [data] into [rawImage].
+     *
+     * @param decodeTime  Maximum seconds to spend; 0 = unlimited.
+     */
+    abstract fun decode(rawImage: ImageRaw, decodeTime: Float = 0f): Boolean
+
+    /**
+     * Encode [rawImage] into this format, storing the result in [data].
+     *
+     * @param encodeTime  Maximum seconds to spend; 0 = unlimited.
+     */
+    abstract fun encode(rawImage: ImageRaw, encodeTime: Float = 0f): Boolean
+
+    // ---- optional overrides with default behaviour --------------------------
+
+    /** Maximum byte size of the stream header; 0 = no header (read whole file). */
+    open fun calcHeaderSize(): Int = 0
+
+    /**
+     * Bytes required to reach [discardLevel] (including header).
+     * Default: fall back to total [dataSize].
+     */
+    open fun calcDataSize(discardLevel: Int = 0): Int = dataSize
+
+    /**
+     * Smallest valid discard level achievable with [bytes] of data.
+     * Default: always returns 0 (full resolution required).
+     */
+    open fun calcDiscardLevelBytes(bytes: Int): Int = 0
+
+    /**
+     * Raw implementation-level discard level.
+     * Default delegates to [discardLevel]; overridden by [ImageJ2C].
+     */
+    open fun getRawDiscardLevel(): Byte = discardLevel
+
+    // ---- error handling (may be overridden for DLL thread-safety) -----------
+
+    open fun resetLastError()                                           { LLImage.setLastError("") }
+    open fun setLastError(message: String, filename: String = "")      { LLImage.setLastError(message) }
+
+    // ---- data injection -----------------------------------------------------
+
+    fun setData(newData: ByteArray) {
+        data = newData
+        updateData()
+    }
+
+    fun appendData(extra: ByteArray) {
+        data = data + extra
+        updateData()
+    }
+
+    /** Load compressed data from [filename]. */
+    fun load(filename: String, loadSize: Int = 0): Boolean =
+        runCatching {
+            val bytes = java.io.File(filename).let { f ->
+                if (loadSize > 0) f.readBytes().copyOf(loadSize.coerceAtMost(f.length().toInt()))
+                else f.readBytes()
+            }
+            setData(bytes)
+            true
+        }.getOrElse { e ->
+            setLastError(e.message ?: "load failed", filename)
+            false
+        }
+
+    /** Save compressed [data] to [filename]. */
+    fun save(filename: String): Boolean =
+        runCatching {
+            java.io.File(filename).writeBytes(data)
+            true
+        }.getOrElse { e ->
+            setLastError(e.message ?: "save failed", filename)
+            false
+        }
+
+    // ---- factory ------------------------------------------------------------
+
+    companion object {
+        /** Global count of bytes held in all formatted image instances. */
+        var globalFormattedMemory: Int = 0
+
+        fun createFromType(codec: ImageCodecType): ImageFormatted? = when (codec) {
+            ImageCodecType.J2C  -> ImageJ2C()
+            ImageCodecType.TGA  -> ImageTGA()
+            ImageCodecType.PNG  -> PNGWrapper().asImageFormatted()
+            else                -> null
+        }
+
+        fun createFromExtension(path: String): ImageFormatted? {
+            val ext = path.substringAfterLast('.', "").lowercase()
+            return createFromType(ImageCodecType.fromExtension(ext))
+        }
+    }
 }
 
 enum class ImageCodecType(val id: Int, val extension: String) {

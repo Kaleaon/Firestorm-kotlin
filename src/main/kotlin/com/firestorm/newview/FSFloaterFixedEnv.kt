@@ -1,0 +1,528 @@
+/**
+ * FSFloaterFixedEnv.kt
+ * Kotlin conversion of llfloaterfixedenvironment.h / llfloaterfixedenvironment.cpp
+ * (no FS-specific fsfloaterfixedenv.* exists; LL upstream used directly)
+ *
+ * Floaters for creating and editing fixed (non-day-cycle) sky and water
+ * environment settings.  The class hierarchy mirrors the C++ tree:
+ *
+ *   FloaterEditEnvironmentBase  (abstract)
+ *     └─ FSFloaterFixedEnv      (open)
+ *          ├─ FSFloaterFixedEnvWater
+ *          └─ FSFloaterFixedEnvSky
+ *
+ * Phoenix Firestorm Project — LGPL 2.1
+ */
+
+package com.firestorm.newview
+
+import com.firestorm.llcommon.LLSD
+import com.firestorm.llcommon.LLUUID
+
+// ---------------------------------------------------------------------------
+// Sealed type for the environment layer selection
+// ---------------------------------------------------------------------------
+
+enum class EnvLayer { LOCAL, PARCEL, REGION, EDIT, CURRENT }
+
+// ---------------------------------------------------------------------------
+// Minimal surface for a settings object (mirrors LLSettingsBase)
+// ---------------------------------------------------------------------------
+
+interface SettingsBase {
+    val settingsType: String   // "sky" | "water"
+    var name: String
+    fun buildClone(): SettingsBase
+}
+
+interface SettingsSky  : SettingsBase
+interface SettingsWater: SettingsBase
+
+// ---------------------------------------------------------------------------
+// Settings-edit panel interface (mirrors LLSettingsEditPanel)
+// ---------------------------------------------------------------------------
+
+interface SettingsEditPanel {
+    var isDirty: Boolean
+    var canChangeSettings: Boolean
+    fun setSettings(settings: SettingsBase?)
+    fun refresh()
+    fun clearIsDirty()
+    var onDirtyFlagChanged: ((Boolean) -> Unit)?
+}
+
+// ---------------------------------------------------------------------------
+// Abstract base — mirrors LLFloaterEditEnvironmentBase
+// ---------------------------------------------------------------------------
+
+/**
+ * Abstract base floater for environment editing.
+ *
+ * Manages inventory loading, permission flags, and dirty-state bookkeeping.
+ * Concrete subclasses supply the sky- or water-specific tab panel and
+ * environment-update logic.
+ *
+ * @param seed LLSD key supplied by the floater registry.
+ */
+abstract class FloaterEditEnvironmentBase(val seed: LLSD) {
+
+    companion object {
+        const val KEY_INVENTORY_ID = "inventory_id"
+    }
+
+    // ------------------------------------------------------------------
+    // Inventory / permission state
+    // ------------------------------------------------------------------
+
+    protected var inventoryId: LLUUID = LLUUID.NULL
+    protected var canCopy:  Boolean = false
+    protected var canMod:   Boolean = false
+    protected var canTrans: Boolean = false
+    protected var canSave:  Boolean = false
+
+    protected var isDirty: Boolean = false
+        private set
+
+    protected fun setDirtyFlag()  { isDirty = true }
+    protected open fun clearDirtyFlag() { isDirty = false }
+
+    // ------------------------------------------------------------------
+    // Abstract surface
+    // ------------------------------------------------------------------
+
+    abstract fun getEditSettings(): SettingsBase?
+    abstract fun setEditSettingsAndUpdate(settings: SettingsBase)
+    abstract fun updateEditEnvironment()
+    abstract fun doImportFromDisk()
+    protected abstract fun getSettingsPicker(): Any
+
+    // ------------------------------------------------------------------
+    // Lifecycle hooks
+    // ------------------------------------------------------------------
+
+    open fun postBuild(): Boolean = true
+
+    open fun onOpen(key: LLSD) {}
+
+    open fun onClose(appQuitting: Boolean) {
+        doCloseInventoryFloater(appQuitting)
+    }
+
+    open fun onFocusReceived() {
+        TODO("Platform: re-apply ENV_EDIT environment when floater regains focus")
+    }
+
+    open fun onFocusLost() {
+        TODO("Platform: handle focus loss (no-op in upstream)")
+    }
+
+    // ------------------------------------------------------------------
+    // Shared actions
+    // ------------------------------------------------------------------
+
+    protected fun loadInventoryItem(inventoryItemId: LLUUID, canTrans: Boolean = true) {
+        TODO("Platform: load LLSettingsBase asset from inventory item $inventoryItemId")
+    }
+
+    protected fun checkAndConfirmSettingsLoss(onConfirm: () -> Unit) {
+        if (isDirty) {
+            TODO("Platform: show 'unsaved changes' notification; call onConfirm on OK")
+        } else {
+            onConfirm()
+        }
+    }
+
+    protected fun doApplyUpdateInventory(settings: SettingsBase) {
+        TODO("Platform: upload settings asset and update inventory item $inventoryId")
+    }
+
+    protected fun doApplyCreateNewInventory(settingsName: String, settings: SettingsBase) {
+        TODO("Platform: create new inventory item with name '$settingsName' and upload asset")
+    }
+
+    protected fun doApplyEnvironment(where: String, settings: SettingsBase) {
+        TODO("Platform: apply settings to layer '$where' (local/parcel/region)")
+    }
+
+    protected fun doCloseInventoryFloater(quitting: Boolean) {
+        TODO("Platform: close the embedded inventory/picker floater if open")
+    }
+
+    protected fun canUseInventory(): Boolean {
+        TODO("Platform: return true if agent has inventory write permission")
+    }
+
+    protected fun canApplyRegion(): Boolean {
+        TODO("Platform: return true if agent has region-environment permission")
+    }
+
+    protected fun canApplyParcel(): Boolean {
+        TODO("Platform: return true if agent has parcel-environment permission")
+    }
+
+    protected open fun onClickCloseBtn(appQuitting: Boolean = false) {
+        if (!appQuitting) {
+            checkAndConfirmSettingsLoss { closeFloater(); clearDirtyFlag() }
+        } else {
+            closeFloater()
+        }
+    }
+
+    protected fun onSaveAsCommit(notification: LLSD, response: LLSD, settings: SettingsBase) {
+        TODO("Platform: extract name from notification response and call doApplyCreateNewInventory")
+    }
+
+    protected fun onPanelDirtyFlagChanged(value: Boolean) {
+        if (value) setDirtyFlag()
+    }
+
+    protected fun onAssetLoaded(assetId: LLUUID, settings: SettingsBase?, status: Int) {
+        TODO("Platform: handle asset-load callback; update mSettings and refresh UI")
+    }
+
+    private fun closeFloater() {
+        TODO("Platform: LLFloater::closeFloater()")
+    }
+
+    private fun <T> getChild(name: String): T? {
+        TODO("Platform: resolve child widget '$name' from the floater's view hierarchy")
+    }
+}
+
+// ---------------------------------------------------------------------------
+// FSFloaterFixedEnv — open middle class, mirrors LLFloaterFixedEnvironment
+// ---------------------------------------------------------------------------
+
+/**
+ * Floater container for creating and editing fixed environment settings.
+ *
+ * Adds a tab-container, a name editor, an import button, and a flyout
+ * commit/save button on top of the base floater machinery.
+ *
+ * @param seed LLSD key supplied by the floater registry.
+ */
+open class FSFloaterFixedEnv(seed: LLSD) : FloaterEditEnvironmentBase(seed) {
+
+    // ------------------------------------------------------------------
+    // Action string constants — mirror the anonymous namespace in the .cpp
+    // ------------------------------------------------------------------
+
+    protected companion object {
+        const val FIELD_SETTINGS_NAME = "settings_name"
+        const val CONTROL_TAB_AREA   = "tab_settings"
+        const val BTN_IMPORT  = "btn_import"
+        const val BTN_COMMIT  = "btn_commit"
+        const val BTN_CANCEL  = "btn_cancel"
+        const val BTN_FLYOUT  = "btn_flyout"
+        const val BTN_LOAD    = "btn_load"
+
+        const val ACTION_SAVE         = "save_settings"
+        const val ACTION_SAVEAS       = "save_as_new_settings"
+        const val ACTION_COMMIT       = "commit_changes"
+        const val ACTION_APPLY_LOCAL  = "apply_local"
+        const val ACTION_APPLY_PARCEL = "apply_parcel"
+        const val ACTION_APPLY_REGION = "apply_region"
+
+        const val XML_FLYOUTMENU_FILE = "menu_save_settings.xml"
+    }
+
+    // ------------------------------------------------------------------
+    // Child widget stubs — populated in [postBuild]
+    // ------------------------------------------------------------------
+
+    protected var tabContainer:  TabContainer?  = null
+    protected var nameEditor:    LineEditor?     = null
+    private   var flyoutControl: FlyoutComboBtn? = null
+
+    // ------------------------------------------------------------------
+    // Settings state
+    // ------------------------------------------------------------------
+
+    protected var settings: SettingsBase? = null
+
+    override fun getEditSettings(): SettingsBase? = settings
+
+    fun setEditSettings(s: SettingsBase) {
+        settings = s
+        clearDirtyFlag()
+        synchronizeTabs()
+        refresh()
+    }
+
+    override fun setEditSettingsAndUpdate(s: SettingsBase) {
+        settings = s
+        updateEditEnvironment()
+        synchronizeTabs()
+        refresh()
+        TODO("Platform: LLEnvironment.updateEnvironment(TRANSITION_INSTANT)")
+    }
+
+    // ------------------------------------------------------------------
+    // Lifecycle
+    // ------------------------------------------------------------------
+
+    override fun postBuild(): Boolean {
+        tabContainer = getChild<TabContainer>(CONTROL_TAB_AREA)
+        nameEditor   = getChild<LineEditor>(FIELD_SETTINGS_NAME)?.also { ed ->
+            ed.commitOnFocusLost = true
+            ed.setCommitCallback { onNameChanged(it) }
+        }
+
+        getChild<Button>(BTN_IMPORT)?.setClickedCallback { onButtonImport() }
+        getChild<Button>(BTN_CANCEL)?.setClickedCallback { onClickCloseBtn() }
+        getChild<Button>(BTN_LOAD)?.setClickedCallback   { onButtonLoad() }
+
+        flyoutControl = FlyoutComboBtn(BTN_COMMIT, BTN_FLYOUT, XML_FLYOUTMENU_FILE).also { fc ->
+            fc.setAction { ctrl, data -> onButtonApply(ctrl, data) }
+            fc.setMenuItemVisible(ACTION_COMMIT, false)
+        }
+
+        return true
+    }
+
+    override fun onOpen(key: LLSD) {
+        val invId = if (key.has(KEY_INVENTORY_ID)) key.getUUID(KEY_INVENTORY_ID) else LLUUID.NULL
+        loadInventoryItem(invId)
+        updateEditEnvironment()
+        synchronizeTabs()
+        refresh()
+        TODO("Platform: LLEnvironment.setSelectedEnvironment(ENV_EDIT, TRANSITION_INSTANT)")
+    }
+
+    override fun onClose(appQuitting: Boolean) {
+        doCloseInventoryFloater(appQuitting)
+        if (!appQuitting) {
+            TODO("Platform: restore ENV_LOCAL, clearEnvironment(ENV_EDIT)")
+            settings = null
+            synchronizeTabs()
+        }
+    }
+
+    // ------------------------------------------------------------------
+    // Refresh
+    // ------------------------------------------------------------------
+
+    open fun refresh() {
+        val s = settings ?: return
+
+        val invAvail = canUseInventory()
+        flyoutControl?.setMenuItemEnabled(ACTION_SAVE,         invAvail && canMod && !inventoryId.isNull())
+        flyoutControl?.setMenuItemEnabled(ACTION_SAVEAS,       invAvail && canCopy)
+        flyoutControl?.setMenuItemEnabled(ACTION_APPLY_PARCEL, canApplyParcel())
+        flyoutControl?.setMenuItemEnabled(ACTION_APPLY_REGION, canApplyRegion())
+
+        nameEditor?.setValue(s.name)
+        nameEditor?.isEnabled = canMod
+
+        val panels = tabContainer?.allPanels().orEmpty()
+        for (panel in panels) {
+            panel.canChangeSettings = canMod
+            panel.refresh()
+        }
+    }
+
+    protected open fun synchronizeTabs() {
+        val panels = tabContainer?.allPanels().orEmpty()
+        for (panel in panels) {
+            panel.setSettings(settings)
+        }
+    }
+
+    override fun clearDirtyFlag() {
+        super.clearDirtyFlag()
+        tabContainer?.allPanels()?.forEach { it.clearIsDirty() }
+    }
+
+    // ------------------------------------------------------------------
+    // Button handlers
+    // ------------------------------------------------------------------
+
+    private fun onNameChanged(name: String) {
+        settings?.name = name
+        setDirtyFlag()
+    }
+
+    private fun onButtonImport() {
+        checkAndConfirmSettingsLoss { doImportFromDisk() }
+    }
+
+    private fun onButtonApply(ctrl: String, data: LLSD) {
+        val s = settings ?: return
+        val clone = s.buildClone()
+
+        if (hasLocalTexture(s)) {
+            TODO("Platform: show 'WLLocalTextureFixedBlock' notification and return")
+        }
+
+        when (ctrl) {
+            ACTION_SAVE   -> { doApplyUpdateInventory(clone); clearDirtyFlag() }
+            ACTION_SAVEAS -> {
+                TODO("Platform: show 'SaveSettingAs' notification; on OK call doApplyCreateNewInventory")
+            }
+            ACTION_APPLY_LOCAL,
+            ACTION_APPLY_PARCEL,
+            ACTION_APPLY_REGION -> doApplyEnvironment(ctrl, clone)
+            else -> TODO("Platform: log unknown settings action '$ctrl'")
+        }
+    }
+
+    override fun onClickCloseBtn(appQuitting: Boolean) {
+        if (!appQuitting) {
+            checkAndConfirmSettingsLoss {
+                TODO("Platform: closeFloater(); clearDirtyFlag()")
+            }
+        } else {
+            TODO("Platform: closeFloater()")
+        }
+    }
+
+    private fun onButtonLoad() {
+        checkAndConfirmSettingsLoss { doSelectFromInventory() }
+    }
+
+    private fun doSelectFromInventory() {
+        val picker = getSettingsPicker()
+        TODO("Platform: open settings picker filtered to ${settings?.settingsType}")
+    }
+
+    private fun onPickerCommitSetting(itemId: LLUUID) {
+        loadInventoryItem(itemId)
+    }
+
+    override fun getSettingsPicker(): Any {
+        TODO("Platform: return or create LLFloaterSettingsPicker instance")
+    }
+
+    // FS-specific: Firestorm checks for local-bitmap textures before applying
+    private fun hasLocalTexture(s: SettingsBase): Boolean {
+        TODO("Platform: check LLLocalBitmapMgr for textures referenced by s")
+    }
+
+    override fun doImportFromDisk() {
+        TODO("Platform: open file-picker for XML; call concrete subclass load method")
+    }
+
+    override fun updateEditEnvironment() {
+        TODO("Platform: LLEnvironment.setEnvironment(ENV_EDIT, settings)")
+    }
+
+    // ------------------------------------------------------------------
+    // Widget stub helpers
+    // ------------------------------------------------------------------
+
+    private fun <T> getChild(name: String): T? {
+        TODO("Platform: resolve child widget '$name' from the floater's view hierarchy")
+    }
+
+    // ------------------------------------------------------------------
+    // Nested widget stubs
+    // ------------------------------------------------------------------
+
+    class TabContainer {
+        fun allPanels(): List<SettingsEditPanel> { TODO("Platform: return all tab panels as SettingsEditPanel") }
+    }
+    class LineEditor {
+        var commitOnFocusLost: Boolean = true
+        var isEnabled: Boolean = true
+        fun setValue(v: String) { TODO("Platform: set editor text") }
+        fun setCommitCallback(cb: (String) -> Unit) { TODO("Platform: wire commit callback") }
+    }
+    class Button {
+        fun setClickedCallback(cb: () -> Unit) { TODO("Platform: wire click callback") }
+    }
+    class FlyoutComboBtn(val commitBtn: String, val flyoutBtn: String, val menuXml: String) {
+        fun setAction(cb: (String, LLSD) -> Unit) { TODO("Platform: wire flyout action callback") }
+        fun setMenuItemVisible(action: String, visible: Boolean) { TODO("Platform: toggle menu-item visibility") }
+        fun setMenuItemEnabled(action: String, enabled: Boolean) { TODO("Platform: toggle menu-item enabled state") }
+    }
+}
+
+// ---------------------------------------------------------------------------
+// FSFloaterFixedEnvWater — mirrors LLFloaterFixedEnvironmentWater
+// ---------------------------------------------------------------------------
+
+/**
+ * Variant of [FSFloaterFixedEnv] for water settings.
+ *
+ * Adds a single `LLPanelSettingsWaterMainTab` tab built from the FS-specific
+ * `panel_fs_settings_water.xml` layout file.
+ */
+class FSFloaterFixedEnvWater(seed: LLSD) : FSFloaterFixedEnv(seed) {
+
+    override fun postBuild(): Boolean {
+        if (!super.postBuild()) return false
+        TODO("Platform: create LLPanelSettingsWaterMainTab from panel_fs_settings_water.xml, add to tab container")
+    }
+
+    override fun onOpen(key: LLSD) {
+        if (settings == null) {
+            TODO("Platform: clone current water from LLEnvironment.getEnvironmentFixedWater(ENV_CURRENT)")
+            // settings would be set here with name "Snapshot water (new)"
+        }
+        super.onOpen(key)
+    }
+
+    override fun updateEditEnvironment() {
+        TODO("Platform: LLEnvironment.setEnvironment(ENV_EDIT, settings as LLSettingsWater)")
+    }
+
+    override fun doImportFromDisk() {
+        TODO("Platform: open XML file-picker; call loadWaterSettingFromFile(filenames)")
+    }
+
+    private fun loadWaterSettingFromFile(filenames: List<String>) {
+        if (filenames.isEmpty()) return
+        val filename = filenames[0]
+        TODO("Platform: LLEnvironment.createWaterFromLegacyPreset(filename); on success setEditSettings(legacyWater)")
+    }
+}
+
+// ---------------------------------------------------------------------------
+// FSFloaterFixedEnvSky — mirrors LLFloaterFixedEnvironmentSky
+// ---------------------------------------------------------------------------
+
+/**
+ * Variant of [FSFloaterFixedEnv] for sky settings.
+ *
+ * Adds three tabs (atmosphere, clouds, sun/moon) each built from FS-specific
+ * XML layout files.  Also saves/restores beacon state on open/close to avoid
+ * the environment-beacon display being left in an inconsistent state.
+ */
+class FSFloaterFixedEnvSky(seed: LLSD) : FSFloaterFixedEnv(seed) {
+
+    override fun postBuild(): Boolean {
+        if (!super.postBuild()) return false
+        TODO(
+            "Platform: create panels from panel_fs_settings_sky_atmos.xml, " +
+            "panel_fs_settings_sky_clouds.xml, panel_fs_settings_sky_sunmoon.xml; " +
+            "add to tab container"
+        )
+    }
+
+    override fun onOpen(key: LLSD) {
+        if (settings == null) {
+            TODO("Platform: clone current sky from LLEnvironment.getEnvironmentFixedSky(ENV_CURRENT); saveBeaconsState()")
+            // settings would be set here with name "Snapshot sky (new)"
+        }
+        super.onOpen(key)
+    }
+
+    override fun onClose(appQuitting: Boolean) {
+        TODO("Platform: LLEnvironment.revertBeaconsState()")
+        super.onClose(appQuitting)
+    }
+
+    override fun updateEditEnvironment() {
+        TODO("Platform: LLEnvironment.setEnvironment(ENV_EDIT, settings as LLSettingsSky)")
+    }
+
+    override fun doImportFromDisk() {
+        TODO("Platform: open XML file-picker; call loadSkySettingFromFile(filenames)")
+    }
+
+    private fun loadSkySettingFromFile(filenames: List<String>) {
+        if (filenames.isEmpty()) return
+        val filename = filenames[0]
+        TODO("Platform: LLEnvironment.createSkyFromLegacyPreset(filename); on success setEditSettings(legacySky)")
+    }
+}

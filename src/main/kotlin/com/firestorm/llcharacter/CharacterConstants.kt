@@ -50,14 +50,14 @@ abstract class Character {
 
     open fun getDebugName(): String = getID().toString()
 
-    fun registerMotion(id: LLUUID, factory: (LLUUID) -> Motion): Boolean =
+    fun registerMotion(id: LLUUID, factory: (LLUUID) -> LLMotion): Boolean =
         motionController.registerMotion(id, factory)
 
     fun removeMotion(id: LLUUID) = motionController.removeMotion(id)
 
-    fun createMotion(id: LLUUID): Motion? = motionController.createMotion(id)
+    fun createMotion(id: LLUUID): LLMotion? = motionController.createMotion(id)
 
-    fun findMotion(id: LLUUID): Motion? = motionController.findMotion(id)
+    fun findMotion(id: LLUUID): LLMotion? = motionController.findMotion(id)
 
     open fun startMotion(id: LLUUID, startOffset: Float = 0f): Boolean =
         motionController.startMotion(id, startOffset)
@@ -70,7 +70,7 @@ abstract class Character {
         return motionController.isMotionActive(motion)
     }
 
-    open fun requestStopMotion(motion: Motion) {}
+    open fun requestStopMotion(motion: LLMotion) {}
 
     fun updateMotions(updateType: UpdateType) {
         when (updateType) {

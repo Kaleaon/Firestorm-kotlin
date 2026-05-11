@@ -4,6 +4,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <com.firestorm.android.gl.FirestormGLSurfaceView
+        android:id="@+id/glSurface"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/appSummary"
         android:layout_width="0dp"
@@ -12,6 +21,7 @@
         android:gravity="center"
         android:text="@string/app_ready"
         android:textAppearance="@style/TextAppearance.Material3.HeadlineSmall"
+        android:textColor="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

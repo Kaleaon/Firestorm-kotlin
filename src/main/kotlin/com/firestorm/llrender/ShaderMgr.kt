@@ -458,6 +458,44 @@ abstract class ShaderMgr {
     companion object {
         var instance: ShaderMgr? = null
             get() = checkNotNull(field) { "ShaderMgr must be instantiated by the application before use" }
+
+        // GLSL ES 3.20 matches the OpenGL ES 3.2 context the Android renderer requests.
+        const val GLSL_VERSION_DIRECTIVE = "#version 320 es"
+
+        /**
+         * Build the preamble prepended to a shader's source: the GLSL version
+         * directive, default precision qualifiers, and `#define` lines for the
+         * provided defines map. Callers concatenate this with the raw shader body.
+         */
+        fun buildShaderPreamble(
+            type: ShaderType,
+            defines: Map<String, String>? = null
+        ): String = buildString {
+            append(GLSL_VERSION_DIRECTIVE).append('\n')
+            when (type) {
+                ShaderType.VERTEX -> {
+                    append("precision highp float;\n")
+                    append("precision highp int;\n")
+                    append("precision highp sampler2DArray;\n")
+                }
+                ShaderType.FRAGMENT -> {
+                    append("precision highp float;\n")
+                    append("precision highp int;\n")
+                    append("precision highp sampler2D;\n")
+                    append("precision highp sampler2DArray;\n")
+                    append("precision highp samplerCube;\n")
+                    append("precision highp samplerCubeArray;\n")
+                }
+                ShaderType.GEOMETRY -> {
+                    append("precision highp float;\n")
+                    append("precision highp int;\n")
+                }
+            }
+            defines?.forEach { (k, v) ->
+                if (v.isEmpty()) append("#define ").append(k).append('\n')
+                else append("#define ").append(k).append(' ').append(v).append('\n')
+            }
+        }
     }
 }
 

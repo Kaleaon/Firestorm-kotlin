@@ -14,7 +14,17 @@ class MainActivity : AppCompatActivity() {
 
         binding.appSummary.text = buildString {
             appendLine("Firestorm Kotlin conversion")
-            appendLine("Android starter app is now configured.")
+            appendLine("Renderer: OpenGL ES 3.2")
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        binding.glSurface.onResume()
+    }
+
+    override fun onPause() {
+        binding.glSurface.onPause()
+        super.onPause()
     }
 }

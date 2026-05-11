@@ -72,6 +72,8 @@ object LLShaderMgr {
 
     fun getLoadedShaderCount(): Int = shaderCache.size
 
+    // OpenGL ES 3.2 (or GL 3.3+) is the supported baseline. The 3.2 cutoff lets
+    // mobile contexts pass, since ES does not advertise a 3.3 minor version.
     fun isSupportedVersion(major: Int, minor: Int): Boolean =
-        (major > 3) || (major == 3 && minor >= 3)
+        (major > 3) || (major == 3 && minor >= 2)
 }

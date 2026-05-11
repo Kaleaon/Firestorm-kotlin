@@ -117,11 +117,17 @@ class CrashLock {
     private fun prepareForEncoding(value: Any?): Any? = when (value) {
         is Map<*, *> -> LinkedHashMap<String, Any?>().also { out ->
             value.forEach { (k, v) ->
-                if (k != null) out[k.toString()] = prepareForEncoding(v)
+                if (k != null) {
+                    val encoded = prepareForEncoding(v)
+                    if (encoded != null) out[k.toString()] = encoded
+                }
             }
         }
         is Iterable<*> -> ArrayList<Any?>().also { out ->
-            value.forEach { out.add(prepareForEncoding(it)) }
+            value.forEach {
+                val encoded = prepareForEncoding(it)
+                if (encoded != null) out.add(encoded)
+            }
         }
         else -> value
     }
@@ -136,6 +142,8 @@ class CrashLock {
             }
         }
         is List<*> -> value.mapNotNull { normalizeDecoded(it) }
+        is Float -> value
+        is Double -> value
         is Number -> value.toLong()
         else -> value
     }

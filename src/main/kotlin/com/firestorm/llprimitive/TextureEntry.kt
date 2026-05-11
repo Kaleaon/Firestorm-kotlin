@@ -241,21 +241,37 @@ data class TextureEntry(
             )
         }
 
+        /**
+         * Parse a media version string of the form `x-mv:<version>/<agent-uuid>` into its
+         * two parts.  Returns `null` if the string is not a valid media version string.
+         */
+        private fun parseMediaVersionString(versionString: String): Pair<UInt, LLUUID>? {
+            if (!versionString.startsWith("x-mv:")) return null
+            val payload = versionString.removePrefix("x-mv:")
+            val slashIdx = payload.indexOf('/')
+            if (slashIdx < 0) return null
+            val version = payload.substring(0, slashIdx).toUIntOrNull() ?: return null
+            val uuid = LLUUID.fromString(payload.substring(slashIdx + 1)) ?: return null
+            return version to uuid
+        }
+
         /** Emit a media version string touched by the given agent. */
-        fun touchMediaVersionString(inVersion: String, agentId: LLUUID): String =
-            TODO("TextureEntry.touchMediaVersionString not yet implemented")
+        fun touchMediaVersionString(inVersion: String, agentId: LLUUID): String {
+            val currentVersion = parseMediaVersionString(inVersion)?.first ?: 0u
+            return "x-mv:${currentVersion + 1u}/$agentId"
+        }
 
         /** Parse the version number from a media-version string. */
         fun getVersionFromMediaVersionString(versionString: String): UInt =
-            TODO("TextureEntry.getVersionFromMediaVersionString not yet implemented")
+            parseMediaVersionString(versionString)?.first ?: 0u
 
         /** Parse the agent UUID from a media-version string. */
         fun getAgentIDFromMediaVersionString(versionString: String): LLUUID =
-            TODO("TextureEntry.getAgentIDFromMediaVersionString not yet implemented")
+            parseMediaVersionString(versionString)?.second ?: LLUUID.NULL
 
         /** Return whether a string is a valid media-version string. */
         fun isMediaVersionString(versionString: String): Boolean =
-            TODO("TextureEntry.isMediaVersionString not yet implemented")
+            parseMediaVersionString(versionString) != null
     }
 
     /**

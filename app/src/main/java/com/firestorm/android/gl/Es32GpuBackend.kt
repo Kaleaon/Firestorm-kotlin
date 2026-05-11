@@ -27,6 +27,9 @@ class Es32GpuBackend : GpuBackend {
     val supportsEs32: Boolean
         get() = cachedVersionMajor > 3 || (cachedVersionMajor == 3 && cachedVersionMinor >= 2)
 
+    /** Per-query last-seen 32-bit result, used to detect wraps in [getQueryObjectui64]. */
+    private val lastQueryResult: MutableMap<Int, Long> = mutableMapOf()
+
     init {
         val tmp = IntArray(1)
         GLES30.glGetIntegerv(GLES30.GL_MAJOR_VERSION, tmp, 0)
@@ -97,7 +100,7 @@ class Es32GpuBackend : GpuBackend {
     override fun validateProgram(program: Int): Boolean {
         GLES20.glValidateProgram(program)
         val tmp = IntArray(1)
-        GLES20.glGetProgramiv(program, GLES20.GL_LINK_STATUS, tmp, 0)
+        GLES20.glGetProgramiv(program, GLES20.GL_VALIDATE_STATUS, tmp, 0)
         return tmp[0] != 0
     }
     override fun getProgramInfoLog(program: Int): String =
@@ -176,11 +179,11 @@ class Es32GpuBackend : GpuBackend {
     override fun texParameterf(target: Int, pname: Int, param: Float) =
         GLES20.glTexParameterf(target, pname, param)
     override fun texImage2D(target: Int, level: Int, internalFormat: Int, width: Int, height: Int, format: Int, type: Int, data: ByteArray?) {
-        val buf = data?.let { java.nio.ByteBuffer.wrap(it) }
+        val buf = data?.let { java.nio.ByteBuffer.allocateDirect(it.size).put(it).flip() }
         GLES20.glTexImage2D(target, level, internalFormat, width, height, 0, format, type, buf)
     }
     override fun texSubImage2D(target: Int, level: Int, xOffset: Int, yOffset: Int, width: Int, height: Int, format: Int, type: Int, data: ByteArray) {
-        val buf = java.nio.ByteBuffer.wrap(data)
+        val buf = java.nio.ByteBuffer.allocateDirect(data.size).put(data).flip()
         GLES20.glTexSubImage2D(target, level, xOffset, yOffset, width, height, format, type, buf)
     }
     override fun copyTexImage2D(target: Int, level: Int, internalFormat: Int, x: Int, y: Int, width: Int, height: Int, border: Int) =
@@ -208,6 +211,11 @@ class Es32GpuBackend : GpuBackend {
         GLES32.glDebugMessageInsert(source, type, id, severity, message.length, message)
     }
 
+    override fun extensionSupported(name: String): Boolean {
+        val extensions = GLES20.glGetString(GLES20.GL_EXTENSIONS) ?: return false
+        return extensions.split(' ').contains(name)
+    }
+
     override fun genQueries(n: Int): IntArray {
         val out = IntArray(n)
         GLES30.glGenQueries(n, out, 0)
@@ -218,11 +226,17 @@ class Es32GpuBackend : GpuBackend {
     override fun beginQuery(target: Int, id: Int) = GLES30.glBeginQuery(target, id)
     override fun endQuery(target: Int) = GLES30.glEndQuery(target)
     override fun getQueryObjectui64(id: Int): Long {
-        // GLES30 returns the 32-bit "available" result. The 64-bit timer
-        // query value is only exposed via the EXT_disjoint_timer_query GLES
-        // extension; if we don't have it we fall back to the 32-bit result.
+        // GL_EXT_disjoint_timer_query exposes 64-bit values; without it we
+        // only have the 32-bit result from GLES30. A GL_TIME_ELAPSED value
+        // wraps every ~4.29 s at nanosecond resolution, so we detect and
+        // correct a single wrap per query by comparing against the previous
+        // result stored in lastQueryResult.
         val tmp = IntArray(1)
         GLES30.glGetQueryObjectuiv(id, GLES30.GL_QUERY_RESULT, tmp, 0)
-        return tmp[0].toLong() and 0xFFFFFFFFL
+        val raw = tmp[0].toLong() and 0xFFFFFFFFL
+        val prev = lastQueryResult.getOrDefault(id, 0L)
+        val corrected = if (raw < prev && (prev - raw) > (1L shl 31)) raw + (1L shl 32) else raw
+        lastQueryResult[id] = corrected
+        return corrected
     }
 }

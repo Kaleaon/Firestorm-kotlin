@@ -121,8 +121,8 @@ class FontRegistry(
             val fontNodes = root.getElementsByTagName("font")
             for (i in 0 until fontNodes.length) {
                 val el = fontNodes.item(i) as? Element ?: continue
-                val name = el.getAttribute("name") ?: continue
-                val styleStr = el.getAttribute("style")
+                val name = el.getAttribute("name").takeIf { it.isNotBlank() } ?: continue
+                val styleStr = el.getAttribute("style").orEmpty()
                 val style = (when (styleStr.uppercase()) {
                     "BOLD" -> FontDescriptor.BOLD
                     "ITALIC" -> FontDescriptor.ITALIC
@@ -136,7 +136,7 @@ class FontRegistry(
             val sizeNodes = root.getElementsByTagName("font_size")
             for (i in 0 until sizeNodes.length) {
                 val el = sizeNodes.item(i) as? Element ?: continue
-                val n = el.getAttribute("name").orEmpty()
+                val n = el.getAttribute("name").takeIf { it.isNotBlank() } ?: continue
                 val s = el.getAttribute("size")?.toFloatOrNull() ?: continue
                 fontSizes[n] = s + fontSizeMod
             }

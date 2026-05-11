@@ -133,7 +133,9 @@ class CubeMap(val isSrgb: Boolean) {
         for (i in 0 until 6) {
             gl.texImage2D(targets[i], 0, GL.RGBA8, resolution, resolution, GL.RGBA, GL.UNSIGNED_BYTE, rawImages[i].data)
         }
-        gl.enable(GL.TEXTURE_CUBE_MAP_SEAMLESS)
+        // GL_TEXTURE_CUBE_MAP_SEAMLESS is a desktop-only OpenGL extension
+        // (ARB_seamless_cube_map). In OpenGL ES 3.0+, seamless cube-map
+        // filtering is always enabled by default — there is no toggle.
         gl.generateMipmap(GL.TEXTURE_CUBE_MAP)
     }
 

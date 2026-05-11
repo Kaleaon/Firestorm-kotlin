@@ -215,12 +215,12 @@ class PostProcess {
     }
 
     private fun createColorFilterShader() {
-        colorFilterUniforms["RenderTexture"] = 0u
-        colorFilterUniforms["brightness"] = 0u
-        colorFilterUniforms["contrast"] = 0u
-        colorFilterUniforms["contrastBase"] = 0u
-        colorFilterUniforms["saturation"] = 0u
-        colorFilterUniforms["lumWeights"] = 0u
+        colorFilterUniforms["RenderTexture"] = UInt.MAX_VALUE
+        colorFilterUniforms["brightness"] = UInt.MAX_VALUE
+        colorFilterUniforms["contrast"] = UInt.MAX_VALUE
+        colorFilterUniforms["contrastBase"] = UInt.MAX_VALUE
+        colorFilterUniforms["saturation"] = UInt.MAX_VALUE
+        colorFilterUniforms["lumWeights"] = UInt.MAX_VALUE
     }
 
     private fun applyNightVisionShader() {
@@ -236,16 +236,23 @@ class PostProcess {
     }
 
     private fun createNightVisionShader() {
-        nightVisionUniforms["RenderTexture"] = 0u
-        nightVisionUniforms["NoiseTexture"] = 0u
-        nightVisionUniforms["brightMult"] = 0u
-        nightVisionUniforms["noiseStrength"] = 0u
-        nightVisionUniforms["lumWeights"] = 0u
+        nightVisionUniforms["RenderTexture"] = UInt.MAX_VALUE
+        nightVisionUniforms["NoiseTexture"] = UInt.MAX_VALUE
+        nightVisionUniforms["brightMult"] = UInt.MAX_VALUE
+        nightVisionUniforms["noiseStrength"] = UInt.MAX_VALUE
+        nightVisionUniforms["lumWeights"] = UInt.MAX_VALUE
         noiseTexture = createNoiseTexture()
     }
 
     private fun applyBloomShader() {
         val gl = GpuBackend.current
+        // NOTE: The bloom pass pipeline is not yet fully wired. `tempBloomTexture`
+        // is created as a plain texture but not attached to a dedicated FBO, so
+        // extract and blur passes render against whatever FBO is currently bound.
+        // Additionally, `drawOrthoQuad` only updates viewport/blend state and
+        // does not issue a draw call — the caller's VAO drives the actual geometry.
+        // This is a known follow-up: wire up the intermediate FBO, attach
+        // `tempBloomTexture`, and issue `glDrawArrays` from a fullscreen-quad VAO.
         // Extract pass: read the scene texture, write bright pixels to the
         // half-resolution bloom target.
         gl.useProgram(bloomExtractUniforms["program"]?.toInt() ?: 0)
@@ -269,16 +276,16 @@ class PostProcess {
     private fun createBloomShader() {
         tempBloomTexture = createTexture(screenW / 2u, screenH / 2u)
 
-        bloomExtractUniforms["RenderTexture"] = 0u
-        bloomExtractUniforms["extractLow"] = 0u
-        bloomExtractUniforms["extractHigh"] = 0u
-        bloomExtractUniforms["lumWeights"] = 0u
+        bloomExtractUniforms["RenderTexture"] = UInt.MAX_VALUE
+        bloomExtractUniforms["extractLow"] = UInt.MAX_VALUE
+        bloomExtractUniforms["extractHigh"] = UInt.MAX_VALUE
+        bloomExtractUniforms["lumWeights"] = UInt.MAX_VALUE
 
-        bloomBlurUniforms["RenderTexture"] = 0u
-        bloomBlurUniforms["bloomStrength"] = 0u
-        bloomBlurUniforms["texelSize"] = 0u
-        bloomBlurUniforms["blurDirection"] = 0u
-        bloomBlurUniforms["blurWidth"] = 0u
+        bloomBlurUniforms["RenderTexture"] = UInt.MAX_VALUE
+        bloomBlurUniforms["bloomStrength"] = UInt.MAX_VALUE
+        bloomBlurUniforms["texelSize"] = UInt.MAX_VALUE
+        bloomBlurUniforms["blurDirection"] = UInt.MAX_VALUE
+        bloomBlurUniforms["blurWidth"] = UInt.MAX_VALUE
     }
 
     private fun getShaderUniforms(uniforms: MutableMap<String, UInt>, prog: UInt) {

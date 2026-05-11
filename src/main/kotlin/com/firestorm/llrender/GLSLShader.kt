@@ -120,7 +120,10 @@ class GLSLShader {
 
         val instances: MutableSet<GLSLShader> = mutableSetOf()
         var profileEnabled: Boolean = false
-        var canProfile: Boolean = true
+        // canProfile is set to true at runtime only when the GL backend confirms
+        // GL_EXT_disjoint_timer_query support; default is false to prevent
+        // glBeginQuery(GL_TIME_ELAPSED) silently failing with GL_INVALID_ENUM.
+        var canProfile: Boolean = false
 
         var curBoundShader: UInt = 0u
         var curBoundShaderPtr: GLSLShader? = null
@@ -268,6 +271,10 @@ class GLSLShader {
         programObject = gl.createProgram().toUInt()
         check(programObject != 0u) { "glCreateProgram failed" }
 
+        // Populate feature-derived #defines into this.defines BEFORE compiling
+        // shader stages so the preamble injected by compileShaderFile picks them up.
+        ShaderMgr.instance?.attachShaderFeatures(toGlslShader())
+
         for ((file, type) in shaderFiles) {
             val ok = when (type) {
                 GL.VERTEX_SHADER -> attachVertexObject(file)
@@ -277,8 +284,6 @@ class GLSLShader {
             }
             if (!ok) return false
         }
-
-        ShaderMgr.instance?.attachShaderFeatures(toGlslShader())
 
         if (!mapAttributes()) return false
         if (!link()) return false
@@ -292,6 +297,10 @@ class GLSLShader {
         s.name = name
         s.programObject = programObject
         s.riggedVariant = null
+        // Share map and features references so mutations from attachShaderFeatures
+        // and updateShaderUniforms are reflected back into this GLSLShader.
+        s.features = features
+        s.defines = defines
         return s
     }
 

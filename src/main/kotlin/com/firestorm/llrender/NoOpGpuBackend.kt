@@ -128,6 +128,8 @@ object NoOpGpuBackend : GpuBackend {
 
     override fun debugMessageInsert(source: Int, type: Int, id: Int, severity: Int, message: String) {}
 
+    override fun extensionSupported(name: String): Boolean = false
+
     override fun genQueries(n: Int): IntArray = IntArray(n) { fresh() }
     override fun deleteQueries(queries: IntArray) {}
     override fun beginQuery(target: Int, id: Int) {}

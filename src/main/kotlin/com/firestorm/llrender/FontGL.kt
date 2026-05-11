@@ -98,12 +98,15 @@ class FontGL {
         }
 
         fun destroyDefaultFonts() {
+            // Tears down the entire font cache, not just the default fonts.
             fontCache.values.forEach { it.destroyGl() }
             fontCache.clear()
         }
 
         fun destroyAllGl() {
-            fontCache.values.forEach { it.destroyGl() }
+            // Deletes all GL textures and bumps cacheGeneration on each entry
+            // so consumers know to regenerate glyphs on next use.
+            fontCache.values.forEach { it.reset() }
         }
 
         fun getFontSansSerifSmall():      FontGL = getOrLoad("SansSerif",  "Small",      STYLE_NORMAL)

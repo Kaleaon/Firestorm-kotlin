@@ -426,7 +426,7 @@ abstract class ShaderMgr {
         set("LL_FEATURE_ALPHA_MASK", f.hasAlphaMask)
         set("LL_FEATURE_ALPHA_LIGHTING", f.isAlphaLighting)
         set("LL_FEATURE_AO", f.hasAmbientOcclusion)
-        set("LL_FEATURE_PBR_TERRAIN", f.isPBRTerrain)
+        set("LL_FEATURE_PBR_TERRAIN", f.isPbrTerrain)
         set("LL_FEATURE_TONEMAP", f.hasTonemap)
         return true
     }
@@ -743,30 +743,6 @@ class GlslShader {
     var shaderHash: String = ""
     var programObject: UInt = 0u
     var riggedVariant: GlslShader? = null
-    val features: ShaderFeatures = ShaderFeatures()
-    val defines: MutableMap<String, String> = mutableMapOf()
-}
-
-class ShaderFeatures {
-    var attachNothing: Boolean = false
-    var calculatesAtmospherics: Boolean = false
-    var hasGamma: Boolean = false
-    var isDeferred: Boolean = false
-    var calculatesLighting: Boolean = false
-    var isSpecular: Boolean = false
-    var isAlphaLighting: Boolean = false
-    var hasSkinning: Boolean = false
-    var hasObjectSkinning: Boolean = false
-    var hasSrgb: Boolean = false
-    var hasAtmospherics: Boolean = false
-    var hasReflectionProbes: Boolean = false
-    var hasFullGBuffer: Boolean = false
-    var hasScreenSpaceReflections: Boolean = false
-    var hasShadows: Boolean = false
-    var hasAmbientOcclusion: Boolean = false
-    var isPBRTerrain: Boolean = false
-    var hasTonemap: Boolean = false
-    var hasLighting: Boolean = false
-    var hasAlphaMask: Boolean = false
-    var mIndexedTextureChannels: Int = 0
+    var features: ShaderFeatures = ShaderFeatures()
+    var defines: MutableMap<String, String> = mutableMapOf()
 }

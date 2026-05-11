@@ -5,13 +5,24 @@ import android.opengl.GLES30
 import android.opengl.GLES32
 import android.opengl.GLSurfaceView
 import android.util.Log
+import com.firestorm.llrender.GLSLShader
 import com.firestorm.llrender.GpuBackend
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 
 private const val TAG = "FirestormRenderer"
 
-class FirestormRenderer : GLSurfaceView.Renderer {
+/**
+ * @param onVersionReady Called on the GL thread after the ES version is
+ *   detected; the implementation should post back to the UI thread if needed.
+ * @param debugBuild Pass [BuildConfig.DEBUG] to enable synchronous GL debug
+ *   output. Synchronous callbacks are useful for pinpointing the exact draw
+ *   call that raised an error, but they add latency on every GL message.
+ */
+class FirestormRenderer(
+    private val onVersionReady: ((major: Int, minor: Int) -> Unit)? = null,
+    private val debugBuild: Boolean = false
+) : GLSurfaceView.Renderer {
 
     @Volatile var actualMajor: Int = 0
         private set
@@ -25,9 +36,15 @@ class FirestormRenderer : GLSurfaceView.Renderer {
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
         detectVersion()
         logCapabilities()
-        GpuBackend.install(Es32GpuBackend())
+        val backend = Es32GpuBackend()
+        GpuBackend.install(backend)
+        // Enable GL timer-query profiling only when the EXT_disjoint_timer_query
+        // extension is present; without it glBeginQuery(GL_TIME_ELAPSED) is a
+        // no-op that silently produces zeroed stats every frame.
+        GLSLShader.canProfile = backend.extensionSupported("GL_EXT_disjoint_timer_query")
         installDebugCallback()
         applyPipelineDefaults()
+        onVersionReady?.invoke(actualMajor, actualMinor)
     }
 
     override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
@@ -60,7 +77,12 @@ class FirestormRenderer : GLSurfaceView.Renderer {
     private fun installDebugCallback() {
         if (!supportsEs32) return
         GLES32.glEnable(GLES32.GL_DEBUG_OUTPUT)
-        GLES32.glEnable(GLES32.GL_DEBUG_OUTPUT_SYNCHRONOUS)
+        // GL_DEBUG_OUTPUT_SYNCHRONOUS makes the driver block until the callback
+        // returns for every message — very useful for debugging but causes a
+        // measurable perf hit on some drivers. Enable only in debug builds.
+        if (debugBuild) {
+            GLES32.glEnable(GLES32.GL_DEBUG_OUTPUT_SYNCHRONOUS)
+        }
         GLES32.glDebugMessageCallback(object : GLES32.DebugProc {
             override fun onMessage(
                 source: Int,

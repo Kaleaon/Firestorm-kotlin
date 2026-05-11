@@ -18,6 +18,16 @@ class MainActivity : AppCompatActivity() {
             appendLine("OpenGL ES 3.2 renderer enabled for graphics baseline.")
             appendLine("LLSD formatting aligned with Libremetaverse / python-llsd conventions.")
         }
+
+        // Update the version label once the GL context is live and the actual
+        // ES version has been negotiated (may be 3.0 fallback on older devices).
+        glSurfaceView.onVersionDetected = { major, minor ->
+            binding.appSummary.text = buildString {
+                appendLine("Firestorm Kotlin conversion")
+                appendLine("Renderer: OpenGL ES $major.$minor")
+                appendLine("LLSD formatting aligned with Libremetaverse / python-llsd conventions.")
+            }
+        }
     }
 
     override fun onResume() {

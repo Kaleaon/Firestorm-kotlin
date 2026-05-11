@@ -49,7 +49,7 @@ private class ImageRequest(
             repeat(discardLevel.coerceAtLeast(0)) {
                 val w = (image.width / 2).coerceAtLeast(1)
                 val h = (image.height / 2).coerceAtLeast(1)
-                val resized = java.awt.image.BufferedImage(w, h, image.type.coerceAtLeast(java.awt.image.BufferedImage.TYPE_INT_ARGB))
+                val resized = java.awt.image.BufferedImage(w, h, java.awt.image.BufferedImage.TYPE_INT_ARGB)
                 val g = resized.createGraphics()
                 g.drawImage(image, 0, 0, w, h, null)
                 g.dispose()
@@ -73,7 +73,7 @@ private class ImageRequest(
                 decodedAux = true
             }
             return true
-        } catch (e: Throwable) {
+        } catch (e: Exception) {
             errorString = e.message ?: e::class.simpleName.orEmpty()
             return false
         }

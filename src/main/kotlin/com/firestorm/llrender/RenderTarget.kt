@@ -91,6 +91,11 @@ class RenderTarget {
         gl.bindFramebuffer(GL.FRAMEBUFFER, fbo.toInt())
         gl.framebufferTexture2D(GL.FRAMEBUFFER, GL.COLOR_ATTACHMENT0, GL.TEXTURE_2D, texName.toInt(), 0)
         tex.add(texName)
+        // Record a format entry so internalFormat stays in sync with tex.
+        // The texture is externally owned so bytesAllocated is not incremented;
+        // callers must invoke releaseColorAttachment() before release() to avoid
+        // attempting to delete externally-owned textures.
+        internalFormat.add(GL.RGBA8.toUInt())
         gl.bindFramebuffer(GL.FRAMEBUFFER, 0)
     }
 

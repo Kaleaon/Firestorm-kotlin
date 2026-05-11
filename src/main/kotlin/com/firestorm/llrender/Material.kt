@@ -91,17 +91,17 @@ class Material() {
         (map["SpecColor"] as? LLSD.LLSDArray)?.value?.let { arr ->
             if (arr.size >= 4) {
                 specularColor = Color4u(
-                    arr[0].asInt().toUByte(),
-                    arr[1].asInt().toUByte(),
-                    arr[2].asInt().toUByte(),
-                    arr[3].asInt().toUByte()
+                    arr[0].asInt().coerceIn(0, 255).toUByte(),
+                    arr[1].asInt().coerceIn(0, 255).toUByte(),
+                    arr[2].asInt().coerceIn(0, 255).toUByte(),
+                    arr[3].asInt().coerceIn(0, 255).toUByte()
                 )
             }
         }
-        specularExp = (map["SpecExp"]?.asInt() ?: MaterialConstants.DEFAULT_SPECULAR_EXP.toInt()).toUByte()
-        environmentIntensity = (map["EnvIntensity"]?.asInt() ?: 0).toUByte()
-        diffuseAlphaMode = (map["AlphaMode"]?.asInt() ?: 0).toUByte()
-        alphaThreshold = (map["AlphaMaskCutoff"]?.asInt() ?: 0).toUByte()
+        specularExp = (map["SpecExp"]?.asInt() ?: MaterialConstants.DEFAULT_SPECULAR_EXP.toInt()).coerceIn(0, 255).toUByte()
+        environmentIntensity = (map["EnvIntensity"]?.asInt() ?: 0).coerceIn(0, 255).toUByte()
+        diffuseAlphaMode = (map["AlphaMode"]?.asInt() ?: 0).coerceIn(0, 255).toUByte()
+        alphaThreshold = (map["AlphaMaskCutoff"]?.asInt() ?: 0).coerceIn(0, 255).toUByte()
     }
 
     fun isEmpty(): Boolean = normalId == LLUUID.NULL && specularId == LLUUID.NULL

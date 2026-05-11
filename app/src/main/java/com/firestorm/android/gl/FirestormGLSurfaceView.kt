@@ -1,6 +1,7 @@
 package com.firestorm.android.gl
 
 import android.content.Context
+import android.content.pm.ApplicationInfo
 import android.opengl.GLSurfaceView
 import android.util.AttributeSet
 import android.util.Log
@@ -20,10 +21,22 @@ class FirestormGLSurfaceView @JvmOverloads constructor(
     attrs: AttributeSet? = null
 ) : GLSurfaceView(context, attrs) {
 
+    /**
+     * Invoked on the main (UI) thread once the GL context is current and the
+     * actual ES version has been detected. Used to update UI labels at runtime
+     * instead of displaying a hard-coded version string.
+     */
+    var onVersionDetected: ((major: Int, minor: Int) -> Unit)? = null
+
+    private val firestormRenderer = FirestormRenderer(
+        onVersionReady = { major, minor -> post { onVersionDetected?.invoke(major, minor) } },
+        debugBuild = context.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE != 0
+    )
+
     init {
         setEGLContextFactory(Es32ContextFactory())
         setEGLConfigChooser(Es32ConfigChooser(red = 8, green = 8, blue = 8, alpha = 8, depth = 24, stencil = 8))
-        setRenderer(FirestormRenderer())
+        setRenderer(firestormRenderer)
         renderMode = RENDERMODE_CONTINUOUSLY
         preserveEGLContextOnPause = true
     }
@@ -41,7 +54,9 @@ class FirestormGLSurfaceView @JvmOverloads constructor(
                 val attribs30 = intArrayOf(EGL_CONTEXT_MAJOR_VERSION, 3, EGL10.EGL_NONE)
                 ctx = egl.eglCreateContext(display, config, EGL10.EGL_NO_CONTEXT, attribs30)
             }
-            checkNotNull(ctx) { "eglCreateContext returned null" }
+            check(ctx != null && ctx !== EGL10.EGL_NO_CONTEXT) {
+                "eglCreateContext failed (ES 3.0 fallback): 0x${egl.eglGetError().toString(16)}"
+            }
             return ctx
         }
 

@@ -15,6 +15,10 @@ package com.firestorm.llrender
  */
 interface GpuBackend {
 
+    // -------- extension query ------------------------------------------------
+
+    fun extensionSupported(name: String): Boolean
+
     // -------- context info --------------------------------------------------
 
     fun majorVersion(): Int

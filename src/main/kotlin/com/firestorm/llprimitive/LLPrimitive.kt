@@ -12,6 +12,10 @@ import com.firestorm.llcommon.LLUUID
 import com.firestorm.llmath.Color4
 import com.firestorm.llmath.Quaternion
 import com.firestorm.llmath.Vector3
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
+import kotlin.math.PI
+import kotlin.math.roundToInt
 
 // ---------------------------------------------------------------------------
 // PCode — raw on-wire primitive byte codes (mirrors LL_PCODE_* values)
@@ -237,8 +241,29 @@ data class FlexibleObjectData(
         )
     }
 
-    fun pack(): ByteArray = TODO("FlexibleObjectData network pack not yet implemented")
-    fun unpack(data: ByteArray): Unit = TODO("FlexibleObjectData network unpack not yet implemented")
+    fun pack(): ByteArray {
+        val buf = ByteBuffer.allocate(29).order(ByteOrder.LITTLE_ENDIAN)
+        buf.put((1 shl simulateLOD).coerceIn(0, 255).toByte())
+        buf.putFloat(gravity)
+        buf.putFloat(airFriction)
+        buf.putFloat(windSensitivity)
+        buf.putFloat(tension)
+        buf.putFloat(userForce.x)
+        buf.putFloat(userForce.y)
+        buf.putFloat(userForce.z)
+        return buf.array()
+    }
+
+    fun unpack(data: ByteArray) {
+        val buf = ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN)
+        val sections = buf.get().toInt() and 0xFF
+        simulateLOD = if (sections > 0) Integer.numberOfTrailingZeros(sections) else 0
+        gravity = buf.float
+        airFriction = buf.float
+        windSensitivity = buf.float
+        tension = buf.float
+        userForce = Vector3(buf.float, buf.float, buf.float)
+    }
 }
 
 // ---------------------------------------------------------------------------
@@ -256,8 +281,29 @@ data class LightParams(
     fun setFalloff(f: Float) { falloff = f.coerceIn(LightDefaults.MIN_FALLOFF, LightDefaults.MAX_FALLOFF) }
     fun setCutoff(c: Float)  { cutoff  = c.coerceIn(LightDefaults.MIN_CUTOFF,  LightDefaults.MAX_CUTOFF) }
 
-    fun pack(): ByteArray = TODO("LightParams network pack not yet implemented")
-    fun unpack(data: ByteArray): Unit = TODO("LightParams network unpack not yet implemented")
+    fun pack(): ByteArray {
+        val buf = ByteBuffer.allocate(16).order(ByteOrder.LITTLE_ENDIAN)
+        buf.put((linearColor.r * 255).roundToInt().coerceIn(0, 255).toByte())
+        buf.put((linearColor.g * 255).roundToInt().coerceIn(0, 255).toByte())
+        buf.put((linearColor.b * 255).roundToInt().coerceIn(0, 255).toByte())
+        buf.put((linearColor.a * 255).roundToInt().coerceIn(0, 255).toByte())
+        buf.putFloat(radius)
+        buf.putFloat(falloff)
+        buf.putFloat(cutoff)
+        return buf.array()
+    }
+
+    fun unpack(data: ByteArray) {
+        val buf = ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN)
+        val r = (buf.get().toInt() and 0xFF) / 255f
+        val g = (buf.get().toInt() and 0xFF) / 255f
+        val b = (buf.get().toInt() and 0xFF) / 255f
+        val a = (buf.get().toInt() and 0xFF) / 255f
+        linearColor = Color4(r, g, b, a)
+        radius  = buf.float
+        falloff = buf.float
+        cutoff  = buf.float
+    }
 }
 
 // ---------------------------------------------------------------------------
@@ -285,8 +331,26 @@ data class ReflectionProbeParams(
         )
     }
 
-    fun pack(): ByteArray = TODO("ReflectionProbeParams network pack not yet implemented")
-    fun unpack(data: ByteArray): Unit = TODO("ReflectionProbeParams network unpack not yet implemented")
+    fun pack(): ByteArray {
+        val buf = ByteBuffer.allocate(9).order(ByteOrder.LITTLE_ENDIAN)
+        buf.putFloat(ambiance)
+        buf.putFloat(clipDistance)
+        val flags = (if (isBox) 0x01 else 0) or
+                    (if (isDynamic) 0x02 else 0) or
+                    (if (isMirror) 0x04 else 0)
+        buf.put(flags.toByte())
+        return buf.array()
+    }
+
+    fun unpack(data: ByteArray) {
+        val buf = ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN)
+        ambiance     = buf.float
+        clipDistance = buf.float
+        val flags    = buf.get().toInt() and 0xFF
+        isBox        = (flags and 0x01) != 0
+        isDynamic    = (flags and 0x02) != 0
+        isMirror     = (flags and 0x04) != 0
+    }
 }
 
 // ---------------------------------------------------------------------------
@@ -297,8 +361,19 @@ data class SculptParams(
     var sculptTexture: LLUUID = SCULPT_DEFAULT_TEXTURE,
     var sculptType: UByte     = 0u,
 ) {
-    fun pack(): ByteArray = TODO("SculptParams network pack not yet implemented")
-    fun unpack(data: ByteArray): Unit = TODO("SculptParams network unpack not yet implemented")
+    fun pack(): ByteArray {
+        val buf = ByteBuffer.allocate(17).order(ByteOrder.LITTLE_ENDIAN)
+        buf.put(sculptTexture.toBytes())
+        buf.put(sculptType.toByte())
+        return buf.array()
+    }
+
+    fun unpack(data: ByteArray) {
+        val buf = ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN)
+        val uuidBytes = ByteArray(16).also { buf.get(it) }
+        sculptTexture = LLUUID.fromBytes(uuidBytes) ?: LLUUID.NULL
+        sculptType    = buf.get().toUByte()
+    }
 
     companion object {
         val SCULPT_DEFAULT_TEXTURE = LLUUID("be293869-d0d9-0a69-5989-ad27f1946fd4")
@@ -315,8 +390,21 @@ data class LightImageParams(
 ) {
     val isSpotlight: Boolean get() = lightTexture != LLUUID.NULL
 
-    fun pack(): ByteArray = TODO("LightImageParams network pack not yet implemented")
-    fun unpack(data: ByteArray): Unit = TODO("LightImageParams network unpack not yet implemented")
+    fun pack(): ByteArray {
+        val buf = ByteBuffer.allocate(28).order(ByteOrder.LITTLE_ENDIAN)
+        buf.put(lightTexture.toBytes())
+        buf.putFloat(params.x)
+        buf.putFloat(params.y)
+        buf.putFloat(params.z)
+        return buf.array()
+    }
+
+    fun unpack(data: ByteArray) {
+        val buf = ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN)
+        val uuidBytes = ByteArray(16).also { buf.get(it) }
+        lightTexture = LLUUID.fromBytes(uuidBytes) ?: LLUUID.NULL
+        params       = Vector3(buf.float, buf.float, buf.float)
+    }
 }
 
 // ---------------------------------------------------------------------------
@@ -329,8 +417,16 @@ data class ExtendedMeshParams(
     val isAnimatedMeshEnabled: Boolean
         get() = (flags and ANIMATED_MESH_ENABLED_FLAG) != 0u
 
-    fun pack(): ByteArray = TODO("ExtendedMeshParams network pack not yet implemented")
-    fun unpack(data: ByteArray): Unit = TODO("ExtendedMeshParams network unpack not yet implemented")
+    fun pack(): ByteArray {
+        val buf = ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN)
+        buf.putInt(flags.toInt())
+        return buf.array()
+    }
+
+    fun unpack(data: ByteArray) {
+        val buf = ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN)
+        flags = buf.int.toUInt()
+    }
 
     companion object {
         const val ANIMATED_MESH_ENABLED_FLAG: UInt = 0x1u
@@ -360,8 +456,29 @@ class RenderMaterialParams {
     fun getMaterial(teIndex: UByte): LLUUID =
         entries.firstOrNull { it.teIndex == teIndex }?.materialId ?: LLUUID.NULL
 
-    fun pack(): ByteArray = TODO("RenderMaterialParams network pack not yet implemented")
-    fun unpack(data: ByteArray): Unit = TODO("RenderMaterialParams network unpack not yet implemented")
+    fun pack(): ByteArray {
+        val buf = ByteBuffer.allocate(1 + entries.size * 17).order(ByteOrder.LITTLE_ENDIAN)
+        buf.put(entries.size.coerceIn(0, 255).toByte())
+        for (entry in entries) {
+            buf.put(entry.teIndex.toByte())
+            buf.put(entry.materialId.toBytes())
+        }
+        return buf.array()
+    }
+
+    fun unpack(data: ByteArray) {
+        entries.clear()
+        val buf   = ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN)
+        val count = buf.get().toInt() and 0xFF
+        repeat(count) {
+            if (buf.remaining() >= 17) {
+                val teIndex   = buf.get().toUByte()
+                val uuidBytes = ByteArray(16).also { buf.get(it) }
+                val materialId = LLUUID.fromBytes(uuidBytes) ?: LLUUID.NULL
+                entries += RenderMaterialEntry(teIndex, materialId)
+            }
+        }
+    }
 }
 
 // ---------------------------------------------------------------------------
@@ -532,15 +649,68 @@ open class LLPrimitive(
 
     // ---- Network codec stubs ------------------------------------------
 
-    fun packTEMessage(): ByteArray =
-        TODO("LLPrimitive.packTEMessage network codec not yet implemented")
+    fun packTEMessage(): ByteArray {
+        val buf = ByteBuffer.allocate(textureList.size * 43).order(ByteOrder.LITTLE_ENDIAN)
+        for (te in textureList) te.pack(buf)
+        return buf.array().copyOf(buf.position())
+    }
 
-    fun unpackTEMessage(data: ByteArray): Int =
-        TODO("LLPrimitive.unpackTEMessage network codec not yet implemented")
+    fun unpackTEMessage(data: ByteArray): Int {
+        if (data.isEmpty()) return 0
+        val buf       = ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN)
+        val faceCount = data.size / 43
+        setNumTEs(faceCount.coerceIn(0, 255).toUByte())
+        for (i in 0 until faceCount) {
+            if (buf.remaining() < 43) break
+            textureList[i] = TextureEntry.unpack(buf)
+        }
+        return faceCount
+    }
 
-    fun parseTEMessage(data: ByteArray, tec: TEContents): Int =
-        TODO("LLPrimitive.parseTEMessage network codec not yet implemented")
+    fun parseTEMessage(data: ByteArray, tec: TEContents): Int {
+        if (data.isEmpty()) return 0
+        val buf       = ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN)
+        val faceCount = minOf(data.size / 43, TEContents.MAX_TES)
+        tec.faceCount = faceCount
+        tec.size      = data.size
+        data.copyInto(tec.packedBuffer, 0, 0, minOf(data.size, TEContents.MAX_TE_BUFFER))
+        for (i in 0 until faceCount) {
+            if (buf.remaining() < 43) break
+            val te            = TextureEntry.unpack(buf)
+            tec.imageData[i]  = te.textureId
+            tec.colors[i]     = te.color
+            tec.scaleS[i]     = te.scaleS
+            tec.scaleT[i]     = te.scaleT
+            tec.offsetS[i]    = (te.offsetS * 32768f).toInt()
+                                    .coerceIn(Short.MIN_VALUE.toInt(), Short.MAX_VALUE.toInt()).toShort()
+            tec.offsetT[i]    = (te.offsetT * 32768f).toInt()
+                                    .coerceIn(Short.MIN_VALUE.toInt(), Short.MAX_VALUE.toInt()).toShort()
+            tec.imageRot[i]   = (te.rotation * (32768f / PI.toFloat())).toInt()
+                                    .coerceIn(Short.MIN_VALUE.toInt(), Short.MAX_VALUE.toInt()).toShort()
+            tec.bump[i]       = te.bumpPacked
+            tec.mediaFlags[i] = te.mediaFlags
+            tec.glow[i]       = (te.glow * 255f).toInt().coerceIn(0, 255).toUByte()
+        }
+        return faceCount
+    }
 
-    fun applyParsedTEMessage(tec: TEContents): Int =
-        TODO("LLPrimitive.applyParsedTEMessage not yet implemented")
+    fun applyParsedTEMessage(tec: TEContents): Int {
+        val faceCount = tec.faceCount
+        setNumTEs(faceCount.coerceIn(0, 255).toUByte())
+        for (i in 0 until faceCount) {
+            textureList[i] = TextureEntry(
+                textureId  = tec.imageData[i],
+                color      = tec.colors[i],
+                scaleS     = tec.scaleS[i],
+                scaleT     = tec.scaleT[i],
+                offsetS    = tec.offsetS[i] / 32768f,
+                offsetT    = tec.offsetT[i] / 32768f,
+                rotation   = tec.imageRot[i] * PI.toFloat() / 32768f,
+                bumpPacked = tec.bump[i],
+                mediaFlags = tec.mediaFlags[i],
+                glow       = tec.glow[i].toFloat() / 255f,
+            )
+        }
+        return faceCount
+    }
 }

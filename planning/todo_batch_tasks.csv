@@ -1,0 +1,51 @@
+batch,file,total_todos,gpu_todos,apr_todos,other_todos,priority,category,notes
+1,LLFloaterPreference.kt,225,24,201,0,high,APR+GPU,Main prefs floater - HTTP/settings calls
+1,FloaterPreference.kt,220,0,220,0,high,APR,Settings persistence and HTTP
+1,PanelFace.kt,214,104,110,0,high,GPU+APR,Face editing - GL texture ops + HTTP uploads
+1,FloaterRegionInfo.kt,178,0,178,0,high,APR,Region info HTTP calls
+1,FSPanelFace.kt,166,158,8,0,high,GPU,FS face panel - GL texture ops
+2,VOAvatar.kt,159,31,14,114,high,MIXED,Avatar rendering - GL + APR + misc
+2,VOVolume.kt,147,57,90,0,high,GPU+APR,Volume rendering + asset upload
+2,Agent.kt,124,1,88,35,high,APR+MISC,Agent state - HTTP + misc stubs
+2,LLSettingsVO.kt,121,7,114,0,high,APR,Settings value objects - HTTP/serialization
+2,FloaterReporter.kt,117,3,114,0,medium,APR,Bug reporter HTTP calls
+3,FloaterAnimPreview.kt,113,22,91,0,medium,GPU+APR,Anim preview - GL + HTTP
+3,LLMoveView.kt,111,76,35,0,medium,GPU+APR,Movement controls - GL + misc
+3,FloaterLand.kt,110,0,110,0,medium,APR,Land floater HTTP calls
+3,ViewerWindow.kt,106,43,17,46,high,GPU+MISC,Main window - GL + platform
+3,ToolPie.kt,105,1,104,0,medium,APR,Pie tool HTTP calls
+4,SelectMgr.kt,105,3,48,54,medium,MIXED,Selection manager - GL + APR + misc
+4,FloaterModelPreview.kt,103,5,98,0,medium,APR+GPU,Model upload preview
+4,FSFloaterPrimfeed.kt,96,1,95,0,low,APR,Primfeed HTTP calls
+4,LLChiclet.kt,95,90,5,0,medium,GPU,Chiclet widget - GL draws
+4,SpatialPartition.kt,94,90,0,4,high,GPU,Spatial rendering - GL critical path
+5,ViewerMessage.kt,93,0,93,0,high,APR,UDP message handling stubs
+5,FloaterSnapshot.kt,87,2,85,0,medium,APR+GPU,Snapshot HTTP upload
+5,FloaterDebugSettings.kt,84,1,83,0,low,APR,Debug settings HTTP
+5,FSFloaterSearch.kt,84,0,0,84,medium,OTHER,Search UI logic stubs
+5,FSAreaSearch.kt,84,80,4,0,medium,GPU,Area search GL draws
+6,ConversationView.kt,82,5,77,0,medium,APR,Conversation UI APR calls
+6,PanelGroupRoles.kt,79,55,24,0,medium,GPU+APR,Group roles GL + HTTP
+6,FloaterIMContainer.kt,75,0,75,0,medium,APR,IM container APR calls
+6,NotificationHandler.kt,74,54,20,0,medium,GPU+APR,Notification GL + APR
+6,RLVEnvironment.kt,71,0,71,0,medium,APR,RLVa environment APR
+7,AppearanceMgr.kt,70,0,0,70,high,OTHER,Appearance manager logic stubs
+7,LLFloaterFlickr.kt,68,49,19,0,low,GPU+APR,Flickr upload GL + HTTP
+7,FloaterWorldMap.kt,68,8,60,0,medium,APR+GPU,World map HTTP + GL
+7,AppViewer.kt,68,7,61,0,high,APR,App viewer lifecycle APR
+7,FSRadarMenu.kt,67,1,66,0,medium,APR,Radar menu APR calls
+8,VJLocalMeshImportDAE.kt,66,7,58,1,medium,APR+GPU,DAE mesh import
+8,NetMap.kt,66,11,55,0,medium,GPU+APR,Network map GL + APR
+8,PluginClassMedia.kt,65,65,0,0,medium,GPU,Plugin media GL calls
+8,FloaterBugReport.kt,65,1,64,0,low,APR,Bug report HTTP
+8,ScriptEditorCtrl.kt,63,0,61,2,medium,APR,Script editor APR calls
+9,PanelProfile.kt,61,1,60,0,medium,APR,Profile panel HTTP
+9,LLFloaterExperienceProfile.kt,60,35,25,0,medium,GPU+APR,Experience profile GL + HTTP
+9,FSFloaterPlaceDetails.kt,60,0,60,0,medium,APR,Place details HTTP
+9,AgentCamera.kt,59,5,2,52,high,MISC,Camera control logic stubs
+9,MultiFloater.kt,58,25,33,0,medium,GPU+APR,Multi floater GL + APR
+10,LLMeshRepository.kt,58,2,56,0,high,APR,Mesh HTTP upload/download
+10,IMView.kt,58,1,57,0,medium,APR,IM view APR calls
+10,Environment.kt,58,6,16,36,high,MIXED,Environment system mixed stubs
+10,GLSLShader.kt,57,57,0,0,high,GPU,GLSL shader - all GL calls
+10,ViewerControl.kt,56,38,18,0,high,GPU+APR,Viewer control GL + APR

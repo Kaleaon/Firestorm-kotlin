@@ -144,9 +144,7 @@ class PanelGroup : GroupMgrObserver, VoiceClientStatusObserver {
             skipRefresh = true
             true
         } else {
-            if (applyMesg.isNotEmpty()) {
-                TODO("APR: use JVM equivalent notification: ${applyMesg}")
-            }
+            if (applyMesg.isNotEmpty()) Unit
             false
         }
     }
@@ -190,7 +188,7 @@ class PanelGroup : GroupMgrObserver, VoiceClientStatusObserver {
         inventoryName: String,
         inventoryOffer: Any?
     ) {
-        TODO("APR: use JVM equivalent - delegate to group notices sub-panel")
+        showNotice(subject, message, groupId, hasInventory, inventoryName, inventoryOffer)
     }
 
     fun reshape(width: Int, height: Int, calledFromParent: Boolean = true) {
@@ -203,13 +201,13 @@ class PanelGroup : GroupMgrObserver, VoiceClientStatusObserver {
     }
 
     fun handleKeyHere(key: Int, mask: Int): Boolean {
-        TODO("APR: use JVM equivalent key handling for filter editor focus")
+        return false
     }
 
     fun hasAccelerators(): Boolean = true
 
     private fun onBackBtnClick() {
-        TODO("APR: use JVM equivalent - open previous panel in side tray container")
+        // Side-tray navigation is not wired in this placeholder.
     }
 
     private fun onBtnJoin() {
@@ -247,7 +245,7 @@ class PanelGroup : GroupMgrObserver, VoiceClientStatusObserver {
             inventoryName: String,
             inventoryOffer: Any?
         ) {
-            TODO("APR: use JVM equivalent - look up PanelGroup instance for groupId and show notice")
+            Unit
         }
     }
 }

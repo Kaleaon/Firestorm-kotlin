@@ -1,0 +1,424 @@
+package com.firestorm.llrender
+
+import com.firestorm.llmath.Color4
+import com.firestorm.llmath.Color4u
+import com.firestorm.llmath.Rect
+import com.firestorm.llmath.RectF
+import kotlin.math.ceil
+import kotlin.math.floor
+
+class FontGL {
+
+    // -------------------------------------------------------------------------
+    // Enumerations
+    // -------------------------------------------------------------------------
+
+    enum class HAlign { LEFT, RIGHT, HCENTER }
+    enum class VAlign { TOP, VCENTER, BASELINE, BOTTOM }
+    enum class ShadowType { NO_SHADOW, DROP_SHADOW, DROP_SHADOW_SOFT }
+    enum class WordWrapStyle { ONLY_WORD_BOUNDARIES, WORD_BOUNDARY_IF_POSSIBLE, ANYWHERE }
+
+    // StyleFlags are bit-masks, kept as a companion-object Int constants so
+    // they can be combined with 'or'/'and' just like the C++ U8 bit flags.
+    companion object {
+        const val STYLE_NORMAL:    Int = 0x00
+        const val STYLE_BOLD:      Int = 0x01
+        const val STYLE_ITALIC:    Int = 0x02
+        const val STYLE_UNDERLINE: Int = 0x04
+
+        private const val BOLD_OFFSET = 1
+        private const val PAD_UVY = 0.5f
+        private const val DROP_SHADOW_SOFT_STRENGTH = 0.3f
+
+        // ---- Global state (mirrors static members of LLFontGL) --------------
+
+        var vertDpi: Float = 96f
+        var horizDpi: Float = 96f
+        var scaleX: Float = 1f
+        var scaleY: Float = 1f
+        var resolutionGeneration: Int = 0
+        var displayFont: Boolean = true
+        var appDir: String = ""
+        var shadowColor: Color4 = Color4(0f, 0f, 0f, 1f)
+
+        // Origin stack used for nested UI matrix pushes.
+        var curOriginX: Int = 0
+        var curOriginY: Int = 0
+        var curDepth: Float = 0f
+        val originStack: MutableList<Triple<Int, Int, Float>> = mutableListOf()
+
+        // Font registry (opaque — actual loading is platform-specific).
+        private var fontRegistry: Any? = null
+
+        // ---- Lifecycle ------------------------------------------------------
+
+        fun initClass(
+            screenDpi: Float,
+            xScale: Float,
+            yScale: Float,
+            appDir: String,
+            fontsFile: String,
+            sizeMod: Float = 0f,
+            createGlTextures: Boolean = true
+        ) {
+            vertDpi   = floor(screenDpi * yScale)
+            horizDpi  = floor(screenDpi * xScale)
+            scaleX    = xScale
+            scaleY    = yScale
+            Companion.appDir = appDir
+            TODO("APR: use JVM equivalent — initialise font registry from '$fontsFile' under '$appDir'")
+        }
+
+        fun loadDefaultFonts(): Boolean {
+            TODO("APR: use JVM equivalent — pre-load sans-serif, monospace and script font faces")
+        }
+
+        fun loadCommonFonts() {
+            TODO("APR: use JVM equivalent — load bold/large/huge SansSerif and medium Monospace")
+        }
+
+        fun destroyDefaultFonts() {
+            fontRegistry = null
+        }
+
+        fun destroyAllGl() {
+            TODO("GPU: release all OpenGL texture objects held by the font bitmap cache")
+        }
+
+        // ---- Well-known font accessors (mirrors getFontXxx statics) ---------
+
+        fun getFontSansSerifSmall():      FontGL = getOrLoad("SansSerif",  "Small",      STYLE_NORMAL)
+        fun getFontSansSerifSmallBold():  FontGL = getOrLoad("SansSerif",  "Small",      STYLE_BOLD)
+        fun getFontSansSerifSmallItalic():FontGL = getOrLoad("SansSerif",  "Small",      STYLE_ITALIC)
+        fun getFontSansSerif():           FontGL = getOrLoad("SansSerif",  "Medium",     STYLE_NORMAL)
+        fun getFontSansSerifBig():        FontGL = getOrLoad("SansSerif",  "Large",      STYLE_NORMAL)
+        fun getFontSansSerifHuge():       FontGL = getOrLoad("SansSerif",  "Huge",       STYLE_NORMAL)
+        fun getFontSansSerifBold():       FontGL = getOrLoad("SansSerif",  "Medium",     STYLE_BOLD)
+        fun getFontMonospace():           FontGL = getOrLoad("Monospace",  "Monospace",  STYLE_NORMAL)
+        fun getFontScripting():           FontGL = getOrLoad("Scripting",  "Scripting",  STYLE_NORMAL)
+        fun getFontOcra():                FontGL = getOrLoad("OCRA",       "Monospace",  STYLE_NORMAL)
+        fun getFontCascadia():            FontGL = getOrLoad("Cascadia",   "Cascadia",   STYLE_NORMAL)
+        fun getFontEmojiSmall(bw: Boolean  = false): FontGL = getOrLoad(if (bw) "EmojiBW" else "Emoji", "Small",  STYLE_NORMAL)
+        fun getFontEmojiMedium(bw: Boolean = false): FontGL = getOrLoad(if (bw) "EmojiBW" else "Emoji", "Medium", STYLE_NORMAL)
+        fun getFontEmojiLarge(bw: Boolean  = false): FontGL = getOrLoad(if (bw) "EmojiBW" else "Emoji", "Large",  STYLE_NORMAL)
+        fun getFontEmojiHuge(bw: Boolean   = false): FontGL = getOrLoad(if (bw) "EmojiBW" else "Emoji", "Huge",   STYLE_NORMAL)
+        fun getFontDefault(): FontGL = getFontSansSerif()
+
+        fun getFontByName(name: String): FontGL? = when (name) {
+            "SANSSERIF"       -> getFontSansSerif()
+            "SANSSERIF_SMALL" -> getFontSansSerifSmall()
+            "SANSSERIF_BIG"   -> getFontSansSerifBig()
+            "SMALL"           -> getFontMonospace()
+            "OCRA"            -> getFontOcra()
+            "Scripting"       -> getFontScripting()
+            "Monospace"       -> getFontMonospace()
+            "Cascadia"        -> getFontCascadia()
+            else              -> null
+        }
+
+        // ---- Alignment name helpers -----------------------------------------
+
+        fun nameFromHAlign(align: HAlign): String = when (align) {
+            HAlign.LEFT    -> "left"
+            HAlign.RIGHT   -> "right"
+            HAlign.HCENTER -> "center"
+        }
+
+        fun hAlignFromName(name: String): HAlign = when (name) {
+            "right"  -> HAlign.RIGHT
+            "center" -> HAlign.HCENTER
+            else     -> HAlign.LEFT
+        }
+
+        fun nameFromVAlign(align: VAlign): String = when (align) {
+            VAlign.TOP      -> "top"
+            VAlign.VCENTER  -> "center"
+            VAlign.BASELINE -> "baseline"
+            VAlign.BOTTOM   -> "bottom"
+        }
+
+        fun vAlignFromName(name: String): VAlign = when (name) {
+            "top"      -> VAlign.TOP
+            "center"   -> VAlign.VCENTER
+            "bottom"   -> VAlign.BOTTOM
+            else       -> VAlign.BASELINE
+        }
+
+        // ---- Style string helpers -------------------------------------------
+
+        fun getStyleFromString(style: String): Int {
+            var ret = STYLE_NORMAL
+            if ("BOLD"      in style) ret = ret or STYLE_BOLD
+            if ("ITALIC"    in style) ret = ret or STYLE_ITALIC
+            if ("UNDERLINE" in style) ret = ret or STYLE_UNDERLINE
+            return ret
+        }
+
+        fun getStringFromStyle(style: Int): String = buildString {
+            if (style == STYLE_NORMAL)       append("|NORMAL")
+            if (style and STYLE_BOLD      != 0) append("|BOLD")
+            if (style and STYLE_ITALIC    != 0) append("|ITALIC")
+            if (style and STYLE_UNDERLINE != 0) append("|UNDERLINE")
+        }
+
+        // ---- System / local font path helpers (platform stubs) --------------
+
+        fun getFontPathSystem(): String {
+            TODO("APR: use JVM equivalent — locate system font directory (platform-specific)")
+        }
+
+        fun getFontPathLocal(): String =
+            if (appDir.isNotEmpty()) "$appDir/fonts/" else "./fonts/"
+
+        // ---- Utility --------------------------------------------------------
+
+        fun nameFromFont(font: FontGL): String = font.descriptor.name
+        fun sizeFromFont(font: FontGL):  String = font.descriptor.size
+
+        fun dumpFonts()        { TODO("APR: use JVM equivalent — log all registered font descriptors") }
+        fun dumpFontTextures() { TODO("GPU: dump all font bitmap cache textures to disk for debugging") }
+
+        // Internal: load-or-create a FontGL from the registry.
+        private fun getOrLoad(family: String, size: String, style: Int): FontGL {
+            val desc = FontDescriptor(family, size, style)
+            TODO("APR: use JVM equivalent — look up or create FontGL for descriptor $desc")
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // Instance state
+    // -------------------------------------------------------------------------
+
+    data class FontDescriptor(val name: String, val size: String, val style: Int)
+
+    var descriptor: FontDescriptor = FontDescriptor("SansSerif", "Medium", STYLE_NORMAL)
+        private set
+
+    // The underlying FreeType face is opaque; all calls that require it are stubbed.
+    private var freetypeFace: Any? = null
+
+    // -------------------------------------------------------------------------
+    // Face loading
+    // -------------------------------------------------------------------------
+
+    fun loadFace(
+        filename: String,
+        pointSize: Float,
+        vertDpi: Float,
+        horzDpi: Float,
+        isFallback: Boolean,
+        faceIndex: Int
+    ): Boolean {
+        TODO("APR: use JVM equivalent — load FreeType face from '$filename' at ${pointSize}pt")
+    }
+
+    fun getNumFaces(filename: String): Int {
+        TODO("APR: use JVM equivalent — query number of faces in font file '$filename'")
+    }
+
+    fun getCacheGeneration(): Int {
+        TODO("APR: use JVM equivalent — return font bitmap-cache generation counter")
+    }
+
+    fun reset() {
+        TODO("GPU: rebuild glyph textures after GL context loss — reset FreeType metrics at $vertDpi×$horizDpi dpi")
+    }
+
+    fun destroyGl() {
+        TODO("GPU: delete all OpenGL texture objects for this font's bitmap cache")
+    }
+
+    fun generateAsciiGlyphs() {
+        TODO("GPU: pre-rasterise printable ASCII (U+0020..U+007E) into the bitmap cache")
+    }
+
+    fun dumpTextures() {
+        TODO("GPU: write font bitmap-cache textures to disk for debugging")
+    }
+
+    // -------------------------------------------------------------------------
+    // Metrics
+    // -------------------------------------------------------------------------
+
+    fun getAscenderHeight(): Float {
+        TODO("APR: use JVM equivalent — return ascender height in virtual pixels from FreeType face")
+    }
+
+    fun getDescenderHeight(): Float {
+        TODO("APR: use JVM equivalent — return descender height (positive) in virtual pixels")
+    }
+
+    fun getLineHeight(): Int {
+        TODO("APR: use JVM equivalent — return ceil(ascender)+ceil(descender) in virtual pixels")
+    }
+
+    // -------------------------------------------------------------------------
+    // Width measurement
+    // -------------------------------------------------------------------------
+
+    fun getWidth(utf8text: String): Int = getWidth(utf8text, 0, Int.MAX_VALUE)
+    fun getWidth(utf8text: String, offset: Int, maxChars: Int): Int =
+        getWidthF32(utf8text, offset, maxChars).let { f -> (f + 0.5f).toInt() }
+
+    fun getWidthF32(utf8text: String): Float = getWidthF32(utf8text, 0, Int.MAX_VALUE)
+    fun getWidthF32(utf8text: String, offset: Int, maxChars: Int): Float {
+        TODO("APR: use JVM equivalent — measure UTF-8 string width via FreeType advance + kerning")
+    }
+
+    fun getWidthF32(codePoints: IntArray, offset: Int, maxChars: Int, noPadding: Boolean = false): Float {
+        TODO("APR: use JVM equivalent — measure code-point array width via FreeType advance + kerning")
+    }
+
+    // -------------------------------------------------------------------------
+    // Character-boundary helpers
+    // -------------------------------------------------------------------------
+
+    fun maxDrawableChars(
+        codePoints: IntArray,
+        maxPixels: Float,
+        maxChars: Int = Int.MAX_VALUE,
+        wrapStyle: WordWrapStyle = WordWrapStyle.ANYWHERE
+    ): Int {
+        TODO("APR: use JVM equivalent — count chars that fit in maxPixels respecting wrapStyle")
+    }
+
+    fun firstDrawableChar(
+        codePoints: IntArray,
+        maxPixels: Float,
+        textLen: Int,
+        startPos: Int = Int.MAX_VALUE,
+        maxChars: Int = Int.MAX_VALUE
+    ): Int {
+        TODO("APR: use JVM equivalent — find first visible char index when scrolled to startPos")
+    }
+
+    fun charFromPixelOffset(
+        codePoints: IntArray,
+        charOffset: Int,
+        x: Float,
+        maxPixels: Float = Float.MAX_VALUE,
+        maxChars: Int = Int.MAX_VALUE,
+        round: Boolean = true
+    ): Int {
+        TODO("APR: use JVM equivalent — map pixel x-offset to character index via FreeType advances")
+    }
+
+    // -------------------------------------------------------------------------
+    // Rendering — all GPU paths are stubbed
+    // -------------------------------------------------------------------------
+
+    fun render(
+        text: String,
+        beginOffset: Int,
+        x: Float,
+        y: Float,
+        color: Color4,
+        hAlign: HAlign = HAlign.LEFT,
+        vAlign: VAlign = VAlign.BASELINE,
+        style: Int = STYLE_NORMAL,
+        shadow: ShadowType = ShadowType.NO_SHADOW,
+        maxChars: Int = Int.MAX_VALUE,
+        maxPixels: Int = Int.MAX_VALUE,
+        rightX: FloatArray? = null,
+        useEllipses: Boolean = false,
+        useColor: Boolean = true
+    ): Int {
+        if (!displayFont) return text.length
+        if (text.isEmpty()) return 0
+        TODO("GPU: rasterise '$text' at ($x,$y) hAlign=$hAlign vAlign=$vAlign style=$style shadow=$shadow")
+    }
+
+    fun render(
+        text: String,
+        beginOffset: Int,
+        rect: Rect,
+        color: Color4,
+        hAlign: HAlign = HAlign.LEFT,
+        vAlign: VAlign = VAlign.BASELINE,
+        style: Int = STYLE_NORMAL,
+        shadow: ShadowType = ShadowType.NO_SHADOW,
+        maxChars: Int = Int.MAX_VALUE,
+        rightX: FloatArray? = null,
+        useEllipses: Boolean = false,
+        useColor: Boolean = true
+    ): Int {
+        val y = when (vAlign) {
+            VAlign.TOP      -> rect.top.toFloat()
+            VAlign.VCENTER  -> ((rect.top + rect.bottom) / 2).toFloat()
+            VAlign.BASELINE,
+            VAlign.BOTTOM   -> rect.bottom.toFloat()
+        }
+        return render(text, beginOffset, rect.left.toFloat(), y, color, hAlign, vAlign, style,
+            shadow, maxChars, rect.width, rightX, useEllipses, useColor)
+    }
+
+    fun render(
+        text: String,
+        beginOffset: Int,
+        rect: RectF,
+        color: Color4,
+        hAlign: HAlign = HAlign.LEFT,
+        vAlign: VAlign = VAlign.BASELINE,
+        style: Int = STYLE_NORMAL,
+        shadow: ShadowType = ShadowType.NO_SHADOW,
+        maxChars: Int = Int.MAX_VALUE,
+        rightX: FloatArray? = null,
+        useEllipses: Boolean = false,
+        useColor: Boolean = true
+    ): Int {
+        val y = when (vAlign) {
+            VAlign.TOP      -> rect.top
+            VAlign.VCENTER  -> (rect.top + rect.bottom) / 2f
+            VAlign.BASELINE,
+            VAlign.BOTTOM   -> rect.bottom
+        }
+        return render(text, beginOffset, rect.left, y, color, hAlign, vAlign, style,
+            shadow, maxChars, rect.width.toInt(), rightX, useEllipses, useColor)
+    }
+
+    // -------------------------------------------------------------------------
+    // Private glyph-level helpers (stubbed — require GPU vertex buffers)
+    // -------------------------------------------------------------------------
+
+    private fun renderTriangle(
+        screenRect: RectF,
+        uvRect: RectF,
+        color: Color4u,
+        slantAmt: Float
+    ) {
+        TODO("GPU: emit two triangles for glyph quad into vertex/UV/colour arrays")
+    }
+
+    private fun drawGlyph(
+        screenRect: RectF,
+        uvRect: RectF,
+        color: Color4u,
+        style: Int,
+        shadow: ShadowType,
+        dropShadowStrength: Float
+    ) {
+        val slant = if (style and STYLE_ITALIC != 0) {
+            TODO("APR: use JVM equivalent — compute slant from ascender height * 0.2")
+        } else {
+            0f
+        }
+        when {
+            style and STYLE_BOLD != 0 -> {
+                // Bold: render the glyph twice, shifted by BOLD_OFFSET on the second pass.
+                TODO("GPU: emit bold glyph pair (pass 0 and pass +$BOLD_OFFSET) into vertex arrays")
+            }
+            shadow == ShadowType.DROP_SHADOW_SOFT -> {
+                // Soft shadow: 5 offset passes at reduced alpha, then the main glyph.
+                TODO("GPU: emit 5-pass soft-shadow quads then main glyph quad into vertex arrays")
+            }
+            shadow == ShadowType.DROP_SHADOW -> {
+                // Hard shadow: one offset pass, then the main glyph.
+                TODO("GPU: emit shadow quad at (+1,-1) then main glyph quad into vertex arrays")
+            }
+            else -> {
+                // Normal: single quad.
+                TODO("GPU: emit single glyph quad into vertex arrays")
+            }
+        }
+    }
+}

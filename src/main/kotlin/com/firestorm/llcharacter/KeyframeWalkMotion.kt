@@ -206,14 +206,15 @@ class WalkAdjustMotion(id: LLUUID) : LLMotion(id) {
             //
             //   directional_factor = (avatarMovDir rotated into avatar space).x
             //   animSpeed = adjustedSpeed * directional_factor
-            // Simplified: use character's float velocity for speed adjustment.
-            // Full double-precision foot tracking requires Vector3d (not yet ported).
-            val velocityDir = ch.getCharacterVelocity().let { v ->
-                val len = v.length()
-                if (len > 0.01f) Vector3(v.x / len, v.y / len, v.z / len) else Vector3(1f, 0f, 0f)
-            }
-            // velocityDir will be used for directional_factor once foot tracking is ported
-            animSpeed = (speed / SPEED_ADJUST_TIME_CONSTANT).coerceIn(0.5f, ANIM_SPEED_MAX)
+            // Simplified: proportional to speed, clamped to animation speed range.
+            // Full implementation needs Vector3d foot tracking (not yet ported); see TODO above
+            // for foot_speed, desired_speed_multiplier, and directional_factor logic.
+            // TODO: restore velocityDir for directional_factor when foot tracking is ported:
+            //   val velocityDir = ch.getCharacterVelocity().let { v ->
+            //       val len = v.length()
+            //       if (len > 0.01f) Vector3(v.x / len, v.y / len, v.z / len) else Vector3(1f, 0f, 0f)
+            //   }
+            animSpeed = (speed / MAX_WALK_PLAYBACK_SPEED * ANIM_SPEED_MAX).coerceIn(0.5f, ANIM_SPEED_MAX)
         } else {
             // Standing/turning: damp animation speed back toward 1
             // TODO: animSpeed = lerp(animSpeed, 1f, 0.2f) via SmoothInterpolation

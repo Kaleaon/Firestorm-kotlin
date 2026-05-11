@@ -433,6 +433,23 @@ class ControlGroup(val name: String) {
             return n
         }
 
+        private fun parseTupleValues(node: XmlNode, expectedCount: Int): List<Double>? {
+            val textParts = node.value.trim().split(Regex("\\s+")).filter { it.isNotEmpty() }
+            if (textParts.size >= expectedCount) {
+                val parsed = textParts.take(expectedCount).map { it.toDoubleOrNull() ?: return null }
+                return parsed
+            }
+
+            val childValues = node.children
+                .asSequence()
+                .filter { !it.isAttribute }
+                .mapNotNull { it.value.trim().toDoubleOrNull() }
+                .take(expectedCount)
+                .toList()
+
+            return if (childValues.size >= expectedCount) childValues else null
+        }
+
         private fun xmlNodeToLlsd(node: XmlNode, type: ControlType): LLSD = when (type) {
             ControlType.BOOLEAN -> LLSD.of(node.value.trim().lowercase() == "true" || node.value.trim() == "1")
             ControlType.S32     -> LLSD.of(node.value.trim().toIntOrNull() ?: 0)
@@ -440,33 +457,33 @@ class ControlGroup(val name: String) {
             ControlType.F32     -> LLSD.of(node.value.trim().toDoubleOrNull() ?: 0.0)
             ControlType.STRING  -> LLSD.of(node.value)
             ControlType.VEC3    -> {
-                val p = node.value.trim().split(Regex("\\s+"))
-                if (p.size >= 3) vec3ToLlsd(Vector3(p[0].toFloatOrNull() ?: 0f, p[1].toFloatOrNull() ?: 0f, p[2].toFloatOrNull() ?: 0f))
+                val p = parseTupleValues(node, 3)
+                if (p != null) vec3ToLlsd(Vector3(p[0].toFloat(), p[1].toFloat(), p[2].toFloat()))
                 else LLSD.Undefined
             }
             ControlType.VEC3D   -> {
-                val p = node.value.trim().split(Regex("\\s+"))
-                if (p.size >= 3) vec3dToLlsd(Vector3d(p[0].toDoubleOrNull() ?: 0.0, p[1].toDoubleOrNull() ?: 0.0, p[2].toDoubleOrNull() ?: 0.0))
+                val p = parseTupleValues(node, 3)
+                if (p != null) vec3dToLlsd(Vector3d(p[0], p[1], p[2]))
                 else LLSD.Undefined
             }
             ControlType.QUAT    -> {
-                val p = node.value.trim().split(Regex("\\s+"))
-                if (p.size >= 4) quatToLlsd(Quaternion(p[0].toFloatOrNull() ?: 0f, p[1].toFloatOrNull() ?: 0f, p[2].toFloatOrNull() ?: 0f, p[3].toFloatOrNull() ?: 1f))
+                val p = parseTupleValues(node, 4)
+                if (p != null) quatToLlsd(Quaternion(p[0].toFloat(), p[1].toFloat(), p[2].toFloat(), p[3].toFloat()))
                 else LLSD.Undefined
             }
             ControlType.RECT    -> {
-                val p = node.value.trim().split(Regex("\\s+"))
-                if (p.size >= 4) rectToLlsd(Rect(p[0].toIntOrNull() ?: 0, p[3].toIntOrNull() ?: 0, p[2].toIntOrNull() ?: 0, p[1].toIntOrNull() ?: 0))
+                val p = parseTupleValues(node, 4)
+                if (p != null) rectToLlsd(Rect(p[0].toInt(), p[3].toInt(), p[2].toInt(), p[1].toInt()))
                 else LLSD.Undefined
             }
             ControlType.COL4    -> {
-                val p = node.value.trim().split(Regex("\\s+"))
-                if (p.size >= 4) color4ToLlsd(Color4(p[0].toFloatOrNull() ?: 0f, p[1].toFloatOrNull() ?: 0f, p[2].toFloatOrNull() ?: 0f, p[3].toFloatOrNull() ?: 1f))
+                val p = parseTupleValues(node, 4)
+                if (p != null) color4ToLlsd(Color4(p[0].toFloat(), p[1].toFloat(), p[2].toFloat(), p[3].toFloat()))
                 else LLSD.Undefined
             }
             ControlType.COL3    -> {
-                val p = node.value.trim().split(Regex("\\s+"))
-                if (p.size >= 3) color3ToLlsd(Color3(p[0].toFloatOrNull() ?: 0f, p[1].toFloatOrNull() ?: 0f, p[2].toFloatOrNull() ?: 0f))
+                val p = parseTupleValues(node, 3)
+                if (p != null) color3ToLlsd(Color3(p[0].toFloat(), p[1].toFloat(), p[2].toFloat()))
                 else LLSD.Undefined
             }
             ControlType.LLSD    -> LLSD.of(node.value)

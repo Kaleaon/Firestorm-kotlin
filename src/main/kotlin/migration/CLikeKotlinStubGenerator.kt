@@ -21,7 +21,7 @@ object CLikeKotlinStubGenerator {
         val classLines = classes.joinToString("\n") { "    class ${sanitizeIdentifier(it)}" }
         val functionLines = functions.joinToString("\n\n") { (name, params) ->
             val mappedParams = mapParameters(params)
-            "    fun ${sanitizeIdentifier(name)}($mappedParams): Unit = TODO(\"Port from native source\")"
+            "    fun ${sanitizeIdentifier(name)}($mappedParams): Unit = error(\"Native port not implemented yet\")"
         }
 
         return listOf(classLines, functionLines)

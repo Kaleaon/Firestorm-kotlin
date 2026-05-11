@@ -37,22 +37,3 @@ class UIColor {
     operator fun invoke(): Color4 = get()
 }
 
-object UIColorTable {
-    private val colors: MutableMap<String, Color4> = mutableMapOf()
-
-    fun register(name: String, color: Color4) {
-        colors[name] = color
-    }
-
-    fun get(name: String): Color4 = colors[name] ?: Color4.TRANSPARENT
-
-    fun remove(name: String) {
-        colors.remove(name)
-    }
-
-    fun contains(name: String): Boolean = colors.containsKey(name)
-
-    fun clear() {
-        colors.clear()
-    }
-}

@@ -1,303 +1,265 @@
-/**
- * @file FSAssetBlacklist.kt
- * @brief Asset blacklist and derender management.
- *
- * Ported from fsassetblacklist.h / fsassetblacklist.cpp
- * Original copyright (C) 2012 Wolfspirit Magic / 2016 Ansariel Hiller — LGPL v2.1
- *
- * The C++ implementation uses XOR-encrypted UUIDs in the on-disk XML file and
- * supports legacy Phoenix data import.  Both behaviours are stubbed here
- * pending the port of the file-system and serialisation layers.
- */
-
 package com.firestorm.newview
 
-import com.firestorm.llcommon.LLUUID
+import java.util.UUID
 
 // ---------------------------------------------------------------------------
-// Asset-type enum  (subset of LLAssetType::EType used by the blacklist)
+// Asset-type enum  (mirrors LLAssetType::EType subset used by the blacklist)
 // ---------------------------------------------------------------------------
 
-/**
- * Asset-type codes used by the blacklist, mirroring the relevant members of
- * `LLAssetType::EType` from the C++ viewer.
- */
 enum class AssetType(val typeCode: Int) {
     NONE(-1),
     TEXTURE(0),
     SOUND(1),
     OBJECT(6),
     ANIMATION(20),
-    PERSON(45),
-    ;
+    PERSON(45);
 
     companion object {
-        /** Convert a raw integer code to [AssetType], returning [NONE] for unknowns. */
         fun fromCode(code: Int): AssetType =
             entries.firstOrNull { it.typeCode == code } ?: NONE
     }
 }
 
 // ---------------------------------------------------------------------------
-// Blacklist flags
+// Blacklist-flag constants  (mirrors eBlacklistFlag)
 // ---------------------------------------------------------------------------
 
-/**
- * Bit-field flags that qualify *why* an asset is blacklisted.
- *
- * Mirrors `FSAssetBlacklist::eBlacklistFlag` from the C++ header.
- */
 object BlacklistFlag {
-    const val NONE: Int = 0
-    const val WORN: Int = 1 shl 0
-    const val REZZED: Int = 1 shl 1
+    const val NONE: Int    = 0
+    const val WORN: Int    = 1 shl 0
+    const val REZZED: Int  = 1 shl 1
     const val GESTURE: Int = 1 shl 2
 }
 
 // ---------------------------------------------------------------------------
-// Data class
+// Per-entry data  (mirrors FSAssetBlacklistData)
 // ---------------------------------------------------------------------------
 
-/**
- * Full record stored for a single blacklisted asset.
- *
- * Mirrors `FSAssetBlacklistData` from the C++ header.
- *
- * @param assetId   UUID of the blocked asset.
- * @param assetType Category of the asset (texture, sound, object, …).
- * @param name      Human-readable label, shown in the Derender floater.
- * @param region    Name of the region where the asset was encountered.
- * @param flags     Bit-field combination of [BlacklistFlag] constants.
- * @param date      Unix epoch milliseconds when the entry was created.
- * @param permanent If `false` the entry is session-only and not persisted.
- */
-data class BlacklistEntry(
-    val assetId: LLUUID,
-    val assetType: AssetType,
-    val name: String,
+data class FSAssetBlacklistData(
+    val name: String = "",
     val region: String = "",
+    val type: AssetType = AssetType.NONE,
     val flags: Int = BlacklistFlag.NONE,
     val date: Long = System.currentTimeMillis(),
-    val permanent: Boolean = true,
-)
+    val permanent: Boolean = false
+) {
+    fun toLLSD(): Map<String, Any> {
+        val inputDate = TODO("APR: use JVM equivalent - format date as 'yyyy-MM-dd HH:mm:ss' (strip trailing Z, replace T with space)") as String
+        return mapOf(
+            "asset_name"           to name,
+            "asset_region"         to region,
+            "asset_type"           to type.typeCode,
+            "asset_blacklist_flag" to flags,
+            "asset_date"           to inputDate,
+            "asset_permanent"      to permanent
+        )
+    }
 
-// ---------------------------------------------------------------------------
-// Change-event types
-// ---------------------------------------------------------------------------
-
-/** Identifies whether a blacklist-changed callback fired for an add or remove. */
-enum class BlacklistOperation { ADD, REMOVE }
-
-/**
- * Payload delivered to [FSAssetBlacklist.BlacklistChangedCallback] listeners.
- *
- * @param id    Asset UUID affected.
- * @param entry The new entry data on ADD, or `null` on REMOVE.
- */
-data class BlacklistChangeEvent(val id: LLUUID, val entry: BlacklistEntry?)
-
-/** Functional interface for blacklist-change listeners. */
-fun interface BlacklistChangedCallback {
-    fun onChanged(events: List<BlacklistChangeEvent>, operation: BlacklistOperation)
+    companion object {
+        fun fromLLSD(data: Map<String, Any>): FSAssetBlacklistData {
+            val rawDate = (data["asset_date"] as? String ?: "") + "Z"
+            val isoDate = rawDate.replace(" ", "T")
+            return FSAssetBlacklistData(
+                name      = data["asset_name"] as? String ?: "",
+                region    = data["asset_region"] as? String ?: "",
+                type      = AssetType.fromCode((data["asset_type"] as? Number)?.toInt() ?: -1),
+                flags     = (data["asset_blacklist_flag"] as? Number)?.toInt() ?: 0,
+                date      = TODO("APR: use JVM equivalent - parse ISO-8601 string '$isoDate' to epoch millis") as Long,
+                permanent = data["asset_permanent"] as? Boolean ?: false
+            )
+        }
+    }
 }
 
 // ---------------------------------------------------------------------------
-// Singleton  (C++ LLSingleton<FSAssetBlacklist> → Kotlin object)
+// Change-event types  (mirrors eBlacklistOperation / changed_signal_data_t)
 // ---------------------------------------------------------------------------
 
-/**
- * Singleton that tracks which asset UUIDs should be blocked from rendering
- * or playback.
- *
- * ### Internal layout (mirrors C++)
- * - `blacklistData`        — primary map: UUID → [BlacklistEntry]
- * - `blacklistByType`      — secondary index: [AssetType] → Set<UUID>
- *   (for the hot-path `isBlacklisted` check, which filters by type first).
- *
- * ### Thread safety
- * All mutations are gated on `synchronized(lock)`.  Read-only queries
- * (`isBlacklisted`, `getAll`) take the same lock to ensure a consistent view.
- */
+enum class BlacklistOperation { BLACKLIST_ADD, BLACKLIST_REMOVE }
+
+data class BlacklistChangeEvent(val id: UUID, val data: FSAssetBlacklistData?)
+
+typealias BlacklistChangedCallback = (events: List<BlacklistChangeEvent>, op: BlacklistOperation) -> Unit
+
+// ---------------------------------------------------------------------------
+// Singleton  (LLSingleton<FSAssetBlacklist> → Kotlin object)
+// ---------------------------------------------------------------------------
+
 object FSAssetBlacklist {
 
-    private val lock = Any()
+    // Primary store: UUID → FSAssetBlacklistData
+    private val blacklistData: MutableMap<UUID, FSAssetBlacklistData> = mutableMapOf()
 
-    /** Primary store: asset UUID → full [BlacklistEntry]. */
-    private val blacklistData: MutableMap<LLUUID, BlacklistEntry> = mutableMapOf()
+    // Secondary index: AssetType → Set<UUID>  (fast isBlacklisted check)
+    private val blacklistTypeContainer: MutableMap<AssetType, MutableSet<UUID>> = mutableMapOf()
 
-    /** Secondary index for the O(1) type-filtered lookup in [isBlacklisted]. */
-    private val blacklistByType: MutableMap<AssetType, MutableSet<LLUUID>> = mutableMapOf()
-
-    /** Registered change listeners, mirroring `mBlacklistChangedCallback`. */
+    // Registered signal listeners  (mirrors mBlacklistChangedCallback)
     private val changeCallbacks: MutableList<BlacklistChangedCallback> = mutableListOf()
+
+    private var blacklistFileName: String = ""
 
     // -----------------------------------------------------------------------
     // Lifecycle
     // -----------------------------------------------------------------------
 
-    /**
-     * Resolve the on-disk filename and load saved entries.
-     *
-     * C++ equivalent: `FSAssetBlacklist::init()` → `loadBlacklist()`.
-     */
     fun init() {
-        TODO("Resolve per-account 'asset_blacklist.xml' path and call loadBlacklist()")
+        blacklistFileName = TODO("APR: use JVM equivalent - expand per-SL-account path to 'asset_blacklist.xml'") as String
+        loadBlacklist()
     }
 
     // -----------------------------------------------------------------------
     // Query
     // -----------------------------------------------------------------------
 
-    /**
-     * Return `true` if [id] is blocked for [assetType] with at least the
-     * given [flag] bits set (or no flag restriction when [flag] is [BlacklistFlag.NONE]).
-     *
-     * C++ equivalent: `FSAssetBlacklist::isBlacklisted(id, type, flag)`.
-     */
-    fun isBlacklisted(
-        id: LLUUID,
-        assetType: AssetType,
-        flag: Int = BlacklistFlag.NONE,
-    ): Boolean = synchronized(lock) {
-        val typeSet = blacklistByType[assetType] ?: return false
+    fun isBlacklisted(id: UUID, type: AssetType, flag: Int = BlacklistFlag.NONE): Boolean {
+        if (blacklistData.isEmpty()) return false
+        val typeSet = blacklistTypeContainer[type] ?: return false
         if (id !in typeSet) return false
         val entry = blacklistData[id] ?: return false
         return (entry.flags == BlacklistFlag.NONE && flag == BlacklistFlag.NONE) ||
             (entry.flags and flag) != 0
     }
 
-    /** Return a snapshot of all current [BlacklistEntry] records. */
-    fun getAll(): Map<LLUUID, BlacklistEntry> = synchronized(lock) { blacklistData.toMap() }
+    fun getBlacklistData(): Map<UUID, FSAssetBlacklistData> = blacklistData.toMap()
 
     // -----------------------------------------------------------------------
     // Mutation
     // -----------------------------------------------------------------------
 
-    /**
-     * Add or update the blacklist entry for [id].
-     *
-     * If an entry already exists its [BlacklistEntry.flags] are OR-merged with
-     * the new [flags]; otherwise a fresh entry is created.
-     *
-     * C++ equivalent: `FSAssetBlacklist::addNewItemToBlacklist(...)`.
-     *
-     * @param save Persist to disk immediately when `true`.
-     */
-    fun addToBlacklist(
-        id: LLUUID,
-        assetType: AssetType,
+    fun addNewItemToBlacklist(
+        id: UUID,
         name: String,
-        region: String = "",
-        flags: Int = BlacklistFlag.NONE,
+        region: String,
+        type: AssetType,
+        flag: Int = BlacklistFlag.NONE,
         permanent: Boolean = true,
-        save: Boolean = true,
+        save: Boolean = true
     ) {
-        val entry = synchronized(lock) {
-            val existing = blacklistData[id]
-            val merged = if (existing != null) {
-                existing.copy(name = name, region = region, flags = existing.flags or flags,
-                    permanent = permanent, date = System.currentTimeMillis())
-            } else {
-                BlacklistEntry(assetId = id, assetType = assetType, name = name,
-                    region = region, flags = flags, permanent = permanent)
-            }
-            blacklistData[id] = merged
-            blacklistByType.getOrPut(assetType) { mutableSetOf() }.add(id)
-            merged
+        val existing = blacklistData[id]
+        val newData = if (existing != null) {
+            existing.copy(name = name, region = region,
+                date = System.currentTimeMillis(), permanent = permanent,
+                flags = existing.flags or flag)
+        } else {
+            FSAssetBlacklistData(name = name, region = region,
+                date = System.currentTimeMillis(), permanent = permanent,
+                flags = flag, type = type)
         }
+        addNewItemToBlacklistData(id, newData, save)
+    }
+
+    fun addNewItemToBlacklistData(id: UUID, data: FSAssetBlacklistData, save: Boolean = true) {
+        val isNew = id !in blacklistData
+        if (!isNew) {
+            blacklistData[id] = data
+        } else {
+            addEntryToBlacklistMap(id, data.type)
+            blacklistData[id] = data
+        }
+
+        if (data.type == AssetType.SOUND && data.flags == BlacklistFlag.NONE) {
+            TODO("APR: use JVM equivalent - remove cached sound file for id from filesystem")
+        }
+
         if (save) saveBlacklist()
-        fireChanged(listOf(BlacklistChangeEvent(id, entry)), BlacklistOperation.ADD)
+
+        if (changeCallbacks.isNotEmpty()) {
+            val events = listOf(BlacklistChangeEvent(id, data))
+            changeCallbacks.forEach { it(events, BlacklistOperation.BLACKLIST_ADD) }
+        }
     }
 
-    /**
-     * Convenience overload that accepts a pre-built [BlacklistEntry].
-     *
-     * C++ equivalent: `FSAssetBlacklist::addNewItemToBlacklistData(id, data, save)`.
-     */
-    fun addToBlacklist(entry: BlacklistEntry, save: Boolean = true) {
-        addToBlacklist(
-            id = entry.assetId,
-            assetType = entry.assetType,
-            name = entry.name,
-            region = entry.region,
-            flags = entry.flags,
-            permanent = entry.permanent,
-            save = save,
-        )
+    fun removeItemFromBlacklist(id: UUID) {
+        removeItemsFromBlacklist(listOf(id))
     }
 
-    /**
-     * Remove the entry for [id] from the blacklist.
-     *
-     * C++ equivalent: `FSAssetBlacklist::removeItemFromBlacklist(id)`.
-     */
-    fun removeFromBlacklist(id: LLUUID) {
-        removeFromBlacklist(listOf(id))
-    }
-
-    /**
-     * Batch-remove multiple entries.
-     *
-     * C++ equivalent: `FSAssetBlacklist::removeItemsFromBlacklist(ids)`.
-     */
-    fun removeFromBlacklist(ids: List<LLUUID>) {
+    fun removeItemsFromBlacklist(ids: List<UUID>) {
         if (ids.isEmpty()) return
-        val events = mutableListOf<BlacklistChangeEvent>()
         var needSave = false
-        synchronized(lock) {
-            for (id in ids) {
-                val entry = blacklistData.remove(id) ?: continue
-                blacklistByType[entry.assetType]?.remove(id)
-                events.add(BlacklistChangeEvent(id, null))
-                if (entry.permanent) needSave = true
-            }
+        val events = mutableListOf<BlacklistChangeEvent>()
+        for (id in ids) {
+            if (removeItem(id)) needSave = true
+            events.add(BlacklistChangeEvent(id, null))
         }
         if (needSave) saveBlacklist()
-        if (events.isNotEmpty()) fireChanged(events, BlacklistOperation.REMOVE)
+        if (changeCallbacks.isNotEmpty()) {
+            changeCallbacks.forEach { it(events, BlacklistOperation.BLACKLIST_REMOVE) }
+        }
+    }
+
+    fun removeFlagsFromItem(id: UUID, combinedFlags: Int) {
+        val entry = blacklistData[id] ?: return
+        val newFlags = entry.flags and combinedFlags.inv()
+        if (newFlags == BlacklistFlag.NONE) {
+            removeItemsFromBlacklist(listOf(id))
+        } else {
+            addNewItemToBlacklistData(id, entry.copy(flags = newFlags), true)
+        }
     }
 
     // -----------------------------------------------------------------------
-    // Persistence (stubs)
+    // Persistence
     // -----------------------------------------------------------------------
 
-    /**
-     * Deserialise the on-disk XML file into [blacklistData] / [blacklistByType].
-     *
-     * The C++ implementation XOR-decrypts each UUID key with a magic UUID before
-     * inserting it.  That cipher logic should be reproduced here once the
-     * file-system layer is ported.
-     *
-     * C++ equivalent: `FSAssetBlacklist::loadBlacklist()`.
-     */
-    fun loadBlacklist() {
-        TODO("Read per-account 'asset_blacklist.xml', XOR-decrypt UUID keys, and populate blacklistData")
-    }
-
-    /**
-     * Serialise all permanent entries to the on-disk XML file.
-     *
-     * C++ equivalent: `FSAssetBlacklist::saveBlacklist()`.
-     */
     fun saveBlacklist() {
-        TODO("XOR-encrypt UUID keys and write permanent entries to 'asset_blacklist.xml'")
+        val saveData = mutableMapOf<String, Any>()
+        for ((id, data) in blacklistData) {
+            if (data.permanent) {
+                val shadowId = xorEncryptUUID(id)
+                saveData[shadowId.toString()] = data.toLLSD()
+            }
+        }
+        TODO("APR: use JVM equivalent - serialize saveData to pretty XML and write to blacklistFileName")
     }
 
     // -----------------------------------------------------------------------
-    // Callback registration
+    // Callback registration  (mirrors setBlacklistChangedCallback)
     // -----------------------------------------------------------------------
 
-    /** Register [callback] to be notified on every add / remove operation. */
-    fun addChangeCallback(callback: BlacklistChangedCallback) {
-        synchronized(changeCallbacks) { changeCallbacks.add(callback) }
+    fun addChangeCallback(callback: BlacklistChangedCallback): BlacklistChangedCallback {
+        changeCallbacks.add(callback)
+        return callback
     }
 
-    /** Unregister a previously-added [callback]. */
     fun removeChangeCallback(callback: BlacklistChangedCallback) {
-        synchronized(changeCallbacks) { changeCallbacks.remove(callback) }
+        changeCallbacks.remove(callback)
     }
 
-    private fun fireChanged(events: List<BlacklistChangeEvent>, op: BlacklistOperation) {
-        val snapshot = synchronized(changeCallbacks) { changeCallbacks.toList() }
-        for (cb in snapshot) cb.onChanged(events, op)
+    // -----------------------------------------------------------------------
+    // Private helpers
+    // -----------------------------------------------------------------------
+
+    private fun loadBlacklist() {
+        val fileExists = TODO("APR: use JVM equivalent - check blacklistFileName exists") as Boolean
+        if (fileExists) {
+            TODO("APR: use JVM equivalent - parse XML from blacklistFileName; XOR-decrypt each UUID key; call addNewItemToBlacklistData for each valid entry with save=false")
+        } else {
+            val oldFile = TODO("APR: use JVM equivalent - build legacy Phoenix floater_blist_settings.xml path") as String
+            val oldFileExists = TODO("APR: use JVM equivalent - check oldFile exists") as Boolean
+            if (oldFileExists) {
+                TODO("APR: use JVM equivalent - parse oldFile XML; migrate entries prepending '[PHOENIX] ' to names; call saveBlacklist()")
+            }
+        }
+    }
+
+    private fun removeItem(id: UUID): Boolean {
+        TODO("GPU: gObjectList.removeDerenderedItem(id)")
+        val entry = blacklistData.remove(id) ?: return false
+        for ((_, container) in blacklistTypeContainer) {
+            container.remove(id)
+        }
+        return entry.permanent
+    }
+
+    private fun addEntryToBlacklistMap(id: UUID, type: AssetType): Boolean {
+        if (id == UUID(0L, 0L)) return false
+        blacklistTypeContainer.getOrPut(type) { mutableSetOf() }.add(id)
+        return true
+    }
+
+    // XOR-cipher used to obfuscate UUIDs on disk (mirrors LLXORCipher with MAGIC_ID).
+    private val MAGIC_ID: UUID = UUID.fromString("3c115e51-04f4-523c-9fa6-98aff1034730")
+    private fun xorEncryptUUID(id: UUID): UUID {
+        TODO("APR: use JVM equivalent - XOR id bytes with MAGIC_ID bytes (same as LLXORCipher)")
     }
 }

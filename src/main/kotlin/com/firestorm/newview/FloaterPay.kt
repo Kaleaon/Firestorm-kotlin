@@ -5,14 +5,10 @@ import com.firestorm.llui.Button
 import com.firestorm.llui.LineEditor
 import com.firestorm.llui.TextBox
 import com.firestorm.llui.UICtrl
-import com.firestorm.llmessage.MessageSystem
-import com.firestorm.llcommon.LLUUID
+import java.util.UUID
 
-// Callback invoked when the L$ transfer is confirmed.
-// Parameters: targetId, region, amount, isGroup, transactionType, description
-typealias MoneyCallback = (LLUUID, Any?, Int, Boolean, Int, String) -> Unit
+typealias MoneyCallback = (targetId: UUID, region: Any?, amount: Int, isGroup: Boolean, transactionType: Int, description: String) -> Unit
 
-// LL LSL constant equivalents for pay button defaults and price signals.
 private const val PAY_BUTTON_DEFAULT_0 = 1
 private const val PAY_BUTTON_DEFAULT_1 = 5
 private const val PAY_BUTTON_DEFAULT_2 = 10
@@ -21,66 +17,138 @@ private const val PAY_PRICE_HIDE       = -1
 private const val PAY_PRICE_DEFAULT    = -2
 private const val MAX_PAY_BUTTONS      = 4
 private const val FASTPAY_BUTTON_WIDTH = 80
+private const val TRANS_PAY_OBJECT     = 5000
+private const val TRANS_GIFT           = 5001
 
-private const val TRANS_PAY_OBJECT = 5000
-private const val TRANS_GIFT       = 5001
+private data class GiveMoneyInfo(
+    val floater: FloaterPay,
+    var amount: Int
+)
 
-// Bundles the floater reference with a pre-set amount for a quick-pay button.
-private data class GiveMoneyInfo(val floater: FloaterPay, val amount: Int)
+class FloaterPay(key: Any) : Floater(key) {
 
-class FloaterPay(seed: Any) : Floater(seed) {
+    private val callbackData: MutableList<GiveMoneyInfo>   = mutableListOf()
+    private var callback: MoneyCallback?                   = null
+    private var objectNameText: TextBox?                   = null
+    private var targetUUID: UUID                           = UUID.fromString(key.toString())
+    private var targetIsGroup: Boolean                     = false
+    private var haveName: Boolean                          = false
+    private val quickPayButton: Array<Button?>             = arrayOfNulls(MAX_PAY_BUTTONS)
+    private val quickPayInfo: Array<GiveMoneyInfo?>        = arrayOfNulls(MAX_PAY_BUTTONS)
+    private var objectSelection: Any?                      = null
 
-    private var callback:         MoneyCallback? = null
-    private var objectNameText:   TextBox?        = null
-    private val targetUuid:       LLUUID          = TODO("extract UUID from seed LLSD")
-    private var targetIsGroup:    Boolean         = false
-    private var haveName:         Boolean         = false
+    companion object {
+        private var lastAmount: Int = 0
 
-    private val callbackData: MutableList<GiveMoneyInfo> = mutableListOf()
-    private val quickPayButton: Array<Button?> = arrayOfNulls(MAX_PAY_BUTTONS)
-    private val quickPayInfo:   Array<GiveMoneyInfo?> = arrayOfNulls(MAX_PAY_BUTTONS)
+        fun payViaObject(callback: MoneyCallback, selection: Any?) {
+            val obj = getPrimaryObject(selection) ?: return
 
-    private var objectSelection: Any? = null   // LLObjectSelection handle
+            val floater: FloaterPay = TODO("APR: use JVM equivalent - FloaterReg showTypedInstance pay_object with object ID")
+            floater.setCallback(callback)
+            floater.objectSelection = selection
+
+            val node = getFirstRootNode(selection)
+            if (node == null) {
+                TODO("APR: use JVM equivalent - show PayObjectFailed notification")
+                floater.closeFloater()
+                return
+            }
+
+            TODO("APR: use JVM equivalent - send RequestPayPrice UDP message to object's region host and register processPayPriceReply handler")
+
+            val (ownerId, isGroup) = getOwnership(node)
+            floater.getChild<UICtrl>("object_name_text").setValue(getName(node))
+            floater.finishPayUI(ownerId, isGroup)
+        }
+
+        fun payDirectly(callback: MoneyCallback, targetId: UUID, isGroup: Boolean) {
+            val floater: FloaterPay = TODO("APR: use JVM equivalent - FloaterReg showTypedInstance pay_resident with targetId")
+            floater.setCallback(callback)
+            floater.objectSelection = null
+
+            floater.getChildView("amount").setVisible(true)
+            floater.getChildView("pay btn").setVisible(true)
+            floater.getChildView("amount text").setVisible(true)
+
+            val canSendIm: Boolean = TODO("APR: use JVM equivalent - RlvActions::canSendIM(targetId)")
+            floater.getChildView("payment_message").setEnabled(canSendIm)
+
+            for (i in 0 until MAX_PAY_BUTTONS) {
+                floater.quickPayButton[i]?.setVisible(true)
+            }
+
+            floater.finishPayUI(targetId, isGroup)
+        }
+
+        private fun payConfirmationCallback(notification: Any, response: Any, info: GiveMoneyInfo): Boolean {
+            val option: Int = TODO("APR: use JVM equivalent - LLNotificationsUtil::getSelectedOption")
+            if (option == 0) {
+                info.floater.give(info.amount)
+                info.floater.closeFloater()
+            }
+            return false
+        }
+
+        private fun processPayPriceReply(msg: Any) {
+            TODO("APR: use JVM equivalent - handle PayPriceReply UDP message; update quick-pay button labels and visibility, reshape floater for large amounts")
+        }
+
+        private fun getPrimaryObject(selection: Any?): Any?           = TODO("APR: use JVM equivalent - selection->getPrimaryObject()")
+        private fun getFirstRootNode(selection: Any?): Any?           = TODO("APR: use JVM equivalent - selection->getFirstRootNode()")
+        private fun getOwnership(node: Any): Pair<UUID, Boolean>      = TODO("APR: use JVM equivalent - node->mPermissions->getOwnership()")
+        private fun getName(node: Any): String                        = TODO("APR: use JVM equivalent - node->mName")
+    }
 
     override fun postBuild(): Boolean {
         var i = 0
-        val defaults = intArrayOf(
-            PAY_BUTTON_DEFAULT_0,
-            PAY_BUTTON_DEFAULT_1,
-            PAY_BUTTON_DEFAULT_2,
-            PAY_BUTTON_DEFAULT_3
-        )
-        val uiNames = arrayOf("fastpay 1", "fastpay 5", "fastpay 10", "fastpay 20")
 
-        for (idx in defaults.indices) {
-            val info = GiveMoneyInfo(this, defaults[idx])
-            callbackData.add(info)
-            quickPayButton[i] = findChild(uiNames[idx])
-            quickPayInfo[i]   = info
-            quickPayButton[i]?.setVisible(false)
-            quickPayButton[i]?.setOnClick { onGive(info) }
-            i++
-        }
+        var info = GiveMoneyInfo(this, PAY_BUTTON_DEFAULT_0)
+        callbackData.add(info)
+        childSetAction("fastpay 1") { onGive(info) }
+        getChildView("fastpay 1").setVisible(false)
+        quickPayButton[i] = getChild("fastpay 1")
+        quickPayInfo[i]   = info
+        i++
 
-        findChild<UICtrl>("amount text")?.setVisible(false)
-        findChild<UICtrl>("amount")?.setVisible(false)
+        info = GiveMoneyInfo(this, PAY_BUTTON_DEFAULT_1)
+        callbackData.add(info)
+        childSetAction("fastpay 5") { onGive(info) }
+        getChildView("fastpay 5").setVisible(false)
+        quickPayButton[i] = getChild("fastpay 5")
+        quickPayInfo[i]   = info
+        i++
 
-        findChild<LineEditor>("amount")?.apply {
-            setOnKeystroke { onKeystroke() }
-            setPrevalidate { s -> s.toIntOrNull()?.let { it >= 0 } ?: false }
-            if (lastAmount > 0) setValue(lastAmount.toString())
-        }
+        info = GiveMoneyInfo(this, PAY_BUTTON_DEFAULT_2)
+        callbackData.add(info)
+        childSetAction("fastpay 10") { onGive(info) }
+        getChildView("fastpay 10").setVisible(false)
+        quickPayButton[i] = getChild("fastpay 10")
+        quickPayInfo[i]   = info
+        i++
+
+        info = GiveMoneyInfo(this, PAY_BUTTON_DEFAULT_3)
+        callbackData.add(info)
+        childSetAction("fastpay 20") { onGive(info) }
+        getChildView("fastpay 20").setVisible(false)
+        quickPayButton[i] = getChild("fastpay 20")
+        quickPayInfo[i]   = info
+
+        getChildView("amount text").setVisible(false)
+        getChildView("amount").setVisible(false)
+
+        val amountEditor = getChild<LineEditor>("amount")
+        amountEditor.setKeystrokeCallback { onKeystroke() }
+        amountEditor.setPrevalidate("NON_NEGATIVE_S32")
+        if (lastAmount > 0) amountEditor.setValue(lastAmount.toString())
 
         val payInfo = GiveMoneyInfo(this, 0)
         callbackData.add(payInfo)
-        findChild<UICtrl>("pay btn")?.apply {
-            setVisible(false)
-            setEnabled(lastAmount > 0)
-            setOnClick { onGive(payInfo) }
-        }
-        setDefaultButton("pay btn")
+        childSetAction("pay btn") { onGive(payInfo) }
+        setDefaultBtn("pay btn")
+        getChildView("pay btn").setVisible(false)
+        getChildView("pay btn").setEnabled(lastAmount > 0)
 
-        findChild<UICtrl>("cancel btn")?.setOnClick { closeFloater() }
+        childSetAction("cancel btn") { onCancel() }
 
         return true
     }
@@ -89,228 +157,124 @@ class FloaterPay(seed: Any) : Floater(seed) {
         objectSelection = null
     }
 
-    fun setCallback(cb: MoneyCallback) { callback = cb }
+    fun setCallback(cb: MoneyCallback) {
+        callback = cb
+    }
 
-    private fun give(amount: Int) {
-        val cb = callback ?: return
-        var actualAmount = amount
-        if (actualAmount == 0) {
-            actualAmount = findChild<UICtrl>("amount")?.getValue()?.toString()?.toIntOrNull() ?: return
-        }
-        lastAmount = actualAmount
-
-        if (objectSelection != null) {
-            TODO("APR: find dest object in gObjectList, determine region, send payment via callback")
+    private fun finishPayUI(targetId: UUID, isGroup: Boolean) {
+        val slurl: String = if (isGroup) {
+            TODO("APR: use JVM equivalent - LLSLURL(group, targetId, inspect).getSLURLString()")
         } else {
-            val paymentMessage = findChild<LineEditor>("payment_message")?.getValue()?.toString() ?: ""
-            cb(
-                targetUuid,
-                TODO("APR: gAgent.getRegion()"),
-                actualAmount,
-                targetIsGroup,
-                TRANS_GIFT,
-                paymentMessage
-            )
-            TODO("APR: LLMuteList::autoRemove(targetUuid, AR_MONEY)")
+            TODO("APR: use JVM equivalent - LLSLURL(agent, targetId, inspect).getSLURLString()")
         }
+        setTitle(if (isGroup) getString("payee_group") else getString("payee_resident"))
+        getChild<TextBox>("payee_name").setText(slurl)
+
+        val amountEditor = getChild<LineEditor>("amount")
+        amountEditor.setFocus(true)
+        amountEditor.selectAll()
+
+        targetIsGroup = isGroup
+    }
+
+    private fun onCancel() {
+        closeFloater()
+    }
+
+    private fun onKeystroke() {
+        val amtStr = getChild<UICtrl>("amount").getValue().toString()
+        getChildView("pay btn").setEnabled(amtStr.isNotEmpty() && (amtStr.toIntOrNull() ?: 0) > 0)
     }
 
     private fun onGive(info: GiveMoneyInfo) {
         var amount = info.amount
         if (amount == 0) {
-            amount = findChild<UICtrl>("amount")?.getValue()?.toString()?.toIntOrNull() ?: return
+            amount = getChild<UICtrl>("amount").getValue().toString().toIntOrNull() ?: 0
         }
 
-        val confirmPayments = TODO<Boolean>("APR: gSavedSettings.getBOOL(\"FSConfirmPayments\")")
-        val threshold       = TODO<Int>("APR: gSavedSettings.getS32(\"FSPaymentConfirmationThreshold\")")
-        val balance         = TODO<Int>("APR: gStatusBar.getBalance()")
+        val confirmPayments: Boolean = TODO("APR: use JVM equivalent - gSavedSettings.getBOOL(FSConfirmPayments)")
+        val confirmThreshold: Int    = TODO("APR: use JVM equivalent - gSavedSettings.getS32(FSPaymentConfirmationThreshold)")
+        val balance: Int             = TODO("APR: use JVM equivalent - gStatusBar.getBalance()")
 
-        if (confirmPayments && amount > threshold && balance >= amount) {
-            var payeeId  = LLUUID.NULL
-            var isGroup  = false
+        if (confirmPayments && amount > confirmThreshold && balance >= amount) {
+            val payeeId: UUID
+            val isGroup: Boolean
 
             if (objectSelection != null) {
-                val node = TODO<Any?>("APR: objectSelection.getFirstRootNode()")
+                val node = getFirstRootNodeLocal(objectSelection)
                 if (node == null) {
-                    TODO("APR: LLNotificationsUtil::add(\"PayObjectFailed\"); closeFloater()")
+                    TODO("APR: use JVM equivalent - show PayObjectFailed notification")
+                    closeFloater()
                     return
                 }
-                TODO("APR: node.mPermissions.getOwnership(payeeId, isGroup)")
+                val ownership: Pair<UUID, Boolean> = TODO("APR: use JVM equivalent - node->mPermissions->getOwnership()")
+                payeeId  = ownership.first
+                isGroup  = ownership.second
             } else {
                 isGroup  = targetIsGroup
-                payeeId  = targetUuid
+                payeeId  = targetUUID
             }
 
-            // Skip the confirmation dialog when paying yourself.
-            if (!isGroup && payeeId == TODO("APR: gAgent.getID()")) {
+            val agentId: UUID = TODO("APR: use JVM equivalent - gAgent.getID()")
+            if (isGroup || payeeId != agentId) {
+                val args = mapOf(
+                    "TARGET" to TODO<String>("APR: use JVM equivalent - LLSLURL completename for payeeId"),
+                    "AMOUNT" to amount
+                )
+                TODO("APR: use JVM equivalent - show PayConfirmation notification with payConfirmationCallback")
+            } else {
                 give(amount)
                 closeFloater()
-                return
             }
-
-            TODO("APR: LLNotificationsUtil::add(\"PayConfirmation\", args, LLSD(), payConfirmationCallback)")
         } else {
             give(amount)
             closeFloater()
         }
     }
 
-    private fun onKeystroke() {
-        val text = findChild<UICtrl>("amount")?.getValue()?.toString() ?: ""
-        findChild<UICtrl>("pay btn")?.setEnabled(text.isNotEmpty() && (text.toIntOrNull() ?: 0) > 0)
-    }
-
-    private fun finishPayUi(targetId: LLUUID, isGroup: Boolean) {
-        val slurl: String
-        if (isGroup) {
-            setTitle(getString("payee_group"))
-            slurl = TODO("APR: LLSLURL(\"group\", targetId, \"inspect\").getSLURLString()")
+    private fun give(amountIn: Int) {
+        val cb = callback ?: return
+        val amount = if (amountIn == 0) {
+            getChild<UICtrl>("amount").getValue().toString().toIntOrNull() ?: 0
         } else {
-            setTitle(getString("payee_resident"))
-            slurl = TODO("APR: LLSLURL(\"agent\", targetId, \"inspect\").getSLURLString()")
+            amountIn
         }
-        findChild<TextBox>("payee_name")?.setText(slurl)
+        lastAmount = amount
 
-        findChild<LineEditor>("amount")?.apply {
-            setFocus(true)
-            selectAll()
-        }
-        targetIsGroup = isGroup
-    }
-
-    // Network reply handler – called when the simulator sends pay-price info
-    // for an in-world object.
-    fun processPayPriceReply(msg: MessageSystem) {
-        val target = TODO<LLUUID>("APR: msg.getUUID(\"ObjectData\", \"ObjectID\")")
-        if (target != targetUuid) return
-
-        val price = TODO<Int>("APR: msg.getS32(\"ObjectData\", \"DefaultPayPrice\")")
-        when (price) {
-            PAY_PRICE_HIDE -> {
-                findChild<UICtrl>("amount")?.setVisible(false)
-                findChild<UICtrl>("pay btn")?.setVisible(false)
-                findChild<UICtrl>("amount text")?.setVisible(false)
-            }
-            PAY_PRICE_DEFAULT -> {
-                findChild<UICtrl>("amount")?.setVisible(true)
-                findChild<UICtrl>("pay btn")?.setVisible(true)
-                findChild<UICtrl>("amount text")?.setVisible(true)
-            }
-            else -> {
-                findChild<UICtrl>("amount")?.setVisible(true)
-                findChild<UICtrl>("pay btn")?.apply { setVisible(true); setEnabled(true) }
-                findChild<UICtrl>("amount text")?.setVisible(true)
-                findChild<UICtrl>("amount")?.setValue(kotlin.math.abs(price).toString())
-            }
-        }
-
-        var numBlocks = TODO<Int>("APR: msg.getNumberOfBlocks(\"ButtonData\")")
-        if (numBlocks > MAX_PAY_BUTTONS) numBlocks = MAX_PAY_BUTTONS
-
-        var maxPayAmount = 0
-        for (idx in 0 until numBlocks) {
-            val payButton = TODO<Int>("APR: msg.getS32(\"ButtonData\", \"PayButton\", idx)")
-            if (payButton > 0) {
-                val label = "L\$${payButton}"
-                quickPayButton[idx]?.apply {
-                    setLabel(label)
-                    setVisible(true)
-                }
-                quickPayInfo[idx] = quickPayInfo[idx]?.copy(amount = payButton)
-                if (payButton > maxPayAmount) maxPayAmount = payButton
+        if (objectSelection != null) {
+            val destObject: Any? = TODO("APR: use JVM equivalent - gObjectList.findObject(targetUUID)")
+            val region: Any?     = TODO("APR: use JVM equivalent - destObject->getRegion()")
+            if (destObject != null && region != null) {
+                val node = getFirstRootNodeLocal(objectSelection)
+                val objectName = node?.let { TODO<String>("APR: use JVM equivalent - node->mName") } ?: ""
+                val isAvatar: Boolean = TODO("APR: use JVM equivalent - destObject->isAvatar()")
+                val txType = if (isAvatar) TRANS_GIFT else TRANS_PAY_OBJECT
+                cb(targetUUID, region, amount, false, txType, objectName)
+                objectSelection = null
+                TODO("APR: use JVM equivalent - send RequestObjectPropertiesFamily UDP message to unmute object owner if needed")
             } else {
-                quickPayButton[idx]?.setVisible(false)
+                TODO("APR: use JVM equivalent - show PayObjectFailed notification")
             }
+        } else {
+            val paymentMessage = getChild<LineEditor>("payment_message").getValue().toString()
+            cb(targetUUID, TODO("APR: use JVM equivalent - gAgent.getRegion()"), amount, targetIsGroup, TRANS_GIFT, paymentMessage)
+            TODO("APR: use JVM equivalent - LLMuteList::autoRemove(targetUUID, AR_MONEY)")
         }
-        for (idx in numBlocks until MAX_PAY_BUTTONS) {
-            quickPayButton[idx]?.setVisible(false)
-        }
-
-        TODO("APR: resize button widths based on maxPayAmount digit count, " +
-             "mirror C++ padding_required / button_delta logic; " +
-             "call reshape() if max >= 100000")
     }
 
-    // Stubs for UI helper calls resolved at runtime by the platform layer.
-    @Suppress("UNCHECKED_CAST")
-    private fun <T> findChild(name: String): T? = null
-    private fun getString(key: String): String = TODO("APR: XUI string lookup for key=$key")
-    private fun setTitle(title: String) { TODO("APR: Floater.setTitle(title)") }
-    private fun setDefaultButton(name: String) { TODO("APR: Floater.setDefaultBtn(name)") }
-    private fun closeFloater() { TODO("APR: Floater.closeFloater()") }
-
-    companion object {
-        // Remembered across floater instances so the amount field is pre-filled.
-        var lastAmount: Int = 0
-            private set
-
-        fun registerFloater() {
-            TODO("APR: FloaterReg.add(\"pay_resident\", \"floater_pay.xml\", ::FloaterPay)")
-            TODO("APR: FloaterReg.add(\"pay_object\",   \"floater_pay_object.xml\", ::FloaterPay)")
-        }
-
-        fun payViaObject(callback: MoneyCallback, selection: Any?) {
-            val obj = TODO<Any?>("APR: selection.getPrimaryObject()")
-            if (obj == null) return
-
-            val floater = TODO<FloaterPay?>("APR: FloaterReg.showTypedInstance<FloaterPay>(\"pay_object\", objId)")
-            if (floater == null) return
-
-            floater.setCallback(callback)
-            floater.objectSelection = selection
-
-            val node = TODO<Any?>("APR: selection.getFirstRootNode()")
-            if (node == null) {
-                TODO("APR: LLNotificationsUtil::add(\"PayObjectFailed\"); floater.closeFloater()")
-                return
-            }
-
-            TODO("APR: send RequestPayPrice message to object's region host")
-            TODO("APR: msg.setHandlerFuncFast(PayPriceReply, floater.processPayPriceReply)")
-
-            val ownerId = TODO<LLUUID>("APR: node.mPermissions.getOwner()")
-            val isGroup = TODO<Boolean>("APR: node.mPermissions.isGroupOwned()")
-            floater.findChild<UICtrl>("object_name_text")?.setValue(TODO("APR: node.mName"))
-            floater.finishPayUi(ownerId, isGroup)
-        }
-
-        fun payDirectly(callback: MoneyCallback, targetId: LLUUID, isGroup: Boolean) {
-            val floater = TODO<FloaterPay?>("APR: FloaterReg.showTypedInstance<FloaterPay>(\"pay_resident\", targetId)")
-            if (floater == null) return
-
-            floater.setCallback(callback)
-            floater.objectSelection = null
-
-            floater.findChild<UICtrl>("amount")?.setVisible(true)
-            floater.findChild<UICtrl>("pay btn")?.setVisible(true)
-            floater.findChild<UICtrl>("amount text")?.setVisible(true)
-
-            // Honour RLV IM restriction: disable the message field if the agent
-            // cannot send IMs to this target.
-            val canSendIm = TODO<Boolean>("APR: RlvActions::canSendIM(targetId)")
-            floater.findChild<UICtrl>("payment_message")?.setEnabled(canSendIm)
-
-            for (i in 0 until MAX_PAY_BUTTONS) {
-                floater.quickPayButton[i]?.setVisible(true)
-            }
-
-            floater.finishPayUi(targetId, isGroup)
-        }
-
-        private fun payConfirmationCallback(notification: Any, response: Any, info: GiveMoneyInfo): Boolean {
-            val option = TODO<Int>("APR: LLNotificationsUtil::getSelectedOption(notification, response)")
-            if (option == 0) {
-                info.floater.give(info.amount)
-                info.floater.closeFloater()
-            }
-            return false
-        }
-    }
+    private fun getFirstRootNodeLocal(sel: Any?): Any? = TODO("APR: use JVM equivalent - mObjectSelection->getFirstRootNode()")
 }
 
-// Top-level utility object mirrors the C++ LLFloaterPayUtil namespace.
 object FloaterPayUtil {
-    fun registerFloater()                                            = FloaterPay.registerFloater()
-    fun payViaObject(cb: MoneyCallback, selection: Any?)             = FloaterPay.payViaObject(cb, selection)
-    fun payDirectly(cb: MoneyCallback, id: LLUUID, isGroup: Boolean) = FloaterPay.payDirectly(cb, id, isGroup)
+    fun registerFloater() {
+        TODO("APR: use JVM equivalent - register pay_resident and pay_object with FloaterReg using FloaterPay builder")
+    }
+
+    fun payViaObject(callback: MoneyCallback, selection: Any?) {
+        FloaterPay.payViaObject(callback, selection)
+    }
+
+    fun payDirectly(callback: MoneyCallback, targetId: UUID, isGroup: Boolean) {
+        FloaterPay.payDirectly(callback, targetId, isGroup)
+    }
 }

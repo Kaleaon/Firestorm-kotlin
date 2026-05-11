@@ -3,177 +3,146 @@ package com.firestorm.newview
 import java.util.ArrayDeque
 import java.util.UUID
 
+private const val EVENTS_PER_IDLE_LOOP_CURRENT_SESSION = 80
+private const val EVENTS_PER_IDLE_LOOP_BACKGROUND = 40
+private const val EVENTS_PER_IDLE_LOOP_MIN_PERCENTAGE = 0.01f
+
 class FloaterIMContainer(private val seed: Map<String, Any>) {
 
-    private val mSessions: MutableMap<UUID, Any> = mutableMapOf()
+    private val sessions: MutableMap<UUID, Any> = mutableMapOf()
+    private var newMessageSlot: (() -> Unit)? = null
+    private var microChangedSlot: (() -> Unit)? = null
 
-    private var mExpandCollapseBtn: Any? = null
-    private var mStubCollapseBtn: Any? = null
-    private var mSpeakBtn: Any? = null
-    private var mStubPanel: Any? = null
-    private var mStubTextBox: Any? = null
-    private var mMessagesPane: Any? = null
-    private var mConversationsPane: Any? = null
-    private var mConversationsStack: Any? = null
+    private var expandCollapseBtn: Any? = null
+    private var stubCollapseBtn: Any? = null
+    private var speakBtn: Any? = null
+    private var stubPanel: Any? = null
+    private var stubTextBox: Any? = null
+    private var messagesPane: Any? = null
+    private var conversationsPane: Any? = null
+    private var conversationsStack: Any? = null
 
-    private var mInitialized: Boolean = false
-    private var mIsFirstLaunch: Boolean = true
-    private var mIsFirstOpen: Boolean = true
+    private var initialized: Boolean = false
+    private var isFirstLaunch: Boolean = true
+    private var isFirstOpen: Boolean = false
 
-    private var mSelectedSession: UUID = UUID.fromString("00000000-0000-0000-0000-000000000000")
-    private var mGeneralTitle: String = ""
-    private var mGeneralTitleInUse: Boolean = true
+    var selectedSession: UUID? = null
+    private var generalTitle: String = ""
+    private var generalTitleInUse: Boolean = true
 
-    private val mConversationsItems: MutableMap<UUID, ConversationItem> = mutableMapOf()
-    private val mConversationsWidgets: MutableMap<UUID, ConversationViewSession> = mutableMapOf()
-    private val mConversationEventQueue: MutableMap<UUID, ArrayDeque<Map<String, Any>>> = mutableMapOf()
+    private val conversationsItems: MutableMap<UUID, Any> = mutableMapOf()
+    private val conversationsWidgets: MutableMap<UUID, Any> = mutableMapOf()
+    private var conversationsListPanel: Any? = null
+    private var conversationsRoot: Any? = null
 
-    companion object {
-        fun findInstance(): FloaterIMContainer? = null
-        fun getInstance(): FloaterIMContainer = FloaterIMContainer(emptyMap())
+    private val conversationEventQueue: MutableMap<UUID, ArrayDeque<Map<String, Any>>> = mutableMapOf()
 
-        fun onCurrentChannelChanged(sessionId: UUID) {
-            TODO("GPU: select conversation for session $sessionId in the IM container")
-        }
-
-        fun isConversationLoggingAllowed(): Boolean {
-            TODO("GPU: check gSavedSettings/LLIMModel to determine if logging is permitted")
-        }
-
-        fun idle(userData: Any?) {
-            (userData as? FloaterIMContainer)?.idleUpdate()
-        }
+    fun postBuild(): Boolean {
+        TODO("APR: use JVM equivalent")
     }
 
-    open fun postBuild(): Boolean {
-        TODO("GPU: wire expand/collapse buttons, speak button, stub panel, layout stack children from XML")
-    }
-
-    open fun onOpen(key: Map<String, Any>) {
-        TODO("GPU: restore conversation pane state, select active session")
-    }
-
-    open fun draw() {
-        TODO("GPU: draw IM container — delegate to LLMultiFloater draw, update speak button state")
-    }
-
-    open fun setMinimized(b: Boolean) {
-        TODO("GPU: minimize/restore all hosted floaters when container is minimized")
-    }
-
-    open fun setVisible(visible: Boolean) {
-        TODO("GPU: propagate visibility to all hosted IM session floaters")
-    }
-
-    open fun setVisibleAndFrontmost(takeFocus: Boolean = true, key: Map<String, Any> = emptyMap()) {
-        TODO("GPU: bring IM container to front and show it, optionally taking keyboard focus")
-    }
-
-    open fun updateResizeLimits() {
+    fun onOpen(key: Any?) {
+        reSelectConversation()
         assignResizeLimits()
     }
 
-    open fun handleReshape(rect: Rect, byUser: Boolean) {
-        TODO("GPU: persist resized rect and update conversation/message pane split")
+    fun draw() {
+        TODO("APR: use JVM equivalent")
+    }
+
+    fun setMinimized(minimize: Boolean) {
+        TODO("APR: use JVM equivalent")
+    }
+
+    open fun setVisible(visible: Boolean) {
+        TODO("APR: use JVM equivalent")
+    }
+
+    fun setVisibleAndFrontmost(takeFocus: Boolean = true, key: Any? = null) {
+        TODO("APR: use JVM equivalent")
+    }
+
+    fun updateResizeLimits() {
+        assignResizeLimits()
+    }
+
+    fun handleReshape(rect: Any, byUser: Boolean) {
+        TODO("APR: use JVM equivalent")
     }
 
     fun onCloseFloater(id: UUID) {
-        removeConversationListItem(id)
-        mSessions.remove(id)
+        sessions.remove(id)
     }
 
-    open fun addFloater(floater: Any, selectAdded: Boolean, insertionPoint: Int = TAB_END) {
-        TODO("GPU: add a hosted IM session floater to the tab container at insertionPoint")
+    fun addFloater(floater: Any, selectAddedFloater: Boolean) {
+        TODO("APR: use JVM equivalent")
     }
 
     fun returnFloaterToHost() {
-        TODO("GPU: re-dock a detached IM session floater back into the container")
+        TODO("APR: use JVM equivalent")
     }
 
     fun showConversation(sessionId: UUID) {
-        selectConversationPair(sessionId, selectWidget = true)
-        TODO("GPU: bring the IM container to front and reveal the session for $sessionId")
+        selectConversationPair(sessionId, selectWidget = false, focusFloater = false)
     }
 
     fun selectConversation(sessionId: UUID) {
-        selectConversationPair(sessionId, selectWidget = true, focusFloater = false)
-    }
-
-    fun selectNextConversationByID(sessionId: UUID) {
-        TODO("GPU: walk conversation list and select the next conversation after $sessionId")
-    }
-
-    fun selectConversationPair(
-        sessionId: UUID,
-        selectWidget: Boolean,
-        focusFloater: Boolean = true
-    ): Boolean {
-        val widget = mConversationsWidgets[sessionId]
-        if (selectWidget) {
-            widget?.setSelected(true)
-            mSelectedSession = sessionId
-        }
-        if (focusFloater) {
-            TODO("GPU: focus the hosted floater for session $sessionId")
-        }
-        return widget != null
-    }
-
-    fun clearAllFlashStates() {
-        for ((id, _) in mConversationsWidgets) {
-            flashConversationItemWidget(id, false)
-        }
-    }
-
-    fun selectAdjacentConversation(focusSelected: Boolean): Boolean =
-        selectNextOrPreviousConversation(selectNext = true, focusSelected = focusSelected)
-
-    fun selectNextOrPreviousConversation(selectNext: Boolean, focusSelected: Boolean = true): Boolean {
-        val ids = mConversationsWidgets.keys.toList()
-        if (ids.isEmpty()) return false
-        val currentIdx = ids.indexOf(mSelectedSession)
-        val nextIdx = if (selectNext) (currentIdx + 1) % ids.size else (currentIdx - 1 + ids.size) % ids.size
-        return selectConversationPair(ids[nextIdx], selectWidget = true, focusFloater = focusSelected)
-    }
-
-    fun expandConversation() {
-        TODO("GPU: expand the conversation list panel if it is currently collapsed")
-    }
-
-    open fun tabClose() {
-        TODO("GPU: handle tab close event — remove the active tab's session")
-    }
-
-    fun showStub(visible: Boolean) {
-        TODO("GPU: show/hide the stub panel that appears when messages pane is collapsed")
-    }
-
-    fun collapseMessagesPane(collapse: Boolean) {
-        collapseConversationsPane(!collapse)
-        TODO("GPU: reshape messages/conversations pane split for collapse=$collapse")
-    }
-
-    fun isMessagesPaneCollapsed(): Boolean {
-        TODO("GPU: query messages pane width to determine if it is collapsed")
-    }
-
-    fun isConversationsPaneCollapsed(): Boolean {
-        TODO("GPU: query conversations pane width to determine if it is collapsed")
-    }
-
-    fun sessionAdded(sessionId: UUID, name: String, otherParticipantId: UUID, hasOfflineMsg: Boolean) {
-        addConversationListItem(sessionId)
-        if (hasOfflineMsg) {
-            flashConversationItemWidget(sessionId, true)
-        }
-    }
-
-    fun sessionActivated(sessionId: UUID, name: String, otherParticipantId: UUID) {
         selectConversationPair(sessionId, selectWidget = true)
     }
 
+    fun selectNextConversationByID(sessionId: UUID) {
+        selectAdjacentConversation(false)
+    }
+
+    fun selectConversationPair(sessionId: UUID, selectWidget: Boolean, focusFloater: Boolean = true): Boolean {
+        TODO("APR: use JVM equivalent")
+    }
+
+    fun clearAllFlashStates() {
+        TODO("APR: use JVM equivalent")
+    }
+
+    fun selectAdjacentConversation(focusSelected: Boolean): Boolean {
+        return selectNextorPreviousConversation(selectNext = true, focusSelected = focusSelected)
+    }
+
+    fun selectNextorPreviousConversation(selectNext: Boolean, focusSelected: Boolean = true): Boolean {
+        TODO("APR: use JVM equivalent")
+    }
+
+    fun expandConversation() {
+        TODO("APR: use JVM equivalent")
+    }
+
+    fun tabClose() {
+        TODO("APR: use JVM equivalent")
+    }
+
+    fun showStub(visible: Boolean) {
+        TODO("APR: use JVM equivalent")
+    }
+
+    fun collapseMessagesPane(collapse: Boolean) {
+        TODO("APR: use JVM equivalent")
+    }
+
+    fun isMessagesPaneCollapsed(): Boolean = TODO("APR: use JVM equivalent")
+    fun isConversationsPaneCollapsed(): Boolean = TODO("APR: use JVM equivalent")
+
+    fun sessionAdded(sessionId: UUID, name: String, otherParticipantId: UUID, hasOfflineMsg: Boolean) {
+        addConversationListItem(sessionId)
+        TODO("APR: use JVM equivalent")
+    }
+
+    fun sessionActivated(sessionId: UUID, name: String, otherParticipantId: UUID) {
+        setVisibleAndFrontmost(false)
+        selectConversationPair(sessionId, true)
+        collapseMessagesPane(false)
+    }
+
     fun sessionVoiceOrIMStarted(sessionId: UUID) {
-        TODO("GPU: update UI indicator that voice/IM started for session $sessionId")
+        addConversationListItem(sessionId)
+        TODO("APR: use JVM equivalent")
     }
 
     fun sessionRemoved(sessionId: UUID) {
@@ -181,251 +150,187 @@ class FloaterIMContainer(private val seed: Map<String, Any>) {
     }
 
     fun sessionIDUpdated(oldSessionId: UUID, newSessionId: UUID) {
-        val item = mConversationsItems.remove(oldSessionId)
-        val widget = mConversationsWidgets.remove(oldSessionId)
-        if (item != null) mConversationsItems[newSessionId] = item
-        if (widget != null) mConversationsWidgets[newSessionId] = widget
-        if (mSelectedSession == oldSessionId) mSelectedSession = newSessionId
+        sessions.remove(oldSessionId)
+        val changeFocus = removeConversationListItem(oldSessionId)
+        addConversationListItem(newSessionId, changeFocus)
+        TODO("APR: use JVM equivalent")
     }
 
-    fun getSelectedSession(): UUID = mSelectedSession
-    fun setSelectedSession(sessionId: UUID) { mSelectedSession = sessionId }
+    fun getSessionModel(sessionId: UUID): Any? = conversationsItems[sessionId]
 
-    fun getSessionModel(sessionId: UUID): ConversationItem? = mConversationsItems[sessionId]
-
-    fun checkContextMenuItem(item: String, selectedIds: List<UUID>): Boolean {
-        TODO("GPU: evaluate context menu item '$item' against selected participants $selectedIds")
+    fun checkContextMenuItem(item: String, selectedIds: MutableList<UUID>): Boolean {
+        TODO("APR: use JVM equivalent")
     }
 
-    fun enableContextMenuItem(item: String, selectedIds: List<UUID>): Boolean {
-        TODO("GPU: determine whether context menu item '$item' is enabled for $selectedIds")
+    fun enableContextMenuItem(item: String, selectedIds: MutableList<UUID>): Boolean {
+        TODO("APR: use JVM equivalent")
     }
 
-    fun doToParticipants(item: String, selectedIds: List<UUID>) {
-        TODO("GPU: perform action '$item' on participants $selectedIds")
+    fun doToParticipants(item: String, selectedIds: MutableList<UUID>) {
+        TODO("APR: use JVM equivalent")
     }
 
     fun assignResizeLimits() {
-        TODO("GPU: compute and set min/max resize limits from conversation + message pane widths")
+        TODO("APR: use JVM equivalent")
     }
 
-    open fun handleKeyHere(key: Int, mask: Int): Boolean {
-        TODO("GPU: handle navigation keys (arrow keys, Esc) within conversation list")
-    }
-
-    open fun closeFloater(appQuitting: Boolean = false) {
-        closeAllConversations(appQuitting)
-        TODO("GPU: hide/destroy the IM container floater")
+    fun closeFloater(appQuitting: Boolean = false) {
+        TODO("APR: use JVM equivalent")
     }
 
     fun closeAllConversations(appQuitting: Boolean) {
-        val ids = mSessions.keys.toList()
-        closeSelectedConversations(ids)
+        TODO("APR: use JVM equivalent")
     }
 
     fun closeSelectedConversations(ids: List<UUID>) {
-        for (id in ids) {
-            mSessions.remove(id)
-            removeConversationListItem(id, changeFocus = false)
-        }
+        TODO("APR: use JVM equivalent")
     }
 
-    open fun isFrontmost(): Boolean {
-        TODO("GPU: query window manager to determine if IM container has focus")
+    fun isFrontmost(): Boolean = TODO("APR: use JVM equivalent")
+
+    fun removeConversationListItem(id: UUID, changeFocus: Boolean = true): Boolean {
+        conversationsItems.remove(id)
+        conversationsWidgets.remove(id)
+        return changeFocus
     }
 
-    fun removeConversationListItem(uuid: UUID, changeFocus: Boolean = true): Boolean {
-        mConversationsItems.remove(uuid) ?: return false
-        mConversationsWidgets.remove(uuid)
-        if (changeFocus && mSelectedSession == uuid) {
-            selectAdjacentConversation(focusSelected = true)
-        }
-        return true
-    }
-
-    fun addConversationListItem(uuid: UUID, isWidgetSelected: Boolean = false): ConversationItem {
-        val item = ConversationItem(uuid)
-        mConversationsItems[uuid] = item
-        val widget = createConversationItemWidget(item)
-        mConversationsWidgets[uuid] = widget
-        if (isWidgetSelected) selectConversationPair(uuid, selectWidget = true)
-        return item
+    fun addConversationListItem(id: UUID, isWidgetSelected: Boolean = false): Any? {
+        TODO("APR: use JVM equivalent")
     }
 
     fun setTimeNow(sessionId: UUID, participantId: UUID) {
-        mConversationsItems[sessionId]?.setTimeNow(participantId)
+        TODO("APR: use JVM equivalent")
     }
 
     fun setNearbyDistances() {
-        TODO("GPU: iterate nearby chat participants and update distance columns in conversation view")
+        TODO("APR: use JVM equivalent")
     }
 
     fun reSelectConversation() {
-        selectConversationPair(mSelectedSession, selectWidget = true)
+        TODO("APR: use JVM equivalent")
     }
 
     fun updateSpeakBtnState() {
-        TODO("GPU: update speak button visual state from LLVoiceClient speaking status")
+        TODO("APR: use JVM equivalent")
     }
 
     fun flashConversationItemWidget(sessionId: UUID, isFlashing: Boolean, alternateColor: Boolean = false) {
-        mConversationsWidgets[sessionId]?.setFlashing(isFlashing, alternateColor)
+        TODO("APR: use JVM equivalent")
     }
 
     fun highlightConversationItemWidget(sessionId: UUID, isHighlighted: Boolean) {
-        mConversationsWidgets[sessionId]?.setHighlighted(isHighlighted)
+        TODO("APR: use JVM equivalent")
     }
 
-    fun isScrolledOutOfSight(widget: ConversationViewSession): Boolean {
-        TODO("GPU: check whether the given conversation widget is scrolled out of the visible list area")
-    }
-
-    fun getConversationListItemSize(): Int = mConversationsWidgets.size
+    fun getConversationListItemSize(): Int = conversationsWidgets.size
 
     fun getDetachedConversationFloaters(floaters: MutableList<Any>) {
-        TODO("GPU: walk mSessions and collect any that are not hosted in the tab container")
-    }
-
-    private fun idleUpdate() {
-        idleProcessEvents()
-    }
-
-    private fun idleProcessEvents() {
-        for ((sessionId, queue) in mConversationEventQueue) {
-            val maxEvents = EVENTS_PER_IDLE_LOOP_BACKGROUND
-            var processed = 0
-            while (queue.isNotEmpty() && processed < maxEvents) {
-                val event = queue.poll() ?: break
-                handleConversationModelEvent(event)
-                processed++
-            }
-        }
+        TODO("APR: use JVM equivalent")
     }
 
     private fun onNewMessageReceived(data: Map<String, Any>) {
         val sessionId = data["session_id"] as? UUID ?: return
-        flashConversationItemWidget(sessionId, true)
+        TODO("APR: use JVM equivalent")
     }
 
     private fun onExpandCollapseButtonClicked() {
-        collapseConversationsPane(isConversationsPaneCollapsed().not())
+        TODO("APR: use JVM equivalent")
     }
 
     private fun onStubCollapseButtonClicked() {
-        collapseMessagesPane(false)
+        TODO("APR: use JVM equivalent")
+    }
+
+    private fun processParticipantsStyleUpdate() {
+        TODO("APR: use JVM equivalent")
     }
 
     private fun onSpeakButtonPressed() {
-        TODO("GPU: begin push-to-talk via LLVoiceClient")
+        TODO("APR: use JVM equivalent")
     }
 
     private fun onSpeakButtonReleased() {
-        TODO("GPU: end push-to-talk via LLVoiceClient")
+        TODO("APR: use JVM equivalent")
     }
 
-    open fun onClickCloseBtn(appQuitting: Boolean = false) {
-        closeFloater(appQuitting)
+    private fun onClickCloseBtn(appQuitting: Boolean = false) {
+        TODO("APR: use JVM equivalent")
     }
 
-    open fun closeHostedFloater() {
-        TODO("GPU: close the currently visible hosted IM session floater")
-    }
-
-    private fun collapseConversationsPane(collapse: Boolean, saveAllowed: Boolean = true) {
-        TODO("GPU: animate conversations pane width to 0 (collapse) or restore (expand), persist if saveAllowed")
+    private fun collapseConversationsPane(collapse: Boolean, saveIsAllowed: Boolean = true) {
+        TODO("APR: use JVM equivalent")
     }
 
     private fun reshapeFloaterAndSetResizeLimits(collapse: Boolean, deltaWidth: Int) {
-        TODO("GPU: adjust floater width by $deltaWidth and recalculate resize limits for collapse=$collapse")
+        TODO("APR: use JVM equivalent")
     }
 
     private fun onAddButtonClicked() {
-        TODO("GPU: open avatar picker to start a new IM session")
+        TODO("APR: use JVM equivalent")
     }
 
     private fun onAvatarPicked(ids: List<UUID>) {
-        TODO("GPU: open IM sessions with each picked avatar UUID: $ids")
+        TODO("APR: use JVM equivalent")
     }
 
-    private fun onCustomAction(userdata: Map<String, Any>) {
-        TODO("GPU: dispatch custom action from conversation context menu based on userdata=$userdata")
-    }
+    private fun isActionChecked(userdata: Any?): Boolean = TODO("APR: use JVM equivalent")
+    private fun onCustomAction(userdata: Any?) { TODO("APR: use JVM equivalent") }
 
-    private fun setSortOrder(order: ConversationSort) {
-        TODO("GPU: apply sort order $order to mConversationViewModel and refresh list")
-    }
+    private fun setSortOrderSessions(order: Int) { TODO("APR: use JVM equivalent") }
+    private fun setSortOrderParticipants(order: Int) { TODO("APR: use JVM equivalent") }
+    private fun setSortOrder(order: Any) { TODO("APR: use JVM equivalent") }
 
     private fun getSelectedUUIDs(selectedUuids: MutableList<UUID>, participantUuids: Boolean = true) {
-        TODO("GPU: collect UUIDs of selected conversation items (participants or sessions) into selectedUuids")
+        TODO("APR: use JVM equivalent")
     }
 
-    private fun getParticipantUUIDs(selectedUuids: MutableList<UUID>) {
-        getSelectedUUIDs(selectedUuids, participantUuids = true)
-    }
+    private fun doToSelected(userdata: Any?) { TODO("APR: use JVM equivalent") }
+    private fun doToSelectedGroup(userdata: Any?) { TODO("APR: use JVM equivalent") }
+    private fun doToSelectedConversation(command: String, selectedIds: MutableList<UUID>) { TODO("APR: use JVM equivalent") }
 
-    private fun doToSelected(userdata: Map<String, Any>) {
-        TODO("GPU: perform action specified in userdata on all selected conversation items")
-    }
+    private fun enableModerateContextMenuItem(userdata: String, isSelf: Boolean = false): Boolean = TODO("APR: use JVM equivalent")
+    private fun isGroupModerator(): Boolean = TODO("APR: use JVM equivalent")
+    private fun haveAbilityToBan(): Boolean = TODO("APR: use JVM equivalent")
+    private fun canBanSelectedMember(participantUuid: UUID): Boolean = TODO("APR: use JVM equivalent")
+    private fun isMuted(avatarId: UUID): Boolean = TODO("APR: use JVM equivalent")
+    private fun moderateVoice(command: String, userId: UUID) { TODO("APR: use JVM equivalent") }
+    private fun moderateVoiceAllParticipants(unmute: Boolean) { TODO("APR: use JVM equivalent") }
+    private fun moderateVoiceParticipant(avatarId: UUID, unmute: Boolean) { TODO("APR: use JVM equivalent") }
+    private fun toggleAllowTextChat(participantUuid: UUID) { TODO("APR: use JVM equivalent") }
+    private fun banSelectedMember(participantUuid: UUID) { TODO("APR: use JVM equivalent") }
+    private fun openNearbyChat() { TODO("APR: use JVM equivalent") }
+    private fun isParticipantListExpanded(): Boolean = TODO("APR: use JVM equivalent")
 
-    private fun doToSelectedConversation(command: String, selectedIds: List<UUID>) {
-        TODO("GPU: perform command='$command' on selected conversation sessions $selectedIds")
-    }
+    private fun idleUpdate() { TODO("APR: use JVM equivalent") }
+    private fun idleProcessEvents() { TODO("APR: use JVM equivalent") }
 
-    private fun doToSelectedGroup(userdata: Map<String, Any>) {
-        TODO("GPU: perform group action from userdata=$userdata on selected group conversation")
+    private fun onConversationModelEvent(event: Map<String, Any>): Boolean {
+        handleConversationModelEvent(event)
+        return false
     }
-
-    private fun moderateVoice(command: String, userId: UUID) {
-        TODO("GPU: send voice moderation command='$command' for participant $userId via LLVoiceClient")
-    }
-
-    private fun moderateVoiceAllParticipants(unmute: Boolean) {
-        TODO("GPU: mute/unmute all participants in voice channel, unmute=$unmute")
-    }
-
-    private fun moderateVoiceParticipant(avatarId: UUID, unmute: Boolean) {
-        TODO("GPU: mute/unmute participant $avatarId in voice channel, unmute=$unmute")
-    }
-
-    private fun toggleAllowTextChat(participantUuid: UUID) {
-        TODO("GPU: toggle allow-text-chat flag for group participant $participantUuid via LLGroupMgr")
-    }
-
-    private fun banSelectedMember(participantUuid: UUID) {
-        TODO("GPU: ban participant $participantUuid from the group via LLGroupMgr")
-    }
-
-    private fun openNearbyChat() {
-        TODO("GPU: show LLFloaterIMNearbyChat via LLFloaterReg")
-    }
-
-    private fun isParticipantListExpanded(): Boolean {
-        TODO("GPU: check whether the conversation participant sub-list is expanded in the view")
-    }
-
-    private fun createConversationItemWidget(item: ConversationItem): ConversationViewSession =
-        ConversationViewSession(item)
 
     private fun handleConversationModelEvent(event: Map<String, Any>) {
-        TODO("GPU: dispatch conversation model event (add/remove/update participant) to the conversation view")
+        TODO("APR: use JVM equivalent")
     }
 
     companion object {
-        private const val EVENTS_PER_IDLE_LOOP_BACKGROUND = 40
-        private const val TAB_END = 0
+        fun findInstance(): FloaterIMContainer? = TODO("APR: use JVM equivalent")
+        fun getInstance(): FloaterIMContainer = TODO("APR: use JVM equivalent")
+
+        fun onCurrentChannelChanged(sessionId: UUID) {
+            if (sessionId != null) {
+                getInstance().showConversation(sessionId)
+            }
+        }
+
+        fun isConversationLoggingAllowed(): Boolean = TODO("APR: use JVM equivalent")
+
+        fun idle(userData: Any?) {
+            (userData as? FloaterIMContainer)?.idleUpdate()
+        }
+
+        private fun confirmMuteAllCallback(notification: Any?, response: Any?) {
+            TODO("APR: use JVM equivalent")
+        }
     }
-
-    data class Rect(val left: Int, val top: Int, val width: Int, val height: Int)
-
-    class ConversationItem(val sessionId: UUID) {
-        fun setTimeNow(participantId: UUID) {}
-    }
-
-    class ConversationViewSession(val item: ConversationItem) {
-        fun setSelected(selected: Boolean) {}
-        fun setFlashing(flashing: Boolean, alternateColor: Boolean = false) {}
-        fun setHighlighted(highlighted: Boolean) {}
-    }
-
-    class ConversationSort
 }

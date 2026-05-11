@@ -7,23 +7,31 @@ interface AvatarTrackerObserver {
 }
 
 object BuddyRights {
-    const val ONLINE: Int         = 1
-    const val MAP: Int            = 2
-    const val MODIFY_OBJECTS: Int = 4
+    const val ONLINE: Int         = 1 shl 0
+    const val MAP: Int            = 1 shl 1
+    const val MODIFY_OBJECTS: Int = 1 shl 2
 }
 
 object AvatarTracker {
 
-    data class BuddyInfo(val rightsGranted: Int, val rightsHas: Int)
+    data class BuddyInfo(
+        val rightsGranted: Int,
+        val rightsHas: Int
+    ) {
+        fun isOnline(): Boolean = (rightsHas and BuddyRights.ONLINE) != 0
+        fun canSeeOnMap(): Boolean = (rightsHas and BuddyRights.MAP) != 0
+        fun canModifyObjects(): Boolean = (rightsHas and BuddyRights.MODIFY_OBJECTS) != 0
+        fun grantsOnline(): Boolean = (rightsGranted and BuddyRights.ONLINE) != 0
+        fun grantsMap(): Boolean = (rightsGranted and BuddyRights.MAP) != 0
+        fun grantsModifyObjects(): Boolean = (rightsGranted and BuddyRights.MODIFY_OBJECTS) != 0
+    }
 
     val buddies: MutableMap<LLUUID, BuddyInfo> = mutableMapOf()
 
-    val trackedAgentId: LLUUID = LLUUID.NULL
+    var trackedAgentId: LLUUID = LLUUID.NULL
     var isTrackingAgent: Boolean = false
 
     private val observers: MutableList<AvatarTrackerObserver> = mutableListOf()
-
-    // ── Buddy management ─────────────────────────────────────────────────────
 
     fun isBuddy(id: LLUUID): Boolean = buddies.containsKey(id)
 
@@ -45,16 +53,24 @@ object AvatarTracker {
         buddies.forEach { (id, info) -> fn(id, info) }
     }
 
-    // ── Queries ──────────────────────────────────────────────────────────────
-
-    // Returns buddies that have granted us online-visibility rights, taken
-    // here as a proxy for "online" since actual presence isn't tracked locally.
     fun findOnline(): List<LLUUID> =
         buddies.entries
-            .filter { (_, info) -> (info.rightsHas and BuddyRights.ONLINE) != 0 }
+            .filter { (_, info) -> info.isOnline() }
             .map { it.key }
 
-    // ── Observers ────────────────────────────────────────────────────────────
+    fun isOnline(id: LLUUID): Boolean = buddies[id]?.isOnline() ?: false
+
+    fun setBuddyRightsGranted(id: LLUUID, rights: Int) {
+        val info = buddies[id] ?: return
+        buddies[id] = info.copy(rightsGranted = rights)
+        notifyObservers(mutableSetOf(id))
+    }
+
+    fun setBuddyRightsHas(id: LLUUID, rights: Int) {
+        val info = buddies[id] ?: return
+        buddies[id] = info.copy(rightsHas = rights)
+        notifyObservers(mutableSetOf(id))
+    }
 
     fun addObserver(obs: AvatarTrackerObserver) {
         if (!observers.contains(obs)) observers.add(obs)
@@ -66,5 +82,11 @@ object AvatarTracker {
 
     fun notifyObservers(changed: MutableSet<LLUUID>) {
         observers.toList().forEach { it.changed(changed) }
+    }
+
+    fun clear() {
+        buddies.clear()
+        trackedAgentId = LLUUID.NULL
+        isTrackingAgent = false
     }
 }

@@ -1,22 +1,13 @@
-// Converted from llvoiceclient.h / llvoiceclient.cpp (Firestorm / Linden Research)
-// LGPL-2.1-only — see project root for full license text.
-
 package com.firestorm.newview
 
 import com.firestorm.llmath.*
 import com.firestorm.llcommon.*
 
-// ---------------------------------------------------------------------------
-// Supporting data types
-// ---------------------------------------------------------------------------
-
-/** Friendly + internal name pair for a physical audio device. */
 data class VoiceDevice(
     val displayName: String,
     val fullName: String,
 )
 
-/** Information about the voice-server plugin that is currently active. */
 data class VoiceVersionInfo(
     val voiceServerType: String,
     val internalVoiceServerType: String,
@@ -26,32 +17,16 @@ data class VoiceVersionInfo(
     val buildVersion: String,
 )
 
-/** A single participant visible in the current voice channel. */
 data class VoiceParticipant(
     val id: LLUUID,
     val name: String,
     val isSpeaking: Boolean,
-    /** Normalised volume received from this participant, 0..1. */
     val volume: Float,
-    /**
-     * Amplitude-derived "power" value.
-     * Mirrors LLVoiceClient::getCurrentPower().
-     */
     val power: Float,
     val isAvatar: Boolean = true,
     val isModeratorMuted: Boolean = false,
 )
 
-// ---------------------------------------------------------------------------
-// Observer interfaces
-// ---------------------------------------------------------------------------
-
-/**
- * Implemented by UI panels that need to react to voice channel / login
- * state changes.
- *
- * Mirrors LLVoiceClientStatusObserver.
- */
 interface VoiceObserver {
     enum class StatusType {
         STATUS_LOGIN_RETRY,
@@ -75,44 +50,20 @@ interface VoiceObserver {
     }
 }
 
-/**
- * Implemented by UI panels that display the participant list.
- *
- * Mirrors LLVoiceClientParticipantObserver.
- */
 interface VoiceParticipantObserver {
     fun onParticipantsChanged()
 }
 
-/**
- * Implemented by the voice module that supports P2P calls (e.g. Vivox).
- *
- * Mirrors LLVoiceP2POutgoingCallInterface.
- */
 interface VoiceP2POutgoingCallInterface {
     fun callUser(agentId: LLUUID)
     fun hangup()
 }
 
-/**
- * Interface presented to the call-accept / call-decline dialog.
- *
- * Mirrors LLVoiceP2PIncomingCallInterface.
- */
 interface VoiceP2PIncomingCallInterface {
     fun answerInvite(): Boolean
     fun declineInvite()
 }
 
-// ---------------------------------------------------------------------------
-// Voice power levels (Firestorm extension — FS:Ansariel)
-// ---------------------------------------------------------------------------
-
-/**
- * Discrete power-level buckets used to drive the in-world speaking indicator.
- *
- * Mirrors EVoicePowerLevel.
- */
 enum class VoicePowerLevel {
     MUTED,
     PTT_OFF,
@@ -122,334 +73,451 @@ enum class VoicePowerLevel {
     LEVEL_3,
 }
 
-// ---------------------------------------------------------------------------
-// Main singleton
-// ---------------------------------------------------------------------------
+interface VoiceModuleInterface {
+    fun init(pump: Any?)
+    fun terminate()
+    fun updateSettings()
+    fun isVoiceWorking(): Boolean
+    fun setHidden(hidden: Boolean)
+    fun getVersion(): VoiceVersionInfo
 
-/**
- * Voice-chat client abstraction layer.
- *
- * Delegates all actual voice work to a pluggable [VoiceModuleInterface]
- * (Vivox or WebRTC).  The singleton owns the active spatial and
- * non-spatial voice modules and routes all calls to the appropriate one.
- *
- * Mirrors LLVoiceClient (LLParamSingleton) in llvoiceclient.h.
- * IPC and Boost.Signals2 plumbing is stubbed with [TODO].
- */
+    fun tuningStart()
+    fun tuningStop()
+    fun inTuningMode(): Boolean
+    fun tuningSetMicVolume(volume: Float)
+    fun tuningSetSpeakerVolume(volume: Float)
+    fun tuningGetEnergy(): Float
+
+    fun deviceSettingsAvailable(): Boolean
+    fun deviceSettingsUpdated(): Boolean
+    fun refreshDeviceLists(clearCurrentList: Boolean = true)
+    fun setCaptureDevice(name: String)
+    fun setRenderDevice(name: String)
+    fun getCaptureDevices(): MutableList<VoiceDevice>
+    fun getRenderDevices(): MutableList<VoiceDevice>
+    fun getParticipantList(participants: MutableSet<LLUUID>)
+    fun isParticipant(speakerId: LLUUID): Boolean
+
+    fun inProximalChannel(): Boolean
+    fun setNonSpatialChannel(channelInfo: Map<String, Any?>, notifyOnFirstJoin: Boolean, hangupOnLastLeave: Boolean)
+    fun setSpatialChannel(channelInfo: Map<String, Any?>): Boolean
+    fun leaveNonSpatialChannel()
+    fun processChannels(process: Boolean)
+    fun isCurrentChannel(channelInfo: Map<String, Any?>): Boolean
+    fun compareChannels(channelInfo1: Map<String, Any?>, channelInfo2: Map<String, Any?>): Boolean
+
+    fun getOutgoingCallInterface(): VoiceP2POutgoingCallInterface?
+    fun getIncomingCallInterface(voiceCallInfo: Map<String, Any?>): VoiceP2PIncomingCallInterface?
+
+    fun setVoiceVolume(volume: Float)
+    fun setMicGain(volume: Float)
+    fun setVoiceEnabled(enabled: Boolean)
+    fun setMuteMic(muted: Boolean)
+
+    fun getDisplayName(id: LLUUID): String
+    fun isParticipantAvatar(id: LLUUID): Boolean
+    fun getIsSpeaking(id: LLUUID): Boolean
+    fun getIsModeratorMuted(id: LLUUID): Boolean
+    fun getCurrentPower(id: LLUUID): Float
+    fun getUserVolume(id: LLUUID): Float
+    fun setUserVolume(id: LLUUID, volume: Float)
+
+    fun isSessionTextIMPossible(id: LLUUID): Boolean
+    fun isSessionCallBackPossible(id: LLUUID): Boolean
+    fun userAuthorized(userId: String, agentId: LLUUID)
+
+    fun addObserver(observer: VoiceObserver)
+    fun removeObserver(observer: VoiceObserver)
+    fun addObserver(observer: VoiceParticipantObserver)
+    fun removeObserver(observer: VoiceParticipantObserver)
+
+    fun sipURIFromID(id: LLUUID): String
+    fun getP2PChannelInfoTemplate(id: LLUUID): Map<String, Any?>
+}
+
+interface VoiceEffectObserver {
+    fun onVoiceEffectChanged(effectListUpdated: Boolean)
+}
+
+interface VoiceEffectInterface {
+    fun setVoiceEffect(id: LLUUID): Boolean
+    fun getVoiceEffect(): LLUUID
+    fun getVoiceEffectProperties(id: LLUUID): Map<String, Any?>
+    fun refreshVoiceEffectLists(clearLists: Boolean)
+    fun getVoiceEffectList(): Map<String, LLUUID>
+    fun getVoiceEffectTemplateList(): Map<String, LLUUID>
+
+    fun addObserver(observer: VoiceEffectObserver)
+    fun removeObserver(observer: VoiceEffectObserver)
+
+    fun enablePreviewBuffer(enable: Boolean)
+    fun recordPreviewBuffer()
+    fun playPreviewBuffer(effectId: LLUUID? = null)
+    fun stopPreviewBuffer()
+    fun isPreviewRecording(): Boolean
+    fun isPreviewPlaying(): Boolean
+}
+
 object VoiceClient {
 
-    // ---- constants ----
-
-    /** Power level at which a participant is considered "overdriven". */
     const val OVERDRIVEN_POWER_LEVEL: Float = 0.7f
-
-    // Firestorm centralized power-level thresholds
     val POWER_LEVEL_0: Float = OVERDRIVEN_POWER_LEVEL / 3f
     val POWER_LEVEL_1: Float = OVERDRIVEN_POWER_LEVEL * 2f / 3f
     val POWER_LEVEL_2: Float = OVERDRIVEN_POWER_LEVEL
-
     const val VOLUME_MIN: Float = 0f
     const val VOLUME_DEFAULT: Float = 0.5f
     const val VOLUME_MAX: Float = 1f
 
-    // ---- state ----
+    private var spatialVoiceModule: VoiceModuleInterface? = null
+    private var nonSpatialVoiceModule: VoiceModuleInterface? = null
+    private var spatialCredentials: Map<String, Any?> = emptyMap()
 
-    /**
-     * True when voice is globally enabled in preferences.
-     * Writing this broadcasts the change to the active voice module.
-     */
     var isVoiceEnabled: Boolean = false
         set(value) {
             field = value
-            TODO("IPC: spatialVoiceModule?.setVoiceEnabled(value)")
+            spatialVoiceModule?.setVoiceEnabled(value)
+            nonSpatialVoiceModule?.setVoiceEnabled(value)
         }
 
-    /** True when the user is currently inside a voice channel. */
     var isInVoiceChannel: Boolean = false
         private set
 
-    /** True while the microphone is locally muted (e.g. window minimised). */
-    var isMicMuted: Boolean = false
-        private set
-
-    /** True when the user is using push-to-talk mode. */
+    private var muteMic: Boolean = false
+    private var disableMic: Boolean = false
     var usePTT: Boolean = true
-
-    /** True when PTT is a toggle rather than a hold. */
+        private set
     var pttIsToggle: Boolean = false
-
-    /** Current PTT button state. */
+        private set
     var userPTTState: Boolean = false
         private set
+
+    private var voiceEffectSupportNotified: Boolean = false
+
+    val microChangedCallbacks: MutableList<() -> Unit> = mutableListOf()
+    val userVolumeUpdateCallbacks: MutableList<(LLUUID) -> Unit> = mutableListOf()
 
     private val statusObservers: MutableList<VoiceObserver> = mutableListOf()
     private val participantObservers: MutableList<VoiceParticipantObserver> = mutableListOf()
 
-    // ---- initialisation ----
-
-    /**
-     * One-time startup; initialises the underlying voice modules.
-     * [pump] is the C++-side IO pump handle (opaque in Kotlin).
-     */
     fun init(pump: Any?) {
         TODO("IPC: init LLVivoxVoiceClient and LLWebRTCVoiceClient with pump")
     }
 
-    /** Clean shutdown; call before the viewer exits. */
     fun terminate() {
         isInVoiceChannel = false
-        TODO("IPC: spatialVoiceModule?.terminate(); nonSpatialVoiceModule?.terminate()")
+        TODO("IPC: webRtcModule?.terminate(); vivoxModule?.terminate()")
     }
 
-    /** Re-read all voice-related settings and push them to the active module. */
     fun updateSettings() {
-        TODO("IPC: spatialVoiceModule?.updateSettings()")
+        TODO("IPC: read PTTCurrentlyEnabled, PushToTalkToggle, VoiceDisableMic from settings; call spatialVoiceModule?.updateSettings()")
     }
 
-    /** Returns true when a voice module is connected and a channel is active. */
     fun isVoiceWorking(): Boolean =
-        TODO("IPC: spatialVoiceModule?.isVoiceWorking() ?: false")
+        TODO("IPC: vivoxModule?.isVoiceWorking() == true || webRtcModule?.isVoiceWorking() == true")
 
-    // ---- version ----
+    fun voiceEnabled(noCache: Boolean = false): Boolean =
+        TODO("IPC: read EnableVoiceChat and CmdLineDisableVoice settings")
 
     fun getVersion(): VoiceVersionInfo =
-        TODO("IPC: spatialVoiceModule?.getVersion()")
+        spatialVoiceModule?.getVersion() ?: VoiceVersionInfo("", "", 0, 0, "", "")
 
-    // ---- tuning ----
+    fun tuningStart() {
+        TODO("IPC: webRtcModule?.tuningStart(); vivoxModule?.tuningStart()")
+    }
 
-    fun tuningStart() { TODO("IPC: spatialVoiceModule?.tuningStart()") }
-    fun tuningStop() { TODO("IPC: spatialVoiceModule?.tuningStop()") }
-    fun inTuningMode(): Boolean = TODO("IPC: spatialVoiceModule?.inTuningMode() ?: false")
-    fun tuningSetMicVolume(volume: Float) { TODO("IPC: spatialVoiceModule?.tuningSetMicVolume(volume)") }
-    fun tuningSetSpeakerVolume(volume: Float) { TODO("IPC: spatialVoiceModule?.tuningSetSpeakerVolume(volume)") }
-    fun tuningGetEnergy(): Float = TODO("IPC: spatialVoiceModule?.tuningGetEnergy() ?: 0f")
+    fun tuningStop() {
+        TODO("IPC: webRtcModule?.tuningStop(); vivoxModule?.tuningStop()")
+    }
 
-    // ---- device management ----
+    fun inTuningMode(): Boolean = TODO("IPC: webRtcModule?.inTuningMode() ?: false")
 
-    /** True when the device list is populated and the settings dialog can be shown. */
-    fun deviceSettingsAvailable(): Boolean = TODO("IPC: spatialVoiceModule?.deviceSettingsAvailable() ?: false")
-    fun deviceSettingsUpdated(): Boolean = TODO("IPC: spatialVoiceModule?.deviceSettingsUpdated() ?: false")
+    fun tuningSetMicVolume(volume: Float) {
+        TODO("IPC: webRtcModule?.tuningSetMicVolume(volume)")
+    }
+
+    fun tuningSetSpeakerVolume(volume: Float) {
+        TODO("IPC: webRtcModule?.tuningSetSpeakerVolume(volume)")
+    }
+
+    fun tuningGetEnergy(): Float = TODO("IPC: webRtcModule?.tuningGetEnergy() ?: 0f")
+
+    fun deviceSettingsAvailable(): Boolean = TODO("IPC: webRtcModule?.deviceSettingsAvailable() ?: false")
+    fun deviceSettingsUpdated(): Boolean = TODO("IPC: webRtcModule?.deviceSettingsUpdated() ?: false")
 
     fun refreshDeviceLists(clearCurrentList: Boolean = true) {
-        TODO("IPC: spatialVoiceModule?.refreshDeviceLists(clearCurrentList)")
+        TODO("IPC: webRtcModule?.refreshDeviceLists(clearCurrentList)")
     }
 
-    fun setCaptureDevice(name: String) { TODO("IPC: spatialVoiceModule?.setCaptureDevice(name)") }
-    fun setRenderDevice(name: String) { TODO("IPC: spatialVoiceModule?.setRenderDevice(name)") }
-    fun setHidden(hidden: Boolean) { TODO("IPC: spatialVoiceModule?.setHidden(hidden)") }
+    fun setCaptureDevice(name: String) {
+        TODO("IPC: vivoxModule?.setCaptureDevice(name); webRtcModule?.setCaptureDevice(name)")
+    }
 
-    fun getCaptureDevices(): List<VoiceDevice> = TODO("IPC: spatialVoiceModule?.getCaptureDevices()")
-    fun getRenderDevices(): List<VoiceDevice> = TODO("IPC: spatialVoiceModule?.getRenderDevices()")
+    fun setRenderDevice(name: String) {
+        TODO("IPC: vivoxModule?.setRenderDevice(name); webRtcModule?.setRenderDevice(name)")
+    }
 
-    // ---- channel management ----
+    fun setHidden(hidden: Boolean) {
+        TODO("IPC: webRtcModule?.setHidden(hidden); vivoxModule?.setHidden(hidden)")
+    }
 
-    /** True iff the user is in a local spatial (proximal) voice channel. */
-    fun inProximalChannel(): Boolean = TODO("IPC: spatialVoiceModule?.inProximalChannel() ?: false")
+    fun getCaptureDevices(): List<VoiceDevice> = TODO("IPC: webRtcModule?.getCaptureDevices() ?: emptyList()")
+    fun getRenderDevices(): List<VoiceDevice> = TODO("IPC: webRtcModule?.getRenderDevices() ?: emptyList()")
 
-    /**
-     * Join a non-spatial (group / estate) voice channel described by [channelInfo].
-     *
-     * @param channelInfo  Serialised channel credentials (equivalent to LLSD).
-     * @param notifyOnFirstJoin  Fire a status notification when the join succeeds.
-     * @param hangupOnLastLeave  Leave the channel automatically when all other
-     *                           participants have gone.
-     */
-    fun joinChannel(
-        uri: String,
-        notifyOnFirstJoin: Boolean = true,
-        hangupOnLastLeave: Boolean = true,
+    fun inProximalChannel(): Boolean =
+        spatialVoiceModule?.inProximalChannel() ?: false
+
+    fun setNonSpatialChannel(
+        channelInfo: Map<String, Any?>,
+        notifyOnFirstJoin: Boolean,
+        hangupOnLastLeave: Boolean,
     ) {
+        val vsType = channelInfo["voice_server_type"] as? String ?: ""
+        setNonSpatialVoiceModule(vsType)
+        if (spatialVoiceModule != null && spatialVoiceModule !== nonSpatialVoiceModule) {
+            spatialVoiceModule?.processChannels(false)
+        }
+        nonSpatialVoiceModule?.processChannels(true)
+        nonSpatialVoiceModule?.setNonSpatialChannel(channelInfo, notifyOnFirstJoin, hangupOnLastLeave)
         isInVoiceChannel = true
-        TODO("IPC: nonSpatialVoiceModule?.setNonSpatialChannel(channelInfo, ...)")
-    }
-
-    /** Leave the current non-spatial voice channel. */
-    fun leaveChannel() {
-        isInVoiceChannel = false
-        TODO("IPC: nonSpatialVoiceModule?.leaveNonSpatialChannel()")
     }
 
     fun setSpatialChannel(channelInfo: Map<String, Any?>) {
-        TODO("IPC: spatialVoiceModule?.setSpatialChannel(channelInfo)")
+        spatialCredentials = channelInfo
+        TODO("IPC: query region simulator features; call setSpatialVoiceModule; forward to spatialVoiceModule")
     }
 
     fun activateSpatialChannel(activate: Boolean) {
-        TODO("IPC: spatialVoiceModule?.processChannels(activate)")
+        spatialVoiceModule?.processChannels(activate)
     }
 
-    // ---- P2P ----
-
-    fun getOutgoingCallInterface(): VoiceP2POutgoingCallInterface? =
-        TODO("IPC: spatialVoiceModule?.getOutgoingCallInterface()")
-
-    fun getIncomingCallInterface(voiceCallInfo: Map<String, Any?>): VoiceP2PIncomingCallInterface? =
-        TODO("IPC: spatialVoiceModule?.getIncomingCallInterface(voiceCallInfo)")
-
-    // ---- volume / mic ----
-
-    /** Set voice-output (speaker) volume. [vol] is in [VOLUME_MIN]..[VOLUME_MAX]. */
-    fun setSpeakerVolume(vol: Float) {
-        TODO("IPC: spatialVoiceModule?.setVoiceVolume(vol.coerceIn(VOLUME_MIN, VOLUME_MAX))")
+    fun leaveNonSpatialChannel() {
+        nonSpatialVoiceModule?.leaveNonSpatialChannel()
+        nonSpatialVoiceModule?.processChannels(false)
+        nonSpatialVoiceModule = null
+        isInVoiceChannel = false
     }
 
-    /** Set microphone input gain. [vol] is in [VOLUME_MIN]..[VOLUME_MAX]. */
-    fun setMicGain(vol: Float) {
-        TODO("IPC: spatialVoiceModule?.setMicGain(vol)")
+    fun isCurrentChannel(channelInfo: Map<String, Any?>): Boolean =
+        TODO("IPC: webRtcModule?.isCurrentChannel(channelInfo) == true || vivoxModule?.isCurrentChannel(channelInfo) == true")
+
+    fun compareChannels(channelInfo1: Map<String, Any?>, channelInfo2: Map<String, Any?>): Boolean =
+        TODO("IPC: webRtcModule?.compareChannels(channelInfo1, channelInfo2) == true || vivoxModule?.compareChannels(...)")
+
+    fun getOutgoingCallInterface(voiceChannelInfo: Map<String, Any?> = emptyMap()): VoiceP2POutgoingCallInterface? =
+        TODO("IPC: resolve voice_server_type from settings / region; return module as outgoing interface")
+
+    fun getIncomingCallInterface(voiceCallInfo: Map<String, Any?>): VoiceP2PIncomingCallInterface? {
+        val vsType = voiceCallInfo["voice_server_type"] as? String ?: ""
+        return TODO("IPC: getVoiceModule($vsType)?.getIncomingCallInterface(voiceCallInfo)")
     }
 
-    /**
-     * Mute/unmute the local microphone, bypassing PTT state.
-     * Used when the viewer window loses focus.
-     */
-    fun setMicMute(muted: Boolean) {
-        isMicMuted = muted
-        TODO("IPC: spatialVoiceModule?.setMuteMic(muted); updateMicMuteLogic()")
+    fun setVoiceVolume(volume: Float) {
+        TODO("IPC: webRtcModule?.setVoiceVolume(volume); vivoxModule?.setVoiceVolume(volume)")
+    }
+
+    fun setMicGain(gain: Float) {
+        TODO("IPC: webRtcModule?.setMicGain(gain); vivoxModule?.setMicGain(gain)")
+    }
+
+    fun setMuteMic(muted: Boolean) {
+        if (muteMic != muted) {
+            muteMic = muted
+            updateMicMuteLogic()
+            microChangedCallbacks.forEach { it() }
+        }
     }
 
     fun setUserPTTState(ptt: Boolean) {
         userPTTState = ptt
-        TODO("IPC: updateMicMuteLogic()")
+        updateMicMuteLogic()
+        microChangedCallbacks.forEach { it() }
     }
 
-    fun toggleUserPTTState() { setUserPTTState(!userPTTState) }
+    fun getUserPTTState(): Boolean = userPTTState
 
-    /** Per-volume override for a specific participant. [volume] is 0..1 where 0.5 is nominal. */
-    fun setUserVolume(id: LLUUID, volume: Float) {
-        TODO("IPC: spatialVoiceModule?.setUserVolume(id, volume)")
+    fun setUsePTT(usePTT: Boolean) {
+        if (usePTT && !this.usePTT) {
+            userPTTState = false
+        }
+        this.usePTT = usePTT
+        updateMicMuteLogic()
     }
 
-    // ---- participant accessors ----
+    fun setPTTIsToggle(toggle: Boolean) {
+        if (!toggle && pttIsToggle) {
+            userPTTState = false
+        }
+        pttIsToggle = toggle
+        updateMicMuteLogic()
+    }
 
-    /** Return a snapshot of all current voice participants. */
-    fun getParticipants(): List<VoiceParticipant> =
-        TODO("IPC: build list from spatialVoiceModule?.getParticipantList()")
+    fun getPTTIsToggle(): Boolean = pttIsToggle
 
-    fun isParticipant(speakerId: LLUUID): Boolean =
-        TODO("IPC: spatialVoiceModule?.isParticipant(speakerId) ?: false")
-
-    fun getDisplayName(id: LLUUID): String =
-        TODO("IPC: spatialVoiceModule?.getDisplayName(id) ?: id.toString()")
-
-    fun getIsSpeaking(id: LLUUID): Boolean =
-        TODO("IPC: spatialVoiceModule?.getIsSpeaking(id) ?: false")
-
-    fun getIsModeratorMuted(id: LLUUID): Boolean =
-        TODO("IPC: spatialVoiceModule?.getIsModeratorMuted(id) ?: false")
-
-    /** Returns amplitude-derived power for [id], in 0..1. */
-    fun getCurrentPower(id: LLUUID): Float =
-        TODO("IPC: spatialVoiceModule?.getCurrentPower(id) ?: 0f")
-
-    fun getUserVolume(id: LLUUID): Float =
-        TODO("IPC: spatialVoiceModule?.getUserVolume(id) ?: VOLUME_DEFAULT")
-
-    /**
-     * Map a raw power value to a [VoicePowerLevel] bucket.
-     * Firestorm extension: FS:Ansariel — centralised voice power level.
-     */
-    fun getPowerLevel(id: LLUUID): VoicePowerLevel {
-        val power = getCurrentPower(id)
-        return when {
-            power <= 0f         -> VoicePowerLevel.MUTED
-            power < POWER_LEVEL_0 -> VoicePowerLevel.PTT_OFF
-            power < POWER_LEVEL_1 -> VoicePowerLevel.PTT_ON
-            power < POWER_LEVEL_1 -> VoicePowerLevel.LEVEL_1
-            power < POWER_LEVEL_2 -> VoicePowerLevel.LEVEL_2
-            else                  -> VoicePowerLevel.LEVEL_3
+    fun inputUserControlState(down: Boolean) {
+        if (pttIsToggle) {
+            if (down) toggleUserPTTState()
+        } else {
+            setUserPTTState(down)
         }
     }
 
-    // ---- text-IM capability queries ----
-
-    fun isSessionTextIMPossible(id: LLUUID): Boolean =
-        TODO("IPC: spatialVoiceModule?.isSessionTextIMPossible(id) ?: false")
-
-    fun isSessionCallBackPossible(id: LLUUID): Boolean =
-        TODO("IPC: spatialVoiceModule?.isSessionCallBackPossible(id) ?: false")
-
-    // ---- observer registration ----
-
-    fun addObserver(observer: VoiceObserver) { statusObservers.add(observer) }
-    fun removeObserver(observer: VoiceObserver) { statusObservers.remove(observer) }
-    fun addObserver(observer: VoiceParticipantObserver) { participantObservers.add(observer) }
-    fun removeObserver(observer: VoiceParticipantObserver) { participantObservers.remove(observer) }
-
-    // ---- SIP / channel info helpers ----
-
-    fun sipURIFromID(id: LLUUID): String =
-        TODO("IPC: spatialVoiceModule?.sipURIFromID(id)")
-
-    fun getP2PChannelInfoTemplate(id: LLUUID): Map<String, Any?> =
-        TODO("IPC: spatialVoiceModule?.getP2PChannelInfoTemplate(id)")
-
-    // ---- region / feature callbacks ----
-
-    /** Called when the agent moves to a new region; triggers a channel switch. */
-    fun onRegionChanged() {
-        TODO("IPC: query new region for VoiceServerType; call handleSimulatorFeaturesReceived")
+    fun toggleUserPTTState() {
+        setUserPTTState(!userPTTState)
     }
 
-    /**
-     * Apply the voice-server type advertised by the simulator feature set
-     * and switch the active spatial module accordingly.
-     */
-    fun handleSimulatorFeaturesReceived(simulatorFeatures: Map<String, Any?>) {
-        val voiceServerType = simulatorFeatures["VoiceServerType"] as? String ?: "vivox"
-        TODO("IPC: setSpatialVoiceModule(voiceServerType); resume channel processing")
+    fun updateMicMuteLogic() {
+        var newMicMute = false
+        if (usePTT) {
+            newMicMute = !userPTTState
+        }
+        if (muteMic || disableMic) {
+            newMicMute = true
+        }
+        TODO("IPC: webRtcModule?.setMuteMic($newMicMute); vivoxModule?.setMuteMic($newMicMute)")
     }
+
+    fun getVoiceEnabled(id: LLUUID): Boolean = isParticipant(id)
+
+    fun getDisplayName(id: LLUUID): String =
+        TODO("IPC: webRtcModule?.getDisplayName(id).takeIf { !it.isNullOrEmpty() } ?: vivoxModule?.getDisplayName(id) ?: id.toString()")
+
+    fun isVoiceWorking(id: LLUUID): Boolean =
+        TODO("IPC: vivoxModule?.isVoiceWorking() == true || webRtcModule?.isVoiceWorking() == true")
+
+    fun isParticipantAvatar(id: LLUUID): Boolean = true
+
+    fun isOnlineSIP(id: LLUUID): Boolean = false
+
+    fun getIsSpeaking(id: LLUUID): Boolean =
+        TODO("IPC: webRtcModule?.getIsSpeaking(id) == true || vivoxModule?.getIsSpeaking(id) == true")
+
+    fun getIsModeratorMuted(id: LLUUID): Boolean =
+        TODO("IPC: webRtcModule?.getIsModeratorMuted(id) == true || vivoxModule?.getIsModeratorMuted(id) == true")
+
+    fun getCurrentPower(id: LLUUID): Float =
+        TODO("IPC: maxOf(vivoxModule?.getCurrentPower(id) ?: 0f, webRtcModule?.getCurrentPower(id) ?: 0f)")
+
+    fun getOnMuteList(id: LLUUID): Boolean =
+        TODO("IPC: MuteList.isMuted(id, flagVoiceChat)")
+
+    fun getUserVolume(id: LLUUID): Float =
+        TODO("IPC: maxOf(vivoxModule?.getUserVolume(id) ?: 0f, webRtcModule?.getUserVolume(id) ?: 0f)")
+
+    fun setUserVolume(id: LLUUID, volume: Float) {
+        TODO("IPC: webRtcModule?.setUserVolume(id, volume); vivoxModule?.setUserVolume(id, volume)")
+        userVolumeUpdateCallbacks.forEach { it(id) }
+    }
+
+    fun getPowerLevel(id: LLUUID): VoicePowerLevel {
+        val power = getCurrentPower(id)
+        return when {
+            getOnMuteList(id)           -> VoicePowerLevel.MUTED
+            power == 0f && !getIsSpeaking(id) -> VoicePowerLevel.PTT_OFF
+            power < POWER_LEVEL_0       -> VoicePowerLevel.PTT_ON
+            power < POWER_LEVEL_1       -> VoicePowerLevel.LEVEL_1
+            power < POWER_LEVEL_2       -> VoicePowerLevel.LEVEL_2
+            else                        -> VoicePowerLevel.LEVEL_3
+        }
+    }
+
+    fun getParticipantList(participants: MutableSet<LLUUID>) {
+        TODO("IPC: webRtcModule?.getParticipantList(participants); vivoxModule?.getParticipantList(participants)")
+    }
+
+    fun isParticipant(speakerId: LLUUID): Boolean =
+        TODO("IPC: webRtcModule?.isParticipant(speakerId) == true || vivoxModule?.isParticipant(speakerId) == true")
+
+    fun isSessionTextIMPossible(id: LLUUID): Boolean = true
+
+    fun isSessionCallBackPossible(id: LLUUID): Boolean = true
 
     fun setSpatialVoiceModule(voiceServerType: String) {
-        TODO("IPC: select LLVivoxVoiceClient or LLWebRTCVoiceClient from voiceServerType")
+        TODO("IPC: resolve module by voiceServerType; swap spatialVoiceModule if different")
     }
 
     fun setNonSpatialVoiceModule(voiceServerType: String) {
-        TODO("IPC: select LLVivoxVoiceClient or LLWebRTCVoiceClient from voiceServerType")
+        TODO("IPC: resolve module by voiceServerType; set nonSpatialVoiceModule")
     }
 
-    /** Called once the agent's SL credentials have been validated. */
     fun userAuthorized(userId: String, agentId: LLUUID) {
-        TODO("IPC: forward to all voice modules; register region-changed callback")
+        TODO("IPC: register region-changed callback; forward to webRtcModule and vivoxModule")
     }
+
+    fun onRegionChanged() {
+        TODO("IPC: query region simulator features; call handleSimulatorFeaturesReceived")
+    }
+
+    fun handleSimulatorFeaturesReceived(simulatorFeatures: Map<String, Any?>) {
+        val voiceServerType = simulatorFeatures["VoiceServerType"] as? String ?: "vivox"
+        TODO("IPC: if spatial module type differs, stop it; setSpatialVoiceModule($voiceServerType); resume channels")
+    }
+
+    fun addObserver(observer: VoiceObserver) {
+        statusObservers.add(observer)
+        TODO("IPC: vivoxModule?.addObserver(observer); webRtcModule?.addObserver(observer)")
+    }
+
+    fun removeObserver(observer: VoiceObserver) {
+        statusObservers.remove(observer)
+        TODO("IPC: vivoxModule?.removeObserver(observer); webRtcModule?.removeObserver(observer)")
+    }
+
+    fun addObserver(observer: VoiceParticipantObserver) {
+        participantObservers.add(observer)
+        TODO("IPC: vivoxModule?.addObserver(observer); webRtcModule?.addObserver(observer)")
+    }
+
+    fun removeObserver(observer: VoiceParticipantObserver) {
+        participantObservers.remove(observer)
+        TODO("IPC: vivoxModule?.removeObserver(observer); webRtcModule?.removeObserver(observer)")
+    }
+
+    fun sipURIFromID(id: LLUUID): String =
+        (nonSpatialVoiceModule ?: spatialVoiceModule)?.sipURIFromID(id) ?: ""
+
+    fun getP2PChannelInfoTemplate(id: LLUUID): Map<String, Any?> =
+        (nonSpatialVoiceModule ?: spatialVoiceModule)?.getP2PChannelInfoTemplate(id) ?: emptyMap()
+
+    fun getVoiceEffectInterface(): VoiceEffectInterface? = null
 }
 
-// ---------------------------------------------------------------------------
-// Speaker-volume persistent storage
-// ---------------------------------------------------------------------------
-
-/**
- * Persists per-speaker volume overrides across sessions.
- *
- * Mirrors LLSpeakerVolumeStorage (LLSingleton) in llvoiceclient.h.
- */
 object SpeakerVolumeStorage {
 
-    private const val SETTINGS_FILE_NAME = "speaker_volumes.xml"
+    private const val SETTINGS_FILE_NAME = "volume_settings.xml"
 
     private val speakersData: MutableMap<LLUUID, Float> = mutableMapOf()
 
-    /**
-     * Store a volume level for [speakerId].
-     * Persists to disk on shutdown (see [save]).
-     */
     fun storeSpeakerVolume(speakerId: LLUUID, volume: Float) {
-        speakersData[speakerId] = volume.coerceIn(VoiceClient.VOLUME_MIN, VoiceClient.VOLUME_MAX)
+        if (volume >= VoiceClient.VOLUME_MIN && volume <= VoiceClient.VOLUME_MAX) {
+            speakersData[speakerId] = volume
+        }
     }
 
-    /**
-     * Retrieve the stored volume for [speakerId].
-     * Returns null if no override exists.
-     */
     fun getSpeakerVolume(speakerId: LLUUID): Float? = speakersData[speakerId]
 
-    /** Remove the stored volume for [speakerId]. */
     fun removeSpeakerVolume(speakerId: LLUUID) { speakersData.remove(speakerId) }
 
-    /** Deserialise volumes from [SETTINGS_FILE_NAME] in the user data directory. */
-    fun load() { TODO("IO: parse SETTINGS_FILE_NAME into speakersData") }
+    fun load() { TODO("IO: parse $SETTINGS_FILE_NAME; apply transformFromLegacyVolume to each entry") }
 
-    /** Serialise all volumes back to [SETTINGS_FILE_NAME]. */
-    fun save() { TODO("IO: write speakersData to SETTINGS_FILE_NAME") }
+    fun save() { TODO("IO: apply transformToLegacyVolume to each entry; write to $SETTINGS_FILE_NAME") }
 
-    /** Called by the singleton framework before the object is destroyed. */
     fun cleanupSingleton() { save() }
+
+    fun transformFromLegacyVolume(volumeIn: Float): Float {
+        val v = volumeIn.coerceIn(0f, 1f)
+        return if (v <= 0.5f) {
+            v * v * 4f * 0.56f
+        } else {
+            (1f - 0.56f) * (4f * v * v - 1f) / 3f + 0.56f
+        }
+    }
+
+    fun transformToLegacyVolume(volumeIn: Float): Float {
+        val v = volumeIn.coerceIn(0f, 1f)
+        return if (v <= 0.56f) {
+            kotlin.math.sqrt(v / (4f * 0.56f))
+        } else {
+            kotlin.math.sqrt((3f * (v - 0.56f) / (1f - 0.56f) + 1f) / 4f)
+        }
+    }
 }

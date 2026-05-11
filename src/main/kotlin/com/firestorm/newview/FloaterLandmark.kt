@@ -1,194 +1,283 @@
 package com.firestorm.newview
 
-import com.firestorm.ui.Floater
-import com.firestorm.ui.ScrollListCtrl
-import com.firestorm.viewer.Agent
-import com.firestorm.viewer.FloaterReg
-import com.firestorm.viewer.FloaterWorldMap
-import com.firestorm.viewer.GroupActions
-import com.firestorm.viewer.MessageSystem
-import com.firestorm.viewer.ProductInfoRequestManager
-import com.firestorm.viewer.StatusBar
 import java.util.UUID
 
-class FloaterLandHoldings(key: LLSD) : Floater(key) {
+class FloaterLandmark(private val key: Any?) {
 
-    private var actualArea: Int = 0
-    private var billableArea: Int = 0
-    private var firstPacketReceived: Boolean = false
-    private var sortColumn: String = ""
-    private var sortAscending: Boolean = true
+    private var folderCombo: Any? = null
+    private var landmarkTitleEditor: Any? = null
+    private var notesEditor: Any? = null
+    private var landmarksId: UUID? = null
+    private var assetId: UUID? = null
+    private var parentId: UUID? = null
 
-    override fun postBuild(): Boolean {
-        childSetAction("Teleport")    { onClickTeleport(this) }
-        childSetAction("Show on Map") { onClickMap(this) }
+    private var inventoryObserver: LandmarksInventoryObserver? = null
+    private var item: Any? = null
 
-        val grantList = getChild<ScrollListCtrl>("grant list")
-        grantList.sortByColumnIndex(0, ascending = true)
-        grantList.setDoubleClickCallback { onGrantList(this) }
+    init {
+        inventoryObserver = LandmarksInventoryObserver(this)
+    }
 
-        Agent.groups.forEach { group ->
-            val areaStr = getString("area_string").replace("[AREA]", "${group.contribution}")
-            grantList.addElement(
-                LLSD.map(
-                    "id" to group.id,
-                    "columns" to LLSD.array(
-                        LLSD.map("column" to "group", "value" to group.name, "font" to "SANSSERIF"),
-                        LLSD.map("column" to "area",  "value" to areaStr,   "font" to "SANSSERIF")
-                    )
-                )
-            )
-        }
+    fun getItem(): Any? = item
 
-        center()
+    fun postBuild(): Boolean {
+        folderCombo = findChildByName("folder_combo")
+        landmarkTitleEditor = findChildByName("title_editor")
+        notesEditor = findChildByName("notes_editor")
+
+        landmarksId = inventoryFindLandmarksCategory()
         return true
     }
 
-    override fun onOpen(key: LLSD) {
-        val list = getChild<ScrollListCtrl>("parcel list")
-        list.clearRows()
-        TODO("APR: use JVM equivalent — send places query for agent-owned parcels (DFQ_AGENT_OWNED)")
+    fun onOpen(key: Any?) {
+        val destFolder = extractDestFolderFromKey(key)
+        item = null
+        inventoryAddObserver(inventoryObserver)
+        setLandmarkInfo(destFolder)
+        populateFoldersList(destFolder)
     }
 
-    override fun draw() {
-        refresh()
-        super.draw()
+    private fun setLandmarkInfo(folderId: UUID?) {
+        val parcel = parcelMgrGetAgentParcel()
+        val name = parcelGetName(parcel)
+        val agentPos = agentGetPositionAgent()
+
+        val title: String
+        if (name.isEmpty()) {
+            val regionX = agentPos[0].toInt()
+            val regionY = agentPos[1].toInt()
+            val regionZ = agentPos[2].toInt()
+            val regionName = parcelMgrGetSelectionRegionName() ?: agentBuildLocationString(agentPos)
+            title = "$regionName ($regionX, $regionY, $regionZ)"
+        } else {
+            title = name
+        }
+
+        setEditorText(landmarkTitleEditor, title)
+        landmarkActionsCreateLandmarkHere(name, "", folderId ?: inventoryFindLandmarksCategory())
     }
 
-    fun refresh() {
-        val list = childGetSelectionInterface("parcel list")
-        val enableBtns = list != null && list.getFirstSelectedIndex() > -1
-        getChildView("Teleport").setEnabled(enableBtns)
-        getChildView("Show on Map").setEnabled(enableBtns)
-        refreshAggregates()
+    private fun populateFoldersList(folderId: UUID?) {
+        val cats = collectLandmarkFolders()
+        comboRemoveAll(folderCombo)
+
+        val landmarkCat = inventoryGetCategory(landmarksId)
+        if (landmarkCat != null) {
+            val fullName = getCategoryFullName(landmarkCat)
+            comboAdd(folderCombo, fullName, getCategoryUUID(landmarkCat))
+        }
+
+        val favoritesId = inventoryFindFavoritesCategory()
+        val favoritesCat = inventoryGetCategory(favoritesId)
+        if (favoritesCat != null) {
+            comboAdd(folderCombo, "Favorites", getCategoryUUID(favoritesCat))
+        }
+
+        val sortedFolders = cats
+            .map { cat -> Pair(getCategoryUUID(cat), getCategoryFullName(cat)) }
+            .sortedBy { it.second }
+
+        for ((uuid, name) in sortedFolders) {
+            comboAdd(folderCombo, name, uuid)
+        }
+
+        if (folderId != null) {
+            comboSetCurrentById(folderCombo, folderId)
+        }
     }
 
-    fun buttonCore(which: Int) {
-        val list = getChild<ScrollListCtrl>("parcel list")
-        val index = list.firstSelectedIndex
-        if (index < 0) return
-
-        val location = list.getSelectedItemLabel(list.numColumns - 1)
-        val parts = location.trim().split(" ")
-        val globalX = parts.getOrNull(0)?.toFloatOrNull() ?: 0f
-        val globalY = parts.getOrNull(1)?.toFloatOrNull() ?: 0f
-        val globalZ = Agent.positionGlobal.z
-
-        val posGlobal = Vector3d(globalX.toDouble(), globalY.toDouble(), globalZ)
-        val worldMap = FloaterWorldMap.getInstance()
-
-        when (which) {
-            0 -> {
-                Agent.teleportViaLocation(posGlobal)
-                worldMap?.trackLocation(posGlobal)
-            }
-            1 -> {
-                worldMap?.trackLocation(posGlobal)
-                FloaterReg.showInstance("world_map", "center")
+    fun setItem(items: Set<UUID>) {
+        for (itemId in items) {
+            val inv = inventoryGetItem(itemId) ?: continue
+            if (!isLandmarkAssetType(inv)) continue
+            if (item == null) {
+                item = inv
+                assetId = inventoryItemGetAssetUUID(inv)
+                parentId = inventoryItemGetParentUUID(inv)
+                setVisibleAndFrontmost(true)
+                break
             }
         }
     }
 
-    private fun refreshAggregates() {
-        val allowedArea   = StatusBar.squareMetersCredit
-        val currentArea   = StatusBar.squareMetersCommitted
-        val availableArea = StatusBar.squareMetersLeft
-        getChild<UICtrl>("allowed_text").setTextArg("[AREA]", "$allowedArea")
-        getChild<UICtrl>("current_text").setTextArg("[AREA]", "$currentArea")
-        getChild<UICtrl>("available_text").setTextArg("[AREA]", "$availableArea")
-    }
+    fun updateItem(items: Set<UUID>, mask: UInt) {
+        val current = item ?: return
+        val landmarkId = inventoryItemGetUUID(current)
 
-    companion object {
-        private const val LINDEN_HOMES_SKU = "131"
+        for (itemId in items) {
+            if (landmarkId != itemId) continue
 
-        var hasLindenHome: Boolean = false
-            private set
-
-        fun processPlacesReply(msg: MessageSystem) {
-            val self = FloaterReg.findTypedInstance<FloaterLandHoldings>("land_holdings")
-            val count = msg.getNumberOfBlocks("QueryData")
-            hasLindenHome = false
-
-            if (self == null) {
-                for (i in 0 until count) {
-                    if (msg.getSize("QueryData", i, "ProductSKU") > 0) {
-                        val sku = msg.getString("QueryData", "ProductSKU", i)
-                        if (sku == LINDEN_HOMES_SKU) { hasLindenHome = true; return }
-                    }
-                }
+            if (current !== inventoryGetItem(itemId)) {
+                closeFloater()
                 return
             }
 
-            val list = self.childGetListInterface("parcel list") ?: return
-
-            if (!self.firstPacketReceived) {
-                self.firstPacketReceived = true
-                list.operateOnAll(SelectionOp.OP_DELETE)
+            if (parentId != inventoryItemGetParentUUID(current)) {
+                closeFloater()
+                return
             }
 
-            for (i in 0 until count) {
-                val ownerId      = msg.getUUID("QueryData", "OwnerID", i)
-                val name         = msg.getString("QueryData", "Name", i)
-                val actualArea   = msg.getInt("QueryData", "ActualArea", i)
-                val billable     = msg.getInt("QueryData", "BillableArea", i)
-                val globalX      = msg.getFloat("QueryData", "GlobalX", i)
-                val globalY      = msg.getFloat("QueryData", "GlobalY", i)
-                val simName      = msg.getString("QueryData", "SimName", i)
-
-                val landSku: String
-                val landType: String
-                if (msg.getSize("QueryData", i, "ProductSKU") > 0) {
-                    landSku = msg.getString("QueryData", "ProductSKU", i)
-                    landType = ProductInfoRequestManager.instance.getDescriptionForSku(landSku)
-                    if (landSku == LINDEN_HOMES_SKU) hasLindenHome = true
-                } else {
-                    landSku = ""
-                    landType = Trans.getString("land_type_unknown")
-                }
-
-                if (ownerId == NULL_UUID) continue
-
-                self.actualArea   += actualArea
-                self.billableArea += billable
-
-                val regionX = Math.round(globalX) % REGION_WIDTH_UNITS
-                val regionY = Math.round(globalY) % REGION_WIDTH_UNITS
-
-                val location = "$simName ($regionX, $regionY)"
-                val area = if (billable == actualArea) "$billable" else "$billable / $actualArea"
-                val hidden = "$globalX $globalY"
-
-                val element = LLSD.map(
-                    "columns" to LLSD.array(
-                        LLSD.map("column" to "name",     "value" to name,     "font" to "SANSSERIF"),
-                        LLSD.map("column" to "location", "value" to location, "font" to "SANSSERIF"),
-                        LLSD.map("column" to "area",     "value" to area,     "font" to "SANSSERIF"),
-                        LLSD.map("column" to "type",     "value" to landType, "font" to "SANSSERIF"),
-                        LLSD.map("column" to "hidden",   "value" to hidden)
-                    )
-                )
-                list.addElement(element)
+            if ((mask and INVENTORY_OBSERVER_INTERNAL) != 0u && assetId != inventoryItemGetAssetUUID(current)) {
+                closeFloater()
+                return
             }
 
-            self.refreshAggregates()
+            if ((mask and INVENTORY_OBSERVER_LABEL) != 0u) {
+                setEditorText(landmarkTitleEditor, inventoryItemGetName(current))
+            }
+
+            if ((mask and INVENTORY_OBSERVER_INTERNAL) != 0u) {
+                setEditorText(notesEditor, inventoryItemGetDescription(current))
+            }
+        }
+    }
+
+    private fun onCommitTextChanges() {
+        val current = item ?: return
+
+        val currentTitle = getEditorText(landmarkTitleEditor).trim()
+        val itemTitle = inventoryItemGetName(current)
+        val currentNotes = getEditorText(notesEditor).trim()
+        val itemNotes = inventoryItemGetDescription(current)
+
+        if (currentTitle.isNotEmpty() && (itemTitle != currentTitle || itemNotes != currentNotes)) {
+            inventoryUpdateItemNameAndDescription(current, currentTitle, currentNotes)
+        }
+    }
+
+    private fun onCreateFolderClicked() {
+        TODO("APR: use JVM equivalent")
+    }
+
+    private fun folderCreatedCallback(folderId: UUID) {
+        populateFoldersList(folderId)
+    }
+
+    private fun onSaveClicked() {
+        val current = item
+        if (current == null) {
+            closeFloater()
+            return
         }
 
-        private fun onClickTeleport(self: FloaterLandHoldings) {
-            self.buttonCore(0)
-            self.closeFloater()
+        val currentTitle = getEditorText(landmarkTitleEditor).trim()
+        val itemTitle = inventoryItemGetName(current)
+        val currentNotes = getEditorText(notesEditor).trim()
+        val itemNotes = inventoryItemGetDescription(current)
+        val folderId = comboGetCurrentUUID(folderCombo)
+        val changeParent = folderId != inventoryItemGetParentUUID(current)
+
+        if (currentTitle.isNotEmpty() && (itemTitle != currentTitle || itemNotes != currentNotes)) {
+            inventoryUpdateItemNameAndDescription(current, currentTitle, currentNotes)
+            if (changeParent) {
+                inventoryMoveItemToFolder(current, folderId)
+            }
+        } else if (changeParent) {
+            inventoryMoveItemToFolder(current, folderId)
         }
 
-        private fun onClickMap(self: FloaterLandHoldings) {
-            self.buttonCore(1)
-        }
+        removeObserver()
+        inventoryNotifyObservers()
+        closeFloater()
+    }
 
-        private fun onGrantList(self: FloaterLandHoldings) {
-            val list = self.childGetSelectionInterface("grant list") ?: return
-            val groupId = list.currentId
-            if (groupId != NULL_UUID) GroupActions.show(groupId)
+    private fun onCancelClicked() {
+        removeObserver()
+        val current = item
+        if (current != null) {
+            inventoryRemoveItem(inventoryItemGetUUID(current))
         }
+        closeFloater()
+    }
 
-        private val NULL_UUID = UUID.fromString("00000000-0000-0000-0000-000000000000")
-        private const val REGION_WIDTH_UNITS = 256
+    private fun removeObserver() {
+        inventoryRemoveObserver(inventoryObserver)
+    }
+
+    private fun closeFloater() {
+        TODO("APR: use JVM equivalent")
+    }
+
+    private fun setVisibleAndFrontmost(takeFocus: Boolean) {
+        TODO("APR: use JVM equivalent")
     }
 }
+
+class LandmarksInventoryObserver(private val floater: FloaterLandmark) {
+
+    fun changed(mask: UInt) {
+        if (floater.getItem() != null) {
+            checkChanged(mask)
+        } else {
+            checkCreated(mask)
+        }
+    }
+
+    private fun checkCreated(mask: UInt) {
+        val addedIds = inventoryGetAddedIDs()
+        if (addedIds.isEmpty()) return
+
+        if ((mask and INVENTORY_OBSERVER_ADD) == 0u ||
+            (mask and INVENTORY_OBSERVER_CREATE) == 0u ||
+            (mask and INVENTORY_OBSERVER_UPDATE_CREATE) == 0u) {
+            return
+        }
+
+        floater.setItem(addedIds)
+    }
+
+    private fun checkChanged(mask: UInt) {
+        val changedIds = inventoryGetChangedIDs()
+        if (changedIds.isEmpty()) return
+
+        val relevantMask = INVENTORY_OBSERVER_LABEL or INVENTORY_OBSERVER_INTERNAL or
+                INVENTORY_OBSERVER_REMOVE or INVENTORY_OBSERVER_STRUCTURE or INVENTORY_OBSERVER_REBUILD
+        if ((mask and relevantMask) != 0u) {
+            floater.updateItem(changedIds, mask)
+        }
+    }
+}
+
+private val INVENTORY_OBSERVER_ADD: UInt = 0x01u
+private val INVENTORY_OBSERVER_CREATE: UInt = 0x02u
+private val INVENTORY_OBSERVER_UPDATE_CREATE: UInt = 0x04u
+private val INVENTORY_OBSERVER_LABEL: UInt = 0x08u
+private val INVENTORY_OBSERVER_INTERNAL: UInt = 0x10u
+private val INVENTORY_OBSERVER_REMOVE: UInt = 0x20u
+private val INVENTORY_OBSERVER_STRUCTURE: UInt = 0x40u
+private val INVENTORY_OBSERVER_REBUILD: UInt = 0x80u
+
+private fun findChildByName(name: String): Any? = TODO("APR: use JVM equivalent")
+private fun inventoryFindLandmarksCategory(): UUID = TODO("APR: use JVM equivalent")
+private fun inventoryFindFavoritesCategory(): UUID = TODO("APR: use JVM equivalent")
+private fun inventoryGetCategory(id: UUID?): Any? = TODO("APR: use JVM equivalent")
+private fun inventoryGetItem(id: UUID): Any? = TODO("APR: use JVM equivalent")
+private fun inventoryAddObserver(observer: Any?) { TODO("APR: use JVM equivalent") }
+private fun inventoryRemoveObserver(observer: Any?) { TODO("APR: use JVM equivalent") }
+private fun inventoryNotifyObservers() { TODO("APR: use JVM equivalent") }
+private fun inventoryGetAddedIDs(): Set<UUID> = TODO("APR: use JVM equivalent")
+private fun inventoryGetChangedIDs(): Set<UUID> = TODO("APR: use JVM equivalent")
+private fun inventoryUpdateItemNameAndDescription(item: Any, name: String, description: String) { TODO("APR: use JVM equivalent") }
+private fun inventoryMoveItemToFolder(item: Any, folderId: UUID?) { TODO("APR: use JVM equivalent") }
+private fun inventoryRemoveItem(itemId: UUID) { TODO("APR: use JVM equivalent") }
+private fun inventoryItemGetUUID(item: Any): UUID = TODO("APR: use JVM equivalent")
+private fun inventoryItemGetAssetUUID(item: Any): UUID = TODO("APR: use JVM equivalent")
+private fun inventoryItemGetParentUUID(item: Any): UUID? = TODO("APR: use JVM equivalent")
+private fun inventoryItemGetName(item: Any): String = TODO("APR: use JVM equivalent")
+private fun inventoryItemGetDescription(item: Any): String = TODO("APR: use JVM equivalent")
+private fun isLandmarkAssetType(item: Any): Boolean = TODO("APR: use JVM equivalent")
+private fun collectLandmarkFolders(): List<Any> = TODO("APR: use JVM equivalent")
+private fun getCategoryUUID(cat: Any): UUID = TODO("APR: use JVM equivalent")
+private fun getCategoryFullName(cat: Any): String = TODO("APR: use JVM equivalent")
+private fun comboRemoveAll(combo: Any?) { TODO("APR: use JVM equivalent") }
+private fun comboAdd(combo: Any?, label: String, value: UUID) { TODO("APR: use JVM equivalent") }
+private fun comboSetCurrentById(combo: Any?, id: UUID) { TODO("APR: use JVM equivalent") }
+private fun comboGetCurrentUUID(combo: Any?): UUID? = TODO("APR: use JVM equivalent")
+private fun setEditorText(editor: Any?, text: String) { TODO("APR: use JVM equivalent") }
+private fun getEditorText(editor: Any?): String = TODO("APR: use JVM equivalent")
+private fun parcelMgrGetAgentParcel(): Any? = TODO("APR: use JVM equivalent")
+private fun parcelGetName(parcel: Any?): String = TODO("APR: use JVM equivalent")
+private fun parcelMgrGetSelectionRegionName(): String? = TODO("APR: use JVM equivalent")
+private fun agentGetPositionAgent(): FloatArray = TODO("APR: use JVM equivalent")
+private fun agentBuildLocationString(pos: FloatArray): String = TODO("APR: use JVM equivalent")
+private fun landmarkActionsCreateLandmarkHere(name: String, notes: String, folderId: UUID?) { TODO("APR: use JVM equivalent") }

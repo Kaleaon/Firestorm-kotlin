@@ -1,659 +1,422 @@
 package com.firestorm.newview
 
-import com.firestorm.llui.Floater
-import com.firestorm.llui.Panel
-import com.firestorm.llui.TabContainer
-import com.firestorm.llui.LineEditor
-import com.firestorm.llui.UICtrl
-import com.firestorm.llmessage.MessageSystem
-import com.firestorm.llcommon.LLUUID
-
-// Region-flag bit constants (mirror llregionflags.h).
-private const val REGION_FLAGS_ALLOW_DAMAGE            = 0x0000000000000001uL
-private const val REGION_FLAGS_EXTERNALLY_VISIBLE      = 0x0000000000000002uL
-private const val REGION_FLAGS_RESET_HOME_ON_TELEPORT  = 0x0000000000000400uL
-private const val REGION_FLAGS_SUN_FIXED               = 0x0000000000000800uL
-private const val REGION_FLAGS_BLOCK_TERRAFORM         = 0x0000000000020000uL
-private const val REGION_FLAGS_SANDBOX                 = 0x0000000000040000uL
-private const val REGION_FLAGS_BLOCK_DWELL             = 0x0000000001000000uL
-private const val REGION_FLAGS_SKIP_SCRIPTS            = 0x0000000004000000uL
-private const val REGION_FLAGS_SKIP_COLLISIONS         = 0x0000000008000000uL
-private const val REGION_FLAGS_SKIP_PHYSICS            = 0x0000000010000000uL
-
-// Sim-wide-delete flag constants.
-private const val SWD_SCRIPTED_ONLY    = 0x00000001u
-private const val SWD_OTHERS_LAND_ONLY = 0x00000002u
+import java.util.UUID
 
 private const val SECONDS_BETWEEN_UPDATE_REQUESTS = 5.0f
-private const val REGION_WIDTH_METERS             = 256.0
 
-// Godlike tool floater with panels for Grid, Region, Objects, and Request tools.
-class FloaterGodTools(seed: Any) : Floater(seed) {
+class FloaterGodTools(private val key: Any?) {
 
-    enum class GodPanel { GRID, REGION, OBJECT, REQUEST }
+    enum class EGodPanel {
+        PANEL_GRID,
+        PANEL_REGION,
+        PANEL_OBJECT,
+        PANEL_REQUEST,
+        PANEL_COUNT
+    }
 
     var panelRegionTools: PanelRegionTools? = null
     var panelObjectTools: PanelObjectTools? = null
 
-    private var currentHost: Any?  = null   // LLHost
-    private var updateTimer: Float = 0f     // elapsed seconds since last request
+    var currentHost: String = ""
+    private var updateTimerElapsed: Float = 0f
 
-    override fun postBuild(): Boolean {
-        panelRegionTools = PanelRegionTools()
-        panelObjectTools = PanelObjectTools()
+    fun postBuild(): Boolean {
         sendRegionInfoRequest()
-        findChild<TabContainer>("GodTools Tabs")?.selectTabByName("region")
         return true
     }
 
-    override fun onOpen(key: Any) {
-        center()
-        setFocus(true)
-        panelObjectTools?.setTargetAvatar(LLUUID.NULL)
-
-        if (TODO<Any?>("APR: gAgent.getRegionHost()") != currentHost) {
+    fun onOpen(key: Any?) {
+        if (panelObjectTools != null) {
+            panelObjectTools!!.setTargetAvatar(null)
+        }
+        if (agentGetRegionHost() != currentHost) {
             sendRegionInfoRequest()
         }
     }
 
-    override fun draw() {
-        if (currentHost == null) {
-            updateTimer += TODO("APR: frame delta seconds")
-            if (updateTimer > SECONDS_BETWEEN_UPDATE_REQUESTS) {
+    fun draw(deltaTime: Float) {
+        updateTimerElapsed += deltaTime
+        if (currentHost.isEmpty()) {
+            if (updateTimerElapsed > SECONDS_BETWEEN_UPDATE_REQUESTS) {
                 sendRegionInfoRequest()
             }
-        } else if (TODO<Any?>("APR: gAgent.getRegionHost()") != currentHost) {
+        } else if (agentGetRegionHost() != currentHost) {
             sendRegionInfoRequest()
         }
-        TODO("APR: Floater.draw()")
     }
 
     fun showPanel(panelName: String) {
-        findChild<TabContainer>("GodTools Tabs")?.selectTabByName(panelName)
-        TODO("APR: openFloater()")
-        TODO("APR: getCurrentPanel().setFocus(true)")
+        TODO("APR: use JVM equivalent")
+    }
+
+    fun updatePopup(centerX: Int, centerY: Int, mask: Int) {
     }
 
     fun sendRegionInfoRequest() {
         panelRegionTools?.clearAllWidgets()
         panelObjectTools?.clearAllWidgets()
-        currentHost  = null
-        updateTimer  = 0f
-
-        TODO("APR: send RequestRegionInfo message via gMessageSystem with agent/session IDs")
+        currentHost = ""
+        updateTimerElapsed = 0f
+        TODO("APR: use JVM equivalent")
     }
 
     fun sendGodUpdateRegionInfo() {
-        val region = TODO<Any?>("APR: gAgent.getRegion()")
-        if (!TODO<Boolean>("APR: gAgent.isGodlike()") || panelRegionTools == null || region == null) return
-        if (TODO<Any?>("APR: gAgent.getRegionHost()") != currentHost) return
-
-        val regionFlags = computeRegionFlags()
-
-        TODO("APR: send GodUpdateRegionInfo message: " +
-             "simName, estateId, parentEstateId, regionFlags(U32 legacy), billableFactor, " +
-             "pricePerMeter, redirectGridX, redirectGridY, RegionInfo2.RegionFlagsExtended(U64)")
+        val rtool = panelRegionTools ?: return
+        TODO("APR: use JVM equivalent")
     }
 
-    private fun computeRegionFlags(): ULong {
-        var flags = TODO<ULong>("APR: gAgent.getRegion().getRegionFlags()")
+    fun computeRegionFlags(): ULong {
+        var flags = agentGetRegionFlags()
         panelRegionTools?.let { flags = it.computeRegionFlags(flags) }
         panelObjectTools?.let { flags = it.computeRegionFlags(flags) }
         return flags
     }
 
-    // Inlined stubs for inherited Floater members used above.
-    @Suppress("UNCHECKED_CAST")
-    private fun <T> findChild(name: String): T? = null
-    private fun center()         { TODO("APR: Floater.center()") }
-    private fun setFocus(b: Boolean) { TODO("APR: Floater.setFocus(b)") }
-
     companion object {
         fun refreshAll() {
-            val godTools = TODO<FloaterGodTools?>("APR: FloaterReg::getTypedInstance<FloaterGodTools>(\"god_tools\")")
-            godTools ?: return
-            if (TODO<Any?>("APR: gAgent.getRegionHost()") != godTools.currentHost) {
-                godTools.sendRegionInfoRequest()
-            }
+            TODO("APR: use JVM equivalent")
         }
 
-        fun processRegionInfo(msg: MessageSystem) {
-            val host             = TODO<Any?>("APR: msg.getSender()")
-            val simName          = TODO<String>("APR: msg.getString(\"RegionInfo\", \"SimName\")")
-            val estateId         = TODO<UInt>("APR: msg.getU32(\"RegionInfo\", \"EstateID\")")
-            val parentEstateId   = TODO<UInt>("APR: msg.getU32(\"RegionInfo\", \"ParentEstateID\")")
-            val simAccess        = TODO<UByte>("APR: msg.getU8(\"RegionInfo\", \"SimAccess\")")
-            val agentLimit       = TODO<UByte>("APR: msg.getU8(\"RegionInfo\", \"MaxAgents\")")
-            val objectBonusFactor = TODO<Float>("APR: msg.getF32(\"RegionInfo\", \"ObjectBonusFactor\")")
-            val billableFactor   = TODO<Float>("APR: msg.getF32(\"RegionInfo\", \"BillableFactor\")")
-            val waterHeight      = TODO<Float>("APR: msg.getF32(\"RegionInfo\", \"WaterHeight\")")
-
-            // Extended flags block supersedes the legacy U32 field when present.
-            val regionFlags: ULong = if (TODO<Boolean>("APR: msg.has(\"RegionInfo3\")")) {
-                TODO("APR: msg.getU64(\"RegionInfo3\", \"RegionFlagsExtended\")")
-            } else {
-                TODO<UInt>("APR: msg.getU32(\"RegionInfo\", \"RegionFlags\")").toULong()
-            }
-
-            if (TODO<Boolean>("APR: msg.has(\"RegionInfo5\")")) {
-                // Chat-range data present – log it but it requires no action here.
-                TODO("APR: read and log chat whisper/normal/shout ranges and flags")
-            }
-
-            val agentRegionHost = TODO<Any?>("APR: gAgent.getRegionHost()")
-            if (host != agentRegionHost) {
-                TODO("APR: LLWorld::getInstance().waterHeightRegionInfo(simName, waterHeight)")
-                return
-            }
-
-            val terrainRaiseLimit  = TODO<Float>("APR: msg.getF32(\"RegionInfo\", \"TerrainRaiseLimit\")")
-            val terrainLowerLimit  = TODO<Float>("APR: msg.getF32(\"RegionInfo\", \"TerrainLowerLimit\")")
-            val pricePerMeter      = TODO<Int>("APR: msg.getS32(\"RegionInfo\", \"PricePerMeter\")")
-            val redirectGridX      = TODO<Int>("APR: msg.getS32(\"RegionInfo\", \"RedirectGridX\")")
-            val redirectGridY      = TODO<Int>("APR: msg.getS32(\"RegionInfo\", \"RedirectGridY\")")
-
-            val regionp = TODO<Any?>("APR: gAgent.getRegion()")
-            regionp?.let {
-                TODO("APR: regionp.setRegionNameAndZone(simName)")
-                TODO("APR: regionp.setRegionFlags(regionFlags)")
-                TODO("APR: regionp.setSimAccess(simAccess)")
-                TODO("APR: regionp.setWaterHeight(waterHeight)")
-                TODO("APR: regionp.setBillableFactor(billableFactor)")
-            }
-
-            val godTools = TODO<FloaterGodTools?>("APR: FloaterReg::getTypedInstance<FloaterGodTools>(\"god_tools\")")
-            godTools ?: return
-
-            val isGodVisible = TODO<Boolean>("APR: gAgent.isGodlike() && FloaterReg::instanceVisible(\"god_tools\")")
-            if (isGodVisible && godTools.panelRegionTools != null && godTools.panelObjectTools != null) {
-                val rtool = godTools.panelRegionTools!!
-                godTools.currentHost = host
-
-                rtool.setSimName(simName)
-                rtool.setEstateId(estateId)
-                rtool.setParentEstateId(parentEstateId)
-                rtool.setCheckFlags(regionFlags)
-                rtool.setBillableFactor(billableFactor)
-                rtool.setPricePerMeter(pricePerMeter)
-                rtool.setRedirectGridX(redirectGridX)
-                rtool.setRedirectGridY(redirectGridY)
-                rtool.enableAllWidgets()
-
-                val otool = godTools.panelObjectTools!!
-                otool.setCheckFlags(regionFlags)
-                otool.enableAllWidgets()
-
-                if (regionp == null) {
-                    rtool.setGridPosX(-1)
-                    rtool.setGridPosY(-1)
-                } else {
-                    val globalPos = TODO<DoubleArray>("APR: regionp.getPosGlobalFromRegion(Vector3.ZERO)")
-                    rtool.setGridPosX((globalPos[0] / 256.0).toInt())
-                    rtool.setGridPosY((globalPos[1] / 256.0).toInt())
-                }
-            }
+        fun processRegionInfo(msg: Any?) {
+            TODO("APR: use JVM equivalent")
         }
     }
 }
 
-// -------------------------------------------------------------------------
-// PanelRegionTools
-// -------------------------------------------------------------------------
+private fun agentGetRegionHost(): String = TODO("APR: use JVM equivalent")
+private fun agentGetRegionFlags(): ULong = TODO("APR: use JVM equivalent")
 
-class PanelRegionTools : Panel() {
+class PanelRegionTools {
 
-    override fun postBuild(): Boolean {
-        setChildKeystrokeCallback("region name") { onChangeSimName() }
-        setChildPrevalidate("region name", "ascii_printable_no_pipe")
-        setChildPrevalidate("estate",       "positive_s32")
-        setChildPrevalidate("parentestate", "positive_s32")
-        setChildEnabled("parentestate", false)
-        setChildPrevalidate("gridposx", "positive_s32")
-        setChildEnabled("gridposx", false)
-        setChildPrevalidate("gridposy", "positive_s32")
-        setChildEnabled("gridposy", false)
-        setChildPrevalidate("redirectx", "positive_s32")
-        setChildPrevalidate("redirecty", "positive_s32")
-        return true
-    }
+    private val BILLABLE_FACTOR_DEFAULT = 1.0f
+    private val PRICE_PER_METER_DEFAULT = 1.0f
 
-    override fun refresh() {}
+    private var simName: String = "unknown"
+    private var estateId: UInt = 0u
+    private var parentEstateId: UInt = 0u
+    private var gridPosX: Int = 0
+    private var gridPosY: Int = 0
+    private var redirectGridX: Int = 0
+    private var redirectGridY: Int = 0
+    private var billableFactor: Float = 1.0f
+    private var pricePerMeter: Int = 1
 
-    fun clearAllWidgets() {
-        setChildValue("region name",   "unknown")
-        setChildFocus("region name",   false)
-        setChildValue("check prelude",   false);  setChildEnabled("check prelude",   false)
-        setChildValue("check fixed sun", false);  setChildEnabled("check fixed sun", false)
-        setChildValue("check reset home",false);  setChildEnabled("check reset home",false)
-        setChildValue("check damage",    false);  setChildEnabled("check damage",    false)
-        setChildValue("check visible",   false);  setChildEnabled("check visible",   false)
-        setChildValue("block terraform", false);  setChildEnabled("block terraform", false)
-        setChildValue("block dwell",     false);  setChildEnabled("block dwell",     false)
-        setChildValue("is sandbox",      false);  setChildEnabled("is sandbox",      false)
-        setChildValue("billable factor", BILLABLE_FACTOR_DEFAULT)
-        setChildEnabled("billable factor", false)
-        setChildValue("land cost",       PRICE_PER_METER_DEFAULT)
-        setChildEnabled("land cost",     false)
-        setChildEnabled("Apply",         false)
-        setChildEnabled("Bake Terrain",  false)
-        setChildEnabled("Autosave now",  false)
-    }
+    private var checkPrelude: Boolean = false
+    private var checkFixedSun: Boolean = false
+    private var checkResetHome: Boolean = false
+    private var checkDamage: Boolean = false
+    private var checkVisible: Boolean = false
+    private var blockTerraform: Boolean = false
+    private var blockDwell: Boolean = false
+    private var isSandbox: Boolean = false
 
-    fun enableAllWidgets() {
-        setChildEnabled("check prelude",   true)
-        setChildEnabled("check fixed sun", true)
-        setChildEnabled("check reset home",true)
-        setChildEnabled("check damage",    true)
-        setChildEnabled("check visible",   false)  // controlled via estate, not directly
-        setChildEnabled("block terraform", true)
-        setChildEnabled("block dwell",     true)
-        setChildEnabled("is sandbox",      true)
-        setChildEnabled("billable factor", true)
-        setChildEnabled("land cost",       true)
-        setChildEnabled("Apply",           false)  // only enabled after a change
-        setChildEnabled("Bake Terrain",    true)
-        setChildEnabled("Autosave now",    true)
-    }
+    private var widgetsEnabled: Boolean = false
+    private var applyEnabled: Boolean = false
 
-    // ---- Getters ----
+    fun postBuild(): Boolean = true
 
-    fun getSimName(): String    = getChildValue("region name") as? String ?: ""
-    fun getEstateId(): UInt     = (getChildInt("estate")).toUInt()
-    fun getParentEstateId(): UInt = (getChildInt("parentestate")).toUInt()
-    fun getGridPosX(): Int      = getChildInt("gridposx")
-    fun getGridPosY(): Int      = getChildInt("gridposy")
-    fun getRedirectGridX(): Int = getChildInt("redirectx")
-    fun getRedirectGridY(): Int = getChildInt("redirecty")
-    fun getBillableFactor(): Float = (getChildValue("billable factor") as? Number)?.toFloat() ?: BILLABLE_FACTOR_DEFAULT
-    fun getPricePerMeter(): Int    = getChildInt("land cost")
+    fun refresh() {}
+
+    fun getSimName(): String = simName
+    fun getEstateID(): UInt = estateId
+    fun getParentEstateID(): UInt = parentEstateId
+    fun getGridPosX(): Int = gridPosX
+    fun getGridPosY(): Int = gridPosY
+    fun getRedirectGridX(): Int = redirectGridX
+    fun getRedirectGridY(): Int = redirectGridY
+    fun getBillableFactor(): Float = billableFactor
+    fun getPricePerMeter(): Int = pricePerMeter
 
     fun getRegionFlags(): ULong {
         var flags = 0uL
-        if (isPrelude()) {
-            flags = setPreludeFlags(flags)
-        } else {
-            flags = unsetPreludeFlags(flags)
-        }
-        if (getChildBool("check fixed sun"))   flags = flags or REGION_FLAGS_SUN_FIXED
-        if (getChildBool("check reset home"))  flags = flags or REGION_FLAGS_RESET_HOME_ON_TELEPORT
-        if (getChildBool("check visible"))     flags = flags or REGION_FLAGS_EXTERNALLY_VISIBLE
-        if (getChildBool("check damage"))      flags = flags or REGION_FLAGS_ALLOW_DAMAGE
-        if (getChildBool("block terraform"))   flags = flags or REGION_FLAGS_BLOCK_TERRAFORM
-        if (getChildBool("block dwell"))       flags = flags or REGION_FLAGS_BLOCK_DWELL
-        if (getChildBool("is sandbox"))        flags = flags or REGION_FLAGS_SANDBOX
+        if (checkPrelude) flags = setPreludeFlags(flags) else flags = unsetPreludeFlags(flags)
+        if (checkFixedSun) flags = flags or REGION_FLAGS_SUN_FIXED
+        if (checkResetHome) flags = flags or REGION_FLAGS_RESET_HOME_ON_TELEPORT
+        if (checkVisible) flags = flags or REGION_FLAGS_EXTERNALLY_VISIBLE
+        if (checkDamage) flags = flags or REGION_FLAGS_ALLOW_DAMAGE
+        if (blockTerraform) flags = flags or REGION_FLAGS_BLOCK_TERRAFORM
+        if (blockDwell) flags = flags or REGION_FLAGS_BLOCK_DWELL
+        if (isSandbox) flags = flags or REGION_FLAGS_SANDBOX
         return flags
     }
 
     fun getRegionFlagsMask(): ULong {
         var flags = 0xFFFFFFFFFFFFFFFFuL
-        if (isPrelude()) {
-            flags = setPreludeFlags(flags)
-        } else {
-            flags = unsetPreludeFlags(flags)
-        }
-        if (!getChildBool("check fixed sun"))   flags = flags and REGION_FLAGS_SUN_FIXED.inv()
-        if (!getChildBool("check reset home"))  flags = flags and REGION_FLAGS_RESET_HOME_ON_TELEPORT.inv()
-        if (!getChildBool("check visible"))     flags = flags and REGION_FLAGS_EXTERNALLY_VISIBLE.inv()
-        if (!getChildBool("check damage"))      flags = flags and REGION_FLAGS_ALLOW_DAMAGE.inv()
-        if (!getChildBool("block terraform"))   flags = flags and REGION_FLAGS_BLOCK_TERRAFORM.inv()
-        if (!getChildBool("block dwell"))       flags = flags and REGION_FLAGS_BLOCK_DWELL.inv()
-        if (!getChildBool("is sandbox"))        flags = flags and REGION_FLAGS_SANDBOX.inv()
+        if (checkPrelude) flags = setPreludeFlags(flags) else flags = unsetPreludeFlags(flags)
+        if (!checkFixedSun) flags = flags and REGION_FLAGS_SUN_FIXED.inv()
+        if (!checkResetHome) flags = flags and REGION_FLAGS_RESET_HOME_ON_TELEPORT.inv()
+        if (!checkVisible) flags = flags and REGION_FLAGS_EXTERNALLY_VISIBLE.inv()
+        if (!checkDamage) flags = flags and REGION_FLAGS_ALLOW_DAMAGE.inv()
+        if (!blockTerraform) flags = flags and REGION_FLAGS_BLOCK_TERRAFORM.inv()
+        if (!blockDwell) flags = flags and REGION_FLAGS_BLOCK_DWELL.inv()
+        if (!isSandbox) flags = flags and REGION_FLAGS_SANDBOX.inv()
         return flags
     }
 
-    fun computeRegionFlags(initial: ULong): ULong = (initial and getRegionFlagsMask()) or getRegionFlags()
-
-    // ---- Setters ----
-
-    fun setSimName(name: String)            { setChildValue("region name",    name) }
-    fun setEstateId(id: UInt)               { setChildValue("estate",         id.toInt()) }
-    fun setParentEstateId(id: UInt)         { setChildValue("parentestate",   id.toInt()) }
-    fun setGridPosX(pos: Int)               { setChildValue("gridposx",       pos) }
-    fun setGridPosY(pos: Int)               { setChildValue("gridposy",       pos) }
-    fun setRedirectGridX(pos: Int)          { setChildValue("redirectx",      pos) }
-    fun setRedirectGridY(pos: Int)          { setChildValue("redirecty",      pos) }
-    fun setBillableFactor(f: Float)         { setChildValue("billable factor", f) }
-    fun setPricePerMeter(price: Int)        { setChildValue("land cost",      price) }
-
-    fun setCheckFlags(flags: ULong) {
-        setChildValue("check prelude",   isPrelude(flags))
-        setChildValue("check fixed sun", flags.isFlagSet(REGION_FLAGS_SUN_FIXED))
-        setChildValue("check reset home",flags.isFlagSet(REGION_FLAGS_RESET_HOME_ON_TELEPORT))
-        setChildValue("check damage",    flags.isFlagSet(REGION_FLAGS_ALLOW_DAMAGE))
-        setChildValue("check visible",   flags.isFlagSet(REGION_FLAGS_EXTERNALLY_VISIBLE))
-        setChildValue("block terraform", flags.isFlagSet(REGION_FLAGS_BLOCK_TERRAFORM))
-        setChildValue("block dwell",     flags.isFlagSet(REGION_FLAGS_BLOCK_DWELL))
-        setChildValue("is sandbox",      flags.isFlagSet(REGION_FLAGS_SANDBOX))
+    fun computeRegionFlags(initialFlags: ULong): ULong {
+        var flags = initialFlags and getRegionFlagsMask()
+        flags = flags or getRegionFlags()
+        return flags
     }
 
-    // ---- Event handlers ----
+    fun setSimName(name: String) { simName = name }
+    fun setEstateID(id: UInt) { estateId = id }
+    fun setParentEstateID(id: UInt) { parentEstateId = id }
+    fun setGridPosX(pos: Int) { gridPosX = pos }
+    fun setGridPosY(pos: Int) { gridPosY = pos }
+    fun setRedirectGridX(pos: Int) { redirectGridX = pos }
+    fun setRedirectGridY(pos: Int) { redirectGridY = pos }
+    fun setBillableFactor(factor: Float) { billableFactor = factor }
+    fun setPricePerMeter(price: Int) { pricePerMeter = price }
+
+    fun setCheckFlags(flags: ULong) {
+        checkPrelude = isPrelude(flags)
+        checkFixedSun = isFlagSet(flags, REGION_FLAGS_SUN_FIXED)
+        checkResetHome = isFlagSet(flags, REGION_FLAGS_RESET_HOME_ON_TELEPORT)
+        checkDamage = isFlagSet(flags, REGION_FLAGS_ALLOW_DAMAGE)
+        checkVisible = isFlagSet(flags, REGION_FLAGS_EXTERNALLY_VISIBLE)
+        blockTerraform = isFlagSet(flags, REGION_FLAGS_BLOCK_TERRAFORM)
+        blockDwell = isFlagSet(flags, REGION_FLAGS_BLOCK_DWELL)
+        isSandbox = isFlagSet(flags, REGION_FLAGS_SANDBOX)
+    }
+
+    fun clearAllWidgets() {
+        simName = "unknown"
+        checkPrelude = false
+        checkFixedSun = false
+        checkResetHome = false
+        checkDamage = false
+        checkVisible = false
+        blockTerraform = false
+        blockDwell = false
+        isSandbox = false
+        billableFactor = BILLABLE_FACTOR_DEFAULT
+        pricePerMeter = PRICE_PER_METER_DEFAULT.toInt()
+        widgetsEnabled = false
+        applyEnabled = false
+    }
+
+    fun enableAllWidgets() {
+        widgetsEnabled = true
+        applyEnabled = false
+    }
 
     fun onChangeAnything() {
-        if (TODO<Boolean>("APR: gAgent.isGodlike()")) {
-            setChildEnabled("Apply", true)
-        }
+        applyEnabled = true
     }
 
     fun onChangePrelude() {
-        if (getChildBool("check prelude")) {
-            setChildValue("check fixed sun",  true)
-            setChildValue("check reset home", true)
+        if (checkPrelude) {
+            checkFixedSun = true
+            checkResetHome = true
             onChangeAnything()
         }
     }
 
-    private fun onChangeSimName() {
-        if (TODO<Boolean>("APR: gAgent.isGodlike()")) setChildEnabled("Apply", true)
-    }
-
     fun onRefresh() {
-        val godTools = TODO<FloaterGodTools?>("APR: FloaterReg::getTypedInstance<FloaterGodTools>(\"god_tools\")")
-        godTools ?: return
-        if (TODO<Any?>("APR: gAgent.getRegion()") != null && TODO<Boolean>("APR: gAgent.isGodlike()")) {
-            godTools.sendRegionInfoRequest()
-        }
+        TODO("APR: use JVM equivalent")
     }
 
     fun onApplyChanges() {
-        val godTools = TODO<FloaterGodTools?>("APR: FloaterReg::getTypedInstance<FloaterGodTools>(\"god_tools\")")
-        godTools ?: return
-        if (TODO<Any?>("APR: gAgent.getRegion()") != null && TODO<Boolean>("APR: gAgent.isGodlike()")) {
-            setChildEnabled("Apply", false)
-            godTools.sendGodUpdateRegionInfo()
-        }
+        applyEnabled = false
+        TODO("APR: use JVM equivalent")
     }
 
-    fun onBakeTerrain()   { PanelRequestTools.sendRequest("terrain", "bake",   TODO("APR: gAgent.getRegionHost()")) }
-    fun onRevertTerrain() { PanelRequestTools.sendRequest("terrain", "revert", TODO("APR: gAgent.getRegionHost()")) }
-    fun onSwapTerrain()   { PanelRequestTools.sendRequest("terrain", "swap",   TODO("APR: gAgent.getRegionHost()")) }
+    fun onBakeTerrain() {
+        PanelRequestTools.sendRequest("terrain", "bake", agentGetRegionHost())
+    }
+
+    fun onRevertTerrain() {
+        PanelRequestTools.sendRequest("terrain", "revert", agentGetRegionHost())
+    }
+
+    fun onSwapTerrain() {
+        PanelRequestTools.sendRequest("terrain", "swap", agentGetRegionHost())
+    }
 
     fun onSelectRegion() {
-        val regionp = TODO<Any?>("APR: LLWorld::getInstance().getRegionFromPosGlobal(gAgent.getPositionGlobal())")
-        regionp ?: return
-        TODO("APR: LLViewerParcelMgr::getInstance().selectLand(origin, origin + (256,256,0), false)")
+        TODO("APR: use JVM equivalent")
     }
 
     fun onSaveState() {
-        if (TODO<Boolean>("APR: gAgent.isGodlike()")) {
-            TODO("APR: send StateSave message with blank filename via gMessageSystem")
-        }
-    }
-
-    // ---- Helpers ----
-
-    private fun isPrelude(): Boolean = getChildBool("check prelude")
-    private fun isPrelude(flags: ULong): Boolean = TODO("APR: is_prelude(flags)")
-    private fun setPreludeFlags(flags: ULong): ULong  = TODO("APR: set_prelude_flags(flags)")
-    private fun unsetPreludeFlags(flags: ULong): ULong = TODO("APR: unset_prelude_flags(flags)")
-    private fun ULong.isFlagSet(flag: ULong): Boolean = (this and flag) != 0uL
-
-    private fun setChildKeystrokeCallback(name: String, cb: () -> Unit) {
-        TODO("APR: getChild<LineEditor>(name).setKeystrokeCallback { cb() }")
-    }
-    private fun setChildPrevalidate(name: String, rule: String) {
-        TODO("APR: getChild<LineEditor>(name).setPrevalidate(LLTextValidate::$rule)")
-    }
-    private fun setChildFocus(name: String, f: Boolean) {
-        TODO("APR: getChildView(name).setFocus(f)")
-    }
-    private fun setChildEnabled(name: String, e: Boolean) {
-        TODO("APR: getChildView(name).setEnabled(e)")
-    }
-    private fun setChildValue(name: String, v: Any) {
-        TODO("APR: getChild<UICtrl>(name).setValue(v)")
-    }
-    private fun getChildValue(name: String): Any = TODO("APR: getChild<UICtrl>(name).getValue()")
-    private fun getChildBool(name: String): Boolean = TODO("APR: getChild<UICtrl>(name).getValue().asBoolean()")
-    private fun getChildInt(name: String): Int = TODO("APR: getChild<UICtrl>(name).getValue().asInteger()")
-
-    companion object {
-        const val BILLABLE_FACTOR_DEFAULT  = 1.0f
-        const val PRICE_PER_METER_DEFAULT  = 1.0f
+        TODO("APR: use JVM equivalent")
     }
 }
 
-// -------------------------------------------------------------------------
-// PanelGridTools
-// -------------------------------------------------------------------------
-
-class PanelGridTools : Panel() {
+class PanelGridTools {
 
     private var kickMessage: String = ""
 
-    override fun postBuild(): Boolean = true
+    fun postBuild(): Boolean = true
 
-    override fun refresh() {}
+    fun refresh() {}
 
     fun onClickFlushMapVisibilityCaches() {
-        TODO("APR: LLNotificationsUtil::add(\"FlushMapVisibilityCaches\", LLSD(), LLSD(), ::flushMapVisibilityCachesConfirm)")
+        TODO("APR: use JVM equivalent")
     }
 
-    companion object {
-        fun flushMapVisibilityCachesConfirm(notification: Any, response: Any): Boolean {
-            val option = TODO<Int>("APR: LLNotificationsUtil::getSelectedOption(notification, response)")
-            if (option != 0) return false
-            TODO("APR: send EstateOwnerMessage with method=\"refreshmapvisibility\", " +
-                 "parameter=gAgent.getID().asString() via gMessageSystem")
-            return false
-        }
+    fun flushMapVisibilityCachesConfirm(selectedOption: Int): Boolean {
+        if (selectedOption != 0) return false
+        TODO("APR: use JVM equivalent")
     }
 }
 
-// -------------------------------------------------------------------------
-// PanelObjectTools
-// -------------------------------------------------------------------------
+class PanelObjectTools {
 
-class PanelObjectTools : Panel() {
-
-    private var targetAvatar: LLUUID = LLUUID.NULL
+    private var targetAvatar: UUID? = null
     private var simWideDeletesFlags: UInt = 0u
 
-    override fun postBuild(): Boolean {
+    private var disableScripts: Boolean = false
+    private var disableCollisions: Boolean = false
+    private var disablePhysics: Boolean = false
+    private var widgetsEnabled: Boolean = false
+    private var applyEnabled: Boolean = false
+
+    fun postBuild(): Boolean {
         refresh()
         return true
     }
 
-    override fun refresh() {
-        val region = TODO<Any?>("APR: gAgent.getRegion()")
-        if (region != null) {
-            setChildValue("region name", TODO("APR: region.getName()"))
-        }
+    fun refresh() {
+        TODO("APR: use JVM equivalent")
     }
 
-    fun setTargetAvatar(targetId: LLUUID) {
+    fun setTargetAvatar(targetId: UUID?) {
         targetAvatar = targetId
-        if (targetId == LLUUID.NULL) {
-            setChildValue("target_avatar_name", getString("no_target"))
-        }
+    }
+
+    fun computeRegionFlags(flags: ULong): ULong {
+        var result = flags
+        result = if (disableScripts) result or REGION_FLAGS_SKIP_SCRIPTS else result and REGION_FLAGS_SKIP_SCRIPTS.inv()
+        result = if (disableCollisions) result or REGION_FLAGS_SKIP_COLLISIONS else result and REGION_FLAGS_SKIP_COLLISIONS.inv()
+        result = if (disablePhysics) result or REGION_FLAGS_SKIP_PHYSICS else result and REGION_FLAGS_SKIP_PHYSICS.inv()
+        return result
     }
 
     fun setCheckFlags(flags: ULong) {
-        setChildValue("disable scripts",    flags.isFlagSet(REGION_FLAGS_SKIP_SCRIPTS))
-        setChildValue("disable collisions", flags.isFlagSet(REGION_FLAGS_SKIP_COLLISIONS))
-        setChildValue("disable physics",    flags.isFlagSet(REGION_FLAGS_SKIP_PHYSICS))
-    }
-
-    fun computeRegionFlags(initial: ULong): ULong {
-        var flags = initial
-        flags = if (getChildBool("disable scripts"))
-            flags or REGION_FLAGS_SKIP_SCRIPTS    else flags and REGION_FLAGS_SKIP_SCRIPTS.inv()
-        flags = if (getChildBool("disable collisions"))
-            flags or REGION_FLAGS_SKIP_COLLISIONS else flags and REGION_FLAGS_SKIP_COLLISIONS.inv()
-        flags = if (getChildBool("disable physics"))
-            flags or REGION_FLAGS_SKIP_PHYSICS    else flags and REGION_FLAGS_SKIP_PHYSICS.inv()
-        return flags
+        disableScripts = isFlagSet(flags, REGION_FLAGS_SKIP_SCRIPTS)
+        disableCollisions = isFlagSet(flags, REGION_FLAGS_SKIP_COLLISIONS)
+        disablePhysics = isFlagSet(flags, REGION_FLAGS_SKIP_PHYSICS)
     }
 
     fun clearAllWidgets() {
-        setChildValue("disable scripts", false);   setChildEnabled("disable scripts", false)
-        setChildEnabled("Apply",                                                       false)
-        setChildEnabled("Set Target",                                                  false)
-        setChildEnabled("Delete Target's Scripted Objects On Others Land",             false)
-        setChildEnabled("Delete Target's Scripted Objects On *Any* Land",              false)
-        setChildEnabled("Delete *ALL* Of Target's Objects",                            false)
+        disableScripts = false
+        widgetsEnabled = false
+        applyEnabled = false
     }
 
     fun enableAllWidgets() {
-        setChildEnabled("disable scripts",                                             true)
-        setChildEnabled("Apply",                                                       false)
-        setChildEnabled("Set Target",                                                  true)
-        setChildEnabled("Delete Target's Scripted Objects On Others Land",             true)
-        setChildEnabled("Delete Target's Scripted Objects On *Any* Land",              true)
-        setChildEnabled("Delete *ALL* Of Target's Objects",                            true)
-        setChildEnabled("Get Top Colliders",                                           true)
-        setChildEnabled("Get Top Scripts",                                             true)
+        widgetsEnabled = true
+        applyEnabled = false
     }
 
     fun onChangeAnything() {
-        if (TODO<Boolean>("APR: gAgent.isGodlike()")) setChildEnabled("Apply", true)
+        applyEnabled = true
     }
 
     fun onApplyChanges() {
-        val godTools = TODO<FloaterGodTools?>("APR: FloaterReg::getTypedInstance<FloaterGodTools>(\"god_tools\")")
-        godTools ?: return
-        if (TODO<Any?>("APR: gAgent.getRegion()") != null && TODO<Boolean>("APR: gAgent.isGodlike()")) {
-            setChildEnabled("Apply", false)
-            godTools.sendGodUpdateRegionInfo()
-        }
+        applyEnabled = false
+        TODO("APR: use JVM equivalent")
     }
 
     fun onClickSet() {
-        TODO("APR: show LLFloaterAvatarPicker, callback = ::callbackAvatarId")
+        TODO("APR: use JVM equivalent")
     }
 
-    fun callbackAvatarId(ids: List<LLUUID>, names: List<Any>) {
+    fun callbackAvatarID(ids: List<UUID>, names: List<String>) {
         if (ids.isEmpty() || names.isEmpty()) return
         targetAvatar = ids[0]
-        setChildValue("target_avatar_name", TODO("APR: names[0].getCompleteName()"))
         refresh()
     }
 
     fun onClickDeletePublicOwnedBy() {
-        if (targetAvatar == LLUUID.NULL) return
+        if (targetAvatar == null) return
         simWideDeletesFlags = SWD_SCRIPTED_ONLY or SWD_OTHERS_LAND_ONLY
-        val avatarName = getChildValue("target_avatar_name") as? String ?: ""
-        TODO("APR: LLNotificationsUtil::add(\"GodDeleteAllScriptedPublicObjectsByUser\", " +
-             "args=[AVATAR_NAME=avatarName], payload=[avatar_id=targetAvatar, flags=simWideDeletesFlags], " +
-             "callback=::callbackSimWideDeletes)")
+        TODO("APR: use JVM equivalent")
     }
 
     fun onClickDeleteAllScriptedOwnedBy() {
-        if (targetAvatar == LLUUID.NULL) return
+        if (targetAvatar == null) return
         simWideDeletesFlags = SWD_SCRIPTED_ONLY
-        TODO("APR: LLNotificationsUtil::add(\"GodDeleteAllScriptedObjectsByUser\", ..., ::callbackSimWideDeletes)")
+        TODO("APR: use JVM equivalent")
     }
 
     fun onClickDeleteAllOwnedBy() {
-        if (targetAvatar == LLUUID.NULL) return
+        if (targetAvatar == null) return
         simWideDeletesFlags = 0u
-        TODO("APR: LLNotificationsUtil::add(\"GodDeleteAllObjectsByUser\", ..., ::callbackSimWideDeletes)")
+        TODO("APR: use JVM equivalent")
     }
 
     fun onGetTopColliders() {
-        if (TODO<Boolean>("APR: gAgent.isGodlike()")) {
-            TODO("APR: FloaterReg::showInstance(\"top_objects\"); FloaterTopObjects.setMode(COLLIDERS); instance.onRefresh()")
-        }
+        TODO("APR: use JVM equivalent")
     }
 
     fun onGetTopScripts() {
-        if (TODO<Boolean>("APR: gAgent.isGodlike()")) {
-            TODO("APR: FloaterReg::showInstance(\"top_objects\"); FloaterTopObjects.setMode(SCRIPTS); instance.onRefresh()")
-        }
+        TODO("APR: use JVM equivalent")
     }
 
     fun onGetScriptDigest() {
-        if (TODO<Boolean>("APR: gAgent.isGodlike()")) {
-            PanelRequestTools.sendRequest("scriptdigest", "0", TODO("APR: gAgent.getRegionHost()"))
-        }
+        PanelRequestTools.sendRequest("scriptdigest", "0", agentGetRegionHost())
     }
 
-    // ---- Helpers ----
-
-    private fun ULong.isFlagSet(flag: ULong): Boolean = (this and flag) != 0uL
-    private fun getString(key: String): String = TODO("APR: XUI string lookup for key=$key")
-    private fun setChildEnabled(name: String, e: Boolean) { TODO("APR: getChildView(name).setEnabled(e)") }
-    private fun setChildValue(name: String, v: Any) { TODO("APR: getChild<UICtrl>(name).setValue(v)") }
-    private fun getChildValue(name: String): Any = TODO("APR: getChild<UICtrl>(name).getValue()")
-    private fun getChildBool(name: String): Boolean = TODO("APR: getChild<UICtrl>(name).getValue().asBoolean()")
-
     companion object {
-        fun callbackSimWideDeletes(notification: Any, response: Any): Boolean {
-            val option   = TODO<Int>("APR: LLNotificationsUtil::getSelectedOption(notification, response)")
-            if (option == 0) {
-                val avatarId = TODO<LLUUID>("APR: notification[\"payload\"][\"avatar_id\"].asUUID()")
-                val flags    = TODO<UInt>("APR: notification[\"payload\"][\"flags\"].asInteger().toUInt()")
-                if (avatarId != LLUUID.NULL) sendSimWideDeletes(avatarId, flags)
+        fun callbackSimWideDeletes(avatarId: UUID?, flags: UInt): Boolean {
+            if (avatarId != null) {
+                sendSimWideDeletes(avatarId, flags)
             }
             return false
         }
     }
 }
 
-// -------------------------------------------------------------------------
-// PanelRequestTools
-// -------------------------------------------------------------------------
+class PanelRequestTools {
 
-class PanelRequestTools : Panel() {
+    private val SELECTION = "Selection"
+    private val AGENT_REGION = "Agent Region"
 
-    companion object {
-        private const val SELECTION    = "Selection"
-        private const val AGENT_REGION = "Agent Region"
-
-        fun sendRequest(request: String, parameter: String, host: Any?) {
-            TODO("APR: send GodlikeMessage with Method=$request, Parameter=$parameter to host=$host")
-        }
-    }
-
-    override fun postBuild(): Boolean {
+    fun postBuild(): Boolean {
         refresh()
         return true
     }
 
-    override fun refresh() {
-        val buffer = getChildValue("destination") as? String ?: ""
-        TODO("APR: rebuild destination combo: keep first 2 items (Selection, Agent Region), " +
-             "then add all LLWorld region names; restore selection to buffer if non-empty")
+    fun refresh() {
+        TODO("APR: use JVM equivalent")
     }
 
     fun onClickRequest() {
-        val dest = (getChildValue("destination") as? String) ?: ""
-        when (dest) {
-            SELECTION -> {
-                var req   = (getChildValue("request") as? String) ?: ""
-                req       = req.substringBefore(' ')
-                val param = (getChildValue("parameter") as? String) ?: ""
-                TODO("APR: LLSelectMgr::getInstance().sendGodlikeRequest(req, param)")
-            }
-            AGENT_REGION -> sendRequest(TODO("APR: gAgent.getRegionHost()"))
-            else -> {
-                TODO("APR: find LLViewerRegion by name=dest in LLWorld::getRegionList(), " +
-                     "then call sendRequest(region.getHost())")
-            }
-        }
+        TODO("APR: use JVM equivalent")
     }
 
-    private fun sendRequest(host: Any?) {
-        val req = (getChildValue("request") as? String) ?: ""
-        if (req == "terrain download") {
-            TODO("APR: gXferManager.requestFile(\"terrain.raw\", \"terrain.raw\", LL_PATH_NONE, host, false, ::terrainDownloadDone)")
-        } else {
-            val trimmed = req.substringBefore(' ')
-            val param   = (getChildValue("parameter") as? String) ?: ""
-            sendRequest(trimmed, param, host)
-        }
+    fun sendRequest(host: String) {
+        TODO("APR: use JVM equivalent")
     }
 
-    private fun getChildValue(name: String): Any = TODO("APR: getChild<UICtrl>(name).getValue()")
+    companion object {
+        fun sendRequest(request: String, parameter: String, host: String) {
+            TODO("APR: use JVM equivalent")
+        }
+    }
 }
 
-// -------------------------------------------------------------------------
-// Free-standing message helpers (mirror C++ file-scope functions).
-// -------------------------------------------------------------------------
-
-fun sendSimWideDeletes(ownerId: LLUUID, flags: UInt) {
-    TODO("APR: send SimWideDeletes message: AgentID, SessionID, TargetID=ownerId, Flags=flags")
+fun sendSimWideDeletes(ownerId: UUID, flags: UInt) {
+    TODO("APR: use JVM equivalent")
 }
 
-fun terrainDownloadDone(status: Int) {
-    TODO("APR: LLNotificationsUtil::add(\"TerrainDownloaded\")")
-}
+private val REGION_FLAGS_SUN_FIXED: ULong = 0x0000000000000010uL
+private val REGION_FLAGS_RESET_HOME_ON_TELEPORT: ULong = 0x0000000000000040uL
+private val REGION_FLAGS_EXTERNALLY_VISIBLE: ULong = 0x0000000000000080uL
+private val REGION_FLAGS_ALLOW_DAMAGE: ULong = 0x0000000000000001uL
+private val REGION_FLAGS_BLOCK_TERRAFORM: ULong = 0x0000000000000400uL
+private val REGION_FLAGS_BLOCK_DWELL: ULong = 0x0000000020000000uL
+private val REGION_FLAGS_SANDBOX: ULong = 0x0000000000000100uL
+private val REGION_FLAGS_SKIP_SCRIPTS: ULong = 0x0000000000040000uL
+private val REGION_FLAGS_SKIP_COLLISIONS: ULong = 0x0000000000080000uL
+private val REGION_FLAGS_SKIP_PHYSICS: ULong = 0x0000000000100000uL
+
+private val SWD_SCRIPTED_ONLY: UInt = 0x00000001u
+private val SWD_OTHERS_LAND_ONLY: UInt = 0x00000002u
+
+private fun isFlagSet(flags: ULong, flag: ULong): Boolean = (flags and flag) != 0uL
+private fun isPrelude(flags: ULong): Boolean = TODO("APR: use JVM equivalent")
+private fun setPreludeFlags(flags: ULong): ULong = TODO("APR: use JVM equivalent")
+private fun unsetPreludeFlags(flags: ULong): ULong = TODO("APR: use JVM equivalent")

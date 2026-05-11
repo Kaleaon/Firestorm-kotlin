@@ -1,47 +1,36 @@
-// ViewerMedia.kt — converted from llviewermedia.h / llviewermedia.cpp
-// Copyright (C) 2007, Linden Research, Inc. LGPL 2.1
 package com.firestorm.newview
 
 import com.firestorm.llcommon.LLUUID
 
-// ---------------------------------------------------------------------------
-// Observer interface
-// ---------------------------------------------------------------------------
-
 interface MediaObserver {
-    /** Called whenever the focused media implementation changes. */
     fun onFocusedMediaChanged()
-
-    /** Called whenever the hovered (mouse-over) media implementation changes. */
     fun onHoveredMediaChanged() {}
 }
 
-// ---------------------------------------------------------------------------
-// MediaImpl — thin representation of a single media instance
-// ---------------------------------------------------------------------------
-
-/**
- * Represents one in-world media instance (maps to LLViewerMediaImpl).
- * Heavy plugin/GL operations are stubbed with TODO.
- */
 class MediaImpl(
     val textureId: LLUUID,
-    val mediaWidth: Int = 0,
-    val mediaHeight: Int = 0,
-    val autoScale: Boolean = false,
-    val loop: Boolean = false
+    var mediaWidth: Int = 0,
+    var mediaHeight: Int = 0,
+    var autoScale: Boolean = false,
+    var loop: Boolean = false,
 ) {
     var mediaUrl: String = ""
     var homeUrl: String = ""
+    var homeMimeType: String = ""
     var mimeType: String = ""
+    var mediaEntryUrl: String = ""
     var visible: Boolean = true
     var isParcelMedia: Boolean = false
     var isDisabled: Boolean = false
     var isTrustedBrowser: Boolean = false
+    var autoPlay: Boolean = false
+    var navigateServerRequest: Boolean = false
     var volume: Float = 1.0f
     var interest: Double = 0.0
     var proximity: Int = Int.MAX_VALUE
     var proximityDistance: Double = Double.MAX_VALUE
+    var usedInUI: Boolean = false
+    var target: String = ""
 
     enum class NavState {
         NONE,
@@ -58,45 +47,62 @@ class MediaImpl(
 
     var navState: NavState = NavState.NONE
 
+    fun hasMedia(): Boolean = TODO("GPU: return mMediaSource != null && mMediaSource.isRunning")
+
     fun play()  { TODO("GPU: play media plugin") }
     fun stop()  { TODO("GPU: stop media plugin") }
     fun pause() { TODO("GPU: pause media plugin") }
+    fun start() { TODO("GPU: start / unpause media plugin") }
+    fun unload() { TODO("GPU: destroy media plugin; reset state") }
 
-    fun navigateTo(url: String, mimeType: String = "", rediscoverType: Boolean = false) {
+    fun navigateTo(url: String, mimeType: String = "", rediscoverType: Boolean = false, serverRequest: Boolean = false) {
         this.mediaUrl = url
-        TODO("GPU: navigate media plugin to url")
+        this.navigateServerRequest = serverRequest
+        TODO("GPU: navigate media plugin to url; track nav state")
     }
 
     fun setVolume(v: Float) { volume = v; TODO("GPU: update plugin volume") }
     fun setMute(mute: Boolean) { TODO("GPU: mute plugin") }
+    fun updateVolume() { TODO("GPU: recalculate effective volume from global + local + mute state; apply to plugin") }
 
-    /** Update the backing GL texture from the plugin's pixel buffer. */
-    fun updateTexture() { TODO("GPU: update media texture") }
+    fun updateTexture() { TODO("GPU: update media texture from plugin pixel buffer") }
 
     fun focus(hasFocus: Boolean) { TODO("GPU: relay focus to plugin") }
+
+    fun clearCache() { TODO("GPU: clear plugin browser cache") }
+
+    fun setSize(width: Int, height: Int) {
+        mediaWidth = width
+        mediaHeight = height
+        TODO("GPU: resize plugin")
+    }
+
+    fun isAutoPlayable(): Boolean = autoPlay && !isDisabled
+
+    fun getMediaTextureId(): LLUUID = textureId
 }
 
-// ---------------------------------------------------------------------------
-// ViewerMedia singleton
-// ---------------------------------------------------------------------------
+data class MediaEntry(
+    val mediaId: LLUUID,
+    val currentUrl: String = "",
+    val homeUrl: String = "",
+    val widthPixels: Int = 0,
+    val heightPixels: Int = 0,
+    val autoScale: Boolean = false,
+    val autoLoop: Boolean = false,
+    val autoPlay: Boolean = false,
+)
 
-/**
- * Central manager for all in-world media instances.
- * Maps to the C++ LLViewerMedia singleton.
- */
 object ViewerMedia {
 
-    // ------------------------------------------------------------------
-    // Settings keys (mirror C++ static const char* members)
-    // ------------------------------------------------------------------
-    const val AUTO_PLAY_MEDIA_SETTING          = "ParcelMediaAutoPlayEnable"
-    const val SHOW_MEDIA_ON_OTHERS_SETTING     = "MediaShowOnOthers"
-    const val SHOW_MEDIA_WITHIN_PARCEL_SETTING = "MediaShowWithinParcel"
-    const val SHOW_MEDIA_OUTSIDE_PARCEL_SETTING= "MediaShowOutsideParcel"
+    const val AUTO_PLAY_MEDIA_SETTING           = "ParcelMediaAutoPlayEnable"
+    const val SHOW_MEDIA_ON_OTHERS_SETTING      = "MediaShowOnOthers"
+    const val SHOW_MEDIA_WITHIN_PARCEL_SETTING  = "MediaShowWithinParcel"
+    const val SHOW_MEDIA_OUTSIDE_PARCEL_SETTING = "MediaShowOutsideParcel"
 
-    // ------------------------------------------------------------------
-    // Internal state
-    // ------------------------------------------------------------------
+    private const val MAX_MEDIA_INSTANCES_DEFAULT = 8
+    private const val MEDIA_INSTANCES_MIN_LIMIT   = 6
+
     private val impls: MutableList<MediaImpl> = mutableListOf()
     private val implsByTexture: MutableMap<LLUUID, MediaImpl> = mutableMapOf()
     private val observers: MutableList<MediaObserver> = mutableListOf()
@@ -104,25 +110,21 @@ object ViewerMedia {
     private var anyMediaShowing: Boolean = false
     private var anyMediaPlaying: Boolean = false
     private var globalVolume: Float = 1.0f
-    private var maxInstances: Int = 8
+    private var maxInstances: Int = MAX_MEDIA_INSTANCES_DEFAULT
+    private var forceUpdate: Boolean = false
+    private var onlyAudibleTextureId: LLUUID = LLUUID.NULL
 
-    /** The impl that currently has keyboard / interaction focus. */
     var focusedMediaImpl: MediaImpl? = null
         private set(value) {
             field = value
             observers.forEach { it.onFocusedMediaChanged() }
         }
 
-    /** The impl the mouse is currently hovering over. */
     var hoveredMediaImpl: MediaImpl? = null
         private set(value) {
             field = value
             observers.forEach { it.onHoveredMediaChanged() }
         }
-
-    // ------------------------------------------------------------------
-    // Observer management
-    // ------------------------------------------------------------------
 
     fun addObserver(observer: MediaObserver): Boolean {
         if (observers.contains(observer)) return false
@@ -132,41 +134,81 @@ object ViewerMedia {
 
     fun removeObserver(observer: MediaObserver): Boolean = observers.remove(observer)
 
-    // ------------------------------------------------------------------
-    // Impl lifecycle
-    // ------------------------------------------------------------------
-
     fun newMediaImpl(
         textureId: LLUUID,
         mediaWidth: Int = 0,
         mediaHeight: Int = 0,
         mediaAutoScale: Boolean = false,
-        mediaLoop: Boolean = false
+        mediaLoop: Boolean = false,
     ): MediaImpl {
-        val impl = MediaImpl(textureId, mediaWidth, mediaHeight, mediaAutoScale, mediaLoop)
-        impls.add(impl)
-        implsByTexture[textureId] = impl
-        return impl
+        val existing = getMediaImplFromTextureID(textureId)
+        return if (existing == null || textureId == LLUUID.NULL) {
+            val impl = MediaImpl(textureId, mediaWidth, mediaHeight, mediaAutoScale, mediaLoop)
+            impls.add(impl)
+            if (textureId != LLUUID.NULL) implsByTexture[textureId] = impl
+            impl
+        } else {
+            existing.unload()
+            existing.mediaWidth  = mediaWidth
+            existing.mediaHeight = mediaHeight
+            existing.autoScale   = mediaAutoScale
+            existing.loop        = mediaLoop
+            existing
+        }
+    }
+
+    fun updateMediaImpl(mediaEntry: MediaEntry, previousUrl: String, updateFromSelf: Boolean): MediaImpl {
+        val existing = getMediaImplFromTextureID(mediaEntry.mediaId)
+        return if (existing != null) {
+            val wasLoaded = existing.hasMedia()
+            existing.homeUrl     = mediaEntry.homeUrl
+            existing.autoScale   = mediaEntry.autoScale
+            existing.loop        = mediaEntry.autoLoop
+            existing.mediaWidth  = mediaEntry.widthPixels
+            existing.mediaHeight = mediaEntry.heightPixels
+            existing.autoPlay    = mediaEntry.autoPlay
+            existing.mediaEntryUrl = mediaEntry.currentUrl
+            TODO("GPU: propagate autoScale/loop/size to media plugin if loaded")
+            val urlChanged = existing.mediaEntryUrl != previousUrl
+            if (existing.mediaEntryUrl.isEmpty()) {
+                if (urlChanged) existing.unload()
+            } else {
+                val needsNavigate = (wasLoaded || existing.isAutoPlayable()) && !updateFromSelf && urlChanged
+                if (needsNavigate) {
+                    existing.navigateTo(existing.mediaEntryUrl, "", rediscoverType = true, serverRequest = true)
+                } else if (existing.mediaUrl.isNotEmpty() && existing.mediaUrl != existing.mediaEntryUrl) {
+                    existing.mediaUrl = existing.mediaEntryUrl
+                    existing.navigateServerRequest = true
+                }
+            }
+            existing
+        } else {
+            val impl = newMediaImpl(
+                mediaEntry.mediaId,
+                mediaEntry.widthPixels,
+                mediaEntry.heightPixels,
+                mediaEntry.autoScale,
+                mediaEntry.autoLoop,
+            )
+            impl.homeUrl      = mediaEntry.homeUrl
+            impl.autoPlay     = mediaEntry.autoPlay
+            impl.mediaEntryUrl = mediaEntry.currentUrl
+            if (impl.isAutoPlayable()) {
+                impl.navigateTo(impl.mediaEntryUrl, "", rediscoverType = true, serverRequest = true)
+            }
+            impl
+        }
     }
 
     fun getMediaImplFromTextureID(textureId: LLUUID): MediaImpl? = implsByTexture[textureId]
 
     fun textureHasMedia(textureId: LLUUID): Boolean = implsByTexture.containsKey(textureId)
 
-    /** Returns the priority-sorted list of all media impls (highest interest first). */
     fun getPriorityList(): MutableList<MediaImpl> {
-        impls.sortWith(Comparator { a, b -> compareValuesBy(b, a) { it.interest } })
+        impls.sortWith(compareByDescending { it.interest })
         return impls
     }
 
-    // ------------------------------------------------------------------
-    // Focus / hover
-    // ------------------------------------------------------------------
-
-    /**
-     * Set which impl has in-world media focus.
-     * Pass null to clear focus.
-     */
     fun setInWorldMediaFocus(impl: MediaImpl?) {
         focusedMediaImpl?.focus(false)
         focusedMediaImpl = impl
@@ -177,15 +219,14 @@ object ViewerMedia {
         hoveredMediaImpl = impl
     }
 
-    // ------------------------------------------------------------------
-    // Global controls
-    // ------------------------------------------------------------------
-
     fun getVolume(): Float = globalVolume
 
     fun setVolume(volume: Float) {
-        globalVolume = volume
-        impls.forEach { it.setVolume(volume) }
+        if (volume != globalVolume || forceUpdate) {
+            globalVolume = volume
+            impls.forEach { it.updateVolume() }
+            forceUpdate = false
+        }
     }
 
     fun isAnyMediaShowing(): Boolean = anyMediaShowing
@@ -199,39 +240,79 @@ object ViewerMedia {
         if (paused) impls.forEach { it.pause() } else impls.forEach { it.play() }
     }
 
-    // ------------------------------------------------------------------
-    // Per-frame update (called from the main idle loop)
-    // ------------------------------------------------------------------
-
-    /** Main per-frame update tick — mirrors LLViewerMedia::updateMedia(). */
-    fun updateMedia(idle: Boolean = false) {
-        TODO("Prioritise impl list, drive plugin updates, manage texture uploads")
+    fun setMaxInstances(maxInstances: Int) {
+        val effectiveMax = maxInstances.coerceAtLeast(MEDIA_INSTANCES_MIN_LIMIT)
+        this.maxInstances = TODO("IPC: reduce by 2 if physical RAM < 8GB, else use effectiveMax") as Int
     }
 
-    // ------------------------------------------------------------------
-    // Cookie / cache / proxy helpers (stubbed)
-    // ------------------------------------------------------------------
+    fun setOnlyAudibleMediaTextureId(textureId: LLUUID) {
+        onlyAudibleTextureId = textureId
+    }
 
-    fun clearAllCookies() { TODO("Clear cookies in all loaded plugins") }
-    fun clearAllCaches()  { TODO("Clear caches in all loaded plugins") }
-    fun setCookiesEnabled(enabled: Boolean) { TODO("Propagate cookie flag to all plugins") }
+    fun updateMedia(idle: Boolean = false) {
+        TODO("IPC: prioritise impl list; drive plugin updates; manage texture uploads; enforce maxInstances; update anyMediaShowing / anyMediaPlaying")
+    }
+
+    fun getCurrentUserAgent(): String {
+        TODO("IPC: build 'SecondLife/<version> (<channel>; <skin> skin)' user-agent string")
+    }
+
+    fun updateBrowserUserAgent() {
+        val ua = getCurrentUserAgent()
+        impls.forEach { impl ->
+            TODO("GPU: if impl.mediaSource?.pluginSupportsMediaBrowser() == true impl.mediaSource?.setBrowserUserAgent($ua)")
+        }
+    }
+
+    fun clearAllCookies() { impls.forEach { TODO("GPU: if it.mediaSource != null it.mediaSource?.clearCookies()") } }
+    fun clearAllCaches()  { impls.forEach { it.clearCache() } }
+    fun setCookiesEnabled(enabled: Boolean) { TODO("GPU: propagate cookie flag to all plugins") }
 
     fun setProxyConfig(enable: Boolean, host: String, port: Int) {
-        TODO("Propagate proxy settings to all plugins")
+        TODO("GPU: propagate proxy settings to all plugins")
     }
-
-    // ------------------------------------------------------------------
-    // Parcel audio / media helpers
-    // ------------------------------------------------------------------
 
     fun hasInWorldMedia(): Boolean = impls.any { !it.isParcelMedia }
     fun hasParcelMedia(): Boolean  = impls.any { it.isParcelMedia }
-    fun getParcelAudioURL(): String { TODO("Return URL of current parcel audio stream") }
-    fun hasParcelAudio(): Boolean   { TODO("Return whether parcel audio URL is set") }
-    fun isParcelMediaPlaying(): Boolean { TODO("Check parcel media play state") }
-    fun isParcelAudioPlaying(): Boolean { TODO("Check parcel audio play state") }
 
-    fun muteListChanged() { TODO("Re-evaluate mute state for all impls") }
+    fun getParcelAudioURL(): String { TODO("IPC: return URL of current parcel audio stream") }
+    fun hasParcelAudio(): Boolean   { TODO("IPC: return whether parcel audio URL is non-empty") }
+    fun isParcelMediaPlaying(): Boolean { TODO("IPC: check parcel media play state") }
+    fun isParcelAudioPlaying(): Boolean { TODO("IPC: check parcel audio play state") }
 
-    fun getCurrentUserAgent(): String { TODO("Return browser user-agent string") }
+    fun muteListChanged() {
+        impls.forEach { TODO("IPC: re-evaluate mute state for each impl") }
+    }
+
+    fun openIdSetup(openIdUrl: String, openIdToken: String) {
+        TODO("IPC: launch openIDSetupCoro")
+    }
+
+    fun proxyWindowOpened(target: String, uuid: String) {
+        TODO("IPC: find impl by uuid; set target")
+    }
+
+    fun proxyWindowClosed(uuid: String) {
+        TODO("IPC: find impl by uuid; unload")
+    }
+
+    fun createSpareBrowserMediaSource() {
+        TODO("GPU: pre-create a browser plugin for fast first-use")
+    }
+
+    fun getSpareBrowserMediaSource(): Any? {
+        TODO("GPU: return and clear spare browser plugin")
+    }
+
+    fun getHeaders(): Map<String, String> {
+        TODO("IPC: build standard HTTP headers map including OpenID cookie")
+    }
+
+    fun getOpenIdCookie(mediaInstance: MediaCtrl): Boolean {
+        TODO("IPC: inject the openid cookie into mediaInstance")
+    }
+
+    fun onTeleportFinished() {
+        TODO("IPC: resume or restart paused media after teleport completes")
+    }
 }

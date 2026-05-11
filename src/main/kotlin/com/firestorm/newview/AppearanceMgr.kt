@@ -1,74 +1,42 @@
-// Converted from llappearancemgr.h / llappearancemgr.cpp
-// Original: Copyright (C) 2010, Linden Research, Inc. (LGPL 2.1)
 package com.firestorm.newview
 
-import com.firestorm.llmath.*
-import com.firestorm.llcommon.*
-import com.firestorm.llinventory.*
-import com.firestorm.llappearance.*
+import java.util.UUID
 
-// ---------------------------------------------------------------------------
-// Observer / callback types
-// ---------------------------------------------------------------------------
-
-/** Invoked when the set of worn attachments changes. */
-typealias AttachmentsChangedCallback = (itemId: LLUUID) -> Unit
-
-/** Invoked on arbitrary appearance events (COF flush, outfit apply, etc.). */
+typealias AttachmentsChangedCallback = (itemId: UUID) -> Unit
 typealias AppearanceCallback = () -> Unit
-
-// ---------------------------------------------------------------------------
-// AppearanceMgr singleton
-// Manages the Current Outfit Folder (COF) and drives avatar appearance updates.
-// ---------------------------------------------------------------------------
 
 object AppearanceMgr {
 
-    // --- COF identity --------------------------------------------------------
-
-    /** UUID of the Current Outfit Folder in the agent's inventory. */
-    var cofId: LLUUID = LLUUID.NULL
+    var cofId: UUID = UUID(0, 0)
         private set
 
-    /** Whether the current region supports server-side baking. */
-    var serverBakeRegion: Boolean = false
-
-    /** Version counter incremented whenever the COF changes. */
     var cofVersion: Int = 0
         private set
 
-    fun initCOFID() { TODO("initCOFID: locate COF in inventory tree") }
-
-    fun getCOF(): LLUUID = cofId
-
-    fun getCOFVersion(): Int = cofVersion
-
-    // --- COF state -----------------------------------------------------------
-
     var isOutfitDirty: Boolean = false
+    var isInUpdateAppearanceFromCOF: Boolean = false
+        private set
 
     var isOutfitLocked: Boolean = false
         private set
 
-    var isInUpdateAppearanceFromCOF: Boolean = false
-        private set
+    var outfitImageId: UUID = UUID(0, 0)
+    var attachmentInvLinkEnabled: Boolean = true
 
+    private var appearanceServiceUrl: String = ""
+
+    fun initCOFID() { TODO("initCOFID: locate COF in inventory tree") }
+    fun getCOF(): UUID = cofId
+    fun getCOFVersion(): Int = cofVersion
     fun setOutfitDirty(dirty: Boolean) { isOutfitDirty = dirty }
 
     fun setOutfitLocked(locked: Boolean) {
         isOutfitLocked = locked
-        TODO("setOutfitLocked: notify outfit-lock observers")
+        TODO("setOutfitLocked: start/stop OutfitUnLockTimer, notify observers")
     }
 
-    /** Re-examine COF vs. base outfit link to determine dirty state. */
-    fun updateIsDirty() { TODO("updateIsDirty") }
+    fun updateIsDirty() { TODO("updateIsDirty: compare COF contents to base outfit link") }
 
-    // --- Appearance update ---------------------------------------------------
-
-    /**
-     * Drive a full appearance rebuild from current COF contents.
-     * Corresponds to LLAppearanceMgr::updateAppearanceFromCOF().
-     */
     fun updateAppearanceFromCOF(
         enforceItemRestrictions: Boolean = true,
         enforceOrdering: Boolean = true,
@@ -77,136 +45,134 @@ object AppearanceMgr {
         TODO("updateAppearanceFromCOF")
     }
 
-    fun updateAgentWearables() { TODO("updateAgentWearables: sync from holding pattern") }
+    fun updateCOF(categoryId: UUID, append: Boolean = false) {
+        TODO("updateCOF($categoryId, append=$append)")
+    }
 
-    fun requestServerAppearanceUpdate() { TODO("requestServerAppearanceUpdate: POST to bake service") }
+    fun updateAgentWearables() { TODO("updateAgentWearables: sync wearable holding pattern to avatar") }
+    fun countActiveHoldingPatterns(): Int = TODO("countActiveHoldingPatterns")
 
-    // --- Outfit operations ---------------------------------------------------
+    fun requestServerAppearanceUpdate() { TODO("requestServerAppearanceUpdate: POST to appearance bake service") }
 
-    /**
-     * Replace the current outfit with the outfit category identified by [newOutfit].
-     * Corresponds to LLAppearanceMgr::replaceCurrentOutfit().
-     */
-    fun replaceCurrentOutfit(newOutfit: LLUUID) { TODO("replaceCurrentOutfit($newOutfit)") }
+    fun setAppearanceServiceURL(url: String) { appearanceServiceUrl = url }
+    fun getAppearanceServiceURL(): String = appearanceServiceUrl
 
-    /** Wear all items in [categoryId], optionally appending to current outfit. */
-    fun wearInventoryCategory(categoryId: LLUUID, copy: Boolean, append: Boolean) {
+    fun replaceCurrentOutfit(newOutfit: UUID) { TODO("replaceCurrentOutfit($newOutfit)") }
+
+    fun wearInventoryCategory(categoryId: UUID, copy: Boolean, append: Boolean) {
         TODO("wearInventoryCategory($categoryId, copy=$copy, append=$append)")
+    }
+
+    fun wearInventoryCategoryOnAvatar(categoryId: UUID, append: Boolean) {
+        TODO("wearInventoryCategoryOnAvatar($categoryId, append=$append)")
+    }
+
+    fun wearCategoryFinal(catId: UUID, copyItems: Boolean, append: Boolean) {
+        TODO("wearCategoryFinal($catId, copyItems=$copyItems, append=$append)")
     }
 
     fun wearOutfitByName(name: String) { TODO("wearOutfitByName($name)") }
 
-    fun changeOutfit(proceed: Boolean, category: LLUUID, append: Boolean) {
-        if (!proceed) return
-        TODO("changeOutfit")
+    fun wearOutfit(queryMap: Map<String, Any>, append: Boolean = false): Boolean {
+        TODO("wearOutfit(append=$append)")
     }
 
-    fun takeOffOutfit(catId: LLUUID)              { TODO("takeOffOutfit($catId)") }
-    fun addCategoryToCurrentOutfit(catId: LLUUID) { TODO("addCategoryToCurrentOutfit($catId)") }
-    fun renameOutfit(outfitId: LLUUID)            { TODO("renameOutfit($outfitId)") }
-    fun removeOutfitPhoto(outfitId: LLUUID)       { TODO("removeOutfitPhoto($outfitId)") }
+    fun changeOutfit(proceed: Boolean, category: UUID, append: Boolean) {
+        if (!proceed) return
+        TODO("changeOutfit: wearInventoryCategory or link-based approach")
+    }
 
-    // --- Wearing / unwearing individual items --------------------------------
+    fun takeOffOutfit(catId: UUID)              { TODO("takeOffOutfit($catId)") }
+    fun addCategoryToCurrentOutfit(catId: UUID) { TODO("addCategoryToCurrentOutfit($catId)") }
+    fun renameOutfit(outfitId: UUID)            { TODO("renameOutfit($outfitId)") }
+    fun removeOutfitPhoto(outfitId: UUID)       { TODO("removeOutfitPhoto($outfitId)") }
 
-    /**
-     * Wear a single inventory item on the avatar.
-     * [replace] – if true, replaces any existing item of the same wearable type.
-     */
-    fun wearItemOnAvatar(itemId: LLUUID, doUpdate: Boolean, replace: Boolean = false) {
+    fun makeNewOutfitLinks(newFolderName: String, showPanel: Boolean = true) {
+        TODO("makeNewOutfitLinks($newFolderName, showPanel=$showPanel)")
+    }
+
+    fun wearItemOnAvatar(itemId: UUID, doUpdate: Boolean, replace: Boolean = false) {
         TODO("wearItemOnAvatar($itemId, replace=$replace)")
     }
 
-    fun wearItemsOnAvatar(itemIds: List<LLUUID>, doUpdate: Boolean, replace: Boolean) {
+    fun wearItemsOnAvatar(itemIds: List<UUID>, doUpdate: Boolean, replace: Boolean) {
         itemIds.forEach { wearItemOnAvatar(it, doUpdate = false, replace = replace) }
         if (doUpdate) updateAppearanceFromCOF()
     }
 
-    fun removeItemFromAvatar(itemId: LLUUID) { TODO("removeItemFromAvatar($itemId)") }
-
-    fun removeItemsFromAvatar(itemIds: List<LLUUID>) {
-        itemIds.forEach { removeItemFromAvatar(it) }
+    fun removeItemFromAvatar(itemId: UUID, postUpdateFunc: AppearanceCallback = {}, immediateDelete: Boolean = false) {
+        TODO("removeItemFromAvatar($itemId)")
     }
 
-    fun removeAllClothesFromAvatar() {
-        TODO("removeAllClothesFromAvatar: removeCOFLinksOfType for all clothing types")
+    fun removeItemsFromAvatar(itemIds: List<UUID>, postUpdateFunc: AppearanceCallback = {}, immediateDelete: Boolean = false) {
+        itemIds.forEach { removeItemFromAvatar(it, postUpdateFunc, immediateDelete) }
     }
 
-    fun removeAllAttachmentsFromAvatar() { TODO("removeAllAttachmentsFromAvatar") }
+    fun removeAllClothesFromAvatar()      { TODO("removeAllClothesFromAvatar: removeCOFLinksOfType for every clothing type") }
+    fun removeAllAttachmentsFromAvatar()  { TODO("removeAllAttachmentsFromAvatar") }
 
-    // --- COF link management -------------------------------------------------
+    fun shouldRemoveTempAttachment(itemId: UUID): Boolean = TODO("shouldRemoveTempAttachment($itemId)")
 
-    fun addCOFItemLink(itemId: LLUUID, description: String = "") {
-        TODO("addCOFItemLink($itemId)")
+    fun addCOFItemLink(itemId: UUID, description: String = "") { TODO("addCOFItemLink($itemId)") }
+
+    fun removeCOFItemLinks(itemId: UUID, immediateDelete: Boolean = false) {
+        TODO("removeCOFItemLinks($itemId, immediateDelete=$immediateDelete)")
     }
 
-    fun removeCOFItemLinks(itemId: LLUUID, immediateDelete: Boolean = false) {
-        TODO("removeCOFItemLinks($itemId)")
+    fun removeCOFLinksOfType(wearableType: Int) { TODO("removeCOFLinksOfType($wearableType)") }
+
+    fun findCOFItemLinks(itemId: UUID): List<UUID> = TODO("findCOFItemLinks($itemId)")
+    fun isLinkedInCOF(itemId: UUID): Boolean       = TODO("isLinkedInCOF($itemId)")
+    fun getIsInCOF(objId: UUID): Boolean           = TODO("getIsInCOF($objId)")
+    fun getIsProtectedCOFItem(objId: UUID): Boolean = TODO("getIsProtectedCOFItem($objId)")
+
+    fun slamCategoryLinks(srcId: UUID, dstId: UUID, includeFolderLinks: Boolean) {
+        TODO("slamCategoryLinks($srcId -> $dstId)")
     }
 
-    fun isLinkedInCOF(itemId: LLUUID): Boolean = TODO("isLinkedInCOF($itemId)")
+    fun shallowCopyCategory(srcId: UUID, dstId: UUID) { TODO("shallowCopyCategory($srcId -> $dstId)") }
+    fun shallowCopyCategoryContents(srcId: UUID, dstId: UUID) { TODO("shallowCopyCategoryContents($srcId -> $dstId)") }
 
-    fun getIsInCOF(objId: LLUUID): Boolean = TODO("getIsInCOF($objId)")
+    fun purgeBaseOutfitLink(categoryId: UUID)                  { TODO("purgeBaseOutfitLink($categoryId)") }
+    fun createBaseOutfitLink(categoryId: UUID)                  { TODO("createBaseOutfitLink($categoryId)") }
 
-    fun getIsProtectedCOFItem(objId: LLUUID): Boolean = TODO("getIsProtectedCOFItem($objId)")
-
-    // --- Ensemble / outfit links ---------------------------------------------
-
-    /**
-     * Add a link to an ensemble (outfit) folder inside the COF.
-     * Corresponds to addCategoryToCurrentOutfit / createBaseOutfitLink.
-     */
-    fun addEnsembleLink(categoryId: LLUUID) { TODO("addEnsembleLink($categoryId)") }
-
-    // --- Base outfit ---------------------------------------------------------
-
-    fun getBaseOutfitName(): String?  = TODO("getBaseOutfitName")
-    fun getBaseOutfitUUID(): LLUUID   = TODO("getBaseOutfitUUID")
-    fun wearBaseOutfit()              { TODO("wearBaseOutfit") }
-    fun updateBaseOutfit(): Boolean   = TODO("updateBaseOutfit")
+    fun getBaseOutfitName(): String? = TODO("getBaseOutfitName")
+    fun getBaseOutfitUUID(): UUID    = TODO("getBaseOutfitUUID")
+    fun wearBaseOutfit()             { TODO("wearBaseOutfit") }
+    fun updateBaseOutfit(): Boolean  = TODO("updateBaseOutfit")
     fun updatePanelOutfitName(name: String) { TODO("updatePanelOutfitName") }
 
-    // --- Outfit image --------------------------------------------------------
-
-    var outfitImageId: LLUUID = LLUUID.NULL
-
-    // --- Attachment tracking -------------------------------------------------
-
-    var attachmentInvLinkEnabled: Boolean = true
-
-    fun registerAttachment(itemId: LLUUID)   { TODO("registerAttachment($itemId)") }
-    fun unregisterAttachment(itemId: LLUUID) { TODO("unregisterAttachment($itemId)") }
+    fun registerAttachment(itemId: UUID)   { TODO("registerAttachment($itemId)") }
+    fun unregisterAttachment(itemId: UUID) { TODO("unregisterAttachment($itemId)") }
     fun setAttachmentInvLinkEnable(enabled: Boolean) { attachmentInvLinkEnabled = enabled }
 
-    // --- Wearable ordering / validation --------------------------------------
+    fun validateClothingOrderingInfo(catId: UUID? = null): Boolean = TODO("validateClothingOrderingInfo")
+    fun updateClothingOrderingInfo(catId: UUID? = null)            { TODO("updateClothingOrderingInfo") }
+    fun enforceCOFItemRestrictions()                               { TODO("enforceCOFItemRestrictions") }
 
-    fun validateClothingOrderingInfo(catId: LLUUID = LLUUID.NULL): Boolean =
-        TODO("validateClothingOrderingInfo")
+    fun findExcessOrDuplicateItems(catId: UUID, assetType: Int, maxPerType: Int, maxTotal: Int): List<UUID> =
+        TODO("findExcessOrDuplicateItems($catId)")
 
-    fun updateClothingOrderingInfo(catId: LLUUID = LLUUID.NULL) {
-        TODO("updateClothingOrderingInfo")
-    }
+    fun findAllExcessOrDuplicateItems(catId: UUID): List<UUID> = TODO("findAllExcessOrDuplicateItems($catId)")
 
-    fun enforceItemRestrictions() { TODO("enforceItemRestrictions") }
+    fun getCanMakeFolderIntoOutfit(folderId: UUID): Boolean  = TODO("getCanMakeFolderIntoOutfit")
+    fun getCanRemoveOutfit(outfitCatId: UUID): Boolean       = TODO("getCanRemoveOutfit")
+    fun getCanReplaceCOF(outfitCatId: UUID): Boolean         = TODO("getCanReplaceCOF")
+    fun canAddWearables(itemIds: List<UUID>, warnOnTypeMismatch: Boolean = true): Boolean = TODO("canAddWearables")
+    fun moveWearable(item: Any, closerToBody: Boolean): Boolean = TODO("moveWearable")
 
-    // --- Queries (static-equivalent helpers) ---------------------------------
+    fun onFirstFullyVisible() { TODO("onFirstFullyVisible: trigger initial appearance bake if needed") }
+    fun copyLibraryGestures() { TODO("copyLibraryGestures") }
+    fun cleanup()             { TODO("cleanup: release COF resources") }
+    fun dumpCOF(): String     = TODO("dumpCOF: return LLSD summary of COF contents")
 
-    fun getCanMakeFolderIntoOutfit(folderId: LLUUID): Boolean = TODO("getCanMakeFolderIntoOutfit")
-    fun getCanRemoveOutfit(outfitCatId: LLUUID): Boolean      = TODO("getCanRemoveOutfit")
-    fun getCanReplaceCOF(outfitCatId: LLUUID): Boolean        = TODO("getCanReplaceCOF")
-    fun canAddWearables(itemIds: List<LLUUID>): Boolean        = TODO("canAddWearables")
-
-    /**
-     * True when the avatar is wearing so few items it is considered nearly naked
-     * (used for RLVa and UI warnings).
-     */
-    fun isNearlyNaked(): Boolean = TODO("isNearlyNaked")
-
-    // --- Observer pattern ----------------------------------------------------
+    fun syncCofVersionAndRefresh() { TODO("syncCofVersionAndRefresh") }
+    fun getActiveCopyOperations(): Int = TODO("getActiveCopyOperations")
 
     private val attachmentsChangedListeners: MutableList<AttachmentsChangedCallback> = mutableListOf()
     private val appearanceChangedListeners:  MutableList<AppearanceCallback>          = mutableListOf()
 
-    fun addAttachmentsChangedCallback(cb: AttachmentsChangedCallback) {
+    fun setAttachmentsChangedCallback(cb: AttachmentsChangedCallback) {
         attachmentsChangedListeners += cb
     }
 
@@ -214,7 +180,7 @@ object AppearanceMgr {
         appearanceChangedListeners += cb
     }
 
-    private fun notifyAttachmentsChanged(itemId: LLUUID) {
+    private fun notifyAttachmentsChanged(itemId: UUID) {
         attachmentsChangedListeners.forEach { it(itemId) }
     }
 
@@ -222,19 +188,72 @@ object AppearanceMgr {
         appearanceChangedListeners.forEach { it() }
     }
 
-    // --- Lifecycle -----------------------------------------------------------
-
-    fun onFirstFullyVisible() { TODO("onFirstFullyVisible: trigger initial bake if needed") }
-    fun copyLibraryGestures() { TODO("copyLibraryGestures") }
-    fun cleanup()             { TODO("cleanup: release COF resources") }
-
-    // --- Debug helpers -------------------------------------------------------
-
-    fun dumpCOF(): String = TODO("dumpCOF: return LLSD summary string")
-
     companion object {
-        const val EXPECTED_TEXTURE_NAME = "OutfitPreview"
+        const val EXPECTED_TEXTURE_NAME      = "OutfitPreview"
         private const val BAKE_RETRY_MAX_COUNT = 5
-        private const val BAKE_RETRY_TIMEOUT   = 2.0f // seconds
+        private const val BAKE_RETRY_TIMEOUT   = 2.0f
+
+        fun getCanRemoveFromCOF(outfitCatId: UUID): Boolean = TODO("getCanRemoveFromCOF($outfitCatId)")
+        fun getCanAddToCOF(outfitCatId: UUID): Boolean      = TODO("getCanAddToCOF($outfitCatId)")
+
+        fun sortItemsByActualDescription(items: MutableList<Any>) {
+            TODO("sortItemsByActualDescription: sort by link description field")
+        }
+
+        fun divvyWearablesByType(items: List<Any>, itemsByType: MutableList<MutableList<Any>>) {
+            TODO("divvyWearablesByType: partition items list by wearable asset type")
+        }
+    }
+}
+
+fun findDescendentCategoryIDByName(parentId: UUID, name: String): UUID {
+    TODO("findDescendentCategoryIDByName: search inventory tree under $parentId for category named '$name'")
+}
+
+fun callAfterCOFFetch(cb: AppearanceCallback) {
+    TODO("callAfterCOFFetch: fetch COF contents then invoke cb")
+}
+
+fun callAfterCategoryFetch(catId: UUID, cb: AppearanceCallback) {
+    TODO("callAfterCategoryFetch($catId): fetch category, then invoke cb")
+}
+
+fun callAfterCategoryLinksFetch(catId: UUID, cb: AppearanceCallback) {
+    TODO("callAfterCategoryLinksFetch($catId): fetch category links, then invoke cb")
+}
+
+fun wearMultiple(ids: List<UUID>, replace: Boolean) {
+    TODO("wearMultiple: wear all items in ids list, replace=$replace")
+}
+
+class UpdateAppearanceOnDestroy(
+    private val enforceItemRestrictions: Boolean = true,
+    private val enforceOrdering: Boolean = true,
+    private val postUpdateFunc: AppearanceCallback = {}
+) {
+    private var fireCount: UInt = 0u
+
+    fun fire(invItem: UUID) { fireCount++ }
+
+    fun destroy() {
+        AppearanceMgr.updateAppearanceFromCOF(enforceItemRestrictions, enforceOrdering, postUpdateFunc)
+    }
+}
+
+class UpdateAppearanceAndEditWearableOnDestroy(private val itemId: UUID) {
+    fun fire(invItem: UUID) {}
+
+    fun destroy() {
+        AppearanceMgr.updateAppearanceFromCOF(true, true) {
+            TODO("edit_wearable_and_customize_avatar($itemId)")
+        }
+    }
+}
+
+class RequestServerAppearanceUpdateOnDestroy {
+    fun fire(invItem: UUID) {}
+
+    fun destroy() {
+        AppearanceMgr.requestServerAppearanceUpdate()
     }
 }

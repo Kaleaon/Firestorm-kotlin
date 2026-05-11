@@ -1,16 +1,6 @@
-// Converted from llagentwearables.h / llagentwearables.cpp
-// Original: Copyright (C) 2010, Linden Research, Inc. (LGPL 2.1)
 package com.firestorm.newview
 
-import com.firestorm.llmath.*
-import com.firestorm.llcommon.*
-import com.firestorm.llinventory.*
-import com.firestorm.llappearance.*
-
-// ---------------------------------------------------------------------------
-// Wearable type enumeration
-// Mirrors LLWearableType::EType; order matches the SL protocol.
-// ---------------------------------------------------------------------------
+import java.util.UUID
 
 enum class WearableType {
     SHAPE, SKIN, HAIR, EYES,
@@ -21,123 +11,80 @@ enum class WearableType {
     INVALID;
 
     companion object {
-        /** Number of body-part types (shape..eyes) that cannot be removed if count == 1. */
-        const val BODY_PART_COUNT = 4
+        const val BODY_PART_COUNT: Int = 4
     }
 }
 
-// ---------------------------------------------------------------------------
-// Lightweight wearable data holder
-// Corresponds to LLViewerWearable in C++.
-// ---------------------------------------------------------------------------
-
 data class ViewerWearable(
-    val type:    WearableType,
-    val itemId:  LLUUID,
-    val assetId: LLUUID,
-    val name:    String,
+    val type: WearableType,
+    val itemId: UUID,
+    val assetId: UUID,
+    val name: String,
     val isModifiable: Boolean = true,
-    val isCopyable:   Boolean = true
+    val isCopyable: Boolean = true
 )
-
-// ---------------------------------------------------------------------------
-// Callback types
-// ---------------------------------------------------------------------------
 
 typealias WearablesLoadedCallback = () -> Unit
 
-// ---------------------------------------------------------------------------
-// AgentWearables singleton
-// Manages per-slot wearable arrays (up to MAX_WEARABLES_PER_TYPE per type).
-// ---------------------------------------------------------------------------
-
 object AgentWearables {
-
-    // --- Constants -----------------------------------------------------------
 
     const val MAX_WEARABLES_PER_TYPE: Int = 5
 
-    // --- Internal storage ----------------------------------------------------
-    // keyed by WearableType; each value is an ordered list of worn items.
-
-    private val mWearables: MutableMap<WearableType, MutableList<ViewerWearable>> =
+    private val wearables: MutableMap<WearableType, MutableList<ViewerWearable>> =
         WearableType.entries.associateWith { mutableListOf<ViewerWearable>() }.toMutableMap()
-
-    // --- State flags ---------------------------------------------------------
 
     var wearablesLoaded: Boolean = false
         private set
-
     var cofChangeInProgress: Boolean = false
         private set
 
-    // Static across login sessions (mirrors C++ static members)
     private var initialWearablesUpdateReceived: Boolean = false
-    private var initialWearablesLoaded:         Boolean = false
-    private var initialAttachmentsRequested:    Boolean = false
+    private var initialWearablesLoaded: Boolean = false
+    private var initialAttachmentsRequested: Boolean = false
 
-    fun areWearablesLoaded():            Boolean = wearablesLoaded
-    fun areInitialWearablesLoaded():     Boolean = initialWearablesLoaded
-    fun areInitialAttachmentsRequested():Boolean = initialAttachmentsRequested
-    fun isCOFChangeInProgress():         Boolean = cofChangeInProgress
+    fun areWearablesLoaded(): Boolean = wearablesLoaded
+    fun areInitialWearablesLoaded(): Boolean = initialWearablesLoaded
+    fun areInitialAttachmentsRequested(): Boolean = initialAttachmentsRequested
+    fun isCOFChangeInProgress(): Boolean = cofChangeInProgress
 
-    // --- Queries -------------------------------------------------------------
+    fun selfHasWearable(type: WearableType): Boolean = getWearableCount(type) > 0
 
-    /** Returns true if any worn wearable has [itemId] as its inventory item UUID. */
-    fun isWearingItem(itemId: LLUUID): Boolean =
-        mWearables.values.any { slots -> slots.any { it.itemId == itemId } }
+    fun isWearingItem(itemId: UUID): Boolean =
+        wearables.values.any { slots -> slots.any { it.itemId == itemId } }
 
-    /** Number of wearables currently worn for [type]. */
-    fun getWearableCount(type: WearableType): Int =
-        mWearables[type]?.size ?: 0
+    fun getWearableCount(type: WearableType): Int = wearables[type]?.size ?: 0
 
-    /** Returns the wearable at [index] for [type], or null if out of range. */
     fun getWearable(type: WearableType, index: Int): ViewerWearable? =
-        mWearables[type]?.getOrNull(index)
+        wearables[type]?.getOrNull(index)
 
-    fun getWearableFromItemId(itemId: LLUUID): ViewerWearable? =
-        mWearables.values.flatten().firstOrNull { it.itemId == itemId }
+    fun getWearableFromItemId(itemId: UUID): ViewerWearable? =
+        wearables.values.flatten().firstOrNull { it.itemId == itemId }
 
-    fun getWearableFromAssetId(assetId: LLUUID): ViewerWearable? =
-        mWearables.values.flatten().firstOrNull { it.assetId == assetId }
+    fun getWearableFromAssetId(assetId: UUID): ViewerWearable? =
+        wearables.values.flatten().firstOrNull { it.assetId == assetId }
 
-    fun getWearableItemID(type: WearableType, index: Int): LLUUID =
-        getWearable(type, index)?.itemId ?: LLUUID.NULL
+    fun getWearableItemID(type: WearableType, index: Int): UUID =
+        getWearable(type, index)?.itemId ?: NULL_UUID
 
-    fun getWearableAssetID(type: WearableType, index: Int): LLUUID =
-        getWearable(type, index)?.assetId ?: LLUUID.NULL
+    fun getWearableAssetID(type: WearableType, index: Int): UUID =
+        getWearable(type, index)?.assetId ?: NULL_UUID
 
-    /** Return the slot index of [itemId] within its type, or -1 if not found. */
-    fun getWearableIndexFromItem(itemId: LLUUID): Int {
-        for (slots in mWearables.values) {
+    fun getWearableIndexFromItem(itemId: UUID): Int {
+        wearables.values.forEach { slots ->
             val idx = slots.indexOfFirst { it.itemId == itemId }
             if (idx >= 0) return idx
         }
         return -1
     }
 
-    /** All item UUIDs currently worn across all wearable types. */
-    fun getWearableItemIDs(): List<LLUUID> =
-        mWearables.values.flatten().map { it.itemId }
+    fun getWearableItemIDs(): List<UUID> =
+        wearables.values.flatten().map { it.itemId }
 
-    /** All item UUIDs for a specific [type]. */
-    fun getWearableItemIDs(type: WearableType): List<LLUUID> =
-        mWearables[type]?.map { it.itemId } ?: emptyList()
+    fun getWearableItemIDs(type: WearableType): List<UUID> =
+        wearables[type]?.map { it.itemId } ?: emptyList()
 
-    companion object {
-        /** True if the agent has at least one wearable of [type] equipped. */
-        fun selfHasWearable(type: WearableType): Boolean =
-            AgentWearables.getWearableCount(type) > 0
-    }
-
-    // --- Setters / mutations -------------------------------------------------
-
-    /**
-     * Replace the wearable at [index] for [type].
-     * Pass null to clear that slot.
-     */
     fun setWearable(type: WearableType, index: Int, wearable: ViewerWearable?) {
-        val slots = mWearables.getOrPut(type) { mutableListOf() }
+        val slots = wearables.getOrPut(type) { mutableListOf() }
         when {
             wearable == null && index < slots.size -> slots.removeAt(index)
             wearable != null && index < slots.size -> slots[index] = wearable
@@ -145,23 +92,15 @@ object AgentWearables {
         }
     }
 
-    /**
-     * Append a wearable to the end of [type]'s slot list if not already full.
-     * Returns true on success.
-     */
     fun addWearable(wearable: ViewerWearable): Boolean {
-        val slots = mWearables.getOrPut(wearable.type) { mutableListOf() }
+        val slots = wearables.getOrPut(wearable.type) { mutableListOf() }
         if (slots.size >= MAX_WEARABLES_PER_TYPE) return false
         slots.add(wearable)
         return true
     }
 
-    /**
-     * Remove the wearable at [index] for [type].
-     * [doRemoveAll] ignores [index] and removes every wearable of [type].
-     */
     fun removeWearable(type: WearableType, doRemoveAll: Boolean = false, index: Int = 0) {
-        val slots = mWearables[type] ?: return
+        val slots = wearables[type] ?: return
         if (doRemoveAll) {
             if (!canForceRemoveType(type)) return
             slots.clear()
@@ -174,7 +113,6 @@ object AgentWearables {
         TODO("removeWearable: sync COF and send server update")
     }
 
-    /** False for single-slot body parts (shape/skin/eyes/hair) when count == 1. */
     fun canWearableBeRemoved(wearable: ViewerWearable): Boolean {
         val isBodyPart = wearable.type.ordinal < WearableType.BODY_PART_COUNT
         return !isBodyPart || getWearableCount(wearable.type) > 1
@@ -186,28 +124,23 @@ object AgentWearables {
     fun isWearableModifiable(type: WearableType, index: Int = 0): Boolean =
         getWearable(type, index)?.isModifiable ?: false
 
-    fun isWearableModifiable(itemId: LLUUID): Boolean =
+    fun isWearableModifiable(itemId: UUID): Boolean =
         getWearableFromItemId(itemId)?.isModifiable ?: false
 
     fun isWearableCopyable(type: WearableType, index: Int = 0): Boolean =
         getWearable(type, index)?.isCopyable ?: false
 
-    fun canMoveWearable(itemId: LLUUID, closerToBody: Boolean): Boolean =
+    fun canMoveWearable(itemId: UUID, closerToBody: Boolean): Boolean =
         TODO("canMoveWearable: check ordering constraints")
 
-    fun moveWearable(itemId: LLUUID, closerToBody: Boolean): Boolean =
+    fun moveWearable(itemId: UUID, closerToBody: Boolean): Boolean =
         TODO("moveWearable: reorder within type")
 
-    // --- Outfit application --------------------------------------------------
-
-    /** Replace all wearables atomically from a fully resolved outfit. */
-    fun setWearableOutfit(items: List<LLUUID>, wearables: List<ViewerWearable>) {
-        mWearables.values.forEach { it.clear() }
-        wearables.forEach { addWearable(it) }
+    fun setWearableOutfit(items: List<UUID>, wearableList: List<ViewerWearable>) {
+        wearables.values.forEach { it.clear() }
+        wearableList.forEach { addWearable(it) }
         TODO("setWearableOutfit: notify and trigger bake")
     }
-
-    // --- Save / revert -------------------------------------------------------
 
     fun saveWearable(type: WearableType, index: Int, sendUpdate: Boolean = true, newName: String = "") {
         TODO("saveWearable($type, $index)")
@@ -224,49 +157,66 @@ object AgentWearables {
         TODO("saveAllWearables: final sendAgentWearablesUpdate")
     }
 
-    fun revertWearable(type: WearableType, index: Int) { TODO("revertWearable($type, $index)") }
+    fun revertWearable(type: WearableType, index: Int) {
+        TODO("revertWearable($type, $index)")
+    }
 
-    // --- Standard wearables creation -----------------------------------------
+    fun createStandardWearables() {
+        TODO("createStandardWearables: generate defaults for bare avatar")
+    }
 
-    fun createStandardWearables() { TODO("createStandardWearables: generate defaults for bare avatar") }
+    private var itemToEdit: UUID = NULL_UUID
 
-    // --- Editing wearables ---------------------------------------------------
+    fun requestEditingWearable(itemId: UUID) {
+        itemToEdit = itemId
+    }
 
-    private var itemToEdit: LLUUID = LLUUID.NULL
-
-    fun requestEditingWearable(itemId: LLUUID) { itemToEdit = itemId }
-    fun editWearableIfRequested(itemId: LLUUID) {
+    fun editWearableIfRequested(itemId: UUID) {
         if (itemToEdit == itemId) {
-            itemToEdit = LLUUID.NULL
+            itemToEdit = NULL_UUID
             TODO("editWearableIfRequested: open wearable editor for $itemId")
         }
     }
 
-    fun setWearableName(itemId: LLUUID, newName: String) { TODO("setWearableName($itemId, $newName)") }
-
-    companion object {
-        fun createWearable(type: WearableType, wear: Boolean = false, parentId: LLUUID = LLUUID.NULL, createdCb: ((LLUUID) -> Unit)? = null) {
-            TODO("createWearable($type)")
-        }
-        fun editWearable(itemId: LLUUID) { TODO("editWearable($itemId)") }
+    fun setWearableName(itemId: UUID, newName: String) {
+        TODO("setWearableName($itemId, $newName)")
     }
 
-    // --- Server communication (Legacy Bake) ----------------------------------
+    fun createWearable(type: WearableType, wear: Boolean = false, parentId: UUID = NULL_UUID, createdCb: ((UUID) -> Unit)? = null) {
+        TODO("createWearable($type)")
+    }
 
-    /** Broadcast the current wearable list to the simulator. */
-    fun sendAgentWearablesUpdate() { TODO("sendAgentWearablesUpdate: build and send AgentWearablesUpdate message") }
+    fun editWearable(itemId: UUID) {
+        TODO("editWearable($itemId)")
+    }
 
-    fun sendAgentWearablesRequest() { TODO("sendAgentWearablesRequest") }
-    fun sendDummyAgentWearablesUpdate() { TODO("sendDummyAgentWearablesUpdate: compatibility shim for old sims") }
-    fun queryWearableCache() { TODO("queryWearableCache") }
+    fun sendAgentWearablesUpdate() {
+        TODO("sendAgentWearablesUpdate: build and send AgentWearablesUpdate message")
+    }
 
-    // --- Wearables-loaded signals --------------------------------------------
+    fun sendAgentWearablesRequest() {
+        TODO("sendAgentWearablesRequest")
+    }
+
+    fun sendDummyAgentWearablesUpdate() {
+        TODO("sendDummyAgentWearablesUpdate: compatibility shim for old sims")
+    }
+
+    fun queryWearableCache() {
+        TODO("queryWearableCache")
+    }
+
+    fun animateAllWearableParams(delta: Float, uploadBake: Boolean) {
+        TODO("animateAllWearableParams: drive morph parameters on avatar mesh")
+    }
 
     private val loadingStartedListeners: MutableList<WearablesLoadedCallback> = mutableListOf()
-    private val loadedListeners:         MutableList<WearablesLoadedCallback> = mutableListOf()
+    private val loadedListeners: MutableList<WearablesLoadedCallback> = mutableListOf()
+    private val initialLoadedListeners: MutableList<WearablesLoadedCallback> = mutableListOf()
 
     fun addLoadingStartedCallback(cb: WearablesLoadedCallback) { loadingStartedListeners += cb }
     fun addLoadedCallback(cb: WearablesLoadedCallback)         { loadedListeners += cb }
+    fun addInitialWearablesLoadedCallback(cb: WearablesLoadedCallback) { initialLoadedListeners += cb }
 
     fun notifyLoadingStarted() {
         cofChangeInProgress = true
@@ -274,22 +224,23 @@ object AgentWearables {
     }
 
     fun notifyLoadingFinished() {
-        wearablesLoaded     = true
+        wearablesLoaded = true
         cofChangeInProgress = false
         loadedListeners.forEach { it() }
         if (!initialWearablesLoaded) {
             initialWearablesLoaded = true
+            initialLoadedListeners.forEach { it() }
         }
     }
 
     fun updateWearablesLoaded() {
-        wearablesLoaded = mWearables.values.flatten().isNotEmpty()
+        wearablesLoaded = wearables.values.flatten().isNotEmpty()
     }
 
-    // --- Lifecycle -----------------------------------------------------------
+    fun changeInProgress(): Boolean = cofChangeInProgress
 
     fun cleanup() {
-        mWearables.values.forEach { it.clear() }
+        wearables.values.forEach { it.clear() }
         wearablesLoaded = false
     }
 
@@ -302,4 +253,6 @@ object AgentWearables {
             }
         }
     }
+
+    private val NULL_UUID: UUID = UUID.fromString("00000000-0000-0000-0000-000000000000")
 }

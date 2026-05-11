@@ -1,43 +1,37 @@
 package com.firestorm.newview
 
-import com.firestorm.ui.IconCtrl
-import com.firestorm.ui.LLSingleton
-import com.firestorm.ui.LLSD
-import com.firestorm.ui.LLAvatarName
-import com.firestorm.ui.LLAvatarPropertiesObserver
+import com.firestorm.ui.AvatarName
+import com.firestorm.ui.AvatarNameCache
+import com.firestorm.ui.AvatarPropertiesObserver
+import com.firestorm.ui.AvatarPropertiesProcessor
 import com.firestorm.ui.EAvatarProcessorType
-import com.firestorm.ui.LLAvatarPropertiesProcessor
-import com.firestorm.ui.LLAvatarNameCache
-import com.firestorm.ui.LLGridManager
-import java.io.File
+import com.firestorm.ui.GridManager
+import com.firestorm.ui.IconCtrl
+import com.firestorm.ui.LLSD
 import java.util.UUID
 
-// ---------------------------------------------------------------------------
-// AvatarIconIDCache  (C++ LLAvatarIconIDCache singleton)
-// ---------------------------------------------------------------------------
-
-data class AvatarIconIDCacheItem(val iconId: UUID, val cachedTime: Long) {
+data class AvatarIconIDCacheItem(val iconId: UUID, val cachedTimeMs: Long) {
     fun expired(): Boolean {
-        val secPerDayPlusHour = (24.0 + 1.0) * 60.0 * 60.0 * 1000L
-        return (System.currentTimeMillis() - cachedTime) > secPerDayPlusHour
+        val thresholdMs = (24.0 + 1.0) * 60.0 * 60.0 * 1000.0
+        return (System.currentTimeMillis() - cachedTimeMs) > thresholdMs
     }
 }
 
 object AvatarIconIDCache {
     private val cache: MutableMap<UUID, AvatarIconIDCacheItem> = mutableMapOf()
     private val filename: String = run {
-        val gridIdStr = LLGridManager.getInstance().gridId
+        val gridId = GridManager.getInstance().getGridId()
             .replace(Regex("[^A-Za-z0-9._-]"), "_")
             .lowercase()
-        "avatar_icons_cache.$gridIdStr.txt"
+        "avatar_icons_cache.$gridId.txt"
     }
 
     fun load() {
-        TODO("APR: use JVM equivalent")
+        TODO("APR: use JVM equivalent for reading $filename from cache dir")
     }
 
     fun save() {
-        TODO("APR: use JVM equivalent")
+        TODO("APR: use JVM equivalent for writing $filename to cache dir")
     }
 
     fun get(avatarId: UUID): UUID? {
@@ -55,17 +49,9 @@ object AvatarIconIDCache {
     }
 }
 
-// ---------------------------------------------------------------------------
-// SymbolPos enum  (C++ LLAvatarIconCtrlEnums::ESymbolPos)
-// ---------------------------------------------------------------------------
-
 enum class SymbolPos {
     BOTTOM_LEFT, BOTTOM_RIGHT, TOP_LEFT, TOP_RIGHT
 }
-
-// ---------------------------------------------------------------------------
-// AvatarIconCtrl  (C++ LLAvatarIconCtrl)
-// ---------------------------------------------------------------------------
 
 open class AvatarIconCtrl(
     avatarId: UUID? = null,
@@ -77,10 +63,16 @@ open class AvatarIconCtrl(
     val symbolPos: SymbolPos = SymbolPos.BOTTOM_RIGHT,
     minWidth: Int = 32,
     minHeight: Int = 32,
-) : IconCtrl(minWidth = minWidth, minHeight = minHeight), LLAvatarPropertiesObserver {
+) : IconCtrl(minWidth = minWidth, minHeight = minHeight), AvatarPropertiesObserver {
 
-    protected var avatarId: UUID = UUID.fromString("00000000-0000-0000-0000-000000000000")
+    companion object {
+        val NULL_ID: UUID = UUID.fromString("00000000-0000-0000-0000-000000000000")
+    }
+
+    protected var avatarId: UUID = NULL_ID
+        private set
     protected var fullName: String = ""
+        private set
     var drawTooltip: Boolean = drawTooltip
         private set
     protected val defaultIconName: String = defaultIconName
@@ -104,9 +96,9 @@ open class AvatarIconCtrl(
 
     open fun setValue(value: LLSD) {
         if (value.isUUID()) {
-            val app = LLAvatarPropertiesProcessor.getInstance()
+            val app = AvatarPropertiesProcessor.getInstance()
             val newId = value.asUUID()
-            if (avatarId != UUID.fromString("00000000-0000-0000-0000-000000000000")) {
+            if (avatarId != NULL_ID) {
                 app.removeObserver(avatarId, this)
             }
             if (avatarId != newId) {
@@ -115,7 +107,7 @@ open class AvatarIconCtrl(
                     super.setValue(LLSD.fromString(defaultIconName))
                     app.addObserver(avatarId, this)
                     app.sendAvatarLegacyPropertiesRequest(avatarId)
-                } else if (com.firestorm.newview.agentID == avatarId) {
+                } else if (agentId() == avatarId) {
                     app.addObserver(avatarId, this)
                 }
             }
@@ -126,17 +118,16 @@ open class AvatarIconCtrl(
     }
 
     private fun fetchAvatarName() {
-        val id = avatarId
-        if (id == UUID.fromString("00000000-0000-0000-0000-000000000000")) return
+        if (avatarId == NULL_ID) return
         avatarNameCacheConnection?.close()
-        avatarNameCacheConnection = LLAvatarNameCache.get(id) { agentId, avName ->
-            onAvatarNameCache(agentId, avName)
+        avatarNameCacheConnection = AvatarNameCache.get(avatarId) { id, avName ->
+            onAvatarNameCache(id, avName)
         }
     }
 
     protected fun updateFromCache(): Boolean {
         val iconId = AvatarIconIDCache.get(avatarId) ?: return false
-        if (iconId == UUID.fromString("00000000-0000-0000-0000-000000000000")) {
+        if (iconId == NULL_ID) {
             super.setValue(LLSD.fromString(defaultIconName))
             return false
         }
@@ -147,13 +138,13 @@ open class AvatarIconCtrl(
     override fun processProperties(data: Any?, type: EAvatarProcessorType) {
         when (type) {
             EAvatarProcessorType.APT_PROPERTIES_LEGACY -> {
-                val avatarData = data as? LLAvatarLegacyData ?: return
+                val avatarData = data as? AvatarLegacyData ?: return
                 if (avatarData.avatarId != avatarId) return
                 AvatarIconIDCache.add(avatarId, avatarData.imageId)
                 updateFromCache()
             }
             EAvatarProcessorType.APT_PROPERTIES -> {
-                val avatarData = data as? LLAvatarData ?: return
+                val avatarData = data as? AvatarData ?: return
                 if (avatarData.avatarId != avatarId) return
                 AvatarIconIDCache.add(avatarId, avatarData.imageId)
                 updateFromCache()
@@ -162,7 +153,7 @@ open class AvatarIconCtrl(
         }
     }
 
-    private fun onAvatarNameCache(agentId: UUID, avName: LLAvatarName) {
+    private fun onAvatarNameCache(agentId: UUID, avName: AvatarName) {
         avatarNameCacheConnection = null
         if (agentId != avatarId) return
         fullName = avName.getUserName()
@@ -175,11 +166,12 @@ open class AvatarIconCtrl(
     }
 
     fun dispose() {
-        val nullId = UUID.fromString("00000000-0000-0000-0000-000000000000")
-        if (avatarId != nullId) {
-            LLAvatarPropertiesProcessor.getInstance().removeObserver(avatarId, this)
+        if (avatarId != NULL_ID) {
+            AvatarPropertiesProcessor.getInstance().removeObserver(avatarId, this)
         }
         avatarNameCacheConnection?.close()
         avatarNameCacheConnection = null
     }
+
+    private fun agentId(): UUID = TODO("APR: return gAgent.getID()")
 }

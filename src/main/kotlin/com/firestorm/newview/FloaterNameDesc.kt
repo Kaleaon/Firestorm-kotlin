@@ -1,156 +1,137 @@
 package com.firestorm.newview
 
+import com.firestorm.llui.Floater
+import com.firestorm.llui.LineEditor
+import com.firestorm.llui.TextBox
+import com.firestorm.llui.UICtrl
 import java.util.UUID
-import java.io.File
 
 private const val PREVIEW_LINE_HEIGHT = 19
 private const val PREVIEW_BORDER_WIDTH = 2
-private const val PREVIEW_RESIZE_HANDLE_SIZE = (RESIZE_HANDLE_WIDTH * OO_SQRT2).toInt() + PREVIEW_BORDER_WIDTH
-private const val PREVIEW_HPAD = PREVIEW_RESIZE_HANDLE_SIZE
 
-open class FloaterNameDesc(args: LLSD) : Floater(args) {
+open class FloaterNameDesc(args: Any) : Floater(args) {
 
     protected var isAudio: Boolean = false
     protected var isText: Boolean = false
-
     protected val filenameAndPath: String
     protected val filename: String
     protected var destinationFolderId: UUID = UUID(0, 0)
 
     init {
-        if (args.isString()) {
-            filenameAndPath = args.asString()
+        val argsMap = args as? Map<*, *>
+        if (argsMap != null) {
+            filenameAndPath = argsMap["filename"]?.toString() ?: ""
+            destinationFolderId = argsMap["dest"]?.let { UUID.fromString(it.toString()) } ?: UUID(0, 0)
         } else {
-            filenameAndPath = args["filename"].asString()
-            destinationFolderId = args["dest"].asUUID()
+            filenameAndPath = args.toString()
         }
-        filename = DirUtils.getBaseFileName(filenameAndPath, stripExtension = false)
+        filename = filenameAndPath.substringAfterLast('/').substringAfterLast('\\')
     }
 
     override fun postBuild(): Boolean {
         var assetName = filename
-        assetName = StringUtils.replaceNonstandardAscii(assetName, '?')
+        assetName = assetName.map { if (it.code < 32 || it.code > 126) '?' else it }.joinToString("")
         assetName = assetName.replace('|', '?')
-        assetName = StringUtils.stripNonprintable(assetName)
         assetName = assetName.trim()
-        assetName = DirUtils.getBaseFileName(assetName, stripExtension = true)
+        assetName = assetName.substringBeforeLast('.')
 
         setTitle(filename)
-        centerWithin(ViewerWindow.instance.rootView.rect)
 
-        getChild<UiCtrl>("name_form")?.apply {
-            setCommitCallback { doCommit() }
-            setValue(LLSD(assetName))
-        }
-        getChild<LineEditor>("name_form")?.apply {
-            maxTextLength = DB_INV_ITEM_NAME_STR_LEN
-            setPrevalidate(TextValidate::validateAsciiPrintableNoPipe)
-        }
+        TODO("APR: use JVM equivalent - center floater within root view")
 
-        getChild<UiCtrl>("description_form")?.apply {
-            setCommitCallback { doCommit() }
-        }
-        getChild<LineEditor>("description_form")?.apply {
-            maxTextLength = DB_INV_ITEM_DESC_STR_LEN
-            setPrevalidate(TextValidate::validateAsciiPrintableNoPipe)
-        }
+        val nameForm = getChild<UICtrl>("name_form")
+        nameForm.setCommitCallback { doCommit() }
+        nameForm.setValue(assetName)
 
-        getChild<UiCtrl>("cancel_btn")?.setCommitCallback { onBtnCancel() }
+        val nameEditor = getChild<LineEditor>("name_form")
+        nameEditor.setMaxTextLength(63)
+        nameEditor.setPrevalidate("ASCII_PRINTABLE_NO_PIPE")
+
+        val descEditor = getChild<LineEditor>("description_form")
+        descEditor.setCommitCallback { doCommit() }
+        descEditor.setMaxTextLength(127)
+        descEditor.setPrevalidate("ASCII_PRINTABLE_NO_PIPE")
+
+        getChild<UICtrl>("cancel_btn").setCommitCallback { onBtnCancel() }
 
         val expectedUploadCost = getExpectedUploadCost()
-        getChild<UiCtrl>("ok_btn")?.setLabelArg("[AMOUNT]", "$expectedUploadCost")
+        getChild<UICtrl>("ok_btn").setLabelArg("[AMOUNT]", expectedUploadCost.toString())
 
-        getChild<TextBox>("info_text")?.setValue(Trans.getString("UploadFeeInfo"))
+        val infoText = findChild<TextBox>("info_text")
+        infoText?.setValue(TODO("APR: use JVM equivalent - translate UploadFeeInfo string"))
 
         setDefaultBtn("ok_btn")
         return true
     }
 
     open fun getExpectedUploadCost(): Int {
-        val extension = DirUtils.getExtension(filename)
-        val assetType = ResourceUploadInfo.findAssetTypeOfExtension(extension) ?: run {
-            logWarn("Unable to find upload cost for $filename")
-            return -1
-        }
-        val cost = AgentBenefitsMgr.current().findUploadCost(assetType)
-        if (cost == null) {
-            logWarn("Unable to find upload cost for asset type $assetType")
-            return -1
-        }
-        return cost
+        TODO("APR: use JVM equivalent - look up upload cost for file extension via agent benefits")
     }
 
-    fun onBtnOK() {
-        getChildView("ok_btn")?.isEnabled = false
-
-        val expectedUploadCost = getExpectedUploadCost()
-        if (canAffordTransaction(expectedUploadCost)) {
-            val name = getChild<UiCtrl>("name_form")?.getValue()?.asString() ?: ""
-            val description = getChild<UiCtrl>("description_form")?.getValue()?.asString() ?: ""
-            val uploadInfo = NewFileResourceUploadInfo(
-                filenameAndPath = filenameAndPath,
-                name = name,
-                description = description,
-                nextOwnerPerms = FloaterPerms.getNextOwnerPerms("Uploads"),
-                groupPerms = FloaterPerms.getGroupPerms("Uploads"),
-                everyonePerms = FloaterPerms.getEveryonePerms("Uploads"),
-                expectedUploadCost = expectedUploadCost,
-                destinationFolderId = destinationFolderId
-            )
-            uploadNewResource(uploadInfo)
-        } else {
-            val args = LLSD().apply { put("COST", "$expectedUploadCost") }
-            NotificationsUtil.add("ErrorCannotAffordUpload", args)
-        }
-        closeFloater(quitting = false)
+    override fun onDestroy() {
+        TODO("APR: use JVM equivalent - release focus before destroying")
     }
 
-    fun onBtnCancel() {
-        closeFloater(quitting = false)
+    protected open fun onCommit() {
+        // Subclasses override to react to name/description edits.
     }
 
     fun doCommit() {
         onCommit()
     }
 
-    protected open fun onCommit() {}
+    fun onBtnOK() {
+        getChildView("ok_btn").setEnabled(false)
 
-    override fun onDestroy() {
-        FocusMgr.instance.releaseFocusIfNeeded(this)
+        val expectedUploadCost = getExpectedUploadCost()
+        if (canAffordTransaction(expectedUploadCost)) {
+            val name        = getChild<UICtrl>("name_form").getValue().toString()
+            val description = getChild<UICtrl>("description_form").getValue().toString()
+            TODO("APR: use JVM equivalent - upload_new_resource with name, description, upload cost, and destination folder")
+        } else {
+            val args = mapOf("COST" to expectedUploadCost.toString())
+            TODO("APR: use JVM equivalent - show ErrorCannotAffordUpload notification with COST arg")
+        }
+        closeFloater(false)
+    }
+
+    fun onBtnCancel() {
+        closeFloater(false)
+    }
+
+    private fun canAffordTransaction(cost: Int): Boolean {
+        TODO("APR: use JVM equivalent - check agent balance >= cost")
     }
 }
 
-class FloaterSoundPreview(args: LLSD) : FloaterNameDesc(args) {
-
+class FloaterSoundPreview(args: Any) : FloaterNameDesc(args) {
     init {
         isAudio = true
     }
 
     override fun postBuild(): Boolean {
         if (!super.postBuild()) return false
-        getChild<UiCtrl>("ok_btn")?.setCommitCallback { onBtnOK() }
+        getChild<UICtrl>("ok_btn").setCommitCallback { onBtnOK() }
         return true
     }
 }
 
-class FloaterAnimPreview(args: LLSD) : FloaterNameDesc(args) {
-
+class FloaterAnimPreview(args: Any) : FloaterNameDesc(args) {
     override fun postBuild(): Boolean {
         if (!super.postBuild()) return false
-        getChild<UiCtrl>("ok_btn")?.setCommitCallback { onBtnOK() }
+        getChild<UICtrl>("ok_btn").setCommitCallback { onBtnOK() }
         return true
     }
 }
 
-class FloaterScriptPreview(args: LLSD) : FloaterNameDesc(args) {
-
+class FloaterScriptPreview(args: Any) : FloaterNameDesc(args) {
     init {
         isText = true
     }
 
     override fun postBuild(): Boolean {
         if (!super.postBuild()) return false
-        getChild<UiCtrl>("ok_btn")?.setCommitCallback { onBtnOK() }
+        getChild<UICtrl>("ok_btn").setCommitCallback { onBtnOK() }
         return true
     }
 }

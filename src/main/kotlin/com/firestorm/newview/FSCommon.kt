@@ -1,31 +1,22 @@
-/**
- * @file FSCommon.kt
- * @brief Central object for common utility functions in Firestorm.
- *
- * Ported from fscommon.h / fscommon.cpp
- * Original copyright (c) 2012 Ansariel Hiller @ Second Life
- * Phoenix Firestorm Project — LGPL v2.1
- */
-
 package com.firestorm.newview
 
-import com.firestorm.llcommon.LLUUID
-import com.firestorm.llmath.*
+import java.net.URLDecoder
+import java.util.UUID
 
 // ---------------------------------------------------------------------------
-// Constants
+// Constants  (mirrors constexpr values in fscommon.h)
 // ---------------------------------------------------------------------------
 
-/** Z-offset sentinel for avatars whose height is unknown. */
+/** Z-offset sentinel for avatars at unknown height. */
 const val AVATAR_UNKNOWN_Z_OFFSET: Double = -1.0
 
-/** Range sentinel for avatars whose distance is unknown. */
+/** Range sentinel for avatars at unknown distance. */
 const val AVATAR_UNKNOWN_RANGE: Float = -1f
 
-// Known Linden-staff last names used to identify LL employees on SL main grid.
+// Linden-staff last-name set for isLinden() on SL main grid
 private val LINDEN_LAST_NAMES = setOf("Linden", "Mole", "ProductEngine", "Scout", "Tester")
 
-// Default texture UUIDs bundled with the viewer.
+// Built-in default texture UUIDs (matches LL_DEFAULT_* and UIImg* constants in C++)
 private val DEFAULT_TEXTURE_IDS: Set<String> = setOf(
     "89556747-24cb-43ed-920b-47caed15465f", // LL_DEFAULT_WOOD_UUID
     "87d41ffc-7b19-48c8-9d83-fc88cc09f5d8", // LL_DEFAULT_STONE_UUID
@@ -43,232 +34,20 @@ private val DEFAULT_TEXTURE_IDS: Set<String> = setOf(
 )
 
 // ---------------------------------------------------------------------------
-// FSCommon singleton object
+// Supporting stub types used across multiple newview files
 // ---------------------------------------------------------------------------
 
-/**
- * Central utility namespace for Firestorm-specific helper functions.
- *
- * Corresponds to the `FSCommon` namespace in C++.
- */
-object FSCommon {
-
-    /**
-     * Tracks the number of ObjectAdd messages sent to the simulator.
-     *
-     * HACK: works around a LL design flaw where _PREHASH_ObjectAdd,
-     * _PREHASH_RezObject and _PREHASH_RezObjectFromNotecard all return
-     * the same object-update packet.
-     */
-    var objectAddMsgCount: Int = 0
-
-    // -----------------------------------------------------------------------
-    // Chat helpers
-    // -----------------------------------------------------------------------
-
-    /**
-     * Post a system-sourced [message] to the nearby-chat channel.
-     */
-    fun reportToNearbyChat(message: String) {
-        TODO("Requires LLNotificationManager / chat pipeline integration")
-    }
-
-    /**
-     * Perform token substitution in [text] using the [args] map and return
-     * the result (mirrors `LLStringUtil::format`).
-     */
-    fun formatString(text: String, args: Map<String, String>): String {
-        var result = text
-        for ((key, value) in args) {
-            result = result.replace("[$key]", value)
-        }
-        return result
-    }
-
-    /**
-     * Returns `true` when [text] starts with an IRC-style `/me ` or `/me'`
-     * emote prefix.
-     */
-    fun isIrcMePrefix(text: String): Boolean {
-        if (text.length < 4) return false
-        val prefix = text.substring(0, 4)
-        return prefix == "/me " || prefix == "/me'"
-    }
-
-    /**
-     * URL-decode a percent-encoded [name] string (mirrors `curl_unescape`).
-     */
-    fun unescapeName(name: String): String {
-        return java.net.URLDecoder.decode(name, Charsets.UTF_8)
-    }
-
-    // -----------------------------------------------------------------------
-    // Chat-text transformations
-    // -----------------------------------------------------------------------
-
-    /**
-     * If the user setting `AutoCloseOOC` is enabled, append the matching
-     * closing bracket sequence when an OOC opener `((` or `[[` is present
-     * without a corresponding closer.
-     */
-    fun applyAutoCloseOoc(message: String): String {
-        // Setting lookup is stubbed – production code must query gSavedSettings.
-        val autoClose = true // TODO: read from settings
-        if (!autoClose) return message
-
-        return when {
-            message.contains("(( ") && !message.contains("))") -> "$message ))"
-            message.contains("((") && !message.contains("))") ->
-                if (message.endsWith(")")) "$message ))" else "$message))"
-            message.contains("[[ ") && !message.contains("]]") -> "$message ]]"
-            message.contains("[[") && !message.contains("]]") ->
-                if (message.endsWith("]")) "$message ]]" else "$message]]"
-            else -> message
-        }
-    }
-
-    /**
-     * Convert MU*-style pose prefix (`:`) to an IRC `/me` emote when the
-     * `AllowMUpose` setting is enabled.
-     */
-    fun applyMuPose(message: String): String {
-        val allowMuPose = true // TODO: read from settings
-        if (!allowMuPose || !message.startsWith(":") || message.length <= 3) return message
-
-        return when {
-            message.startsWith(":'") -> "/me" + message.substring(1)
-            !message[1].isDigit() && !message[1].isLetterOrDigit().not() &&
-                    !message[1].isWhitespace() -> "/me " + message.substring(1)
-            else -> message
-        }
-    }
-
-    // -----------------------------------------------------------------------
-    // Date / time
-    // -----------------------------------------------------------------------
-
-    /**
-     * Parse [str] according to [format] (Boost.DateTime/strftime specifiers)
-     * and return the number of whole seconds since the Unix epoch (1970-01-01).
-     *
-     * @param format A strftime-compatible format string, e.g. `"%A %b %d, %Y"`.
-     * @param str    The date/time string to parse.
-     */
-    fun secondsSinceEpochFromString(format: String, str: String): Int {
-        TODO("Requires a date-parsing library (e.g. java.time or Kotlin-datetime)")
-    }
-
-    // -----------------------------------------------------------------------
-    // Avatar / identity helpers
-    // -----------------------------------------------------------------------
-
-    /**
-     * Returns `true` when [avId] belongs to a Linden Lab employee account on
-     * the Second Life main grid, or to a grid-god account on OpenSim.
-     */
-    fun isLinden(avId: LLUUID): Boolean {
-        TODO("Requires avatar name cache and optional grid-manager integration")
-    }
-
-    /**
-     * Returns `true` when [assetId] is one of the viewer's built-in default
-     * textures.
-     */
-    fun isDefaultTexture(assetId: LLUUID): Boolean {
-        return assetId.toString() in DEFAULT_TEXTURE_IDS
-    }
-
-    /**
-     * Returns `true` when the active UI skin is the legacy "Vintage" skin.
-     */
-    fun isLegacySkin(): Boolean {
-        TODO("Requires settings lookup for 'FSInternalSkinCurrent'")
-    }
-
-    /**
-     * Returns `true` when the key combination [key] + [mask] matches the
-     * configured filter-editor shortcut (`Ctrl+F` when enabled).
-     */
-    fun isFilterEditorKeyCombo(key: Char, mask: Int): Boolean {
-        TODO("Requires settings lookup for 'FSSelectLocalSearchEditorOnShortcut'")
-    }
-
-    // -----------------------------------------------------------------------
-    // Group / permission helpers
-    // -----------------------------------------------------------------------
-
-    /**
-     * Ensure group data for [groupId] is cached; sends a server request if it
-     * is not.
-     *
-     * @return `true` if the data is already available locally.
-     */
-    fun requestGroupData(groupId: LLUUID): Boolean {
-        TODO("Requires LLGroupMgr integration")
-    }
-
-    /**
-     * Evaluate whether a registrar action [actionType] is currently enabled
-     * for avatar [avId].
-     */
-    fun checkIsActionEnabled(avId: LLUUID, actionType: EFSRegistrarFunctionActionType): Boolean {
-        TODO("Requires agent, RLVa, and avatar-action integration")
-    }
-
-    /**
-     * Build an LLSD-compatible map describing the current group slot usage
-     * (count / remaining) for display in the UI.
-     */
-    fun populateGroupCount(): Map<String, String> {
-        TODO("Requires agent group membership and benefit-tier integration")
-    }
-
-    /**
-     * Determine the preferred display form of [avName] based on the active
-     * display-name settings (`UseDisplayNames`, `NameTagShowUsernames`).
-     */
-    fun getAvatarNameByDisplaySettings(avName: AvatarName): String {
-        TODO("Requires settings lookup and AvatarName model")
-    }
-
-    /**
-     * Returns the LLUUID of the group that should own newly rezzed objects,
-     * respecting the `RezUnderLandGroup` preference and the agent's current
-     * parcel.
-     */
-    fun getGroupForRezzing(): LLUUID {
-        TODO("Requires agent, parcel manager, and settings integration")
-    }
-
-    /**
-     * Record emoji characters found in [text] as recently used, and persist
-     * the updated usage history.
-     */
-    fun updateUsedEmojis(text: String) {
-        TODO("Requires LLEmojiDictionary and LLFloaterEmojiPicker integration")
-    }
-
-    /**
-     * Apply default build preferences (texture, colour, alpha, permissions,
-     * physics flags, etc.) to a newly created [viewerObject].
-     */
-    fun applyDefaultBuildPreferences(viewerObject: LLViewerObject) {
-        TODO("Requires viewer-object, texture, and message-system integration")
-    }
-}
-
-// ---------------------------------------------------------------------------
-// Supporting types (stubs — expand as other modules are ported)
-// ---------------------------------------------------------------------------
-
-/** Placeholder for the avatar-name data class (mirrors LLAvatarName). */
+/** Mirrors LLAvatarName — expand when the name-cache layer is ported. */
 data class AvatarName(
-    val userName: String,
-    val displayName: String,
-    val completeName: String,
+    val userName: String = "",
+    val displayName: String = "",
+    val completeName: String = ""
 )
 
-/** Action types understood by the registrar / context-menu system. */
+/** Mirrors LLViewerObject — expand when the viewer-object layer is ported. */
+open class LLViewerObject
+
+/** Action types for the FS registrar / context-menu system (mirrors EFSRegistrarFunctionActionType). */
 enum class EFSRegistrarFunctionActionType {
     FS_RGSTR_ACT_ADD_FRIEND,
     FS_RGSTR_ACT_REMOVE_FRIEND,
@@ -289,3 +68,236 @@ enum class EFSRegistrarFunctionActionType {
     FS_RGSTR_CHK_CAN_JOIN_GROUP,
     FS_RGSTR_CHK_GROUP_NOT_ACTIVE,
 }
+
+// ---------------------------------------------------------------------------
+// FSCommon object  (mirrors the FSCommon namespace in C++)
+// ---------------------------------------------------------------------------
+
+object FSCommon {
+
+    /**
+     * Tracks the number of ObjectAdd messages sent to the simulator.
+     *
+     * HACK: works around a LL design flaw where _PREHASH_ObjectAdd,
+     * _PREHASH_RezObject, and _PREHASH_RezObjectFromNotecard all produce
+     * the same object-update packet on the return path.
+     */
+    var sObjectAddMsg: Int = 0
+
+    // -----------------------------------------------------------------------
+    // Chat helpers
+    // -----------------------------------------------------------------------
+
+    /** Post a system-sourced [message] into the nearby-chat channel. */
+    fun reportToNearbyChat(message: String) {
+        TODO("GPU: LLNotificationsUI::LLNotificationManager::instance().onChat(chat, LLSD())")
+    }
+
+    /**
+     * Substitute [args] tokens in [text] (mirrors LLStringUtil::format).
+     * Token syntax is `[KEY]`.
+     */
+    fun formatString(text: String, args: Map<String, String>): String {
+        var result = text
+        for ((key, value) in args) result = result.replace("[$key]", value)
+        return result
+    }
+
+    /**
+     * Returns `true` when [text] opens with an IRC-style `/me ` or `/me'` prefix.
+     */
+    fun isIrcMePrefix(text: String): Boolean {
+        if (text.length < 4) return false
+        val prefix = text.substring(0, 4)
+        return prefix == "/me " || prefix == "/me'"
+    }
+
+    /**
+     * URL-decode a percent-encoded [name] (mirrors `curl_unescape`).
+     */
+    fun unescapeName(name: String): String =
+        URLDecoder.decode(name, Charsets.UTF_8)
+
+    // -----------------------------------------------------------------------
+    // Chat-text transformations
+    // -----------------------------------------------------------------------
+
+    /**
+     * Append a closing `))` or `]]` when an OOC opener is present without a
+     * matching closer, provided the `AutoCloseOOC` setting is enabled.
+     */
+    fun applyAutoCloseOoc(message: String): String {
+        val autoClose = TODO("GPU: gSavedSettings.getBOOL(\"AutoCloseOOC\")") as Boolean
+        if (!autoClose) return message
+
+        return when {
+            message.contains("(( ") && !message.contains("))") -> "$message ))"
+            message.contains("((") && !message.contains("))") ->
+                if (message.endsWith(")")) "$message ))" else "$message))"
+            message.contains("[[ ") && !message.contains("]]") -> "$message ]]"
+            message.contains("[[") && !message.contains("]]") ->
+                if (message.endsWith("]")) "$message ]]" else "$message]]"
+            else -> message
+        }
+    }
+
+    /**
+     * Convert a MU*-style `:pose` prefix to `/me` IRC-emote format when
+     * `AllowMUpose` is enabled.
+     */
+    fun applyMuPose(message: String): String {
+        val allowMuPose = TODO("GPU: gSavedSettings.getBOOL(\"AllowMUpose\")") as Boolean
+        if (!allowMuPose || !message.startsWith(":") || message.length <= 3) return message
+
+        return when {
+            message.startsWith(":'") -> "/me" + message.substring(1)
+            !message[1].isDigit() && !message[1].isPunct() && !message[1].isWhitespace() ->
+                "/me " + message.substring(1)
+            else -> message
+        }
+    }
+
+    // -----------------------------------------------------------------------
+    // Date / time
+    // -----------------------------------------------------------------------
+
+    /**
+     * Parse [str] with [format] (Boost.DateTime / strftime specifiers) and
+     * return whole seconds since the Unix epoch.
+     *
+     * The C++ implementation uses Boost.Date_Time's `time_input_facet`.
+     * Replace with `java.time` or `kotlinx-datetime` when porting.
+     */
+    fun secondsSinceEpochFromString(format: String, str: String): Int {
+        TODO("APR: use JVM equivalent - parse str with format using java.time DateTimeFormatter and return epochSecond.toInt()")
+    }
+
+    // -----------------------------------------------------------------------
+    // Build preferences
+    // -----------------------------------------------------------------------
+
+    /**
+     * Apply the user's default build preferences (texture, colour, alpha, glow,
+     * shininess, fullbright, next-owner permissions, physics/temporary/phantom
+     * flags) to [viewerObject] immediately after it is rezzed.
+     */
+    fun applyDefaultBuildPreferences(viewerObject: LLViewerObject) {
+        TODO("APR: use JVM equivalent - read FSBuildPrefs_* settings and send ObjectPermissions + ObjectFlagUpdate messages")
+    }
+
+    // -----------------------------------------------------------------------
+    // Avatar / identity helpers
+    // -----------------------------------------------------------------------
+
+    /**
+     * Returns `true` when [avId] belongs to a Linden Lab employee on SL main
+     * grid, or to a grid-god account on OpenSim.
+     */
+    fun isLinden(avId: UUID): Boolean {
+        TODO("APR: use JVM equivalent - resolve last name via LLAvatarNameCache / gCacheName; on OpenSim also check region gods list")
+    }
+
+    /**
+     * Returns `true` when [assetId] matches one of the viewer's built-in
+     * default textures.
+     */
+    fun isDefaultTexture(assetId: UUID): Boolean =
+        assetId.toString() in DEFAULT_TEXTURE_IDS
+
+    /**
+     * Returns `true` when the active UI skin is the legacy "Vintage" skin.
+     */
+    fun isLegacySkin(): Boolean {
+        TODO("GPU: gSavedSettings.getString(\"FSInternalSkinCurrent\") == \"Vintage\"")
+    }
+
+    /**
+     * Returns `true` when [key] + [mask] matches the Ctrl+F filter-editor
+     * shortcut (only when `FSSelectLocalSearchEditorOnShortcut` is enabled).
+     */
+    fun isFilterEditorKeyCombo(key: Int, mask: Int): Boolean {
+        val enabled = TODO("GPU: gSavedSettings.getBOOL(\"FSSelectLocalSearchEditorOnShortcut\")") as Boolean
+        return mask == MASK_CONTROL && key == 'F'.code && enabled
+    }
+
+    // -----------------------------------------------------------------------
+    // Group / permission helpers
+    // -----------------------------------------------------------------------
+
+    /**
+     * Ensure group data for [groupId] is in the local cache; sends a server
+     * request if it is not.
+     *
+     * @return `true` if data is already available locally.
+     */
+    fun requestGroupData(groupId: UUID): Boolean {
+        TODO("GPU: if LLGroupMgr.getGroupData(groupId) == null, call sendGroupPropertiesRequest and return false; else return true")
+    }
+
+    /**
+     * Evaluate whether registrar action [actionType] is currently enabled
+     * for avatar [avId].
+     */
+    fun checkIsActionEnabled(avId: UUID, actionType: EFSRegistrarFunctionActionType): Boolean {
+        TODO("GPU: evaluate each EFSRegistrarFunctionActionType case using agent, RLVa, friend, group, and radar integrations")
+    }
+
+    /**
+     * Build a localised string describing the agent's current group-slot
+     * usage (count / remaining).
+     */
+    fun populateGroupCount(): String {
+        TODO("GPU: read gAgent.mGroups.size() and LLAgentBenefitsMgr.current().getGroupMembershipLimit(); format groupcountstring / groupcountunlimitedstring")
+    }
+
+    /**
+     * Return the preferred display form of [avName] based on the active
+     * `UseDisplayNames` / `NameTagShowUsernames` settings.
+     */
+    fun getAvatarNameByDisplaySettings(avName: AvatarName): String {
+        val showUsernames = TODO("GPU: gSavedSettings.getBOOL(\"NameTagShowUsernames\")") as Boolean
+        val useDisplayNames = TODO("GPU: gSavedSettings.getBOOL(\"UseDisplayNames\")") as Boolean
+        return when {
+            showUsernames && useDisplayNames -> avName.completeName
+            useDisplayNames -> avName.displayName
+            else -> avName.userName
+        }
+    }
+
+    /**
+     * Return the UUID of the group that should own newly rezzed objects,
+     * respecting the `RezUnderLandGroup` preference and the agent's parcel.
+     */
+    fun getGroupForRezzing(): UUID {
+        val groupId = TODO("GPU: gAgent.getGroupID()") as UUID
+        val rezUnderLandGroup = TODO("GPU: gSavedSettings.getBOOL(\"RezUnderLandGroup\")") as Boolean
+        if (rezUnderLandGroup) {
+            val parcelGroupId = TODO("GPU: LLViewerParcelMgr.getInstance().getAgentParcel()?.getGroupID()") as UUID?
+            val agentInGroup = TODO("GPU: gAgent.isInGroup(parcelGroupId)") as Boolean
+            if (parcelGroupId != null && parcelGroupId != UUID(0L, 0L) && agentInGroup) {
+                return parcelGroupId
+            }
+        }
+        return groupId
+    }
+
+    /**
+     * Record any emoji characters in [text] as recently used and persist the
+     * updated state.
+     */
+    fun updateUsedEmojis(text: String) {
+        TODO("GPU: iterate text codepoints; for each emoji call LLFloaterEmojiPicker.onEmojiUsed(c); then call LLFloaterEmojiPicker.saveState()")
+    }
+
+    // -----------------------------------------------------------------------
+    // Private constants
+    // -----------------------------------------------------------------------
+
+    private const val MASK_CONTROL = 0x0001
+}
+
+// ---------------------------------------------------------------------------
+// Extension to check if a Char is punctuation (used in applyMuPose)
+// ---------------------------------------------------------------------------
+
+private fun Char.isPunct(): Boolean = !isLetterOrDigit() && !isWhitespace()

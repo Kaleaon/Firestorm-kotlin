@@ -1,358 +1,473 @@
-/**
- * WorldMapView.kt
- * Converted from llworldmapview.h / llworldmapview.cpp
- *
- * Renders the Second Life world map UI panel. All OpenGL draw calls,
- * texture look-ups, and UI-framework callbacks are stubbed with TODO.
- * The coordinate-transform arithmetic and input-handling logic are preserved.
- */
-
 package com.firestorm.newview
 
-import com.firestorm.llmath.*
-import com.firestorm.llcommon.*
+import kotlin.math.*
 
-// ---------------------------------------------------------------------------
-// Constants (from llworldmapview.cpp)
-// ---------------------------------------------------------------------------
+const val DEFAULT_TRACKING_ARROW_SIZE = 16
 
-private const val MAP_DEFAULT_SCALE: Float    = 128f
-private const val MAP_ITERP_TIME_CONSTANT: Float = 0.75f
-private const val MAP_ZOOM_ACCELERATION_TIME: Float = 0.3f
-private const val MAP_ZOOM_MAX_INTERP: Float  = 0.5f
-private const val MAP_SCALE_SNAP_THRESHOLD: Float = 0.005f
-private const val DEFAULT_TRACKING_ARROW_SIZE: Int = 16
+private const val MAP_DEFAULT_SCALE = 128f
+private const val MAP_ITERP_TIME_CONSTANT = 0.75f
+private const val MAP_ZOOM_ACCELERATION_TIME = 0.3f
+private const val MAP_ZOOM_MAX_INTERP = 0.5f
+private const val MAP_SCALE_SNAP_THRESHOLD = 0.005f
 
-// Ocean colour (#1D475F) — kept as constants to match mapstitcher.py.
-private const val OCEAN_RED:   Float = 0x1D / 255f
-private const val OCEAN_GREEN: Float = 0x47 / 255f
-private const val OCEAN_BLUE:  Float = 0x5F / 255f
+private const val OCEAN_RED   = 0x1D / 255f
+private const val OCEAN_GREEN = 0x47 / 255f
+private const val OCEAN_BLUE  = 0x5F / 255f
 
-// ---------------------------------------------------------------------------
-// MapScale zoom levels
-// ---------------------------------------------------------------------------
+private const val GODLY_TELEPORT_HEIGHT = 200.0
+private const val BIG_DOT_RADIUS = 5f
 
-/**
- * Named zoom levels for the world map.
- * Higher ordinal → more zoomed in (larger on-screen pixels per metre).
- */
-enum class MapScale {
-    VERY_SMALL,
-    SMALL,
-    MEDIUM,
-    LARGE;
+private const val DRAW_TEXT_THRESHOLD = 96f
+private const val DRAW_SIMINFO_THRESHOLD = 3
+private const val DRAW_LANDFORSALE_THRESHOLD = 2
+
+data class Color4(val r: Float, val g: Float, val b: Float, val a: Float) {
+    companion object {
+        val white  = Color4(1f, 1f, 1f, 1f)
+        val yellow = Color4(1f, 1f, 0f, 1f)
+        val orange = Color4(1f, 0.5f, 0f, 1f)
+    }
 }
 
-// ---------------------------------------------------------------------------
-// WorldMapView singleton  (LLWorldMapView)
-// ---------------------------------------------------------------------------
+data class Vector3(val x: Float, val y: Float, val z: Float)
+data class Vector3d(val x: Double, val y: Double, val z: Double) {
+    fun isExactlyZero() = x == 0.0 && y == 0.0 && z == 0.0
+}
+data class Vector2f(val x: Float, val y: Float) {
+    fun isExactlyZero() = x == 0f && y == 0f
+}
+data class Rect(val left: Int, val bottom: Int, val right: Int, val top: Int) {
+    fun getWidth()  = right - left
+    fun getHeight() = top - bottom
+}
 
-/**
- * Singleton facade for the world-map panel.
- *
- * Coordinate system:
- *   - Global position: metres from the origin of the SL grid (Vector3 / x,y).
- *   - View position: pixels relative to the top-left corner of this panel.
- *   - Pan: pixel offset of the world origin from the panel centre.
- *
- * All render calls delegate to the real GL pipeline and are stubbed here.
- */
-object WorldMapView {
+class UIImage(val name: String) {
+    fun getWidth()  = 0
+    fun getHeight() = 0
+    fun draw(x: Int, y: Int, color: Color4 = Color4.white) {
+        TODO("GPU: draw UIImage $name at ($x, $y)")
+    }
+    fun draw(x: Int, y: Int, w: Int, h: Int, color: Color4) {
+        TODO("GPU: draw UIImage $name scaled at ($x, $y) size ${w}x${h}")
+    }
+}
 
-    // -- Pan / scale state ----------------------------------------------------
+class ItemInfo {
+    fun getGlobalPosition(): Vector3d = Vector3d(0.0, 0.0, 0.0)
+    fun getRegionHandle(): ULong = 0UL
+    fun getUUID(): String = ""
+    fun getCount(): Int = 1
+}
 
-    /** Current horizontal pan in pixels from panel centre. */
-    var panX: Float = 0f
-        private set
-    /** Current vertical pan in pixels from panel centre. */
-    var panY: Float = 0f
-        private set
+open class WorldMapView {
 
-    /** Target pan — interpolated toward over multiple frames. */
-    var targetPanX: Float = 0f
-        private set
-    var targetPanY: Float = 0f
-        private set
+    companion object {
+        var sAvatarSmallImage: UIImage?     = null
+        var sAvatarYouImage: UIImage?       = null
+        var sAvatarYouLargeImage: UIImage?  = null
+        var sAvatarLevelImage: UIImage?     = null
+        var sAvatarAboveImage: UIImage?     = null
+        var sAvatarBelowImage: UIImage?     = null
+        var sAvatarUnknownImage: UIImage?   = null
+        var sTelehubImage: UIImage?         = null
+        var sInfohubImage: UIImage?         = null
+        var sHomeImage: UIImage?            = null
+        var sEventImage: UIImage?           = null
+        var sEventMatureImage: UIImage?     = null
+        var sEventAdultImage: UIImage?      = null
+        var sTrackCircleImage: UIImage?     = null
+        var sTrackArrowImage: UIImage?      = null
+        var sClassifiedsImage: UIImage?     = null
+        var sForSaleImage: UIImage?         = null
+        var sForSaleAdultImage: UIImage?    = null
 
-    /** Current linear scale: screen pixels per in-world metre. */
-    var mapScale: Float = MAP_DEFAULT_SCALE
-        private set
-    /** Scale that the view is interpolating toward. */
-    var targetMapScale: Float = MAP_DEFAULT_SCALE
-        private set
+        var sTrackingArrowX = 0
+        var sTrackingArrowY = 0
+        var sVisibleTilesLoaded = false
+        var sHandledLastClick = false
 
-    /** Ratio used during zoom-pivot interpolation. */
-    private var mapRatio: Float = 1f
+        var sMapScaleSetting = MAP_DEFAULT_SCALE
+        var sZoomPivot = Vector2f(0f, 0f)
 
-    /** Interpolation time for map pan/scale transitions (seconds). */
-    private var mapInterpTime: Float = MAP_ITERP_TIME_CONSTANT
+        val sStringsMap: MutableMap<String, String> = mutableMapOf()
 
-    // -- Shared static state --------------------------------------------------
+        fun initClass() {
+            sAvatarSmallImage    = UIImage("map_avatar_8.tga")
+            sAvatarYouImage      = UIImage("map_avatar_16.tga")
+            sAvatarYouLargeImage = UIImage("map_avatar_you_32.tga")
+            sAvatarLevelImage    = UIImage("map_avatar_32.tga")
+            sAvatarAboveImage    = UIImage("map_avatar_above_32.tga")
+            sAvatarBelowImage    = UIImage("map_avatar_below_32.tga")
+            sAvatarUnknownImage  = UIImage("map_avatar_unknown.tga")
+            sHomeImage           = UIImage("map_home.tga")
+            sTelehubImage        = UIImage("map_telehub.tga")
+            sInfohubImage        = UIImage("map_infohub.tga")
+            sEventImage          = UIImage("Parcel_PG_Dark")
+            sEventMatureImage    = UIImage("Parcel_M_Dark")
+            sEventAdultImage     = UIImage("Parcel_R_Dark")
+            sTrackCircleImage    = UIImage("map_track_16.tga")
+            sTrackArrowImage     = UIImage("direction_arrow.tga")
+            sClassifiedsImage    = UIImage("icon_top_pick.tga")
+            sForSaleImage        = UIImage("icon_for_sale.tga")
+            sForSaleAdultImage   = UIImage("icon_for_sale_adult.tga")
+            sStringsMap["loading"]        = "texture_loading"
+            sStringsMap["offline"]        = "worldmap_offline"
+            sStringsMap["agent_position"] = "worldmap_agent_position"
+        }
 
-    var trackingArrowX: Int = 0
-    var trackingArrowY: Int = 0
-    var visibleTilesLoaded: Boolean = false
-    var handledLastClick: Boolean = false
+        fun cleanupClass() {
+            sAvatarSmallImage = null; sAvatarYouImage = null; sAvatarYouLargeImage = null
+            sAvatarLevelImage = null; sAvatarAboveImage = null; sAvatarBelowImage = null
+            sAvatarUnknownImage = null; sTelehubImage = null; sInfohubImage = null
+            sHomeImage = null; sEventImage = null; sEventMatureImage = null; sEventAdultImage = null
+            sTrackCircleImage = null; sTrackArrowImage = null
+            sClassifiedsImage = null; sForSaleImage = null; sForSaleAdultImage = null
+        }
 
-    /** Persisted scale setting applied on next login. */
-    var scaleSetting: Float = MAP_DEFAULT_SCALE
+        fun cleanupTextures() {}
 
-    /** Background fill colour (deep ocean blue by default). */
-    var backgroundColor: Color4 = Color4(OCEAN_RED, OCEAN_GREEN, OCEAN_BLUE, 1f)
+        fun clearLastClick() { sHandledLastClick = false }
 
-    // -- Panel geometry -------------------------------------------------------
+        fun setScaleSetting(scaleSetting: Float) { sMapScaleSetting = scaleSetting }
+        fun getScaleSetting(): Float = sMapScaleSetting
 
-    var panelWidth: Int = 0
-        private set
-    var panelHeight: Int = 0
-        private set
+        fun drawTrackingArrow(
+            viewRect: Rect, x: Int, y: Int, color: Color4,
+            arrowSize: Int = DEFAULT_TRACKING_ARROW_SIZE
+        ) {
+            val xCenter = viewRect.getWidth() / 2f
+            val yCenter = viewRect.getHeight() / 2f
+            var xClamped = x.coerceIn(0, viewRect.getWidth() - arrowSize).toFloat()
+            var yClamped = y.coerceIn(0, viewRect.getHeight() - arrowSize).toFloat()
 
-    // -- Mouse drag state -----------------------------------------------------
+            val denom = (x - xCenter).let { if (it == 0f) 1e-6f else it }
+            val slope = (y - yCenter) / denom
+            val windowRatio = viewRect.getHeight().toFloat() / viewRect.getWidth()
 
-    var panning: Boolean = false
-        private set
-    private var mouseDownPanX: Int = 0
-    private var mouseDownPanY: Int = 0
-    private var mouseDownX: Int = 0
-    private var mouseDownY: Int = 0
+            if (abs(slope) > windowRatio && yClamped != y.toFloat()) {
+                xClamped = ((yClamped - yCenter) / slope + xCenter)
+                    .coerceIn(0f, (viewRect.getWidth() - arrowSize).toFloat())
+            } else if (xClamped != x.toFloat()) {
+                yClamped = ((xClamped - xCenter) * slope + yCenter)
+                    .coerceIn(0f, (viewRect.getHeight() - arrowSize).toFloat())
+            }
 
-    // -- Items ----------------------------------------------------------------
+            val halfArrow = (0.5f * arrowSize).toInt()
+            val angle = atan2(y + halfArrow - yCenter, x + halfArrow - xCenter)
 
-    var itemPicked: Boolean = false
+            sTrackingArrowX = xClamped.toInt()
+            sTrackingArrowY = yClamped.toInt()
+            TODO("GPU: gl_draw_scaled_rotated_image sTrackArrowImage angle=${Math.toDegrees(angle.toDouble())}")
+        }
 
-    // -- Visible region handles (set each frame after draw) -------------------
+        fun drawTrackingDot(
+            xPixels: Float, yPixels: Float, color: Color4,
+            relativeZ: Float = 0f, dotRadius: Float = 5f
+        ) {
+            val img = sTrackCircleImage ?: return
+            drawDot(xPixels, yPixels, color, relativeZ, dotRadius, img)
+        }
+
+        fun drawTrackingCircle(
+            rect: Rect, x: Int, y: Int, color: Color4,
+            minThickness: Int, overlap: Int
+        ) {
+            val piHalf = (PI / 2).toFloat()
+            val twoPi  = (2 * PI).toFloat()
+            var startTheta = 0f
+            var endTheta   = twoPi
+            var xDelta = 0f
+            var yDelta = 0f
+
+            if (x < 0) {
+                xDelta = -x.toFloat()
+                startTheta = PI.toFloat() + piHalf; endTheta = twoPi + piHalf
+            } else if (x > rect.getWidth()) {
+                xDelta = (x - rect.getWidth()).toFloat()
+                startTheta = piHalf; endTheta = PI.toFloat() + piHalf
+            }
+            if (y < 0) {
+                yDelta = -y.toFloat()
+                when {
+                    x < 0               -> { startTheta = 0f;             endTheta = piHalf }
+                    x > rect.getWidth() -> { startTheta = piHalf;         endTheta = PI.toFloat() }
+                    else                -> { startTheta = 0f;             endTheta = PI.toFloat() }
+                }
+            } else if (y > rect.getHeight()) {
+                yDelta = (y - rect.getHeight()).toFloat()
+                when {
+                    x < 0               -> { startTheta = PI.toFloat() + piHalf; endTheta = twoPi }
+                    x > rect.getWidth() -> { startTheta = PI.toFloat();           endTheta = PI.toFloat() + piHalf }
+                    else                -> { startTheta = PI.toFloat();           endTheta = twoPi }
+                }
+            }
+
+            val distance = max(0.1f, sqrt(xDelta * xDelta + yDelta * yDelta))
+            val outerRadius = distance + (1f + 9f * sqrt(xDelta * yDelta) / distance) * overlap
+            val innerRadius = outerRadius - minThickness
+
+            val angleX = asin((xDelta / outerRadius).coerceIn(-1f, 1f))
+            val angleY = asin((yDelta / outerRadius).coerceIn(-1f, 1f))
+            val adj = when {
+                angleX != 0f && angleY != 0f -> min(angleX, angleY)
+                angleX != 0f -> angleX
+                else         -> angleY
+            }
+            startTheta += adj; endTheta -= adj
+            TODO("GPU: gl_washer_segment_2d inner=$innerRadius outer=$outerRadius start=$startTheta end=$endTheta color=$color")
+        }
+
+        fun drawAvatar(
+            xPixels: Float, yPixels: Float, color: Color4,
+            relativeZ: Float = 0f, dotRadius: Float = 3f, reachedMaxZ: Boolean = false
+        ) {
+            val threshold = 7f
+            val img = when {
+                reachedMaxZ && abs(relativeZ) > threshold -> sAvatarUnknownImage
+                relativeZ < -threshold  -> sAvatarBelowImage
+                relativeZ > threshold   -> sAvatarAboveImage
+                else                    -> sAvatarLevelImage
+            } ?: return
+            val w = (dotRadius * 2f).toInt()
+            img.draw((xPixels - dotRadius).toInt(), (yPixels - dotRadius).toInt(), w, w, color)
+        }
+
+        fun drawIconName(
+            xPixels: Float, yPixels: Float, color: Color4,
+            firstLine: String, secondLine: String
+        ) {
+            val vertPad = 8
+            val textX = xPixels.toInt()
+            val textY = (yPixels - BIG_DOT_RADIUS - vertPad).toInt()
+            TODO("GPU: render text '$firstLine' / '$secondLine' at ($textX, $textY) color=$color")
+        }
+
+        private fun drawDot(
+            xPixels: Float, yPixels: Float, color: Color4,
+            relativeZ: Float, dotRadius: Float, dotImage: UIImage
+        ) {
+            val threshold = 7f
+            if (relativeZ in -threshold..threshold) {
+                dotImage.draw(
+                    xPixels.toInt() - dotImage.getWidth() / 2,
+                    yPixels.toInt() - dotImage.getHeight() / 2,
+                    color
+                )
+            } else {
+                TODO("GPU: draw V-indicator lines for avatar above/below threshold")
+            }
+        }
+
+        fun scaleFromZoom(zoom: Float): Float = 2f.pow(zoom) * 256f
+        fun zoomFromScale(scale: Float): Float = log2(scale / 256f)
+    }
+
+    var backgroundColor = Color4(OCEAN_RED, OCEAN_GREEN, OCEAN_BLUE, 1f)
+    var itemPicked = false
+    var panX = 0f
+    var panY = 0f
+    var targetPanX = 0f
+    var targetPanY = 0f
+    var panning = false
+    var mouseDownPanX = 0
+    var mouseDownPanY = 0
+    var mouseDownX = 0
+    var mouseDownY = 0
+    var selectIDStart = 0
 
     val visibleRegions: MutableList<ULong> = mutableListOf()
 
-    // -------------------------------------------------------------------------
-    // Coordinate transforms
-    // -------------------------------------------------------------------------
+    private var mapScale      = 0f
+    private var targetMapScale = 0f
+    private var mapRatio      = 0.5f
+    private var mapIterpTime  = MAP_ITERP_TIME_CONSTANT
 
-    /**
-     * Convert a global (in-world) position to a view-space pixel coordinate.
-     *
-     * The x/y of [pos] are in metres from the SL grid origin; z is elevation.
-     * Returns a [Vector3] whose x/y are pixel coordinates within this panel
-     * (origin = panel top-left). The z component carries the elevation unchanged.
-     *
-     * Formula mirrors LLWorldMapView::globalPosToView in the C++ source:
-     *   panelCentre + (globalPos - agentGlobalPos) * scale + pan
-     */
-    fun globalPosToView(pos: Vector3): Vector3 {
-        val cx = panelWidth  * 0.5f
-        val cy = panelHeight * 0.5f
-        // agentGlobalPos would come from LLAgent — stubbed as origin here.
-        val agentX = 0f; val agentY = 0f
-        val px = cx + (pos.x - agentX) * mapScale + panX
-        val py = cy + (pos.y - agentY) * mapScale + panY
-        return Vector3(px, py, pos.z)
+    private var zoomTimerStarted = false
+    private var zoomTimerElapsed = 0f
+
+    private var rectWidth  = 0
+    private var rectHeight = 0
+
+    fun postBuild(): Boolean {
+        setScale(sMapScaleSetting, snap = true)
+        return true
     }
 
-    /**
-     * Convert a view-space pixel position to a global (in-world) position.
-     *
-     * Inverse of [globalPosToView].
-     */
-    fun viewToGlobalPos(x: Int, y: Int): Vector3 {
-        val cx = panelWidth  * 0.5f
-        val cy = panelHeight * 0.5f
-        val agentX = 0f; val agentY = 0f
-        val gx = agentX + (x - cx - panX) / mapScale
-        val gy = agentY + (y - cy - panY) / mapScale
-        return Vector3(gx, gy, 0f)
+    open fun reshape(width: Int, height: Int, calledFromParent: Boolean = true) {
+        rectWidth  = width
+        rectHeight = height
     }
 
-    // -------------------------------------------------------------------------
-    // Zoom / pan controls
-    // -------------------------------------------------------------------------
-
-    /**
-     * Smoothly zoom to the given scale level (not a log-zoom; treated as a
-     * direct target scale to match the C++ [zoomWithPivot] signature).
-     */
-    fun zoom(targetScale: Float) {
-        targetMapScale = targetScale.coerceIn(MIN_SCALE, MAX_SCALE)
+    open fun setVisible(visible: Boolean) {
+        if (!visible) {
+            TODO("APR: drop world map image download priorities")
+        }
     }
 
-    /**
-     * Zoom with a screen-space pivot point so that the world position under
-     * the cursor (x, y) stays stationary.
-     */
-    fun zoomWithPivot(targetScale: Float, x: Int, y: Int) {
-        val oldScale = mapScale
-        val newScale = targetScale.coerceIn(MIN_SCALE, MAX_SCALE)
-        // Adjust pan to keep the world point at (x, y) fixed on screen.
-        val cx = panelWidth * 0.5f; val cy = panelHeight * 0.5f
-        val dx = x - cx; val dy = y - cy
-        val factor = newScale / oldScale - 1f
-        targetPanX = panX - dx * factor
-        targetPanY = panY - dy * factor
-        targetMapScale = newScale
+    fun zoom(zoom: Float) {
+        targetMapScale = scaleFromZoom(zoom)
+        if (!zoomTimerStarted && mapScale != targetMapScale) {
+            sZoomPivot = Vector2f(0f, 0f)
+            zoomTimerStarted = true
+            zoomTimerElapsed = 0f
+        }
     }
 
-    fun getZoom(): Float = mapScale
+    fun zoomWithPivot(zoom: Float, x: Int, y: Int) {
+        targetMapScale = scaleFromZoom(zoom)
+        sZoomPivot = Vector2f(x.toFloat(), y.toFloat())
+        if (!zoomTimerStarted && mapScale != targetMapScale) {
+            zoomTimerStarted = true
+            zoomTimerElapsed = 0f
+        }
+    }
+
+    fun getZoom(): Float = zoomFromScale(mapScale)
     fun getScale(): Float = mapScale
 
-    /** Pan the map by a pixel delta. */
     fun translatePan(deltaX: Int, deltaY: Int) {
-        targetPanX = panX + deltaX
-        targetPanY = panY + deltaY
+        panX += deltaX; panY += deltaY
+        targetPanX = panX; targetPanY = panY
+        sVisibleTilesLoaded = false
     }
 
-    /** Jump the pan to an absolute pixel position (optionally snapping immediately). */
     fun setPan(x: Int, y: Int, snap: Boolean = true) {
+        mapIterpTime = MAP_ITERP_TIME_CONSTANT
         targetPanX = x.toFloat(); targetPanY = y.toFloat()
         if (snap) { panX = targetPanX; panY = targetPanY }
+        sVisibleTilesLoaded = false
     }
 
-    // -------------------------------------------------------------------------
-    // Rendering
-    // -------------------------------------------------------------------------
-
-    /** Full panel draw — GL rendering is deferred to the native pipeline. */
-    fun draw() {
-        TODO("GL: world map draw requires OpenGL context and texture pipeline")
+    fun setPanWithInterpTime(x: Int, y: Int, snap: Boolean, interpTime: Float) {
+        setPan(x, y, snap)
+        mapIterpTime = interpTime
     }
 
-    /** Draw generic map-item icons (telehubs, events, etc.). */
-    fun drawGenericItems() {
-        TODO("GL: generic item rendering not implemented")
+    fun showRegionInfo(): Boolean {
+        TODO("APR: call WorldMipmap.scaleToLevel(mapScale) <= DRAW_SIMINFO_THRESHOLD")
     }
 
-    /** Draw the avatar dots for nearby agents. */
+    fun globalPosToView(globalPos: Vector3d): Vector3 {
+        TODO("GPU: convert globalPos to view coords relative to agentCamera")
+    }
+
+    fun viewPosToGlobal(x: Int, y: Int): Vector3d {
+        TODO("GPU: convert view pixel coords to global world position")
+    }
+
+    open fun draw() {
+        TODO("GPU: full world map draw pass including mipmap, regions, agents, tracking")
+    }
+
+    fun drawGenericItems(items: List<ItemInfo>, image: UIImage) {
+        items.forEach { drawGenericItem(it, image) }
+    }
+
+    fun drawGenericItem(item: ItemInfo, image: UIImage) {
+        drawImage(item.getGlobalPosition(), image)
+    }
+
+    fun drawImage(globalPos: Vector3d, image: UIImage, color: Color4 = Color4.white) {
+        TODO("GPU: draw UIImage ${image.name} at global position $globalPos color=$color")
+    }
+
+    fun drawImageStack(
+        globalPos: Vector3d, image: UIImage, count: UInt, offset: Float, color: Color4
+    ) {
+        TODO("GPU: draw image stack count=$count offset=$offset at $globalPos")
+    }
+
     fun drawAgents() {
-        TODO("GL: agent rendering requires GL draw and avatar list")
+        TODO("GPU: draw agent icon stacks for all visible regions")
     }
 
-    /** Draw map items (events, classifieds, etc.). */
     fun drawItems() {
-        TODO("GL: item rendering requires GL draw and world-map data model")
+        TODO("GPU: draw telehubs, infohubs, events, land-for-sale icons")
     }
 
-    /** Draw camera frustum overlay. */
     fun drawFrustum() {
-        TODO("GL: frustum overlay requires camera matrix and GL draw calls")
+        TODO("GPU: draw camera frustum triangle overlay on world map")
     }
 
-    /**
-     * Draw mipmap tiles at the given panel dimensions.
-     * Returns true when all visible tiles are loaded.
-     */
-    fun drawMipmap(width: Int, height: Int): Boolean {
-        TODO("GL: mipmap tile rendering requires texture cache and GL draw calls")
+    fun drawMipmap(width: Int, height: Int) {
+        TODO("GPU: render all mipmap levels onto world map canvas")
     }
 
-    // -------------------------------------------------------------------------
-    // Tracking / direction indicators
-    // -------------------------------------------------------------------------
+    fun drawMipmapLevel(width: Int, height: Int, level: Int, load: Boolean = true): Boolean {
+        TODO("GPU: render mipmap level $level; return true when all tiles complete")
+    }
 
     fun drawTracking(
-        posGlobal: Vector3,
-        color: Color4,
-        drawArrow: Boolean = true,
-        label: String = "",
-        tooltip: String = "",
-        vertOffset: Int = 0
+        posGlobal: Vector3d, color: Color4, drawArrow: Boolean = true,
+        label: String = "", tooltip: String = "", vertOffset: Int = 0
     ) {
-        TODO("GL: tracking indicator rendering not implemented")
+        TODO("GPU: draw tracking indicator (circle or arrow) and text label")
     }
 
-    fun drawTrackingArrow(x: Int, y: Int, color: Color4, arrowSize: Int = DEFAULT_TRACKING_ARROW_SIZE) {
-        TODO("GL: tracking arrow rendering not implemented")
+    fun checkItemHit(x: Int, y: Int, item: ItemInfo, outId: Array<String>, track: Boolean): Boolean {
+        TODO("GPU: hit-test item against BIG_DOT_RADIUS around its view position")
     }
 
-    fun drawTrackingDot(xPixels: Float, yPixels: Float, color: Color4, relativeZ: Float = 0f, dotRadius: Float = 5f) {
-        TODO("GL: tracking dot rendering not implemented")
+    fun handleClick(x: Int, y: Int, mask: Int, outHitType: IntArray, outId: Array<String>) {
+        TODO("GPU: click dispatch — test visible region items then fall back to location track")
     }
 
-    fun drawAvatar(xPixels: Float, yPixels: Float, color: Color4, relativeZ: Float = 0f, dotRadius: Float = 3f, reachedMaxZ: Boolean = false) {
-        TODO("GL: avatar icon rendering not implemented")
-    }
-
-    fun cleanupTextures() {
-        TODO("GL: texture cleanup not implemented")
-    }
-
-    // -------------------------------------------------------------------------
-    // Input handling
-    // -------------------------------------------------------------------------
-
-    /**
-     * Primary click handler.  Returns true if the click was consumed.
-     * Hit-testing against live map items requires the data model (LLWorldMap)
-     * which is not available here; a full hit-test is stubbed.
-     */
-    fun handleClick(x: Int, y: Int): Boolean {
-        handledLastClick = false
-        // Placeholder: convert to global pos and check against known regions.
-        val globalPos = viewToGlobalPos(x, y)
-        println("WorldMapView.handleClick: viewPos=($x,$y) globalPos=$globalPos")
-        // Real implementation would hit-test against LLWorldMap::sInstance regions.
-        handledLastClick = true
-        return true
-    }
-
-    fun handleMouseDown(x: Int, y: Int): Boolean {
-        mouseDownX = x; mouseDownY = y
+    open fun handleMouseDown(x: Int, y: Int, mask: Int): Boolean {
         mouseDownPanX = panX.toInt(); mouseDownPanY = panY.toInt()
-        panning = true
+        mouseDownX = x; mouseDownY = y
+        sHandledLastClick = true
         return true
     }
 
-    fun handleMouseUp(x: Int, y: Int): Boolean {
-        panning = false
-        return true
+    open fun handleMouseUp(x: Int, y: Int, mask: Int): Boolean {
+        TODO("GPU: end pan drag or dispatch handleClick if not panning")
     }
 
-    fun handleDoubleClick(x: Int, y: Int): Boolean {
-        val globalPos = viewToGlobalPos(x, y)
-        println("WorldMapView.handleDoubleClick: teleport request to $globalPos (stub)")
-        return true
+    open fun handleDoubleClick(x: Int, y: Int, mask: Int): Boolean {
+        if (!sHandledLastClick) return false
+        TODO("GPU: double-click teleport or event/classified dispatch")
     }
 
-    fun handleHover(x: Int, y: Int): Boolean {
-        if (panning) {
-            val dx = x - mouseDownX; val dy = y - mouseDownY
-            panX = mouseDownPanX + dx.toFloat()
-            panY = mouseDownPanY + dy.toFloat()
-            targetPanX = panX; targetPanY = panY
-        }
-        return true
+    open fun handleHover(x: Int, y: Int, mask: Int): Boolean {
+        TODO("GPU: drag-pan handling, cursor updates")
     }
 
-    // -------------------------------------------------------------------------
-    // Region visibility
-    // -------------------------------------------------------------------------
+    open fun handleToolTip(x: Int, y: Int, mask: Int): Boolean {
+        TODO("GPU: build and show region tooltip at cursor position")
+    }
 
-    /** Check whether the current zoom allows reading sim info from the server. */
-    fun showRegionInfo(): Boolean = mapScale >= MIN_REGION_INFO_SCALE
-
-    /** Fetch additional sim info for newly visible blocks. Stubbed. */
     fun updateVisibleBlocks() {
-        TODO("NET: region info fetch not implemented")
+        TODO("APR: send updateRegions request for currently visible grid cells")
     }
 
-    // -------------------------------------------------------------------------
-    // Resize
-    // -------------------------------------------------------------------------
-
-    fun reshape(width: Int, height: Int) {
-        panelWidth = width; panelHeight = height
+    private fun setScale(scale: Float, snap: Boolean = true) {
+        if (scale != mapScale) {
+            val old = mapScale.let { if (it == 0f) 1f else it }
+            mapScale = max(0.1f, scale)
+            sMapScaleSetting = mapScale
+            mapRatio = mapScale / 256f
+            mapIterpTime = MAP_ITERP_TIME_CONSTANT
+            val ratio = scale / old
+            panX *= ratio; panY *= ratio
+            targetPanX = panX; targetPanY = panY
+            sVisibleTilesLoaded = false
+            if (!sZoomPivot.isExactlyZero()) {
+                val relX = sZoomPivot.x - rectWidth / 2f
+                val relY = sZoomPivot.y - rectHeight / 2f
+                val offX = relX - relX * scale / old
+                val offY = relY - relY * scale / old
+                panX += offX; panY += offY
+                targetPanX += offX; targetPanY += offY
+            }
+        }
+        if (snap) targetMapScale = scale
     }
 
-    // -------------------------------------------------------------------------
-    // Companion / class-level helpers
-    // -------------------------------------------------------------------------
+    private fun updateDirections() {
+        TODO("GPU: reposition N/S/E/W/NE/NW/SE/SW label TextBoxes within panel bounds")
+    }
 
-    private const val MIN_SCALE: Float = 1f
-    private const val MAX_SCALE: Float = 4096f
-    private const val MIN_REGION_INFO_SCALE: Float = 128f / 256f  // half a region per pixel
-
-    /** Convert from a UI zoom value to a linear map scale. */
-    fun scaleFromZoom(zoom: Float): Float = MAP_DEFAULT_SCALE * kotlin.math.exp(zoom)
-
-    /** Convert from a linear map scale back to a UI zoom value. */
-    fun zoomFromScale(scale: Float): Float = kotlin.math.ln(scale / MAP_DEFAULT_SCALE)
-
-    fun clearLastClick() { handledLastClick = false }
+    private fun drawTileOutline(level: Int, top: Float, left: Float, bottom: Float, right: Float) {
+        TODO("GPU: draw debug tile outline lines for mipmap level $level")
+    }
 }

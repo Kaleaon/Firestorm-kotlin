@@ -1,59 +1,34 @@
 package com.firestorm.newview
 
-class FloaterHUD(key: Any?) : Floater(key) {
+class FloaterHUD(private val key: Any?) {
 
-    private var webBrowser: MediaCtrlStub? = null
+    private var webBrowser: Any? = null
 
     init {
-        val tutorialUrl = SavedSettings.getString("TutorialURL")
+        val tutorialUrl = savedSettingsGetString("TutorialURL")
         if (tutorialUrl.isEmpty()) {
-            NotificationsUtil.add("TutorialNotFound")
-        } else {
-            setBackgroundOpaque(true)
+            notificationsAdd("TutorialNotFound")
         }
     }
 
-    override fun postBuild(): Boolean {
-        webBrowser = getChild("floater_hud_browser")
-        webBrowser?.let {
-            it.setTakeFocusOnClick(false)
-            val language = UI.getLanguage()
-            val baseUrl = SavedSettings.getString("TutorialURL")
-            it.navigateTo("$baseUrl$language/")
+    fun postBuild(): Boolean {
+        val browser = findChildByName("floater_hud_browser")
+        if (browser != null) {
+            webBrowser = browser
+            setWebBrowserTakeFocusOnClick(browser, false)
+
+            val language = uiGetLanguage()
+            val baseUrl = savedSettingsGetString("TutorialURL")
+            val url = "$baseUrl$language/"
+            webBrowserNavigateTo(browser, url)
         }
         return true
     }
-
-    private fun setBackgroundOpaque(opaque: Boolean) {
-        TODO("GPU: set background opacity for floater")
-    }
-
-    @Suppress("UNCHECKED_CAST")
-    private fun <T> getChild(name: String): T? {
-        TODO("GPU: look up named child widget '$name'")
-    }
 }
 
-object SavedSettings {
-    fun getString(key: String): String = TODO("APR: use JVM equivalent for gSavedSettings.getString")
-    fun getBool(key: String): Boolean = TODO("APR: use JVM equivalent for gSavedSettings.getBOOL")
-    fun setBool(key: String, value: Boolean): Unit = TODO("APR: use JVM equivalent for gSavedSettings.setBOOL")
-    fun getFloat(key: String): Float = TODO("APR: use JVM equivalent for gSavedSettings.getF32")
-}
-
-object NotificationsUtil {
-    fun add(name: String) {
-        TODO("APR: use JVM equivalent for LLNotificationsUtil::add")
-    }
-}
-
-object UI {
-    fun getLanguage(): String = TODO("APR: use JVM equivalent for LLUI::getLanguage")
-}
-
-class MediaCtrlStub {
-    fun setTakeFocusOnClick(take: Boolean) {}
-    fun navigateTo(url: String) {
-        TODO("GPU: navigate embedded browser to '$url'")
-    }
-}
+private fun savedSettingsGetString(key: String): String = TODO("APR: use JVM equivalent")
+private fun notificationsAdd(notification: String) { TODO("APR: use JVM equivalent") }
+private fun findChildByName(name: String): Any? = TODO("APR: use JVM equivalent")
+private fun uiGetLanguage(): String = TODO("APR: use JVM equivalent")
+private fun setWebBrowserTakeFocusOnClick(browser: Any, value: Boolean) { TODO("APR: use JVM equivalent") }
+private fun webBrowserNavigateTo(browser: Any, url: String) { TODO("APR: use JVM equivalent") }

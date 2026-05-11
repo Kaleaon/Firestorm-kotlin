@@ -430,14 +430,14 @@ class ImageFilter(val filterDescriptionPath: String = "") {
         add: Float,
         alphaR: Float = 1.0f, alphaG: Float = 1.0f, alphaB: Float = 1.0f
     ) {
-        val addInt = (add * 255f).toInt()
+        val scaledOffset = (add * 255f).toInt()
         val alphas = floatArrayOf(alphaR, alphaG, alphaB)
         val c = image.components
         var i = 0
         while (i < image.data.size) {
             for (ch in 0 until minOf(c, 3)) {
                 val orig = image.data[i + ch].toInt() and 0xFF
-                image.data[i + ch] = (orig + alphas[ch] * addInt).toInt().coerceIn(0, 255).toByte()
+                image.data[i + ch] = (orig + alphas[ch] * scaledOffset).toInt().coerceIn(0, 255).toByte()
             }
             i += c
         }
@@ -531,12 +531,15 @@ class ImageFilter(val filterDescriptionPath: String = "") {
         val totalPixels = image.width * image.height
         val alphas = floatArrayOf(alphaR, alphaG, alphaB)
         val histos = arrayOf(histoRed!!, histoGreen!!, histoBlue!!)
+        val scale = if (nbClasses > 1) 255.0f / (nbClasses - 1) else 0f
         val luts = Array(3) { ch ->
             val histo = histos[ch]
             var cdf = 0
             IntArray(256) { v ->
                 cdf += histo[v]
-                floor(cdf.toFloat() / totalPixels.toFloat() * (nbClasses - 1)).toInt().coerceIn(0, nbClasses - 1)
+                val classIdx = floor(cdf.toFloat() / totalPixels.toFloat() * (nbClasses - 1)).toInt()
+                    .coerceIn(0, nbClasses - 1)
+                (classIdx * scale).toInt().coerceIn(0, 255)
             }
         }
         val c = image.components

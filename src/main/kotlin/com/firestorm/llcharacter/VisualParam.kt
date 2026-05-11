@@ -1,5 +1,7 @@
 package com.firestorm.llcharacter
 
+import com.firestorm.llxml.XmlNode
+
 const val MAX_TRANSMITTED_VISUAL_PARAMS = 255
 
 enum class Sex { FEMALE, MALE, BOTH }
@@ -38,8 +40,27 @@ data class VisualParamInfo(
     var defaultWeight: Float = 0f,
     var sex: Sex = Sex.BOTH
 ) {
-    /** Parse attributes from an XML node (stubbed — requires XML tree support). */
-    fun parseXml(node: Any): Boolean = TODO("Wire to XML tree parser")
+    /** Parse attributes from an XML node. Accepts an [XmlNode]; returns false for other types. */
+    fun parseXml(node: Any): Boolean {
+        val n = node as? XmlNode ?: run {
+            System.err.println("VisualParamInfo.parseXml: expected XmlNode, got ${node::class.simpleName}")
+            return false
+        }
+        id            = n.getAttributeInt("id")            ?: id
+        name          = n.getAttributeString("name")       ?: name
+        displayName   = n.getAttributeString("label")      ?: displayName
+        minName       = n.getAttributeString("label_min")  ?: minName
+        maxName       = n.getAttributeString("label_max")  ?: maxName
+        minWeight     = n.getAttributeFloat("min")         ?: minWeight
+        maxWeight     = n.getAttributeFloat("max")         ?: maxWeight
+        defaultWeight = n.getAttributeFloat("default")     ?: defaultWeight
+        sex = when (n.getAttributeString("sex")?.lowercase()) {
+            "female" -> Sex.FEMALE
+            "male"   -> Sex.MALE
+            else     -> Sex.BOTH
+        }
+        return true
+    }
 }
 
 /**

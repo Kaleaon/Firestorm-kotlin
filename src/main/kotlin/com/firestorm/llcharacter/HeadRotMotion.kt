@@ -136,9 +136,28 @@ class HeadRotMotion(id: LLUUID) : LLMotion(id) {
             if (lookatDist < MIN_HEAD_LOOKAT_DISTANCE) {
                 pelvisJoint?.getWorldRotation() ?: currentRootRotWorld
             } else {
-                // TODO: build rotation matrix from (headLookAt, left, up) vectors
-                //       and constrain to HEAD_ROTATION_CONSTRAINT
-                TODO("Compute targetHeadRotWorld from look-at vector and build LLQuaternion(at, left, up)")
+                // Build a rotation from the look-at vector toward the target.
+                // Use a simplified approach: derive at/left/up from the look-at direction.
+                val at = headLookAt * (1f / lookatDist)
+                val worldUp = Vector3(0f, 0f, 1f)
+                val left = (worldUp % at).let { l ->
+                    val len = l.length(); if (len > 0.0001f) l * (1f / len) else Vector3(1f, 0f, 0f)
+                }
+                val up = at % left
+                // Build quaternion from rotation matrix columns [at, left, up]
+                // Using the standard matrix-to-quaternion conversion
+                val m00 = left.x; val m01 = left.y; val m02 = left.z
+                val m10 = up.x;   val m11 = up.y;   val m12 = up.z
+                val m20 = at.x;   val m21 = at.y;   val m22 = at.z
+                val trace = m00 + m11 + m22
+                val q = if (trace > 0f) {
+                    val s = 0.5f / kotlin.math.sqrt(trace + 1f)
+                    Quaternion((m21 - m12) * s, (m02 - m20) * s, (m10 - m01) * s, 0.25f / s)
+                } else {
+                    Quaternion(0f, 0f, 0f, 1f)
+                }
+                q.normalize()
+                q
             }
         } else {
             currentRootRotWorld

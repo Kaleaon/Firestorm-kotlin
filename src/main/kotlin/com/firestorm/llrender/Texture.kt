@@ -59,8 +59,20 @@ class Texture(
     fun isValid(): Boolean = textureId != LLUUID.NULL && width > 0 && height > 0
     fun isMissingAsset(): Boolean = missingAsset
 
-    fun bind(stage: Int) { TODO("Bind GL texture to texture unit $stage") }
-    fun unbind(stage: Int) { TODO("Unbind GL texture from texture unit $stage") }
+    /** GL texture name; assigned when the asset is uploaded. */
+    var glName: Int = 0
+
+    fun bind(stage: Int) {
+        val gl = GpuBackend.current
+        gl.activeTexture(GL.TEXTURE0 + stage)
+        gl.bindTexture(GL.TEXTURE_2D, glName)
+    }
+
+    fun unbind(stage: Int) {
+        val gl = GpuBackend.current
+        gl.activeTexture(GL.TEXTURE0 + stage)
+        gl.bindTexture(GL.TEXTURE_2D, 0)
+    }
 
     fun getWidth(discard: Int = 0): Int =
         if (discard <= 0) width else discardWidths.getOrDefault(discard, width shr discard)

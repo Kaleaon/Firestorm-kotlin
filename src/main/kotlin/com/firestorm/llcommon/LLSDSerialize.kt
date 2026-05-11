@@ -479,7 +479,7 @@ object LLSDSerialize {
         }
     }
 
-    
+
 
     private fun mapEntries(value: Map<String, LLSD>, canonical: Boolean): Map<String, LLSD> =
         if (canonical) value.toSortedMap() else value

@@ -2,6 +2,9 @@ package com.firestorm.llrender
 
 import java.util.TreeMap
 import java.util.UUID
+import java.security.MessageDigest
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
 
 data class Vector4(val x: Float, val y: Float, val z: Float, val w: Float) {
     constructor(v: FloatArray) : this(v[0], v[1], v[2], v[3])
@@ -117,7 +120,10 @@ class GLSLShader {
 
         val instances: MutableSet<GLSLShader> = mutableSetOf()
         var profileEnabled: Boolean = false
-        var canProfile: Boolean = true
+        // canProfile is set to true at runtime only when the GL backend confirms
+        // GL_EXT_disjoint_timer_query support; default is false to prevent
+        // glBeginQuery(GL_TIME_ELAPSED) silently failing with GL_INVALID_ENUM.
+        var canProfile: Boolean = false
 
         var curBoundShader: UInt = 0u
         var curBoundShaderPtr: GLSLShader? = null
@@ -178,7 +184,9 @@ class GLSLShader {
         }
 
         fun unbind() {
-            TODO("GPU: glUseProgram(0); clear curBoundShader and curBoundShaderPtr")
+            GpuBackend.current.useProgram(0)
+            curBoundShader = 0u
+            curBoundShaderPtr = null
         }
     }
 
@@ -219,6 +227,8 @@ class GLSLShader {
     val matHash: UIntArray = UIntArray(8) { 0xFFFFFFFFu }
     var lightHash: UInt = 0xFFFFFFFFu
 
+    private val attachedObjects: MutableSet<UInt> = mutableSetOf()
+
     fun unload() {
         shaderFiles.clear()
         defines.clear()
@@ -231,14 +241,21 @@ class GLSLShader {
         attribute.clear()
         texture.clear()
         uniform.clear()
+        val gl = GpuBackend.current
         if (programObject != 0u) {
-            TODO("GPU: detach and delete all attached shader objects, then glDeleteProgram(programObject)")
+            for (obj in attachedObjects.toList()) {
+                gl.detachShader(programObject.toInt(), obj.toInt())
+                gl.deleteShader(obj.toInt())
+            }
+            attachedObjects.clear()
+            gl.deleteProgram(programObject.toInt())
             programObject = 0u
         }
         if (timerQuery != 0u) {
-            TODO("GPU: glDeleteQueries for timerQuery, samplesQuery")
+            gl.deleteQueries(intArrayOf(timerQuery.toInt(), samplesQuery.toInt(), primitivesQuery.toInt()))
             timerQuery = 0u
             samplesQuery = 0u
+            primitivesQuery = 0u
         }
     }
 
@@ -250,22 +267,71 @@ class GLSLShader {
 
         check(shaderFiles.isNotEmpty()) { "shaderFiles must not be empty" }
 
-        TODO("GPU: glCreateProgram; load/compile shader files; attachShaderFeatures; mapAttributes; mapUniforms; handle indexed texture channels")
+        val gl = GpuBackend.current
+        programObject = gl.createProgram().toUInt()
+        check(programObject != 0u) { "glCreateProgram failed" }
+
+        // Populate feature-derived #defines into this.defines BEFORE compiling
+        // shader stages so the preamble injected by compileShaderFile picks them up.
+        ShaderMgr.instance?.attachShaderFeatures(toGlslShader())
+
+        for ((file, type) in shaderFiles) {
+            val ok = when (type) {
+                GL.VERTEX_SHADER -> attachVertexObject(file)
+                GL.FRAGMENT_SHADER -> attachFragmentObject(file)
+                GL.GEOMETRY_SHADER -> attachGeometryObject(file)
+                else -> false
+            }
+            if (!ok) return false
+        }
+
+        if (!mapAttributes()) return false
+        if (!link()) return false
+        if (!mapUniforms()) return false
+
+        return true
+    }
+
+    private fun toGlslShader(): GlslShader {
+        val s = GlslShader()
+        s.name = name
+        s.programObject = programObject
+        s.riggedVariant = null
+        // Share map and features references so mutations from attachShaderFeatures
+        // and updateShaderUniforms are reflected back into this GLSLShader.
+        s.features = features
+        s.defines = defines
+        return s
     }
 
     fun attachVertexObject(objectPath: String): Boolean {
-        TODO("GPU: glAttachShader for vertex shader object at $objectPath")
+        val handle = ShaderMgr.compileShaderFile(objectPath, GL.VERTEX_SHADER, defines)
+        if (handle == 0u) return false
+        attachObject(handle)
+        return true
     }
 
     fun attachFragmentObject(objectPath: String): Boolean {
         if (usingBinaryProgram) return true
-        TODO("GPU: glAttachShader for fragment shader object at $objectPath")
+        val handle = ShaderMgr.compileShaderFile(objectPath, GL.FRAGMENT_SHADER, defines)
+        if (handle == 0u) return false
+        attachObject(handle)
+        return true
+    }
+
+    fun attachGeometryObject(objectPath: String): Boolean {
+        if (usingBinaryProgram) return true
+        val handle = ShaderMgr.compileShaderFile(objectPath, GL.GEOMETRY_SHADER, defines)
+        if (handle == 0u) return false
+        attachObject(handle)
+        return true
     }
 
     fun attachObject(objectHandle: UInt) {
         if (usingBinaryProgram) return
         if (objectHandle != 0u) {
-            TODO("GPU: glAttachShader(programObject, $objectHandle)")
+            GpuBackend.current.attachShader(programObject.toInt(), objectHandle.toInt())
+            attachedObjects.add(objectHandle)
         }
     }
 
@@ -275,33 +341,62 @@ class GLSLShader {
     }
 
     fun mapAttributes(): Boolean {
-        TODO("GPU: glBindAttribLocation for reserved attribs; link(); glGetAttribLocation readback")
+        val gl = GpuBackend.current
+        val mgr = ShaderMgr.instance ?: return true
+        attribute.clear()
+        for ((idx, attrName) in mgr.reservedAttribs.withIndex()) {
+            gl.bindAttribLocation(programObject.toInt(), idx, attrName)
+        }
+        if (!link()) return false
+        for (attrName in mgr.reservedAttribs) {
+            attribute.add(gl.getAttribLocation(programObject.toInt(), attrName))
+        }
+        return true
     }
 
     fun mapUniform(index: Int) {
-        TODO("GPU: glGetActiveUniform; accumulate totalUniformSize; glGetUniformLocation; map into uniformMap and uniform list")
+        val gl = GpuBackend.current
+        val au = gl.getActiveUniform(programObject.toInt(), index)
+        totalUniformSize += au.size
+        val location = gl.getUniformLocation(programObject.toInt(), au.name)
+        uniformMap[au.name] = location
+        uniform.add(location)
+        // Treat sampler-typed uniforms as texture channels.
+        mapUniformTextureChannel(location, au.type, au.size)
     }
 
     fun mapUniforms(): Boolean {
-        TODO("GPU: glGetProgramiv GL_ACTIVE_UNIFORMS; handle diffuseMap ordering; call mapUniform for each; set up UBO bindings via glUniformBlockBinding")
+        val gl = GpuBackend.current
+        uniform.clear()
+        uniformMap.clear()
+        texture.clear()
+        val count = gl.getActiveUniformCount(programObject.toInt())
+        repeat(count) { mapUniform(it) }
+        // Bind UBOs that are present in the program.
+        UniformBlock.values().forEach { block ->
+            val idx = gl.getUniformBlockIndex(programObject.toInt(), block.name.lowercase())
+            if (idx >= 0) gl.uniformBlockBinding(programObject.toInt(), idx, block.id)
+        }
+        return true
     }
 
     fun link(suppressErrors: Boolean = false): Boolean {
-        TODO("GPU: ShaderMgr.linkProgramObject(programObject, suppressErrors)")
+        return ShaderMgr.linkProgramObject(programObject, suppressErrors)
     }
 
     fun bind() {
         check(programObject != 0u) { "shader not loaded" }
+        val gl = GpuBackend.current
         if (curBoundShader != programObject) {
             curBoundShaderPtr?.readProfileQuery()
-            TODO("GPU: LLVertexBuffer.unbind(); glUseProgram(programObject)")
+            gl.useProgram(programObject.toInt())
             curBoundShader = programObject
             curBoundShaderPtr = this
             placeProfileQuery()
-            TODO("GPU: LLVertexBuffer.setupClientArrays(attributeMask)")
+            binds++
         }
         if (uniformsDirty) {
-            TODO("GPU: ShaderMgr.updateShaderUniforms(this)")
+            ShaderMgr.instance?.updateShaderUniforms(toGlslShader())
             uniformsDirty = false
         }
     }
@@ -321,13 +416,39 @@ class GLSLShader {
     }
 
     fun unbind() {
-        TODO("GPU: flush; LLVertexBuffer.unbind(); readProfileQuery; glUseProgram(0); clear curBoundShader/Ptr")
+        readProfileQuery()
+        GpuBackend.current.useProgram(0)
+        curBoundShader = 0u
+        curBoundShaderPtr = null
     }
 
     fun isComplete(): Boolean = programObject != 0u
 
     fun hash(): UUID {
-        TODO("GPU: compute xxHash128 over name, shaderGroup, shaderLevel, shaderFiles, defines, globalDefines, features, GL vendor/renderer/version strings")
+        // SHA-256 over the salient inputs, truncated to 128 bits. Identical
+        // inputs always yield the same UUID, so callers can use this for cache
+        // keys (binary shader cache, debug log correlation, etc.).
+        val md = MessageDigest.getInstance("SHA-256")
+        fun feed(s: String) {
+            val b = s.toByteArray(Charsets.UTF_8)
+            md.update(ByteBuffer.allocate(4).order(ByteOrder.BIG_ENDIAN).putInt(b.size).array())
+            md.update(b)
+        }
+        feed(name)
+        feed(shaderGroup.name)
+        feed(shaderLevel.toString())
+        for ((file, type) in shaderFiles) { feed(file); feed(type.toString()) }
+        defines.forEach { (k, v) -> feed(k); feed(v) }
+        globalDefines.forEach { (k, v) -> feed(k); feed(v) }
+        feed(features.toString())
+        feed(GpuBackend.current.vendor())
+        feed(GpuBackend.current.renderer())
+        feed(GpuBackend.current.versionString())
+        val digest = md.digest()
+        val msb = ByteBuffer.wrap(digest, 0, 8).order(ByteOrder.BIG_ENDIAN).long
+        val lsb = ByteBuffer.wrap(digest, 8, 8).order(ByteOrder.BIG_ENDIAN).long
+        shaderHash = UUID(msb, lsb)
+        return shaderHash
     }
 
     fun clearPermutations() {
@@ -362,7 +483,20 @@ class GLSLShader {
         if (attrib < attribute.size.toUInt()) attribute[attrib.toInt()] else -1
 
     fun mapUniformTextureChannel(location: Int, type: Int, size: Int): Int {
-        TODO("GPU: check if type is a sampler type; assign texture channels via glUniform1i/glUniform1iv")
+        val isSampler = type == GL.SAMPLER_2D || type == GL.SAMPLER_3D ||
+            type == GL.SAMPLER_CUBE || type == GL.SAMPLER_2D_ARRAY ||
+            type == GL.SAMPLER_CUBE_MAP_ARRAY || type == GL.SAMPLER_2D_SHADOW
+        if (!isSampler) return -1
+        val channel = activeTextureChannels
+        if (size > 1) {
+            val channels = IntArray(size) { channel + it }
+            GpuBackend.current.uniform1iv(location, size, channels)
+        } else {
+            GpuBackend.current.uniform1i(location, channel)
+        }
+        texture.add(channel)
+        activeTextureChannels += size
+        return channel
     }
 
     fun getTextureChannel(uniformIndex: Int): Int = texture[uniformIndex]
@@ -371,7 +505,7 @@ class GLSLShader {
         if (uniformIndex < 0 || uniformIndex >= texture.size) return -1
         val index = texture[uniformIndex]
         if (index != -1) {
-            TODO("GPU: gGL.getTexUnit(index).activate(); enable(mode)")
+            GpuBackend.current.activeTexture(GL.TEXTURE0 + index)
         }
         return index
     }
@@ -380,7 +514,10 @@ class GLSLShader {
         if (uniformIndex < 0 || uniformIndex >= texture.size) return -1
         val index = texture[uniformIndex]
         if (index < 0) return index
-        TODO("GPU: gGL.getTexUnit(index) disable if active and type matches mode")
+        val gl = GpuBackend.current
+        gl.activeTexture(GL.TEXTURE0 + index)
+        gl.bindTexture(GL.TEXTURE_2D, 0)
+        return index
     }
 
     fun bindTexture(uniformName: String, textureName: UInt, mode: Int = 0): Int {
@@ -392,7 +529,9 @@ class GLSLShader {
         if (uniformIndex < 0 || uniformIndex >= texture.size) return -1
         val channel = texture[uniformIndex]
         if (channel > -1) {
-            TODO("GPU: gGL.getTexUnit(channel).bindFast(textureName)")
+            val gl = GpuBackend.current
+            gl.activeTexture(GL.TEXTURE0 + channel)
+            gl.bindTexture(GL.TEXTURE_2D, textureName.toInt())
         }
         return channel
     }
@@ -406,24 +545,51 @@ class GLSLShader {
         if (uniformIndex < 0 || uniformIndex >= texture.size) return -1
         val channel = texture[uniformIndex]
         if (channel > -1) {
-            TODO("GPU: gGL.getTexUnit(channel).unbindFast(mode)")
+            val gl = GpuBackend.current
+            gl.activeTexture(GL.TEXTURE0 + channel)
+            gl.bindTexture(GL.TEXTURE_2D, 0)
         }
         return channel
     }
 
     fun setMinimumAlpha(minimum: Float) {
-        TODO("GPU: flush gGL; uniform1f(MINIMUM_ALPHA index, minimum)")
+        val loc = uniformMap["minimum_alpha"] ?: return
+        GpuBackend.current.uniform1f(loc, minimum)
     }
 
     fun placeProfileQuery(forRuntime: Boolean = false) {
-        if (profileEnabled || forRuntime) {
-            TODO("GPU: glGenQueries if needed; glBeginQuery(GL_TIME_ELAPSED, timerQuery); optionally GL_SAMPLES_PASSED, GL_PRIMITIVES_GENERATED")
+        if (!(profileEnabled || forRuntime)) return
+        val gl = GpuBackend.current
+        if (timerQuery == 0u) {
+            val handles = gl.genQueries(3)
+            timerQuery = handles[0].toUInt()
+            samplesQuery = handles[1].toUInt()
+            primitivesQuery = handles[2].toUInt()
         }
+        gl.beginQuery(GL.TIME_ELAPSED, timerQuery.toInt())
+        gl.beginQuery(GL.SAMPLES_PASSED, samplesQuery.toInt())
+        gl.beginQuery(GL.PRIMITIVES_GENERATED, primitivesQuery.toInt())
+        profilePending = true
     }
 
     fun readProfileQuery(forRuntime: Boolean = false, forceRead: Boolean = false): Boolean {
+        if (!profilePending) return true
         if ((profileEnabled || forRuntime) && canProfile) {
-            TODO("GPU: glEndQuery; glGetQueryObjectui64v; accumulate timeElapsed, samplesDrawn, trianglesDrawn; update totals")
+            val gl = GpuBackend.current
+            gl.endQuery(GL.TIME_ELAPSED)
+            gl.endQuery(GL.SAMPLES_PASSED)
+            gl.endQuery(GL.PRIMITIVES_GENERATED)
+            val time = gl.getQueryObjectui64(timerQuery.toInt())
+            val samples = gl.getQueryObjectui64(samplesQuery.toInt())
+            val prims = gl.getQueryObjectui64(primitivesQuery.toInt())
+            timeElapsed += time.toULong()
+            samplesDrawn += samples.toULong()
+            trianglesDrawn += prims.toUInt()
+            totalTimeElapsed += time.toULong()
+            totalSamplesDrawn += samples.toULong()
+            totalTrianglesDrawn += prims.toUInt()
+            totalBinds++
+            profilePending = false
         }
         return true
     }
@@ -440,7 +606,6 @@ class GLSLShader {
         result["name"] = name
         result["files"] = shaderFiles.map { it.first }
         val mega = 1_000_000f
-        val giga = 1_000_000_000.0
         val ms = timeElapsed.toFloat() / mega
         val seconds = ms / 1000f
         result["time"] = seconds.toDouble()
@@ -463,7 +628,7 @@ class GLSLShader {
         if (loc >= 0) {
             val cached = value[loc]
             if (cached == null || cached.x != v.toFloat()) {
-                TODO("GPU: glUniform1i($loc, $v)")
+                GpuBackend.current.uniform1i(loc, v)
                 value[loc] = Vector4(v.toFloat(), 0f, 0f, 0f)
             }
         }
@@ -474,7 +639,7 @@ class GLSLShader {
         if (loc >= 0) {
             val cached = value[loc]
             if (cached == null || cached.x != v) {
-                TODO("GPU: glUniform1f($loc, $v)")
+                GpuBackend.current.uniform1f(loc, v)
                 value[loc] = Vector4(v, 0f, 0f, 0f)
             }
         }
@@ -482,7 +647,7 @@ class GLSLShader {
 
     fun fastUniform1f(index: UInt, v: Float) {
         val loc = uniform[index.toInt()]
-        TODO("GPU: glUniform1f($loc, $v) — no caching check, hot path")
+        GpuBackend.current.uniform1f(loc, v)
     }
 
     fun uniform2f(index: UInt, x: Float, y: Float) {
@@ -490,7 +655,7 @@ class GLSLShader {
         if (loc >= 0) {
             val vec = Vector4(x, y, 0f, 0f)
             if (value[loc] != vec) {
-                TODO("GPU: glUniform2f($loc, $x, $y)")
+                GpuBackend.current.uniform2f(loc, x, y)
                 value[loc] = vec
             }
         }
@@ -501,7 +666,7 @@ class GLSLShader {
         if (loc >= 0) {
             val vec = Vector4(x, y, z, 0f)
             if (value[loc] != vec) {
-                TODO("GPU: glUniform3f($loc, $x, $y, $z)")
+                GpuBackend.current.uniform3f(loc, x, y, z)
                 value[loc] = vec
             }
         }
@@ -512,7 +677,7 @@ class GLSLShader {
         if (loc >= 0) {
             val vec = Vector4(x, y, z, w)
             if (value[loc] != vec) {
-                TODO("GPU: glUniform4f($loc, $x, $y, $z, $w)")
+                GpuBackend.current.uniform4f(loc, x, y, z, w)
                 value[loc] = vec
             }
         }
@@ -523,7 +688,7 @@ class GLSLShader {
         if (loc >= 0) {
             val vec = Vector4(v[0].toFloat(), 0f, 0f, 0f)
             if (value[loc] != vec || count != 1u) {
-                TODO("GPU: glUniform1iv($loc, $count, v)")
+                GpuBackend.current.uniform1iv(loc, count.toInt(), v)
                 value[loc] = vec
             }
         }
@@ -534,7 +699,7 @@ class GLSLShader {
         if (loc >= 0) {
             val vec = Vector4(v[0].toFloat(), v[1].toFloat(), v[2].toFloat(), v[3].toFloat())
             if (value[loc] != vec || count != 1u) {
-                TODO("GPU: glUniform4iv($loc, $count, v)")
+                GpuBackend.current.uniform4iv(loc, count.toInt(), v)
                 value[loc] = vec
             }
         }
@@ -545,7 +710,7 @@ class GLSLShader {
         if (loc >= 0) {
             val vec = Vector4(v[0], 0f, 0f, 0f)
             if (value[loc] != vec || count != 1u) {
-                TODO("GPU: glUniform1fv($loc, $count, v)")
+                GpuBackend.current.uniform1fv(loc, count.toInt(), v)
                 value[loc] = vec
             }
         }
@@ -556,7 +721,7 @@ class GLSLShader {
         if (loc >= 0) {
             val vec = Vector4(v[0], v[1], 0f, 0f)
             if (value[loc] != vec || count != 1u) {
-                TODO("GPU: glUniform2fv($loc, $count, v)")
+                GpuBackend.current.uniform2fv(loc, count.toInt(), v)
                 value[loc] = vec
             }
         }
@@ -567,7 +732,7 @@ class GLSLShader {
         if (loc >= 0) {
             val vec = Vector4(v[0], v[1], v[2], 0f)
             if (value[loc] != vec || count != 1u) {
-                TODO("GPU: glUniform3fv($loc, $count, v)")
+                GpuBackend.current.uniform3fv(loc, count.toInt(), v)
                 value[loc] = vec
             }
         }
@@ -578,7 +743,7 @@ class GLSLShader {
         if (loc >= 0) {
             val vec = Vector4(v[0], v[1], v[2], v[3])
             if (value[loc] != vec || count != 1u) {
-                TODO("GPU: glUniform4fv($loc, $count, v)")
+                GpuBackend.current.uniform4fv(loc, count.toInt(), v)
                 value[loc] = vec
             }
         }
@@ -589,7 +754,7 @@ class GLSLShader {
         if (loc >= 0) {
             val vec = Vector4(v[0].toFloat(), v[1].toFloat(), v[2].toFloat(), v[3].toFloat())
             if (value[loc] != vec || count != 1u) {
-                TODO("GPU: glUniform4uiv($loc, $count, v)")
+                GpuBackend.current.uniform4uiv(loc, count.toInt(), v.toIntArrayUnsigned())
                 value[loc] = vec
             }
         }
@@ -597,22 +762,22 @@ class GLSLShader {
 
     fun uniformMatrix2fv(index: UInt, count: UInt, transpose: Boolean, v: FloatArray) {
         val loc = resolvedLocation(index)
-        if (loc >= 0) TODO("GPU: glUniformMatrix2fv($loc, $count, $transpose, v)")
+        if (loc >= 0) GpuBackend.current.uniformMatrix2fv(loc, count.toInt(), transpose, v)
     }
 
     fun uniformMatrix3fv(index: UInt, count: UInt, transpose: Boolean, v: FloatArray) {
         val loc = resolvedLocation(index)
-        if (loc >= 0) TODO("GPU: glUniformMatrix3fv($loc, $count, $transpose, v)")
+        if (loc >= 0) GpuBackend.current.uniformMatrix3fv(loc, count.toInt(), transpose, v)
     }
 
     fun uniformMatrix3x4fv(index: UInt, count: UInt, transpose: Boolean, v: FloatArray) {
         val loc = resolvedLocation(index)
-        if (loc >= 0) TODO("GPU: glUniformMatrix3x4fv($loc, $count, $transpose, v)")
+        if (loc >= 0) GpuBackend.current.uniformMatrix3x4fv(loc, count.toInt(), transpose, v)
     }
 
     fun uniformMatrix4fv(index: UInt, count: UInt, transpose: Boolean, v: FloatArray) {
         val loc = resolvedLocation(index)
-        if (loc >= 0) TODO("GPU: glUniformMatrix4fv($loc, $count, $transpose, v)")
+        if (loc >= 0) GpuBackend.current.uniformMatrix4fv(loc, count.toInt(), transpose, v)
     }
 
     // --- Named-uniform overloads ---
@@ -622,7 +787,7 @@ class GLSLShader {
         if (loc >= 0) {
             val vec = Vector4(v.toFloat(), 0f, 0f, 0f)
             if (value[loc] != vec) {
-                TODO("GPU: glUniform1i($loc, $v)")
+                GpuBackend.current.uniform1i(loc, v)
                 value[loc] = vec
             }
         }
@@ -633,7 +798,7 @@ class GLSLShader {
         if (loc >= 0) {
             val vec = Vector4(i.toFloat(), j.toFloat(), 0f, 0f)
             if (value[loc] != vec) {
-                TODO("GPU: glUniform2i($loc, $i, $j)")
+                GpuBackend.current.uniform4iv(loc, 1, intArrayOf(i, j, 0, 0))
                 value[loc] = vec
             }
         }
@@ -644,7 +809,7 @@ class GLSLShader {
         if (loc >= 0) {
             val vec = Vector4(v[0].toFloat(), 0f, 0f, 0f)
             if (value[loc] != vec || count != 1u) {
-                TODO("GPU: glUniform1iv($loc, $count, v)")
+                GpuBackend.current.uniform1iv(loc, count.toInt(), v)
                 value[loc] = vec
             }
         }
@@ -655,7 +820,7 @@ class GLSLShader {
         if (loc >= 0) {
             val vec = Vector4(v[0].toFloat(), v[1].toFloat(), v[2].toFloat(), v[3].toFloat())
             if (value[loc] != vec || count != 1u) {
-                TODO("GPU: glUniform4iv($loc, $count, v)")
+                GpuBackend.current.uniform4iv(loc, count.toInt(), v)
                 value[loc] = vec
             }
         }
@@ -666,7 +831,7 @@ class GLSLShader {
         if (loc >= 0) {
             val vec = Vector4(v, 0f, 0f, 0f)
             if (value[loc] != vec) {
-                TODO("GPU: glUniform1f($loc, $v)")
+                GpuBackend.current.uniform1f(loc, v)
                 value[loc] = vec
             }
         }
@@ -677,7 +842,7 @@ class GLSLShader {
         if (loc >= 0) {
             val vec = Vector4(x, y, 0f, 0f)
             if (value[loc] != vec) {
-                TODO("GPU: glUniform2f($loc, $x, $y)")
+                GpuBackend.current.uniform2f(loc, x, y)
                 value[loc] = vec
             }
         }
@@ -688,7 +853,7 @@ class GLSLShader {
         if (loc >= 0) {
             val vec = Vector4(x, y, z, 0f)
             if (value[loc] != vec) {
-                TODO("GPU: glUniform3f($loc, $x, $y, $z)")
+                GpuBackend.current.uniform3f(loc, x, y, z)
                 value[loc] = vec
             }
         }
@@ -699,7 +864,7 @@ class GLSLShader {
         if (loc >= 0) {
             val vec = Vector4(x, y, z, w)
             if (value[loc] != vec) {
-                TODO("GPU: glUniform4f($loc, $x, $y, $z, $w)")
+                GpuBackend.current.uniform4f(loc, x, y, z, w)
                 value[loc] = vec
             }
         }
@@ -710,7 +875,7 @@ class GLSLShader {
         if (loc >= 0) {
             val vec = Vector4(v[0], 0f, 0f, 0f)
             if (value[loc] != vec || count != 1u) {
-                TODO("GPU: glUniform1fv($loc, $count, v)")
+                GpuBackend.current.uniform1fv(loc, count.toInt(), v)
                 value[loc] = vec
             }
         }
@@ -721,7 +886,7 @@ class GLSLShader {
         if (loc >= 0) {
             val vec = Vector4(v[0], v[1], 0f, 0f)
             if (value[loc] != vec || count != 1u) {
-                TODO("GPU: glUniform2fv($loc, $count, v)")
+                GpuBackend.current.uniform2fv(loc, count.toInt(), v)
                 value[loc] = vec
             }
         }
@@ -732,7 +897,7 @@ class GLSLShader {
         if (loc >= 0) {
             val vec = Vector4(v[0], v[1], v[2], 0f)
             if (value[loc] != vec || count != 1u) {
-                TODO("GPU: glUniform3fv($loc, $count, v)")
+                GpuBackend.current.uniform3fv(loc, count.toInt(), v)
                 value[loc] = vec
             }
         }
@@ -743,7 +908,7 @@ class GLSLShader {
         if (loc >= 0) {
             val vec = Vector4(v[0], v[1], v[2], v[3])
             if (value[loc] != vec || count != 1u) {
-                TODO("GPU: glUniform4fv($loc, $count, v)")
+                GpuBackend.current.uniform4fv(loc, count.toInt(), v)
                 value[loc] = vec
             }
         }
@@ -754,7 +919,7 @@ class GLSLShader {
         if (loc >= 0) {
             val vec = Vector4(v[0].toFloat(), v[1].toFloat(), v[2].toFloat(), v[3].toFloat())
             if (value[loc] != vec || count != 1u) {
-                TODO("GPU: glUniform4uiv($loc, $count, v)")
+                GpuBackend.current.uniform4uiv(loc, count.toInt(), v.toIntArrayUnsigned())
                 value[loc] = vec
             }
         }
@@ -763,22 +928,24 @@ class GLSLShader {
     fun uniformMatrix4fv(uniformName: String, count: UInt, transpose: Boolean, v: FloatArray) {
         val loc = getUniformLocation(uniformName)
         if (loc >= 0) {
-            TODO("GPU: glUniformMatrix4fv($loc, $count, $transpose, v)")
+            GpuBackend.current.uniformMatrix4fv(loc, count.toInt(), transpose, v)
         }
     }
 
     fun vertexAttrib4f(index: UInt, x: Float, y: Float, z: Float, w: Float) {
         if (attribute[index.toInt()] > 0) {
-            TODO("GPU: glVertexAttrib4f(${attribute[index.toInt()]}, $x, $y, $z, $w)")
+            GpuBackend.current.vertexAttrib4f(attribute[index.toInt()], x, y, z, w)
         }
     }
 
     fun vertexAttrib4fv(index: UInt, v: FloatArray) {
         if (attribute[index.toInt()] > 0) {
-            TODO("GPU: glVertexAttrib4fv(${attribute[index.toInt()]}, v)")
+            GpuBackend.current.vertexAttrib4fv(attribute[index.toInt()], v)
         }
     }
 }
+
+private fun UIntArray.toIntArrayUnsigned(): IntArray = IntArray(size) { this[it].toInt() }
 
 val gUiProgram = GLSLShader()
 val gSolidColorProgram = GLSLShader()

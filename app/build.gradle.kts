@@ -39,6 +39,19 @@ android {
     buildFeatures {
         viewBinding = true
     }
+
+    // The pure-Kotlin renderer + math libraries live at the repository root.
+    // They are not yet broken out into a Gradle module, so we pull them into
+    // the Android compilation as additional source roots. Keep this list
+    // tight — every directory added here must compile cleanly against the
+    // Android classpath.
+    sourceSets.getByName("main") {
+        java.srcDirs(
+            "../src/main/kotlin/com/firestorm/llrender",
+            "../src/main/kotlin/com/firestorm/llmath",
+            "../src/main/kotlin/com/firestorm/llcommon"
+        )
+    }
 }
 
 dependencies {

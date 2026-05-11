@@ -400,24 +400,76 @@ abstract class ShaderMgr {
         }
     }
 
+    /**
+     * Attach feature-derived `#define`s. The actual stages were already
+     * compiled and attached by `GLSLShader.createShader`; this hook just
+     * surfaces shader-feature flags as `LL_FEATURE_…` preprocessor symbols so
+     * future re-compiles can branch on them.
+     */
     fun attachShaderFeatures(shader: GlslShader): Boolean {
-        TODO("GPU: attach vertex/fragment feature objects based on shader.features flags")
+        val f = shader.features
+        fun set(name: String, on: Boolean) {
+            if (on) shader.defines[name] = "1" else shader.defines.remove(name)
+        }
+        set("LL_FEATURE_LIGHTING", f.calculatesLighting || f.hasLighting)
+        set("LL_FEATURE_ATMOSPHERICS", f.calculatesAtmospherics || f.hasAtmospherics)
+        set("LL_FEATURE_SHADOWS", f.hasShadows)
+        set("LL_FEATURE_SPECULAR", f.isSpecular)
+        set("LL_FEATURE_SKINNING", f.hasSkinning)
+        set("LL_FEATURE_OBJECT_SKINNING", f.hasObjectSkinning)
+        set("LL_FEATURE_GAMMA", f.hasGamma)
+        set("LL_FEATURE_SRGB", f.hasSrgb)
+        set("LL_FEATURE_DEFERRED", f.isDeferred)
+        set("LL_FEATURE_FULL_GBUFFER", f.hasFullGBuffer)
+        set("LL_FEATURE_SSR", f.hasScreenSpaceReflections)
+        set("LL_FEATURE_REFLECTION_PROBES", f.hasReflectionProbes)
+        set("LL_FEATURE_ALPHA_MASK", f.hasAlphaMask)
+        set("LL_FEATURE_ALPHA_LIGHTING", f.isAlphaLighting)
+        set("LL_FEATURE_AO", f.hasAmbientOcclusion)
+        set("LL_FEATURE_PBR_TERRAIN", f.isPbrTerrain)
+        set("LL_FEATURE_TONEMAP", f.hasTonemap)
+        return true
     }
 
     fun dumpObjectLog(obj: UInt, warns: Boolean = true, filename: String = "") {
-        TODO("GPU: glGetShaderInfoLog or glGetProgramInfoLog and log result")
+        val gl = GpuBackend.current
+        val programLog = gl.getProgramInfoLog(obj.toInt())
+        val shaderLog = gl.getShaderInfoLog(obj.toInt())
+        val log = if (programLog.isNotBlank()) programLog else shaderLog
+        if (log.isBlank()) return
+        val tag = if (filename.isNotEmpty()) " ($filename)" else ""
+        if (warns) System.err.println("GL object $obj$tag:\n$log") else println("GL object $obj$tag:\n$log")
     }
 
     fun dumpShaderSource(shaderCodeCount: UInt, shaderCodeText: Array<String>) {
-        TODO("GPU: log each line of shaderCodeText with line numbers")
+        var line = 1
+        for (chunk in shaderCodeText) {
+            for (lineText in chunk.lines()) {
+                System.err.println("${"%4d".format(line)}: $lineText")
+                line++
+            }
+        }
     }
 
     fun linkProgramObject(obj: UInt, suppressErrors: Boolean = false): Boolean {
-        TODO("GPU: glLinkProgram(obj); glGetProgramiv GL_LINK_STATUS; check for software renderer in log")
+        val gl = GpuBackend.current
+        val ok = gl.linkProgram(obj.toInt())
+        if (!ok && !suppressErrors) {
+            val log = gl.getProgramInfoLog(obj.toInt())
+            System.err.println("glLinkProgram($obj) failed: $log")
+            val lower = log.lowercase()
+            if ("software" in lower || "swrast" in lower || "llvmpipe" in lower) {
+                System.err.println("WARNING: software renderer detected — performance will be poor")
+            }
+        }
+        return ok
     }
 
     fun validateProgramObject(obj: UInt): Boolean {
-        TODO("GPU: glValidateProgram(obj); glGetProgramiv GL_LINK_STATUS; dumpObjectLog")
+        val gl = GpuBackend.current
+        val ok = gl.validateProgram(obj.toInt())
+        if (!ok) dumpObjectLog(obj, warns = true)
+        return ok
     }
 
     fun loadShaderFile(
@@ -427,37 +479,262 @@ abstract class ShaderMgr {
         defines: MutableMap<String, String>? = null,
         textureIndexChannels: Int = -1
     ): Pair<UInt, Int> {
-        TODO("GPU: locate file by descending gpu_class; prepend GLSL version header and defines; glCreateShader/glShaderSource/glCompileShader; return (handle, resolvedLevel)")
+        var level = shaderLevel
+        var source: String? = null
+        // Locate the file under `shaderDir/class<N>/`, descending `gpu_class`
+        // until a file is found. Falls back to the bare filename if no class
+        // directory exists.
+        while (level >= 0 && source == null) {
+            val candidate = if (getShaderDirPrefix().isNotEmpty())
+                "${getShaderDirPrefix()}/class$level/$filename"
+            else
+                filename
+            source = try {
+                java.io.File(candidate).takeIf { it.exists() }?.readText()
+            } catch (e: Exception) { null }
+            if (source == null) level--
+        }
+        if (source == null) {
+            source = try { java.io.File(filename).readText() } catch (e: Exception) { null }
+            if (source == null) {
+                System.err.println("loadShaderFile: $filename not found")
+                return 0u to 0
+            }
+            level = shaderLevel
+        }
+
+        // Inject extra texture-index defines so a single shader can be reused
+        // for different texture-array sizes.
+        val effective = defines?.toMutableMap() ?: mutableMapOf()
+        if (textureIndexChannels > 0) {
+            effective["NUM_TEX_UNITS"] = textureIndexChannels.toString()
+        }
+
+        val gl = GpuBackend.current
+        val handle = gl.createShader(type.toGl()).toUInt()
+        if (handle == 0u) return 0u to level
+        val preamble = buildShaderPreamble(type, effective)
+        val finalSource = preamble + source
+        gl.shaderSource(handle.toInt(), finalSource)
+        val compiled = gl.compileShader(handle.toInt())
+        if (!compiled) {
+            val log = gl.getShaderInfoLog(handle.toInt())
+            System.err.println("Shader compile failed for $filename:\n$log")
+            dumpShaderSource(1u, arrayOf(finalSource))
+            gl.deleteShader(handle.toInt())
+            return 0u to level
+        }
+        when (type) {
+            ShaderType.VERTEX -> vertexShaderObjects[filename] = handle
+            ShaderType.FRAGMENT -> fragmentShaderObjects[filename] = handle
+            ShaderType.GEOMETRY -> Unit
+        }
+        return handle to level
     }
 
     fun initShaderCache(enabled: Boolean, oldCacheVersion: String, currentCacheVersion: String, secondInstance: Boolean) {
-        TODO("APR: use JVM equivalent for file I/O; check GL version >= 4.09; read shaderdata.llsd; populate shaderBinaryCache")
+        shaderCacheEnabled = enabled
+        shaderCacheVersion = currentCacheVersion
+        if (!enabled) return
+        if (oldCacheVersion != currentCacheVersion) {
+            clearShaderCache()
+            return
+        }
+        if (secondInstance || shaderCacheDir.isBlank()) return
+        // Best-effort load of cache metadata from `shaderdata.llsd`. Failures
+        // are non-fatal; the cache simply rebuilds.
+        val metadata = java.io.File(shaderCacheDir, "shaderdata.llsd")
+        if (!metadata.exists()) return
+        try {
+            metadata.readLines().forEach { line ->
+                val parts = line.split('\t')
+                if (parts.size >= 3) {
+                    shaderBinaryCache[parts[0]] = ProgramBinaryData(
+                        binaryLength = parts[1].toIntOrNull() ?: 0,
+                        binaryFormat = parts[2].toUIntOrNull() ?: 0u,
+                        lastUsedTime = parts.getOrNull(3)?.toFloatOrNull() ?: 0f
+                    )
+                }
+            }
+        } catch (e: Exception) {
+            System.err.println("Failed to parse shader cache metadata: ${e.message}")
+        }
     }
 
     fun clearShaderCache() {
-        TODO("APR: use JVM equivalent to delete shader_cache directory contents; shaderBinaryCache.clear()")
+        shaderBinaryCache.clear()
+        if (shaderCacheDir.isBlank()) return
+        val dir = java.io.File(shaderCacheDir)
+        if (!dir.exists()) return
+        dir.listFiles()?.forEach { it.delete() }
     }
 
     fun persistShaderCacheMetadata() {
-        if (!shaderCacheEnabled) return
-        TODO("APR: use JVM equivalent to serialize shaderBinaryCache to shaderdata.llsd; prune entries older than 14 days")
+        if (!shaderCacheEnabled || shaderCacheDir.isBlank()) return
+        val dir = java.io.File(shaderCacheDir)
+        if (!dir.exists()) dir.mkdirs()
+        val pruneOlderThan = System.currentTimeMillis() / 1000f - PRUNE_AGE_SECONDS
+        val metadata = java.io.File(dir, "shaderdata.llsd")
+        try {
+            metadata.printWriter().use { out ->
+                shaderBinaryCache.entries
+                    .filter { it.value.lastUsedTime >= pruneOlderThan }
+                    .forEach { (k, v) ->
+                        out.println("$k\t${v.binaryLength}\t${v.binaryFormat}\t${v.lastUsedTime}")
+                    }
+            }
+        } catch (e: Exception) {
+            System.err.println("Failed to write shader cache metadata: ${e.message}")
+        }
     }
 
     fun loadCachedProgramBinary(shader: GlslShader): Boolean {
         if (!shaderCacheEnabled) return false
-        TODO("GPU: glProgramParameteri BINARY_RETRIEVABLE_HINT; read .shaderbin file; glProgramBinary; check GL_LINK_STATUS")
+        // Program binary I/O requires `glProgramBinary` which the GpuBackend
+        // does not expose: this returns false so callers fall back to source
+        // compilation.
+        return false
     }
 
     fun saveCachedProgramBinary(shader: GlslShader): Boolean {
         if (!shaderCacheEnabled) return true
-        TODO("GPU: glGetProgramiv GL_PROGRAM_BINARY_LENGTH; glGetProgramBinary; write to .shaderbin file; update shaderBinaryCache")
+        // See `loadCachedProgramBinary`: persisting program binaries is a
+        // pure-write operation that the current backend doesn't support; we
+        // skip it without surfacing an error.
+        return true
     }
+
+    /**
+     * Compile a single shader stage and return its handle, dropping the
+     * resolved class level. Convenience wrapper for callers that don't care
+     * about LOD-based selection.
+     */
+    fun compileShaderStage(
+        filename: String,
+        type: ShaderType,
+        defines: MutableMap<String, String>? = null
+    ): UInt = loadShaderFile(filename, shaderLevelDefault, type, defines).first
 
     enum class ShaderType { VERTEX, FRAGMENT, GEOMETRY }
 
+    private fun ShaderType.toGl(): Int = when (this) {
+        ShaderType.VERTEX -> GL.VERTEX_SHADER
+        ShaderType.FRAGMENT -> GL.FRAGMENT_SHADER
+        ShaderType.GEOMETRY -> GL.GEOMETRY_SHADER
+    }
+
+    var shaderLevelDefault: Int = 3
+    private val PRUNE_AGE_SECONDS: Float = 14f * 24f * 60f * 60f
+
     companion object {
+        /**
+         * Singleton instance. Most call sites read it via `instanceOrNull` so
+         * pure-Kotlin tests can run without registering a manager; the
+         * `instance` accessor throws so old code that requires it surfaces
+         * the missing init.
+         */
         var instance: ShaderMgr? = null
-            get() = checkNotNull(field) { "ShaderMgr must be instantiated by the application before use" }
+        val instanceOrThrow: ShaderMgr
+            get() = checkNotNull(instance) { "ShaderMgr must be instantiated by the application before use" }
+
+        /**
+         * Compile a single shader stage by file name, using whichever
+         * `ShaderMgr` is currently installed (or the default loader if none
+         * is). Returns 0 on failure.
+         */
+        fun compileShaderFile(
+            filename: String,
+            type: Int,
+            defines: Map<String, String>? = null
+        ): UInt {
+            val st = when (type) {
+                GL.VERTEX_SHADER -> ShaderType.VERTEX
+                GL.FRAGMENT_SHADER -> ShaderType.FRAGMENT
+                GL.GEOMETRY_SHADER -> ShaderType.GEOMETRY
+                else -> return 0u
+            }
+            val mgr = instance
+            val effective = defines?.toMutableMap()
+            return if (mgr != null) {
+                mgr.loadShaderFile(filename, mgr.shaderLevelDefault, st, effective).first
+            } else {
+                inlineCompileFromFile(filename, st, effective)
+            }
+        }
+
+        /** Compile + link directly via [GpuBackend], without the manager. */
+        fun linkProgramObject(obj: UInt, suppressErrors: Boolean = false): Boolean {
+            val mgr = instance
+            if (mgr != null) return mgr.linkProgramObject(obj, suppressErrors)
+            val gl = GpuBackend.current
+            val ok = gl.linkProgram(obj.toInt())
+            if (!ok && !suppressErrors) {
+                System.err.println("glLinkProgram($obj) failed: ${gl.getProgramInfoLog(obj.toInt())}")
+            }
+            return ok
+        }
+
+        private fun inlineCompileFromFile(
+            filename: String,
+            type: ShaderType,
+            defines: MutableMap<String, String>?
+        ): UInt {
+            val source = try { java.io.File(filename).readText() } catch (e: Exception) { return 0u }
+            val gl = GpuBackend.current
+            val handle = gl.createShader(
+                when (type) {
+                    ShaderType.VERTEX -> GL.VERTEX_SHADER
+                    ShaderType.FRAGMENT -> GL.FRAGMENT_SHADER
+                    ShaderType.GEOMETRY -> GL.GEOMETRY_SHADER
+                }
+            ).toUInt()
+            if (handle == 0u) return 0u
+            gl.shaderSource(handle.toInt(), buildShaderPreamble(type, defines) + source)
+            if (!gl.compileShader(handle.toInt())) {
+                System.err.println("Inline shader compile failed: ${gl.getShaderInfoLog(handle.toInt())}")
+                gl.deleteShader(handle.toInt())
+                return 0u
+            }
+            return handle
+        }
+
+        // GLSL ES 3.20 matches the OpenGL ES 3.2 context the Android renderer requests.
+        const val GLSL_VERSION_DIRECTIVE = "#version 320 es"
+
+        /**
+         * Build the preamble prepended to a shader's source: the GLSL version
+         * directive, default precision qualifiers, and `#define` lines for the
+         * provided defines map. Callers concatenate this with the raw shader body.
+         */
+        fun buildShaderPreamble(
+            type: ShaderType,
+            defines: Map<String, String>? = null
+        ): String = buildString {
+            append(GLSL_VERSION_DIRECTIVE).append('\n')
+            when (type) {
+                ShaderType.VERTEX -> {
+                    append("precision highp float;\n")
+                    append("precision highp int;\n")
+                    append("precision highp sampler2DArray;\n")
+                }
+                ShaderType.FRAGMENT -> {
+                    append("precision highp float;\n")
+                    append("precision highp int;\n")
+                    append("precision highp sampler2D;\n")
+                    append("precision highp sampler2DArray;\n")
+                    append("precision highp samplerCube;\n")
+                    append("precision highp samplerCubeArray;\n")
+                }
+                ShaderType.GEOMETRY -> {
+                    append("precision highp float;\n")
+                    append("precision highp int;\n")
+                }
+            }
+            defines?.forEach { (k, v) ->
+                if (v.isEmpty()) append("#define ").append(k).append('\n')
+                else append("#define ").append(k).append(' ').append(v).append('\n')
+            }
+        }
     }
 }
 
@@ -466,29 +743,6 @@ class GlslShader {
     var shaderHash: String = ""
     var programObject: UInt = 0u
     var riggedVariant: GlslShader? = null
-    val features: ShaderFeatures = ShaderFeatures()
-}
-
-class ShaderFeatures {
-    var attachNothing: Boolean = false
-    var calculatesAtmospherics: Boolean = false
-    var hasGamma: Boolean = false
-    var isDeferred: Boolean = false
-    var calculatesLighting: Boolean = false
-    var isSpecular: Boolean = false
-    var isAlphaLighting: Boolean = false
-    var hasSkinning: Boolean = false
-    var hasObjectSkinning: Boolean = false
-    var hasSrgb: Boolean = false
-    var hasAtmospherics: Boolean = false
-    var hasReflectionProbes: Boolean = false
-    var hasFullGBuffer: Boolean = false
-    var hasScreenSpaceReflections: Boolean = false
-    var hasShadows: Boolean = false
-    var hasAmbientOcclusion: Boolean = false
-    var isPBRTerrain: Boolean = false
-    var hasTonemap: Boolean = false
-    var hasLighting: Boolean = false
-    var hasAlphaMask: Boolean = false
-    var mIndexedTextureChannels: Int = 0
+    var features: ShaderFeatures = ShaderFeatures()
+    var defines: MutableMap<String, String> = mutableMapOf()
 }

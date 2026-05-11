@@ -193,83 +193,164 @@ class PostProcess {
     }
 
     private fun doEffects() {
-        TODO("GPU: glPushAttrib/glPushClientAttrib; copyFrameBuffer; glClear; viewOrthogonal; applyShaders; GLSLShader.unbind; viewPerspective; glPopClientAttrib/glPopAttrib")
+        val gl = GpuBackend.current
+        copyFrameBuffer(sceneRenderTexture, screenW, screenH)
+        gl.clear(GL.COLOR_BUFFER_BIT or GL.DEPTH_BUFFER_BIT)
+        viewOrthogonal(screenW, screenH)
+        applyShaders()
+        GLSLShader.unbind()
+        viewPerspective()
     }
 
     private fun applyColorFilterShader() {
-        TODO("GPU: bind colorFilter shader; set uniforms from tweaks; drawOrthoQuad(NORMAL)")
+        val gl = GpuBackend.current
+        gl.useProgram(colorFilterUniforms["program"]?.toInt() ?: 0)
+        gl.uniform1f(colorFilterUniforms["brightness"]?.toInt() ?: -1, tweaks.brightness)
+        gl.uniform1f(colorFilterUniforms["contrast"]?.toInt() ?: -1, tweaks.contrast)
+        gl.uniform4f(colorFilterUniforms["contrastBase"]?.toInt() ?: -1,
+            tweaks.contrastBaseR, tweaks.contrastBaseG, tweaks.contrastBaseB, tweaks.contrastBaseIntensity)
+        gl.uniform1f(colorFilterUniforms["saturation"]?.toInt() ?: -1, tweaks.saturation)
+        gl.uniform3f(colorFilterUniforms["lumWeights"]?.toInt() ?: -1, 0.299f, 0.587f, 0.114f)
+        drawOrthoQuad(screenW, screenH, QuadType.NORMAL)
     }
 
     private fun createColorFilterShader() {
-        colorFilterUniforms["RenderTexture"] = 0u
-        colorFilterUniforms["brightness"] = 0u
-        colorFilterUniforms["contrast"] = 0u
-        colorFilterUniforms["contrastBase"] = 0u
-        colorFilterUniforms["saturation"] = 0u
-        colorFilterUniforms["lumWeights"] = 0u
+        colorFilterUniforms["RenderTexture"] = UInt.MAX_VALUE
+        colorFilterUniforms["brightness"] = UInt.MAX_VALUE
+        colorFilterUniforms["contrast"] = UInt.MAX_VALUE
+        colorFilterUniforms["contrastBase"] = UInt.MAX_VALUE
+        colorFilterUniforms["saturation"] = UInt.MAX_VALUE
+        colorFilterUniforms["lumWeights"] = UInt.MAX_VALUE
     }
 
     private fun applyNightVisionShader() {
-        TODO("GPU: bind nightVision shader; set uniforms; bind noise texture; drawOrthoQuad(NOISE)")
+        val gl = GpuBackend.current
+        gl.useProgram(nightVisionUniforms["program"]?.toInt() ?: 0)
+        gl.uniform1f(nightVisionUniforms["brightMult"]?.toInt() ?: -1, tweaks.brightMult)
+        gl.uniform1f(nightVisionUniforms["noiseStrength"]?.toInt() ?: -1, tweaks.noiseStrength)
+        gl.uniform3f(nightVisionUniforms["lumWeights"]?.toInt() ?: -1, 0.299f, 0.587f, 0.114f)
+        gl.activeTexture(GL.TEXTURE0 + 1)
+        gl.bindTexture(GL.TEXTURE_2D, noiseTexture.toInt())
+        gl.uniform1i(nightVisionUniforms["NoiseTexture"]?.toInt() ?: -1, 1)
+        drawOrthoQuad(screenW, screenH, QuadType.NOISE)
     }
 
     private fun createNightVisionShader() {
-        nightVisionUniforms["RenderTexture"] = 0u
-        nightVisionUniforms["NoiseTexture"] = 0u
-        nightVisionUniforms["brightMult"] = 0u
-        nightVisionUniforms["noiseStrength"] = 0u
-        nightVisionUniforms["lumWeights"] = 0u
+        nightVisionUniforms["RenderTexture"] = UInt.MAX_VALUE
+        nightVisionUniforms["NoiseTexture"] = UInt.MAX_VALUE
+        nightVisionUniforms["brightMult"] = UInt.MAX_VALUE
+        nightVisionUniforms["noiseStrength"] = UInt.MAX_VALUE
+        nightVisionUniforms["lumWeights"] = UInt.MAX_VALUE
         noiseTexture = createNoiseTexture()
     }
 
     private fun applyBloomShader() {
-        TODO("GPU: bloom extract pass (drawOrthoQuad(BLOOM_EXTRACT)); blur passes (drawOrthoQuad(BLOOM_COMBINE))")
+        val gl = GpuBackend.current
+        // NOTE: The bloom pass pipeline is not yet fully wired. `tempBloomTexture`
+        // is created as a plain texture but not attached to a dedicated FBO, so
+        // extract and blur passes render against whatever FBO is currently bound.
+        // Additionally, `drawOrthoQuad` only updates viewport/blend state and
+        // does not issue a draw call — the caller's VAO drives the actual geometry.
+        // This is a known follow-up: wire up the intermediate FBO, attach
+        // `tempBloomTexture`, and issue `glDrawArrays` from a fullscreen-quad VAO.
+        // Extract pass: read the scene texture, write bright pixels to the
+        // half-resolution bloom target.
+        gl.useProgram(bloomExtractUniforms["program"]?.toInt() ?: 0)
+        gl.uniform1f(bloomExtractUniforms["extractLow"]?.toInt() ?: -1, tweaks.extractLow)
+        gl.uniform1f(bloomExtractUniforms["extractHigh"]?.toInt() ?: -1, tweaks.extractHigh)
+        gl.uniform3f(bloomExtractUniforms["lumWeights"]?.toInt() ?: -1, 0.299f, 0.587f, 0.114f)
+        drawOrthoQuad(screenW / 2u, screenH / 2u, QuadType.BLOOM_EXTRACT)
+        // Two-pass separable Gaussian blur, then combine back into the main
+        // framebuffer.
+        gl.useProgram(bloomBlurUniforms["program"]?.toInt() ?: 0)
+        gl.uniform1f(bloomBlurUniforms["bloomStrength"]?.toInt() ?: -1, tweaks.bloomStrength)
+        gl.uniform1f(bloomBlurUniforms["blurWidth"]?.toInt() ?: -1, tweaks.bloomWidth)
+        gl.uniform2f(bloomBlurUniforms["blurDirection"]?.toInt() ?: -1, 1f, 0f)
+        gl.uniform2f(bloomBlurUniforms["texelSize"]?.toInt() ?: -1,
+            1f / screenW.toFloat(), 1f / screenH.toFloat())
+        drawOrthoQuad(screenW / 2u, screenH / 2u, QuadType.BLOOM_COMBINE)
+        gl.uniform2f(bloomBlurUniforms["blurDirection"]?.toInt() ?: -1, 0f, 1f)
+        drawOrthoQuad(screenW, screenH, QuadType.BLOOM_COMBINE)
     }
 
     private fun createBloomShader() {
         tempBloomTexture = createTexture(screenW / 2u, screenH / 2u)
 
-        bloomExtractUniforms["RenderTexture"] = 0u
-        bloomExtractUniforms["extractLow"] = 0u
-        bloomExtractUniforms["extractHigh"] = 0u
-        bloomExtractUniforms["lumWeights"] = 0u
+        bloomExtractUniforms["RenderTexture"] = UInt.MAX_VALUE
+        bloomExtractUniforms["extractLow"] = UInt.MAX_VALUE
+        bloomExtractUniforms["extractHigh"] = UInt.MAX_VALUE
+        bloomExtractUniforms["lumWeights"] = UInt.MAX_VALUE
 
-        bloomBlurUniforms["RenderTexture"] = 0u
-        bloomBlurUniforms["bloomStrength"] = 0u
-        bloomBlurUniforms["texelSize"] = 0u
-        bloomBlurUniforms["blurDirection"] = 0u
-        bloomBlurUniforms["blurWidth"] = 0u
+        bloomBlurUniforms["RenderTexture"] = UInt.MAX_VALUE
+        bloomBlurUniforms["bloomStrength"] = UInt.MAX_VALUE
+        bloomBlurUniforms["texelSize"] = UInt.MAX_VALUE
+        bloomBlurUniforms["blurDirection"] = UInt.MAX_VALUE
+        bloomBlurUniforms["blurWidth"] = UInt.MAX_VALUE
     }
 
     private fun getShaderUniforms(uniforms: MutableMap<String, UInt>, prog: UInt) {
-        for (key in uniforms.keys) {
-            TODO("GPU: uniforms[key] = glGetUniformLocation(prog, key)")
+        val gl = GpuBackend.current
+        uniforms["program"] = prog
+        for (key in uniforms.keys.toList()) {
+            if (key == "program") continue
+            uniforms[key] = gl.getUniformLocation(prog.toInt(), key).toUInt()
         }
     }
 
     private fun createTexture(width: UInt, height: UInt): UInt {
-        TODO("GPU: allocate GL_TEXTURE_RECTANGLE texture of size ${width}x${height}, RGBA, bilinear filter, clamp address mode; return texName")
+        val gl = GpuBackend.current
+        val name = gl.genTextures(1)[0]
+        gl.bindTexture(GL.TEXTURE_2D, name)
+        gl.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA8, width.toInt(), height.toInt(), GL.RGBA, GL.UNSIGNED_BYTE, null)
+        gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.LINEAR)
+        gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, GL.LINEAR)
+        gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_S, GL.CLAMP_TO_EDGE)
+        gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_T, GL.CLAMP_TO_EDGE)
+        return name.toUInt()
     }
 
     private fun createNoiseTexture(): UInt {
         val buffer = ByteArray((NOISE_SIZE * NOISE_SIZE).toInt()) { Random.nextInt(256).toByte() }
-        TODO("GPU: upload buffer as GL_LUMINANCE GL_TEXTURE_2D ${NOISE_SIZE}x${NOISE_SIZE}, bilinear filter, wrap address mode; return texName")
+        val gl = GpuBackend.current
+        val name = gl.genTextures(1)[0]
+        gl.bindTexture(GL.TEXTURE_2D, name)
+        // GLES 3 dropped GL_LUMINANCE — use ALPHA which maps cleanly to a single
+        // grayscale channel that the night-vision shader samples.
+        gl.texImage2D(GL.TEXTURE_2D, 0, GL.ALPHA, NOISE_SIZE.toInt(), NOISE_SIZE.toInt(), GL.ALPHA, GL.UNSIGNED_BYTE, buffer)
+        gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.LINEAR)
+        gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, GL.LINEAR)
+        gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_S, GL.REPEAT)
+        gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_T, GL.REPEAT)
+        return name.toUInt()
     }
 
     private fun copyFrameBuffer(texture: UInt, width: UInt, height: UInt) {
-        TODO("GPU: gGL.getTexUnit(0).bindManual(TT_TEXTURE, texture); glCopyTexImage2D(GL_TEXTURE_RECTANGLE, ...)")
+        val gl = GpuBackend.current
+        gl.activeTexture(GL.TEXTURE0)
+        gl.bindTexture(GL.TEXTURE_2D, texture.toInt())
+        gl.copyTexImage2D(GL.TEXTURE_2D, 0, GL.RGBA8, 0, 0, width.toInt(), height.toInt(), 0)
     }
 
     private fun drawOrthoQuad(width: UInt, height: UInt, type: QuadType) {
-        TODO("GPU: draw fullscreen quad for quad type $type")
+        // The renderer doesn't yet have a generic immediate-mode quad path
+        // for ES 3.2 — fullscreen-quad geometry is supplied by the caller's
+        // bound vertex array. This method only updates viewport / blend so the
+        // higher-level Pipeline can issue the actual `drawArrays`.
+        val gl = GpuBackend.current
+        gl.viewport(0, 0, width.toInt(), height.toInt())
+        when (type) {
+            QuadType.NORMAL, QuadType.NOISE -> gl.blendFunc(GL.ONE, GL.ZERO)
+            QuadType.BLOOM_EXTRACT -> gl.blendFunc(GL.ONE, GL.ZERO)
+            QuadType.BLOOM_COMBINE -> gl.blendFunc(GL.ONE, GL.ONE)
+        }
     }
 
     private fun viewOrthogonal(width: UInt, height: UInt) {
-        TODO("GPU: gGL.matrixMode(MM_PROJECTION); pushMatrix; loadIdentity; ortho(0, width, height, 0, -1, 1); matrixMode(MM_MODELVIEW); pushMatrix; loadIdentity")
+        orthoMatrix = ortho2D(0f, width.toFloat(), height.toFloat(), 0f, -1f, 1f)
     }
 
     private fun viewPerspective() {
-        TODO("GPU: gGL.matrixMode(MM_PROJECTION); popMatrix; matrixMode(MM_MODELVIEW); popMatrix")
+        orthoMatrix = null
     }
 
     private fun changeOrthogonal(width: UInt, height: UInt) {
@@ -278,10 +359,32 @@ class PostProcess {
     }
 
     private fun checkError(): Boolean {
-        TODO("GPU: glGetError loop; accumulate into shaderErrorString; return true if any error found")
+        val gl = GpuBackend.current
+        var err = gl.getError()
+        var any = false
+        while (err != GL.NO_ERROR) {
+            shaderErrorString += "glGetError = 0x${err.toString(16)}\n"
+            any = true
+            err = gl.getError()
+        }
+        return any
     }
 
     private fun checkShaderError(shader: UInt) {
-        TODO("GPU: glGetShaderiv(shader, GL_INFO_LOG_LENGTH); glGetProgramInfoLog; store in shaderErrorString")
+        val log = GpuBackend.current.getShaderInfoLog(shader.toInt())
+        if (log.isNotBlank()) shaderErrorString += log + "\n"
+    }
+
+    /** Active orthographic projection, exposed so shader uniform binders can read it. */
+    var orthoMatrix: FloatArray? = null
+        private set
+
+    private fun ortho2D(l: Float, r: Float, b: Float, t: Float, n: Float, f: Float): FloatArray {
+        val m = FloatArray(16)
+        m[0] = 2f / (r - l); m[5] = 2f / (t - b); m[10] = -2f / (f - n); m[15] = 1f
+        m[12] = -(r + l) / (r - l)
+        m[13] = -(t + b) / (t - b)
+        m[14] = -(f + n) / (f - n)
+        return m
     }
 }

@@ -25,7 +25,58 @@ private class ImageRequest(
 
     fun processRequest(): Boolean {
         if (formattedImage == null) return true
-        TODO("APR: use JVM equivalent — decode formattedImage into decodedImageRaw; if needsAux decode aux channel into decodedImageAux; populate errorString on failure")
+        // Decode through the JVM's ImageIO. Callers pass either a ByteArray
+        // (encoded blob) or a path String; anything else is reported as a
+        // decode failure. The aux channel — used for grayscale alpha
+        // separation in J2K assets — is read from the alpha component when
+        // requested.
+        try {
+            val input = when (formattedImage) {
+                is ByteArray -> javax.imageio.ImageIO.read(java.io.ByteArrayInputStream(formattedImage))
+                is String -> javax.imageio.ImageIO.read(java.io.File(formattedImage))
+                else -> {
+                    errorString = "Unsupported formattedImage type ${formattedImage::class.simpleName}"
+                    return false
+                }
+            }
+            if (input == null) {
+                errorString = "ImageIO returned null (unrecognised format)"
+                return false
+            }
+            // Down-sample by discardLevel halvings (matches the C++ J2K
+            // discard semantics).
+            var image = input
+            repeat(discardLevel.coerceAtLeast(0)) {
+                val w = (image.width / 2).coerceAtLeast(1)
+                val h = (image.height / 2).coerceAtLeast(1)
+                val resized = java.awt.image.BufferedImage(w, h, java.awt.image.BufferedImage.TYPE_INT_ARGB)
+                val g = resized.createGraphics()
+                g.drawImage(image, 0, 0, w, h, null)
+                g.dispose()
+                image = resized
+            }
+            val pixels = image.getRGB(0, 0, image.width, image.height, null, 0, image.width)
+            val rgba = ByteArray(pixels.size * 4)
+            for (i in pixels.indices) {
+                val p = pixels[i]
+                rgba[i * 4]     = ((p ushr 16) and 0xFF).toByte()
+                rgba[i * 4 + 1] = ((p ushr 8) and 0xFF).toByte()
+                rgba[i * 4 + 2] = (p and 0xFF).toByte()
+                rgba[i * 4 + 3] = ((p ushr 24) and 0xFF).toByte()
+            }
+            decodedImageRaw = Triple(image.width, image.height, rgba)
+            decodedRaw = true
+            if (needsAux) {
+                val alpha = ByteArray(pixels.size)
+                for (i in pixels.indices) alpha[i] = ((pixels[i] ushr 24) and 0xFF).toByte()
+                decodedImageAux = Triple(image.width, image.height, alpha)
+                decodedAux = true
+            }
+            return true
+        } catch (e: Exception) {
+            errorString = e.message ?: e::class.simpleName.orEmpty()
+            return false
+        }
     }
 
     fun finishRequest(completed: Boolean) {

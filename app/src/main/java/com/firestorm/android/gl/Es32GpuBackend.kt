@@ -235,8 +235,15 @@ class Es32GpuBackend : GpuBackend {
         GLES30.glGetQueryObjectuiv(id, GLES30.GL_QUERY_RESULT, tmp, 0)
         val raw = tmp[0].toLong() and 0xFFFFFFFFL
         val prev = lastQueryResult.getOrDefault(id, 0L)
-        val corrected = if (raw < prev && (prev - raw) > (1L shl 31)) raw + (1L shl 32) else raw
+        val corrected = if (raw < prev && (prev - raw) > HALF_U32_RANGE) raw + U32_RANGE else raw
         lastQueryResult[id] = corrected
         return corrected
+    }
+
+    companion object {
+        /** Half the 32-bit unsigned range (2^31), used to detect a single wrap in a u32 counter. */
+        private const val HALF_U32_RANGE = 1L shl 31
+        /** Full 32-bit unsigned range (2^32), added to correct a detected wrap. */
+        private const val U32_RANGE = 1L shl 32
     }
 }

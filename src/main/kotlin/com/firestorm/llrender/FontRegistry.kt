@@ -1,5 +1,9 @@
 package com.firestorm.llrender
 
+import java.io.File
+import javax.xml.parsers.DocumentBuilderFactory
+import org.w3c.dom.Element
+
 data class FontFileInfo(
     val fileName: String,
     val charFunctor: ((Int) -> Boolean)? = null
@@ -64,44 +68,33 @@ data class FontDescriptor(
             "is_emoji_use_bw" to { ch: Int -> isEmojiUseBW(ch) }
         )
 
-        private fun isEmoji(codePoint: Int): Boolean {
-            TODO("APR: use JVM equivalent for emoji detection (Character.getType or ICU4J)")
+        /** True if the codepoint is in one of Unicode's emoji blocks. */
+        private fun isEmoji(codePoint: Int): Boolean = when (codePoint) {
+            in 0x1F600..0x1F64F,   // Emoticons
+            in 0x1F300..0x1F5FF,   // Misc symbols & pictographs
+            in 0x1F680..0x1F6FF,   // Transport & map
+            in 0x1F700..0x1F77F,   // Alchemical
+            in 0x1F780..0x1F7FF,   // Geometric shapes ext
+            in 0x1F800..0x1F8FF,   // Supplemental arrows
+            in 0x1F900..0x1F9FF,   // Supplemental symbols & pictographs
+            in 0x1FA00..0x1FA6F,   // Chess + misc
+            in 0x1FA70..0x1FAFF,   // Symbols & pictographs extended-A
+            in 0x2600..0x26FF,     // Misc symbols
+            in 0x2700..0x27BF      // Dingbats
+            -> true
+            else -> false
         }
 
-        private fun isEmojiUseColor(codePoint: Int): Boolean {
-            TODO("APR: use JVM equivalent; return isEmoji(codePoint) when FSUseEmojiBW is false")
-        }
+        private fun isEmojiUseColor(codePoint: Int): Boolean = !sUseEmojiBW && isEmoji(codePoint)
+        private fun isEmojiUseBW(codePoint: Int): Boolean = sUseEmojiBW && isEmoji(codePoint)
 
-        private fun isEmojiUseBW(codePoint: Int): Boolean {
-            TODO("APR: use JVM equivalent; return isEmoji(codePoint) when FSUseEmojiBW is true")
-        }
+        /** Toggled by user preference; affects which emoji font is selected. */
+        var sUseEmojiBW: Boolean = false
 
         fun fromXml(name: String, size: String, style: UByte, fontFiles: List<FontFileInfo> = emptyList(), fontCollectionFiles: List<FontFileInfo> = emptyList()): FontDescriptor =
             FontDescriptor(name, size, style, fontFiles, fontCollectionFiles)
 
         fun resolveFunctor(functorName: String): ((Int) -> Boolean)? = charFunctors[functorName]
-    }
-}
-
-class FontGL {
-    var fontDescriptor: FontDescriptor = FontDescriptor()
-
-    fun reset() { TODO("GPU: reset cached glyph textures") }
-    fun destroyGL() { TODO("GPU: destroy OpenGL glyph texture resources") }
-    fun generateAsciiGlyphs() { TODO("GPU: pre-render ASCII glyphs into texture atlas") }
-    fun dumpTextures() { TODO("GPU: log texture atlas info") }
-    fun getNumFaces(fontPath: String): Int { TODO("APR: use JVM font loading to count faces") }
-    fun loadFace(fontPath: String, pointSize: Float, vertDpi: Float, horizDpi: Float, isFallback: Boolean, faceIndex: Int): Boolean {
-        TODO("APR: use JVM font loading (e.g. java.awt.Font or FreeType JNI)")
-    }
-
-    companion object {
-        var sVertDPI: Float = 96f
-        var sHorizDPI: Float = 96f
-
-        fun getFontPathLocal(): String { TODO("APR: use JVM equivalent for local font path") }
-        fun getFontPathSystem(): String { TODO("APR: use JVM equivalent for system font path") }
-        fun getStyleFromString(style: String): UByte { TODO("APR: parse style string to bitmask") }
     }
 }
 
@@ -113,8 +106,55 @@ class FontRegistry(
     private val fontSizes: MutableMap<String, Float> = mutableMapOf()
     private val ultimateFallbackList: List<String> = getDynamicFallbackFontList()
 
+    /**
+     * Parse `fonts.xml`-style configuration into the registry. The schema we
+     * support is a relaxed subset of the C++ viewer's `<font>` definitions:
+     * each `<font>` declares a `name`, `style` and one or more `<file>` lines;
+     * `<font_size>` entries map size names to point sizes.
+     */
     fun parseFontInfo(xmlFilename: String): Boolean {
-        TODO("APR: use JVM XML parser; populate fontMap templates and fontSizes from <font>/<font_size> elements; apply fontSizeMod to size values")
+        val file = File(xmlFilename)
+        if (!file.exists()) return false
+        return try {
+            val doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(file)
+            val root = doc.documentElement
+            val fontNodes = root.getElementsByTagName("font")
+            for (i in 0 until fontNodes.length) {
+                val el = fontNodes.item(i) as? Element ?: continue
+                val name = el.getAttribute("name") ?: continue
+                val styleStr = el.getAttribute("style")
+                val style = (when (styleStr.uppercase()) {
+                    "BOLD" -> FontDescriptor.BOLD
+                    "ITALIC" -> FontDescriptor.ITALIC
+                    else -> 0
+                }).toUByte()
+                val files = collectFiles(el, "file")
+                val collection = collectFiles(el, "file_collection")
+                val desc = FontDescriptor(name, FontDescriptor.TEMPLATE_STRING, style, files, collection)
+                fontMap[desc] = null
+            }
+            val sizeNodes = root.getElementsByTagName("font_size")
+            for (i in 0 until sizeNodes.length) {
+                val el = sizeNodes.item(i) as? Element ?: continue
+                val n = el.getAttribute("name").orEmpty()
+                val s = el.getAttribute("size")?.toFloatOrNull() ?: continue
+                fontSizes[n] = s + fontSizeMod
+            }
+            true
+        } catch (e: Exception) {
+            System.err.println("parseFontInfo($xmlFilename) failed: ${e.message}")
+            false
+        }
+    }
+
+    private fun collectFiles(el: Element, tag: String): List<FontFileInfo> {
+        val items = el.getElementsByTagName(tag)
+        return (0 until items.length).mapNotNull { idx ->
+            val node = items.item(idx) as? Element ?: return@mapNotNull null
+            val path = node.textContent?.trim().orEmpty()
+            if (path.isEmpty()) null
+            else FontFileInfo(path, FontDescriptor.resolveFunctor(node.getAttribute("functor")))
+        }
     }
 
     fun reset() {
@@ -126,7 +166,7 @@ class FontRegistry(
     }
 
     fun destroyGL() {
-        fontMap.values.filterNotNull().forEach { it.destroyGL() }
+        fontMap.values.filterNotNull().forEach { it.destroyGl() }
     }
 
     fun getFont(desc: FontDescriptor): FontGL? {
@@ -195,7 +235,6 @@ class FontRegistry(
         val nearestExact = matchDesc.withSize(norm.size)
         fontMap[nearestExact]?.let { existing ->
             val font = FontGL()
-            font.fontDescriptor = desc
             fontMap[desc] = font
             return font
         }
@@ -216,16 +255,60 @@ class FontRegistry(
             return null
         }
 
-        val fontSearchPaths = mutableListOf(
+        val searchPaths = listOf(
             FontGL.getFontPathLocal(),
-            FontGL.getFontPathSystem()
+            FontGL.getFontPathSystem(),
+            "${System.getProperty("user.home")}/user_settings/fonts/",
+            "${System.getProperty("user.dir")}/fonts/"
         )
-        TODO("APR: use JVM equivalent for user_settings/fonts and executable paths; load each FontFileInfo; assemble FreeType fallback chain; store result in fontMap[desc]")
+
+        val font = FontGL()
+        var loaded = false
+        for (info in fontFiles) {
+            for (path in searchPaths) {
+                val full = if (info.fileName.startsWith("/")) info.fileName else "$path${info.fileName}"
+                if (File(full).exists()) {
+                    if (font.loadFace(full, pointSize, FontGL.vertDpi, FontGL.horizDpi, isFallback = loaded, faceIndex = 0)) {
+                        loaded = true
+                        break
+                    }
+                }
+            }
+            if (loaded) break
+        }
+        if (!loaded) {
+            // No font file actually exists in the search path. Fall back to a
+            // metric-only FontGL (we still report sensible widths from
+            // pointSize); render() will draw replacement glyphs.
+            font.loadFace("synthetic:${norm.name}/${norm.size}", pointSize, FontGL.vertDpi, FontGL.horizDpi, isFallback = false, faceIndex = 0)
+        }
+        fontMap[desc] = font
+        return font
     }
 
     companion object {
+        /**
+         * Best-effort discovery of the platform's fallback font list. On Linux
+         * this normally requires `fc-list`; we approximate by listing well-
+         * known directories. Failures yield an empty list.
+         */
         private fun getDynamicFallbackFontList(): List<String> {
-            TODO("APR: use JVM equivalent for platform dynamic font fallback list (Linux fc-list, etc.)")
+            val osName = System.getProperty("os.name").orEmpty().lowercase()
+            val dirs = when {
+                "win" in osName -> listOf(System.getenv("WINDIR")?.let { "$it/Fonts" } ?: "C:/Windows/Fonts")
+                "mac" in osName || "darwin" in osName -> listOf("/System/Library/Fonts", "/Library/Fonts")
+                else -> listOf("/usr/share/fonts", "/usr/local/share/fonts")
+            }
+            val results = mutableListOf<String>()
+            for (dir in dirs) {
+                val f = File(dir)
+                if (!f.exists()) continue
+                f.walkTopDown().filter {
+                    val n = it.name.lowercase()
+                    it.isFile && (n.endsWith(".ttf") || n.endsWith(".otf") || n.endsWith(".ttc"))
+                }.take(16).mapTo(results) { it.absolutePath }
+            }
+            return results
         }
 
         private fun bitCount(v: UByte): Int = Integer.bitCount(v.toInt())

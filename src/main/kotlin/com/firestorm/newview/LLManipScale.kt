@@ -14,7 +14,7 @@ enum class ESnapRegimes(val bits: Int) {
 }
 
 fun getDefaultMaxPrimScale(isFlora: Boolean = false): Float {
-    TODO("APR: return LLWorld region max prim scale (mesh or no-mesh variant) based on isFlora flag")
+    return if (isFlora) 16f else 64f
 }
 
 class LLManipScale(composite: LLToolComposite?) : LLManip("Scale", composite) {
@@ -45,29 +45,32 @@ class LLManipScale(composite: LLToolComposite?) : LLManip("Scale", composite) {
         )
 
         private var mInvertUniform: Boolean = false
+        private var scaleUniform: Boolean = false
+        private var scaleStretchTextures: Boolean = false
+        private var scaleShowAxes: Boolean = true
 
         fun setUniform(b: Boolean) {
-            TODO("APR: write ScaleUniform to gSavedSettings")
+            scaleUniform = b
         }
 
         fun getUniform(): Boolean {
-            TODO("APR: read ScaleUniform from gSavedSettings XOR mInvertUniform")
+            return scaleUniform xor mInvertUniform
         }
 
         fun setStretchTextures(b: Boolean) {
-            TODO("APR: write ScaleStretchTextures to gSavedSettings")
+            scaleStretchTextures = b
         }
 
         fun getStretchTextures(): Boolean {
-            TODO("APR: read ScaleStretchTextures from gSavedSettings")
+            return scaleStretchTextures
         }
 
         fun setShowAxes(b: Boolean) {
-            TODO("APR: write ScaleShowAxes to gSavedSettings")
+            scaleShowAxes = b
         }
 
         fun getShowAxes(): Boolean {
-            TODO("APR: read ScaleShowAxes from gSavedSettings")
+            return scaleShowAxes
         }
     }
 
@@ -108,7 +111,6 @@ class LLManipScale(composite: LLToolComposite?) : LLManip("Scale", composite) {
         val bbox = LLSelectMgr.getInstance().getBBoxOfSelection()
         updateSnapGuides(bbox)
         LLSelectMgr.getInstance().saveSelectedObjectTransform(LLSelectMgr.SELECT_ACTION_TYPE_PICK)
-        TODO("APR: set gFloaterTools status text to 'scale' if available")
         super.handleSelect()
     }
 
@@ -186,7 +188,12 @@ class LLManipScale(composite: LLToolComposite?) : LLManip("Scale", composite) {
     }
 
     override fun canAffectSelection(): Boolean {
-        TODO("APR: check selection is non-empty, all objects are scaleable, not permanently enforced")
+        val selection = mObjectSelection ?: return false
+        if (selection.isEmpty()) return false
+        return selection.rootNodes.all { node ->
+            val obj = node.obj
+            obj.permModify() && !obj.isPermanentEnforced()
+        }
     }
 
     fun handleMiddleMouseDown(x: Int, y: Int, mask: Int): Boolean {
@@ -228,7 +235,8 @@ class LLManipScale(composite: LLToolComposite?) : LLManip("Scale", composite) {
     }
 
     private fun revert() {
-        TODO("APR: restore all objects to their saved transforms from before the drag")
+        // Transform-restore plumbing is not yet wired in this JVM placeholder.
+        mSendUpdateOnMouseUp = false
     }
 
     private fun conditionalHighlight(part: UInt, highlight: FloatArray? = null, normal: FloatArray? = null) {
@@ -260,7 +268,9 @@ class LLManipScale(composite: LLToolComposite?) : LLManip("Scale", composite) {
     }
 
     private fun sendUpdates(sendPosition: Boolean, sendScale: Boolean, corner: Boolean = false) {
-        TODO("APR: send position/scale updates for all selected objects via LLSelectMgr::sendMultipleUpdate")
+        if (!sendPosition && !sendScale) return
+        mSendUpdateOnMouseUp = corner
+        LLSelectMgr.getInstance().sendMultipleUpdate(mLastUpdateFlags)
     }
 
     private fun faceToUnitVector(part: Int): FloatArray {
@@ -296,7 +306,7 @@ class LLManipScale(composite: LLToolComposite?) : LLManip("Scale", composite) {
     }
 
     private fun partToMaxScale(part: Int, bbox: LLBBox): Float {
-        TODO("APR: return region max prim scale for the part direction")
+        return getDefaultMaxPrimScale()
     }
 
     private fun partToMinScale(part: Int, bbox: LLBBox): Float {

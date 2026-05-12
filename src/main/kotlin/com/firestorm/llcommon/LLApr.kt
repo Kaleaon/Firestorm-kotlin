@@ -1,5 +1,10 @@
 package com.firestorm.llcommon
 
+import java.io.RandomAccessFile
+import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.StandardCopyOption
+
 /**
  * Apache Portable Runtime (APR) wrapper stubs, translated from llapr.h.
  *
@@ -122,9 +127,11 @@ object LLApr {
         val maxSizeBytes: Int = 0,
         val releaseOnClose: Boolean = true,
     ) : AutoCloseable {
+        private val buffer: java.nio.ByteBuffer =
+            java.nio.ByteBuffer.allocateDirect(maxSizeBytes.coerceAtLeast(0))
+
         /** JVM replacement: java.nio.ByteBuffer.allocateDirect(maxSizeBytes) */
-        fun getBuffer(): Nothing =
-            TODO("APR Pool: use java.nio.ByteBuffer.allocateDirect(maxSizeBytes) or ByteArray")
+        fun getBuffer(): java.nio.ByteBuffer = buffer
 
         override fun close() {
             // JVM replacement: de-reference the ByteBuffer; GC handles the rest.
@@ -143,23 +150,28 @@ object LLApr {
      */
     class VolatilePool(
         isLocal: Boolean = true,
-        maxSizeBytes: Int = 0,
+        val maxSizeBytes: Int = 0,
         releaseOnClose: Boolean = true,
     ) : AutoCloseable {
         private var activeRefs: Int = 0
         private var totalRefs:  Int = 0
+        private val buffer: java.nio.ByteBuffer =
+            java.nio.ByteBuffer.allocateDirect(maxSizeBytes.coerceAtLeast(0))
 
         /** JVM replacement: ByteBuffer.clear() to reuse a buffer. */
-        fun getVolatilePool(): Nothing =
-            TODO("APR VolatilePool: use a pooled ByteBuffer and call ByteBuffer.clear() to reset")
+        fun getVolatilePool(): java.nio.ByteBuffer {
+            activeRefs++
+            totalRefs++
+            return buffer
+        }
 
         fun clearVolatilePool() {
-            // JVM replacement: call buffer.clear() on the backing ByteBuffer.
-            TODO("APR VolatilePool.clear: call ByteBuffer.clear() on the backing buffer")
+            buffer.clear()
+            activeRefs = 0
         }
 
         fun isFull(): Boolean =
-            TODO("APR VolatilePool.isFull: track reference count against a configured cap")
+            activeRefs > 0 && maxSizeBytes > 0 && activeRefs >= maxSizeBytes / 64
 
         override fun close() { /* GC reclaims the ByteBuffer */ }
     }
@@ -180,45 +192,102 @@ object LLApr {
      */
     class APRFile : AutoCloseable {
 
-        /** JVM replacement: Files.newInputStream(Path.of(filename)) */
+        // APR open-flag constants (subset used for read/write/create detection)
+        companion object {
+            const val APR_READ    = 0x00001
+            const val APR_WRITE   = 0x00002
+            const val APR_CREATE  = 0x00004
+            const val APR_APPEND  = 0x00008
+            const val APR_TRUNCATE = 0x00010
+        }
+
+        private var raf: RandomAccessFile? = null
+        private var appendMode: Boolean = false
+
+        /** Opens the file using [java.io.RandomAccessFile]. */
         fun open(filename: String, flags: Int, pool: VolatilePool? = null): Int {
-            TODO("APR File.open: use java.nio.file.Files.newInputStream / newOutputStream")
+            return try {
+                appendMode = (flags and APR_APPEND != 0)
+                if (flags and APR_CREATE != 0) {
+                    val f = java.io.File(filename)
+                    if (!f.exists()) f.createNewFile()
+                }
+                val mode = if (flags and (APR_WRITE or APR_CREATE or APR_TRUNCATE or APR_APPEND) != 0) "rw" else "r"
+                val f = RandomAccessFile(filename, mode)
+                if (flags and APR_TRUNCATE != 0) f.setLength(0)
+                if (appendMode) f.seek(f.length())
+                raf = f
+                0 // APR_SUCCESS
+            } catch (e: Exception) {
+                -1
+            }
         }
 
         /**
          * Close the APR file handle.  Returns an APR status code.
          *
-         * JVM replacement: use try-with-resources or Kotlin's [AutoCloseable.use]
-         * extension on [java.io.InputStream] / [java.io.OutputStream].
-         *
          * Named `closeFile` to avoid conflicting with [AutoCloseable.close].
          */
         fun closeFile(): Int {
-            TODO("APR File.close: use try-with-resources or .use { } in Kotlin")
+            return try {
+                raf?.close()
+                raf = null
+                appendMode = false
+                0
+            } catch (e: Exception) {
+                -1
+            }
         }
 
-        /** JVM replacement: RandomAccessFile.seek(offset) */
+        /** Seeks within the file using [java.io.RandomAccessFile.seek]. */
         fun seek(whence: Int, offset: Int): Int {
-            TODO("APR File.seek: use RandomAccessFile.seek(offset)")
+            val f = raf ?: return -1
+            return try {
+                val pos = when (whence) {
+                    1 -> f.filePointer + offset  // SEEK_CUR
+                    2 -> f.length() + offset     // SEEK_END
+                    else -> offset.toLong()       // SEEK_SET (0)
+                }
+                f.seek(pos)
+                0
+            } catch (e: Exception) {
+                -1
+            }
         }
 
-        /** JVM replacement: InputStream.read(buf, 0, nbytes) */
+        /** Reads up to [nbytes] from the file into [buf]. Returns bytes read, or -1 on error. */
         fun read(buf: ByteArray, nbytes: Int): Int {
-            TODO("APR File.read: use InputStream.read(buf, 0, nbytes)")
+            val f = raf ?: return -1
+            return try {
+                f.read(buf, 0, nbytes)
+            } catch (e: Exception) {
+                -1
+            }
         }
 
-        /** JVM replacement: OutputStream.write(buf, 0, nbytes) */
+        /** Writes [nbytes] from [buf] into the file. Returns bytes written, or -1 on error. */
         fun write(buf: ByteArray, nbytes: Int): Int {
-            TODO("APR File.write: use OutputStream.write(buf, 0, nbytes)")
+            val f = raf ?: return -1
+            return try {
+                if (appendMode) f.seek(f.length())
+                f.write(buf, 0, nbytes)
+                nbytes
+            } catch (e: Exception) {
+                -1
+            }
         }
 
-        /** JVM replacement: channel.force(true) / stream.flush() */
+        /** Flushes the file's channel to storage. */
         fun flush() {
-            TODO("APR File.flush: use OutputStream.flush() or FileChannel.force(true)")
+            raf?.channel?.force(true)
         }
 
-        /** Release the resource; GC reclaims underlying JVM streams automatically. */
-        override fun close() = Unit
+        /** Closes the underlying file handle if open. */
+        override fun close() {
+            raf?.close()
+            raf = null
+            appendMode = false
+        }
     }
 
     // =========================================================================
@@ -226,54 +295,96 @@ object LLApr {
     // (C++: LLAPRFile::remove, rename, isExist, size, makeDir, removeDir, …)
     // =========================================================================
 
-    /** JVM replacement: java.nio.file.Files.delete(Path.of(filename)) */
+    /** Deletes [filename] using [java.nio.file.Files.delete]. Returns true on success. */
     fun remove(filename: String, pool: VolatilePool? = null): Boolean {
-        TODO("APR remove: use java.nio.file.Files.delete(Path.of(filename))")
+        return try {
+            Files.deleteIfExists(Path.of(filename))
+            true
+        } catch (e: Exception) {
+            false
+        }
     }
 
-    /** JVM replacement: java.nio.file.Files.move(source, target) */
+    /** Renames/moves [filename] to [newname] using [java.nio.file.Files.move]. Returns true on success. */
     fun rename(filename: String, newname: String, pool: VolatilePool? = null): Boolean {
-        TODO("APR rename: use java.nio.file.Files.move(Path.of(filename), Path.of(newname))")
+        return try {
+            Files.move(Path.of(filename), Path.of(newname), StandardCopyOption.REPLACE_EXISTING)
+            true
+        } catch (e: Exception) {
+            false
+        }
     }
 
-    /** JVM replacement: java.nio.file.Files.exists(Path.of(filename)) */
+    /** Returns true if [filename] exists on the filesystem. */
     fun isExist(filename: String, pool: VolatilePool? = null, flags: Int = 0): Boolean {
-        TODO("APR isExist: use java.nio.file.Files.exists(Path.of(filename))")
+        return Files.exists(Path.of(filename))
     }
 
-    /** JVM replacement: java.nio.file.Files.size(Path.of(filename)).toInt() */
+    /** Returns the size of [filename] in bytes, or -1 if the file does not exist or an error occurs. */
     fun size(filename: String, pool: VolatilePool? = null): Int {
-        TODO("APR size: use java.nio.file.Files.size(Path.of(filename)).toInt()")
+        return try {
+            Files.size(Path.of(filename)).toInt()
+        } catch (e: Exception) {
+            -1
+        }
     }
 
-    /** JVM replacement: java.nio.file.Files.createDirectories(Path.of(dirname)) */
+    /** Creates [dirname] and any missing parent directories. Returns true on success. */
     fun makeDir(dirname: String, pool: VolatilePool? = null): Boolean {
-        TODO("APR makeDir: use java.nio.file.Files.createDirectories(Path.of(dirname))")
+        return try {
+            Files.createDirectories(Path.of(dirname))
+            true
+        } catch (e: Exception) {
+            false
+        }
     }
 
-    /** JVM replacement: walk + Files.delete for each path, then delete the root. */
+    /** Recursively deletes [dirname] and all its contents. Returns true on success. */
     fun removeDir(dirname: String, pool: VolatilePool? = null): Boolean {
-        TODO("APR removeDir: use Files.walk(Path.of(dirname)).sorted(Comparator.reverseOrder()).forEach(Files::delete)")
+        return try {
+            Files.walk(Path.of(dirname))
+                .sorted(Comparator.reverseOrder())
+                .forEach(Files::delete)
+            true
+        } catch (e: Exception) {
+            false
+        }
     }
 
     /**
      * Read [nbytes] starting at [offset] from [filename] into [buf].
-     *
-     * JVM replacement: [java.io.RandomAccessFile] with seek + read.
+     * Returns the number of bytes read, or -1 on error.
      */
     fun readEx(filename: String, buf: ByteArray, offset: Int, nbytes: Int,
                pool: VolatilePool? = null): Int {
-        TODO("APR readEx: use RandomAccessFile(filename, \"r\").use { it.seek(offset.toLong()); it.read(buf, 0, nbytes) }")
+        return try {
+            RandomAccessFile(filename, "r").use { raf ->
+                raf.seek(offset.toLong())
+                raf.read(buf, 0, nbytes)
+            }
+        } catch (e: Exception) {
+            -1
+        }
     }
 
     /**
      * Write [nbytes] from [buf] at [offset] (or append when offset < 0) in [filename].
-     *
-     * JVM replacement: [java.io.RandomAccessFile] for random writes,
-     * [java.io.FileOutputStream] with append=true for append mode.
+     * Returns [nbytes] on success, or -1 on error.
      */
     fun writeEx(filename: String, buf: ByteArray, offset: Int, nbytes: Int,
                 pool: VolatilePool? = null): Int {
-        TODO("APR writeEx: use RandomAccessFile(filename, \"rw\").use { it.seek(offset.toLong()); it.write(buf, 0, nbytes) }")
+        return try {
+            if (offset < 0) {
+                java.io.FileOutputStream(filename, true).use { it.write(buf, 0, nbytes) }
+            } else {
+                RandomAccessFile(filename, "rw").use { raf ->
+                    raf.seek(offset.toLong())
+                    raf.write(buf, 0, nbytes)
+                }
+            }
+            nbytes
+        } catch (e: Exception) {
+            -1
+        }
     }
 }

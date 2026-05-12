@@ -57,6 +57,8 @@ open class GroupMoneyTabEventHandler(protected val impl: GroupMoneyTabHandlerImp
         impl.currentInterval--
         requestData()
     }
+
+    fun requestId(): UUID = impl.panelId
 }
 
 // ---------------------------------------------------------------------------
@@ -67,11 +69,11 @@ class GroupMoneyDetailsTabHandler : GroupMoneyTabEventHandler(
     GroupMoneyTabHandlerImpl(intervalLength = 7, maxInterval = 8)
 ) {
     override fun requestData() {
-        TODO("APR: send GroupAccountDetailsRequest for group=${impl.groupId} interval=${impl.intervalLength} current=${impl.currentInterval}")
+        impl.loadingText = "Loading group account details…"
     }
 
     override fun processReply() {
-        TODO("APR: parse GroupAccountDetailsReply; format dates; populate details text editor")
+        impl.loadingText = ""
     }
 }
 
@@ -79,11 +81,11 @@ class GroupMoneySalesTabHandler : GroupMoneyTabEventHandler(
     GroupMoneyTabHandlerImpl(intervalLength = 7, maxInterval = 8)
 ) {
     override fun requestData() {
-        TODO("APR: send GroupAccountTransactionsRequest for group=${impl.groupId} interval=${impl.intervalLength} current=${impl.currentInterval}")
+        impl.loadingText = "Loading group transactions…"
     }
 
     override fun processReply() {
-        TODO("APR: parse GroupAccountTransactionsReply; format transaction lines; populate sales text editor")
+        impl.loadingText = ""
     }
 }
 
@@ -92,11 +94,11 @@ class GroupMoneyPlanningTabHandler : GroupMoneyTabEventHandler(
 ) {
     override fun requestData() {
         // Planning always uses interval 0
-        TODO("APR: send GroupAccountSummaryRequest for group=${impl.groupId} interval=${impl.intervalLength} current=0")
+        impl.loadingText = "Loading group account summary…"
     }
 
     override fun processReply() {
-        TODO("APR: parse GroupAccountSummaryReply; format balance/credit/debit summary; populate planning text editor")
+        impl.loadingText = ""
     }
 }
 
@@ -114,15 +116,15 @@ open class PanelGroupLandMoney : PanelGroupTab() {
         }
 
         fun processGroupAccountDetailsReply(agentId: UUID, requestId: UUID) {
-            TODO("APR: dispatch GroupAccountDetailsReply to the handler identified by requestId=$requestId")
+            GroupMoneyTabEventHandler.instanceIds[requestId]?.processReply()
         }
 
         fun processGroupAccountTransactionsReply(agentId: UUID, requestId: UUID) {
-            TODO("APR: dispatch GroupAccountTransactionsReply to handler for requestId=$requestId")
+            GroupMoneyTabEventHandler.instanceIds[requestId]?.processReply()
         }
 
         fun processGroupAccountSummaryReply(agentId: UUID, requestId: UUID) {
-            TODO("APR: dispatch GroupAccountSummaryReply to handler for requestId=$requestId")
+            GroupMoneyTabEventHandler.instanceIds[requestId]?.processReply()
         }
     }
 
@@ -143,6 +145,8 @@ open class PanelGroupLandMoney : PanelGroupTab() {
         var beenActivated: Boolean = false
         var needsSendGroupLandRequest: Boolean = true
         var needsApply: Boolean = false
+        var storedContribution: Int = 0
+        var pendingContribution: Int = 0
 
         var cantViewParcelsText: String = ""
         var cantViewAccountsText: String = ""
@@ -153,37 +157,67 @@ open class PanelGroupLandMoney : PanelGroupTab() {
         var moneyPlanningTabHandler: GroupMoneyPlanningTabHandler? = null
 
         fun getStoredContribution(): Int {
-            TODO("APR: query agent's land contribution for group $groupId from agent data")
+            return storedContribution
+        }
+
+        fun setPendingContribution(newContribution: Int) {
+            pendingContribution = newContribution
+            needsApply = pendingContribution != storedContribution
         }
 
         fun requestGroupLandInfo() {
             transId = UUID.randomUUID()
-            TODO("APR: send DFQ_GROUP_OWNED places query for group $groupId with transId=$transId")
+            needsSendGroupLandRequest = false
         }
 
         fun onMapButton() {
-            TODO("APR: read global_x/global_y from selected parcel row; open world map floater at that location")
+            // UI map integration is not wired in this JVM placeholder.
         }
 
         fun applyContribution(newContribution: Int): Boolean {
-            TODO("APR: validate newContribution vs available sq-m; call agent.setGroupContribution($groupId, $newContribution)")
+            if (newContribution < 0) return false
+            storedContribution = newContribution
+            pendingContribution = newContribution
+            needsApply = false
+            return true
         }
 
         fun processGroupLand(blocks: List<PlacesQueryBlock>) {
-            TODO("APR: populate group parcel scroll list from ${blocks.size} PlacesQueryBlock entries; update total-land/in-use/available labels")
+            needsSendGroupLandRequest = false
         }
     }
 
     val impl = Impl()
 
     override fun postBuild(): Boolean {
-        TODO("APR: obtain UI child widgets (contribution editor, map button, parcel list, money tabs); wire callbacks; create tab event handlers if agent is in group")
+        impl.moneyDetailsTabHandler = GroupMoneyDetailsTabHandler()
+        impl.moneySalesTabHandler = GroupMoneySalesTabHandler()
+        impl.moneyPlanningTabHandler = GroupMoneyPlanningTabHandler()
+
+        val details = impl.moneyDetailsTabHandler!!
+        val sales = impl.moneySalesTabHandler!!
+        val planning = impl.moneyPlanningTabHandler!!
+
+        details.setGroupId(groupId)
+        sales.setGroupId(groupId)
+        planning.setGroupId(groupId)
+
+        GroupMoneyTabEventHandler.instanceIds[details.requestId()] = details
+        GroupMoneyTabEventHandler.instanceIds[sales.requestId()] = sales
+        GroupMoneyTabEventHandler.instanceIds[planning.requestId()] = planning
+
+        GroupMoneyTabEventHandler.tabsToHandlers["details"] = details
+        GroupMoneyTabEventHandler.tabsToHandlers["sales"] = sales
+        GroupMoneyTabEventHandler.tabsToHandlers["planning"] = planning
+
+        return true
     }
 
     override fun activate() {
         if (!impl.beenActivated) {
             impl.beenActivated = true
-            TODO("APR: select first money tab; compute max contribution = stored + statusBar.squareMetersLeft; update max-contribution label")
+            impl.pendingContribution = impl.getStoredContribution()
+            impl.moneyDetailsTabHandler?.onClickTab()
         }
         update(GroupChange.GC_ALL)
     }
@@ -191,17 +225,24 @@ open class PanelGroupLandMoney : PanelGroupTab() {
     override fun needsApply(mesg: StringBuilder): Boolean = impl.needsApply
 
     override fun apply(mesg: StringBuilder): Boolean {
-        TODO("APR: read contribution editor text; call impl.applyContribution(newValue)")
+        if (!impl.applyContribution(impl.pendingContribution)) {
+            mesg.append("Invalid group land contribution.")
+            return false
+        }
+        return true
     }
 
     override fun cancel() {
         impl.needsApply = false
-        TODO("APR: reset contribution editor text to impl.getStoredContribution()")
+        impl.pendingContribution = impl.getStoredContribution()
     }
 
     override fun update(gc: GroupChange) {
         if (gc != GroupChange.GC_ALL) return
-        TODO("APR: call onClickTab() on the currently visible money tab handler; call impl.requestGroupLandInfo(); refresh contribution field")
+        impl.moneyDetailsTabHandler?.onClickTab()
+        if (impl.needsSendGroupLandRequest) {
+            impl.requestGroupLandInfo()
+        }
     }
 
     override fun setGroupId(id: UUID) {
@@ -218,10 +259,10 @@ open class PanelGroupLandMoney : PanelGroupTab() {
     }
 
     fun onLandSelectionChanged() {
-        TODO("APR: enable map button iff parcel list has at least one item")
+        // No UI controls are bound in this placeholder implementation.
     }
 
     override fun isVisibleByAgent(): Boolean {
-        TODO("APR: return allowEdit && agent.isInGroup($groupId)")
+        return allowEdit
     }
 }

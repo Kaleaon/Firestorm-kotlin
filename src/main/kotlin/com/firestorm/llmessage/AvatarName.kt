@@ -69,17 +69,15 @@ data class AvatarName(
         else -> "$legacyFirstName $legacyLastName"
     }
 
-    fun toSD(): LLSD {
-        val sd = LLSD()
-        sd["username"] = LLSD(username)
-        sd["display_name"] = LLSD(displayName)
-        sd["legacy_first_name"] = LLSD(legacyFirstName)
-        sd["legacy_last_name"] = LLSD(legacyLastName)
-        sd["is_display_name_default"] = LLSD(isDisplayNameDefault)
-        sd["display_name_expires"] = LLSD(expiresDate)
-        sd["display_name_next_update"] = LLSD(nextUpdate)
-        return sd
-    }
+    fun toSD(): LLSD = LLSD.ofMap(mapOf(
+        "username"                  to LLSD.of(username),
+        "display_name"              to LLSD.of(displayName),
+        "legacy_first_name"         to LLSD.of(legacyFirstName),
+        "legacy_last_name"          to LLSD.of(legacyLastName),
+        "is_display_name_default"   to LLSD.of(isDisplayNameDefault),
+        "display_name_expires"      to LLSD.of(expiresDate.toDouble()),
+        "display_name_next_update"  to LLSD.of(nextUpdate.toDouble())
+    ))
 
     companion object {
         var useDisplayNames: Boolean = true

@@ -227,10 +227,50 @@ data class LLMaterial(
      * Mirrors `LLMaterial::getShaderMask()` in the C++ source; actual shader
      * selection tables are not yet ported.
      */
-    fun getShaderMask(alphaMode: UInt, isAlpha: Boolean): UInt =
-        TODO("LLMaterial.getShaderMask shader table not yet ported")
+    fun getShaderMask(alphaMode: UInt, isAlpha: Boolean): UInt {
+        // Two least-significant bits hold the effective diffuse alpha mode.
+        var ret = alphaMode
+        if (ret == DiffuseAlphaMode.DEFAULT.code.toUInt()) {
+            ret = diffuseAlphaMode.code.toUInt()
+            if (ret == DiffuseAlphaMode.BLEND.code.toUInt() && !isAlpha) {
+                ret = DiffuseAlphaMode.NONE.code.toUInt()
+            }
+        }
+
+        // Bit 2: specular map present
+        if (specularId.notNull()) ret = ret or 0x4u
+
+        // Bit 3: normal map present
+        if (normalId.notNull()) ret = ret or 0x8u
+
+        return ret
+    }
 
     /** Returns a UUID-based hash of this material's content. */
-    fun getHash(): LLUUID =
-        TODO("LLMaterial.getHash not yet implemented")
+    fun getHash(): LLUUID {
+        val md5 = java.security.MessageDigest.getInstance("MD5")
+        val bb = java.nio.ByteBuffer.allocate(128)
+        bb.put(normalId.toBytes())
+        bb.putFloat(normalOffsetX)
+        bb.putFloat(normalOffsetY)
+        bb.putFloat(normalRepeatX)
+        bb.putFloat(normalRepeatY)
+        bb.putFloat(normalRotation)
+        bb.put(specularId.toBytes())
+        bb.putFloat(specularOffsetX)
+        bb.putFloat(specularOffsetY)
+        bb.putFloat(specularRepeatX)
+        bb.putFloat(specularRepeatY)
+        bb.putFloat(specularRotation)
+        bb.put(specularLightColor.r.toByte())
+        bb.put(specularLightColor.g.toByte())
+        bb.put(specularLightColor.b.toByte())
+        bb.put(specularLightColor.a.toByte())
+        bb.put(specularLightExponent.toByte())
+        bb.put(environmentIntensity.toByte())
+        bb.put(diffuseAlphaMode.code.toByte())
+        bb.put(alphaMaskCutoff.toByte())
+        md5.update(bb.array(), 0, bb.position())
+        return LLUUID.fromBytes(md5.digest()) ?: LLUUID.NULL
+    }
 }

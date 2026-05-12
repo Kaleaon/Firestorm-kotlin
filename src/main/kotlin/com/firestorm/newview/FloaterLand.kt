@@ -1,9 +1,30 @@
 package com.firestorm.newview
 
+import java.net.DatagramSocket
+import java.net.DatagramPacket
+import java.net.InetSocketAddress
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
+import java.net.HttpURLConnection
+import java.net.URL
 import java.util.UUID
+import java.io.File
 
 private const val CACHE_REFRESH_TIME = 2.5f
 private const val COVENANT_REFRESH_TIME_SEC = 60.0
+
+// Return-type constants matching C++ viewer values
+private const val RETURN_TYPE_OWNER: UInt = 0u
+private const val RETURN_TYPE_GROUP: UInt = 1u
+private const val RETURN_TYPE_OTHER: UInt = 2u
+private const val RETURN_TYPE_LIST:  UInt = 4u
+
+// Singleton-style instance registry (replaces LLFloaterReg lookups)
+internal object FloaterLandRegistry {
+    private var landInstance: FloaterLand? = null
+    fun getLandInstance(): FloaterLand? = landInstance
+    fun setLandInstance(f: FloaterLand?) { landInstance = f }
+}
 
 class FloaterLand(private val seed: Any?) {
 
@@ -25,34 +46,63 @@ class FloaterLand(private val seed: Any?) {
         var sLastTab: Int = 0
         var sRequestReplyOnUpdate: Boolean = true
 
+        /** Refresh the active FloaterLand instance (mirrors LLFloaterLand::refreshAll). */
         fun refreshAll() {
-            TODO("APR: use JVM equivalent")
+            FloaterLandRegistry.getLandInstance()?.refresh()
         }
 
-        fun getCurrentPanelLandObjects(): PanelLandObjects? = TODO("APR: use JVM equivalent")
-        fun getCurrentPanelLandCovenant(): PanelLandCovenant? = TODO("APR: use JVM equivalent")
+        /** Return the PanelLandObjects from the active instance. */
+        fun getCurrentPanelLandObjects(): PanelLandObjects? =
+            FloaterLandRegistry.getLandInstance()?.panelObjects
+
+        /** Return the PanelLandCovenant from the active instance. */
+        fun getCurrentPanelLandCovenant(): PanelLandCovenant? =
+            FloaterLandRegistry.getLandInstance()?.panelCovenant
     }
 
-    fun getCurrentSelectedParcel(): Any? = TODO("APR: use JVM equivalent")
+    /** Return the currently selected parcel (mirrors LLFloaterLand::getCurrentSelectedParcel). */
+    fun getCurrentSelectedParcel(): Any? = parcelSelection
 
+    /**
+     * Build the floater: register as the active instance and select last-used tab.
+     * Mirrors LLFloaterLand::postBuild.
+     */
     fun postBuild(): Boolean {
-        TODO("APR: use JVM equivalent")
+        FloaterLandRegistry.setLandInstance(this)
+        sObserver = Runnable { refreshAll() }
+        tabLand = sLastTab
+        return true
     }
 
+    /**
+     * Called when the floater is opened.
+     * Mirrors LLFloaterLand::onOpen.
+     */
     fun onOpen(key: Any?) {
-        TODO("APR: use JVM equivalent")
+        if (parcelSelection == null) {
+            parcelSelection = key
+        }
+        refresh()
     }
 
+    /** Refresh all sub-panels. Mirrors LLFloaterLand::refresh. */
     fun refresh() {
         panelGeneral?.refresh()
         panelObjects?.refresh()
         panelOptions?.refresh()
-        TODO("APR: use JVM equivalent")
+        panelAccess?.refresh()
+        panelCovenant?.refresh()
+        panelExperiences?.refresh()
+        panelEnvironment?.refresh()
     }
 
+    /**
+     * Called when visibility changes.
+     * On hide: save the current tab index. Mirrors LLFloaterLand::onVisibilityChanged.
+     */
     fun onVisibilityChanged(visible: Boolean) {
         if (!visible) {
-            TODO("APR: use JVM equivalent")
+            sLastTab = (tabLand as? Int) ?: 0
         }
     }
 }

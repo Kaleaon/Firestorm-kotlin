@@ -10,15 +10,33 @@ data class LLVolumeFace(val vertices: List<LLVolumeVertex>, val indices: List<In
 
 enum class LodDetail(val steps: Int) { LOWEST(4), LOW(8), MEDIUM(16), HIGH(32) }
 
+/**
+ * Minimal volume-shape parameters used by [LLVolume] to generate geometry.
+ * Mirrors the fields of `llprimitive.VolumeParams` that geometry generation
+ * actually reads; the caller can bridge to that type if needed.
+ */
+data class LLVolumeParams(
+    // Profile (S axis)
+    val profileCurve: UByte = 0x10u,  // CIRCLE
+    val beginS: Float       = 0f,
+    val endS: Float         = 1f,
+    val hollow: Float       = 0f,
+    // Path (T axis)
+    val pathCurve: UByte    = 0x10u,  // LINE
+    val beginT: Float       = 0f,
+    val endT: Float         = 1f,
+    val twist: Float        = 0f,
+)
+
 object LLVolume {
 
-    fun buildVolume(params: com.firestorm.llprimitive.VolumeParams, lod: LodDetail = LodDetail.MEDIUM): List<LLVolumeFace> {
+    fun buildVolume(params: LLVolumeParams, lod: LodDetail = LodDetail.MEDIUM): List<LLVolumeFace> {
         val profile = buildProfile(params, lod.steps)
         val path    = buildPath(params, lod.steps)
         return extrude(profile, path)
     }
 
-    private fun buildProfile(params: com.firestorm.llprimitive.VolumeParams, steps: Int): List<Vector2> {
+    private fun buildProfile(params: LLVolumeParams, steps: Int): List<Vector2> {
         val begin = params.beginS
         val end   = params.endS
         val hollow = params.hollow
@@ -87,7 +105,7 @@ object LLVolume {
         return pts
     }
 
-    private fun buildPath(params: com.firestorm.llprimitive.VolumeParams, steps: Int): List<Pair<Vector3, Float>> {
+    private fun buildPath(params: LLVolumeParams, steps: Int): List<Pair<Vector3, Float>> {
         val begin = params.beginT
         val end   = params.endT
         val twist = params.twist

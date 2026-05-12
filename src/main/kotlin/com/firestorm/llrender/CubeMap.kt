@@ -236,8 +236,6 @@ class ImageGL(val width: Int, val height: Int, val components: Int, val useMipMa
     fun setTexName(name: UInt) { texName = name }
     fun getWidth(mip: Int = 0): Int = width shr mip
     fun getHeight(mip: Int = 0): Int = height shr mip
-    fun getComponents(): Int = components
-    fun getUseMipMaps(): Boolean = useMipMaps
 
     fun setUseMipMaps(v: Boolean) { hasMipMaps = v }
     fun setHasMipMaps(v: Boolean) { hasMipMaps = v }

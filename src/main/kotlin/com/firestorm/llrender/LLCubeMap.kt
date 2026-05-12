@@ -1,6 +1,5 @@
 package com.firestorm.llrender
 
-import com.firestorm.llimage.ImageRaw
 import com.firestorm.llmath.Matrix4
 
 enum class CubeFace(val index: Int) {

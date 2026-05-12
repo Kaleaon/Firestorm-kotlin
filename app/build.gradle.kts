@@ -52,6 +52,16 @@ android {
             "../src/main/kotlin/com/firestorm/llcommon"
         )
     }
+    // Wire the repository-root unit-tests into the Android local-test
+    // source set so they are picked up by ./gradlew testDebugUnitTest.
+    // Only include tests for packages that are compiled in the main source set.
+    sourceSets.getByName("test") {
+        java.srcDirs(
+            "../src/test/kotlin/com/firestorm/llrender",
+            "../src/test/kotlin/com/firestorm/llmath",
+            "../src/test/kotlin/com/firestorm/llcommon"
+        )
+    }
 }
 
 dependencies {
@@ -59,4 +69,8 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("com.google.android.material:material:1.12.0")
     implementation("androidx.constraintlayout:constraintlayout:2.2.0")
+
+    // kotlin.test (used by the repository-root unit tests)
+    testImplementation(kotlin("test"))
+    testImplementation("junit:junit:4.13.2")
 }

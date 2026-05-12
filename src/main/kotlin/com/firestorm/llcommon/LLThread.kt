@@ -1,7 +1,8 @@
 package com.firestorm.llcommon
 
-import java.util.concurrent.locks.ReentrantLock
-import kotlin.concurrent.withLock
+// Top-level alias so tests (and callers) can refer to the thread-status enum
+// without needing to know the nesting path LLThread.Status.
+typealias LLThreadStatus = LLThread.Status
 
 abstract class LLThread(var name: String) {
     enum class Status { STOPPED, RUNNING, QUEUED, PAUSED, QUITTING }
@@ -58,7 +59,7 @@ abstract class LLThread(var name: String) {
     fun checkPause() {
         dataLock.lock()
         while (shouldSleep()) {
-            runCondition.wait()
+            runCondition.await()
         }
         dataLock.unlock()
     }
@@ -80,28 +81,9 @@ abstract class LLThread(var name: String) {
         dataLock.unlock()
     }
 
+    protected fun shouldRun(): Boolean = status != Status.QUITTING
+
     companion object {
         fun yield() = Thread.yield()
     }
-}
-
-class LLMutex {
-    private val lock = ReentrantLock()
-
-    fun lock() = lock.lock()
-    fun unlock() = lock.unlock()
-    fun tryLock(): Boolean = lock.tryLock()
-
-    fun <T> withLock(block: () -> T): T = lock.withLock(block)
-
-    internal fun newCondition(): java.util.concurrent.locks.Condition = lock.newCondition()
-    internal fun isHeldByCurrentThread(): Boolean = lock.isHeldByCurrentThread
-}
-
-class LLCondition(private val mutex: LLMutex) {
-    private val condition = mutex.newCondition()
-
-    fun wait() = condition.await()
-    fun signal() = condition.signal()
-    fun broadcast() = condition.signalAll()
 }

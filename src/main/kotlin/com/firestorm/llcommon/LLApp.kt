@@ -34,12 +34,18 @@ abstract class LLApp {
     // -------------------------------------------------------------------------
     private val _status: AtomicReference<AppStatus> = AtomicReference(AppStatus.UNINITIALIZED)
 
+    @get:JvmName("instanceStatus")
     val status: AppStatus get() = _status.get()
 
+    @get:JvmName("instanceIsRunning")
     val isRunning: Boolean  get() = _status.get() == AppStatus.RUNNING
+    @get:JvmName("instanceIsQuitting")
     val isQuitting: Boolean get() = _status.get() == AppStatus.QUITTING
+    @get:JvmName("instanceIsStopped")
     val isStopped: Boolean  get() = _status.get() == AppStatus.STOPPED
+    @get:JvmName("instanceIsError")
     val isError: Boolean    get() = _status.get() == AppStatus.ERROR
+    @get:JvmName("instanceIsExiting")
     val isExiting: Boolean  get() = isQuitting || isError
 
     // -------------------------------------------------------------------------
@@ -121,7 +127,15 @@ abstract class LLApp {
         @JvmStatic fun setStopped()  { globalStatus.set(AppStatus.STOPPED) }
         @JvmStatic fun setError()    { globalStatus.set(AppStatus.ERROR) }
 
-        @JvmStatic fun getPid(): Int = ProcessHandle.current().pid().toInt()
+        @JvmStatic fun getPid(): Int {
+            // ProcessHandle (Java 9 / Android API 26+) is not universally
+            // available.  Read /proc/self on Linux/Android; return 0 elsewhere.
+            return try {
+                java.io.File("/proc/self").canonicalFile.name.toIntOrNull() ?: 0
+            } catch (_: Exception) {
+                0
+            }
+        }
 
         // --- Singleton instance management ------------------------------------
 

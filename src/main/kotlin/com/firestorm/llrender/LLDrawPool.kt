@@ -1,6 +1,9 @@
 package com.firestorm.llrender
 
-import com.firestorm.llprimitive.VolumeFace
+import com.firestorm.llmath.LLVolumeFace
+
+// Type alias to match the C++ naming convention; backed by the llmath geometry type.
+private typealias VolumeFace = LLVolumeFace
 
 enum class DrawPoolType {
     SIMPLE,

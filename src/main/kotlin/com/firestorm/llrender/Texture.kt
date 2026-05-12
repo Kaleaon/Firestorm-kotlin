@@ -80,10 +80,6 @@ class Texture(
     fun getHeight(discard: Int = 0): Int =
         if (discard <= 0) height else discardHeights.getOrDefault(discard, height shr discard)
 
-    fun setBoostLevel(level: BoostLevel) {
-        boostLevel = level
-    }
-
     fun setDiscardSize(discard: Int, w: Int, h: Int) {
         discardWidths[discard] = w
         discardHeights[discard] = h

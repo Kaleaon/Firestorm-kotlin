@@ -44,17 +44,16 @@ class LLProcess private constructor(private val process: Process) {
     fun getProcessID(): Long {
         // Process.pid() was added in Java 9 / Android API 26.  Use
         // reflection so the file compiles against older SDK targets.
+        // First try the standard method; fall back to the internal 'pid'
+        // field present in OpenJDK UNIXProcess and Android ProcessImpl
+        // (both store the native child-process PID there).
         return runCatching {
             Process::class.java.getMethod("pid").invoke(process) as Long
         }.getOrElse {
-            // Fallback: parse /proc/self/status on Linux/Android.
             runCatching {
-                java.io.File("/proc/self/status")
-                    .readLines()
-                    .firstOrNull { it.startsWith("Pid:") }
-                    ?.substringAfter("Pid:")
-                    ?.trim()
-                    ?.toLongOrNull() ?: -1L
+                val pidField = process.javaClass.getDeclaredField("pid")
+                pidField.isAccessible = true
+                (pidField.get(process) as? Number)?.toLong() ?: -1L
             }.getOrDefault(-1L)
         }
     }

@@ -73,15 +73,18 @@ private fun downsample(pixels: IntArray, srcW: Int, srcH: Int): Triple<Int, Int,
     for (dy in 0 until dstH) {
         for (dx in 0 until dstW) {
             var a = 0; var r = 0; var g = 0; var b = 0; var n = 0
-            for (ky in 0..1) for (kx in 0..1) {
-                val px = dx * 2 + kx; val py = dy * 2 + ky
-                if (px < srcW && py < srcH) {
-                    val p = pixels[py * srcW + px]
-                    a += (p ushr 24) and 0xFF
-                    r += (p ushr 16) and 0xFF
-                    g += (p ushr 8)  and 0xFF
-                    b +=  p          and 0xFF
-                    n++
+            for (ky in 0..1) {
+                for (kx in 0..1) {
+                    val px = dx * 2 + kx
+                    val py = dy * 2 + ky
+                    if (px < srcW && py < srcH) {
+                        val p = pixels[py * srcW + px]
+                        a += (p ushr 24) and 0xFF
+                        r += (p ushr 16) and 0xFF
+                        g += (p ushr 8)  and 0xFF
+                        b +=  p          and 0xFF
+                        n++
+                    }
                 }
             }
             dst[dy * dstW + dx] = if (n > 0)

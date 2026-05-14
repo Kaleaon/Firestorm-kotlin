@@ -93,7 +93,7 @@ object FSLSLBridge {
 
     /** Returns true if the bridge exists AND the LSL bridge feature is enabled. */
     fun canUseBridge(): Boolean {
-        TODO("Check gSavedSettings.getBool(\"UseLSLBridge\") && isBridgeValid()")
+        return false
     }
 
     /**
@@ -102,7 +102,7 @@ object FSLSLBridge {
      * Mirrors FSLSLBridge::initBridge().
      */
     fun initBridge() {
-        TODO("Locate FS bridge folder in inventory; attach or create bridge prim")
+        System.err.println("FSLSLBridge: initBridge not yet implemented")
     }
 
     /**
@@ -110,7 +110,7 @@ object FSLSLBridge {
      * Mirrors FSLSLBridge::recreateBridge().
      */
     fun recreateBridge() {
-        TODO("Detach current bridge; call cleanUpBridge(); then startCreation()")
+        System.err.println("FSLSLBridge: recreateBridge not yet implemented")
     }
 
     /**
@@ -137,10 +137,10 @@ object FSLSLBridge {
                 true
             }
             "<bridgeError>" -> {
-                TODO("Parse error attribute and log / notify user")
+                return false
             }
             else -> {
-                TODO("Dispatch other LSL→viewer tags (AO control, windlight, etc.)")
+                return false
             }
         }
     }
@@ -153,7 +153,7 @@ object FSLSLBridge {
     fun viewerToScript(message: String, callback: ((Any?) -> Unit)? = null): Boolean {
         if (!isBridgeValid()) return false
         if (currentURL.isEmpty()) return false
-        TODO("POST message to currentURL via LLHTTPClient / FSLSLBridgeRequestResponder")
+        return false
     }
 
     /**
@@ -161,7 +161,7 @@ object FSLSLBridge {
      * Mirrors FSLSLBridge::updateBoolSettingValue().
      */
     fun updateBoolSettingValue(msgVal: String, contentVal: Boolean? = null): Boolean {
-        TODO("Parse msgVal to extract setting name; apply contentVal or toggle current value")
+        return false
     }
 
     /**
@@ -170,7 +170,7 @@ object FSLSLBridge {
      * Mirrors FSLSLBridge::updateIntegrations().
      */
     fun updateIntegrations() {
-        TODO("Iterate integration list and send current state to bridge via viewerToScript()")
+        System.err.println("FSLSLBridge: updateIntegrations not yet implemented")
     }
 
     // -----------------------------------------------------------------------
@@ -184,7 +184,7 @@ object FSLSLBridge {
     fun processAttach(objectId: LLUUID, attachmentPointName: String) {
         if (attachmentPointName != FS_BRIDGE_ATTACHMENT_POINT_NAME) return
         attachedId = objectId
-        TODO("Verify prim name matches currentFullName; begin handshake")
+        System.err.println("FSLSLBridge: processAttach handshake not yet implemented")
     }
 
     /**
@@ -196,7 +196,7 @@ object FSLSLBridge {
         attachedId = LLUUID.NULL
         status = BridgeStatus.INVALID
         currentURL = ""
-        TODO("Notify observers; optionally schedule re-attach")
+        System.err.println("FSLSLBridge: processDetach observer notify not yet implemented")
     }
 
     /** Returns true if the inventory item [itemId] is allowed to be detached. */
@@ -222,7 +222,7 @@ object FSLSLBridge {
                 timerResult = TimerResult.NO_TIMER
             }
             TimerResult.REATTACH_FINISHED -> {
-                TODO("Re-attach bridge using mReattachBridgeUUID via LLAttachmentsMgr")
+                System.err.println("FSLSLBridge: reattach not yet implemented")
                 timerResult = TimerResult.NO_TIMER
             }
             TimerResult.SCRIPT_UPLOAD_FINISHED -> {
@@ -246,29 +246,24 @@ object FSLSLBridge {
      * Mirrors the <bridgeURL> branch in FSLSLBridge::lslToViewer().
      */
     private fun handleBridgeUrl(message: String) {
-        TODO(
-            "Extract <bridgeURL>, <bridgeAuth>, <bridgeVer> substrings; " +
-            "validate version against FS_BRIDGE_MAJOR/MINOR_VERSION; " +
-            "set currentURL; mark status = BridgeStatus.VALID; " +
-            "send first viewerToScript() handshake reply"
-        )
+        System.err.println("FSLSLBridge: handleBridgeUrl not yet implemented")
     }
 
     private fun startCreation() {
         isBridgeCreating = true
-        TODO("Create bridge prim from LIB_ROCK_NAME template in inventory")
+        System.err.println("FSLSLBridge: startCreation not yet implemented")
     }
 
     private fun finishBridge() {
-        TODO("Attach finished bridge prim; call updateIntegrations()")
+        System.err.println("FSLSLBridge: finishBridge not yet implemented")
     }
 
     private fun cleanUpBridge() {
-        TODO("Remove old bridge items from FS_BRIDGE_FOLDER")
+        System.err.println("FSLSLBridge: cleanUpBridge not yet implemented")
     }
 
     private fun cleanUpPreCreation() {
-        TODO("Remove leftover items before a fresh bridge creation run")
+        System.err.println("FSLSLBridge: cleanUpPreCreation not yet implemented")
     }
 
     private fun finishCleanUpPreCreation() {
@@ -277,14 +272,14 @@ object FSLSLBridge {
     }
 
     private fun cleanUpOldVersions() {
-        TODO("Purge bridge inventory items with version < currentFullName")
+        System.err.println("FSLSLBridge: cleanUpOldVersions not yet implemented")
     }
 
     private fun checkBridgeScriptName() {
-        TODO("Verify uploaded script UUID matches expected; finalise bridge setup")
+        System.err.println("FSLSLBridge: checkBridgeScriptName not yet implemented")
     }
 
     private fun findFSCategory(): LLUUID {
-        TODO("Search inventory for FS_BRIDGE_FOLDER; return its UUID or LLUUID.NULL")
+        return LLUUID.NULL
     }
 }

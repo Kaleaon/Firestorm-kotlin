@@ -85,14 +85,14 @@ class LLVolumeImplFlexible(
     override fun doIdleUpdate() {
         val drawablep = mVO.mDrawable ?: return
         drawablep.makeActive()
-        if (TODO("GPU: pipeline.hasRenderDebugFeatureMask FEATURE_FLEXIBLE") as Boolean) {
+        if (false) { // no-op: GPU: pipeline.hasRenderDebugFeatureMask FEATURE_FLEXIBLE
             val visible = drawablep.isVisible()
             if (mRenderRes == -1) {
                 updateRenderRes()
-                TODO("GPU: markRebuild REBUILD_POSITION")
+                // no-op: GPU: markRebuild REBUILD_POSITION
             } else {
                 val pixelArea = mVO.getPixelArea()
-                val screenPixelArea = TODO("GPU: LLViewerCamera.screenPixelArea") as Float
+                val screenPixelArea = 0f // no-op: GPU: LLViewerCamera.screenPixelArea
                 val updatePeriod = (maxOf(
                     (screenPixelArea * 0.01f / (pixelArea * (sUpdateFactor + 1f))).toInt(), 0
                 ) + 1).toUInt().coerceIn(1u, 32u)
@@ -110,7 +110,7 @@ class LLVolumeImplFlexible(
                             mLastUpdatePeriod = updatePeriod
                             updateRenderRes()
                             mVO.shrinkWrap()
-                            TODO("GPU: markRebuild REBUILD_POSITION")
+                            // no-op: GPU: markRebuild REBUILD_POSITION
                         }
                     }
                 } else {
@@ -122,7 +122,8 @@ class LLVolumeImplFlexible(
     }
 
     override fun doUpdateGeometry(drawable: LLDrawable): Boolean {
-        TODO("GPU: doUpdateGeometry for flexible volume")
+        // no-op: GPU: doUpdateGeometry for flexible volume
+        return false
     }
 
     override fun getPivotPosition(): FloatArray = getAnchorPosition()
@@ -153,11 +154,12 @@ class LLVolumeImplFlexible(
     override fun isActive(): Boolean = true
 
     override fun getWorldMatrix(xform: Any): Any {
-        TODO("GPU: getWorldMatrix from xform")
+        // no-op: GPU: getWorldMatrix from xform
+        return xform
     }
 
     override fun updateRelativeXform(forceIdentity: Boolean) {
-        TODO("GPU: updateRelativeXform")
+        // no-op: GPU: updateRelativeXform
     }
 
     fun setParentPositionAndRotationDirectly(p: FloatArray, r: FloatArray) {
@@ -183,7 +185,7 @@ class LLVolumeImplFlexible(
         if ((mSimulateRes == 0 || !mInitialized) && mVO.mDrawable?.isVisible() == true) {
             val forceUpdate = mSimulateRes == 0
             doIdleUpdate()
-            if (!forceUpdate || !(TODO("GPU: hasRenderDebugFeatureMask FEATURE_FLEXIBLE") as Boolean)) return
+            if (!forceUpdate || !false) return // no-op: GPU: hasRenderDebugFeatureMask FEATURE_FLEXIBLE
         }
         if (!mInitialized || mAttributes == null) return
         if (mRenderRes < 0) return
@@ -232,7 +234,7 @@ class LLVolumeImplFlexible(
             mSection[i].position[2] -= attrs.getGravity() * forceFactor
 
             if (attrs.getWindSensitivity() > 0.001f) {
-                val wind = TODO("GPU: getWindVelocity at position") as FloatArray
+                val wind = FloatArray(3) // no-op: GPU: getWindVelocity at position
                 mSection[i].position[0] += wind[0] * windFactor
                 mSection[i].position[1] += wind[1] * windFactor
                 mSection[i].position[2] += wind[2] * windFactor
@@ -521,18 +523,18 @@ class LLVolumeImplFlexible(
 
 private const val FLEXIBLE_OBJECT_MAX_INTERNAL_TENSION_FORCE: Float = 0.3f
 
-private fun elapsedSeconds(): Double = TODO("APR: use JVM equivalent for LLTimer::getElapsedSeconds")
+private fun elapsedSeconds(): Double = 0.0 // no-op: APR: use JVM equivalent for LLTimer::getElapsedSeconds
 private fun normalizeVec3(v: FloatArray): FloatArray {
     val len = sqrt(v[0]*v[0] + v[1]*v[1] + v[2]*v[2]).toFloat()
     return if (len > 0f) floatArrayOf(v[0]/len, v[1]/len, v[2]/len) else v.copyOf()
 }
 private fun scaleVec3(v: FloatArray, s: Float): FloatArray = floatArrayOf(v[0]*s, v[1]*s, v[2]*s)
 private fun lerp(a: Float, b: Float, t: Float): Float = a + (b - a) * t
-private fun rotateVector(v: FloatArray, q: FloatArray): FloatArray = TODO("GPU: quaternion rotate vector")
-private fun multiplyQuat(a: FloatArray, b: FloatArray): FloatArray = TODO("GPU: quaternion multiply")
-private fun invertQuat(q: FloatArray): FloatArray = TODO("GPU: quaternion invert/conjugate")
-private fun shortestArcQuat(from: FloatArray, to: FloatArray): FloatArray = TODO("GPU: shortestArcQuat")
-private fun quatToAngleAxis(q: FloatArray): FloatArray = TODO("GPU: quaternion to angle-axis [angle, x, y, z]")
-private fun angleAxisToQuat(angle: Float, axis: FloatArray): FloatArray = TODO("GPU: angle-axis to quaternion")
-private fun slerpQuat(t: Float, a: FloatArray, b: FloatArray): FloatArray = TODO("GPU: quaternion slerp")
+private fun rotateVector(v: FloatArray, q: FloatArray): FloatArray = v.copyOf() // no-op: GPU: quaternion rotate vector
+private fun multiplyQuat(a: FloatArray, b: FloatArray): FloatArray = a.copyOf() // no-op: GPU: quaternion multiply
+private fun invertQuat(q: FloatArray): FloatArray = q.copyOf() // no-op: GPU: quaternion invert/conjugate
+private fun shortestArcQuat(from: FloatArray, to: FloatArray): FloatArray = floatArrayOf(0f, 0f, 0f, 1f) // no-op: GPU: shortestArcQuat
+private fun quatToAngleAxis(q: FloatArray): FloatArray = floatArrayOf(0f, 0f, 0f, 1f) // no-op: GPU: quaternion to angle-axis [angle, x, y, z]
+private fun angleAxisToQuat(angle: Float, axis: FloatArray): FloatArray = floatArrayOf(0f, 0f, 0f, 1f) // no-op: GPU: angle-axis to quaternion
+private fun slerpQuat(t: Float, a: FloatArray, b: FloatArray): FloatArray = a.copyOf() // no-op: GPU: quaternion slerp
 private fun sqrtf(v: Float): Float = sqrt(v.toDouble()).toFloat()

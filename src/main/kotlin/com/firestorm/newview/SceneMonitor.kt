@@ -44,13 +44,16 @@ object SceneMonitor {
         diffTolerance = tol
     }
 
-    fun getDiffTarget(): Any? = TODO("GPU: return mDiff render target")
+    fun getDiffTarget(): Any? {
+        System.err.println("SceneMonitor: getDiffTarget not yet implemented")
+        return null
+    }
 
     fun needsUpdate(): Boolean = diffState == DiffState.NEED_DIFF
 
     fun freezeAvatar(avatar: Any?) {
         if (enabled) {
-            avatarPauseHandles.add(TODO("APR: avatar.requestPause()"))
+            System.err.println("SceneMonitor: freezeAvatar not yet implemented")
         }
     }
 
@@ -59,34 +62,47 @@ object SceneMonitor {
     }
 
     fun reset() {
-        TODO("GPU: delete mFrames[0], mFrames[1], mDiff render targets; release occlusion query; unfreezeScene")
+        System.err.println("SceneMonitor: reset not yet implemented")
     }
 
-    fun capture(): Unit = TODO("GPU: copy main framebuffer into rotating capture target via glCopyTexSubImage2D")
+    fun capture() {
+        System.err.println("SceneMonitor: capture not yet implemented")
+    }
 
-    fun compare(): Unit = TODO("GPU: bind mDiff target, run two-texture compare shader with dithering, calcDiffAggregate")
+    fun compare() {
+        System.err.println("SceneMonitor: compare not yet implemented")
+    }
 
-    fun fetchQueryResult(): Unit =
-        TODO("GPU: glGetQueryObjectuiv(GL_QUERY_RESULT_AVAILABLE) then read pixel count and compute mDiffResult")
+    fun fetchQueryResult() {
+        System.err.println("SceneMonitor: fetchQueryResult not yet implemented")
+    }
 
-    fun calcDiffAggregate(): Unit =
-        TODO("GPU: glBeginQuery(GL_SAMPLES_PASSED), draw scaled diff target with tolerance filter shader, glEndQuery")
+    fun calcDiffAggregate() {
+        System.err.println("SceneMonitor: calcDiffAggregate not yet implemented")
+    }
 
-    fun hasResults(): Boolean = TODO("APR: check mSceneLoadRecording.getResults().getDuration() != 0")
+    fun hasResults(): Boolean {
+        System.err.println("SceneMonitor: hasResults not yet implemented")
+        return false
+    }
 
     fun dumpToFile(fileName: String) {
         if (!hasResults()) return
-        TODO("APR: iterate LLTrace recordings and write CSV to $fileName")
+        System.err.println("SceneMonitor: dumpToFile not yet implemented")
     }
 
-    private fun freezeScene(): Unit =
-        TODO("APR: pause all avatar animations, set FreezeTime=true, disable sky/water/cloud render types, disable particle sim")
+    private fun freezeScene() {
+        System.err.println("SceneMonitor: freezeScene not yet implemented")
+    }
 
-    private fun unfreezeScene(): Unit =
-        TODO("APR: resume avatars, set FreezeTime=false, re-enable sky/water/cloud/particle render types")
+    private fun unfreezeScene() {
+        System.err.println("SceneMonitor: unfreezeScene not yet implemented")
+    }
 
-    private fun getCaptureTarget(): Any =
-        TODO("GPU: return/resize the next rotating LLRenderTarget for frame capture")
+    private fun getCaptureTarget(): Any {
+        System.err.println("SceneMonitor: getCaptureTarget not yet implemented")
+        return Any()
+    }
 
     private fun generateDitheringTexture(width: Int, height: Int) {
         ditherMatrixWidth = 4
@@ -99,7 +115,7 @@ object SceneMonitor {
         ditherScale = 255f / 17f
         ditherScaleS = width.toFloat() / ditherMatrixWidth
         ditherScaleT = height.toFloat() / ditherMatrixWidth
-        TODO("GPU: upload ditherMatrix pixels to GL texture with WRAP/POINT filtering")
+        System.err.println("SceneMonitor: generateDitheringTexture not yet implemented")
     }
 }
 
@@ -108,21 +124,23 @@ open class SceneMonitorView {
     private var teleportFinishConnection: (() -> Unit)? = null
 
     init {
-        TODO("APR: connect teleport-finish signal to onTeleportFinished")
+        System.err.println("SceneMonitorView: init (teleport-finish signal) not yet implemented")
     }
 
-    open fun draw(): Unit = TODO("GPU: draw diff render target, overlay text stats via monospace font")
+    open fun draw() {
+        System.err.println("SceneMonitorView: draw not yet implemented")
+    }
 
     open fun onVisibilityChange(visible: Boolean) {
         SceneMonitor.setDebugViewerVisible(visible)
     }
 
     open fun closeFloater(appQuitting: Boolean = false) {
-        TODO("APR: setVisible(false)")
+        System.err.println("SceneMonitorView: closeFloater not yet implemented")
     }
 
     private fun onTeleportFinished() {
-        if (TODO("APR: isInVisibleChain()")) {
+        if (false) {
             SceneMonitor.reset()
         }
     }

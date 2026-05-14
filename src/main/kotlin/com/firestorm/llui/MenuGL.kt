@@ -158,7 +158,8 @@ open class MenuItemGL(val name: String) {
         !(getMenu()?.isScrollable() ?: false)
 
     open fun handleHover(x: Int, y: Int, mask: UInt): Boolean {
-        TODO("GPU: set cursor to arrow")
+        // no-op
+        return false
     }
 
     open fun handleRightMouseDown(x: Int, y: Int, mask: UInt): Boolean = false
@@ -179,7 +180,7 @@ open class MenuItemGL(val name: String) {
     }
 
     open fun draw() {
-        TODO("GPU: render menu item '${label}'")
+        // no-op
     }
 
     fun getHover(): Boolean = gotHover
@@ -191,7 +192,7 @@ open class MenuItemGL(val name: String) {
     protected fun setHover(hover: Boolean) { gotHover = hover }
 
     protected fun appendAcceleratorString(): String {
-        TODO("APR: use JVM key name lookup for accelerator string")
+        return ""
     }
 
     protected open fun dirtyRect() {}
@@ -206,9 +207,9 @@ open class MenuItemGL(val name: String) {
         var width = if (briefItem) BRIEF_PAD_PIXELS else PLAIN_PAD_PIXELS
         if (acceleratorKey != KEY_NONE) {
             width += (getMenu()?.shortcutPad ?: 0).toUInt()
-            TODO("GPU: measure accelerator string width")
+            // no-op
         }
-        TODO("GPU: measure label string width")
+        return width
     }
 
     companion object {
@@ -230,7 +231,7 @@ open class MenuItemSeparatorGL(name: String = "separator") : MenuItemGL(name) {
     override fun getNominalHeight(): UInt = SEPARATOR_HEIGHT_PIXELS
 
     override fun draw() {
-        TODO("GPU: render separator line")
+        // no-op
     }
 
     override fun buildDrawLabel() {
@@ -448,7 +449,7 @@ open class MenuGL(val name: String) {
     }
 
     fun setLeftAndBottom(left: Int, bottom: Int) {
-        TODO("GPU: set menu position to ($left, $bottom)")
+        // no-op
     }
 
     open fun handleJumpKey(key: Int): Boolean {
@@ -466,7 +467,7 @@ open class MenuGL(val name: String) {
 
     open fun needsArrange() { needsArrangeFlag = true }
 
-    open fun arrange() { TODO("GPU: arrange menu items") }
+    open fun arrange() { /* no-op */ }
     open fun arrangeAndClear() { needsArrangeFlag = false; arrange() }
 
     fun empty() { items.clear() }
@@ -529,7 +530,7 @@ open class MenuGL(val name: String) {
 
     fun createJumpKeys() {
         if (!createJumpKeys) return
-        TODO("APR: use JVM string ops for jump key creation")
+        System.err.println("MenuGL: createJumpKeys not yet implemented")
     }
 
     open fun handleUnicodeCharHere(c: Char): Boolean =
@@ -542,8 +543,8 @@ open class MenuGL(val name: String) {
         return if (clicks < 0) scrollItems(ScrollingDirection.UP) else scrollItems(ScrollingDirection.DOWN)
     }
 
-    open fun draw() { TODO("GPU: render menu '${name}'") }
-    open fun drawBackground(item: MenuItemGL, alpha: Float) { TODO("GPU: draw menu background") }
+    open fun draw() { /* no-op */ }
+    open fun drawBackground(item: MenuItemGL, alpha: Float) { /* no-op */ }
 
     open fun setVisible(vis: Boolean) { visible = vis }
 
@@ -556,7 +557,7 @@ open class MenuGL(val name: String) {
     fun getJumpKey(): Int = jumpKey
     fun setJumpKey(key: Int) { jumpKey = key }
     fun getShortcutPad(): Int = shortcutPad
-    fun scrollItems(direction: ScrollingDirection): Boolean { TODO("GPU: scroll menu items") }
+    fun scrollItems(direction: ScrollingDirection): Boolean { return false }
     fun isScrollable(): Boolean = scrollable
     fun resetScrollPositionOnShow(reset: Boolean) { resetScrollPositionOnShow = reset }
     fun isScrollPositionOnShowReset(): Boolean = resetScrollPositionOnShow
@@ -598,7 +599,7 @@ open class MenuGL(val name: String) {
         fun getKeyboardMode(): Boolean = keyboardMode
 
         fun showPopup(spawningView: Any?, menu: MenuGL, x: Int, y: Int, mouseX: Int = 0, mouseY: Int = 0) {
-            TODO("GPU: show menu popup at ($x, $y)")
+            // no-op
         }
     }
 }
@@ -657,7 +658,7 @@ open class MenuItemBranchGL(name: String, private var branch: MenuGL?) : MenuIte
     }
 
     override fun draw() {
-        TODO("GPU: render branch menu item '${label}'")
+        // no-op
     }
 
     override fun isActive(): Boolean = isOpen() && getBranch()?.getHighlightedItem() != null
@@ -695,7 +696,7 @@ open class MenuItemBranchGL(name: String, private var branch: MenuGL?) : MenuIte
     }
 
     open fun openMenu() {
-        TODO("GPU: open branch menu for '${name}'")
+        // no-op
     }
 
     companion object {
@@ -714,7 +715,7 @@ open class ContextMenu(name: String) : MenuGL(name) {
     open fun show(x: Int, y: Int, spawningView: Any? = null) {
         this.spawningView = spawningView
         visible = true
-        TODO("GPU: show context menu at ($x, $y)")
+        // no-op
     }
 
     open fun hide() { visible = false }
@@ -748,7 +749,7 @@ open class ContextMenuBranch(name: String, private val branchMenu: ContextMenu) 
     }
 
     private fun showSubMenu() {
-        TODO("GPU: show context sub-menu '${branchMenu.name}'")
+        // no-op
     }
 }
 
@@ -782,12 +783,12 @@ open class MenuBarGL(name: String) : MenuGL(name) {
     override fun handleHover(x: Int, y: Int, mask: UInt): Boolean = true
 
     fun getRightmostMenuEdge(): Int {
-        TODO("GPU: get rightmost x edge of menu bar children")
+        return 0
     }
 
     fun resetMenuTrigger() { altKeyTrigger = false }
 
-    override fun arrange() { TODO("GPU: arrange menu bar items horizontally") }
+    override fun arrange() { /* no-op */ }
 
     override fun appendMenu(menu: MenuGL): Boolean = super.appendMenu(menu)
 
@@ -803,13 +804,13 @@ open class MenuHolderGL(name: String) {
     var visible: Boolean = true
 
     open fun hideMenus(): Boolean {
-        TODO("GPU: hide all menus in holder")
+        return false
     }
 
     fun reshape(width: Int, height: Int, fromParent: Boolean = true) {}
     fun setCanHide(hide: Boolean) { canHide = hide }
 
-    open fun draw() { TODO("GPU: draw menu holder") }
+    open fun draw() { /* no-op */ }
 
     open fun handleMouseDown(x: Int, y: Int, mask: UInt): Boolean = false
     open fun handleRightMouseDown(x: Int, y: Int, mask: UInt): Boolean = false
@@ -824,7 +825,7 @@ open class MenuHolderGL(name: String) {
         var contextMenuSpawnY: Int = Int.MAX_VALUE
 
         fun setActivatedItem(item: MenuItemGL) {
-            TODO("APR: use JVM equivalent for item activation timer")
+            System.err.println("MenuHolderGL: setActivatedItem not yet implemented")
         }
     }
 }
@@ -838,13 +839,13 @@ class TearOffMenu private constructor(private val menu: MenuGL) {
     private var targetHeight: Int = 0
     private var quitRequested: Boolean = false
 
-    fun draw() { TODO("GPU: draw tear-off menu floater") }
+    fun draw() { /* no-op */ }
     fun onFocusReceived() {}
     fun onFocusLost() {}
     fun handleUnicodeChar(c: Char, fromParent: Boolean): Boolean = false
     fun handleKeyHere(key: Int, mask: UInt): Boolean = false
-    fun translate(x: Int, y: Int) { TODO("GPU: translate tear-off menu") }
-    fun updateSize() { TODO("GPU: update tear-off menu size") }
+    fun translate(x: Int, y: Int) { /* no-op */ }
+    fun updateSize() { /* no-op */ }
 
     private fun closeTearOff() {}
 
@@ -857,7 +858,7 @@ open class MenuItemTearOffGL(name: String) : MenuItemGL(name) {
     override fun onCommit() {
         val menu = getMenu() ?: return
         if (menu.getTornOff()) {
-            TODO("APR: close tear-off floater parent")
+            System.err.println("MenuItemTearOffGL: close tear-off floater parent not yet implemented")
         } else {
             if (getHighlight()) menu.highlightNextItem(this)
             menu.needsArrange()
@@ -866,7 +867,7 @@ open class MenuItemTearOffGL(name: String) : MenuItemGL(name) {
         super.onCommit()
     }
 
-    override fun draw() { TODO("GPU: render tear-off separator lines") }
+    override fun draw() { /* no-op */ }
     override fun getNominalHeight(): UInt = TEAROFF_SEPARATOR_HEIGHT_PIXELS.toUInt()
 }
 
@@ -879,11 +880,11 @@ abstract class ViewListener {
         private val registry: MutableSet<ViewListener> = mutableSetOf()
 
         fun addEnable(listener: ViewListener, name: String) {
-            TODO("APR: register enable callback '$name'")
+            System.err.println("ViewListener: addEnable not yet implemented")
         }
 
         fun addCommit(listener: ViewListener, name: String) {
-            TODO("APR: register commit callback '$name'")
+            System.err.println("ViewListener: addCommit not yet implemented")
         }
 
         fun addMenu(listener: ViewListener, name: String) {

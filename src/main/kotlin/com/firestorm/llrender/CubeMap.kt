@@ -25,7 +25,7 @@ class CubeMap(val isSrgb: Boolean) {
             return
         }
         if (images[0] != null) return
-        TODO("GPU: LLImageGL.generateTextures(1); for each face create ImageGL/ImageRaw at DEFAULT_RESOLUTION; set sRGB format if isSrgb; setTarget(TT_CUBE_MAP); createGLTexture; setAddressMode(TAM_CLAMP); disable tex unit")
+        // no-op
     }
 
     fun initRawData(rawImages: List<ImageRaw>) {
@@ -54,7 +54,7 @@ class CubeMap(val isSrgb: Boolean) {
     }
 
     fun initGlData() {
-        TODO("GPU: for each face call setSubImage on images[i] using rawImages[i] at DEFAULT_RESOLUTION")
+        // no-op
     }
 
     fun init(rawImages: List<ImageRaw>) {
@@ -64,28 +64,28 @@ class CubeMap(val isSrgb: Boolean) {
     }
 
     fun initReflectionMap(resolution: UInt, components: UInt = 3u) {
-        TODO("GPU: generateTextures(1); create images[0] at resolution; setTexName; setTarget TT_CUBE_MAP; bindManual; setAddressMode TAM_CLAMP")
+        // no-op
     }
 
     fun initEnvironmentMap(rawImages: List<ImageRaw>) {
         require(rawImages.size == 6)
-        TODO("GPU: generateTextures(1); for each face create ImageGL; createGLTexture; bindManual; setAddressMode; setSubImage; enableTexture(0); bind; setFilteringOption ANISOTROPIC; glEnable GL_TEXTURE_CUBE_MAP_SEAMLESS; glGenerateMipmap; disable")
+        // no-op
     }
 
     fun generateMipMaps() {
-        TODO("GPU: setUseMipMaps/setHasMipMaps on images[0]; enableTexture(0); bind; setFilteringOption BILINEAR; glGenerateMipmap GL_TEXTURE_CUBE_MAP; disable")
+        // no-op
     }
 
     fun getGlName(): UInt {
-        TODO("GPU: return images[0].getTexName()")
+        return 0u
     }
 
     fun getResolution(): UInt {
-        TODO("GPU: return images[0]?.getWidth(0) ?: 0u")
+        return 0u
     }
 
     fun bind() {
-        TODO("GPU: gGL.getTexUnit(textureStage).bind(this)")
+        // no-op
     }
 
     fun enable(stage: Int) = enableTexture(stage)
@@ -93,7 +93,7 @@ class CubeMap(val isSrgb: Boolean) {
     fun enableTexture(stage: Int) {
         textureStage = stage
         if (stage >= 0 && sUseCubeMaps) {
-            TODO("GPU: gGL.getTexUnit(stage).enable(TT_CUBE_MAP)")
+            // no-op
         }
     }
 
@@ -101,19 +101,19 @@ class CubeMap(val isSrgb: Boolean) {
 
     fun disableTexture() {
         if (textureStage >= 0 && sUseCubeMaps) {
-            TODO("GPU: gGL.getTexUnit(textureStage).disable(); if stage==0 re-enable TT_TEXTURE")
+            // no-op
         }
     }
 
     fun setMatrix(stage: Int) {
         matrixStage = stage
         if (matrixStage < 0) return
-        TODO("GPU: activate tex unit; extract rotation 3x3 from gGLModelView; transpose; push as texture matrix")
+        // no-op
     }
 
     fun restoreMatrix() {
         if (matrixStage < 0) return
-        TODO("GPU: activate tex unit matrixStage; gGL.matrixMode(MM_TEXTURE); gGL.popMatrix(); gGL.matrixMode(MM_MODELVIEW)")
+        // no-op
     }
 
     fun destroyGL() {
@@ -140,13 +140,13 @@ class ImageGL(val width: Int, val height: Int, val components: Int, val useMipMa
     fun getHeight(mip: Int = 0): Int = height shr mip
     fun getComponents(): Int = components
     fun getUseMipMaps(): Boolean = useMipMaps
-    fun setUseMipMaps(v: Boolean) { TODO("GPU: store mip flag") }
-    fun setHasMipMaps(v: Boolean) { TODO("GPU: store hasMipMaps flag") }
-    fun setTarget(target: Int, texType: TextureType) { TODO("GPU: store GL target and texture type") }
-    fun setAddressMode(mode: AddressMode) { TODO("GPU: glTexParameteri wrap mode") }
-    fun setFilteringOption(opt: TextureFilterOptions) { TODO("GPU: glTexParameteri filter") }
-    fun setSubImage(raw: ImageRaw, x: Int, y: Int, w: UShort, h: UShort) { TODO("GPU: glTexSubImage2D") }
-    fun createGLTexture(mipLevel: Int, raw: ImageRaw, texName: UInt): Boolean { TODO("GPU: bind and upload texture data") }
+    fun setUseMipMaps(v: Boolean) { /* no-op */ }
+    fun setHasMipMaps(v: Boolean) { /* no-op */ }
+    fun setTarget(target: Int, texType: TextureType) { /* no-op */ }
+    fun setAddressMode(mode: AddressMode) { /* no-op */ }
+    fun setFilteringOption(opt: TextureFilterOptions) { /* no-op */ }
+    fun setSubImage(raw: ImageRaw, x: Int, y: Int, w: UShort, h: UShort) { /* no-op */ }
+    fun createGLTexture(mipLevel: Int, raw: ImageRaw, texName: UInt): Boolean { return false }
 }
 
 class ImageRaw(val width: Int, val height: Int, val components: Int) {

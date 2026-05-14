@@ -52,22 +52,22 @@ class PlacesRemoteParcelInfoObserver(private val places: PanelPlaces) {
     private val parcelIds: MutableSet<UUID> = mutableSetOf()
 
     fun processParcelInfo(parcelData: Any) {
-        TODO("APR: use JVM equivalent - update global position and clean up observer")
+        System.err.println("PlacesRemoteParcelInfoObserver: processParcelInfo not yet implemented")
     }
 
     fun setParcelID(parcelId: UUID) {
         if (parcelId != UUID.NULL) {
             parcelIds.add(parcelId)
-            TODO("APR: use JVM equivalent - register with RemoteParcelInfoProcessor and send request")
+            System.err.println("PlacesRemoteParcelInfoObserver: setParcelID not yet implemented")
         }
     }
 
     fun setErrorStatus(status: Int, reason: String) {
-        TODO("APR: use JVM equivalent - log HTTP error from remote parcel info request")
+        System.err.println("PlacesRemoteParcelInfoObserver: setErrorStatus not yet implemented")
     }
 
     fun cleanup() {
-        TODO("APR: use JVM equivalent - remove all in-flight observer registrations")
+        System.err.println("PlacesRemoteParcelInfoObserver: cleanup not yet implemented")
     }
 }
 
@@ -116,7 +116,7 @@ class PanelPlaces : Panel() {
         inventoryObserver = PlacesInventoryObserver(this)
         remoteParcelObserver = PlacesRemoteParcelInfoObserver(this)
 
-        TODO("APR: use JVM equivalent - register inventory observer and agent parcel changed callback")
+        System.err.println("PanelPlaces: init not yet implemented")
     }
 
     override fun postBuild(): Boolean {
@@ -183,7 +183,7 @@ class PanelPlaces : Panel() {
         landmarkInfo!!.getChild<Button>("edit_btn")
             .setCommitCallback { onEditButtonClicked() }
 
-        TODO("APR: use JVM equivalent - build place/landmark toggle menus from XML")
+        System.err.println("PanelPlaces: postBuild (build toggle menus) not yet implemented")
 
         createTabs()
         updateVerbs()
@@ -210,13 +210,13 @@ class PanelPlaces : Panel() {
             }
             CREATE_PICK_TYPE -> {
                 val itemId = key["item_id"].asUUID()
-                TODO("APR: use JVM equivalent - get landmark and create pick via landmarks panel")
+                System.err.println("PanelPlaces: onOpen CREATE_PICK_TYPE not yet implemented")
             }
             TELEPORT_HISTORY_TAB_INFO_TYPE -> {
                 togglePlaceInfoPanel(false)
                 placeInfoType = LANDMARK_TAB_INFO_TYPE
                 landmarkInfo!!.setVisible(false)
-                TODO("APR: use JVM equivalent - select teleport history tab in container")
+                System.err.println("PanelPlaces: onOpen TELEPORT_HISTORY_TAB_INFO_TYPE not yet implemented")
                 onTabSelected()
                 updateVerbs()
             }
@@ -232,7 +232,7 @@ class PanelPlaces : Panel() {
                 when (placeInfoType) {
                     AGENT_INFO_TYPE -> {
                         placeProfile!!.setInfoType(PanelPlaceInfo.InfoType.AGENT)
-                        TODO("APR: use JVM equivalent - get region ID from agent")
+                        System.err.println("PanelPlaces: onOpen AGENT_INFO_TYPE not yet implemented")
                     }
                     CREATE_LANDMARK_INFO_TYPE -> {
                         val destFolder = key["dest_folder"].asUUID()
@@ -240,7 +240,8 @@ class PanelPlaces : Panel() {
                         posGlobal = if (key.has("x") && key.has("y") && key.has("z")) {
                             Vector3d(key["x"].asDouble(), key["y"].asDouble(), key["z"].asDouble())
                         } else {
-                            TODO("APR: use JVM equivalent - get agent global position")
+                            System.err.println("PanelPlaces: onOpen CREATE_LANDMARK_INFO_TYPE (agent global position) not yet implemented")
+                            Vector3d.ZERO
                         }
                         landmarkInfo!!.displayParcelInfo(UUID.NULL, posGlobal)
                         saveBtn?.setEnabled(false)
@@ -248,7 +249,7 @@ class PanelPlaces : Panel() {
                     LANDMARK_INFO_TYPE -> {
                         landmarkInfo!!.setInfoType(PanelPlaceInfo.InfoType.LANDMARK)
                         val id = key["id"].asUUID()
-                        TODO("APR: use JVM equivalent - load inventory item and check edit permissions")
+                        System.err.println("PanelPlaces: onOpen LANDMARK_INFO_TYPE not yet implemented")
                     }
                     REMOTE_PLACE_INFO_TYPE -> {
                         if (key.has("id")) {
@@ -263,7 +264,7 @@ class PanelPlaces : Panel() {
                     }
                     TELEPORT_HISTORY_INFO_TYPE -> {
                         val index = key["id"].asInteger()
-                        TODO("APR: use JVM equivalent - get global pos from teleport history storage at index")
+                        System.err.println("PanelPlaces: onOpen TELEPORT_HISTORY_INFO_TYPE not yet implemented")
                         placeProfile!!.setInfoType(PanelPlaceInfo.InfoType.TELEPORT_HISTORY)
                         placeProfile!!.displayParcelInfo(UUID.NULL, posGlobal)
                     }
@@ -276,16 +277,17 @@ class PanelPlaces : Panel() {
     }
 
     fun handleKeyHere(key: Int, mask: Int): Boolean {
-        TODO("APR: use JVM equivalent - CTRL-F focuses filter editor")
+        System.err.println("PanelPlaces: handleKeyHere not yet implemented")
+        return false
     }
 
     fun changedParcelSelection() {
-        TODO("APR: use JVM equivalent - update place profile with current parcel")
+        System.err.println("PanelPlaces: changedParcelSelection not yet implemented")
     }
 
     fun createTabs() {
         if (tabsCreated) return
-        TODO("APR: use JVM equivalent - create My Landmarks and Teleport History tabs")
+        System.err.println("PanelPlaces: createTabs not yet implemented")
         tabsCreated = true
     }
 
@@ -295,12 +297,12 @@ class PanelPlaces : Panel() {
     }
 
     fun showAddedLandmarkInfo(items: Set<UUID>) {
-        TODO("APR: use JVM equivalent - show landmark info panel for newly created landmark")
+        System.err.println("PanelPlaces: showAddedLandmarkInfo not yet implemented")
     }
 
     fun setItem(item: InventoryItem?) {
         this.item = item
-        TODO("APR: use JVM equivalent - load landmark and update place info panel")
+        System.err.println("PanelPlaces: setItem not yet implemented")
     }
 
     fun getItem(): InventoryItem? = item
@@ -308,7 +310,8 @@ class PanelPlaces : Panel() {
     fun tabsCreated(): Boolean = tabsCreated
 
     override fun notifyParent(info: LLSD): Int {
-        TODO("APR: use JVM equivalent - handle child panel notifications (e.g. back button)")
+        System.err.println("PanelPlaces: notifyParent not yet implemented")
+        return 0
     }
 
     fun hideBackBtn() {
@@ -321,12 +324,12 @@ class PanelPlaces : Panel() {
     }
 
     private fun onLandmarkLoaded(landmark: Any) {
-        TODO("APR: use JVM equivalent - display landmark parcel info once asset loaded")
+        System.err.println("PanelPlaces: onLandmarkLoaded not yet implemented")
     }
 
     private fun onFilterEdit(searchString: String, forceFilter: Boolean) {
         activePanel?.onSearchEdit(searchString)
-        TODO("APR: use JVM equivalent - propagate filter to active tab panel")
+        System.err.println("PanelPlaces: onFilterEdit not yet implemented")
     }
 
     private fun onTabSelected() {
@@ -335,19 +338,19 @@ class PanelPlaces : Panel() {
     }
 
     private fun onTeleportButtonClicked() {
-        TODO("APR: use JVM equivalent - teleport to posGlobal or landmark")
+        System.err.println("PanelPlaces: onTeleportButtonClicked not yet implemented")
     }
 
     private fun onShowOnMapButtonClicked() {
-        TODO("APR: use JVM equivalent - open world map floater at posGlobal")
+        System.err.println("PanelPlaces: onShowOnMapButtonClicked not yet implemented")
     }
 
     private fun onEditButtonClicked() {
-        TODO("APR: use JVM equivalent - enable landmark edit mode and update verbs")
+        System.err.println("PanelPlaces: onEditButtonClicked not yet implemented")
     }
 
     private fun onSaveButtonClicked() {
-        TODO("APR: use JVM equivalent - save landmark info changes")
+        System.err.println("PanelPlaces: onSaveButtonClicked not yet implemented")
     }
 
     private fun onCancelButtonClicked() {
@@ -357,15 +360,16 @@ class PanelPlaces : Panel() {
     }
 
     private fun onOverflowButtonClicked() {
-        TODO("APR: use JVM equivalent - show overflow toggleable menu")
+        System.err.println("PanelPlaces: onOverflowButtonClicked not yet implemented")
     }
 
     private fun onOverflowMenuItemClicked(param: LLSD) {
-        TODO("APR: use JVM equivalent - dispatch overflow menu action (copy SLURL, create pick, etc.)")
+        System.err.println("PanelPlaces: onOverflowMenuItemClicked not yet implemented")
     }
 
     private fun onOverflowMenuItemEnable(param: LLSD): Boolean {
-        TODO("APR: use JVM equivalent - return enabled state for overflow menu item")
+        System.err.println("PanelPlaces: onOverflowMenuItemEnable not yet implemented")
+        return false
     }
 
     private fun onBackButtonClicked() {
@@ -374,23 +378,23 @@ class PanelPlaces : Panel() {
     }
 
     private fun onProfileButtonClicked() {
-        TODO("APR: use JVM equivalent - show avatar/place profile")
+        System.err.println("PanelPlaces: onProfileButtonClicked not yet implemented")
     }
 
     private fun onGearMenuClick() {
-        TODO("APR: use JVM equivalent - show gear toggleable menu")
+        System.err.println("PanelPlaces: onGearMenuClick not yet implemented")
     }
 
     private fun onSortingMenuClick() {
-        TODO("APR: use JVM equivalent - show sorting toggleable menu")
+        System.err.println("PanelPlaces: onSortingMenuClick not yet implemented")
     }
 
     private fun onAddMenuClick() {
-        TODO("APR: use JVM equivalent - show add landmark/folder menu")
+        System.err.println("PanelPlaces: onAddMenuClick not yet implemented")
     }
 
     private fun onRemoveButtonClicked() {
-        TODO("APR: use JVM equivalent - remove selected landmark or folder")
+        System.err.println("PanelPlaces: onRemoveButtonClicked not yet implemented")
     }
 
     private fun handleDragAndDropToTrash(
@@ -399,21 +403,22 @@ class PanelPlaces : Panel() {
         cargoData: Any?,
         accept: IntArray,
     ): Boolean {
-        TODO("APR: use JVM equivalent - validate and perform DnD delete of landmark/folder")
+        System.err.println("PanelPlaces: handleDragAndDropToTrash not yet implemented")
+        return false
     }
 
     private fun togglePlaceInfoPanel(visible: Boolean) {
-        TODO("APR: use JVM equivalent - show/hide place profile vs landmark info panel, manage tab visibility")
+        System.err.println("PanelPlaces: togglePlaceInfoPanel not yet implemented")
     }
 
     override fun onVisibilityChange(newVisibility: Boolean) {
         if (!newVisibility) {
-            TODO("APR: use JVM equivalent - deselect parcel when panel hides")
+            System.err.println("PanelPlaces: onVisibilityChange (deselect parcel) not yet implemented")
         }
     }
 
     private fun updateVerbs() {
-        TODO("APR: use JVM equivalent - set enabled/visible state of all action buttons based on placeInfoType")
+        System.err.println("PanelPlaces: updateVerbs not yet implemented")
     }
 
     private fun getCurrentInfoPanel(): PanelPlaceInfo? = when {
@@ -423,6 +428,6 @@ class PanelPlaces : Panel() {
     }
 
     private fun handleParcelManagerState() {
-        TODO("APR: use JVM equivalent - register/deregister parcel observer based on current info type")
+        System.err.println("PanelPlaces: handleParcelManagerState not yet implemented")
     }
 }

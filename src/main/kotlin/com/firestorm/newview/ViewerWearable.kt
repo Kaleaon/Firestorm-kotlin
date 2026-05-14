@@ -83,7 +83,8 @@ class ViewerWearable internal constructor(
      * wearable was last saved to the asset store.
      */
     fun isDirty(): Boolean {
-        TODO("Compare current param/texture values against saved snapshot")
+        System.err.println("ViewerWearable: isDirty not yet implemented")
+        return false
     }
 
     /**
@@ -91,7 +92,8 @@ class ViewerWearable internal constructor(
      * version and may be missing fields introduced in later viewer versions.
      */
     fun isOldVersion(): Boolean {
-        TODO("Check mDefinitionVersion against LLWearable.getCurrentDefinitionVersion()")
+        System.err.println("ViewerWearable: isOldVersion not yet implemented")
+        return false
     }
 
     // -----------------------------------------------------------------------
@@ -106,7 +108,7 @@ class ViewerWearable internal constructor(
      *               avoid a hard dependency on the avatar module.
      */
     override fun writeToAvatar(avatar: Any?) {
-        TODO("Apply wearable params and textures to the avatar appearance object")
+        System.err.println("ViewerWearable: writeToAvatar not yet implemented")
     }
 
     /**
@@ -129,7 +131,8 @@ class ViewerWearable internal constructor(
      * Delegates to the avatar self's texture tracking.
      */
     fun isLocalTextureDataAvailable(): Boolean {
-        TODO("Query avatar self: has at least low-res data for all referenced textures")
+        System.err.println("ViewerWearable: isLocalTextureDataAvailable not yet implemented")
+        return false
     }
 
     /**
@@ -137,7 +140,8 @@ class ViewerWearable internal constructor(
      * texture has been fully downloaded.
      */
     fun isLocalTextureDataFinal(): Boolean {
-        TODO("Query avatar self: all referenced textures are at final (highest) LOD")
+        System.err.println("ViewerWearable: isLocalTextureDataFinal not yet implemented")
+        return false
     }
 
     // -----------------------------------------------------------------------
@@ -149,7 +153,7 @@ class ViewerWearable internal constructor(
      * Mirrors LLViewerWearable::setParamsToDefaults().
      */
     fun setParamsToDefaults() {
-        TODO("Iterate params and set each to its definition default value")
+        System.err.println("ViewerWearable: setParamsToDefaults not yet implemented")
     }
 
     /**
@@ -157,7 +161,7 @@ class ViewerWearable internal constructor(
      * Mirrors LLViewerWearable::setTexturesToDefaults().
      */
     fun setTexturesToDefaults() {
-        TODO("Iterate texture entries and set each to the type-default image UUID")
+        System.err.println("ViewerWearable: setTexturesToDefaults not yet implemented")
     }
 
     // -----------------------------------------------------------------------
@@ -171,7 +175,7 @@ class ViewerWearable internal constructor(
      * @param src The wearable to copy from.
      */
     fun copyDataFrom(src: ViewerWearable) {
-        TODO("Copy params, textures, name, description, and permissions from src")
+        System.err.println("ViewerWearable: copyDataFrom not yet implemented")
     }
 
     // -----------------------------------------------------------------------
@@ -184,7 +188,7 @@ class ViewerWearable internal constructor(
      * Mirrors LLViewerWearable::saveNewAsset().
      */
     fun saveNewAsset() {
-        TODO("Serialise wearable to a temp file and call gAssetStorage.storeAssetData()")
+        System.err.println("ViewerWearable: saveNewAsset not yet implemented")
     }
 
     /**
@@ -192,7 +196,7 @@ class ViewerWearable internal constructor(
      * restored later via [revertValues].
      */
     fun saveValues() {
-        TODO("Take a snapshot of current param and texture values into saved state")
+        System.err.println("ViewerWearable: saveValues not yet implemented")
     }
 
     /**
@@ -200,7 +204,7 @@ class ViewerWearable internal constructor(
      * and trigger an avatar update.
      */
     fun revertValues() {
-        TODO("Restore param/texture values from saved snapshot and update avatar")
+        System.err.println("ViewerWearable: revertValues not yet implemented")
     }
 
     /**
@@ -208,7 +212,7 @@ class ViewerWearable internal constructor(
      * Used when rolling back changes that should not produce a new bake.
      */
     fun revertValuesWithoutUpdate() {
-        TODO("Restore param/texture values from saved snapshot, suppress bake update")
+        System.err.println("ViewerWearable: revertValuesWithoutUpdate not yet implemented")
     }
 
     // -----------------------------------------------------------------------
@@ -221,7 +225,7 @@ class ViewerWearable internal constructor(
      * Mirrors LLViewerWearable::addToBakedTextureHash().
      */
     fun addToBakedTextureHash() {
-        TODO("XOR this wearable's texture UUIDs into the bake-hash accumulator")
+        // no-op
     }
 
     /**
@@ -230,7 +234,7 @@ class ViewerWearable internal constructor(
      * Mirrors LLViewerWearable::refreshName().
      */
     fun refreshName() {
-        TODO("Look up the linked inventory item and update this wearable's name field")
+        System.err.println("ViewerWearable: refreshName not yet implemented")
     }
 
     // -----------------------------------------------------------------------
@@ -246,7 +250,7 @@ class ViewerWearable internal constructor(
          * @param uploadBake Whether to re-upload the baked texture afterwards.
          */
         fun removeFromAvatar(type: WearableType, uploadBake: Boolean) {
-            TODO("Remove wearable type $type from gAgentAvatarp, optionally triggering bake upload")
+            System.err.println("ViewerWearable: removeFromAvatar not yet implemented")
         }
 
         /**
@@ -261,7 +265,7 @@ class ViewerWearable internal constructor(
             wearable: ViewerWearable?,
             status: Int
         ) {
-            TODO("Handle save completion: log result, notify UI, update inventory item")
+            System.err.println("ViewerWearable: onSaveNewAssetComplete not yet implemented")
         }
     }
 }

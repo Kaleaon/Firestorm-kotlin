@@ -16,7 +16,7 @@ class LLFloaterRegionRestarting private constructor(key: Map<String, Any?>) : LL
 
     companion object {
         fun close() {
-            TODO("APR: use JVM equivalent - find region_restarting floater instance and closeFloater()")
+            System.err.println("LLFloaterRegionRestarting: close not yet implemented")
         }
 
         fun updateTime(time: Int) {
@@ -55,6 +55,8 @@ class LLFloaterRegionRestarting private constructor(key: Map<String, Any?>) : LL
         return true
     }
 
+
+
     private fun regionChange() {
         close()
     }
@@ -71,12 +73,12 @@ class LLFloaterRegionRestarting private constructor(key: Map<String, Any?>) : LL
 
     open fun onOpen(key: Map<String, Any?>) {
         refreshLandmarkList()
-        TODO("APR: use JVM equivalent - flash viewer window icon for 5 seconds")
+        System.err.println("LLFloaterRegionRestarting: flash viewer window icon not yet implemented")
     }
 
     private fun onTeleportClicked() {
         val assetId = getLandmarkComboSelectedAssetId() ?: return
-        TODO("APR: use JVM equivalent - gAgent.teleportViaLandmark(assetId)")
+        System.err.println("LLFloaterRegionRestarting: gAgent.teleportViaLandmark not yet implemented")
     }
 
     private fun refreshLandmarkList() {
@@ -89,7 +91,7 @@ class LLFloaterRegionRestarting private constructor(key: Map<String, Any?>) : LL
     }
 
     open fun draw() {
-        TODO("GPU: LLFloater.draw()")
+        // no-op: GPU LLFloater.draw() not yet implemented
 
         val shakeInterval = 0.025f
         val shakeTotalDuration = 1.8f
@@ -109,19 +111,19 @@ class LLFloaterRegionRestarting private constructor(key: Map<String, Any?>) : LL
             unlockAgentCameraView()
             when (sShakeState) {
                 ShakeState.SHAKE_LEFT -> {
-                    TODO("GPU: gAgentCamera.setPanLeftKey(shakeMagnitude * shakeHorizontalBias)")
+                    // no-op: GPU gAgentCamera.setPanLeftKey not yet implemented
                     sShakeState = ShakeState.SHAKE_UP
                 }
                 ShakeState.SHAKE_UP -> {
-                    TODO("GPU: gAgentCamera.setPanUpKey(shakeMagnitude)")
+                    // no-op: GPU gAgentCamera.setPanUpKey not yet implemented
                     sShakeState = ShakeState.SHAKE_RIGHT
                 }
                 ShakeState.SHAKE_RIGHT -> {
-                    TODO("GPU: gAgentCamera.setPanRightKey(shakeMagnitude * shakeHorizontalBias)")
+                    // no-op: GPU gAgentCamera.setPanRightKey not yet implemented
                     sShakeState = ShakeState.SHAKE_DOWN
                 }
                 ShakeState.SHAKE_DOWN -> {
-                    TODO("GPU: gAgentCamera.setPanDownKey(shakeMagnitude)")
+                    // no-op: GPU gAgentCamera.setPanDownKey not yet implemented
                     shakeIterations++
                     val timeShaking = shakeInterval * (shakeIterations.toInt() * 4)
                     if (shakeTotalDuration <= timeShaking) {
@@ -138,53 +140,66 @@ class LLFloaterRegionRestarting private constructor(key: Map<String, Any?>) : LL
         }
     }
 
-    private fun addRegionChangedCallback(callback: () -> Unit): () -> Unit =
-        TODO("APR: use JVM equivalent - gAgent.addRegionChangedCallback(callback)")
+    private fun addRegionChangedCallback(callback: () -> Unit): () -> Unit {
+        System.err.println("LLFloaterRegionRestarting: addRegionChangedCallback not yet implemented")
+        return {}
+    }
 
-    private fun findLandmarksCategoryId(): Any =
-        TODO("APR: use JVM equivalent - gInventory.findCategoryUUIDForType(FT_LANDMARK)")
+    private fun findLandmarksCategoryId(): Any {
+        System.err.println("LLFloaterRegionRestarting: findLandmarksCategoryId not yet implemented")
+        return Unit
+    }
 
-    private fun startInventoryBackgroundFetch(categoryId: Any) =
-        TODO("APR: use JVM equivalent - LLInventoryModelBackgroundFetch.start(categoryId)")
+    private fun startInventoryBackgroundFetch(categoryId: Any) {
+        System.err.println("LLFloaterRegionRestarting: startInventoryBackgroundFetch not yet implemented")
+    }
 
-    private fun setLandmarkComboPrearrangeCallback(cb: () -> Unit) =
-        TODO("APR: use JVM equivalent - set prearrange callback on 'landmark combo' child widget")
+    private fun setLandmarkComboPrearrangeCallback(cb: () -> Unit) {
+        System.err.println("LLFloaterRegionRestarting: setLandmarkComboPrearrangeCallback not yet implemented")
+    }
 
-    private fun setTeleportBtnCommitCallback(cb: () -> Unit) =
-        TODO("APR: use JVM equivalent - set commit callback on 'teleport_btn' child widget")
+    private fun setTeleportBtnCommitCallback(cb: () -> Unit) {
+        System.err.println("LLFloaterRegionRestarting: setTeleportBtnCommitCallback not yet implemented")
+    }
 
-    private fun setRegionNameText(regionName: String) =
-        TODO("APR: use JVM equivalent - format and set 'region_name' text box with regionName")
+    private fun setRegionNameText(regionName: String) {
+        System.err.println("LLFloaterRegionRestarting: setRegionNameText not yet implemented")
+    }
 
-    private fun setRestartSecondsText(seconds: Int) =
-        TODO("APR: use JVM equivalent - format and set 'restart_seconds' text box with countdown value")
+    private fun setRestartSecondsText(seconds: Int) {
+        System.err.println("LLFloaterRegionRestarting: setRestartSecondsText not yet implemented")
+    }
 
-    private fun getLandmarkComboSelectedAssetId(): Any? =
-        TODO("APR: use JVM equivalent - get selected value as UUID from 'landmark combo'")
+    private fun getLandmarkComboSelectedAssetId(): Any? = null
 
-    private fun clearLandmarkComboExceptFirst() =
-        TODO("APR: use JVM equivalent - delete all items except placeholder from 'landmark combo'")
+    private fun clearLandmarkComboExceptFirst() {
+        System.err.println("LLFloaterRegionRestarting: clearLandmarkComboExceptFirst not yet implemented")
+    }
 
     private data class LandmarkItem(val name: String, val assetId: Any)
 
-    private fun collectLandmarksFromInventory(): List<LandmarkItem> =
-        TODO("APR: use JVM equivalent - collectDescendentsIf with LLFindLandmarks from inventory root")
+    private fun collectLandmarksFromInventory(): List<LandmarkItem> {
+        System.err.println("LLFloaterRegionRestarting: collectLandmarksFromInventory not yet implemented")
+        return emptyList()
+    }
 
-    private fun addLandmarkComboItem(name: String, assetId: Any) =
-        TODO("APR: use JVM equivalent - add item to 'landmark combo' at bottom")
+    private fun addLandmarkComboItem(name: String, assetId: Any) {
+        System.err.println("LLFloaterRegionRestarting: addLandmarkComboItem not yet implemented")
+    }
 
-    private fun selectFirstLandmarkComboItem() =
-        TODO("APR: use JVM equivalent - select first item in 'landmark combo'")
+    private fun selectFirstLandmarkComboItem() {
+        System.err.println("LLFloaterRegionRestarting: selectFirstLandmarkComboItem not yet implemented")
+    }
 
-    private fun isScreenShakeDisabled(): Boolean =
-        TODO("APR: use JVM equivalent - read FSNoScreenShakeOnRegionRestart cached control")
+    private fun isScreenShakeDisabled(): Boolean = false
 
-    private fun setShakeTimer(intervalSeconds: Float) =
-        TODO("APR: use JVM equivalent - mShakeTimer.setTimerExpirySec(intervalSeconds)")
+    private fun setShakeTimer(intervalSeconds: Float) {
+        System.err.println("LLFloaterRegionRestarting: setShakeTimer not yet implemented")
+    }
 
-    private fun isShakeTimerExpired(): Boolean =
-        TODO("APR: use JVM equivalent - mShakeTimer.hasExpired()")
+    private fun isShakeTimerExpired(): Boolean = false
 
-    private fun unlockAgentCameraView() =
-        TODO("GPU: gAgentCamera.unlockView()")
+    private fun unlockAgentCameraView() {
+        // no-op: GPU gAgentCamera.unlockView not yet implemented
+    }
 }

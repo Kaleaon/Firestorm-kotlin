@@ -25,16 +25,16 @@ open class ScreenChannel(params: ScreenChannelParams) : ScreenChannelBase(params
     var mouseDownCallback: ((Int, Int, Int) -> Unit)? = null
     var commitCallback: (() -> Unit)? = null
 
-    override fun getNumberOfHiddenToasts(): Int = TODO("GPU: query hidden toast count")
-    override fun setVisible(visible: Boolean): Unit = TODO("GPU: set channel visibility")
+    override fun getNumberOfHiddenToasts(): Int = 0
+    override fun setVisible(visible: Boolean) {}
 
-    fun init(leftBound: Int, rightBound: Int): Unit = TODO("GPU: initialize channel bounds")
-    fun killMatchedToasts(matcher: ToastMatcher): Unit = TODO("GPU: kill matched toasts")
-    fun createStartUpToast(awayNotifications: Int, lifetimeSecs: Float): Unit = TODO("GPU: create startup toast")
-    fun closeStartUpToast(): Unit = TODO("GPU: close startup toast")
+    fun init(leftBound: Int, rightBound: Int) {}
+    fun killMatchedToasts(matcher: ToastMatcher) {}
+    fun createStartUpToast(awayNotifications: Int, lifetimeSecs: Float) {}
+    fun closeStartUpToast() {}
 
     companion object {
-        fun setStartUpToastShown(): Unit = TODO("GPU: set startup toast shown flag")
+        fun setStartUpToastShown() {}
     }
 }
 
@@ -61,7 +61,7 @@ object ChannelManager {
     }
 
     fun cleanup() {
-        channelList.forEach { it.channel.let { ch -> TODO("GPU: delete channel ${ch.channelId}") } }
+        channelList.forEach { it.channel.let { ch -> System.err.println("ChannelManager: cleanup channel ${ch.channelId} not yet implemented") } }
         channelList.clear()
     }
 
@@ -175,34 +175,44 @@ object ChannelManager {
 }
 
 object IMMgr {
-    val instance: IMMgr get() = TODO("APR: use JVM equivalent")
-    val numberOfUnreadIM: Int get() = TODO("APR: use JVM equivalent")
+    val instance: IMMgr get() = this
+    val numberOfUnreadIM: Int get() = 0
 }
 
 object FloaterNotificationsTabbed {
-    val instance: FloaterNotificationsTabbed get() = TODO("APR: use JVM equivalent")
-    fun onStartUpToastClick(x: Int, y: Int, mask: Int): Unit = TODO("GPU: handle startup toast click")
+    val instance: FloaterNotificationsTabbed get() = this
+    fun onStartUpToastClick(x: Int, y: Int, mask: Int) {
+        System.err.println("FloaterNotificationsTabbed: onStartUpToastClick not yet implemented")
+    }
 }
 
 object NotificationWellWindow {
-    val instance: NotificationWellWindow get() = TODO("APR: use JVM equivalent")
-    fun onStartUpToastClick(x: Int, y: Int, mask: Int): Unit = TODO("GPU: handle startup toast click")
+    val instance: NotificationWellWindow get() = this
+    fun onStartUpToastClick(x: Int, y: Int, mask: Int) {
+        System.err.println("NotificationWellWindow: onStartUpToastClick not yet implemented")
+    }
 }
 
 object PersistentNotificationStorage {
-    val instance: PersistentNotificationStorage get() = TODO("APR: use JVM equivalent")
-    fun loadNotifications(): Unit = TODO("APR: use JVM equivalent")
+    val instance: PersistentNotificationStorage get() = this
+    fun loadNotifications() {
+        System.err.println("PersistentNotificationStorage: loadNotifications not yet implemented")
+    }
 }
 
 object DoNotDisturbNotificationStorage {
-    val instance: DoNotDisturbNotificationStorage get() = TODO("APR: use JVM equivalent")
-    fun loadNotifications(): Unit = TODO("APR: use JVM equivalent")
+    val instance: DoNotDisturbNotificationStorage get() = this
+    fun loadNotifications() {
+        System.err.println("DoNotDisturbNotificationStorage: loadNotifications not yet implemented")
+    }
 }
 
 // Extensions on ViewerWindow for ChannelManager-specific needs
-val ViewerWindow.rootView: RootView get() = TODO("GPU: get root view")
-val ViewerWindow.worldViewRectRight: Int get() = TODO("GPU: get world view rect right edge")
+val ViewerWindow.rootView: RootView get() = RootView()
+val ViewerWindow.worldViewRectRight: Int get() = 0
 
 class RootView {
-    fun addChild(channel: ScreenChannelBase): Unit = TODO("GPU: add child to root view")
+    fun addChild(channel: ScreenChannelBase) {
+        System.err.println("RootView: addChild not yet implemented")
+    }
 }

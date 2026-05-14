@@ -1013,17 +1013,25 @@ private fun objectListFindObject(id: UUID): ViewerObject? {
     return null
 }
 
-private fun currentSelection(): List<ViewerObject> =
-    TODO("APR: use JVM equivalent for LLSelectMgr::getSelection root iterator")
+private fun currentSelection(): List<ViewerObject> {
+    System.err.println("ChatBarAsCmdline: currentSelection not yet implemented")
+    return emptyList()
+}
 
-private fun rlvIsEnabled(): Boolean =
-    TODO("APR: use JVM equivalent for RlvActions::isRlvEnabled")
+private fun rlvIsEnabled(): Boolean {
+    System.err.println("ChatBarAsCmdline: rlvIsEnabled not yet implemented")
+    return false
+}
 
-private fun rlvActionsCanShowName(id: UUID): Boolean =
-    TODO("APR: use JVM equivalent for RlvActions::canShowName")
+private fun rlvActionsCanShowName(id: UUID): Boolean {
+    System.err.println("ChatBarAsCmdline: rlvActionsCanShowName not yet implemented")
+    return false
+}
 
-private fun rlvActionsCanTouch(obj: ViewerObject): Boolean =
-    TODO("APR: use JVM equivalent for RlvActions::canTouch")
+private fun rlvActionsCanTouch(obj: ViewerObject): Boolean {
+    System.err.println("ChatBarAsCmdline: rlvActionsCanTouch not yet implemented")
+    return false
+}
 
 private fun rlvActionsCanSit(obj: ViewerObject): Boolean =
     TODO("APR: use JVM equivalent for RlvActions::canSit")

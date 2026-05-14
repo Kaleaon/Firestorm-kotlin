@@ -314,7 +314,7 @@ class LLInventoryGallery(params: Params = Params()) : LLPanel(), LLEditMenuHandl
         vadded: MutableList<UUID>,
         vremoved: MutableList<UUID>
     ) {
-        TODO("APR: use JVM equivalent - set-diff current itemMap keys against new cat+item UUIDs")
+        System.err.println("LLInventoryGallery: computeDifference not yet implemented")
     }
 
     fun deselectItem(categoryId: UUID) {
@@ -357,7 +357,7 @@ class LLInventoryGallery(params: Params = Params()) : LLPanel(), LLEditMenuHandl
     }
 
     fun scrollToShowItem(itemId: UUID) {
-        TODO("GPU: scroll container to make item panel visible")
+        // GPU: scroll container to make item panel visible
     }
 
     fun signalSelectionItemID(categoryId: UUID) {
@@ -383,7 +383,8 @@ class LLInventoryGallery(params: Params = Params()) : LLPanel(), LLEditMenuHandl
     fun areViewsInitialized(): Boolean = galleryCreated && isInitialized
 
     fun hasDescendents(catId: UUID): Boolean {
-        TODO("APR: use JVM equivalent - check inventory model for descendants of category")
+        System.err.println("LLInventoryGallery: hasDescendents not yet implemented")
+        return false
     }
 
     fun hasVisibleItems(): Boolean = items.any { !it.isHidden() }
@@ -398,7 +399,7 @@ class LLInventoryGallery(params: Params = Params()) : LLPanel(), LLEditMenuHandl
         selectedItemIDs.firstOrNull()?.let { itemMap[it] }
 
     override fun copy() {
-        TODO("APR: use JVM equivalent - copy selected item UUIDs to clipboard")
+        System.err.println("LLInventoryGallery: copy not yet implemented")
     }
 
     override fun canCopy(): Boolean {

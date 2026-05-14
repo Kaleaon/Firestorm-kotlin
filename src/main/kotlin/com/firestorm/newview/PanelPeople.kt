@@ -510,7 +510,8 @@ class PanelPeople : Panel(), FriendObserver, VoiceClientStatusObserver {
     }
 
     private fun handleAvatarDropToCurrentContactSet(avatarId: UUID, drop: Boolean): Boolean {
-        TODO("APR: use JVM equivalent - validate/perform DnD avatar into contact set")
+        System.err.println("PanelPeople: handleAvatarDropToCurrentContactSet not yet implemented")
+        return false
     }
 
     private fun updateContactSets(type: LGGContactSets.ContactSetUpdate) {
@@ -519,16 +520,17 @@ class PanelPeople : Panel(), FriendObserver, VoiceClientStatusObserver {
     }
 
     private fun onColumnVisibilityChecked(userdata: LLSD) {
-        TODO("APR: use JVM equivalent - toggle radar column visibility")
+        System.err.println("PanelPeople: onColumnVisibilityChecked not yet implemented")
     }
 
     private fun onEnableColumnVisibilityChecked(userdata: LLSD): Boolean {
-        TODO("APR: use JVM equivalent - return whether radar column can be toggled")
+        System.err.println("PanelPeople: onEnableColumnVisibilityChecked not yet implemented")
+        return false
     }
 
     companion object {
         fun onAvatarPicked(ids: List<UUID>, names: List<AvatarName>) {
-            TODO("APR: use JVM equivalent - handle result from avatar picker floater")
+            System.err.println("PanelPeople: onAvatarPicked not yet implemented")
         }
     }
 }

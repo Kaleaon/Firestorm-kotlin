@@ -545,23 +545,28 @@ object IMModel {
         }
 
         private fun buildUsername(name: String): String {
-            TODO("APR: use JVM equivalent - LLCacheName.buildUsername($name) - normalise to firstname.lastname form")
+            System.err.println("IMSession: buildUsername not yet implemented")
+            return ""
         }
 
         private fun translate(key: String, vararg args: Pair<String, String>): String {
-            TODO("APR: use JVM equivalent - LLTrans.getString($key, args)")
+            System.err.println("IMSession: translate not yet implemented")
+            return ""
         }
 
         private fun agentIsInGroup(groupId: UUID): Boolean {
-            TODO("APR: use JVM equivalent - gAgent.isInGroup($groupId)")
+            System.err.println("IMSession: agentIsInGroup not yet implemented")
+            return false
         }
 
         private fun voiceSessionCallbackPossible(sessionId: UUID): Boolean {
-            TODO("APR: use JVM equivalent - VoiceClient.isSessionCallBackPossible($sessionId)")
+            System.err.println("IMSession: voiceSessionCallbackPossible not yet implemented")
+            return false
         }
 
         private fun voiceSessionTextIMPossible(sessionId: UUID): Boolean {
-            TODO("APR: use JVM equivalent - VoiceClient.isSessionTextIMPossible($sessionId)")
+            System.err.println("IMSession: voiceSessionTextIMPossible not yet implemented")
+            return false
         }
 
         companion object {
@@ -656,7 +661,7 @@ object IMMgr {
     }
 
     fun addSystemMessage(sessionId: UUID, messageName: String, args: Map<String, Any>) {
-        TODO("APR: use JVM equivalent - translate message key with args and add to session as system message")
+        System.err.println("IMMgr: addSystemMessage not yet implemented")
     }
 
     fun addSession(

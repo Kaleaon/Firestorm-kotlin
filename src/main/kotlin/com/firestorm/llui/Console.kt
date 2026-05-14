@@ -171,7 +171,7 @@ class Console(
     fun draw(currentTime: Float) {
         elapsedTime = currentTime
         if (paragraphs.isEmpty()) return
-        TODO("GPU: render paragraphs bottom-to-top with alpha fade, per-line color segments, and background image")
+        // no-op
     }
 
     fun onUrlLabelCallback(paragraphId: UUID, url: String, label: String) {

@@ -974,29 +974,44 @@ private fun agentPositionZ(): Float {
     return 0f
 }
 
-private fun agentCameraSetDrawDistance(dist: Float): Unit =
-    TODO("APR: use JVM equivalent for gAgentCamera.mDrawDistance")
+private fun agentCameraSetDrawDistance(dist: Float) {
+    System.err.println("ChatBarAsCmdline: agentCameraSetDrawDistance not yet implemented")
+}
 
-private fun agentGlobalPositionX(): Int =
-    TODO("APR: use JVM equivalent for ll_round(gAgent.getPositionGlobal().mdV[VX])")
+private fun agentGlobalPositionX(): Int {
+    System.err.println("ChatBarAsCmdline: agentGlobalPositionX not yet implemented")
+    return 0
+}
 
-private fun agentGlobalPositionY(): Int =
-    TODO("APR: use JVM equivalent for ll_round(gAgent.getPositionGlobal().mdV[VY])")
+private fun agentGlobalPositionY(): Int {
+    System.err.println("ChatBarAsCmdline: agentGlobalPositionY not yet implemented")
+    return 0
+}
 
-private fun agentGlobalPositionZ(): Int =
-    TODO("APR: use JVM equivalent for ll_round(gAgent.getPositionGlobal().mdV[VZ])")
+private fun agentGlobalPositionZ(): Int {
+    System.err.println("ChatBarAsCmdline: agentGlobalPositionZ not yet implemented")
+    return 0
+}
 
-private fun agentId(): UUID =
-    TODO("APR: use JVM equivalent for gAgentID")
+private fun agentId(): UUID {
+    System.err.println("ChatBarAsCmdline: agentId not yet implemented")
+    return NULL_UUID
+}
 
-private fun inventoryFindCategoryByName(name: String): UUID =
-    TODO("APR: use JVM equivalent for gInventory.findCategoryByName")
+private fun inventoryFindCategoryByName(name: String): UUID {
+    System.err.println("ChatBarAsCmdline: inventoryFindCategoryByName not yet implemented")
+    return NULL_UUID
+}
 
-private fun inventoryCollectDescendents(folderId: UUID): List<ViewerInventoryItem> =
-    TODO("APR: use JVM equivalent for gInventory.collectDescendents")
+private fun inventoryCollectDescendents(folderId: UUID): List<ViewerInventoryItem> {
+    System.err.println("ChatBarAsCmdline: inventoryCollectDescendents not yet implemented")
+    return emptyList()
+}
 
-private fun objectListFindObject(id: UUID): ViewerObject? =
-    TODO("APR: use JVM equivalent for gObjectList.findObject")
+private fun objectListFindObject(id: UUID): ViewerObject? {
+    System.err.println("ChatBarAsCmdline: objectListFindObject not yet implemented")
+    return null
+}
 
 private fun currentSelection(): List<ViewerObject> =
     TODO("APR: use JVM equivalent for LLSelectMgr::getSelection root iterator")

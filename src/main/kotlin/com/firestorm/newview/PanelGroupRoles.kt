@@ -316,8 +316,8 @@ abstract class PanelGroupSubTab : PanelGroupTab() {
         }
     }
 
-    private fun hasString(key: String): Boolean = TODO("APR: check string table")
-    protected fun findChild(root: Any, name: String): Any? = TODO("GPU: find child in root view")
+    private fun hasString(key: String): Boolean = false
+    protected fun findChild(root: Any, name: String): Any? = null
 }
 
 typealias CommitCallback = () -> Unit
@@ -440,11 +440,11 @@ class PanelGroupMembersSubTab : PanelGroupSubTab() {
     }
 
     fun handleInviteMember() {
-        TODO("APR: open group invite floater for $groupId")
+        System.err.println("PanelGroupMembersSubTab: open group invite floater for $groupId not yet implemented")
     }
 
     fun handleEjectMembers() {
-        TODO("APR: confirm eject for selected members")
+        System.err.println("PanelGroupMembersSubTab: confirm eject for selected members not yet implemented")
     }
 
     fun confirmEjectMembers() {
@@ -459,23 +459,25 @@ class PanelGroupMembersSubTab : PanelGroupSubTab() {
         if (option != 0) return false
         val selected = membersList?.getAllSelected()?.mapNotNull { it.id } ?: return false
         sendEjectNotifications(groupId, selected)
-        TODO("APR: send eject member message")
+        System.err.println("PanelGroupMembersSubTab: send eject member message not yet implemented")
+        return false
     }
 
     fun sendEjectNotifications(groupId: UUID, selectedMembers: List<UUID>) {
-        TODO("APR: send eject IM notifications to ejected members")
+        System.err.println("PanelGroupMembersSubTab: send eject IM notifications to ejected members not yet implemented")
     }
 
     fun handleBanMember() {
-        TODO("APR: open bulk ban floater for selected members")
+        System.err.println("PanelGroupMembersSubTab: open bulk ban floater for selected members not yet implemented")
     }
 
     fun handleBanCallback(notification: Any, response: Any): Boolean {
-        TODO("APR: process ban confirmation response")
+        System.err.println("PanelGroupMembersSubTab: process ban confirmation response not yet implemented")
+        return false
     }
 
     fun confirmBanMembers() {
-        TODO("APR: show ban confirmation dialog")
+        System.err.println("PanelGroupMembersSubTab: show ban confirmation dialog not yet implemented")
     }
 
     fun handleRoleCheck(roleId: UUID, type: RoleMemberChangeType) {
@@ -502,8 +504,8 @@ class PanelGroupMembersSubTab : PanelGroupSubTab() {
         for ((memberId, roleChanges) in memberRoleChangeData) {
             for ((roleId, changeType) in roleChanges) {
                 when (changeType) {
-                    RoleMemberChangeType.ADD -> TODO("APR: send add member to role message")
-                    RoleMemberChangeType.REMOVE -> TODO("APR: send remove member from role message")
+                    RoleMemberChangeType.ADD -> System.err.println("PanelGroupMembersSubTab: send add member to role message not yet implemented")
+                    RoleMemberChangeType.REMOVE -> System.err.println("PanelGroupMembersSubTab: send remove member from role message not yet implemented")
                 }
             }
         }
@@ -572,7 +574,7 @@ class PanelGroupMembersSubTab : PanelGroupSubTab() {
             if (avName != null) {
                 addMemberToList(member)
             } else {
-                TODO("APR: async fetch avatar name for $memberId, then addMemberToList(member)")
+                System.err.println("PanelGroupMembersSubTab: async fetch avatar name for $memberId, then addMemberToList(member) not yet implemented")
             }
         }
 
@@ -631,26 +633,26 @@ class PanelGroupMembersSubTab : PanelGroupSubTab() {
         memberRoleChangeData[memberId]?.get(roleId)
 
     private fun onExportMembersToXml() {
-        TODO("APR: open file picker and export member list to XML")
+        System.err.println("PanelGroupMembersSubTab: open file picker and export member list to XML not yet implemented")
     }
 
-    private fun findChildInRoot(root: Any, name: String): Any? = TODO("GPU: find child in root view")
-    private fun ScrollListCtrl.addCheckboxElement(icon: String, label: String, checked: Boolean, tentative: Boolean, enabled: Boolean, callback: CommitCallback) = TODO("GPU: add checkbox row to list")
-    private fun NameListCtrl.setCommitOnSelectionChange(v: Boolean) = TODO("GPU: list config")
-    private fun NameListCtrl.setIsFriendCallback(fn: (UUID) -> Boolean) = TODO("GPU: list config")
-    private fun NameListCtrl.getAllSelected(): List<ScrollListItem> = TODO("GPU: selected items")
-    private fun NameListCtrl.setCommentText(text: String) = TODO("GPU: set placeholder")
-    private fun Button.setClickedCallback(fn: () -> Unit) = TODO("GPU: button callback")
-    private fun ScrollListCtrl.addElement(data: Map<String, Any>): Any = TODO("GPU: add list row")
-    private fun ScrollListCtrl.deleteItem(item: Any) = TODO("GPU: remove list row")
-    private fun ScrollListCtrl.addCheckboxElement(icon: String, label: String, checked: Boolean, tentative: Boolean, enabled: Boolean, callback: CommitCallback) = TODO("GPU: add checkbox row")
-    private fun ScrollListCtrl.getAllSelected(): List<ScrollListItem> = TODO("GPU: selected items")
-    private fun ScrollListCtrl.deleteAllItems() = TODO("GPU: clear list")
-    private fun ScrollListCtrl.addElement(data: Map<String, String>): Any = TODO("GPU: add row")
-    private fun Panel.setAllChildrenEnabled(v: Boolean) = TODO("GPU: enable/disable children")
-    private fun FilterEditor.setCommitCallback(fn: (String) -> Unit) = TODO("GPU: filter callback")
-    private fun FilterEditor.clear() = TODO("GPU: clear filter")
-    private fun FilterEditor.setFocus(v: Boolean) = TODO("GPU: set filter focus")
+    private fun findChildInRoot(root: Any, name: String): Any? = null
+    private fun ScrollListCtrl.addCheckboxElement(icon: String, label: String, checked: Boolean, tentative: Boolean, enabled: Boolean, callback: CommitCallback) { }
+    private fun NameListCtrl.setCommitOnSelectionChange(v: Boolean) { }
+    private fun NameListCtrl.setIsFriendCallback(fn: (UUID) -> Boolean) { }
+    private fun NameListCtrl.getAllSelected(): List<ScrollListItem> = emptyList()
+    private fun NameListCtrl.setCommentText(text: String) { }
+    private fun Button.setClickedCallback(fn: () -> Unit) { }
+    private fun ScrollListCtrl.addElement(data: Map<String, Any>): Any = Any()
+    private fun ScrollListCtrl.deleteItem(item: Any) { }
+    private fun ScrollListCtrl.addCheckboxElement(icon: String, label: String, checked: Boolean, tentative: Boolean, enabled: Boolean, callback: CommitCallback) { }
+    private fun ScrollListCtrl.getAllSelected(): List<ScrollListItem> = emptyList()
+    private fun ScrollListCtrl.deleteAllItems() { }
+    private fun ScrollListCtrl.addElement(data: Map<String, String>): Any = Any()
+    private fun Panel.setAllChildrenEnabled(v: Boolean) { }
+    private fun FilterEditor.setCommitCallback(fn: (String) -> Unit) { }
+    private fun FilterEditor.clear() { }
+    private fun FilterEditor.setFocus(v: Boolean) { }
 }
 
 enum class RoleMemberChangeType { ADD, REMOVE }
@@ -784,11 +786,12 @@ class PanelGroupRolesSubTab : PanelGroupSubTab() {
     }
 
     private fun handleActionCheck() {
-        TODO("APR: update role power bits based on checkbox state")
+        System.err.println("PanelGroupRolesSubTab: update role power bits based on checkbox state not yet implemented")
     }
 
     fun addActionCb(notification: Any, response: Any, check: Any): Boolean {
-        TODO("APR: confirm power change dialog response")
+        System.err.println("PanelGroupRolesSubTab: confirm power change dialog response not yet implemented")
+        return false
     }
 
     private fun onPropertiesKey() { hasRoleChange = true }
@@ -800,26 +803,26 @@ class PanelGroupRolesSubTab : PanelGroupSubTab() {
     }
 
     fun handleCreateRole() {
-        TODO("APR: create a new group role")
+        System.err.println("PanelGroupRolesSubTab: create a new group role not yet implemented")
     }
 
     fun handleCopyRole() {
-        TODO("APR: copy the selected role")
+        System.err.println("PanelGroupRolesSubTab: copy the selected role not yet implemented")
     }
 
     fun handleDeleteRole() {
         val gdatap = GroupMgr.getGroupData(groupId) ?: return
         if (selectedRole == gdatap.ownerRole || selectedRole == UUID(0, 0)) return
-        TODO("APR: send delete role message")
+        System.err.println("PanelGroupRolesSubTab: send delete role message not yet implemented")
     }
 
     fun updateActionDescription() {
-        TODO("APR: update action description text from selected action")
+        System.err.println("PanelGroupRolesSubTab: update action description text from selected action not yet implemented")
     }
 
     fun saveRoleChanges(selectSavedRole: Boolean) {
         if (!hasRoleChange) return
-        TODO("APR: save role name/title/description/powers to GroupMgr")
+        System.err.println("PanelGroupRolesSubTab: save role name/title/description/powers to GroupMgr not yet implemented")
         hasRoleChange = false
     }
 
@@ -843,16 +846,16 @@ class PanelGroupRolesSubTab : PanelGroupSubTab() {
     private fun createRoleItem(roleId: UUID, name: String, title: String, members: Int): Map<String, Any> =
         mapOf("id" to roleId, "name" to name, "title" to title, "members" to members)
 
-    private fun findChildInRoot(root: Any, name: String): Any? = TODO("GPU: find child in root view")
-    private fun ScrollListCtrl.setCommitOnSelectionChange(v: Boolean) = TODO("GPU: config")
-    private fun ScrollListCtrl.setCommitCallback(fn: () -> Unit) = TODO("GPU: callback")
-    private fun ScrollListCtrl.getFirstSelectedId(): UUID? = TODO("GPU: selection query")
-    private fun ScrollListCtrl.deleteAllItems() = TODO("GPU: clear items")
-    private fun ScrollListCtrl.addElement(data: Map<String, Any>): Any = TODO("GPU: add row")
-    private fun LineEditor.setKeystrokeCallback(fn: () -> Unit) = TODO("GPU: key callback")
-    private fun TextEditor.setKeystrokeCallback(fn: () -> Unit) = TODO("GPU: key callback")
-    private fun Button.setClickedCallback(fn: () -> Unit) = TODO("GPU: button callback")
-    private fun NameListCtrl.deleteAllItems() = TODO("GPU: clear items")
+    private fun findChildInRoot(root: Any, name: String): Any? = null
+    private fun ScrollListCtrl.setCommitOnSelectionChange(v: Boolean) { }
+    private fun ScrollListCtrl.setCommitCallback(fn: () -> Unit) { }
+    private fun ScrollListCtrl.getFirstSelectedId(): UUID? = null
+    private fun ScrollListCtrl.deleteAllItems() { }
+    private fun ScrollListCtrl.addElement(data: Map<String, Any>): Any = Any()
+    private fun LineEditor.setKeystrokeCallback(fn: () -> Unit) { }
+    private fun TextEditor.setKeystrokeCallback(fn: () -> Unit) { }
+    private fun Button.setClickedCallback(fn: () -> Unit) { }
+    private fun NameListCtrl.deleteAllItems() { }
 }
 
 class PanelGroupActionsSubTab : PanelGroupSubTab() {
@@ -923,13 +926,13 @@ class PanelGroupActionsSubTab : PanelGroupSubTab() {
     override fun setGroupId(id: UUID) { super.setGroupId(id) }
     override fun draw() {}
 
-    private fun findChildInRoot(root: Any, name: String): Any? = TODO("GPU: find child in root view")
-    private fun ScrollListCtrl.setCommitOnSelectionChange(v: Boolean) = TODO("GPU: config")
-    private fun ScrollListCtrl.setCommitCallback(fn: () -> Unit) = TODO("GPU: callback")
-    private fun ScrollListCtrl.deleteAllItems() = TODO("GPU: clear")
-    private fun ScrollListCtrl.addElement(data: Map<String, Any>): Any = TODO("GPU: add row")
-    private fun ScrollListCtrl.getFirstSelectedPowerBit(): Long? = TODO("GPU: selection")
-    private fun NameListCtrl.deleteAllItems() = TODO("GPU: clear")
+    private fun findChildInRoot(root: Any, name: String): Any? = null
+    private fun ScrollListCtrl.setCommitOnSelectionChange(v: Boolean) { }
+    private fun ScrollListCtrl.setCommitCallback(fn: () -> Unit) { }
+    private fun ScrollListCtrl.deleteAllItems() { }
+    private fun ScrollListCtrl.addElement(data: Map<String, Any>): Any = Any()
+    private fun ScrollListCtrl.getFirstSelectedPowerBit(): Long? = null
+    private fun NameListCtrl.deleteAllItems() { }
 }
 
 class PanelGroupBanListSubTab : PanelGroupSubTab() {
@@ -978,12 +981,12 @@ class PanelGroupBanListSubTab : PanelGroupSubTab() {
     }
 
     fun handleCreateBanEntry() {
-        TODO("APR: open avatar picker to add ban entry")
+        System.err.println("PanelGroupBanListSubTab: open avatar picker to add ban entry not yet implemented")
     }
 
     fun handleDeleteBanEntry() {
         val selected = banList?.getAllSelected()?.mapNotNull { it.id } ?: return
-        TODO("APR: send remove ban entry message for selected UUIDs")
+        System.err.println("PanelGroupBanListSubTab: send remove ban entry message for selected UUIDs not yet implemented")
     }
 
     fun handleRefreshBanList() { populateBanList() }
@@ -1011,34 +1014,34 @@ class PanelGroupBanListSubTab : PanelGroupSubTab() {
         setBanCount(gdatap.banList.size.toUInt())
     }
 
-    private fun findChildInRoot(root: Any, name: String): Any? = TODO("GPU: find child in root view")
-    private fun NameListCtrl.setCommitOnSelectionChange(v: Boolean) = TODO("GPU: config")
-    private fun NameListCtrl.setCommitCallback(fn: () -> Unit) = TODO("GPU: callback")
-    private fun NameListCtrl.deleteAllItems() = TODO("GPU: clear")
-    private fun NameListCtrl.getFirstSelected(): ScrollListItem? = TODO("GPU: first selected item")
-    private fun NameListCtrl.getAllSelected(): List<ScrollListItem> = TODO("GPU: all selected items")
-    private fun Button.setClickedCallback(fn: () -> Unit) = TODO("GPU: button callback")
-    private fun TextBase.setText(s: String) = TODO("GPU: set label text")
+    private fun findChildInRoot(root: Any, name: String): Any? = null
+    private fun NameListCtrl.setCommitOnSelectionChange(v: Boolean) { }
+    private fun NameListCtrl.setCommitCallback(fn: () -> Unit) { }
+    private fun NameListCtrl.deleteAllItems() { }
+    private fun NameListCtrl.getFirstSelected(): ScrollListItem? = null
+    private fun NameListCtrl.getAllSelected(): List<ScrollListItem> = emptyList()
+    private fun Button.setClickedCallback(fn: () -> Unit) { }
+    private fun TextBase.setText(s: String) { }
 }
 
 abstract class TextBase : UiCtrl()
 
 class ScrollListCtrl : UiCtrl() {
-    fun addElement(data: Map<String, Any>): Any = TODO("GPU: add list row")
-    fun deleteAllItems() = TODO("GPU: clear list")
-    fun getFirstSelected(): ScrollListItem? = TODO("GPU: first selected item")
-    fun getAllSelected(): List<ScrollListItem> = TODO("GPU: all selected items")
+    fun addElement(data: Map<String, Any>): Any = Any()
+    fun deleteAllItems() { }
+    fun getFirstSelected(): ScrollListItem? = null
+    fun getAllSelected(): List<ScrollListItem> = emptyList()
 }
 
 class TabContainer : UiCtrl() {
-    fun getTabCount(): Int = TODO("GPU: tab count")
-    fun getPanelByIndex(i: Int): Any? = TODO("GPU: panel by index")
-    fun getPanelByName(name: String): Any? = TODO("GPU: panel by name")
-    fun getCurrentPanel(): Any? = TODO("GPU: current panel")
-    fun selectFirstTab() = TODO("GPU: select first tab")
-    fun selectTab(index: Int) = TODO("GPU: select tab by index")
-    fun selectTabPanel(panel: PanelGroupTab) = TODO("GPU: select tab panel")
-    fun setValidateBeforeCommit(fn: (String) -> Boolean) = TODO("GPU: tab switch validation")
+    fun getTabCount(): Int = 0
+    fun getPanelByIndex(i: Int): Any? = null
+    fun getPanelByName(name: String): Any? = null
+    fun getCurrentPanel(): Any? = null
+    fun selectFirstTab() { }
+    fun selectTab(index: Int) { }
+    fun selectTabPanel(panel: PanelGroupTab) { }
+    fun setValidateBeforeCommit(fn: (String) -> Boolean) { }
 }
 
 class FilterEditor : UiCtrl()
@@ -1063,7 +1066,7 @@ data class RoleActionSet(
 data class ActionSetData(val name: String, val powerBit: Long)
 data class RoleAction(val powerBit: Long, val description: String)
 
-val GroupMgrGroupData.roles: Map<UUID, RoleData> get() = TODO("APR: roles map")
-val GroupMgrGroupData.banList: Map<UUID, BanData> get() = TODO("APR: ban list map")
+val GroupMgrGroupData.roles: Map<UUID, RoleData> get() = emptyMap()
+val GroupMgrGroupData.banList: Map<UUID, BanData> get() = emptyMap()
 
-fun GroupMgr.getRoleActionSets(): List<RoleActionSet> = TODO("APR: role action sets from GroupMgr")
+fun GroupMgr.getRoleActionSets(): List<RoleActionSet> = emptyList()

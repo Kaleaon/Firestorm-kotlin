@@ -434,9 +434,11 @@ object IMModel {
             msgs.clear()
             lastHistoryCacheMsgs.clear()
             lastHistoryCacheDateTime = ""
-            val logShowHistory = TODO("APR: use JVM equivalent - gSavedPerAccountSettings.getBOOL(\"LogShowHistory\")") as Boolean
+            System.err.println("IMSession: gSavedPerAccountSettings.getBOOL(LogShowHistory) not yet implemented")
+            val logShowHistory = false
             if (!logShowHistory) return
-            val chatHistory = TODO("APR: use JVM equivalent - LLLogChat.loadChatHistory($historyFileName, isGroupChat=${ isGroupChat() })") as List<Map<String, Any>>
+            System.err.println("IMSession: LLLogChat.loadChatHistory not yet implemented")
+            val chatHistory = emptyList<Map<String, Any>>()
             addMessagesFromHistoryCache(chatHistory)
         }
 
@@ -447,13 +449,15 @@ object IMModel {
                         val sortedUuids = TreeSet(initialTargetIDs)
                         "$name hash${generateHash(sortedUuids)}"
                     } else {
-                        val ts = TODO("APR: use JVM equivalent - LLLogChat.timestamp2LogString(0, true)") as String
+                        System.err.println("IMSession: LLLogChat.timestamp2LogString not yet implemented")
+                    val ts = ""
                         val shortId = sessionID.toString().take(4)
                         "$name $ts $shortId"
                     }
                 }
                 isP2P() -> {
-                    val avName = TODO("APR: use JVM equivalent - LLAvatarNameCache.get($otherParticipantID)") as Pair<String, String>?
+                    System.err.println("IMSession: LLAvatarNameCache.get not yet implemented")
+                    val avName = null as Pair<String, String>?
                     val userName = avName?.first ?: name
                     buildUsername(userName)
                 }
@@ -488,7 +492,8 @@ object IMModel {
             val youStartedCall = translate("you_started_call")
             when (sessionType) {
                 SType.P2P_SESSION -> {
-                    val otherName = TODO("APR: use JVM equivalent - get cached avatar username for $otherParticipantID") as String
+                    System.err.println("IMSession: get cached avatar username not yet implemented")
+                    val otherName = ""
                     if (direction == VoiceChannelDirection.INCOMING_CALL) {
                         when (newState) {
                             VoiceChannelState.STATE_CALL_STARTED ->
@@ -517,7 +522,7 @@ object IMModel {
                 else -> {}
             }
             if (newState == VoiceChannelState.STATE_CONNECTED) {
-                TODO("APR: use JVM equivalent - speakers.update(true)")
+                System.err.println("IMSession: speakers.update not yet implemented")
             }
         }
 
@@ -535,8 +540,8 @@ object IMModel {
         private fun resolveFromId(msg: Map<String, Any>): UUID {
             val id = msg["from_id"]
             if (id is UUID) return id
-            val from = msg["from"] as? String ?: ""
-            return TODO("APR: use JVM equivalent - LLAvatarNameCache.findIdByName(buildLegacyName($from))") as UUID
+            System.err.println("IMSession: LLAvatarNameCache.findIdByName not yet implemented")
+            return UUID(0, 0)
         }
 
         private fun buildUsername(name: String): String {

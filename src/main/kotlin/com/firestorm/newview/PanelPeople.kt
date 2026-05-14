@@ -471,27 +471,28 @@ class PanelPeople : Panel(), FriendObserver, VoiceClientStatusObserver {
         findChild<UICtrl>(name)?.let { isAccordionCollapsedByUser(it) } ?: false
 
     private fun onContactSetsEnable(userdata: LLSD): Boolean {
-        TODO("APR: use JVM equivalent - check contact set action is applicable")
+        System.err.println("PanelPeople: onContactSetsEnable not yet implemented")
+        return false
     }
 
     private fun onContactSetsMenuItemClicked(userdata: LLSD) {
-        TODO("APR: use JVM equivalent - handle contact sets context menu action")
+        System.err.println("PanelPeople: onContactSetsMenuItemClicked not yet implemented")
     }
 
     private fun handlePickerCallback(ids: List<UUID>, set: String) {
-        TODO("APR: use JVM equivalent - add picked avatars to contact set")
+        System.err.println("PanelPeople: handlePickerCallback not yet implemented")
     }
 
     private fun moveSelectedContactsToSet() {
-        TODO("APR: use JVM equivalent - move selected avatars to chosen contact set")
+        System.err.println("PanelPeople: moveSelectedContactsToSet not yet implemented")
     }
 
     private fun refreshContactSets() {
-        TODO("APR: use JVM equivalent - repopulate contact set combo box")
+        System.err.println("PanelPeople: refreshContactSets not yet implemented")
     }
 
     private fun generateContactList(contactSet: String) {
-        TODO("APR: use JVM equivalent - populate contactSetList from named contact set")
+        System.err.println("PanelPeople: generateContactList not yet implemented")
     }
 
     private fun generateCurrentContactList() {
@@ -500,11 +501,12 @@ class PanelPeople : Panel(), FriendObserver, VoiceClientStatusObserver {
     }
 
     private fun updateContactSetListSorting() {
-        TODO("APR: use JVM equivalent - apply comparator based on current set sort preference")
+        System.err.println("PanelPeople: updateContactSetListSorting not yet implemented")
     }
 
     private fun shouldSortByOnlineStatusForCurrentSet(): Boolean {
-        TODO("APR: use JVM equivalent - check saved setting for current contact set")
+        System.err.println("PanelPeople: shouldSortByOnlineStatusForCurrentSet not yet implemented")
+        return false
     }
 
     private fun handleAvatarDropToCurrentContactSet(avatarId: UUID, drop: Boolean): Boolean {

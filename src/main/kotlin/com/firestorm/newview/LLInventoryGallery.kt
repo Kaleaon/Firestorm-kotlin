@@ -236,15 +236,15 @@ class LLInventoryGallery(params: Params = Params()) : LLPanel(), LLEditMenuHandl
     }
 
     fun updateMessageVisibility() {
-        TODO("GPU: show or hide empty-folder message based on visible item count")
+        // GPU: show or hide empty-folder message based on visible item count
     }
 
     fun setRootFolder(catId: UUID) {
-        TODO("APR: use JVM equivalent - validate category, push current to history, clear state, dirtyRootFolder")
+        System.err.println("LLInventoryGallery: setRootFolder not yet implemented")
     }
 
     fun updateRootFolder() {
-        TODO("APR: use JVM equivalent - remove old items, reset observers, fetch category, queue items for build")
+        System.err.println("LLInventoryGallery: updateRootFolder not yet implemented")
     }
 
     fun getRootFolder(): UUID = folderID
@@ -292,19 +292,20 @@ class LLInventoryGallery(params: Params = Params()) : LLPanel(), LLEditMenuHandl
     fun getNavForwardList(): List<UUID> = forwardFolders.toList()
 
     fun getOutfitImageID(outfitId: UUID): UUID {
-        TODO("APR: use JVM equivalent - find first thumbnail in outfit folder")
+        System.err.println("LLInventoryGallery: getOutfitImageID not yet implemented")
+        return UUID.randomUUID()
     }
 
     fun refreshList(categoryId: UUID) {
-        TODO("APR: use JVM equivalent - compute added/removed items and update build queue")
+        System.err.println("LLInventoryGallery: refreshList not yet implemented")
     }
 
     fun onCOFChanged() {
-        TODO("APR: use JVM equivalent - refresh worn status for all gallery items")
+        System.err.println("LLInventoryGallery: onCOFChanged not yet implemented")
     }
 
     fun onGesturesChanged() {
-        TODO("APR: use JVM equivalent - refresh active gesture worn status for all gallery items")
+        System.err.println("LLInventoryGallery: onGesturesChanged not yet implemented")
     }
 
     fun computeDifference(

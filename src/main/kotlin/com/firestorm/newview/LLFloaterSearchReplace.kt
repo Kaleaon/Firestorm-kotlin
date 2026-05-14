@@ -159,14 +159,14 @@ class LLFloaterSearchReplace(sdKey: Any) : LLFloater(sdKey) {
     }
 
     @Suppress("UNCHECKED_CAST")
-    private fun <T> getChild(name: String): T? = TODO("UI: resolve child widget '$name'")
-    private fun setDefaultBtn(btn: LLButton?) { TODO("UI: set default button") }
-    private fun getDependee(): LLFloater? = TODO("UI: getDependee")
-    private fun openFloater() { TODO("UI: openFloater") }
-    private fun super_handleKeyHere(key: Int, mask: Int): Boolean = TODO("UI: LLFloater base handleKeyHere")
-    private fun removeDependentFloater(floater: LLFloater) { TODO("UI: removeDependentFloater") }
-    private fun addDependentFloater(floater: LLFloater) { TODO("UI: addDependentFloater") }
-    private fun getHost(): LLFloater? = TODO("UI: getHost")
+    private fun <T> getChild(name: String): T? = null
+    private fun setDefaultBtn(btn: LLButton?) { System.err.println("LLFloaterSearchReplace: set default button not yet implemented") }
+    private fun getDependee(): LLFloater? = null
+    private fun openFloater() { System.err.println("LLFloaterSearchReplace: openFloater not yet implemented") }
+    private fun super_handleKeyHere(key: Int, mask: Int): Boolean = false
+    private fun removeDependentFloater(floater: LLFloater) { System.err.println("LLFloaterSearchReplace: removeDependentFloater not yet implemented") }
+    private fun addDependentFloater(floater: LLFloater) { System.err.println("LLFloaterSearchReplace: addDependentFloater not yet implemented") }
+    private fun getHost(): LLFloater? = null
 }
 
 // ============================================================================
@@ -174,30 +174,30 @@ class LLFloaterSearchReplace(sdKey: Any) : LLFloater(sdKey) {
 // ============================================================================
 
 open class LLViewBase {
-    open fun getParent(): LLViewBase? = TODO("UI: getParent")
-    open fun hasAccelerators(): Boolean = TODO("UI: hasAccelerators")
-    fun hasAncestor(view: LLViewBase): Boolean = TODO("UI: hasAncestor")
-    fun handleKeyHere(key: Int, mask: Int): Boolean = TODO("UI: handleKeyHere")
+    open fun getParent(): LLViewBase? = null
+    open fun hasAccelerators(): Boolean = false
+    fun hasAncestor(view: LLViewBase): Boolean = false
+    fun handleKeyHere(key: Int, mask: Int): Boolean = false
 }
 
 open class LLTextEditor : LLViewBase() {
-    fun canCopy(): Boolean = TODO("UI: canCopy (used as synonym for hasSelection)")
-    fun getSelectionString(): String = TODO("UI: getSelectionString")
-    fun getReadOnly(): Boolean = TODO("UI: getReadOnly")
-    fun clearHighlights() { TODO("UI: clearHighlights") }
-    fun setHighlightWord(word: String, caseInsensitive: Boolean) { TODO("UI: setHighlightWord") }
-    fun selectNext(search: String, caseInsensitive: Boolean, wrap: Boolean, searchUp: Boolean) { TODO("UI: selectNext") }
-    fun replaceText(search: String, replace: String, caseInsensitive: Boolean, wrap: Boolean, searchUp: Boolean) { TODO("UI: replaceText") }
-    fun replaceTextAll(search: String, replace: String, caseInsensitive: Boolean) { TODO("UI: replaceTextAll") }
+    fun canCopy(): Boolean = false
+    fun getSelectionString(): String = ""
+    fun getReadOnly(): Boolean = false
+    fun clearHighlights() { System.err.println("LLTextEditor: clearHighlights not yet implemented") }
+    fun setHighlightWord(word: String, caseInsensitive: Boolean) { System.err.println("LLTextEditor: setHighlightWord not yet implemented") }
+    fun selectNext(search: String, caseInsensitive: Boolean, wrap: Boolean, searchUp: Boolean) { System.err.println("LLTextEditor: selectNext not yet implemented") }
+    fun replaceText(search: String, replace: String, caseInsensitive: Boolean, wrap: Boolean, searchUp: Boolean) { System.err.println("LLTextEditor: replaceText not yet implemented") }
+    fun replaceTextAll(search: String, replace: String, caseInsensitive: Boolean) { System.err.println("LLTextEditor: replaceTextAll not yet implemented") }
 }
 
 class LLCheckBoxCtrl : LLViewBase() {
-    fun get(): Boolean = TODO("UI: get checkbox value")
-    fun setCommitCallback(cb: () -> Unit) { TODO("UI: setCommitCallback on checkbox") }
+    fun get(): Boolean = false
+    fun setCommitCallback(cb: () -> Unit) { System.err.println("LLCheckBoxCtrl: setCommitCallback not yet implemented") }
 }
 
 object gFocusMgr {
-    fun childHasKeyboardFocus(view: Any): Boolean = TODO("UI: childHasKeyboardFocus")
+    fun childHasKeyboardFocus(view: Any): Boolean = false
 }
 
 object LLEditMenuHandler {
@@ -205,5 +205,5 @@ object LLEditMenuHandler {
 }
 
 object gEditMenu {
-    fun handleAcceleratorKey(key: Int, mask: Int): Boolean = TODO("UI: handleAcceleratorKey")
+    fun handleAcceleratorKey(key: Int, mask: Int): Boolean = false
 }

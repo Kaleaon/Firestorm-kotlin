@@ -31,7 +31,10 @@ class ViewerMenuHolder {
     private var parcelSelection: Any? = null
     private var objectSelection: Any? = null
 
-    fun hideMenus(): Boolean = TODO("Implement menu-hide sweep")
+    fun hideMenus(): Boolean {
+        System.err.println("ViewerMenuHolder: menu-hide sweep not yet implemented")
+        return false
+    }
 
     fun setParcelSelection(sel: Any?) { parcelSelection = sel }
     fun setObjectSelection(sel: Any?) { objectSelection = sel }
@@ -92,13 +95,21 @@ object ViewerMenu {
      * Mirrors C++ `init_menus()` – loads XML menu definitions and wires up
      * all context menus to [menuHolder].
      */
-    fun initMenus(): Unit = TODO("Load XML menu definitions and populate menu references")
+    fun initMenus(): Unit {
+        System.err.println("ViewerMenu: load XML menu definitions and populate menu references not yet implemented")
+    }
 
-    fun initEditMenu(): Unit = TODO("Initialize edit-menu callbacks")
+    fun initEditMenu(): Unit {
+        System.err.println("ViewerMenu: initialize edit-menu callbacks not yet implemented")
+    }
 
-    fun initSpellcheckMenu(): Unit = TODO("Initialize spell-check sub-menu")
+    fun initSpellcheckMenu(): Unit {
+        System.err.println("ViewerMenu: initialize spell-check sub-menu not yet implemented")
+    }
 
-    fun initVolumeControlsCallbacks(): Unit = TODO("Register volume-panel callbacks")
+    fun initVolumeControlsCallbacks(): Unit {
+        System.err.println("ViewerMenu: register volume-panel callbacks not yet implemented")
+    }
 
     fun cleanupMenus() {
         menuBarView   = null
@@ -110,53 +121,110 @@ object ViewerMenu {
 
     // ── Built-in action stubs ─────────────────────────────────────────────────
 
-    fun handleObjectEdit(): Unit = TODO("Enter build/edit mode for selected object")
+    fun handleObjectEdit(): Unit {
+        System.err.println("ViewerMenu: enter build/edit mode for selected object not yet implemented")
+    }
 
-    fun handleObjectTouch(): Unit = TODO("Send touch message to selected in-world object")
+    fun handleObjectTouch(): Unit {
+        System.err.println("ViewerMenu: send touch message to selected in-world object not yet implemented")
+    }
 
-    fun handleObjectOpen(): Unit = TODO("Open selected object's inventory")
+    fun handleObjectOpen(): Unit {
+        System.err.println("ViewerMenu: open selected object's inventory not yet implemented")
+    }
 
-    fun handleObjectDelete(): Unit = TODO("Request deletion of selected object from server")
+    fun handleObjectDelete(): Unit {
+        System.err.println("ViewerMenu: request deletion of selected object from server not yet implemented")
+    }
 
-    fun handleObjectReturn(): Unit = TODO("Return selected object to owner's inventory")
+    fun handleObjectReturn(): Unit {
+        System.err.println("ViewerMenu: return selected object to owner's inventory not yet implemented")
+    }
 
-    fun handleBuy(): Unit = TODO("Initiate buy flow for selected object or its contents")
+    fun handleBuy(): Unit {
+        System.err.println("ViewerMenu: initiate buy flow for selected object or its contents not yet implemented")
+    }
 
-    fun handleTake(takeSeparate: Boolean = false): Unit = TODO("Take selected object into inventory")
+    fun handleTake(takeSeparate: Boolean = false): Unit {
+        System.err.println("ViewerMenu: take selected object into inventory not yet implemented")
+    }
 
-    fun handleTakeCopy(): Unit = TODO("Copy selected object into inventory")
+    fun handleTakeCopy(): Unit {
+        System.err.println("ViewerMenu: copy selected object into inventory not yet implemented")
+    }
 
-    fun handleBuyLand(): Unit = TODO("Open land-purchase dialog")
+    fun handleBuyLand(): Unit {
+        System.err.println("ViewerMenu: open land-purchase dialog not yet implemented")
+    }
 
-    fun handleGoTo(): Boolean = TODO("Teleport agent to clicked location")
+    fun handleGoTo(): Boolean {
+        System.err.println("ViewerMenu: teleport agent to clicked location not yet implemented")
+        return false
+    }
 
-    fun handleObjectSitOrStand(): Unit = TODO("Sit on or stand up from selected object")
+    fun handleObjectSitOrStand(): Unit {
+        System.err.println("ViewerMenu: sit on or stand up from selected object not yet implemented")
+    }
 
-    fun handleGiveMoney(): Unit = TODO("Open pay-resident dialog")
+    fun handleGiveMoney(): Unit {
+        System.err.println("ViewerMenu: open pay-resident dialog not yet implemented")
+    }
 
-    fun handleAttachmentEdit(invItemId: LLUUID): Unit = TODO("Edit attachment by inventory item id")
+    fun handleAttachmentEdit(invItemId: LLUUID): Unit {
+        System.err.println("ViewerMenu: edit attachment by inventory item id not yet implemented")
+    }
 
-    fun handleAttachmentTouch(invItemId: LLUUID): Unit = TODO("Touch attachment by inventory item id")
+    fun handleAttachmentTouch(invItemId: LLUUID): Unit {
+        System.err.println("ViewerMenu: touch attachment by inventory item id not yet implemented")
+    }
 
-    fun handleAvatarFreeze(avatarId: LLUUID): Unit = TODO("Send freeze request to region for avatarId")
+    fun handleAvatarFreeze(avatarId: LLUUID): Unit {
+        System.err.println("ViewerMenu: send freeze request to region for avatarId not yet implemented")
+    }
 
-    fun handleAvatarEject(avatarId: LLUUID): Unit = TODO("Send eject request to region for avatarId")
+    fun handleAvatarEject(avatarId: LLUUID): Unit {
+        System.err.println("ViewerMenu: send eject request to region for avatarId not yet implemented")
+    }
 
     // ── Enable / visibility predicates ───────────────────────────────────────
 
-    fun enableObjectEdit(): Boolean = TODO("Return true when selected object can be edited")
+    fun enableObjectEdit(): Boolean {
+        System.err.println("ViewerMenu: enableObjectEdit not yet implemented")
+        return false
+    }
 
-    fun enableObjectDelete(): Boolean = TODO("Return true when selected object can be deleted")
+    fun enableObjectDelete(): Boolean {
+        System.err.println("ViewerMenu: enableObjectDelete not yet implemented")
+        return false
+    }
 
-    fun enableObjectTakeCopy(): Boolean = TODO("Return true when a copy can be taken")
+    fun enableObjectTakeCopy(): Boolean {
+        System.err.println("ViewerMenu: enableObjectTakeCopy not yet implemented")
+        return false
+    }
 
-    fun enablePayObject(): Boolean = TODO("Return true when selected object accepts payment")
+    fun enablePayObject(): Boolean {
+        System.err.println("ViewerMenu: enablePayObject not yet implemented")
+        return false
+    }
 
-    fun enableBuyObject(): Boolean = TODO("Return true when selected object is for sale")
+    fun enableBuyObject(): Boolean {
+        System.err.println("ViewerMenu: enableBuyObject not yet implemented")
+        return false
+    }
 
-    fun isAgentMappable(agentId: LLUUID): Boolean = TODO("Return true when agent location can be shown on map")
+    fun isAgentMappable(agentId: LLUUID): Boolean {
+        System.err.println("ViewerMenu: isAgentMappable not yet implemented")
+        return false
+    }
 
-    fun enableGodFull(): Boolean = TODO("Return true when logged in as full god")
+    fun enableGodFull(): Boolean {
+        System.err.println("ViewerMenu: enableGodFull not yet implemented")
+        return false
+    }
 
-    fun enableGodBasic(): Boolean = TODO("Return true when logged in with any god level")
+    fun enableGodBasic(): Boolean {
+        System.err.println("ViewerMenu: enableGodBasic not yet implemented")
+        return false
+    }
 }

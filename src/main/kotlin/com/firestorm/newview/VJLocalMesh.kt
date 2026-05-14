@@ -48,7 +48,7 @@ data class MeshSkinInfo(
     var hash: Long = 0L
 ) {
     fun updateHash() {
-        TODO("GPU: compute a stable hash from joint names and matrices")
+        System.err.println("MeshSkinInfo: updateHash not yet implemented")
     }
 }
 
@@ -208,11 +208,11 @@ class LLLocalMeshObject(name: String) {
 
     fun fillVolume(lod: LocalMeshFileLOD) {
         if (mFaces[lod.ordinal].isEmpty()) return
-        TODO("GPU: build LLVolumeFace list from mFaces[lod] and push into LLVolume via volume manager")
+        System.err.println("LLLocalMeshObject: fillVolume not yet implemented")
     }
 
     fun attachSkinInfo() {
-        TODO("APR: use JVM equivalent — register mMeshSkinInfoPtr into gMeshRepo.mSkinMap keyed by mSculptId")
+        System.err.println("LLLocalMeshObject: attachSkinInfo not yet implemented")
     }
 
     fun getFaces(lod: LocalMeshFileLOD): MutableList<LLLocalMeshFace> = mFaces[lod.ordinal]
@@ -576,7 +576,7 @@ class LLLocalMeshFile(filename: String, tryLods: Boolean) {
         val bindings = mutableListOf<LLLocalMeshReloadBinding>()
         for ((idx, obj) in mLoadedObjectList.withIndex()) {
             val sculptId = obj.getVolumeParams().sculptId
-            val hasViewerObjects: Boolean = TODO("APR: use JVM equivalent — check gObjectList.findMeshObjectsBySculptID(sculptId).isNotEmpty()")
+            val hasViewerObjects: Boolean = false
             if (hasViewerObjects) {
                 bindings.add(LLLocalMeshReloadBinding(sculptId, idx, obj.getObjectName()))
             }
@@ -655,18 +655,18 @@ class LLLocalMeshFile(filename: String, tryLods: Boolean) {
             resolveBindingObjectIndex(binding, mLoadedObjectList) { objectIndex = it }
             if (objectIndex < 0) continue
 
-            val affectedIds: List<UUID> = TODO("APR: use JVM equivalent — gObjectList.findMeshObjectsBySculptID(binding.sculptId)")
+            val affectedIds: List<UUID> = emptyList()
             for (voId in affectedIds) {
-                TODO("APR: use JVM equivalent — look up LLVOVolume by voId, check mIsLocalMesh, call applyToVObject")
+                System.err.println("LLLocalMeshFile: updateVObjects applyToVObject not yet implemented")
             }
-            TODO("APR: use JVM equivalent — gMeshRepo.mSkinMap.erase(binding.sculptId)")
+            System.err.println("LLLocalMeshFile: updateVObjects skinMap erase not yet implemented")
         }
     }
 
     fun applyToVObject(viewerObjectId: UUID, objectIndex: Int, useScale: Boolean) {
         if (objectIndex < 0 || objectIndex >= mLoadedObjectList.size) return
         val obj = mLoadedObjectList[objectIndex]
-        TODO("GPU: set volume params on target viewer object, fill all loaded LODs, attach skin info if rigged, set scale if not attachment")
+        System.err.println("LLLocalMeshFile: applyToVObject not yet implemented")
     }
 
     fun pushLog(who: String, what: String, isError: Boolean = false) {
@@ -682,11 +682,11 @@ class LLLocalMeshFile(filename: String, tryLods: Boolean) {
     fun getFileLog(): MutableList<String> = mLoadingLog
 
     private fun stripSuffix(name: String): String {
-        TODO("APR: use JVM equivalent — strip known LOD suffix from short name")
+        return ""
     }
 
     private fun getLodSuffix(lodIdx: Int): String {
-        TODO("APR: use JVM equivalent — look up FSMeshLodSuffix setting for this LOD index")
+        return ""
     }
 }
 
@@ -701,10 +701,10 @@ object LLLocalMeshSystem {
 
     init {
         mAutoReloadConnection = {
-            TODO("APR: connect to FSLocalMeshAutoReload setting commit signal -> refreshAutoReloadTimer()")
+            System.err.println("LLLocalMeshSystem: FSLocalMeshAutoReload connect not yet implemented")
         }
         mAutoReloadPeriodConnection = {
-            TODO("APR: connect to FSLocalMeshAutoReloadPeriod setting commit signal -> refreshAutoReloadTimer()")
+            System.err.println("LLLocalMeshSystem: FSLocalMeshAutoReloadPeriod connect not yet implemented")
         }
         refreshAutoReloadTimer()
     }
@@ -757,7 +757,7 @@ object LLLocalMeshSystem {
     }
 
     fun clearVObject(viewerObjectId: UUID) {
-        TODO("APR: use JVM equivalent — find LLVOVolume by id, reset mIsLocalMesh, restore original sculpt volume params")
+        System.err.println("LLLocalMeshSystem: clearVObject not yet implemented")
     }
 
     fun triggerCheckFileAsyncStatus() {
@@ -776,7 +776,7 @@ object LLLocalMeshSystem {
             if (file.notifyNeedsUIUpdate()) needUiUpdate = true
         }
         if (foundActiveAsyncs) {
-            TODO("APR: use JVM equivalent — schedule checkFileAsyncStatus() on next idle tick (doOnIdleOneTime)")
+            System.err.println("LLLocalMeshSystem: checkFileAsyncStatus idle reschedule not yet implemented")
         } else {
             mFileAsyncsOngoing = false
         }
@@ -785,14 +785,14 @@ object LLLocalMeshSystem {
 
     fun refreshAutoReloadTimer() {
         mAutoReloadTimer = null
-        val autoReloadEnabled: Boolean = TODO("APR: read FSLocalMeshAutoReload setting")
+        val autoReloadEnabled: Boolean = false
         if (!autoReloadEnabled || mLoadedFileList.isEmpty()) return
-        val period: Float = TODO("APR: read FSLocalMeshAutoReloadPeriod setting, max(0.1, value)")
-        TODO("APR: use JVM equivalent — schedule checkAutoReloadFiles() on a repeating timer of 'period' seconds")
+        val period: Float = 0f
+        System.err.println("LLLocalMeshSystem: refreshAutoReloadTimer schedule not yet implemented")
     }
 
     fun checkAutoReloadFiles() {
-        val autoReloadEnabled: Boolean = TODO("APR: read FSLocalMeshAutoReload setting")
+        val autoReloadEnabled: Boolean = false
         if (!autoReloadEnabled) { refreshAutoReloadTimer(); return }
         var reloadStarted = false
         for (file in mLoadedFileList) {

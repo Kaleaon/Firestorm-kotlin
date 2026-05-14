@@ -35,15 +35,15 @@ open class NearbyChat(key: LLSD = LLSD.fromUUID(UUID.NULL)) : Floater() {
         fun buildFloater(key: LLSD): NearbyChat = NearbyChat(key)
 
         fun startChat(line: String?) {
-            TODO("APR: use JVM equivalent - focus chat input editor, optionally prefill text")
+            System.err.println("NearbyChat: focus chat input editor, optionally prefill text not yet implemented")
         }
 
         fun stopChat() {
-            TODO("APR: use JVM equivalent - clear chat input and release focus")
+            System.err.println("NearbyChat: clear chat input and release focus not yet implemented")
         }
 
         fun sendChatFromViewer(utf8text: String, type: ChatType, animate: Boolean) {
-            TODO("APR: use JVM equivalent - send chat packet on channel derived from text")
+            System.err.println("NearbyChat: send chat packet on channel derived from text not yet implemented")
         }
 
         fun isWordsName(name: String): Boolean {
@@ -119,13 +119,13 @@ open class NearbyChat(key: LLSD = LLSD.fromUUID(UUID.NULL)) : Floater() {
     fun setVisibleAndFrontmost(takeFocus: Boolean = true, key: LLSD = LLSD.EMPTY) {
         super.setVisibleAndFrontmost(takeFocus, key)
         if (matchesKey(key)) {
-            TODO("APR: use JVM equivalent - select conversation pair in IM container")
+            System.err.println("NearbyChat: select conversation pair in IM container not yet implemented")
         }
     }
 
     fun closeHostedFloater() {
         if (getHost() == null) setVisible(false)
-        TODO("APR: use JVM equivalent - manage IM container conversation closing logic")
+        System.err.println("NearbyChat: manage IM container conversation closing logic not yet implemented")
     }
 
     fun loadHistory() {
@@ -136,7 +136,8 @@ open class NearbyChat(key: LLSD = LLSD.fromUUID(UUID.NULL)) : Floater() {
             val fromId: UUID = if (msg["from_id"].isDefined()) {
                 msg["from_id"].asUUID()
             } else {
-                TODO("APR: use JVM equivalent - resolve legacy name to UUID via name cache")
+                System.err.println("NearbyChat: resolve legacy name to UUID via name cache not yet implemented")
+                UUID.NULL
             }
 
             val chat = Chat(
@@ -168,7 +169,7 @@ open class NearbyChat(key: LLSD = LLSD.fromUUID(UUID.NULL)) : Floater() {
     }
 
     fun removeScreenChat() {
-        TODO("APR: use JVM equivalent - remove toasts from nearby chat notification channel")
+        System.err.println("NearbyChat: remove toasts from nearby chat notification channel not yet implemented")
     }
 
     fun show() {
@@ -176,12 +177,13 @@ open class NearbyChat(key: LLSD = LLSD.fromUUID(UUID.NULL)) : Floater() {
     }
 
     fun isChatVisible(): Boolean {
-        TODO("APR: use JVM equivalent - check IM container visibility and minimized state")
+        System.err.println("NearbyChat: check IM container visibility and minimized state not yet implemented")
+        return false
     }
 
     fun addMessage(message: Chat, archive: Boolean = true, args: LLSD = LLSD.EMPTY) {
         if (archive) messageArchive.add(message)
-        TODO("APR: use JVM equivalent - append message to chat history widget")
+        System.err.println("NearbyChat: append message to chat history widget not yet implemented")
     }
 
     fun getChatBox(): ChatEntry? = inputEditor
@@ -192,7 +194,7 @@ open class NearbyChat(key: LLSD = LLSD.fromUUID(UUID.NULL)) : Floater() {
 
     fun showHistory() {
         openFloater()
-        TODO("APR: use JVM equivalent - select nearby chat conversation and expand pane")
+        System.err.println("NearbyChat: select nearby chat conversation and expand pane not yet implemented")
     }
 
     fun handleKeyHere(key: Int, mask: Int): Boolean {
@@ -201,8 +203,8 @@ open class NearbyChat(key: LLSD = LLSD.fromUUID(UUID.NULL)) : Floater() {
             key == KEY_RETURN && mask == MASK_SHIFT -> { sendChat(ChatType.CHAT_TYPE_WHISPER); true }
             mask == MASK_ALT && isTornOff() -> {
                 when (key) {
-                    KEY_UP, KEY_LEFT -> { TODO("APR: use JVM equivalent - select previous conversation") }
-                    KEY_DOWN, KEY_RIGHT -> { TODO("APR: use JVM equivalent - select next conversation") }
+                    KEY_UP, KEY_LEFT -> { System.err.println("NearbyChat: select previous conversation not yet implemented"); false }
+                    KEY_DOWN, KEY_RIGHT -> { System.err.println("NearbyChat: select next conversation not yet implemented"); false }
                     else -> false
                 }
             }
@@ -211,11 +213,11 @@ open class NearbyChat(key: LLSD = LLSD.fromUUID(UUID.NULL)) : Floater() {
     }
 
     protected fun onChatBoxKeystroke() {
-        TODO("APR: use JVM equivalent - handle typing indicator, gesture autocomplete, and channel strip")
+        System.err.println("NearbyChat: handle typing indicator, gesture autocomplete, and channel strip not yet implemented")
     }
 
     protected fun onChatBoxFocusLost() {
-        TODO("APR: use JVM equivalent - stop typing animation via agent")
+        System.err.println("NearbyChat: stop typing animation via agent not yet implemented")
     }
 
     protected fun onChatBoxFocusReceived() {
@@ -240,7 +242,7 @@ open class NearbyChat(key: LLSD = LLSD.fromUUID(UUID.NULL)) : Floater() {
     }
 
     protected fun onTearOffClicked() {
-        TODO("APR: use JVM equivalent - toggle tear-off and persist state in per-account settings")
+        System.err.println("NearbyChat: toggle tear-off and persist state in per-account settings not yet implemented")
     }
 
     protected fun onClickCloseBtn(appQuitting: Boolean = false) {
@@ -249,7 +251,7 @@ open class NearbyChat(key: LLSD = LLSD.fromUUID(UUID.NULL)) : Floater() {
     }
 
     protected fun displaySpeakingIndicator() {
-        TODO("APR: use JVM equivalent - show/hide output monitor based on PTT state")
+        System.err.println("NearbyChat: show/hide output monitor based on PTT state not yet implemented")
     }
 
     protected fun processChatTypeTriggers(type: ChatType, str: StringBuilder): ChatType {
@@ -269,7 +271,8 @@ open class NearbyChat(key: LLSD = LLSD.fromUUID(UUID.NULL)) : Floater() {
     }
 
     private fun stripChannelNumber(text: String): Pair<String, Int> {
-        TODO("APR: use JVM equivalent - parse /channel prefix from text, return remainder and channel number")
+        System.err.println("NearbyChat: parse /channel prefix from text, return remainder and channel number not yet implemented")
+        return Pair(text, 0)
     }
 
     private fun shouldAnimate(type: ChatType): Boolean = type == ChatType.CHAT_TYPE_NORMAL
@@ -277,49 +280,55 @@ open class NearbyChat(key: LLSD = LLSD.fromUUID(UUID.NULL)) : Floater() {
     private fun refresh() {
         displaySpeakingIndicator()
         VoiceClient.getInstance()?.let { vc ->
-            TODO("APR: use JVM equivalent - update call button state from PTT state")
+            System.err.println("NearbyChat: update call button state from PTT state not yet implemented")
         }
-        TODO("APR: use JVM equivalent - set transparency type based on focus")
+        System.err.println("NearbyChat: set transparency type based on focus not yet implemented")
     }
 
     private fun isMessagePaneExpanded(): Boolean {
-        TODO("APR: use JVM equivalent - check collapsed state from floater geometry")
+        System.err.println("NearbyChat: check collapsed state from floater geometry not yet implemented")
+        return false
     }
 
     private fun restoreFloater() {
-        TODO("APR: use JVM equivalent - restore floater to expanded state")
+        System.err.println("NearbyChat: restore floater to expanded state not yet implemented")
     }
 
     private fun forceReshape() {
-        TODO("APR: use JVM equivalent - snap floater to expanded rect")
+        System.err.println("NearbyChat: snap floater to expanded rect not yet implemented")
     }
 
     private fun storeRectControl() {
-        TODO("APR: use JVM equivalent - persist floater rect to settings")
+        System.err.println("NearbyChat: persist floater rect to settings not yet implemented")
     }
 
     private fun clearChatHistory() {
-        TODO("APR: use JVM equivalent - clear chat history widget")
+        System.err.println("NearbyChat: clear chat history widget not yet implemented")
     }
 
     private fun isDisconnected(): Boolean {
-        TODO("APR: use JVM equivalent - check global gDisconnected flag equivalent")
+        System.err.println("NearbyChat: check global gDisconnected flag equivalent not yet implemented")
+        return false
     }
 
     private fun getSavedPerAccountSetting(key: String): Boolean {
-        TODO("APR: use JVM equivalent - read per-account saved setting")
+        System.err.println("NearbyChat: read per-account saved setting not yet implemented")
+        return false
     }
 
     private fun matchesKey(key: LLSD): Boolean {
-        TODO("APR: use JVM equivalent - check if key matches this floater's session key")
+        System.err.println("NearbyChat: check if key matches this floater's session key not yet implemented")
+        return false
     }
 
     private fun loadChatHistory(name: String): List<LLSD> {
-        TODO("APR: use JVM equivalent - read chat history from log file")
+        System.err.println("NearbyChat: read chat history from log file not yet implemented")
+        return emptyList()
     }
 
     private fun getString(key: String): String {
-        TODO("APR: use JVM equivalent - translate UI string key")
+        System.err.println("NearbyChat: translate UI string key not yet implemented")
+        return ""
     }
 
     companion object {

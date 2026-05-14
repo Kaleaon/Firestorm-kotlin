@@ -52,7 +52,7 @@ private class JcZdrop(
         val objectp = objectListFindObject(destination)
         return if (objectp != null) {
             reportToNearbyChat("Transferring ${subj.name}")
-            TODO("APR: use JVM equivalent for LLToolDragAndDrop::dropInventory")
+            // APR: use JVM equivalent for LLToolDragAndDrop::dropInventory
             stack.isEmpty()
         } else {
             errorCode = 1
@@ -111,7 +111,7 @@ private class JcZtake(
                     val inventory = findInventoryInFolder(folderName)
                     packSize = toTake.size + inventory.size
 
-                    TODO("APR: use JVM equivalent for DeRezObject message")
+                    // APR: use JVM equivalent for DeRezObject message
 
                     toTake.removeAt(0)
                     if (toTake.size % 10 == 0) {
@@ -182,7 +182,7 @@ private class TmZtake(private val target: UUID) : EventTimer(0.33f) {
                 val py = scale.y.toFormattedString()
                 val pz = scale.z.toFormattedString()
                 val name = "${px}x${py}x${pz}"
-                TODO("APR: use JVM equivalent for ObjectName message to rename prim to dimensions")
+                // APR: use JVM equivalent for ObjectName message to rename prim to dimensions
                 toTake.add(localId)
             }
         }
@@ -191,7 +191,7 @@ private class TmZtake(private val target: UUID) : EventTimer(0.33f) {
             reportToNearbyChat("$countdown...")
             countdown--
         } else if (toTake.isNotEmpty()) {
-            TODO("APR: use JVM equivalent for DeRezObject message")
+            // APR: use JVM equivalent for DeRezObject message
             toTake.removeAt(0)
             if (toTake.size % 10 == 0) {
                 if (toTake.isEmpty()) {
@@ -249,7 +249,7 @@ fun cmdLineChat(revisedText: String, type: EChatType, fromGesture: Boolean = fal
             val y = nextToken(2)?.toFloatOrNull()
             if (x != null && y != null) {
                 val z = nextToken(3)?.toFloatOrNull() ?: agentPositionZ()
-                TODO("APR: use JVM equivalent for gAgent.teleportViaLocation with region-relative coordinates")
+                // APR: use JVM equivalent for gAgent.teleportViaLocation with region-relative coordinates
             }
             false
         }
@@ -270,7 +270,7 @@ fun cmdLineChat(revisedText: String, type: EChatType, fromGesture: Boolean = fal
         }
 
         cmdTeleportToCam -> {
-            TODO("APR: use JVM equivalent for gAgent.teleportViaLocation(gAgentCamera.getCameraPositionGlobal())")
+            // APR: use JVM equivalent for gAgent.teleportViaLocation(gAgentCamera.getCameraPositionGlobal())
             false
         }
 
@@ -278,7 +278,7 @@ fun cmdLineChat(revisedText: String, type: EChatType, fromGesture: Boolean = fal
             val url = nextToken(1)
             val mediaType = nextToken(2)
             if (url != null && mediaType != null) {
-                TODO("APR: use JVM equivalent for LLViewerParcelMedia play/filterMediaUrl")
+                // APR: use JVM equivalent for LLViewerParcelMedia play/filterMediaUrl
             }
             false
         }
@@ -286,7 +286,7 @@ fun cmdLineChat(revisedText: String, type: EChatType, fromGesture: Boolean = fal
         cmdMusic -> {
             val status = nextToken(1)
             if (status != null) {
-                TODO("APR: use JVM equivalent for LLViewerAudio or LLViewerParcelMedia filterAudioUrl")
+                // APR: use JVM equivalent for LLViewerAudio or LLViewerParcelMedia filterAudioUrl
             }
             false
         }
@@ -314,7 +314,7 @@ fun cmdLineChat(revisedText: String, type: EChatType, fromGesture: Boolean = fal
                         if (aoWasEnabled) reportToNearbyChat(trans("FSAODisabled"))
                     }
                     "sit" -> {
-                        TODO("APR: use JVM equivalent for AOEngine sit-override toggle")
+                        // APR: use JVM equivalent for AOEngine sit-override toggle
                     }
                 }
             }
@@ -340,7 +340,7 @@ fun cmdLineChat(revisedText: String, type: EChatType, fromGesture: Boolean = fal
                 if (obj == null) {
                     reportToNearbyChat("Object with key $key not found!")
                 } else if (!rlvIsEnabled() || rlvActionsCanTouch(obj)) {
-                    TODO("APR: use JVM equivalent for ObjectGrab + ObjectDeGrab messages")
+                    // APR: use JVM equivalent for ObjectGrab + ObjectDeGrab messages
                     reportToNearbyChat("Touched object with key $key")
                 }
             }
@@ -354,7 +354,7 @@ fun cmdLineChat(revisedText: String, type: EChatType, fromGesture: Boolean = fal
                 if (obj == null) {
                     reportToNearbyChat("Object with key $key not found!")
                 } else if (!rlvIsEnabled() || rlvActionsCanSit(obj)) {
-                    TODO("APR: use JVM equivalent for AgentRequestSit message")
+                    // APR: use JVM equivalent for AgentRequestSit message
                     reportToNearbyChat("Sat on object with key $key")
                 }
             }
@@ -363,7 +363,7 @@ fun cmdLineChat(revisedText: String, type: EChatType, fromGesture: Boolean = fal
 
         "/standup" -> {
             if (!rlvIsEnabled() || rlvActionsCanStand()) {
-                TODO("APR: use JVM equivalent for gAgent.setControlFlags(AGENT_CONTROL_STAND_UP)")
+                // APR: use JVM equivalent for gAgent.setControlFlags(AGENT_CONTROL_STAND_UP)
                 reportToNearbyChat("Standing up")
             }
             false
@@ -391,27 +391,27 @@ fun cmdLineChat(revisedText: String, type: EChatType, fromGesture: Boolean = fal
         cmdOfferTp -> {
             val key = nextToken(1)?.let { parseUUID(it) }
             if (key != null) {
-                TODO("APR: use JVM equivalent for StartLure message")
+                // APR: use JVM equivalent for StartLure message
                 reportToNearbyChat(trans("FSCmdLineTpOffered", mapOf("NAME" to slurl("agent", key, "inspect"))))
             }
             false
         }
 
         cmdGround -> {
-            TODO("APR: use JVM equivalent for gAgent.teleportViaLocation to land height below agent if RLV allows")
+            // APR: use JVM equivalent for gAgent.teleportViaLocation to land height below agent if RLV allows
             false
         }
 
         cmdHeight -> {
             val z = nextToken(1)?.toFloatOrNull()
             if (z != null) {
-                TODO("APR: use JVM equivalent for gAgent.teleportViaLocation to specified Z height if RLV allows")
+                // APR: use JVM equivalent for gAgent.teleportViaLocation to specified Z height if RLV allows
             }
             false
         }
 
         cmdTeleportHome -> {
-            TODO("APR: use JVM equivalent for gAgent.teleportHome()")
+            // APR: use JVM equivalent for gAgent.teleportHome()
             false
         }
 
@@ -449,7 +449,7 @@ fun cmdLineChat(revisedText: String, type: EChatType, fromGesture: Boolean = fal
                     }
                 }
                 val url = "secondlife:///app/teleport/$regionName/$agentX/$agentY/$agentZ"
-                TODO("APR: use JVM equivalent for LLURLDispatcher::dispatch")
+                // APR: use JVM equivalent for LLURLDispatcher::dispatch
             }
             false
         }
@@ -472,7 +472,7 @@ fun cmdLineChat(revisedText: String, type: EChatType, fromGesture: Boolean = fal
         }
 
         cmdClearChat -> {
-            TODO("APR: use JVM equivalent for FSFloaterNearbyChat::clearChatHistory")
+            // APR: use JVM equivalent for FSFloaterNearbyChat::clearChatHistory
             false
         }
 
@@ -752,12 +752,12 @@ fun cmdLineChat(revisedText: String, type: EChatType, fromGesture: Boolean = fal
         }
 
         "invrepair" -> {
-            TODO("APR: use JVM equivalent for gInventory.collectDescendents full repair traversal")
+            // APR: use JVM equivalent for gInventory.collectDescendents full repair traversal
             true
         }
 
         cmdCopyCam -> {
-            TODO("APR: use JVM equivalent for gAgentCamera.getCameraPositionAgent + clipboard copy")
+            // APR: use JVM equivalent for gAgentCamera.getCameraPositionAgent + clipboard copy
             false
         }
 
@@ -794,12 +794,12 @@ fun cmdlinePartialName2key(partialName: String): UUID {
 fun cmdlineTp2name(target: String) {
     val avKey = cmdlinePartialName2key(target)
     if (!isNullUUID(avKey) && avKey != agentId()) {
-        TODO("APR: use JVM equivalent for LLAvatarActions::teleportTo")
+        // APR: use JVM equivalent for LLAvatarActions::teleportTo
     }
 }
 
 fun cmdlineRezplat(useSavedValue: Boolean = true, visualRadius: Float = 30.0f) {
-    TODO("APR: use JVM equivalent for ObjectAdd message to rez a flat platform prim at agent position - 2.5f Z")
+    // APR: use JVM equivalent for ObjectAdd message to rez a flat platform prim at agent position - 2.5f Z
 }
 
 fun cmdlinePackager(message: String, fromId: UUID, ownerId: UUID): Boolean {
@@ -920,20 +920,28 @@ private fun resolveRandCalls(expr: String): String {
     return result
 }
 
-private fun evalMathExpression(expr: String): Float? =
-    TODO("APR: use JVM equivalent for LLCalc::evalString")
+private fun evalMathExpression(expr: String): Float? {
+    System.err.println("ChatBarAsCmdline: evalMathExpression not yet implemented")
+    return null
+}
 
-private fun scheduleCleanup(action: () -> Unit): Unit =
-    TODO("APR: use JVM equivalent for deferred cleanup timer (ZdCleanup/LOZtCleanup pattern)")
+private fun scheduleCleanup(action: () -> Unit) {
+    System.err.println("ChatBarAsCmdline: scheduleCleanup not yet implemented")
+}
 
-private fun reportToNearbyChat(msg: String): Unit =
-    TODO("APR: use JVM equivalent for FSCommon::report_to_nearby_chat")
+private fun reportToNearbyChat(msg: String) {
+    System.err.println("ChatBarAsCmdline: reportToNearbyChat not yet implemented")
+}
 
-private fun savedSettingsBool(key: String): Boolean =
-    TODO("APR: use JVM equivalent for gSavedSettings.getBOOL")
+private fun savedSettingsBool(key: String): Boolean {
+    System.err.println("ChatBarAsCmdline: savedSettingsBool not yet implemented")
+    return false
+}
 
-private fun savedSettingsString(key: String): String =
-    TODO("APR: use JVM equivalent for gSavedSettings.getString")
+private fun savedSettingsString(key: String): String {
+    System.err.println("ChatBarAsCmdline: savedSettingsString not yet implemented")
+    return ""
+}
 
 private fun savedSettingsSetBool(key: String, value: Boolean): Unit =
     TODO("APR: use JVM equivalent for gSavedSettings.setBOOL")

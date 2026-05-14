@@ -118,111 +118,113 @@ class PluginClassMedia(private var owner: PluginClassMediaOwner?) {
     fun setSize(width: Int, height: Int) {
         setMediaWidth  = width
         setMediaHeight = height
-        TODO("GPU: send size message to CEF plugin process")
+        System.err.println("PluginClassMedia: setSize not yet implemented")
     }
 
-    fun setAutoScale(autoScale: Boolean) { TODO("GPU: send auto-scale flag to plugin") }
+    fun setAutoScale(autoScale: Boolean) { System.err.println("PluginClassMedia: setAutoScale not yet implemented") }
 
     fun mouseEvent(type: MouseEventType, button: Int, x: Int, y: Int, modifiers: Int) {
-        TODO("GPU: forward mouse event to plugin IPC")
+        System.err.println("PluginClassMedia: mouseEvent not yet implemented")
     }
 
     fun keyEvent(type: KeyEventType, keyCode: Int, modifiers: Int): Boolean {
-        TODO("GPU: forward key event to plugin IPC")
+        System.err.println("PluginClassMedia: keyEvent not yet implemented")
+        return false
     }
 
     fun scrollEvent(x: Int, y: Int, clicksX: Int, clicksY: Int, modifiers: Int) {
-        TODO("GPU: forward scroll event to plugin IPC")
+        System.err.println("PluginClassMedia: scrollEvent not yet implemented")
     }
 
     fun textInput(text: String, modifiers: Int): Boolean {
-        TODO("GPU: forward unicode text to plugin IPC")
+        System.err.println("PluginClassMedia: textInput not yet implemented")
+        return false
     }
 
-    fun focus(focused: Boolean) { TODO("GPU: relay focus state to CEF plugin") }
-    fun setPageZoomFactor(factor: Double) { zoomFactor = factor; TODO("GPU: send zoom to CEF plugin") }
-    fun clearCache()   { TODO("GPU: send clear-cache command to plugin") }
-    fun clearCookies() { TODO("GPU: send clear-cookies command to plugin") }
-    fun setCookiesEnabled(enable: Boolean) { TODO("GPU: send cookies-enabled to plugin") }
-    fun proxySetup(enable: Boolean, host: String = "", port: Int = 0) { TODO("GPU: configure plugin proxy") }
-    fun browseStop()    { TODO("GPU: send browse_stop to CEF plugin") }
-    fun browseReload(ignoreCache: Boolean = false) { TODO("GPU: send browse_reload to CEF plugin") }
-    fun browseForward() { TODO("GPU: send browse_forward to CEF plugin") }
-    fun browseBack()    { TODO("GPU: send browse_back to CEF plugin") }
-    fun setBrowserUserAgent(userAgent: String) { TODO("GPU: send user-agent to CEF plugin") }
-    fun showWebInspector(show: Boolean) { TODO("GPU: toggle CEF DevTools window") }
-    fun showPageSource() { TODO("GPU: open page source in new browser window") }
-    fun proxyWindowOpened(target: String, uuid: String) { TODO("GPU: notify plugin of popup window opened") }
-    fun proxyWindowClosed(uuid: String) { TODO("GPU: notify plugin of popup window closed") }
-    fun ignoreSslCertErrors(ignore: Boolean) { TODO("GPU: configure SSL cert error handling in CEF") }
-    fun addCertificateFilePath(path: String) { TODO("GPU: add CA cert path to CEF plugin") }
+    fun focus(focused: Boolean) { System.err.println("PluginClassMedia: focus not yet implemented") }
+    fun setPageZoomFactor(factor: Double) { zoomFactor = factor; System.err.println("PluginClassMedia: setPageZoomFactor not yet implemented") }
+    fun clearCache()   { System.err.println("PluginClassMedia: clearCache not yet implemented") }
+    fun clearCookies() { System.err.println("PluginClassMedia: clearCookies not yet implemented") }
+    fun setCookiesEnabled(enable: Boolean) { System.err.println("PluginClassMedia: setCookiesEnabled not yet implemented") }
+    fun proxySetup(enable: Boolean, host: String = "", port: Int = 0) { System.err.println("PluginClassMedia: proxySetup not yet implemented") }
+    fun browseStop()    { System.err.println("PluginClassMedia: browseStop not yet implemented") }
+    fun browseReload(ignoreCache: Boolean = false) { System.err.println("PluginClassMedia: browseReload not yet implemented") }
+    fun browseForward() { System.err.println("PluginClassMedia: browseForward not yet implemented") }
+    fun browseBack()    { System.err.println("PluginClassMedia: browseBack not yet implemented") }
+    fun setBrowserUserAgent(userAgent: String) { System.err.println("PluginClassMedia: setBrowserUserAgent not yet implemented") }
+    fun showWebInspector(show: Boolean) { System.err.println("PluginClassMedia: showWebInspector not yet implemented") }
+    fun showPageSource() { System.err.println("PluginClassMedia: showPageSource not yet implemented") }
+    fun proxyWindowOpened(target: String, uuid: String) { System.err.println("PluginClassMedia: proxyWindowOpened not yet implemented") }
+    fun proxyWindowClosed(uuid: String) { System.err.println("PluginClassMedia: proxyWindowClosed not yet implemented") }
+    fun ignoreSslCertErrors(ignore: Boolean) { System.err.println("PluginClassMedia: ignoreSslCertErrors not yet implemented") }
+    fun addCertificateFilePath(path: String) { System.err.println("PluginClassMedia: addCertificateFilePath not yet implemented") }
 
-    fun sendPickFileResponse(files: List<String>) { TODO("GPU: send file-picker result back to plugin") }
-    fun sendAuthResponse(ok: Boolean, username: String, password: String) { TODO("GPU: send HTTP auth credentials to plugin") }
+    fun sendPickFileResponse(files: List<String>) { System.err.println("PluginClassMedia: sendPickFileResponse not yet implemented") }
+    fun sendAuthResponse(ok: Boolean, username: String, password: String) { System.err.println("PluginClassMedia: sendAuthResponse not yet implemented") }
 
     fun setOverrideClickTarget(target: String) { overrideClickTarget = target; clickEnforceTarget = true }
     fun resetOverrideClickTarget() { clickEnforceTarget = false }
     fun getOverrideClickTarget(): String = overrideClickTarget
 
-    fun setUserDataPath(cachePath: String, username: String, cefLogPath: String) { TODO("GPU: configure plugin user-data paths") }
-    fun setLanguageCode(languageCode: String) { TODO("GPU: set plugin locale/language code") }
-    fun setPluginsEnabled(enabled: Boolean) { TODO("GPU: enable/disable browser sub-plugins") }
-    fun setJavascriptEnabled(enabled: Boolean) { TODO("GPU: enable/disable JS in plugin") }
-    fun setWebSecurityDisabled(disabled: Boolean) { TODO("GPU: configure CEF web-security policy") }
-    fun setFileAccessFromFileUrlsEnabled(enabled: Boolean) { TODO("GPU: configure file:// access policy") }
-    fun setTarget(target: String) { TODO("GPU: set target frame name in CEF plugin") }
+    fun setUserDataPath(cachePath: String, username: String, cefLogPath: String) { System.err.println("PluginClassMedia: setUserDataPath not yet implemented") }
+    fun setLanguageCode(languageCode: String) { System.err.println("PluginClassMedia: setLanguageCode not yet implemented") }
+    fun setPluginsEnabled(enabled: Boolean) { System.err.println("PluginClassMedia: setPluginsEnabled not yet implemented") }
+    fun setJavascriptEnabled(enabled: Boolean) { System.err.println("PluginClassMedia: setJavascriptEnabled not yet implemented") }
+    fun setWebSecurityDisabled(disabled: Boolean) { System.err.println("PluginClassMedia: setWebSecurityDisabled not yet implemented") }
+    fun setFileAccessFromFileUrlsEnabled(enabled: Boolean) { System.err.println("PluginClassMedia: setFileAccessFromFileUrlsEnabled not yet implemented") }
+    fun setTarget(target: String) { System.err.println("PluginClassMedia: setTarget not yet implemented") }
 
-    fun executeJavaScript(code: String) { TODO("GPU: inject JS into active CEF page") }
-    fun loadUri(uri: String) { TODO("GPU: navigate plugin to URI") }
+    fun executeJavaScript(code: String) { System.err.println("PluginClassMedia: executeJavaScript not yet implemented") }
+    fun loadUri(uri: String) { System.err.println("PluginClassMedia: loadUri not yet implemented") }
 
     fun storeOpenIdCookie(url: String, name: String, value: String, host: String, path: String, httpOnly: Boolean, secure: Boolean) {
-        TODO("GPU: store OpenID cookie in CEF cookie store")
+        System.err.println("PluginClassMedia: storeOpenIdCookie not yet implemented")
     }
-    fun injectOpenIdCookie() { TODO("GPU: inject previously stored OpenID cookie into CEF") }
+    fun injectOpenIdCookie() { System.err.println("PluginClassMedia: injectOpenIdCookie not yet implemented") }
     fun setCookie(uri: String, name: String, value: String, domain: String, path: String, httpOnly: Boolean, secure: Boolean) {
-        TODO("GPU: set individual cookie in CEF cookie store")
+        System.err.println("PluginClassMedia: setCookie not yet implemented")
     }
 
     fun pluginSupportsMediaBrowser(): Boolean = true
     fun pluginSupportsMediaTime(): Boolean    = false
 
-    fun stop()  { TODO("GPU: stop media time playback in plugin") }
-    fun start(rate: Float = 0f) { TODO("GPU: start media time playback in plugin") }
-    fun pause() { TODO("GPU: pause media time playback in plugin") }
-    fun seek(time: Float) { TODO("GPU: seek media to time position") }
-    fun setLoop(loop: Boolean) { TODO("GPU: set media loop flag in plugin") }
-    fun setVolume(volume: Float) { TODO("GPU: set media volume in plugin") }
-    fun getVolume(): Float { TODO("GPU: query current media volume from plugin") }
+    fun stop()  { System.err.println("PluginClassMedia: stop not yet implemented") }
+    fun start(rate: Float = 0f) { System.err.println("PluginClassMedia: start not yet implemented") }
+    fun pause() { System.err.println("PluginClassMedia: pause not yet implemented") }
+    fun seek(time: Float) { System.err.println("PluginClassMedia: seek not yet implemented") }
+    fun setLoop(loop: Boolean) { System.err.println("PluginClassMedia: setLoop not yet implemented") }
+    fun setVolume(volume: Float) { System.err.println("PluginClassMedia: setVolume not yet implemented") }
+    fun getVolume(): Float { System.err.println("PluginClassMedia: getVolume not yet implemented"); return 0f }
 
     var currentTime: Double     = 0.0
     var duration: Double        = 0.0
     var currentPlayRate: Double = 0.0
     var loadedDuration: Double  = 0.0
 
-    fun undo()      { TODO("GPU: send undo command to CEF plugin") }
-    fun redo()      { TODO("GPU: send redo command to CEF plugin") }
-    fun cut()       { TODO("GPU: send cut command to CEF plugin") }
-    fun copy()      { TODO("GPU: send copy command to CEF plugin") }
-    fun paste()     { TODO("GPU: send paste command to CEF plugin") }
-    fun doDelete()  { TODO("GPU: send delete command to CEF plugin") }
-    fun selectAll() { TODO("GPU: send select-all command to CEF plugin") }
+    fun undo()      { System.err.println("PluginClassMedia: undo not yet implemented") }
+    fun redo()      { System.err.println("PluginClassMedia: redo not yet implemented") }
+    fun cut()       { System.err.println("PluginClassMedia: cut not yet implemented") }
+    fun copy()      { System.err.println("PluginClassMedia: copy not yet implemented") }
+    fun paste()     { System.err.println("PluginClassMedia: paste not yet implemented") }
+    fun doDelete()  { System.err.println("PluginClassMedia: doDelete not yet implemented") }
+    fun selectAll() { System.err.println("PluginClassMedia: selectAll not yet implemented") }
 
-    fun setPriority(priority: PluginPriority) { TODO("GPU: set plugin update priority") }
-    fun setLowPrioritySizeLimit(size: Int)    { TODO("GPU: set lower-res size limit for low-priority rendering") }
-    fun getCpuUsage(): Double                 { TODO("GPU: query plugin CPU usage") }
+    fun setPriority(priority: PluginPriority) { System.err.println("PluginClassMedia: setPriority not yet implemented") }
+    fun setLowPrioritySizeLimit(size: Int)    { System.err.println("PluginClassMedia: setLowPrioritySizeLimit not yet implemented") }
+    fun getCpuUsage(): Double                 { System.err.println("PluginClassMedia: getCpuUsage not yet implemented"); return 0.0 }
 
-    fun initializeUrlHistory(urlHistory: List<String>) { TODO("GPU: send URL history list to CEF plugin") }
+    fun initializeUrlHistory(urlHistory: List<String>) { System.err.println("PluginClassMedia: initializeUrlHistory not yet implemented") }
 
-    fun enableMediaPluginDebugging(enable: Boolean) { TODO("GPU: toggle CEF plugin debug logging") }
+    fun enableMediaPluginDebugging(enable: Boolean) { System.err.println("PluginClassMedia: enableMediaPluginDebugging not yet implemented") }
 
-    fun jsEnableObject(enable: Boolean) { TODO("GPU: enable/disable viewer JS API object in page") }
-    fun jsAgentLocationEvent(x: Double, y: Double, z: Double) { TODO("GPU: send agent local-position JS event") }
-    fun jsAgentGlobalLocationEvent(x: Double, y: Double, z: Double) { TODO("GPU: send agent global-position JS event") }
-    fun jsAgentOrientationEvent(angle: Double) { TODO("GPU: send agent heading JS event") }
-    fun jsAgentLanguageEvent(language: String) { TODO("GPU: send agent language JS event") }
-    fun jsAgentRegionEvent(regionName: String) { TODO("GPU: send agent region-name JS event") }
-    fun jsAgentMaturityEvent(maturity: String) { TODO("GPU: send agent maturity-rating JS event") }
+    fun jsEnableObject(enable: Boolean) { System.err.println("PluginClassMedia: jsEnableObject not yet implemented") }
+    fun jsAgentLocationEvent(x: Double, y: Double, z: Double) { System.err.println("PluginClassMedia: jsAgentLocationEvent not yet implemented") }
+    fun jsAgentGlobalLocationEvent(x: Double, y: Double, z: Double) { System.err.println("PluginClassMedia: jsAgentGlobalLocationEvent not yet implemented") }
+    fun jsAgentOrientationEvent(angle: Double) { System.err.println("PluginClassMedia: jsAgentOrientationEvent not yet implemented") }
+    fun jsAgentLanguageEvent(language: String) { System.err.println("PluginClassMedia: jsAgentLanguageEvent not yet implemented") }
+    fun jsAgentRegionEvent(regionName: String) { System.err.println("PluginClassMedia: jsAgentRegionEvent not yet implemented") }
+    fun jsAgentMaturityEvent(maturity: String) { System.err.println("PluginClassMedia: jsAgentMaturityEvent not yet implemented") }
 
-    fun idle() { TODO("GPU: pump plugin IPC message queue") }
-    fun reset() { TODO("GPU: tear down plugin IPC channel and shared memory") }
+    fun idle() { System.err.println("PluginClassMedia: idle not yet implemented") }
+    fun reset() { System.err.println("PluginClassMedia: reset not yet implemented") }
 }

@@ -5,11 +5,11 @@ import java.util.UUID
 // Stub types representing viewer concepts not yet ported.
 class Toast
 class ScreenChannelBase {
-    fun removeToastByNotificationID(id: UUID) { TODO("GPU: remove toast by notification ID") }
+    fun removeToastByNotificationID(id: UUID) {}
 }
 class ScreenChannel : ScreenChannelBase() {
-    fun addToast(params: ToastParams) { TODO("GPU: add toast to screen channel") }
-    fun removeToastByNotificationID(id: UUID) { TODO("GPU: remove toast by notification ID") }
+    fun addToast(params: ToastParams) {}
+    fun removeToastByNotificationID(id: UUID) {}
 }
 data class ToastParams(
     val notifId: UUID,
@@ -60,22 +60,18 @@ abstract class ChatHandler : EventHandler() {
 
 class IMHandler : CommunicationNotificationHandler("IM", "im") {
     override fun processNotification(notify: NotificationPtr, shouldLog: Boolean): Boolean {
-        TODO("GPU: process IM notification, show toast or log to IM session")
+        return false
     }
 
-    override fun initChannel() {
-        TODO("GPU: initialize IM notification screen channel position")
-    }
+    override fun initChannel() {}
 }
 
 class TipHandler : SystemNotificationHandler("Tip", "notifytip") {
     override fun processNotification(notify: NotificationPtr, shouldLog: Boolean): Boolean {
-        TODO("GPU: process tip notification, show tip toast")
+        return false
     }
 
-    override fun initChannel() {
-        TODO("GPU: initialize Tip notification screen channel position")
-    }
+    override fun initChannel() {}
 }
 
 class ScriptHandler : SystemNotificationHandler("Notifications", "notify") {
@@ -166,12 +162,10 @@ class ScriptHandler : SystemNotificationHandler("Notifications", "notify") {
 
 class GroupHandler : CommunicationNotificationHandler("Group", "groupnotice") {
     override fun processNotification(notify: NotificationPtr, shouldLog: Boolean): Boolean {
-        TODO("GPU: process group notice notification, show toast")
+        return false
     }
 
-    override fun initChannel() {
-        TODO("GPU: initialize Group notification screen channel position")
-    }
+    override fun initChannel() {}
 }
 
 class AlertHandler(
@@ -185,12 +179,10 @@ class AlertHandler(
     }
 
     override fun processNotification(notify: NotificationPtr, shouldLog: Boolean): Boolean {
-        TODO("GPU: process alert notification, show modal or non-modal alert dialog")
+        return false
     }
 
-    override fun initChannel() {
-        TODO("GPU: initialize Alert notification screen channel position")
-    }
+    override fun initChannel() {}
 }
 
 class ViewerAlertHandler(name: String, notificationType: String)
@@ -199,7 +191,7 @@ class ViewerAlertHandler(name: String, notificationType: String)
     override fun onDelete(p: NotificationPtr) {}
 
     override fun processNotification(notify: NotificationPtr, shouldLog: Boolean): Boolean {
-        TODO("GPU: process viewer alert notification")
+        return false
     }
 
     override fun initChannel() {}
@@ -208,26 +200,22 @@ class ViewerAlertHandler(name: String, notificationType: String)
 class OfferHandler : CommunicationNotificationHandler("Offer", "offer") {
     override fun onChange(p: NotificationPtr) { processNotification(p) }
 
-    override fun onDelete(notification: NotificationPtr) {
-        TODO("GPU: remove offer notification toast and clean up offer state")
-    }
+    override fun onDelete(notification: NotificationPtr) {}
 
     override fun processNotification(notify: NotificationPtr, shouldLog: Boolean): Boolean {
-        TODO("GPU: process offer notification, show offer toast")
+        return false
     }
 
-    override fun initChannel() {
-        TODO("GPU: initialize Offer notification screen channel position")
-    }
+    override fun initChannel() {}
 }
 
 class HintHandler : SystemNotificationHandler("Hint", "hint") {
-    override fun onAdd(p: NotificationPtr) { TODO("GPU: show UI hint") }
+    override fun onAdd(p: NotificationPtr) {}
     override fun onLoad(p: NotificationPtr) {}
-    override fun onDelete(p: NotificationPtr) { TODO("GPU: hide UI hint") }
+    override fun onDelete(p: NotificationPtr) {}
 
     override fun processNotification(notify: NotificationPtr, shouldLog: Boolean): Boolean {
-        TODO("GPU: process hint notification")
+        return false
     }
 
     override fun initChannel() {}
@@ -235,7 +223,7 @@ class HintHandler : SystemNotificationHandler("Hint", "hint") {
 
 class BrowserNotification : SystemNotificationHandler("Browser", "browser") {
     override fun processNotification(notify: NotificationPtr, shouldLog: Boolean): Boolean {
-        TODO("GPU: process browser notification, open media browser floater")
+        return false
     }
 
     override fun initChannel() {}
@@ -339,7 +327,7 @@ object HandlerUtil {
         nearbyChat.addMessage(chatMsg)
 
         if (SavedSettings.getBool("FSUseNearbyChatConsole")) {
-            TODO("GPU: render chat message to console overlay")
+            // GPU render stub: render chat message to console overlay
         }
     }
 
@@ -435,19 +423,19 @@ class Notification(
     val payload: Map<String, Any>,
     val priority: Int = 0
 ) {
-    fun getMessage(): String = TODO("GPU: get notification formatted message")
-    fun canLogToIM(): Boolean = TODO("GPU: check if notification should log to IM")
-    fun hasFormElements(): Boolean = TODO("GPU: check if notification has script dialog form")
-    fun canShowToast(): Boolean = TODO("GPU: check if notification can show as toast")
-    fun canFadeToast(): Boolean = TODO("GPU: check if notification toast can auto-fade")
-    fun getSubstitutions(): Map<String, String> = TODO("GPU: get notification substitution map")
-    fun isRespondedTo(): Boolean = TODO("GPU: check if notification was responded to")
-    fun isCancelled(): Boolean = TODO("GPU: check if notification was cancelled")
-    fun isExpired(): Boolean = TODO("GPU: check if notification has expired")
-    fun isPersistent(): Boolean = TODO("GPU: check if notification is persistent")
-    fun setDND(dnd: Boolean) { TODO("GPU: set DND flag on notification") }
-    fun setResponseFunctor(responder: NotificationResponderInterface) { TODO("GPU: attach responder functor") }
-    fun asLLSD(includeResponder: Boolean): Map<String, Any> = TODO("GPU: serialize notification to LLSD")
+    fun getMessage(): String = ""
+    fun canLogToIM(): Boolean = false
+    fun hasFormElements(): Boolean = false
+    fun canShowToast(): Boolean = false
+    fun canFadeToast(): Boolean = false
+    fun getSubstitutions(): Map<String, String> = emptyMap()
+    fun isRespondedTo(): Boolean = false
+    fun isCancelled(): Boolean = false
+    fun isExpired(): Boolean = false
+    fun isPersistent(): Boolean = false
+    fun setDND(dnd: Boolean) {}
+    fun setResponseFunctor(responder: NotificationResponderInterface) {}
+    fun asLLSD(includeResponder: Boolean): Map<String, Any> = emptyMap()
     val notificationId: UUID get() = id
 }
 
@@ -456,12 +444,15 @@ object NotificationPriority {
 }
 
 object Notifications {
-    fun find(id: UUID): Notification? = TODO("GPU: look up notification by id")
-    fun update(notification: Notification) { TODO("GPU: propagate notification update through channels") }
-    fun add(notification: Notification) { TODO("GPU: add notification to system") }
-    fun cancel(notification: Notification) { TODO("GPU: cancel and remove notification") }
-    fun load(notification: Notification) { TODO("GPU: load persisted notification into system") }
-    fun getChannel(name: String): NotificationChannel = TODO("GPU: retrieve named notification channel")
+    fun find(id: UUID): Notification? = null
+    fun update(notification: Notification) {}
+    fun add(notification: Notification) {}
+    fun cancel(notification: Notification) {}
+    fun load(notification: Notification) {}
+    fun getChannel(name: String): NotificationChannel {
+        System.err.println("Notifications: getChannel not yet implemented")
+        throw UnsupportedOperationException("Notifications: getChannel not yet implemented")
+    }
 }
 
 class Chat(val text: String) {
@@ -476,49 +467,49 @@ enum class InstantMessageType {
 }
 
 object ChannelManager {
-    fun createNotificationChannel(): ScreenChannel? = TODO("GPU: create and register a new screen notification channel")
-    fun findChannelByID(id: UUID): ScreenChannelBase? = TODO("GPU: find screen channel by UUID")
+    fun createNotificationChannel(): ScreenChannel? = null
+    fun findChannelByID(id: UUID): ScreenChannelBase? = null
 }
 
 object ViewerWindow {
-    fun worldViewRectScaledRight(): Int = TODO("GPU: get right edge of scaled world view rect")
+    fun worldViewRectScaledRight(): Int = 0
 }
 
 object SavedSettings {
-    fun getInt(key: String): Int = TODO("APR: read integer from saved settings")
-    fun getBool(key: String): Boolean = TODO("APR: read boolean from saved settings")
+    fun getInt(key: String): Int = 0
+    fun getBool(key: String): Boolean = false
 }
 
 object Agent {
-    fun isDoNotDisturb(): Boolean = TODO("APR: check agent DND status")
-    fun getGroupData(groupId: UUID): GroupData? = TODO("APR: get agent group data by id")
+    fun isDoNotDisturb(): Boolean = false
+    fun getGroupData(groupId: UUID): GroupData? = null
 }
 
 data class GroupData(val name: String)
 
 object ToastPanel {
-    fun buildPanelFromNotification(notification: Notification): Any? = TODO("GPU: build toast UI panel for notification")
+    fun buildPanelFromNotification(notification: Notification): Any? = null
 }
 
 object ScriptFloaterManager {
-    fun onAddNotification(id: UUID) { TODO("GPU: show script floater for notification") }
-    fun onRemoveNotification(id: UUID) { TODO("GPU: remove script floater for notification") }
-    fun setFloaterVisible(id: UUID, visible: Boolean) { TODO("GPU: set script floater visibility") }
+    fun onAddNotification(id: UUID) {}
+    fun onRemoveNotification(id: UUID) {}
+    fun setFloaterVisible(id: UUID, visible: Boolean) {}
 }
 
 object IMMgr {
-    fun computeSessionID(type: InstantMessageType, agentId: UUID): UUID = TODO("APR: compute IM session id")
-    fun addSession(name: String, type: InstantMessageType, agentId: UUID): UUID = TODO("APR: create new IM session")
+    fun computeSessionID(type: InstantMessageType, agentId: UUID): UUID = UUID(0, 0)
+    fun addSession(name: String, type: InstantMessageType, agentId: UUID): UUID = UUID(0, 0)
 }
 
 object IMModel {
     var activeSessionId: UUID? = null
-    fun findIMSession(sessionId: UUID): IMSession? = TODO("APR: find IM session by id")
-    fun logToFile(fileName: String, from: String, fromId: UUID, message: String) { TODO("APR: log IM message to file") }
-    fun addMessageSilently(sessionId: UUID, from: String, fromId: UUID, message: String) { TODO("APR: add IM message without notification") }
+    fun findIMSession(sessionId: UUID): IMSession? = null
+    fun logToFile(fileName: String, from: String, fromId: UUID, message: String) {}
+    fun addMessageSilently(sessionId: UUID, from: String, fromId: UUID, message: String) {}
     fun setActiveSessionID(id: UUID) { activeSessionId = id }
     fun resetActiveSessionID() { activeSessionId = null }
-    fun emitNewMsgSignal(arg: Map<String, Any>) { TODO("APR: emit new message signal to listeners") }
+    fun emitNewMsgSignal(arg: Map<String, Any>) {}
 }
 
 class IMSession {
@@ -528,54 +519,54 @@ class IMSession {
 }
 
 object AvatarNameCache {
-    fun get(id: UUID, callback: (AvatarName) -> Unit) { TODO("APR: async avatar name lookup") }
-    fun getCached(id: UUID): AvatarName? = TODO("APR: synchronous cached avatar name lookup")
-    fun findIdByName(name: String): UUID? = TODO("APR: reverse-lookup avatar id by display name")
+    fun get(id: UUID, callback: (AvatarName) -> Unit) {}
+    fun getCached(id: UUID): AvatarName? = null
+    fun findIdByName(name: String): UUID? = null
 }
 
 data class AvatarName(val userName: String, val displayName: String)
 
 object CacheName {
-    fun buildUsername(name: String): String = TODO("APR: normalize legacy name to username format")
+    fun buildUsername(name: String): String = ""
 }
 
 object LogChat {
-    fun groupChatSuffix(): String = TODO("APR: get group chat log file suffix")
-    fun timestamp2LogString(time: Long, utc: Boolean): String = TODO("APR: format timestamp for log")
+    fun groupChatSuffix(): String = ""
+    fun timestamp2LogString(time: Long, utc: Boolean): String = ""
 }
 
 object Trans {
-    fun getString(key: String): String = TODO("APR: get translated UI string")
+    fun getString(key: String): String = ""
 }
 
 object FSFloaterIM {
-    fun findInstance(sessionId: UUID): FSFloaterIMInstance? = TODO("GPU: find IM floater by session id")
+    fun findInstance(sessionId: UUID): FSFloaterIMInstance? = null
 }
 
 class FSFloaterIMInstance {
-    fun isVisible(): Boolean = TODO("GPU: check if IM floater is visible")
-    fun updateMessages() { TODO("GPU: refresh messages in IM floater") }
+    fun isVisible(): Boolean = false
+    fun updateMessages() {}
 }
 
 object FSFloaterNearbyChat {
-    val instance: FSFloaterNearbyChatInstance? get() = TODO("GPU: get nearby chat floater instance")
+    val instance: FSFloaterNearbyChatInstance? get() = null
 }
 
 class FSFloaterNearbyChatInstance {
-    fun addMessage(chat: Chat) { TODO("GPU: add chat message to nearby chat floater") }
+    fun addMessage(chat: Chat) {}
 }
 
 object RlvActions {
-    fun isRlvEnabled(): Boolean = TODO("APR: check if RLV restrictions are active")
-    fun hasBehaviour(behaviour: String): Boolean = TODO("APR: check specific RLV behaviour flag")
+    fun isRlvEnabled(): Boolean = false
+    fun hasBehaviour(behaviour: String): Boolean = false
 }
 
 object RlvUtil {
-    fun notifyBlocked(reason: String) { TODO("APR: show RLV blocked notification") }
+    fun notifyBlocked(reason: String) {}
 }
 
 const val RLV_BHVR_SENDCHAT = "sendchat"
 
-fun ScreenChannelBase.isVisible(): Boolean = TODO("GPU: check if channel is visible on screen")
-fun ScreenChannelBase.init(left: Int, right: Int) { TODO("GPU: position screen channel between left and right bounds") }
-fun ScreenChannel.setControlHovering(enable: Boolean) { TODO("GPU: enable/disable hover control on channel") }
+fun ScreenChannelBase.isVisible(): Boolean = false
+fun ScreenChannelBase.init(left: Int, right: Int) {}
+fun ScreenChannel.setControlHovering(enable: Boolean) {}

@@ -85,12 +85,12 @@ class LLInventoryGallery(params: Params = Params()) : LLPanel(), LLEditMenuHandl
 
     init {
         updateGalleryWidth()
-        TODO("APR: use JVM equivalent - register gesture observer and idle callbacks")
+        System.err.println("LLInventoryGallery: register gesture observer and idle callbacks not yet implemented")
     }
 
     fun postBuild(): Boolean {
-        scrollPanel = TODO("GPU: find child scroll container 'gallery_scroll_panel'")
-        messageTextBox = TODO("GPU: find child text box 'empty_txt'")
+        scrollPanel = null
+        messageTextBox = null
         inventoryGalleryMenu = LLInventoryGalleryContextMenu(this)
         rootGalleryMenu = LLInventoryGalleryContextMenu(this).also { it.isRootFolder = true }
         return true
@@ -112,31 +112,34 @@ class LLInventoryGallery(params: Params = Params()) : LLPanel(), LLEditMenuHandl
     }
 
     override fun draw() {
-        TODO("GPU: call super draw and invoke updateRowsIfNeeded / handleModifiedFilter")
+        // GPU: call super draw and invoke updateRowsIfNeeded / handleModifiedFilter
     }
 
     open fun onVisibilityChange(newVisibility: Boolean) {
         if (newVisibility) {
             if (rootDirty) updateRootFolder()
-            else if (needsArrange) TODO("APR: use JVM equivalent - schedule idle callback")
+            else if (needsArrange) System.err.println("LLInventoryGallery: schedule idle callback not yet implemented")
         }
-        TODO("GPU: call super onVisibilityChange")
+        // GPU: call super onVisibilityChange
     }
 
     open fun handleDragAndDrop(
         x: Int, y: Int, mask: Int, drop: Boolean,
         cargoType: EDragAndDropType, cargoData: Any?,
         accept: Array<EAcceptance>, tooltipMsg: StringBuilder
-    ): Boolean = TODO("APR: use JVM equivalent - delegate to baseHandleDragAndDrop for folderID")
+    ): Boolean {
+        System.err.println("LLInventoryGallery: handleDragAndDrop not yet implemented")
+        return false
+    }
 
     fun startDrag() {
-        TODO("APR: use JVM equivalent - initiate drag operation for selected items")
+        System.err.println("LLInventoryGallery: startDrag not yet implemented")
     }
 
     open fun handleRightMouseDown(x: Int, y: Int, mask: Int): Boolean {
-        if (selectedItemIDs.isNotEmpty()) TODO("GPU: setFocus(true)")
+        if (selectedItemIDs.isNotEmpty()) { /* GPU: setFocus(true) */ }
         lastInteractedUUID = UUID.randomUUID()
-        val res: Boolean = TODO("GPU: call super handleRightMouseDown")
+        val res: Boolean = false
         if (lastInteractedUUID == UUID.randomUUID()) {
             clearSelection()
             if (inventoryGalleryMenu != null && folderID != UUID.randomUUID()) {

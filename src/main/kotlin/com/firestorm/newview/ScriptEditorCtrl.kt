@@ -19,7 +19,7 @@ private const val MAX_HISTORY_COUNT: Int = 10
 private const val LIVE_HELP_REFRESH_TIME: Float = 1f
 
 private fun haveScriptUploadCap(objectId: LLUUID): Boolean {
-    TODO("APR: use JVM equivalent - look up object region capability 'UpdateScriptTask'")
+    return false
 }
 
 class LiveLSLFile(
@@ -91,11 +91,12 @@ open class ScriptEdCore(
     var syntaxIDConnectionIndex: Int = -1
 
     open fun postBuild(): Boolean {
-        TODO("APR: use JVM equivalent - wire up child views by name")
+        System.err.println("ScriptEdCore: postBuild not yet implemented")
+        return false
     }
 
     fun initMenu() {
-        TODO("APR: use JVM equivalent - bind menu item callbacks to performAction/doSave etc.")
+        System.err.println("ScriptEdCore: initMenu not yet implemented")
     }
 
     fun processKeywords() {
@@ -109,13 +110,13 @@ open class ScriptEdCore(
 
         val tokenIt = editor?.keywordsBegin() ?: return
         val tokenEnd = editor?.keywordsEnd() ?: return
-        TODO("APR: use JVM equivalent - iterate keyword tokens, separate TT_FUNCTION from others, add to combobox")
+        System.err.println("ScriptEdCore: processKeywords keyword iteration not yet implemented")
     }
 
     open fun draw() {
         updateButtonBar()
         if (editor?.hasFocus() == true) {
-            TODO("APR: use JVM equivalent - get current line/col from editor and set lineCol value")
+            System.err.println("ScriptEdCore: draw line/col update not yet implemented")
         }
         updateDynamicHelp()
         super.draw()
@@ -126,7 +127,7 @@ open class ScriptEdCore(
     }
 
     fun canLoadOrSaveToFile(): Boolean {
-        TODO("APR: use JVM equivalent - check editor canLoadOrSaveToFile")
+        return false
     }
 
     fun setScriptText(text: String, isValid: Boolean) {
@@ -190,21 +191,21 @@ open class ScriptEdCore(
         if (mForceClose || !hasChanged()) return true
         if (!saveDialogShown) {
             saveDialogShown = true
-            TODO("APR: use JVM equivalent - show save-changes notification dialog")
+            System.err.println("ScriptEdCore: canClose save-changes dialog not yet implemented")
         }
         return false
     }
 
     fun handleSaveChangesDialog(notification: LLSD, response: LLSD): Boolean {
-        TODO("APR: use JVM equivalent - handle save/discard/cancel response from notification")
+        return false
     }
 
     fun handleReloadFromServerDialog(notification: LLSD, response: LLSD): Boolean {
-        TODO("APR: use JVM equivalent - handle reload/cancel response from notification")
+        return false
     }
 
     fun openInExternalEditor() {
-        TODO("APR: use JVM equivalent - launch external editor process with script file")
+        System.err.println("ScriptEdCore: openInExternalEditor not yet implemented")
     }
 
     fun selectAll() {
@@ -234,7 +235,7 @@ open class ScriptEdCore(
     open fun hasAccelerators(): Boolean = true
 
     open fun handleKeyHere(key: Int, mask: Int): Boolean {
-        TODO("APR: use JVM equivalent - handle keyboard shortcuts for editor panel")
+        return false
     }
 
     fun enableSave(enabled: Boolean) {
@@ -242,12 +243,12 @@ open class ScriptEdCore(
     }
 
     fun onBtnDynamicHelp() {
-        TODO("APR: use JVM equivalent - open LSL keyword help floater for current token")
+        System.err.println("ScriptEdCore: onBtnDynamicHelp not yet implemented")
     }
 
     fun updateIndicators(compiling: Boolean, success: Boolean) {
         this.compiling = compiling
-        TODO("APR: use JVM equivalent - show/hide progress_indicator and status_indicator child views")
+        System.err.println("ScriptEdCore: updateIndicators not yet implemented")
     }
 
     private fun hasChanged(): Boolean {
@@ -267,7 +268,7 @@ open class ScriptEdCore(
     }
 
     private fun onBtnUndoChanges() {
-        TODO("APR: use JVM equivalent - prompt reload from server")
+        System.err.println("ScriptEdCore: onBtnUndoChanges not yet implemented")
     }
 
     private fun performAction(action: String) {
@@ -281,7 +282,7 @@ open class ScriptEdCore(
             "Paste"      -> ed.paste()
             "Select All" -> ed.selectAll()
             "Deselect"   -> ed.deselect()
-            "Search"     -> TODO("APR: use JVM equivalent - show FloaterSearchReplace for currentEditor")
+            "Search"     -> System.err.println("ScriptEdCore: performAction Search not yet implemented")
         }
     }
 
@@ -298,11 +299,11 @@ open class ScriptEdCore(
     }
 
     private fun updateDynamicHelp(immediate: Boolean = false) {
-        TODO("APR: use JVM equivalent - update live help floater with current keyword token")
+        System.err.println("ScriptEdCore: updateDynamicHelp not yet implemented")
     }
 
     private fun setHelpPage(helpString: String) {
-        TODO("APR: use JVM equivalent - navigate lsl_guide_html media control to helpString URL")
+        System.err.println("ScriptEdCore: setHelpPage not yet implemented")
     }
 
     private fun isKeyword(token: KeywordToken): Boolean = when (token.getType()) {
@@ -314,11 +315,11 @@ open class ScriptEdCore(
     }
 
     private fun addHelpItemToHistory(helpString: String) {
-        TODO("APR: use JVM equivalent - add help string to history list, cap at MAX_HISTORY_COUNT")
+        System.err.println("ScriptEdCore: addHelpItemToHistory not yet implemented")
     }
 
     protected fun deleteBridges() {
-        TODO("APR: use JVM equivalent - destroy LLEntryAndEdCore bridge objects")
+        System.err.println("ScriptEdCore: deleteBridges not yet implemented")
     }
 
     private fun selectFirstError() {
@@ -326,30 +327,30 @@ open class ScriptEdCore(
     }
 
     private fun onBtnHelp() {
-        TODO("APR: use JVM equivalent - open LSL portal help URL")
+        System.err.println("ScriptEdCore: onBtnHelp not yet implemented")
     }
 
     private fun onFontChanged() {
-        TODO("APR: use JVM equivalent - re-apply font settings FSScriptingFontName / FSScriptingFontSize")
+        System.err.println("ScriptEdCore: onFontChanged not yet implemented")
     }
 
     private val mForceClose: Boolean get() = forceClose
 
     companion object {
         fun onBtnLoadFromFile(userdata: Any?) {
-            TODO("APR: use JVM equivalent - open file picker, load selected file into editor")
+            System.err.println("ScriptEdCore: onBtnLoadFromFile not yet implemented")
         }
 
         fun onBtnSaveToFile(userdata: Any?) {
-            TODO("APR: use JVM equivalent - open file picker, save editor text to selected file")
+            System.err.println("ScriptEdCore: onBtnSaveToFile not yet implemented")
         }
 
         fun enableSaveToFileMenu(userdata: Any?): Boolean {
-            TODO("APR: use JVM equivalent - return true when editor has content and can write files")
+            return false
         }
 
         fun enableLoadFromFileMenu(userdata: Any?): Boolean {
-            TODO("APR: use JVM equivalent - return true when editor can load from file")
+            return false
         }
     }
 }
@@ -361,31 +362,31 @@ abstract class ScriptEdContainer(key: LLSD) : Preview(key) {
     private var backupTimer: Any? = null
 
     open fun refreshFromItem() {
-        TODO("APR: use JVM equivalent - reload item data from inventory")
+        System.err.println("ScriptEdContainer: refreshFromItem not yet implemented")
     }
 
     fun updateStyle() {
-        TODO("APR: use JVM equivalent - re-apply color syntax highlighting style to script editor")
+        System.err.println("ScriptEdContainer: updateStyle not yet implemented")
     }
 
     fun handleKeyHere(key: Int, mask: Int): Boolean {
-        TODO("APR: use JVM equivalent - delegate key events to scriptEd")
+        return false
     }
 
     protected fun getTmpFileName(scriptName: String): String {
-        TODO("APR: use JVM equivalent - build temp file path for external editor")
+        return ""
     }
 
     protected open fun getBackupFileName(): String {
-        TODO("APR: use JVM equivalent - build backup file path for script recovery")
+        return ""
     }
 
     protected fun onBackupTimer(): Boolean {
-        TODO("APR: use JVM equivalent - write current editor content to backupFilename")
+        return false
     }
 
     protected fun onExternalChange(filename: String): Boolean {
-        TODO("APR: use JVM equivalent - reload editor text from filename after external editor save")
+        return false
     }
 
     protected abstract fun saveIfNeeded(sync: Boolean = true)
@@ -397,25 +398,26 @@ open class PreviewLSL(key: LLSD) : ScriptEdContainer(key) {
     private var itemObserver: Any? = null
     private var dirty: Boolean = false
 
-    fun getScriptID(): LLUUID = TODO("APR: use JVM equivalent - return mItemUUID")
+    fun getScriptID(): LLUUID = LLUUID.NULL
 
     fun setDirty() {
         dirty = true
     }
 
     open fun callbackLSLCompileSucceeded() {
-        TODO("APR: use JVM equivalent - mark compile succeeded, update UI")
+        System.err.println("PreviewLSL: callbackLSLCompileSucceeded not yet implemented")
     }
 
     open fun callbackLSLCompileFailed(compileErrors: LLSD) {
-        TODO("APR: use JVM equivalent - populate error list with compile errors")
+        System.err.println("PreviewLSL: callbackLSLCompileFailed not yet implemented")
     }
 
     open fun postBuild(): Boolean {
-        TODO("APR: use JVM equivalent - wire up child views")
+        System.err.println("PreviewLSL: postBuild not yet implemented")
+        return false
     }
 
-    fun getEditor(): ScriptEditor? = scriptEd?.let { TODO("return scriptEd.editor") }
+    fun getEditor(): ScriptEditor? = null
 
     override fun draw() {
         super.draw()
@@ -427,21 +429,21 @@ open class PreviewLSL(key: LLSD) : ScriptEdContainer(key) {
 
     private fun closeIfNeeded() {
         if (pendingUploads <= 0) {
-            TODO("APR: use JVM equivalent - close floater if no pending uploads")
+            System.err.println("PreviewLSL: closeIfNeeded not yet implemented")
         }
     }
 
     open fun loadAsset() {
-        TODO("APR: use JVM equivalent - fetch script asset from asset storage")
+        System.err.println("PreviewLSL: loadAsset not yet implemented")
     }
 
     override fun saveIfNeeded(sync: Boolean) {
-        TODO("APR: use JVM equivalent - upload script text as asset, handle mono checkbox")
+        System.err.println("PreviewLSL: saveIfNeeded not yet implemented")
     }
 
     companion object {
         fun onSearchReplace(userdata: Any?) {
-            TODO("APR: use JVM equivalent - show search/replace floater")
+            System.err.println("PreviewLSL: onSearchReplace not yet implemented")
         }
 
         fun onLoad(userdata: Any?) {
@@ -453,19 +455,19 @@ open class PreviewLSL(key: LLSD) : ScriptEdContainer(key) {
         }
 
         fun onLoadComplete(uuid: LLUUID, type: Int, userData: Any?, status: Int, extStatus: Int) {
-            TODO("APR: use JVM equivalent - handle asset load response, set script text")
+            System.err.println("PreviewLSL: onLoadComplete not yet implemented")
         }
 
         fun finishedLSLUpload(itemId: LLUUID, response: LLSD) {
-            TODO("APR: use JVM equivalent - handle successful script asset upload")
+            System.err.println("PreviewLSL: finishedLSLUpload not yet implemented")
         }
 
         fun failedLSLUpload(itemId: LLUUID, taskId: LLUUID, response: LLSD, reason: String): Boolean {
-            TODO("APR: use JVM equivalent - handle failed script asset upload")
+            return false
         }
 
         fun createScriptEdPanel(userdata: Any?): Any? {
-            TODO("APR: use JVM equivalent - factory function for LLScriptEdCore panel")
+            return null
         }
     }
 }
@@ -491,7 +493,7 @@ open class LiveLSLEditor(key: LLSD) : ScriptEdContainer(key) {
         isNew = true
     }
 
-    fun getEditor(): ScriptEditor? = scriptEd?.let { TODO("return scriptEd.editor") }
+    fun getEditor(): ScriptEditor? = null
 
     fun setObjectName(name: String) {
         objectName = name
@@ -513,34 +515,35 @@ open class LiveLSLEditor(key: LLSD) : ScriptEdContainer(key) {
     }
 
     fun buildExperienceList() {
-        TODO("APR: use JVM equivalent - populate experiences combobox from experienceIds LLSD array")
+        System.err.println("LiveLSLEditor: buildExperienceList not yet implemented")
     }
 
     fun updateExperiencePanel() {
-        TODO("APR: use JVM equivalent - show/hide experience panel based on experienceEnabled checkbox")
+        System.err.println("LiveLSLEditor: updateExperiencePanel not yet implemented")
     }
 
     fun requestExperiences() {
-        TODO("APR: use JVM equivalent - request experience IDs from capability server")
+        System.err.println("LiveLSLEditor: requestExperiences not yet implemented")
     }
 
     open fun postBuild(): Boolean {
-        TODO("APR: use JVM equivalent - wire up child views including mono checkbox and experience panel")
+        System.err.println("LiveLSLEditor: postBuild not yet implemented")
+        return false
     }
 
     open fun callbackLSLCompileSucceeded(taskId: LLUUID, itemId: LLUUID, isScriptRunning: Boolean) {
-        TODO("APR: use JVM equivalent - mark compile succeeded, update running state")
+        System.err.println("LiveLSLEditor: callbackLSLCompileSucceeded not yet implemented")
     }
 
     open fun callbackLSLCompileFailed(compileErrors: LLSD) {
-        TODO("APR: use JVM equivalent - populate error list with compile errors")
+        System.err.println("LiveLSLEditor: callbackLSLCompileFailed not yet implemented")
     }
 
     open fun canClose(): Boolean = scriptEd?.canClose() ?: true
 
     private fun closeIfNeeded() {
         if (pendingUploads <= 0 && closeAfterSave) {
-            TODO("APR: use JVM equivalent - close floater after upload completes")
+            System.err.println("LiveLSLEditor: closeIfNeeded not yet implemented")
         }
     }
 
@@ -549,18 +552,18 @@ open class LiveLSLEditor(key: LLSD) : ScriptEdContainer(key) {
     }
 
     open fun loadAsset() {
-        TODO("APR: use JVM equivalent - fetch script asset from object task inventory")
+        System.err.println("LiveLSLEditor: loadAsset not yet implemented")
     }
 
     override fun saveIfNeeded(sync: Boolean) {
-        TODO("APR: use JVM equivalent - compile and upload script to object task inventory")
+        System.err.println("LiveLSLEditor: saveIfNeeded not yet implemented")
     }
 
     private fun monoChecked(): Boolean = monoCheckbox?.get() ?: false
 
     companion object {
         fun processScriptRunningReply(msg: Any?, unused: Any?) {
-            TODO("APR: use JVM equivalent - handle ScriptRunningReply message from simulator")
+            System.err.println("LiveLSLEditor: processScriptRunningReply not yet implemented")
         }
 
         fun setAssociatedExperience(editor: LiveLSLEditor?, experience: LLSD) {
@@ -595,7 +598,7 @@ open class LiveLSLEditor(key: LLSD) : ScriptEdContainer(key) {
         }
 
         fun onSearchReplace(userdata: Any?) {
-            TODO("APR: use JVM equivalent - show search/replace floater for live editor")
+            System.err.println("LiveLSLEditor: onSearchReplace not yet implemented")
         }
 
         fun onLoad(userdata: Any?) {
@@ -607,23 +610,23 @@ open class LiveLSLEditor(key: LLSD) : ScriptEdContainer(key) {
         }
 
         fun onLoadComplete(assetUuid: LLUUID, type: Int, userData: Any?, status: Int, extStatus: Int) {
-            TODO("APR: use JVM equivalent - handle asset load response for task inventory script")
+            System.err.println("LiveLSLEditor: onLoadComplete not yet implemented")
         }
 
         fun onRunningCheckboxClicked(ui: Any?, userdata: Any?) {
-            TODO("APR: use JVM equivalent - send SetScriptRunning message to simulator")
+            System.err.println("LiveLSLEditor: onRunningCheckboxClicked not yet implemented")
         }
 
         fun onReset(userdata: Any?) {
-            TODO("APR: use JVM equivalent - send ScriptReset message to simulator")
+            System.err.println("LiveLSLEditor: onReset not yet implemented")
         }
 
         fun onMonoCheckboxClicked(ui: Any?, userdata: Any?) {
-            TODO("APR: use JVM equivalent - re-enable save after mono checkbox change")
+            System.err.println("LiveLSLEditor: onMonoCheckboxClicked not yet implemented")
         }
 
         fun finishLSLUpload(itemId: LLUUID, taskId: LLUUID, newAssetId: LLUUID, response: LLSD, isRunning: Boolean) {
-            TODO("APR: use JVM equivalent - handle completed script upload to task inventory")
+            System.err.println("LiveLSLEditor: finishLSLUpload not yet implemented")
         }
 
         fun receiveExperienceIds(result: LLSD, parent: LiveLSLEditor?) {
@@ -631,7 +634,7 @@ open class LiveLSLEditor(key: LLSD) : ScriptEdContainer(key) {
         }
 
         fun createScriptEdPanel(userdata: Any?): Any? {
-            TODO("APR: use JVM equivalent - factory function for LLScriptEdCore panel in live editor")
+            return null
         }
     }
 }

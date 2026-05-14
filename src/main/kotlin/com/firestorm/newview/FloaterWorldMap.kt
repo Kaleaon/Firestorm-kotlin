@@ -20,16 +20,16 @@ class WorldMapParcelInfoObserver(private val posGlobal: Vector3d) {
     private var parcelId: String = ""
 
     fun processParcelInfo(parcelData: Any) {
-        TODO("APR: forward parcel data to FloaterWorldMap.processParcelInfo if IDs match")
+        System.err.println("WorldMapParcelInfoObserver: forward parcel data to FloaterWorldMap.processParcelInfo if IDs match not yet implemented")
     }
 
     fun setParcelID(parcelId: String) {
         this.parcelId = parcelId
-        TODO("APR: add observer and send parcel info request for $parcelId")
+        System.err.println("WorldMapParcelInfoObserver: add observer and send parcel info request for $parcelId not yet implemented")
     }
 
     fun setErrorStatus(status: Int, reason: String) {
-        TODO("APR: log error for failed parcel info request status=$status reason=$reason")
+        System.err.println("WorldMapParcelInfoObserver: log error for failed parcel info request status=$status reason=$reason not yet implemented")
     }
 }
 
@@ -43,7 +43,7 @@ class FloaterWorldMap(private val key: Any) {
         fun getInstance(): FloaterWorldMap? = instance
 
         fun reloadIcons() {
-            TODO("APR: LLWorldMap.reloadItems()")
+            System.err.println("FloaterWorldMap: LLWorldMap.reloadItems() not yet implemented")
         }
     }
 
@@ -81,55 +81,58 @@ class FloaterWorldMap(private val key: Any) {
     }
 
     fun postBuild(): Boolean {
-        TODO("APR: bind all child UI controls (mapView, buttons, checkboxes, combos, etc.)")
+        System.err.println("FloaterWorldMap: bind all child UI controls (mapView, buttons, checkboxes, combos, etc.) not yet implemented")
+        return false
     }
 
     fun onOpen(key: Any) {
-        TODO("APR: connect teleport-finish, reset pan, reload items, adjust zoom slider bounds")
+        System.err.println("FloaterWorldMap: connect teleport-finish, reset pan, reload items, adjust zoom slider bounds not yet implemented")
     }
 
     fun onClose(appQuitting: Boolean) {
-        TODO("APR: clear world map image refs, disconnect teleport-finish signal")
+        System.err.println("FloaterWorldMap: clear world map image refs, disconnect teleport-finish signal not yet implemented")
     }
 
     fun onFocusLost() {
-        TODO("APR: handle floater focus loss")
+        System.err.println("FloaterWorldMap: handle floater focus loss not yet implemented")
     }
 
     fun reshape(width: Int, height: Int, calledFromParent: Boolean = true) {
-        TODO("GPU: resize floater and reflow map panel")
+        System.err.println("FloaterWorldMap: resize floater and reflow map panel not yet implemented")
     }
 
     fun handleHover(x: Int, y: Int, mask: Int): Boolean {
-        TODO("GPU: pass hover event to parent floater")
+        System.err.println("FloaterWorldMap: pass hover event to parent floater not yet implemented")
+        return false
     }
 
     fun handleScrollWheel(x: Int, y: Int, clicks: Int): Boolean {
         val mv = mapView ?: return false
-        val mapX = TODO("GPU: compute x relative to mapView rect") as Int
-        val mapY = TODO("GPU: compute y relative to mapView rect") as Int
-        TODO("GPU: adjust zoom slider and call mapView.zoomWithPivot")
+        val mapX = 0
+        val mapY = 0
+        System.err.println("FloaterWorldMap: adjust zoom slider and call mapView.zoomWithPivot not yet implemented")
+        return false
     }
 
     fun draw() {
-        TODO("GPU: update tracking icons, zoom, checkbox states, and draw floater")
+        System.err.println("FloaterWorldMap: update tracking icons, zoom, checkbox states, and draw floater not yet implemented")
     }
 
     fun observeInventory(inv: Any) {
         inventory = inv
-        TODO("APR: attach LLMapInventoryObserver to inventory")
+        System.err.println("FloaterWorldMap: attach LLMapInventoryObserver to inventory not yet implemented")
     }
 
     fun inventoryChanged() {
-        TODO("APR: rebuild landmark combo box from inventory")
+        System.err.println("FloaterWorldMap: rebuild landmark combo box from inventory not yet implemented")
     }
 
     fun observeFriends() {
-        TODO("APR: attach LLMapFriendObserver to avatar tracker")
+        System.err.println("FloaterWorldMap: attach LLMapFriendObserver to avatar tracker not yet implemented")
     }
 
     fun friendsChanged() {
-        TODO("APR: rebuild friend combo box from avatar tracker")
+        System.err.println("FloaterWorldMap: rebuild friend combo box from avatar tracker not yet implemented")
     }
 
     fun trackAvatar(avatarId: String, name: String) {
@@ -138,7 +141,7 @@ class FloaterWorldMap(private val key: Any) {
         if (trackedStatus != TrackingStatus.TRACKING_AVATAR || avatarId != trackedAvatarID) {
             trackedStatus    = TrackingStatus.TRACKING_AVATAR
             trackedAvatarID  = avatarId
-            TODO("APR: LLTracker.trackAvatar($avatarId, $name) and centerOnTarget")
+            System.err.println("FloaterWorldMap: LLTracker.trackAvatar($avatarId, $name) and centerOnTarget not yet implemented")
         }
     }
 
@@ -148,69 +151,70 @@ class FloaterWorldMap(private val key: Any) {
         val idx = landmarkItemIdList.indexOf(landmarkItemId)
         if (idx >= 0) {
             trackedStatus = TrackingStatus.TRACKING_LANDMARK
-            TODO("APR: LLTracker.trackLandmark with assetID=${landmarkAssetIdList.getOrNull(idx)}")
+            System.err.println("FloaterWorldMap: LLTracker.trackLandmark with assetID=${landmarkAssetIdList.getOrNull(idx)} not yet implemented")
         } else {
-            TODO("APR: LLTracker.stopTracking(false)")
+            System.err.println("FloaterWorldMap: LLTracker.stopTracking(false) not yet implemented")
         }
     }
 
     fun trackLocation(posGlobal: Vector3d) {
         processingSearchUpdate = false
-        TODO("APR: resolve sim info, track location via LLTracker, request parcel info")
+        System.err.println("FloaterWorldMap: resolve sim info, track location via LLTracker, request parcel info not yet implemented")
     }
 
     fun trackEvent(eventInfo: ItemInfo) {
         showParcelInfo = false
         trackedStatus  = TrackingStatus.TRACKING_LOCATION
-        TODO("APR: LLTracker.trackLocation for event at ${eventInfo.getGlobalPosition()}")
+        System.err.println("FloaterWorldMap: LLTracker.trackLocation for event at ${eventInfo.getGlobalPosition()} not yet implemented")
     }
 
     fun trackGenericItem(item: ItemInfo) {
         showParcelInfo = false
         trackedStatus  = TrackingStatus.TRACKING_LOCATION
-        TODO("APR: LLTracker.trackLocation for generic item at ${item.getGlobalPosition()}")
+        System.err.println("FloaterWorldMap: LLTracker.trackLocation for generic item at ${item.getGlobalPosition()} not yet implemented")
     }
 
     fun trackUrl(regionName: String, xCoord: Int, yCoord: Int, zCoord: Int) {
         completingRegionName = regionName
         completingRegionPos  = Vector3(xCoord.toFloat(), yCoord.toFloat(), zCoord.toFloat())
-        TODO("APR: send named region request, track location once handle resolved")
+        System.err.println("FloaterWorldMap: send named region request, track location once handle resolved not yet implemented")
     }
 
     fun getDistanceToDestination(posGlobal: Vector3d, zAttenuation: Float = 0.5f): Float {
-        TODO("APR: compute distance from agent to posGlobal with Z attenuation")
+        System.err.println("FloaterWorldMap: compute distance from agent to posGlobal with Z attenuation not yet implemented")
+        return 0f
     }
 
     fun clearLocationSelection(clearUi: Boolean = false, destReached: Boolean = false) {
-        TODO("APR: stop location tracking and optionally clear UI widgets")
+        System.err.println("FloaterWorldMap: stop location tracking and optionally clear UI widgets not yet implemented")
     }
 
     fun clearAvatarSelection(clearUi: Boolean = false) {
-        TODO("APR: stop avatar tracking and optionally clear friend combo")
+        System.err.println("FloaterWorldMap: stop avatar tracking and optionally clear friend combo not yet implemented")
     }
 
     fun clearLandmarkSelection(clearUi: Boolean = false) {
-        TODO("APR: stop landmark tracking and optionally clear landmark combo")
+        System.err.println("FloaterWorldMap: stop landmark tracking and optionally clear landmark combo not yet implemented")
     }
 
     fun adjustZoomSliderBounds() {
-        TODO("APR: set zoom slider min/max based on world bounding box")
+        System.err.println("FloaterWorldMap: set zoom slider min/max based on world bounding box not yet implemented")
     }
 
     fun updateSims(foundNullSim: Boolean) {
-        TODO("APR: update the search results list from world map region data")
+        System.err.println("FloaterWorldMap: update the search results list from world map region data not yet implemented")
     }
 
     fun teleport() {
-        TODO("APR: teleport agent to the currently tracked destination")
+        System.err.println("FloaterWorldMap: teleport agent to the currently tracked destination not yet implemented")
     }
 
     fun onChangeMaturity() {
-        TODO("APR: show/hide adult/mature checkboxes based on agent access level")
+        System.err.println("FloaterWorldMap: show/hide adult/mature checkboxes based on agent access level not yet implemented")
     }
 
     fun onClearBtn() {
-        TODO("APR: clear all tracking and reset the map to agent position")
+        System.err.println("FloaterWorldMap: clear all tracking and reset the map to agent position not yet implemented")
     }
 
     fun avatarTrackFromSlapp(id: String) {
@@ -218,35 +222,35 @@ class FloaterWorldMap(private val key: Any) {
     }
 
     fun processParcelInfo(parcelData: Any, posGlobal: Vector3d) {
-        TODO("APR: update tracker label/tooltip with parcel name and sim coordinates")
+        System.err.println("FloaterWorldMap: update tracker label/tooltip with parcel name and sim coordinates not yet implemented")
     }
 
     protected fun onGoHome() {
-        TODO("APR: track home position and teleport")
+        System.err.println("FloaterWorldMap: track home position and teleport not yet implemented")
     }
 
     protected fun onLandmarkComboPrearrange() {
-        TODO("APR: rebuild landmark list before showing dropdown")
+        System.err.println("FloaterWorldMap: rebuild landmark list before showing dropdown not yet implemented")
     }
 
     protected fun onLandmarkComboCommit() {
-        TODO("APR: handle landmark selection; start tracking selected landmark")
+        System.err.println("FloaterWorldMap: handle landmark selection; start tracking selected landmark not yet implemented")
     }
 
     protected fun onAvatarComboPrearrange() {
-        TODO("APR: rebuild avatar/friend list before showing dropdown")
+        System.err.println("FloaterWorldMap: rebuild avatar/friend list before showing dropdown not yet implemented")
     }
 
     protected fun onAvatarComboCommit() {
-        TODO("APR: handle avatar selection; start tracking selected avatar")
+        System.err.println("FloaterWorldMap: handle avatar selection; start tracking selected avatar not yet implemented")
     }
 
     protected fun onComboTextEntry() {
-        TODO("APR: update search state on combo text change")
+        System.err.println("FloaterWorldMap: update search state on combo text change not yet implemented")
     }
 
     protected fun onSearchTextEntry() {
-        TODO("APR: enable search button and clear stale search results")
+        System.err.println("FloaterWorldMap: enable search button and clear stale search results not yet implemented")
     }
 
     protected fun onClickTeleportBtn() {
@@ -254,94 +258,94 @@ class FloaterWorldMap(private val key: Any) {
     }
 
     protected fun onShowTargetBtn() {
-        TODO("APR: pan map to currently tracked target")
+        System.err.println("FloaterWorldMap: pan map to currently tracked target not yet implemented")
     }
 
     protected fun onShowAgentBtn() {
-        TODO("APR: pan map to agent's current position")
+        System.err.println("FloaterWorldMap: pan map to agent's current position not yet implemented")
     }
 
     protected fun onCopySLURL() {
-        TODO("APR: copy current tracked SLURL to clipboard")
+        System.err.println("FloaterWorldMap: copy current tracked SLURL to clipboard not yet implemented")
     }
 
     protected fun onTrackRegion() {
-        TODO("APR: open region tracker floater for currently tracked region")
+        System.err.println("FloaterWorldMap: open region tracker floater for currently tracked region not yet implemented")
     }
 
     protected fun centerOnTarget(animate: Boolean) {
-        TODO("APR: pan mapView to center on the tracked target position")
+        System.err.println("FloaterWorldMap: pan mapView to center on the tracked target position not yet implemented")
     }
 
     protected fun updateLocation() {
-        TODO("APR: update location editor text from current tracked position")
+        System.err.println("FloaterWorldMap: update location editor text from current tracked position not yet implemented")
     }
 
     protected fun fly() {
-        TODO("APR: fly to tracked position instead of teleporting")
+        System.err.println("FloaterWorldMap: fly to tracked position instead of teleporting not yet implemented")
     }
 
     protected fun buildLandmarkIdLists() {
-        TODO("APR: populate landmarkAssetIdList and landmarkItemIdList from inventory")
+        System.err.println("FloaterWorldMap: populate landmarkAssetIdList and landmarkItemIdList from inventory not yet implemented")
     }
 
     protected fun flyToLandmark() {
-        TODO("APR: fly agent to tracked landmark position")
+        System.err.println("FloaterWorldMap: fly agent to tracked landmark position not yet implemented")
     }
 
     protected fun teleportToLandmark() {
-        TODO("APR: teleport agent to tracked landmark position")
+        System.err.println("FloaterWorldMap: teleport agent to tracked landmark position not yet implemented")
     }
 
     protected fun buildAvatarIdList() {
-        TODO("APR: populate friend combo from LLAvatarTracker friend list")
+        System.err.println("FloaterWorldMap: populate friend combo from LLAvatarTracker friend list not yet implemented")
     }
 
     protected fun flyToAvatar() {
-        TODO("APR: fly agent to tracked avatar position")
+        System.err.println("FloaterWorldMap: fly agent to tracked avatar position not yet implemented")
     }
 
     protected fun teleportToAvatar() {
-        TODO("APR: teleport agent to tracked avatar position")
+        System.err.println("FloaterWorldMap: teleport agent to tracked avatar position not yet implemented")
     }
 
     protected fun updateSearchEnabled() {
-        TODO("APR: enable/disable search button based on location editor content")
+        System.err.println("FloaterWorldMap: enable/disable search button based on location editor content not yet implemented")
     }
 
     protected fun onLocationFocusChanged(ctrl: Any) {
-        TODO("APR: handle location editor focus change")
+        System.err.println("FloaterWorldMap: handle location editor focus change not yet implemented")
     }
 
     protected fun onLocationCommit() {
-        TODO("APR: parse location editor text and begin tracking resolved position")
+        System.err.println("FloaterWorldMap: parse location editor text and begin tracking resolved position not yet implemented")
     }
 
     protected fun onCoordinatesCommit() {
-        TODO("APR: read X/Y/Z spin controls and update tracked location coordinates")
+        System.err.println("FloaterWorldMap: read X/Y/Z spin controls and update tracked location coordinates not yet implemented")
     }
 
     protected fun onCommitSearchResult(fromSearch: Boolean) {
-        TODO("APR: handle search result selection; start tracking the selected region")
+        System.err.println("FloaterWorldMap: handle search result selection; start tracking the selected region not yet implemented")
     }
 
     protected fun onTeleportFinished() {
-        TODO("APR: update UI after teleport completes")
+        System.err.println("FloaterWorldMap: update UI after teleport completes not yet implemented")
     }
 
     private fun updateTeleportCoordsDisplay(pos: Vector3d) {
-        TODO("APR: set X/Y/Z spin control values from global pos adjusted for sim origin")
+        System.err.println("FloaterWorldMap: set X/Y/Z spin control values from global pos adjusted for sim origin not yet implemented")
     }
 
     private fun enableTeleportCoordsDisplay(enabled: Boolean) {
-        TODO("APR: show/hide teleport coordinate spin controls based on RLV and $enabled")
+        System.err.println("FloaterWorldMap: show/hide teleport coordinate spin controls based on RLV and $enabled not yet implemented")
     }
 
     private fun requestParcelInfo(posGlobal: Vector3d, regionOrigin: Vector3d) {
         if (posGlobal == requestedGlobalPos) return
         requestedGlobalPos = posGlobal
         parcelInfoObserver = WorldMapParcelInfoObserver(posGlobal)
-        TODO("APR: send RemoteParcelRequest cap call for $posGlobal")
+        System.err.println("FloaterWorldMap: send RemoteParcelRequest cap call for $posGlobal not yet implemented")
     }
 }
 
@@ -358,7 +362,8 @@ class PanelHideBeacon {
     private var hideButton: Any? = null
 
     fun postBuild(): Boolean {
-        TODO("APR: bind hideButton child control")
+        System.err.println("PanelHideBeacon: bind hideButton child control not yet implemented")
+        return false
     }
 
     fun setVisible(visible: Boolean) {
@@ -367,14 +372,14 @@ class PanelHideBeacon {
 
     fun draw() {
         updatePosition()
-        TODO("GPU: draw hide-beacon panel")
+        System.err.println("PanelHideBeacon: draw hide-beacon panel not yet implemented")
     }
 
     private fun onHideButtonClick() {
-        TODO("APR: hide the tracking beacon indicator")
+        System.err.println("PanelHideBeacon: hide the tracking beacon indicator not yet implemented")
     }
 
     private fun updatePosition() {
-        TODO("GPU: reposition panel relative to tracked item on screen")
+        System.err.println("PanelHideBeacon: reposition panel relative to tracked item on screen not yet implemented")
     }
 }

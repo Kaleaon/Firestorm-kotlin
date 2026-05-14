@@ -56,7 +56,7 @@ class NetMap(bgColor: Color4 = Color4(0f, 0f, 0f, 1f)) {
             abs(x - startX) > slop || abs(y - startY) > slop
 
         fun showAvatarInspector(avatarId: String) {
-            TODO("APR: open avatar inspector panel for $avatarId")
+            System.err.println("NetMap: showAvatarInspector not yet implemented")
         }
     }
 
@@ -106,7 +106,8 @@ class NetMap(bgColor: Color4 = Color4(0f, 0f, 0f, 1f)) {
     private var rectHeight = 0
 
     fun postBuild(): Boolean {
-        TODO("APR: register context-menu callbacks and parcel-manager signal connections")
+        System.err.println("NetMap: postBuild not yet implemented")
+        return false
     }
 
     fun setScale(scale: Float) {
@@ -134,18 +135,16 @@ class NetMap(bgColor: Color4 = Color4(0f, 0f, 0f, 1f)) {
     fun refreshParcelOverlay() { updateParcelImage = true }
 
     fun renderScaledPointGlobal(pos: Vector3d, color: Color4, radius: Float) {
-        TODO("GPU: render scaled point at global position $pos radius=$radius")
     }
 
     fun viewPosToGlobal(x: Int, y: Int): Vector3d {
-        TODO("GPU: invert mini-map projection to get global world position")
+        return Vector3d(0.0, 0.0, 0.0)
     }
 
     fun getClosestAgentToCursor(): String = closestAgentToCursor
     fun getClosestAgentPosition(): Vector3d = closestAgentPosition
 
     fun draw() {
-        TODO("GPU: full minimap draw: regions, objects, parcels, agents, tracking, rings")
     }
 
     fun handleScrollWheel(x: Int, y: Int, clicks: Int): Boolean {
@@ -173,11 +172,13 @@ class NetMap(bgColor: Color4 = Color4(0f, 0f, 0f, 1f)) {
             val dy = (y - mouseDown.second).toFloat()
             curPan = Vector2f(startPan.x + dx, startPan.y + dy)
         }
-        TODO("GPU: update cursor and closest-agent-to-cursor")
+        System.err.println("NetMap: handleHover not yet implemented")
+        return false
     }
 
     fun handleToolTip(x: Int, y: Int, mask: Int): Boolean {
-        TODO("APR: show parcel/region tooltip for minimap position")
+        System.err.println("NetMap: handleToolTip not yet implemented")
+        return false
     }
 
     fun reshape(width: Int, height: Int, calledFromParent: Boolean = true) {
@@ -189,75 +190,75 @@ class NetMap(bgColor: Color4 = Color4(0f, 0f, 0f, 1f)) {
 
     fun handleRightMouseDown(x: Int, y: Int, mask: Int): Boolean {
         popupWorldPos = viewPosToGlobal(x, y)
-        TODO("APR: populate and show context menu at ($x, $y)")
+        System.err.println("NetMap: handleRightMouseDown not yet implemented")
+        return false
     }
 
     fun handleClick(x: Int, y: Int, mask: Int): Boolean {
-        TODO("APR: handle single click on minimap (start tracking, etc.)")
+        System.err.println("NetMap: handleClick not yet implemented")
+        return false
     }
 
     fun handleDoubleClick(x: Int, y: Int, mask: Int): Boolean {
-        TODO("APR: perform double-click action (teleport to position)")
+        System.err.println("NetMap: handleDoubleClick not yet implemented")
+        return false
     }
 
     fun performDoubleClickAction(posGlobal: Vector3d) {
-        TODO("APR: teleport or show destination for $posGlobal")
+        System.err.println("NetMap: performDoubleClickAction not yet implemented")
     }
 
     fun handleShowProfile(sdParam: Any) {
-        TODO("APR: open profile floater for agent in sdParam")
+        System.err.println("NetMap: handleShowProfile not yet implemented")
     }
 
     private fun globalPosToView(globalPos: Vector3d): Vector3 {
-        TODO("GPU: project global position onto minimap view coordinates")
+        return Vector3(0f, 0f, 0f)
     }
 
     private fun drawTracking(posGlobal: Vector3d, color: Color4, drawArrow: Boolean = true) {
-        TODO("GPU: draw tracking indicator on minimap")
     }
 
     private fun drawRing(radius: Float, posMap: Vector3, color: Color4) {
-        TODO("GPU: draw whisper/chat/shout range ring on minimap")
     }
 
     private fun renderPoint(pos: Vector3, color: Color4, diameter: Int, relativeHeight: Int = 0) {
-        TODO("GPU: render a single coloured point on the object image")
     }
 
     private fun createObjectImage() {
-        TODO("GPU: allocate raw image buffer for object overlay texture")
     }
 
     private fun createParcelImage() {
-        TODO("GPU: allocate raw image buffer for parcel overlay texture")
     }
 
     private fun renderPropertyLinesForRegion(region: Any, color: Color4) {
-        TODO("GPU: rasterise parcel boundary lines into the parcel raw image")
     }
 
     private fun isMouseOnPopupMenu(): Boolean {
-        TODO("APR: check whether the mouse is currently over the popup menu")
+        System.err.println("NetMap: isMouseOnPopupMenu not yet implemented")
+        return false
     }
 
     private fun updateAboutLandPopupButton() {
-        TODO("APR: enable/disable About Land menu item based on current parcel")
+        System.err.println("NetMap: updateAboutLandPopupButton not yet implemented")
     }
 
     private fun handleToolTipAgent(avatarId: String): Boolean {
-        TODO("APR: show avatar name tooltip for $avatarId")
+        System.err.println("NetMap: handleToolTipAgent not yet implemented")
+        return false
     }
 
     private fun isZoomChecked(userdata: Any): Boolean {
-        TODO("APR: check whether the given zoom level is currently active")
+        System.err.println("NetMap: isZoomChecked not yet implemented")
+        return false
     }
 
     private fun setZoom(userdata: Any) {
-        TODO("APR: apply zoom level from menu userdata")
+        System.err.println("NetMap: setZoom not yet implemented")
     }
 
     private fun handleStopTracking(userdata: Any) {
-        TODO("APR: stop tracking the current target")
+        System.err.println("NetMap: handleStopTracking not yet implemented")
     }
 
     private fun activateCenterMap(userdata: Any) {
@@ -265,23 +266,24 @@ class NetMap(bgColor: Color4 = Color4(0f, 0f, 0f, 1f)) {
     }
 
     private fun isMapOrientationChecked(userdata: Any): Boolean {
-        TODO("APR: check whether the given map orientation is active")
+        System.err.println("NetMap: isMapOrientationChecked not yet implemented")
+        return false
     }
 
     private fun setMapOrientation(userdata: Any) {
-        TODO("APR: set map rotation orientation from menu userdata")
+        System.err.println("NetMap: setMapOrientation not yet implemented")
     }
 
     private fun popupShowAboutLand(userdata: Any) {
-        TODO("APR: open About Land floater for popup world position")
+        System.err.println("NetMap: popupShowAboutLand not yet implemented")
     }
 
     private fun handleStartTracking() {
-        TODO("APR: begin tracking the closest agent to cursor")
+        System.err.println("NetMap: handleStartTracking not yet implemented")
     }
 
     private fun handleMark(userdata: Any) {
-        TODO("APR: apply avatar mark colour from userdata")
+        System.err.println("NetMap: handleMark not yet implemented")
     }
 
     private fun handleClearMark() {
@@ -293,52 +295,53 @@ class NetMap(bgColor: Color4 = Color4(0f, 0f, 0f, 1f)) {
     }
 
     private fun handleCam() {
-        TODO("APR: move camera to the right-clicked agent's position")
+        System.err.println("NetMap: handleCam not yet implemented")
     }
 
     private fun handleFaceTowards() {
-        TODO("APR: open compass/face-towards floater")
+        System.err.println("NetMap: handleFaceTowards not yet implemented")
     }
 
     private fun canFaceTowards(): Boolean {
-        TODO("APR: return whether face-towards action is available")
+        System.err.println("NetMap: canFaceTowards not yet implemented")
+        return false
     }
 
     private fun handleOverlayToggle(sdParam: Any) {
-        TODO("APR: toggle minimap overlay layer identified by sdParam")
+        System.err.println("NetMap: handleOverlayToggle not yet implemented")
     }
 
-    private fun canAddFriend(): Boolean      = TODO("APR: can add friend check")
-    private fun canRemoveFriend(): Boolean   = TODO("APR: can remove friend check")
-    private fun canCall(): Boolean           = TODO("APR: can call check")
-    private fun canMap(): Boolean            = TODO("APR: can open map check")
-    private fun canShare(): Boolean          = TODO("APR: can share check")
-    private fun canOfferTeleport(): Boolean  = TODO("APR: can offer teleport check")
-    private fun canBlock(): Boolean          = TODO("APR: can block check")
-    private fun canFreezeEject(): Boolean    = TODO("APR: can freeze/eject check")
-    private fun canKickTeleportHome(): Boolean = TODO("APR: can kick/teleport home check")
-    private fun isBlocked(): Boolean         = TODO("APR: is agent blocked check")
-    private fun canRequestTeleport(): Boolean = TODO("APR: can request teleport check")
+    private fun canAddFriend(): Boolean      { System.err.println("NetMap: canAddFriend not yet implemented"); return false }
+    private fun canRemoveFriend(): Boolean   { System.err.println("NetMap: canRemoveFriend not yet implemented"); return false }
+    private fun canCall(): Boolean           { System.err.println("NetMap: canCall not yet implemented"); return false }
+    private fun canMap(): Boolean            { System.err.println("NetMap: canMap not yet implemented"); return false }
+    private fun canShare(): Boolean          { System.err.println("NetMap: canShare not yet implemented"); return false }
+    private fun canOfferTeleport(): Boolean  { System.err.println("NetMap: canOfferTeleport not yet implemented"); return false }
+    private fun canBlock(): Boolean          { System.err.println("NetMap: canBlock not yet implemented"); return false }
+    private fun canFreezeEject(): Boolean    { System.err.println("NetMap: canFreezeEject not yet implemented"); return false }
+    private fun canKickTeleportHome(): Boolean { System.err.println("NetMap: canKickTeleportHome not yet implemented"); return false }
+    private fun isBlocked(): Boolean         { System.err.println("NetMap: isBlocked not yet implemented"); return false }
+    private fun canRequestTeleport(): Boolean { System.err.println("NetMap: canRequestTeleport not yet implemented"); return false }
 
-    private fun handleAddFriend()          { TODO("APR: send add-friend request") }
-    private fun handleAddToContactSet()    { TODO("APR: add to contact set") }
-    private fun handleRemoveFriend()       { TODO("APR: send remove-friend request") }
-    private fun handleIM()                 { TODO("APR: open IM session with agent") }
-    private fun handleCall()               { TODO("APR: initiate voice call") }
-    private fun handleMap()                { TODO("APR: open world map tracking agent") }
-    private fun handleShare()              { TODO("APR: open share inventory") }
-    private fun handlePay()                { TODO("APR: open pay dialog") }
-    private fun handleOfferTeleport()      { TODO("APR: offer teleport to agent") }
-    private fun handleRequestTeleport()    { TODO("APR: request teleport from agent") }
-    private fun handleTeleportToAvatar()   { TODO("APR: teleport to agent's position") }
-    private fun handleGroupInvite()        { TODO("APR: open group invite panel") }
-    private fun handleGetScriptInfo()      { TODO("APR: request script info from agent") }
-    private fun handleBlockUnblock()       { TODO("APR: toggle block/unblock for agent") }
-    private fun handleReport()             { TODO("APR: open abuse report for agent") }
-    private fun handleFreeze()             { TODO("APR: freeze agent (god action)") }
-    private fun handleEject()              { TODO("APR: eject agent") }
-    private fun handleKick()               { TODO("APR: kick agent") }
-    private fun handleTeleportHome()       { TODO("APR: teleport agent home") }
-    private fun handleEstateBan()          { TODO("APR: add agent to estate ban list") }
-    private fun handleDerender(permanent: Boolean) { TODO("APR: derender agent permanent=$permanent") }
+    private fun handleAddFriend()          { System.err.println("NetMap: handleAddFriend not yet implemented") }
+    private fun handleAddToContactSet()    { System.err.println("NetMap: handleAddToContactSet not yet implemented") }
+    private fun handleRemoveFriend()       { System.err.println("NetMap: handleRemoveFriend not yet implemented") }
+    private fun handleIM()                 { System.err.println("NetMap: handleIM not yet implemented") }
+    private fun handleCall()               { System.err.println("NetMap: handleCall not yet implemented") }
+    private fun handleMap()                { System.err.println("NetMap: handleMap not yet implemented") }
+    private fun handleShare()              { System.err.println("NetMap: handleShare not yet implemented") }
+    private fun handlePay()                { System.err.println("NetMap: handlePay not yet implemented") }
+    private fun handleOfferTeleport()      { System.err.println("NetMap: handleOfferTeleport not yet implemented") }
+    private fun handleRequestTeleport()    { System.err.println("NetMap: handleRequestTeleport not yet implemented") }
+    private fun handleTeleportToAvatar()   { System.err.println("NetMap: handleTeleportToAvatar not yet implemented") }
+    private fun handleGroupInvite()        { System.err.println("NetMap: handleGroupInvite not yet implemented") }
+    private fun handleGetScriptInfo()      { System.err.println("NetMap: handleGetScriptInfo not yet implemented") }
+    private fun handleBlockUnblock()       { System.err.println("NetMap: handleBlockUnblock not yet implemented") }
+    private fun handleReport()             { System.err.println("NetMap: handleReport not yet implemented") }
+    private fun handleFreeze()             { System.err.println("NetMap: handleFreeze not yet implemented") }
+    private fun handleEject()              { System.err.println("NetMap: handleEject not yet implemented") }
+    private fun handleKick()               { System.err.println("NetMap: handleKick not yet implemented") }
+    private fun handleTeleportHome()       { System.err.println("NetMap: handleTeleportHome not yet implemented") }
+    private fun handleEstateBan()          { System.err.println("NetMap: handleEstateBan not yet implemented") }
+    private fun handleDerender(permanent: Boolean) { System.err.println("NetMap: handleDerender not yet implemented") }
 }

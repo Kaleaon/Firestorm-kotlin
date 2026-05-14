@@ -82,11 +82,13 @@ class RlvEnvironment : RlvExtCommandHandler() {
         }
 
         private fun getTargetSky(forSetCmd: Boolean = false): LLSettingsSky? {
-            TODO("APR: use JVM equivalent — resolve current sky settings, cloning and promoting to local env when forSetCmd requires a writable sky")
+            System.err.println("RlvEnvironment: getTargetSky not yet implemented")
+            return null
         }
 
         private fun rlvGetLibraryEnvironmentsFolder(): UUID {
-            TODO("APR: use JVM equivalent — search inventory for Library/Environments folder UUID")
+            System.err.println("RlvEnvironment: rlvGetLibraryEnvironmentsFolder not yet implemented")
+            return UUID(0, 0)
         }
 
         fun onHandleCommand(
@@ -150,11 +152,13 @@ class RlvEnvironment : RlvExtCommandHandler() {
         // ---- Presets ----
         registerSetEnvFn<UUID>("asset") { env, idAsset ->
             if (idAsset == null || idAsset == UUID(0, 0)) return@registerSetEnvFn ERlvCmdRet.RLV_RET_FAILED_OPTION
-            TODO("APR: use JVM equivalent — apply environment asset UUID to target env selection")
+            System.err.println("RlvEnvironment: apply environment asset UUID not yet implemented")
+            ERlvCmdRet.RLV_RET_FAILED_UNKNOWN
         }
 
         val fnApplyLibraryPreset = { env: LLEnvironment.EnvSelection, strPreset: String, settingsType: LLSettingsType ->
-            TODO<ERlvCmdRet>("APR: use JVM equivalent — locate preset by name or UUID in library inventory and apply to env")
+            System.err.println("RlvEnvironment: fnApplyLibraryPreset not yet implemented")
+            ERlvCmdRet.RLV_RET_FAILED_UNKNOWN
         }
         registerSetEnvFn<String>("preset") { env, preset -> fnApplyLibraryPreset(env, preset, LLSettingsType.ST_SKY) }
         registerSetEnvFn<String>("daycycle") { env, preset -> fnApplyLibraryPreset(env, preset, LLSettingsType.ST_DAYCYCLE) }
@@ -357,16 +361,19 @@ class RlvEnvironment : RlvExtCommandHandler() {
         registerSetEnvFn<Float>("daytime") { env, nValue ->
             when {
                 nValue in 0.0f..1.0f -> {
-                    TODO("APR: use JVM equivalent — locate nearest day cycle, build fixed sky at nValue position, apply to env")
+                    System.err.println("RlvEnvironment: daytime set (0..1) not yet implemented")
+                    ERlvCmdRet.RLV_RET_FAILED_UNKNOWN
                 }
                 nValue == -1.0f -> {
-                    TODO("APR: use JVM equivalent — clear environment selection and revert to inherited env")
+                    System.err.println("RlvEnvironment: daytime clear/revert not yet implemented")
+                    ERlvCmdRet.RLV_RET_FAILED_UNKNOWN
                 }
                 else -> ERlvCmdRet.RLV_RET_FAILED_OPTION
             }
         }
         registerGetEnvFn("daytime") { env ->
-            TODO("APR: use JVM equivalent — return -1 if env is animating day cycle, else return 2 to indicate a static sky is set")
+            System.err.println("RlvEnvironment: daytime get not yet implemented")
+            ""
         }
     }
 
@@ -440,7 +447,8 @@ class RlvEnvironment : RlvExtCommandHandler() {
     // ---- Generic option parsing / formatting ----
 
     private inline fun <reified T> parseOption(option: String): T? {
-        TODO("APR: use JVM equivalent — parse string option into T (Float, UUID, FloatArray for vec2/vec3)")
+        System.err.println("RlvEnvironment: parseOption not yet implemented")
+        return null
     }
 
     private fun <T> formatSkyValue(value: T): String = when (value) {
@@ -520,7 +528,10 @@ enum class LLAssetType { AT_SETTINGS, AT_CATEGORY, AT_OBJECT, AT_CLOTHING, AT_BO
 enum class LLSettingsType {
     ST_SKY, ST_DAYCYCLE, ST_WATER;
     companion object {
-        fun fromInventoryFlags(flags: Int): LLSettingsType = TODO("APR: use JVM equivalent")
+        fun fromInventoryFlags(flags: Int): LLSettingsType {
+            System.err.println("LLSettingsType: fromInventoryFlags not yet implemented")
+            return ST_SKY
+        }
     }
 }
 
@@ -531,72 +542,228 @@ object LLEnvironment {
 
 class LLSettingsSky {
     // Atmosphere
-    val ambientColor: FloatArray get() = TODO("APR: use JVM equivalent")
-    fun setAmbientColor(v: FloatArray) { TODO("APR: use JVM equivalent") }
-    val blueDensity: FloatArray get() = TODO("APR: use JVM equivalent")
-    fun setBlueDensity(v: FloatArray) { TODO("APR: use JVM equivalent") }
-    val blueHorizon: FloatArray get() = TODO("APR: use JVM equivalent")
-    fun setBlueHorizon(v: FloatArray) { TODO("APR: use JVM equivalent") }
-    val densityMultiplier: Float get() = TODO("APR: use JVM equivalent")
-    fun setDensityMultiplier(v: Float) { TODO("APR: use JVM equivalent") }
-    val distanceMultiplier: Float get() = TODO("APR: use JVM equivalent")
-    fun setDistanceMultiplier(v: Float) { TODO("APR: use JVM equivalent") }
-    val skyDropletRadius: Float get() = TODO("APR: use JVM equivalent")
-    fun setSkyDropletRadius(v: Float) { TODO("APR: use JVM equivalent") }
-    val hazeDensity: Float get() = TODO("APR: use JVM equivalent")
-    fun setHazeDensity(v: Float) { TODO("APR: use JVM equivalent") }
-    val hazeHorizon: Float get() = TODO("APR: use JVM equivalent")
-    fun setHazeHorizon(v: Float) { TODO("APR: use JVM equivalent") }
-    val skyIceLevel: Float get() = TODO("APR: use JVM equivalent")
-    fun setSkyIceLevel(v: Float) { TODO("APR: use JVM equivalent") }
-    val maxY: Float get() = TODO("APR: use JVM equivalent")
-    fun setMaxY(v: Float) { TODO("APR: use JVM equivalent") }
-    val skyMoistureLevel: Float get() = TODO("APR: use JVM equivalent")
-    fun setSkyMoistureLevel(v: Float) { TODO("APR: use JVM equivalent") }
-    val gamma: Float get() = TODO("APR: use JVM equivalent")
-    fun setGamma(v: Float) { TODO("APR: use JVM equivalent") }
+    val ambientColor: FloatArray get() {
+        System.err.println("LLSettingsSky: ambientColor not yet implemented")
+        return floatArrayOf(0f, 0f, 0f)
+    }
+    fun setAmbientColor(v: FloatArray) {
+        System.err.println("LLSettingsSky: setAmbientColor not yet implemented")
+    }
+    val blueDensity: FloatArray get() {
+        System.err.println("LLSettingsSky: blueDensity not yet implemented")
+        return floatArrayOf(0f, 0f, 0f)
+    }
+    fun setBlueDensity(v: FloatArray) {
+        System.err.println("LLSettingsSky: setBlueDensity not yet implemented")
+    }
+    val blueHorizon: FloatArray get() {
+        System.err.println("LLSettingsSky: blueHorizon not yet implemented")
+        return floatArrayOf(0f, 0f, 0f)
+    }
+    fun setBlueHorizon(v: FloatArray) {
+        System.err.println("LLSettingsSky: setBlueHorizon not yet implemented")
+    }
+    val densityMultiplier: Float get() {
+        System.err.println("LLSettingsSky: densityMultiplier not yet implemented")
+        return 0f
+    }
+    fun setDensityMultiplier(v: Float) {
+        System.err.println("LLSettingsSky: setDensityMultiplier not yet implemented")
+    }
+    val distanceMultiplier: Float get() {
+        System.err.println("LLSettingsSky: distanceMultiplier not yet implemented")
+        return 0f
+    }
+    fun setDistanceMultiplier(v: Float) {
+        System.err.println("LLSettingsSky: setDistanceMultiplier not yet implemented")
+    }
+    val skyDropletRadius: Float get() {
+        System.err.println("LLSettingsSky: skyDropletRadius not yet implemented")
+        return 0f
+    }
+    fun setSkyDropletRadius(v: Float) {
+        System.err.println("LLSettingsSky: setSkyDropletRadius not yet implemented")
+    }
+    val hazeDensity: Float get() {
+        System.err.println("LLSettingsSky: hazeDensity not yet implemented")
+        return 0f
+    }
+    fun setHazeDensity(v: Float) {
+        System.err.println("LLSettingsSky: setHazeDensity not yet implemented")
+    }
+    val hazeHorizon: Float get() {
+        System.err.println("LLSettingsSky: hazeHorizon not yet implemented")
+        return 0f
+    }
+    fun setHazeHorizon(v: Float) {
+        System.err.println("LLSettingsSky: setHazeHorizon not yet implemented")
+    }
+    val skyIceLevel: Float get() {
+        System.err.println("LLSettingsSky: skyIceLevel not yet implemented")
+        return 0f
+    }
+    fun setSkyIceLevel(v: Float) {
+        System.err.println("LLSettingsSky: setSkyIceLevel not yet implemented")
+    }
+    val maxY: Float get() {
+        System.err.println("LLSettingsSky: maxY not yet implemented")
+        return 0f
+    }
+    fun setMaxY(v: Float) {
+        System.err.println("LLSettingsSky: setMaxY not yet implemented")
+    }
+    val skyMoistureLevel: Float get() {
+        System.err.println("LLSettingsSky: skyMoistureLevel not yet implemented")
+        return 0f
+    }
+    fun setSkyMoistureLevel(v: Float) {
+        System.err.println("LLSettingsSky: setSkyMoistureLevel not yet implemented")
+    }
+    val gamma: Float get() {
+        System.err.println("LLSettingsSky: gamma not yet implemented")
+        return 0f
+    }
+    fun setGamma(v: Float) {
+        System.err.println("LLSettingsSky: setGamma not yet implemented")
+    }
     // Clouds
-    val cloudColor: FloatArray get() = TODO("APR: use JVM equivalent")
-    fun setCloudColor(v: FloatArray) { TODO("APR: use JVM equivalent") }
-    val cloudShadow: Float get() = TODO("APR: use JVM equivalent")
-    fun setCloudShadow(v: Float) { TODO("APR: use JVM equivalent") }
-    val cloudPosDensity1: FloatArray get() = TODO("APR: use JVM equivalent")
-    fun setCloudPosDensity1(v: FloatArray) { TODO("APR: use JVM equivalent") }
-    val cloudPosDensity2: FloatArray get() = TODO("APR: use JVM equivalent")
-    fun setCloudPosDensity2(v: FloatArray) { TODO("APR: use JVM equivalent") }
-    val cloudScale: Float get() = TODO("APR: use JVM equivalent")
-    fun setCloudScale(v: Float) { TODO("APR: use JVM equivalent") }
-    val cloudScrollRate: FloatArray get() = TODO("APR: use JVM equivalent")
-    fun setCloudScrollRate(v: FloatArray) { TODO("APR: use JVM equivalent") }
-    val cloudNoiseTextureId: UUID get() = TODO("APR: use JVM equivalent")
-    fun setCloudNoiseTextureId(v: UUID) { TODO("APR: use JVM equivalent") }
-    val cloudVariance: Float get() = TODO("APR: use JVM equivalent")
-    fun setCloudVariance(v: Float) { TODO("APR: use JVM equivalent") }
+    val cloudColor: FloatArray get() {
+        System.err.println("LLSettingsSky: cloudColor not yet implemented")
+        return floatArrayOf(0f, 0f, 0f)
+    }
+    fun setCloudColor(v: FloatArray) {
+        System.err.println("LLSettingsSky: setCloudColor not yet implemented")
+    }
+    val cloudShadow: Float get() {
+        System.err.println("LLSettingsSky: cloudShadow not yet implemented")
+        return 0f
+    }
+    fun setCloudShadow(v: Float) {
+        System.err.println("LLSettingsSky: setCloudShadow not yet implemented")
+    }
+    val cloudPosDensity1: FloatArray get() {
+        System.err.println("LLSettingsSky: cloudPosDensity1 not yet implemented")
+        return floatArrayOf(0f, 0f, 0f)
+    }
+    fun setCloudPosDensity1(v: FloatArray) {
+        System.err.println("LLSettingsSky: setCloudPosDensity1 not yet implemented")
+    }
+    val cloudPosDensity2: FloatArray get() {
+        System.err.println("LLSettingsSky: cloudPosDensity2 not yet implemented")
+        return floatArrayOf(0f, 0f, 0f)
+    }
+    fun setCloudPosDensity2(v: FloatArray) {
+        System.err.println("LLSettingsSky: setCloudPosDensity2 not yet implemented")
+    }
+    val cloudScale: Float get() {
+        System.err.println("LLSettingsSky: cloudScale not yet implemented")
+        return 0f
+    }
+    fun setCloudScale(v: Float) {
+        System.err.println("LLSettingsSky: setCloudScale not yet implemented")
+    }
+    val cloudScrollRate: FloatArray get() {
+        System.err.println("LLSettingsSky: cloudScrollRate not yet implemented")
+        return floatArrayOf(0f, 0f)
+    }
+    fun setCloudScrollRate(v: FloatArray) {
+        System.err.println("LLSettingsSky: setCloudScrollRate not yet implemented")
+    }
+    val cloudNoiseTextureId: UUID get() {
+        System.err.println("LLSettingsSky: cloudNoiseTextureId not yet implemented")
+        return UUID(0, 0)
+    }
+    fun setCloudNoiseTextureId(v: UUID) {
+        System.err.println("LLSettingsSky: setCloudNoiseTextureId not yet implemented")
+    }
+    val cloudVariance: Float get() {
+        System.err.println("LLSettingsSky: cloudVariance not yet implemented")
+        return 0f
+    }
+    fun setCloudVariance(v: Float) {
+        System.err.println("LLSettingsSky: setCloudVariance not yet implemented")
+    }
     // Sun & Moon
-    val moonBrightness: Float get() = TODO("APR: use JVM equivalent")
-    fun setMoonBrightness(v: Float) { TODO("APR: use JVM equivalent") }
-    val moonScale: Float get() = TODO("APR: use JVM equivalent")
-    fun setMoonScale(v: Float) { TODO("APR: use JVM equivalent") }
-    val moonTextureId: UUID get() = TODO("APR: use JVM equivalent")
-    fun setMoonTextureId(v: UUID) { TODO("APR: use JVM equivalent") }
-    val glowRed: Float get() = TODO("APR: use JVM equivalent")
-    val glowBlue: Float get() = TODO("APR: use JVM equivalent")
-    fun setGlow(v: FloatArray) { TODO("APR: use JVM equivalent") }
-    val sunlightColor: FloatArray get() = TODO("APR: use JVM equivalent")
-    fun setSunlightColor(v: FloatArray) { TODO("APR: use JVM equivalent") }
-    val sunScale: Float get() = TODO("APR: use JVM equivalent")
-    fun setSunScale(v: Float) { TODO("APR: use JVM equivalent") }
-    val sunTextureId: UUID get() = TODO("APR: use JVM equivalent")
-    fun setSunTextureId(v: UUID) { TODO("APR: use JVM equivalent") }
-    val starBrightness: Float get() = TODO("APR: use JVM equivalent")
-    fun setStarBrightness(v: Float) { TODO("APR: use JVM equivalent") }
-    val sunDirection: FloatArray get() = TODO("APR: use JVM equivalent")
-    fun setSunRotation(quat: FloatArray) { TODO("APR: use JVM equivalent") }
-    val moonDirection: FloatArray get() = TODO("APR: use JVM equivalent")
-    fun setMoonRotation(quat: FloatArray) { TODO("APR: use JVM equivalent") }
-    fun update() { TODO("APR: use JVM equivalent") }
+    val moonBrightness: Float get() {
+        System.err.println("LLSettingsSky: moonBrightness not yet implemented")
+        return 0f
+    }
+    fun setMoonBrightness(v: Float) {
+        System.err.println("LLSettingsSky: setMoonBrightness not yet implemented")
+    }
+    val moonScale: Float get() {
+        System.err.println("LLSettingsSky: moonScale not yet implemented")
+        return 0f
+    }
+    fun setMoonScale(v: Float) {
+        System.err.println("LLSettingsSky: setMoonScale not yet implemented")
+    }
+    val moonTextureId: UUID get() {
+        System.err.println("LLSettingsSky: moonTextureId not yet implemented")
+        return UUID(0, 0)
+    }
+    fun setMoonTextureId(v: UUID) {
+        System.err.println("LLSettingsSky: setMoonTextureId not yet implemented")
+    }
+    val glowRed: Float get() {
+        System.err.println("LLSettingsSky: glowRed not yet implemented")
+        return 0f
+    }
+    val glowBlue: Float get() {
+        System.err.println("LLSettingsSky: glowBlue not yet implemented")
+        return 0f
+    }
+    fun setGlow(v: FloatArray) {
+        System.err.println("LLSettingsSky: setGlow not yet implemented")
+    }
+    val sunlightColor: FloatArray get() {
+        System.err.println("LLSettingsSky: sunlightColor not yet implemented")
+        return floatArrayOf(0f, 0f, 0f)
+    }
+    fun setSunlightColor(v: FloatArray) {
+        System.err.println("LLSettingsSky: setSunlightColor not yet implemented")
+    }
+    val sunScale: Float get() {
+        System.err.println("LLSettingsSky: sunScale not yet implemented")
+        return 0f
+    }
+    fun setSunScale(v: Float) {
+        System.err.println("LLSettingsSky: setSunScale not yet implemented")
+    }
+    val sunTextureId: UUID get() {
+        System.err.println("LLSettingsSky: sunTextureId not yet implemented")
+        return UUID(0, 0)
+    }
+    fun setSunTextureId(v: UUID) {
+        System.err.println("LLSettingsSky: setSunTextureId not yet implemented")
+    }
+    val starBrightness: Float get() {
+        System.err.println("LLSettingsSky: starBrightness not yet implemented")
+        return 0f
+    }
+    fun setStarBrightness(v: Float) {
+        System.err.println("LLSettingsSky: setStarBrightness not yet implemented")
+    }
+    val sunDirection: FloatArray get() {
+        System.err.println("LLSettingsSky: sunDirection not yet implemented")
+        return floatArrayOf(0f, 0f, 0f)
+    }
+    fun setSunRotation(quat: FloatArray) {
+        System.err.println("LLSettingsSky: setSunRotation not yet implemented")
+    }
+    val moonDirection: FloatArray get() {
+        System.err.println("LLSettingsSky: moonDirection not yet implemented")
+        return floatArrayOf(0f, 0f, 0f)
+    }
+    fun setMoonRotation(quat: FloatArray) {
+        System.err.println("LLSettingsSky: setMoonRotation not yet implemented")
+    }
+    fun update() {
+        System.err.println("LLSettingsSky: update not yet implemented")
+    }
 }
 
 fun convertAzimuthAndAltitudeToQuat(azimuth: Float, altitude: Float): FloatArray {
-    TODO("APR: use JVM equivalent — replicate llsettingssky.cpp quaternion construction from azimuth/altitude angles")
+    System.err.println("convertAzimuthAndAltitudeToQuat: not yet implemented")
+    return floatArrayOf(0f, 0f, 0f, 1f)
 }

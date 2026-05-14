@@ -15,80 +15,83 @@ val gWarningSettings: ControlGroup = ControlGroup("Warnings")
 object ViewerControl {
 
     fun toggleShowNavigationPanel(newValue: Boolean): Boolean {
-        TODO("GPU: update navigation bar visibility")
+        System.err.println("ViewerControl: update navigation bar visibility not yet implemented")
+        return false
     }
 
     fun toggleShowFavoritesPanel(newValue: Boolean): Boolean {
-        TODO("GPU: update favorites panel visibility")
+        System.err.println("ViewerControl: update favorites panel visibility not yet implemented")
+        return false
     }
 
     fun handleSetShaderChanged(newValue: Boolean): Boolean {
-        TODO("GPU: rebuild shader program set; invalidate bump map cache; call pipeline refreshCachedSettings")
+        System.err.println("ViewerControl: rebuild shader program set; invalidate bump map cache; call pipeline refreshCachedSettings not yet implemented")
+        return false
     }
 
     fun applyGlobalOnlineStatusChange(notification: Map<String, Any?>, response: Map<String, Any?>) {
-        TODO("APR: use JVM equivalent — propagate online-status grant changes to all buddies via HTTP capability")
+        System.err.println("ViewerControl: propagate online-status grant changes to all buddies via HTTP capability not yet implemented")
     }
 
     fun setupListeners() {
         gSavedSettings.getControl("RenderAvatarMouselook")?.addCommitListener { _, newVal, _ ->
-            TODO("GPU: set VOAvatar.sVisibleInFirstPerson = newVal.asBoolean()")
+            System.err.println("ViewerControl: set VOAvatar.sVisibleInFirstPerson = newVal.asBoolean() not yet implemented")
         }
 
         gSavedSettings.getControl("RenderFarClip")?.addCommitListener { _, newVal, _ ->
-            TODO("GPU: update agentCamera drawDistance and world far clip = newVal.asReal().toFloat()")
+            System.err.println("ViewerControl: update agentCamera drawDistance and world far clip = newVal.asReal().toFloat() not yet implemented")
         }
 
         gSavedSettings.getControl("RenderTerrainScale")?.addCommitListener { _, newVal, _ ->
             val scale = newVal.asReal()
             if (scale != 0.0) {
-                TODO("GPU: DrawPoolTerrain.sDetailScale = (1.0 / scale).toFloat()")
+                System.err.println("ViewerControl: DrawPoolTerrain.sDetailScale = (1.0 / scale).toFloat() not yet implemented")
             }
         }
 
         gSavedSettings.getControl("RenderPBRTerrainScale")?.addCommitListener { _, newVal, _ ->
             val scale = newVal.asReal()
             if (scale != 0.0) {
-                TODO("GPU: DrawPoolTerrain.sPBRDetailScale = (1.0 / scale).toFloat()")
+                System.err.println("ViewerControl: DrawPoolTerrain.sPBRDetailScale = (1.0 / scale).toFloat() not yet implemented")
             }
         }
 
         gSavedSettings.getControl("DebugAvatarJoints")?.addCommitListener { _, newVal, _ ->
-            TODO("GPU: LLJoint.setDebugJointNames(newVal.asString())")
+            System.err.println("ViewerControl: LLJoint.setDebugJointNames(newVal.asString()) not yet implemented")
         }
 
         gSavedSettings.getControl("DebugQualityPerformance")?.addCommitListener { _, newVal, _ ->
             if (gSavedSettings.getU32("RenderQualityPerformance") != newVal.asInt().toUInt()) {
-                TODO("GPU: sync RenderQualityPerformance to newVal and notify FloaterPreference.onChangeQuality")
+                System.err.println("ViewerControl: sync RenderQualityPerformance to newVal and notify FloaterPreference.onChangeQuality not yet implemented")
             }
         }
 
         gSavedSettings.getControl("AvatarHoverOffsetZ")?.addCommitListener { _, _, _ ->
-            TODO("GPU: gAgentAvatarp.setHoverIfRegionEnabled()")
+            System.err.println("ViewerControl: gAgentAvatarp.setHoverIfRegionEnabled() not yet implemented")
         }
 
         gSavedSettings.getControl("RenderTransparentWater")?.addCommitListener { _, _, _ ->
-            TODO("GPU: pipeline.updateRenderTransparentWater(); releaseGLBuffers(); createGLBuffers(); setShaders(); updateWaterObjects()")
+            System.err.println("ViewerControl: pipeline.updateRenderTransparentWater(); releaseGLBuffers(); createGLBuffers(); setShaders(); updateWaterObjects() not yet implemented")
         }
 
         gSavedSettings.getControl("RenderShadowResolutionScale")?.addCommitListener { _, _, _ ->
-            TODO("GPU: pipeline.requestResizeShadowTexture()")
+            System.err.println("ViewerControl: pipeline.requestResizeShadowTexture() not yet implemented")
         }
 
         gSavedSettings.getControl("RenderHiDPI")?.addCommitListener { _, _, _ ->
-            TODO("GPU: pipeline.requestResizeScreenTexture()")
+            System.err.println("ViewerControl: pipeline.requestResizeScreenTexture() not yet implemented")
         }
 
         gSavedSettings.getControl("RenderDeferredSSAO")?.addCommitListener { _, _, _ ->
-            TODO("GPU: pipeline.releaseGLBuffers(); createGLBuffers()")
+            System.err.println("ViewerControl: pipeline.releaseGLBuffers(); createGLBuffers() not yet implemented")
         }
 
         gSavedSettings.getControl("RenderEnableEmissiveBuffer")?.addCommitListener { _, newVal, _ ->
-            TODO("GPU: releaseGLBuffers/createGLBuffers + setShaders")
+            System.err.println("ViewerControl: releaseGLBuffers/createGLBuffers + setShaders not yet implemented")
         }
 
         gSavedSettings.getControl("RenderHDREnabled")?.addCommitListener { _, _, _ ->
-            TODO("GPU: reflectionMapManager.reset(); heroProbeManager.reset(); releaseGLBuffers; createGLBuffers; setShaders")
+            System.err.println("ViewerControl: reflectionMapManager.reset(); heroProbeManager.reset(); releaseGLBuffers; createGLBuffers; setShaders not yet implemented")
         }
 
         gSavedSettings.getControl("RenderEnableVintageMode")?.addCommitListener { _, newVal, _ ->
@@ -97,125 +100,125 @@ object ViewerControl {
         }
 
         gSavedSettings.getControl("RenderAnisotropic")?.addCommitListener { _, newVal, _ ->
-            TODO("GPU: LLImageGL.sGlobalUseAnisotropic = newVal.asBoolean(); dirtyTexOptions()")
+            System.err.println("ViewerControl: LLImageGL.sGlobalUseAnisotropic = newVal.asBoolean(); dirtyTexOptions() not yet implemented")
         }
 
         gSavedSettings.getControl("RenderVSyncEnable")?.addCommitListener { _, newVal, _ ->
-            TODO("GPU: LLPerfStats.tunables.vsyncEnabled = newVal.asBoolean(); window.toggleVSync(); clamp TargetFPS to refresh rate")
+            System.err.println("ViewerControl: LLPerfStats.tunables.vsyncEnabled = newVal.asBoolean(); window.toggleVSync(); clamp TargetFPS to refresh rate not yet implemented")
         }
 
         gSavedSettings.getControl("RenderVolumeLODFactor")?.addCommitListener { _, newVal, _ ->
-            TODO("GPU: VOVolume.sLODFactor = clamp(newVal.asReal().toFloat(), 0.01f, MAX_LOD_FACTOR); sDistanceFactor = 1 - sLODFactor * 0.1f")
+            System.err.println("ViewerControl: VOVolume.sLODFactor = clamp(newVal.asReal().toFloat(), 0.01f, MAX_LOD_FACTOR); sDistanceFactor = 1 - sLODFactor * 0.1f not yet implemented")
         }
 
         gSavedSettings.getControl("RenderAvatarLODFactor")?.addCommitListener { _, newVal, _ ->
-            TODO("GPU: VOAvatar.sLODFactor = clamp(newVal.asReal().toFloat(), 0f, MAX_AVATAR_LOD_FACTOR)")
+            System.err.println("ViewerControl: VOAvatar.sLODFactor = clamp(newVal.asReal().toFloat(), 0f, MAX_AVATAR_LOD_FACTOR) not yet implemented")
         }
 
         gSavedSettings.getControl("RenderAvatarPhysicsLODFactor")?.addCommitListener { _, newVal, _ ->
-            TODO("GPU: VOAvatar.sPhysicsLODFactor = clamp(newVal.asReal().toFloat(), 0f, MAX_AVATAR_LOD_FACTOR)")
+            System.err.println("ViewerControl: VOAvatar.sPhysicsLODFactor = clamp(newVal.asReal().toFloat(), 0f, MAX_AVATAR_LOD_FACTOR) not yet implemented")
         }
 
         gSavedSettings.getControl("RenderTerrainLODFactor")?.addCommitListener { _, newVal, _ ->
-            TODO("GPU: VOSurfacePatch.sLODFactor = newVal.asReal().toFloat() squared")
+            System.err.println("ViewerControl: VOSurfacePatch.sLODFactor = newVal.asReal().toFloat() squared not yet implemented")
         }
 
         gSavedSettings.getControl("RenderTreeLODFactor")?.addCommitListener { _, newVal, _ ->
-            TODO("GPU: VOTree.sTreeFactor = newVal.asReal().toFloat()")
+            System.err.println("ViewerControl: VOTree.sTreeFactor = newVal.asReal().toFloat() not yet implemented")
         }
 
         gSavedSettings.getControl("RenderFlexTimeFactor")?.addCommitListener { _, newVal, _ ->
-            TODO("GPU: VolumeImplFlexible.sUpdateFactor = newVal.asReal().toFloat()")
+            System.err.println("ViewerControl: VolumeImplFlexible.sUpdateFactor = newVal.asReal().toFloat() not yet implemented")
         }
 
         gSavedSettings.getControl("RenderGamma")?.addCommitListener { _, newVal, _ ->
             var gamma = newVal.asReal().toFloat()
             if (gamma == 0f) gamma = 1f
-            TODO("GPU: viewerWindow.window.setGamma(gamma)")
+            System.err.println("ViewerControl: viewerWindow.window.setGamma(gamma) not yet implemented")
         }
 
         gSavedSettings.getControl("RenderFogRatio")?.addCommitListener { _, newVal, _ ->
-            TODO("GPU: gSky.setFogRatio(clamp(newVal.asReal().toFloat(), MIN_USER_FOG_RATIO, MAX_USER_FOG_RATIO))")
+            System.err.println("ViewerControl: gSky.setFogRatio(clamp(newVal.asReal().toFloat(), MIN_USER_FOG_RATIO, MAX_USER_FOG_RATIO)) not yet implemented")
         }
 
         gSavedSettings.getControl("RenderMaxPartCount")?.addCommitListener { _, newVal, _ ->
-            TODO("GPU: ViewerPartSim.setMaxPartCount(newVal.asInt())")
+            System.err.println("ViewerControl: ViewerPartSim.setMaxPartCount(newVal.asInt()) not yet implemented")
         }
 
         gSavedSettings.getControl("ChatFontSize")?.addCommitListener { _, newVal, _ ->
-            TODO("APR: use JVM equivalent — gConsole.setFontSize(newVal.asInt())")
+            System.err.println("ViewerControl: gConsole.setFontSize(newVal.asInt()) not yet implemented")
         }
 
         gSavedSettings.getControl("ChatPersistTime")?.addCommitListener { _, newVal, _ ->
-            TODO("APR: use JVM equivalent — gConsole.setLinePersistTime(newVal.asReal().toFloat())")
+            System.err.println("ViewerControl: gConsole.setLinePersistTime(newVal.asReal().toFloat()) not yet implemented")
         }
 
         gSavedSettings.getControl("ConsoleMaxLines")?.addCommitListener { _, newVal, _ ->
-            TODO("APR: use JVM equivalent — gConsole.setMaxLines(newVal.asInt())")
+            System.err.println("ViewerControl: gConsole.setMaxLines(newVal.asInt()) not yet implemented")
         }
 
         gSavedSettings.getControl("AudioLevelMaster")?.addCommitListener { _, _, _ ->
-            TODO("APR: use JVM equivalent — audio_update_volume(true)")
+            System.err.println("ViewerControl: audio_update_volume(true) not yet implemented")
         }
 
         gSavedSettings.getControl("JoystickEnabled")?.addCommitListener { _, _, _ ->
-            TODO("APR: use JVM equivalent — ViewerJoystick.getInstance().setCameraNeedsUpdate(true)")
+            System.err.println("ViewerControl: ViewerJoystick.getInstance().setCameraNeedsUpdate(true) not yet implemented")
         }
 
         gSavedSettings.getControl("UseOcclusion")?.addCommitListener { _, newVal, _ ->
-            TODO("GPU: Pipeline.sUseOcclusion = if (newVal.asBoolean() && featureAvailable && !wireframe) 2 else 0")
+            System.err.println("ViewerControl: Pipeline.sUseOcclusion = if (newVal.asBoolean() && featureAvailable && !wireframe) 2 else 0 not yet implemented")
         }
 
         gSavedSettings.getControl("RenderUseStreamVBO")?.addCommitListener { _, newVal, _ ->
-            TODO("GPU: Pipeline.sForceOldBakedUpload = newVal.asBoolean()")
+            System.err.println("ViewerControl: Pipeline.sForceOldBakedUpload = newVal.asBoolean() not yet implemented")
         }
 
         gSavedSettings.getControl("WLSkyDetail")?.addCommitListener { _, _, _ ->
-            TODO("GPU: gSky.mVOWLSkyp.updateGeometry(drawable)")
+            System.err.println("ViewerControl: gSky.mVOWLSkyp.updateGeometry(drawable) not yet implemented")
         }
 
         gSavedSettings.getControl("OctreeMaxNodeCapacity")?.addCommitListener { _, _, _ ->
-            TODO("GPU: re-partition octree with new capacity")
+            System.err.println("ViewerControl: re-partition octree with new capacity not yet implemented")
         }
 
         gSavedSettings.getControl("RenderDynamicLOD")?.addCommitListener { _, newVal, _ ->
-            TODO("GPU: Pipeline.sDynamicLOD = newVal.asBoolean()")
+            System.err.println("ViewerControl: Pipeline.sDynamicLOD = newVal.asBoolean() not yet implemented")
         }
 
         gSavedSettings.getControl("RenderReflectionProbeDetail")?.addCommitListener { _, _, _ ->
-            TODO("GPU: reflectionMapManager.refreshSettings(); reset(); release/create GL buffers; setShaders()")
+            System.err.println("ViewerControl: reflectionMapManager.refreshSettings(); reset(); release/create GL buffers; setShaders() not yet implemented")
         }
 
         gSavedSettings.getControl("RenderReflectionProbeCount")?.addCommitListener { _, _, _ ->
-            TODO("GPU: reflectionMapManager.refreshSettings()")
+            System.err.println("ViewerControl: reflectionMapManager.refreshSettings() not yet implemented")
         }
 
         gSavedSettings.getControl("RenderHeroProbeResolution")?.addCommitListener { _, _, _ ->
-            TODO("GPU: heroProbeManager.reset(); release/create GL buffers")
+            System.err.println("ViewerControl: heroProbeManager.reset(); release/create GL buffers not yet implemented")
         }
 
         gSavedSettings.getControl("RenderDebugPipeline")?.addCommitListener { _, newVal, _ ->
-            TODO("GPU: gDebugPipeline = newVal.asBoolean()")
+            System.err.println("ViewerControl: gDebugPipeline = newVal.asBoolean() not yet implemented")
         }
 
         gSavedSettings.getControl("RenderResolutionDivisor")?.addCommitListener { _, _, _ ->
-            TODO("GPU: gResizeScreenTexture = true")
+            System.err.println("ViewerControl: gResizeScreenTexture = true not yet implemented")
         }
 
         gSavedSettings.getControl("DebugViews")?.addCommitListener { _, newVal, _ ->
-            TODO("GPU: LLView.sDebugRects = newVal.asBoolean()")
+            System.err.println("ViewerControl: LLView.sDebugRects = newVal.asBoolean() not yet implemented")
         }
 
         gSavedSettings.getControl("LogFile")?.addCommitListener { _, newVal, _ ->
-            TODO("APR: use JVM equivalent — reroute log output to newVal.asString()")
+            System.err.println("ViewerControl: reroute log output to newVal.asString() not yet implemented")
         }
 
         gSavedSettings.getControl("HideGroupTitle")?.addCommitListener { _, newVal, _ ->
-            TODO("APR: use JVM equivalent — gAgent.setHideGroupTitle(newVal)")
+            System.err.println("ViewerControl: gAgent.setHideGroupTitle(newVal) not yet implemented")
         }
 
         gSavedSettings.getControl("EffectColor")?.addCommitListener { _, newVal, _ ->
-            TODO("APR: use JVM equivalent — gAgent.setEffectColor(Color4(newVal))")
+            System.err.println("ViewerControl: gAgent.setEffectColor(Color4(newVal)) not yet implemented")
         }
 
         gSavedSettings.getControl("HighResSnapshot")?.addCommitListener { _, newVal, _ ->
@@ -223,23 +226,23 @@ object ViewerControl {
         }
 
         gSavedSettings.getControl("EnableVoiceChat")?.addCommitListener { _, _, _ ->
-            TODO("APR: use JVM equivalent — VoiceClient.getInstance().updateSettings()")
+            System.err.println("ViewerControl: VoiceClient.getInstance().updateSettings() not yet implemented")
         }
 
         gSavedSettings.getControl("VelocityInterpolate")?.addCommitListener { _, newVal, _ ->
-            TODO("APR: use JVM equivalent — send VelocityInterpolateOn/Off UDP message")
+            System.err.println("ViewerControl: send VelocityInterpolateOn/Off UDP message not yet implemented")
         }
 
         gSavedSettings.getControl("ForceShowGrid")?.addCommitListener { _, _, _ ->
-            TODO("APR: use JVM equivalent — FSPanelLogin.updateLocationSelectorsVisibility()")
+            System.err.println("ViewerControl: FSPanelLogin.updateLocationSelectorsVisibility() not yet implemented")
         }
 
         gSavedSettings.getControl("LoginLocation")?.addCommitListener { _, newVal, _ ->
-            TODO("APR: use JVM equivalent — LLStartUp.setStartSLURL(LLSLURL(newVal.asString()))")
+            System.err.println("ViewerControl: LLStartUp.setStartSLURL(LLSLURL(newVal.asString())) not yet implemented")
         }
 
         gSavedSettings.getControl("SpellCheck")?.addCommitListener { _, _, _ ->
-            TODO("APR: use JVM equivalent — reinitialise spell checker with current SpellCheckDictionary setting")
+            System.err.println("ViewerControl: reinitialise spell checker with current SpellCheckDictionary setting not yet implemented")
         }
 
         gSavedSettings.getControl("ShowNavbarNavigationPanel")?.addCommitListener { _, newVal, _ ->
@@ -251,19 +254,19 @@ object ViewerControl {
         }
 
         gSavedSettings.getControl("NaclAntiSpamGlobalQueue")?.addCommitListener { _, newVal, _ ->
-            TODO("APR: use JVM equivalent — NACLAntiSpamRegistry.instance().setGlobalQueue(newVal.asBoolean())")
+            System.err.println("ViewerControl: NACLAntiSpamRegistry.instance().setGlobalQueue(newVal.asBoolean()) not yet implemented")
         }
 
         gSavedSettings.getControl("NaclAntiSpamTime")?.addCommitListener { _, newVal, _ ->
-            TODO("APR: use JVM equivalent — NACLAntiSpamRegistry.instance().setAllQueueTimes(newVal.asInt())")
+            System.err.println("ViewerControl: NACLAntiSpamRegistry.instance().setAllQueueTimes(newVal.asInt()) not yet implemented")
         }
 
         gSavedSettings.getControl("NaclAntiSpamAmount")?.addCommitListener { _, newVal, _ ->
-            TODO("APR: use JVM equivalent — NACLAntiSpamRegistry.instance().setAllQueueAmounts(newVal.asInt())")
+            System.err.println("ViewerControl: NACLAntiSpamRegistry.instance().setAllQueueAmounts(newVal.asInt()) not yet implemented")
         }
 
         gSavedPerAccountSettings.getControl("GlobalOnlineStatusToggle")?.addCommitListener { _, newVal, _ ->
-            TODO("APR: use JVM equivalent — show ConfirmGlobalOnlineStatusToggle notification")
+            System.err.println("ViewerControl: show ConfirmGlobalOnlineStatusToggle notification not yet implemented")
         }
     }
 

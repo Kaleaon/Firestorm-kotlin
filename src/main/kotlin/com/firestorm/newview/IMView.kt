@@ -67,7 +67,7 @@ object IMModel {
             IMMgr.notifyObserverSessionIDUpdated(oldSessionId, newSessionId)
         }
         if (session.startCallOnInitialize) {
-            TODO("APR: use JVM equivalent - IMMgr.startCall(newSessionId)")
+            System.err.println("IMModel: startCall on initialize not yet implemented")
         }
     }
 
@@ -123,7 +123,7 @@ object IMModel {
         session.addMessage(from, fromId, utf8Text, time, CHAT_STYLE_NORMAL, isRegionMsg, timeStamp)
 
         if (log2file && shouldTranslate(utf8Text, sessionId)) {
-            TODO("APR: use JVM equivalent - optionally translate then call logToFile")
+            System.err.println("IMModel: translate then logToFile not yet implemented")
         } else if (log2file) {
             logToFile(getHistoryFileName(sessionId), from, fromId, utf8Text)
         }
@@ -203,7 +203,8 @@ object IMModel {
         findIMSession(sessionId)?.historyFileName ?: ""
 
     fun logToFile(fileName: String, from: String, fromId: UUID, utf8Text: String): Boolean {
-        TODO("APR: use JVM equivalent - append log entry to chat history file at fileName")
+        System.err.println("IMModel: logToFile not yet implemented")
+        return false
     }
 
     fun addNewMsgCallback(callback: (Map<String, Any>) -> Unit) { newMsgListeners += callback }

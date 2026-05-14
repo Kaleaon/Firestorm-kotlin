@@ -247,7 +247,7 @@ abstract class FloaterSnapshotBase(key: Any) : Floater(key) {
 
             fun onClickNoPost(ctrl: UICtrl?, data: Any?) {
                 val noPost = (ctrl as? CheckBoxCtrl)?.get() ?: false
-                TODO("APR: use JVM equivalent - gSavedSettings.setBOOL(RenderSnapshotNoPost, noPost)")
+                System.err.println("ImplBase: gSavedSettings.setBOOL(RenderSnapshotNoPost) not yet implemented")
                 val view = data as? FloaterSnapshotBase ?: return
                 view.getPreviewView()?.updateSnapshot(true, true)
                 view.impl?.updateControls(view)
@@ -280,7 +280,7 @@ abstract class FloaterSnapshotBase(key: Any) : Floater(key) {
                 val checkBox = ctrl as? CheckBoxCtrl ?: return
                 val view = data as? FloaterSnapshotBase ?: return
                 val previewp = view.getPreviewView() ?: return
-                TODO("APR: use JVM equivalent - gSavedSettings.setBOOL(UseFreezeFrame, checkBox.get())")
+                System.err.println("ImplBase: gSavedSettings.setBOOL(UseFreezeFrame) not yet implemented")
                 if (checkBox.get()) {
                     previewp.prepareFreezeFrame()
                 }
@@ -307,7 +307,8 @@ abstract class PanelSnapshot : Panel() {
     }
     fun isCustomResolution(): Boolean {
         val selected = getImageSizeComboBox()?.getSelectedValue() ?: return false
-        TODO("APR: use JVM equivalent - parse LLSD notation from selected value")
+        System.err.println("PanelSnapshot: isCustomResolution LLSD parse not yet implemented")
+        return false
     }
 }
 
@@ -321,43 +322,47 @@ class SnapshotLivePreview {
     var forceUpdateSnapshot: Boolean = false
     var keepAspectRatio: Boolean = false
 
-    fun isSnapshotActive(): Boolean = TODO("APR: use JVM equivalent - check snapshot active")
-    fun getThumbnailLock(): Boolean = TODO("APR: use JVM equivalent - check thumbnail lock")
-    fun getThumbnailImage(): Any? = TODO("APR: use JVM equivalent - get thumbnail image")
-    fun getThumbnailWidth(): Int = TODO("APR: use JVM equivalent - get thumbnail width")
-    fun getThumbnailHeight(): Int = TODO("APR: use JVM equivalent - get thumbnail height")
-    fun getSnapshotUpToDate(): Boolean = TODO("APR: use JVM equivalent - check snapshot up to date")
-    fun getDataSize(): Int = TODO("APR: use JVM equivalent - get data size")
-    fun getEncodedImageWidth(): Int = TODO("APR: use JVM equivalent - get encoded image width")
-    fun getEncodedImageHeight(): Int = TODO("APR: use JVM equivalent - get encoded image height")
-    fun getMaxImageSize(): Int = TODO("APR: use JVM equivalent - get max image size")
-    fun getSize(w: Int, h: Int) { TODO("APR: use JVM equivalent - get preview size") }
-    fun setSize(w: Int, h: Int) { TODO("APR: use JVM equivalent - set preview size") }
-    fun setMaxImageSize(size: Int) { TODO("APR: use JVM equivalent - set max image size") }
-    fun setSnapshotType(type: SnapshotModel.SnapshotType) { TODO("APR: use JVM equivalent - set snapshot type") }
-    fun setSnapshotFormat(format: SnapshotModel.SnapshotFormat) { TODO("APR: use JVM equivalent - set snapshot format") }
-    fun setSnapshotBufferType(type: SnapshotModel.SnapshotLayerType) { TODO("APR: use JVM equivalent - set buffer type") }
-    fun setSnapshotQuality(quality: Int) { TODO("APR: use JVM equivalent - set snapshot quality") }
-    fun setFilter(filterName: String) { TODO("APR: use JVM equivalent - set image filter") }
-    fun setVisible(visible: Boolean) { TODO("APR: use JVM equivalent - set visible") }
-    fun setEnabled(enabled: Boolean) { TODO("APR: use JVM equivalent - set enabled") }
-    fun setAllowFullScreenPreview(allow: Boolean) { TODO("APR: use JVM equivalent - set full screen preview") }
-    fun setFixedThumbnailSize(width: Int, height: Int) { TODO("APR: use JVM equivalent - set fixed thumbnail size") }
-    fun setThumbnailPlaceholderRect(rect: Any) { TODO("APR: use JVM equivalent - set thumbnail placeholder rect") }
-    fun setThumbnailImageSize() { TODO("APR: use JVM equivalent - set thumbnail image size") }
-    fun setContainer(floater: FloaterSnapshotBase) { TODO("APR: use JVM equivalent - set container floater") }
+    fun isSnapshotActive(): Boolean { System.err.println("SnapshotLivePreview: isSnapshotActive not yet implemented"); return false }
+    fun getThumbnailLock(): Boolean { System.err.println("SnapshotLivePreview: getThumbnailLock not yet implemented"); return false }
+    fun getThumbnailImage(): Any? { System.err.println("SnapshotLivePreview: getThumbnailImage not yet implemented"); return null }
+    fun getThumbnailWidth(): Int { System.err.println("SnapshotLivePreview: getThumbnailWidth not yet implemented"); return 0 }
+    fun getThumbnailHeight(): Int { System.err.println("SnapshotLivePreview: getThumbnailHeight not yet implemented"); return 0 }
+    fun getSnapshotUpToDate(): Boolean { System.err.println("SnapshotLivePreview: getSnapshotUpToDate not yet implemented"); return false }
+    fun getDataSize(): Int { System.err.println("SnapshotLivePreview: getDataSize not yet implemented"); return 0 }
+    fun getEncodedImageWidth(): Int { System.err.println("SnapshotLivePreview: getEncodedImageWidth not yet implemented"); return 0 }
+    fun getEncodedImageHeight(): Int { System.err.println("SnapshotLivePreview: getEncodedImageHeight not yet implemented"); return 0 }
+    fun getMaxImageSize(): Int { System.err.println("SnapshotLivePreview: getMaxImageSize not yet implemented"); return 0 }
+    fun getSize(w: Int, h: Int) { System.err.println("SnapshotLivePreview: getSize not yet implemented") }
+    fun setSize(w: Int, h: Int) { System.err.println("SnapshotLivePreview: setSize not yet implemented") }
+    fun setMaxImageSize(size: Int) { System.err.println("SnapshotLivePreview: setMaxImageSize not yet implemented") }
+    fun setSnapshotType(type: SnapshotModel.SnapshotType) { System.err.println("SnapshotLivePreview: setSnapshotType not yet implemented") }
+    fun setSnapshotFormat(format: SnapshotModel.SnapshotFormat) { System.err.println("SnapshotLivePreview: setSnapshotFormat not yet implemented") }
+    fun setSnapshotBufferType(type: SnapshotModel.SnapshotLayerType) { System.err.println("SnapshotLivePreview: setSnapshotBufferType not yet implemented") }
+    fun setSnapshotQuality(quality: Int) { System.err.println("SnapshotLivePreview: setSnapshotQuality not yet implemented") }
+    fun setFilter(filterName: String) { System.err.println("SnapshotLivePreview: setFilter not yet implemented") }
+    fun setVisible(visible: Boolean) { System.err.println("SnapshotLivePreview: setVisible not yet implemented") }
+    fun setEnabled(enabled: Boolean) { System.err.println("SnapshotLivePreview: setEnabled not yet implemented") }
+    fun setAllowFullScreenPreview(allow: Boolean) { System.err.println("SnapshotLivePreview: setAllowFullScreenPreview not yet implemented") }
+    fun setFixedThumbnailSize(width: Int, height: Int) { System.err.println("SnapshotLivePreview: setFixedThumbnailSize not yet implemented") }
+    fun setThumbnailPlaceholderRect(rect: Any) { System.err.println("SnapshotLivePreview: setThumbnailPlaceholderRect not yet implemented") }
+    fun setThumbnailImageSize() { System.err.println("SnapshotLivePreview: setThumbnailImageSize not yet implemented") }
+    fun setContainer(floater: FloaterSnapshotBase) { System.err.println("SnapshotLivePreview: setContainer not yet implemented") }
     fun updateSnapshot(autosnap: Boolean, updateThumbnail: Boolean = false, delay: Float = 0f) {
-        TODO("APR: use JVM equivalent - update snapshot")
+        System.err.println("SnapshotLivePreview: updateSnapshot not yet implemented")
     }
-    fun prepareFreezeFrame() { TODO("APR: use JVM equivalent - prepare freeze frame") }
-    fun saveTexture() { TODO("APR: use JVM equivalent - save texture to inventory") }
-    fun saveLocal(successCb: Any, failureCb: Any) { TODO("APR: use JVM equivalent - save snapshot locally") }
-    fun drawPreviewRect(offsetX: Int, offsetY: Int) { TODO("GPU: draw preview rect") }
-    fun getHandle(): Any = TODO("APR: use JVM equivalent - get handle")
+    fun prepareFreezeFrame() { System.err.println("SnapshotLivePreview: prepareFreezeFrame not yet implemented") }
+    fun saveTexture() { System.err.println("SnapshotLivePreview: saveTexture not yet implemented") }
+    fun saveLocal(successCb: Any, failureCb: Any) { System.err.println("SnapshotLivePreview: saveLocal not yet implemented") }
+    fun drawPreviewRect(offsetX: Int, offsetY: Int) { // GPU: draw preview rect
+    }
+    fun getHandle(): Any { System.err.println("SnapshotLivePreview: getHandle not yet implemented"); return Any() }
 
     companion object {
         val sList: MutableSet<SnapshotLivePreview> = mutableSetOf()
-        fun onIdle(preview: SnapshotLivePreview): Boolean = TODO("APR: use JVM equivalent - onIdle update")
+        fun onIdle(preview: SnapshotLivePreview): Boolean {
+            System.err.println("SnapshotLivePreview: onIdle not yet implemented")
+            return false
+        }
     }
 }
 
@@ -383,7 +388,7 @@ class FloaterSnapshot(key: Any) : FloaterSnapshotBase(key) {
 
         (impl as Impl).setAspectRatioCheckboxValue(
             this,
-            TODO("APR: use JVM equivalent - gSavedSettings.getBOOL(KeepAspectForSnapshot)") as Boolean
+            false
         )
 
         childSetCommitCallback("layer_types") { ctrl, data -> Impl.onCommitLayerTypes(ctrl, this) }
@@ -391,13 +396,17 @@ class FloaterSnapshot(key: Any) : FloaterSnapshotBase(key) {
         getChildView("layer_types")?.setEnabled(false)
 
         freezeFrameCheck = getChild<UICtrl>("freeze_frame_check")
-        freezeFrameCheck?.setValue(TODO("APR: use JVM equivalent - gSavedSettings.getBOOL(UseFreezeFrame)"))
+        freezeFrameCheck?.setValue(false)
         freezeFrameCheck?.setCommitCallback { ctrl, data -> ImplBase.onCommitFreezeFrame(ctrl, this) }
 
-        getChild<UICtrl>("auto_snapshot_check")?.setValue(TODO("APR: use JVM equivalent - gSavedSettings.getBOOL(AutoSnapshot)"))
+        getChild<UICtrl>("auto_snapshot_check")?.setValue(false)
         childSetCommitCallback("auto_snapshot_check") { ctrl, _ -> ImplBase.onClickAutoSnap(ctrl, this) }
 
-        getChild<UICtrl>("no_post_check")?.setValue(TODO("APR: use JVM equivalent - gSavedSettings.getBOOL(RenderSnapshotNoPost)"))
+        val renderSnapshotNoPost: Any = run {
+            System.err.println("FloaterSnapshot: gSavedSettings.getBOOL(RenderSnapshotNoPost) not yet implemented")
+            false
+        }
+        getChild<UICtrl>("no_post_check")?.setValue(renderSnapshotNoPost)
         childSetCommitCallback("no_post_check") { ctrl, _ -> ImplBase.onClickNoPost(ctrl, this) }
 
         getChild<Button>("retract_btn")?.setCommitCallback { onExtendFloater() }
@@ -405,24 +414,32 @@ class FloaterSnapshot(key: Any) : FloaterSnapshotBase(key) {
         getChild<Button>("360_label")?.setCommitCallback { on360Snapshot() }
 
         val filterbox = getChild<ComboBox>("filters_combobox") ?: return false
-        val filterList = TODO("APR: use JVM equivalent - LLImageFiltersManager::getFiltersList()") as List<String>
+        val filterList: List<String> = run {
+            System.err.println("FloaterSnapshot: LLImageFiltersManager::getFiltersList() not yet implemented")
+            emptyList()
+        }
         filterList.forEach { filterbox.add(it) }
         childSetCommitCallback("filters_combobox") { ctrl, _ -> ImplBase.onClickFilter(ctrl, this) }
 
-        TODO("APR: use JVM equivalent - LLWebProfile::setImageUploadResultCallback / LLPostCard::setPostResultCallback")
+        System.err.println("FloaterSnapshot: LLWebProfile::setImageUploadResultCallback / LLPostCard::setPostResultCallback not yet implemented")
 
         thumbnailPlaceholder = getChild<UICtrl>("thumbnail_placeholder")
 
-        val fullScreenRect = TODO("APR: use JVM equivalent - getRootView()->getRect()") as Any
+        System.err.println("FloaterSnapshot: getRootView()->getRect() not yet implemented")
+        @Suppress("UNUSED_VARIABLE") val fullScreenRect: Any = Any()
         val previewp = SnapshotLivePreview()
         SnapshotLivePreview.sList.add(previewp)
-        TODO("APR: use JVM equivalent - reparent previewp under gSnapshotFloaterView parent, add to gSnapshotFloaterView")
+        System.err.println("FloaterSnapshot: reparent previewp under gSnapshotFloaterView parent, add to gSnapshotFloaterView not yet implemented")
 
         originalHeight = getRect().height
         impl?.previewHandle = previewp.getHandle()
         previewp.setContainer(this)
         impl?.updateControls(this)
-        impl?.setAdvanced(TODO("APR: use JVM equivalent - gSavedSettings.getBOOL(AdvanceSnapshot)") as Boolean)
+        val advanceSnapshot: Boolean = run {
+            System.err.println("FloaterSnapshot: gSavedSettings.getBOOL(AdvanceSnapshot) not yet implemented")
+            false
+        }
+        impl?.setAdvanced(advanceSnapshot)
         impl?.updateLayout(this)
         previewp.setThumbnailPlaceholderRect(getThumbnailPlaceholderRect())
 
@@ -438,18 +455,25 @@ class FloaterSnapshot(key: Any) : FloaterSnapshotBase(key) {
         focusFirstItem(false)
         gSnapshotFloaterView?.setEnabled(true)
         gSnapshotFloaterView?.setVisible(true)
-        TODO("APR: use JVM equivalent - gSnapshotFloaterView->adjustToFitScreen")
+        System.err.println("FloaterSnapshot: gSnapshotFloaterView->adjustToFitScreen not yet implemented")
 
         impl?.updateControls(this)
-        impl?.setAdvanced(TODO("APR: use JVM equivalent - gSavedSettings.getBOOL(AdvanceSnapshot)") as Boolean)
+        val advanceSnapshot2: Boolean = run {
+            System.err.println("FloaterSnapshot: gSavedSettings.getBOOL(AdvanceSnapshot) not yet implemented")
+            false
+        }
+        impl?.setAdvanced(advanceSnapshot2)
         impl?.updateLayout(this)
 
         if (isOpen) return
         isOpen = true
 
-        val lastPanel = TODO("APR: use JVM equivalent - gSavedSettings.getString(FSLastSnapshotPanel)") as? String ?: ""
+        val lastPanel: String = run {
+            System.err.println("FloaterSnapshot: gSavedSettings.getString(FSLastSnapshotPanel) not yet implemented")
+            ""
+        }
         val panelName = if (lastPanel.isEmpty()) "panel_snapshot_options" else lastPanel
-        TODO("APR: use JVM equivalent - panel_container->selectTabByName(panelName) and onOpen")
+        System.err.println("FloaterSnapshot: panel_container->selectTabByName(panelName) and onOpen not yet implemented")
         succeessLblPanel?.setVisible(false)
         failureLblPanel?.setVisible(false)
     }
@@ -457,8 +481,11 @@ class FloaterSnapshot(key: Any) : FloaterSnapshotBase(key) {
     override fun onClose(appQuitting: Boolean) {
         super.onClose(appQuitting)
         isOpen = false
-        val panelName = TODO("APR: use JVM equivalent - panel_container->getCurrentPanel()->getName()") as? String ?: ""
-        TODO("APR: use JVM equivalent - gSavedSettings.setString(FSLastSnapshotPanel, panelName)")
+        val panelName: String = run {
+            System.err.println("FloaterSnapshot: panel_container->getCurrentPanel()->getName() not yet implemented")
+            ""
+        }
+        System.err.println("FloaterSnapshot: gSavedSettings.setString(FSLastSnapshotPanel, panelName) not yet implemented")
     }
 
     override fun notify(info: Map<String, Any>): Int {
@@ -506,21 +533,29 @@ class FloaterSnapshot(key: Any) : FloaterSnapshotBase(key) {
     }
 
     fun onExtendFloater() {
-        impl?.setAdvanced(TODO("APR: use JVM equivalent - gSavedSettings.getBOOL(AdvanceSnapshot)") as Boolean)
+        val advanceSnapshot3: Boolean = run {
+            System.err.println("FloaterSnapshot: gSavedSettings.getBOOL(AdvanceSnapshot) not yet implemented")
+            false
+        }
+        impl?.setAdvanced(advanceSnapshot3)
     }
 
     fun on360Snapshot() {
-        TODO("APR: use JVM equivalent - LLFloaterReg::showInstance(360capture)")
+        System.err.println("FloaterSnapshot: LLFloaterReg::showInstance(360capture) not yet implemented")
         closeFloater()
     }
 
     fun isWaitingState(): Boolean = impl?.getStatus() == ImplBase.Status.WORKING
 
     companion object {
-        fun getInstance(): FloaterSnapshot? =
-            TODO("APR: use JVM equivalent - LLFloaterReg::getTypedInstance<FloaterSnapshot>(snapshot)")
-        fun findInstance(): FloaterSnapshot? =
-            TODO("APR: use JVM equivalent - LLFloaterReg::findTypedInstance<FloaterSnapshot>(snapshot)")
+        fun getInstance(): FloaterSnapshot? {
+            System.err.println("FloaterSnapshot: LLFloaterReg::getTypedInstance not yet implemented")
+            return null
+        }
+        fun findInstance(): FloaterSnapshot? {
+            System.err.println("FloaterSnapshot: LLFloaterReg::findTypedInstance not yet implemented")
+            return null
+        }
 
         fun update() {
             val inst = findInstance()
@@ -532,14 +567,15 @@ class FloaterSnapshot(key: Any) : FloaterSnapshotBase(key) {
         }
 
         fun setAgentEmail(email: String) {
-            TODO("APR: use JVM equivalent - set agent email for postcard")
+            System.err.println("FloaterSnapshot: set agent email for postcard not yet implemented")
         }
     }
 
     class Impl(floater: FloaterSnapshotBase) : ImplBase(floater) {
 
         override fun getActivePanel(floater: FloaterSnapshotBase, okIfNotFound: Boolean): PanelSnapshot? {
-            TODO("APR: use JVM equivalent - get active panel from panel_container SideTray")
+            System.err.println("Impl: get active panel from panel_container SideTray not yet implemented")
+            return null
         }
 
         override fun getImageFormat(floater: FloaterSnapshotBase): SnapshotModel.SnapshotFormat {
@@ -561,7 +597,8 @@ class FloaterSnapshot(key: Any) : FloaterSnapshotBase(key) {
 
         override fun updateControls(floater: FloaterSnapshotBase) {
             val shotType   = getActiveSnapshotType(floater)
-            val shotFormat = TODO("APR: use JVM equivalent - gSavedSettings.getS32(SnapshotFormat)") as? Int ?: 0
+            System.err.println("Impl: gSavedSettings.getS32(SnapshotFormat) not yet implemented")
+            val shotFormat = 0
             val layerType  = getLayerType(floater)
 
             floater.getChild<ComboBox>("local_format_combo")?.selectNthItem(shotFormat)
@@ -572,19 +609,24 @@ class FloaterSnapshot(key: Any) : FloaterSnapshotBase(key) {
                 val widthCtrl  = getWidthSpinner(floater)
                 val heightCtrl = getHeightSpinner(floater)
                 if (activePanel.isCustomResolution()) {
-                    val renderUiInSnapshot = TODO("APR: use JVM equivalent - gSavedSettings.getBOOL(RenderUIInSnapshot)") as? Boolean ?: false
-                    val renderHudInSnapshot = TODO("APR: use JVM equivalent - gSavedSettings.getBOOL(RenderHUDInSnapshot)") as? Boolean ?: false
+                    System.err.println("Impl: gSavedSettings.getBOOL(RenderUIInSnapshot) not yet implemented")
+                    val renderUiInSnapshot = false
+                    System.err.println("Impl: gSavedSettings.getBOOL(RenderHUDInSnapshot) not yet implemented")
+                    val renderHudInSnapshot = false
                     if (renderUiInSnapshot || renderHudInSnapshot) {
-                        val width  = TODO("APR: use JVM equivalent - gViewerWindow->getWindowWidthRaw()") as? Int ?: 0
-                        val height = TODO("APR: use JVM equivalent - gViewerWindow->getWindowHeightRaw()") as? Int ?: 0
+                        System.err.println("Impl: gViewerWindow->getWindowWidthRaw() not yet implemented")
+                        val width = 0
+                        System.err.println("Impl: gViewerWindow->getWindowHeightRaw() not yet implemented")
+                        val height = 0
                         widthCtrl?.setMaxValue(width.toFloat())
                         heightCtrl?.setMaxValue(height.toFloat())
                         if ((widthCtrl?.getValue() as? Int ?: 0) > width)  widthCtrl?.forceSetValue(width)
                         if ((heightCtrl?.getValue() as? Int ?: 0) > height) heightCtrl?.forceSetValue(height)
                     }
                 } else {
-                    widthCtrl?.setMaxValue(TODO("APR: use JVM equivalent - MAX_SNAPSHOT_IMAGE_SIZE") as Float)
-                    heightCtrl?.setMaxValue(TODO("APR: use JVM equivalent - MAX_SNAPSHOT_IMAGE_SIZE") as Float)
+                    System.err.println("Impl: MAX_SNAPSHOT_IMAGE_SIZE not yet implemented")
+                    widthCtrl?.setMaxValue(MAX_TEXTURE_SIZE.toFloat())
+                    heightCtrl?.setMaxValue(MAX_TEXTURE_SIZE.toFloat())
                 }
             }
 
@@ -608,7 +650,8 @@ class FloaterSnapshot(key: Any) : FloaterSnapshotBase(key) {
                 else -> {}
             }
 
-            val keepAspect = TODO("APR: use JVM equivalent - gSavedSettings.getBOOL(KeepAspectForSnapshot)") as? Boolean ?: false
+            System.err.println("Impl: gSavedSettings.getBOOL(KeepAspectForSnapshot) not yet implemented")
+            val keepAspect = false
             setAspectRatioCheckboxValue(floater, keepAspect)
             enableAspectRatioCheckbox(floater, !aspectRatioCheckOff)
 
@@ -665,7 +708,7 @@ class FloaterSnapshot(key: Any) : FloaterSnapshotBase(key) {
         }
 
         fun applyKeepAspectCheck(view: FloaterSnapshotBase, checked: Boolean) {
-            TODO("APR: use JVM equivalent - gSavedSettings.setBOOL(KeepAspectForSnapshot, checked)")
+            System.err.println("Impl: gSavedSettings.setBOOL(KeepAspectForSnapshot, checked) not yet implemented")
             if (checked) {
                 val activePanel = getActivePanel(view)
                 if (activePanel != null) {
@@ -686,12 +729,12 @@ class FloaterSnapshot(key: Any) : FloaterSnapshotBase(key) {
         fun updateResolution(ctrl: UICtrl?, data: Any?, doUpdate: Boolean = true) {
             val combobox = ctrl as? ComboBox ?: return
             val view = data as? FloaterSnapshot ?: return
-            TODO("APR: use JVM equivalent - parse LLSD resolution from combo, set preview size, check aspect")
+            System.err.println("Impl: parse LLSD resolution from combo, set preview size, check aspect not yet implemented")
         }
 
         fun applyCustomResolution(view: FloaterSnapshotBase, w: Int, h: Int) {
             val previewp = getPreviewView() ?: return
-            TODO("APR: use JVM equivalent - set preview size and trigger update")
+            System.err.println("Impl: set preview size and trigger update not yet implemented")
         }
 
         fun onImageQualityChange(view: FloaterSnapshotBase, qualityVal: Int) {
@@ -699,14 +742,15 @@ class FloaterSnapshot(key: Any) : FloaterSnapshotBase(key) {
         }
 
         fun onImageFormatChange(view: FloaterSnapshotBase) {
-            TODO("APR: use JVM equivalent - gSavedSettings.setS32(SnapshotFormat, getImageFormat(view))")
+            System.err.println("Impl: gSavedSettings.setS32(SnapshotFormat, getImageFormat(view)) not yet implemented")
             getPreviewView()?.updateSnapshot(true)
             updateControls(view)
         }
 
         fun checkImageSize(previewp: SnapshotLivePreview?, width: Int, height: Int, isWidthChanged: Boolean, maxValue: Int): Boolean {
             if (previewp == null || !previewp.keepAspectRatio) return false
-            TODO("APR: use JVM equivalent - gViewerWindow->getWindowWidthRaw/HeightRaw for aspect calc")
+            System.err.println("Impl: gViewerWindow->getWindowWidthRaw/HeightRaw for aspect calc not yet implemented")
+            return false
         }
 
         fun setImageSizeSpinnersValues(view: FloaterSnapshotBase, width: Int, height: Int) {
@@ -734,7 +778,10 @@ class FloaterSnapshot(key: Any) : FloaterSnapshotBase(key) {
             }
             val (keepAspect, enableCb) = when (index) {
                 0  -> Pair(true, false)
-                -1 -> Pair(TODO("APR: use JVM equivalent - gSavedSettings.getBOOL(KeepAspectForSnapshot)") as Boolean, true)
+                -1 -> run {
+                    System.err.println("Impl: gSavedSettings.getBOOL(KeepAspectForSnapshot) not yet implemented")
+                    Pair(false, true)
+                }
                 else -> Pair(false, false)
             }
             aspectRatioCheckOff = !enableCb
@@ -769,15 +816,23 @@ class FloaterSnapshot(key: Any) : FloaterSnapshotBase(key) {
 }
 
 class SnapshotFloaterView(params: Any) : FloaterView(params) {
-    fun handleKey(key: Int, mask: Int, calledFromParent: Boolean): Boolean =
-        TODO("APR: use JVM equivalent - handle key event in snapshot floater view")
+    fun handleKey(key: Int, mask: Int, calledFromParent: Boolean): Boolean {
+        System.err.println("SnapshotFloaterView: handle key event not yet implemented")
+        return false
+    }
 
-    fun handleMouseDown(x: Int, y: Int, mask: Int): Boolean =
-        TODO("APR: use JVM equivalent - handle mouse down in snapshot floater view")
+    fun handleMouseDown(x: Int, y: Int, mask: Int): Boolean {
+        System.err.println("SnapshotFloaterView: handle mouse down not yet implemented")
+        return false
+    }
 
-    fun handleMouseUp(x: Int, y: Int, mask: Int): Boolean =
-        TODO("APR: use JVM equivalent - handle mouse up in snapshot floater view")
+    fun handleMouseUp(x: Int, y: Int, mask: Int): Boolean {
+        System.err.println("SnapshotFloaterView: handle mouse up not yet implemented")
+        return false
+    }
 
-    fun handleHover(x: Int, y: Int, mask: Int): Boolean =
-        TODO("APR: use JVM equivalent - handle hover in snapshot floater view")
+    fun handleHover(x: Int, y: Int, mask: Int): Boolean {
+        System.err.println("SnapshotFloaterView: handle hover not yet implemented")
+        return false
+    }
 }

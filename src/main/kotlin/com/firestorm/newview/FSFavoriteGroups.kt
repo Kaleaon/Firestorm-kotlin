@@ -39,10 +39,10 @@ object FSFavoriteGroups {
 
     fun loadFavorites() {
         favoriteGroups.clear()
-        TODO("APR: use JVM equivalent — read FSFavoriteGroups array from per-account settings LLSD and populate favoriteGroups")
+        System.err.println("FSFavoriteGroups: loadFavorites not yet implemented")
     }
 
     fun saveFavorites() {
-        TODO("APR: use JVM equivalent — prune groups no longer joined via agent membership check, then persist favoriteGroups to per-account settings LLSD")
+        System.err.println("FSFavoriteGroups: saveFavorites not yet implemented")
     }
 }

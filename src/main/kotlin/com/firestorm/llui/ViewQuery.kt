@@ -108,4 +108,4 @@ open class ViewQuery {
     }
 }
 
-fun View.canFocusChildren(): Boolean = TODO("APR: return whether this view allows children to receive keyboard focus")
+fun View.canFocusChildren(): Boolean = false

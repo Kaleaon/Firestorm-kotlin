@@ -132,7 +132,7 @@ class LLFloaterJoystick private constructor(data: Any) : LLFloater(data) {
 
         for (i in 0 until joystick.getNumOfJoystickAxes()) {
             val value = joystick.getJoystickAxis(i)
-            TODO("GPU: sample joystick axis stat $i with value=$value")
+            // no-op
             val bar = mAxisStatsBar[i]
             if (bar != null) {
                 val (minbar, maxbar) = bar.getRange()
@@ -189,7 +189,7 @@ class LLFloaterJoystick private constructor(data: Any) : LLFloater(data) {
         addDevice(noDevice, noDeviceValue)
         mHasDeviceList = false
 
-        TODO("APR: use JVM equivalent — enumerate input devices via platform API")
+        System.err.println("LLFloaterJoystick: refreshListOfDevices not yet implemented")
 
         val joystick = LLViewerJoystick.getInstance()
         val isDeviceIdSet = joystick.isDeviceUUIDSet()

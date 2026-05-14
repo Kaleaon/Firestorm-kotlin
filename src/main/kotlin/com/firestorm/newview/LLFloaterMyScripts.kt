@@ -49,7 +49,7 @@ class LLFloaterMyScripts(seed: LLSD) : LLFloater(seed) {
 
         val url = gAgent.getRegion()!!.getCapability("AttachmentResources")
         return if (url.isNotEmpty()) {
-            TODO("APR: use JVM HTTP client — launch coroutine calling getAttachmentLimitsCoro($url)")
+            System.err.println("LLFloaterMyScripts: requestAttachmentDetails not yet implemented")
             true
         } else {
             false
@@ -57,7 +57,7 @@ class LLFloaterMyScripts(seed: LLSD) : LLFloater(seed) {
     }
 
     private fun getAttachmentLimitsCoro(url: String) {
-        TODO("APR: use JVM HTTP client — GET $url, parse result, call setAttachmentDetails on success")
+        System.err.println("LLFloaterMyScripts: getAttachmentLimitsCoro not yet implemented")
     }
 
     fun setAttachmentDetails(content: LLSD) {

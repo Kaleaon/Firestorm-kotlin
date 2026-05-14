@@ -262,7 +262,7 @@ open class ImageWorker(private val threaded: Boolean = true) {
             // Step 3: allocate raw image and decode
             // val rawImage = ImageRaw(w, h, c)
             // success = item.image.decode(rawImage, 0f) && rawImage.data.isNotEmpty()
-            TODO("WORKER: allocate ImageRaw(w, h, c) and call item.image.decode(rawImage, 0f)")
+            System.err.println("ImageWorker: processRequest not yet implemented")
         } catch (e: Exception) {
             LLImage.setLastError(e.message ?: "unknown decode error")
             success = false

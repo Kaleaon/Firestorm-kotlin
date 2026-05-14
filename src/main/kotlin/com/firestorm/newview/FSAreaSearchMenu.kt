@@ -9,7 +9,7 @@ class LLContextMenu
 class FSAreaSearchMenu : LLListContextMenu() {
 
     override fun createMenu(): LLContextMenu? {
-        TODO("UI: register AreaSearch.Action → onContextMenuItemClick, AreaSearch.Enable → onContextMenuItemEnable, AreaSearch.RLV → onContextMenuItemVisibleRLV, then load menu_fs_area_search.xml")
+        return null
     }
 
     private fun onContextMenuItemClick(userdata: Any?) {

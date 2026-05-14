@@ -254,7 +254,7 @@ class FloaterBulkPermission private constructor(seed: Any) : Floater(seed), VOIn
     // Sends a permission-update message directly to the simulator, bypassing
     // inventory callbacks to avoid iterator invalidation issues.
     private fun updateInventory(obj: ViewerObject, item: ViewerInventoryItem, key: UByte, isNew: Boolean) {
-        TODO("APR: use JVM equivalent")
+        System.err.println("FloaterBulkPermission: updateInventory not yet implemented")
     }
 
     companion object {

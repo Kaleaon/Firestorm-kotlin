@@ -95,11 +95,11 @@ class LLFloaterBulkUpload(key: LLSD) : LLModalDialog(key, true) {
     }
 
     private fun getBulkUploadExpectedCost(files: MutableList<String>, allow2k: Boolean) {
-        TODO("APR: use JVM equivalent for get_bulk_upload_expected_cost; update mUploadCost and mUploadCount")
+        System.err.println("LLFloaterBulkUpload: getBulkUploadExpectedCost not yet implemented")
     }
 
     private fun doBulkUpload(files: MutableList<String>, allow2k: Boolean, destFolderId: UUID) {
-        TODO("APR: use JVM equivalent for do_bulk_upload")
+        System.err.println("LLFloaterBulkUpload: doBulkUpload not yet implemented")
     }
 
     companion object {

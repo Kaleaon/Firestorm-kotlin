@@ -113,11 +113,8 @@ data class TextureAnim(
      * Mirrors LLTextureAnim::packTAMessage(LLDataPacker&).
      */
     fun packTAMessage(): ByteArray {
-        TODO(
-            "Port LLTextureAnim::packTAMessage() — " +
-            "write mode/face/sizeX/sizeY then three F32-LE floats " +
-            "into a $BLOCK_SIZE-byte ByteArray."
-        )
+        System.err.println("TextureAnim: packTAMessage not yet implemented")
+        return ByteArray(0)
     }
 
     /**
@@ -127,10 +124,6 @@ data class TextureAnim(
      * Applies minimum tile-size clamping depending on [TAM_SMOOTH] flag.
      */
     fun unpackTAMessage(data: ByteArray) {
-        TODO(
-            "Port LLTextureAnim::unpackTAMessage() — " +
-            "read mode/face/sizeX/sizeY then three F32-LE floats from [data]. " +
-            "Clamp sizeX/sizeY to >= 1 (or >= 0 if TAM_SMOOTH is set)."
-        )
+        System.err.println("TextureAnim: unpackTAMessage not yet implemented")
     }
 }

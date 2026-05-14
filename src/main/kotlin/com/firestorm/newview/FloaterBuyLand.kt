@@ -308,7 +308,7 @@ class FloaterBuyLandUI(key: Any) : Floater(key) {
 
         getChildTextBox("covenant_text").setVisible(false)
 
-        TODO("APR: use JVM equivalent — send EstateCovenantRequest message via network layer")
+        System.err.println("FloaterBuyLand: updateCovenantInfo not yet implemented")
     }
 
     private fun onChangeAgreeCovenant() {

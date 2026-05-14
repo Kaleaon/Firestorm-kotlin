@@ -120,7 +120,7 @@ private object CommandHandlerRegistry {
     private fun notifySlurlBlocked() {
         if (!slurlBlocked) {
             if (Startup.getStartupState() >= Startup.State.BROWSER_INIT) {
-                TODO("APR: use JVM equivalent for LLNotificationsUtil::add(\"BlockedSLURL\")")
+                System.err.println("CommandHandler: notifySlurlBlocked not yet implemented")
             }
             slurlBlocked = true
         }
@@ -129,7 +129,7 @@ private object CommandHandlerRegistry {
     private fun notifySlurlThrottled() {
         if (!slurlThrottled) {
             if (Startup.getStartupState() >= Startup.State.BROWSER_INIT) {
-                TODO("APR: use JVM equivalent for LLNotificationsUtil::add(\"ThrottledSLURL\")")
+                System.err.println("CommandHandler: notifySlurlThrottled not yet implemented")
             }
             slurlThrottled = true
         }

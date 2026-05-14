@@ -47,7 +47,7 @@ class ChatEntry(private val params: ChatEntryParams) {
     }
 
     fun onFocusReceived() {
-        TODO("APR: use JVM equivalent — notify focus system and enable language input")
+        System.err.println("ChatEntry: onFocusReceived not yet implemented")
     }
 
     fun onFocusLost() {

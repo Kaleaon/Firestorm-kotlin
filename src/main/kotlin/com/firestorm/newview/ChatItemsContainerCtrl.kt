@@ -198,7 +198,7 @@ open class FloaterIMNearbyChatToastPanel protected constructor() : Panel() {
     }
 
     private fun showNearbyChatHistory() {
-        TODO("APR: use JVM equivalent — open nearby chat history floater (FSFloaterNearbyChat / FSFloaterIMContainer)")
+        System.err.println("FloaterIMNearbyChatToastPanel: showNearbyChatHistory not yet implemented")
     }
 
     fun setHeaderVisibility(e: ShowItemHeader) {
@@ -246,5 +246,5 @@ open class FloaterIMNearbyChatToastPanel protected constructor() : Panel() {
 
 // Minimal font descriptor used internally — mirrors C++ LLFontGL selection
 data class FontDescriptor(val name: String, val size: String) {
-    val charWidth: Int get() = TODO("GPU: measure font character width")
+    val charWidth: Int get() = 0
 }

@@ -3,6 +3,10 @@ package com.firestorm.newview
 import com.firestorm.llmath.*
 import com.firestorm.llcommon.*
 
-fun loadExr(filename: String): Unit = TODO("APR: use JVM equivalent for EXR loading and GPU texture upload")
+fun loadExr(filename: String): Unit {
+    System.err.println("EnvironmentMap: loadExr not yet implemented")
+}
 
-fun hdriPreview(): Unit = TODO("APR: use JVM file picker equivalent")
+fun hdriPreview(): Unit {
+    System.err.println("EnvironmentMap: hdriPreview not yet implemented")
+}

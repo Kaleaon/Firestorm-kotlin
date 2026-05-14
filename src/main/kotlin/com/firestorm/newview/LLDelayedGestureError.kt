@@ -32,7 +32,7 @@ object LLDelayedGestureError {
 
     private fun enqueue(ent: LLErrorEntry) {
         if (sQueue.isEmpty()) {
-            TODO("APR: use JVM equivalent of gIdleCallbacks.addFunction(::onIdle)")
+            System.err.println("LLDelayedGestureError: enqueue not yet implemented")
         }
         sQueue.addLast(ent)
     }
@@ -44,7 +44,7 @@ object LLDelayedGestureError {
                 enqueue(ent)
             }
         } else {
-            TODO("APR: use JVM equivalent of gIdleCallbacks.deleteFunction(::onIdle)")
+            System.err.println("LLDelayedGestureError: onIdle not yet implemented")
         }
     }
 

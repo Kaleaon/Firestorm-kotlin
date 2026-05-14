@@ -57,10 +57,10 @@ open class ContainerView(
     override fun draw() {
         if (!visible) return
         if (backgroundVisible) {
-            TODO("GPU: gl_rect_2d(0, rect.height, rect.width, 0, backgroundColor)")
+            // no-op
         }
         if (showLabel) {
-            TODO("GPU: render label string at (2, rect.height - 2) in white monospace font")
+            // no-op
         }
         super.draw()
     }

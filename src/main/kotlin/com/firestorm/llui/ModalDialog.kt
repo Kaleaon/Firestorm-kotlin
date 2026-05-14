@@ -134,12 +134,12 @@ open class ModalDialog(
 
         fun onAppFocusLost() {
             val instance = sModalStack.firstOrNull() ?: return
-            TODO("APR: if instance has mouse capture, release it; instance.setFocus(false)")
+            System.err.println("ModalDialog: onAppFocusLost not yet implemented")
         }
 
         fun onAppFocusGained() {
             val instance = sModalStack.firstOrNull() ?: return
-            TODO("APR: setMouseCapture(instance); instance.setFocus(true); addPopup(instance); instance.centerOnScreen()")
+            System.err.println("ModalDialog: onAppFocusGained not yet implemented")
         }
 
         fun activeCount(): Int = sModalStack.size

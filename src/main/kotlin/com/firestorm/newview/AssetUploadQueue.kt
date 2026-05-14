@@ -40,7 +40,7 @@ open class UpdateTaskInventoryResponder(
     val queueId: LLUUID = LLUUID.NULL
 ) : AssetUploadResponder(postData, vfileId, assetType, filename) {
     override fun uploadComplete(content: Map<String, Any>) {
-        TODO("APR: use JVM equivalent - notify queue that upload is complete and trigger next item")
+        System.err.println("UpdateTaskInventoryResponder: uploadComplete not yet implemented")
     }
 }
 

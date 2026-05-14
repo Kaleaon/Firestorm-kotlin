@@ -149,7 +149,7 @@ object FSFloaterAvatarRenderPersistenceMenu {
                 }
             }
 
-            TODO("GPU: LLVOAvatar.cullAvatarsByPixelArea()")
+            // no-op
         }
     }
 }

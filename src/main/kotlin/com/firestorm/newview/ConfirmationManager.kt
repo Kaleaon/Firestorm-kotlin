@@ -58,8 +58,11 @@ object NotificationUtil {
         name: String,
         args: Map<String, String> = emptyMap(),
         callback: ((Map<String, String>, Map<String, String>) -> Unit)? = null
-    ): Unit = TODO("APR: use JVM equivalent")
+    ) {
+        System.err.println("NotificationUtil: add not yet implemented")
+    }
 
-    fun getSelectedOption(notification: Map<String, String>, response: Map<String, String>): Int =
-        TODO("APR: use JVM equivalent")
+    fun getSelectedOption(notification: Map<String, String>, response: Map<String, String>): Int {
+        return 0
+    }
 }

@@ -842,11 +842,11 @@ object IMMgr {
     }
 
     private fun noteOfflineUsers(sessionId: UUID, ids: List<UUID>) {
-        TODO("APR: use JVM equivalent - for each id in ids, if offline, add system message to session $sessionId")
+        System.err.println("IMMgr: noteOfflineUsers not yet implemented")
     }
 
     private fun noteMutedUsers(sessionId: UUID, ids: List<UUID>) {
-        TODO("APR: use JVM equivalent - for each muted id in ids, add system message to session $sessionId")
+        System.err.println("IMMgr: noteMutedUsers not yet implemented")
     }
 
     internal fun notifyObserverSessionAdded(sessionId: UUID, name: String, otherParticipantId: UUID, hasOfflineMsg: Boolean) {
@@ -883,7 +883,7 @@ object CallDialogManager {
         previousSessionName = currentSessionName
         currentSessionName = session?.name ?: ""
         currentSession = session
-        TODO("APR: use JVM equivalent - update call dialog UI for voice channel change to $sessionId")
+        System.err.println("CallDialogManager: onVoiceChannelChanged not yet implemented")
     }
 
     fun onVoiceChannelStateChanged(
@@ -892,7 +892,7 @@ object CallDialogManager {
         direction: VoiceChannelDirection,
         endedByAgent: Boolean,
     ) {
-        TODO("APR: use JVM equivalent - show/hide incoming-call or outgoing-call dialog based on state transition")
+        System.err.println("CallDialogManager: onVoiceChannelStateChanged not yet implemented")
     }
 }
 
@@ -910,22 +910,22 @@ abstract class CallDialog(protected val payload: Map<String, Any>) {
 
     open fun draw() {
         if (lifetimeHasExpired()) onLifetimeExpired()
-        TODO("GPU: draw call dialog UI elements")
+        // GPU: draw call dialog UI elements
     }
 
     fun dockToToolbarButton(toolbarButtonName: String) {
-        TODO("APR: use JVM equivalent - dock this floater to toolbar button named $toolbarButtonName")
+        System.err.println("CallDialog: dockToToolbarButton not yet implemented")
     }
 
     protected open fun lifetimeHasExpired(): Boolean =
         (System.currentTimeMillis() - lifetimeTimer) / 1000 >= lifetimeSecs
 
     protected open fun onLifetimeExpired() {
-        TODO("APR: use JVM equivalent - close this floater after lifetime expired")
+        System.err.println("CallDialog: onLifetimeExpired not yet implemented")
     }
 
     protected fun setIcon(sessionId: Any, participantId: Any) {
-        TODO("APR: use JVM equivalent - show group icon if sessionId is a group, else avatar icon for participantId")
+        System.err.println("CallDialog: setIcon not yet implemented")
     }
 
     companion object {

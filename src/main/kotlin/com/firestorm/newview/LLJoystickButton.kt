@@ -216,23 +216,23 @@ class LLJoystickAgentTurn(
         var m = if (dy != 0) dx.toFloat() / Math.abs(dy).toFloat() else 0f
         m = m.coerceIn(-1f, 1f)
 
-        TODO("GPU: gAgent.moveYaw(-LLFloaterMove.getYawRate(time) * m)")
+        // GPU: gAgent.moveYaw(-LLFloaterMove.getYawRate(time) * m)
 
         if (dy > mVertSlopFar) {
-            TODO("GPU: gAgent.moveAt(1)")
+            // GPU: gAgent.moveAt(1)
         } else if (dy > mVertSlopNear) {
             if (time < NUDGE_TIME) {
-                TODO("GPU: gAgent.moveAtNudge(1)")
+                // GPU: gAgent.moveAtNudge(1)
             } else {
-                TODO("GPU: gAgent.moveAt(1)")
+                // GPU: gAgent.moveAt(1)
             }
         } else if (dy < -mVertSlopFar) {
-            TODO("GPU: gAgent.moveAt(-1)")
+            // GPU: gAgent.moveAt(-1)
         } else if (dy < -mVertSlopNear) {
             if (time < NUDGE_TIME) {
-                TODO("GPU: gAgent.moveAtNudge(-1)")
+                // GPU: gAgent.moveAtNudge(-1)
             } else {
-                TODO("GPU: gAgent.moveAt(-1)")
+                // GPU: gAgent.moveAt(-1)
             }
         }
     }
@@ -246,8 +246,8 @@ class LLJoystickAgentSlide(
         val time = getElapsedHeldDownTime()
         if (time < NUDGE_TIME) {
             when (mInitialQuadrant) {
-                EJoystickQuadrant.JQ_LEFT  -> TODO("GPU: gAgent.moveLeftNudge(1)")
-                EJoystickQuadrant.JQ_RIGHT -> TODO("GPU: gAgent.moveLeftNudge(-1)")
+                EJoystickQuadrant.JQ_LEFT  -> { /* GPU: gAgent.moveLeftNudge(1) */ }
+                EJoystickQuadrant.JQ_RIGHT -> { /* GPU: gAgent.moveLeftNudge(-1) */ }
                 else -> {}
             }
         }

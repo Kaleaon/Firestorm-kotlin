@@ -602,13 +602,13 @@ class LLInventoryGallery(params: Params = Params()) : LLPanel(), LLEditMenuHandl
 
     private fun addToRow(rowStack: LLPanel, item: LLInventoryGalleryItem, pos: Int, hgap: Int): LLPanel {
         val lpanel = buildItemPanel(pos * itemWidth + hgap)
-        TODO("GPU: lpanel.addChild(item); rowStack.addChild(lpanel)")
+        // GPU: lpanel.addChild(item); rowStack.addChild(lpanel)
         itemPanels.add(lpanel)
         return lpanel
     }
 
     private fun removeFromLastRow(item: LLInventoryGalleryItem) {
-        TODO("GPU: remove item from last item panel, remove panel from lastRowPanel, push to unusedItemPanels")
+        // GPU: remove item from last item panel, remove panel from lastRowPanel, push to unusedItemPanels
     }
 
     private fun buildGalleryItem(
@@ -616,33 +616,36 @@ class LLInventoryGallery(params: Params = Params()) : LLPanel(), LLEditMenuHandl
         inventoryType: LLInventoryType.EType, flags: UInt,
         creationDate: Long, isLink: Boolean, isWorn: Boolean, isFavorite: Boolean
     ): LLInventoryGalleryItem {
-        TODO("GPU: construct and configure LLInventoryGalleryItem with given parameters")
+        // GPU: construct and configure LLInventoryGalleryItem with given parameters
+        return LLInventoryGalleryItem()
     }
 
     private fun getItem(id: UUID): LLInventoryGalleryItem? = itemMap[id]
 
     private fun buildGalleryPanel(rowCount: Int) {
-        TODO("GPU: create LLGalleryPanel with bounding-rect disabled, call reshapeGalleryPanel")
+        // GPU: create LLGalleryPanel with bounding-rect disabled, call reshapeGalleryPanel
     }
 
     private fun reshapeGalleryPanel(rowCount: Int) {
         val height = rowCount * (rowPanelHeight + verticalGap)
-        TODO("GPU: set galleryPanel rect and reshape to (galleryWidth, height)")
+        // GPU: set galleryPanel rect and reshape to (galleryWidth, height)
     }
 
     private fun buildItemPanel(left: Int): LLPanel {
         return if (unusedItemPanels.isEmpty()) {
-            TODO("GPU: create LLPanel with item dimensions at given left offset")
+            // GPU: create LLPanel with item dimensions at given left offset
+            LLPanel()
         } else {
             val panel = unusedItemPanels.removeLastOrNull()!!
-            TODO("GPU: reposition panel to left offset, return it")
+            // GPU: reposition panel to left offset, return it
             panel
         }
     }
 
     private fun buildRowPanel(left: Int, bottom: Int): LLPanel {
         val stack: LLPanel = if (unusedRowPanels.isEmpty()) {
-            TODO("GPU: create LLPanel with row dimensions")
+            // GPU: create LLPanel with row dimensions
+            LLPanel()
         } else {
             unusedRowPanels.removeLastOrNull()!!
         }
@@ -651,7 +654,7 @@ class LLInventoryGallery(params: Params = Params()) : LLPanel(), LLEditMenuHandl
     }
 
     private fun moveRowPanel(stack: LLPanel, left: Int, bottom: Int) {
-        TODO("GPU: set stack rect to (left, bottom, left+rowPanelWidth, bottom+rowPanelHeight) and reshape")
+        // GPU: set stack rect to (left, bottom, left+rowPanelWidth, bottom+rowPanelHeight) and reshape
     }
 
     private fun reArrangeRows(rowDiff: Int = 0) {

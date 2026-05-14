@@ -1084,5 +1084,7 @@ private fun slurl(scheme: String, id: UUID, action: String): String {
     return ""
 }
 
-private fun trans(key: String, args: Map<String, String> = emptyMap()): String =
-    TODO("APR: use JVM equivalent for LLTrans::getString")
+private fun trans(key: String, args: Map<String, String> = emptyMap()): String {
+    System.err.println("ChatBarAsCmdline: trans not yet implemented")
+    return ""
+}

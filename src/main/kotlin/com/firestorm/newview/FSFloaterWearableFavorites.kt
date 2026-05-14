@@ -48,25 +48,32 @@ open class FSWearableFavoritesItemsList {
 
     fun setSortOrder(order: WearableItemsSortOrder) {
         sortOrder = order
-        TODO("Platform: mItemsList->setSortOrder(order.code)")
+        // Platform: mItemsList->setSortOrder(order.code)
     }
 
     fun getSortOrder(): WearableItemsSortOrder = sortOrder
 
-    fun setFilterSubString(filter: String, forceUpdate: Boolean): Unit =
-        TODO("Platform: LLWearableItemsList::setFilterSubString(filter, forceUpdate)")
+    fun setFilterSubString(filter: String, forceUpdate: Boolean) {
+        // Platform: LLWearableItemsList::setFilterSubString(filter, forceUpdate)
+    }
 
-    fun updateList(folderId: UUID): Unit =
-        TODO("Platform: LLWearableItemsList::updateList(folderId)")
+    fun updateList(folderId: UUID) {
+        // Platform: LLWearableItemsList::updateList(folderId)
+    }
 
-    fun numSelected(): Int =
-        TODO("Platform: LLWearableItemsList::numSelected()")
+    fun numSelected(): Int {
+        // Platform: LLWearableItemsList::numSelected()
+        return 0
+    }
 
-    fun getSelectedUUID(): UUID =
-        TODO("Platform: LLWearableItemsList::getSelectedUUID()")
+    fun getSelectedUUID(): UUID {
+        // Platform: LLWearableItemsList::getSelectedUUID()
+        return UUID.fromString("00000000-0000-0000-0000-000000000000")
+    }
 
-    fun getSelectedUUIDs(out: MutableList<UUID>): Unit =
-        TODO("Platform: LLWearableItemsList::getSelectedUUIDs(out)")
+    fun getSelectedUUIDs(out: MutableList<UUID>) {
+        // Platform: LLWearableItemsList::getSelectedUUIDs(out)
+    }
 
     fun setDoubleClickCallback(cb: () -> Unit) { doubleClickCallback = cb }
 
@@ -75,8 +82,9 @@ open class FSWearableFavoritesItemsList {
         return cb
     }
 
-    fun rearrange(): Unit =
-        TODO("Platform: LLWearableItemsList::rearrangeItems()")
+    fun rearrange() {
+        // Platform: LLWearableItemsList::rearrangeItems()
+    }
 
     open fun handleDragAndDrop(
         x: Int, y: Int, mask: Int,
@@ -93,12 +101,14 @@ open class FSWearableFavoritesItemsList {
                 dadCallbacks.forEach { it(itemId) }
             }
         }
-        TODO("Platform: autoScroll(x, y); return ACCEPT_YES_SINGLE when not dropping")
+        // Platform: autoScroll(x, y); return ACCEPT_YES_SINGLE when not dropping
         return true
     }
 
-    private fun getUuidFromCargoData(cargoData: Any): UUID =
-        TODO("Platform: (cargoData as LLInventoryItem).getUUID()")
+    private fun getUuidFromCargoData(cargoData: Any): UUID {
+        // Platform: (cargoData as LLInventoryItem).getUUID()
+        return UUID.fromString("00000000-0000-0000-0000-000000000000")
+    }
 }
 
 // =============================================================================
@@ -197,7 +207,7 @@ class FSFloaterWearableFavorites(val key: Any) {
         registerMenuEnableCallback("FavWearables.CheckAction") { data -> onOptionsMenuItemChecked(data) }
 
         optionsButton = getChild("options_btn")
-        TODO("Platform: load menu_fs_wearable_favorites.xml; attach to optionsButton as MP_BOTTOM_LEFT")
+        // Platform: load menu_fs_wearable_favorites.xml; attach to optionsButton as MP_BOTTOM_LEFT
 
         return true
     }
@@ -233,7 +243,7 @@ class FSFloaterWearableFavorites(val key: Any) {
     }
 
     fun draw() {
-        TODO("Platform: LLFloater::draw()")
+        // Platform: LLFloater::draw()
         val numSelected = itemsList?.numSelected() ?: 0
         setChildEnabled("remove_btn", numSelected > 0)
     }
@@ -243,7 +253,7 @@ class FSFloaterWearableFavorites(val key: Any) {
             setChildFocus("wearable_filter_input", true)
             return true
         }
-        TODO("Platform: return LLFloater::handleKeyHere(key, mask)")
+        // Platform: return LLFloater::handleKeyHere(key, mask)
         return false
     }
 
@@ -348,29 +358,39 @@ class FSFloaterWearableFavorites(val key: Any) {
     // Platform stubs
     // -------------------------------------------------------------------------
 
-    private fun getString(key: String): String =
-        TODO("Platform: getString(\"$key\") from floater XUI strings")
+    private fun getString(key: String): String {
+        // Platform: getString("$key") from floater XUI strings
+        return ""
+    }
 
-    private fun <T> getChild(name: String): T? =
-        TODO("Platform: getChild<T>(\"$name\")")
+    private fun <T> getChild(name: String): T? {
+        // Platform: getChild<T>("$name")
+        return null
+    }
 
-    private fun setChildAction(name: String, action: () -> Unit): Unit =
-        TODO("Platform: childSetAction(\"$name\", action)")
+    private fun setChildAction(name: String, action: () -> Unit) {
+        // Platform: childSetAction("$name", action)
+    }
 
-    private fun setChildEnabled(name: String, enabled: Boolean): Unit =
-        TODO("Platform: childSetEnabled(\"$name\", $enabled)")
+    private fun setChildEnabled(name: String, enabled: Boolean) {
+        // Platform: childSetEnabled("$name", $enabled)
+    }
 
-    private fun setChildFocus(name: String, focused: Boolean): Unit =
-        TODO("Platform: getChild<LLUICtrl>(\"$name\").setFocus($focused)")
+    private fun setChildFocus(name: String, focused: Boolean) {
+        // Platform: getChild<LLUICtrl>("$name").setFocus($focused)
+    }
 
-    private fun setFilterEditorCallback(name: String, cb: (String) -> Unit): Unit =
-        TODO("Platform: getChild<LLFilterEditor>(\"$name\").setCommitCallback(cb)")
+    private fun setFilterEditorCallback(name: String, cb: (String) -> Unit) {
+        // Platform: getChild<LLFilterEditor>("$name").setCommitCallback(cb)
+    }
 
-    private fun registerMenuCallback(action: String, cb: (String) -> Unit): Unit =
-        TODO("Platform: registrar.add(\"$action\", cb)")
+    private fun registerMenuCallback(action: String, cb: (String) -> Unit) {
+        // Platform: registrar.add("$action", cb)
+    }
 
-    private fun registerMenuEnableCallback(action: String, cb: (String) -> Boolean): Unit =
-        TODO("Platform: enable_registrar.add(\"$action\", cb)")
+    private fun registerMenuEnableCallback(action: String, cb: (String) -> Boolean) {
+        // Platform: enable_registrar.add("$action", cb)
+    }
 }
 
 // =============================================================================
@@ -378,59 +398,111 @@ class FSFloaterWearableFavorites(val key: Any) {
 // =============================================================================
 
 object WISavedSettings {
-    fun getUInt(key: String): Int =
-        TODO("Platform: gSavedSettings.getU32(\"$key\")")
-    fun setUInt(key: String, value: Int): Unit =
-        TODO("Platform: gSavedSettings.setU32(\"$key\", $value)")
+    fun getUInt(key: String): Int {
+        // Platform: gSavedSettings.getU32("$key")
+        return 0
+    }
+    fun setUInt(key: String, value: Int) {
+        // Platform: gSavedSettings.setU32("$key", $value)
+    }
 }
 
 enum class InventoryAssetType { BODYPART, CLOTHING, OBJECT }
 enum class FolderType { NONE }
 
 object InventoryModel {
-    val rootFolderID: UUID get() = TODO("Platform: gInventory.getRootFolderID()")
-    fun isInventoryUsable(): Boolean = TODO("Platform: gInventory.isInventoryUsable()")
-    fun findCategoryByName(name: String): UUID = TODO("Platform: gInventory.findCategoryByName(\"$name\")")
-    fun findDirectDescendantCategoryByName(parentId: UUID, name: String): UUID? =
-        TODO("Platform: iterate gInventory.getDirectDescendentsOf(parentId).cats for name")
-    fun findCategoryForCurrentOutfit(): UUID =
-        TODO("Platform: gInventory.findCategoryUUIDForType(FT_CURRENT_OUTFIT)")
-    fun getCategory(id: UUID): Any? = TODO("Platform: gInventory.getCategory($id)")
-    fun getItem(id: UUID): Any? = TODO("Platform: gInventory.getItem($id)")
-    fun getAssetType(item: Any): InventoryAssetType =
-        TODO("Platform: item->getType() mapped to InventoryAssetType")
-    fun isItemWorn(id: UUID): Boolean = TODO("Platform: get_is_item_worn($id)")
-    fun isCategoryComplete(id: UUID): Boolean = TODO("Platform: gInventory.isCategoryComplete($id)")
-    fun fetchCategory(id: UUID): Unit = TODO("Platform: category->fetch()")
-    fun addObserver(observer: Any?): Unit = TODO("Platform: gInventory.addObserver(observer)")
-    fun observeCategory(id: UUID, cb: () -> Unit): Unit =
-        TODO("Platform: mCategoriesObserver->addCategory($id, cb)")
-    fun createNewCategory(parentId: UUID, type: FolderType, name: String, cb: (UUID) -> Unit): Unit =
-        TODO("Platform: gInventory.createNewCategory(parentId, FT_NONE, \"$name\", cb)")
-    fun linkInventoryObject(destFolderId: UUID, itemId: UUID): Unit =
-        TODO("Platform: link_inventory_object(destFolderId, itemId, nullptr)")
-    fun removeInventoryItem(id: UUID): Unit =
-        TODO("Platform: remove_inventory_item($id, nullptr)")
+    val rootFolderID: UUID get() {
+        // Platform: gInventory.getRootFolderID()
+        return UUID.fromString("00000000-0000-0000-0000-000000000000")
+    }
+    fun isInventoryUsable(): Boolean {
+        // Platform: gInventory.isInventoryUsable()
+        return false
+    }
+    fun findCategoryByName(name: String): UUID {
+        // Platform: gInventory.findCategoryByName("$name")
+        return UUID.fromString("00000000-0000-0000-0000-000000000000")
+    }
+    fun findDirectDescendantCategoryByName(parentId: UUID, name: String): UUID? {
+        // Platform: iterate gInventory.getDirectDescendentsOf(parentId).cats for name
+        return null
+    }
+    fun findCategoryForCurrentOutfit(): UUID {
+        // Platform: gInventory.findCategoryUUIDForType(FT_CURRENT_OUTFIT)
+        return UUID.fromString("00000000-0000-0000-0000-000000000000")
+    }
+    fun getCategory(id: UUID): Any? {
+        // Platform: gInventory.getCategory($id)
+        return null
+    }
+    fun getItem(id: UUID): Any? {
+        // Platform: gInventory.getItem($id)
+        return null
+    }
+    fun getAssetType(item: Any): InventoryAssetType {
+        // Platform: item->getType() mapped to InventoryAssetType
+        return InventoryAssetType.OBJECT
+    }
+    fun isItemWorn(id: UUID): Boolean {
+        // Platform: get_is_item_worn($id)
+        return false
+    }
+    fun isCategoryComplete(id: UUID): Boolean {
+        // Platform: gInventory.isCategoryComplete($id)
+        return false
+    }
+    fun fetchCategory(id: UUID) {
+        // Platform: category->fetch()
+    }
+    fun addObserver(observer: Any?) {
+        // Platform: gInventory.addObserver(observer)
+    }
+    fun observeCategory(id: UUID, cb: () -> Unit) {
+        // Platform: mCategoriesObserver->addCategory($id, cb)
+    }
+    fun createNewCategory(parentId: UUID, type: FolderType, name: String, cb: (UUID) -> Unit) {
+        // Platform: gInventory.createNewCategory(parentId, FT_NONE, "$name", cb)
+    }
+    fun linkInventoryObject(destFolderId: UUID, itemId: UUID) {
+        // Platform: link_inventory_object(destFolderId, itemId, nullptr)
+    }
+    fun removeInventoryItem(id: UUID) {
+        // Platform: remove_inventory_item($id, nullptr)
+    }
 }
 
 object AppearanceMgr {
-    fun removeItemsFromAvatar(ids: List<UUID>): Unit =
-        TODO("Platform: LLAppearanceMgr::instance().removeItemsFromAvatar(ids)")
-    fun canAddWearables(ids: List<UUID>): Boolean =
-        TODO("Platform: LLAppearanceMgr::instance().canAddWearables(ids)")
-    fun wearMultiple(ids: List<UUID>, replace: Boolean): Unit =
-        TODO("Platform: wear_multiple(ids, $replace)")
+    fun removeItemsFromAvatar(ids: List<UUID>) {
+        // Platform: LLAppearanceMgr::instance().removeItemsFromAvatar(ids)
+    }
+    fun canAddWearables(ids: List<UUID>): Boolean {
+        // Platform: LLAppearanceMgr::instance().canAddWearables(ids)
+        return false
+    }
+    fun wearMultiple(ids: List<UUID>, replace: Boolean) {
+        // Platform: wear_multiple(ids, $replace)
+    }
 }
 
 object RlvActions {
-    fun canRemove(item: Any): Boolean =
-        TODO("Platform: !RlvActions::isRlvEnabled() || gRlvWearableLocks.canRemove(item)")
-    fun canDetach(item: Any): Boolean =
-        TODO("Platform: !RlvActions::isRlvEnabled() || gRlvAttachmentLocks.canDetach(item)")
-    fun canWearReplace(item: Any): Boolean =
-        TODO("Platform: !RlvActions::isRlvEnabled() || (gRlvWearableLocks.canWear(item) & RLV_WEAR_REPLACE) == RLV_WEAR_REPLACE")
-    fun canWearAdd(item: Any): Boolean =
-        TODO("Platform: !RlvActions::isRlvEnabled() || (gRlvWearableLocks.canWear(item) & RLV_WEAR_ADD) == RLV_WEAR_ADD")
-    fun canAttachAdd(item: Any): Boolean =
-        TODO("Platform: !RlvActions::isRlvEnabled() || (gRlvAttachmentLocks.canAttach(item) & RLV_WEAR_ADD) == RLV_WEAR_ADD")
+    fun canRemove(item: Any): Boolean {
+        // Platform: !RlvActions::isRlvEnabled() || gRlvWearableLocks.canRemove(item)
+        return false
+    }
+    fun canDetach(item: Any): Boolean {
+        // Platform: !RlvActions::isRlvEnabled() || gRlvAttachmentLocks.canDetach(item)
+        return false
+    }
+    fun canWearReplace(item: Any): Boolean {
+        // Platform: !RlvActions::isRlvEnabled() || (gRlvWearableLocks.canWear(item) & RLV_WEAR_REPLACE) == RLV_WEAR_REPLACE
+        return false
+    }
+    fun canWearAdd(item: Any): Boolean {
+        // Platform: !RlvActions::isRlvEnabled() || (gRlvWearableLocks.canWear(item) & RLV_WEAR_ADD) == RLV_WEAR_ADD
+        return false
+    }
+    fun canAttachAdd(item: Any): Boolean {
+        // Platform: !RlvActions::isRlvEnabled() || (gRlvAttachmentLocks.canAttach(item) & RLV_WEAR_ADD) == RLV_WEAR_ADD
+        return false
+    }
 }

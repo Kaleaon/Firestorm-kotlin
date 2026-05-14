@@ -46,7 +46,7 @@ class FloaterInspect(key: String) : Floater(key) {
     private var textureVramMemory: UInt = 0u
 
     fun postBuild(): Boolean {
-        TODO("APR: bind owner/creator profile buttons and object-list selection callback")
+        // APR: bind owner/creator profile buttons and object-list selection callback
         registerColumnConfigCallback()
         refresh()
         return true

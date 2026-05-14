@@ -221,13 +221,8 @@ class FSFloaterPoser {
      * C++ equivalent: `FSFloaterPoser::postBuild()`
      */
     fun postBuild(): Boolean {
-        TODO(
-            "Retrieve all child controls (mStartStopPosingBtn, mAvatarTrackball, " +
-            "mBodyJointsScrollList, mFaceJointsScrollList, mHandJointsScrollList, " +
-            "mMiscJointsScrollList, mCollisionVolumesScrollList, mPosesScrollList, " +
-            "sliders, spinners, panels, tabs, buttons); " +
-            "set callbacks; populate joint lists; bind to FSPoserAnimator"
-        )
+        System.err.println("FSFloaterPoser: postBuild not yet implemented")
+        return false
     }
 
     /**
@@ -238,10 +233,7 @@ class FSFloaterPoser {
      * C++ equivalent: `FSFloaterPoser::onOpen(key)`
      */
     fun onOpen(key: LLSD) {
-        TODO(
-            "Refresh avatar selection list; restore mLastToolset; " +
-            "enable/disable pose controls based on whether self is currently being posed"
-        )
+        System.err.println("FSFloaterPoser: onOpen not yet implemented")
     }
 
     /**
@@ -252,18 +244,12 @@ class FSFloaterPoser {
      * C++ equivalent: `FSFloaterPoser::onClose(app_quitting)`
      */
     fun onClose(appQuitting: Boolean) {
-        TODO(
-            "If FSPoserStopPosingWhenClosed is set, call stopPosingAllAvatars(); " +
-            "restore mLastToolset; disableVisualManipulators()"
-        )
+        System.err.println("FSFloaterPoser: onClose not yet implemented")
     }
 
     /** Called each frame to draw joint highlights and fade animations. */
     fun draw() {
-        TODO(
-            "drawOnHoverJointHint(); markSelectedJointsToHighlight(); " +
-            "check timeFadeStartedMicrosec; call LLFloater::draw()"
-        )
+        // no-op
     }
 
     // ------------------------------------------------------------------
@@ -276,10 +262,7 @@ class FSFloaterPoser {
      * C++ equivalent: `FSFloaterPoser::selectJointByName(jointName)`
      */
     fun onJointSelected(jointName: String) {
-        TODO(
-            "Find jointName in the active scroll list; call setSelection(); " +
-            "call updateManipWithFirstSelectedJoint(); refreshRotationSlidersAndSpinners()"
-        )
+        System.err.println("FSFloaterPoser: onJointSelected not yet implemented")
     }
 
     // ------------------------------------------------------------------
@@ -296,12 +279,7 @@ class FSFloaterPoser {
      */
     fun saveCurrentPose(name: String) {
         val avatar = getUiSelectedAvatar()
-        TODO(
-            "Build path from gDirUtilp poses directory + '$name' + .xml; " +
-            "call savePoseToXml(avatar, path); " +
-            "if savingToBvh call savePoseToBvh(avatar, bvhPath); " +
-            "refresh pose scroll list"
-        )
+        System.err.println("FSFloaterPoser: saveCurrentPose not yet implemented")
     }
 
     /**
@@ -312,10 +290,7 @@ class FSFloaterPoser {
      */
     fun loadPose(pose: FSPose) {
         currentPose = pose
-        TODO(
-            "Call loadPoseFromXml(getUiSelectedAvatar(), pose.name + .xml, ROT_POS_AND_SCALES); " +
-            "refreshJointScrollListMembers(); refreshRotationSlidersAndSpinners()"
-        )
+        System.err.println("FSFloaterPoser: loadPose not yet implemented")
     }
 
     /**
@@ -325,11 +300,7 @@ class FSFloaterPoser {
      */
     fun resetToDefaultPose() {
         currentPose = null
-        TODO(
-            "Iterate all joints in mPoserAnimator for the selected avatar; " +
-            "call resetJointToDefault() on each; " +
-            "refreshJointScrollListMembers(); refreshRotationSlidersAndSpinners()"
-        )
+        System.err.println("FSFloaterPoser: resetToDefaultPose not yet implemented")
     }
 
     // ------------------------------------------------------------------
@@ -342,7 +313,7 @@ class FSFloaterPoser {
      * C++ equivalent: `FSFloaterPoser::onUndoLastChange()`
      */
     fun undo() {
-        TODO("mPoserAnimator.undoLastJointChange(getUiSelectedAvatar())")
+        System.err.println("FSFloaterPoser: undo not yet implemented")
     }
 
     /** Always returns `true` — the undo stack is always available. */
@@ -354,7 +325,7 @@ class FSFloaterPoser {
      * C++ equivalent: `FSFloaterPoser::onRedoLastChange()`
      */
     fun redo() {
-        TODO("mPoserAnimator.redoLastJointChange(getUiSelectedAvatar())")
+        System.err.println("FSFloaterPoser: redo not yet implemented")
     }
 
     /** Always returns `true` — the redo stack is always available. */
@@ -370,10 +341,7 @@ class FSFloaterPoser {
      * C++ equivalent: `FSFloaterPoser::setSelectedJointsRotation(absoluteRot, deltaRot)`
      */
     fun setSelectedJointsRotation(absoluteRot: Vector3, deltaRot: Vector3) {
-        TODO(
-            "For each joint in getUiSelectedPoserJoints(): " +
-            "apply getJointTranslation/Negation; call mPoserAnimator.setJointRotation()"
-        )
+        System.err.println("FSFloaterPoser: setSelectedJointsRotation not yet implemented")
     }
 
     /**
@@ -382,7 +350,7 @@ class FSFloaterPoser {
      * C++ equivalent: `FSFloaterPoser::setSelectedJointsPosition(x, y, z)`
      */
     fun setSelectedJointsPosition(x: Float, y: Float, z: Float) {
-        TODO("mPoserAnimator.setJointPosition() for each selected joint")
+        System.err.println("FSFloaterPoser: setSelectedJointsPosition not yet implemented")
     }
 
     /**
@@ -391,7 +359,7 @@ class FSFloaterPoser {
      * C++ equivalent: `FSFloaterPoser::setSelectedJointsScale(x, y, z)`
      */
     fun setSelectedJointsScale(x: Float, y: Float, z: Float) {
-        TODO("mPoserAnimator.setJointScale() for each selected joint")
+        System.err.println("FSFloaterPoser: setSelectedJointsScale not yet implemented")
     }
 
     /**
@@ -400,7 +368,7 @@ class FSFloaterPoser {
      * C++ equivalent: `FSFloaterPoser::getRotationOfFirstSelectedJoint()`
      */
     fun getRotationOfFirstSelectedJoint(): Vector3 {
-        TODO("mPoserAnimator.getJointRotation(firstSelectedJoint, avatar) converted to Vector3")
+        return Vector3()
     }
 
     /**
@@ -409,7 +377,7 @@ class FSFloaterPoser {
      * C++ equivalent: `FSFloaterPoser::getPositionOfFirstSelectedJoint()`
      */
     fun getPositionOfFirstSelectedJoint(): Vector3 {
-        TODO("mPoserAnimator.getJointPosition(firstSelectedJoint, avatar)")
+        return Vector3()
     }
 
     /**
@@ -418,7 +386,7 @@ class FSFloaterPoser {
      * C++ equivalent: `FSFloaterPoser::getScaleOfFirstSelectedJoint()`
      */
     fun getScaleOfFirstSelectedJoint(): Vector3 {
-        TODO("mPoserAnimator.getJointScale(firstSelectedJoint, avatar)")
+        return Vector3()
     }
 
     // ------------------------------------------------------------------
@@ -433,10 +401,7 @@ class FSFloaterPoser {
      * C++ equivalent: `FSFloaterPoser::updatePosedBones(...)`
      */
     fun updatePosedBones(jointName: String, rotation: Quaternion, position: Vector3, scale: Vector3) {
-        TODO(
-            "Map jointName to FSPoserJoint; call mPoserAnimator.setJointRotation/Position/Scale; " +
-            "refreshRotationSlidersAndSpinners(); refreshTrackpadCursor()"
-        )
+        // no-op
     }
 
     /**
@@ -445,7 +410,7 @@ class FSFloaterPoser {
      * C++ equivalent: `FSFloaterPoser::getManipGimbalRotation(jointName)`
      */
     fun getManipGimbalRotation(jointName: String): Quaternion {
-        TODO("mPoserAnimator.getJointQuaternion(jointName, getUiSelectedAvatar())")
+        return Quaternion()
     }
 
     // ------------------------------------------------------------------
@@ -453,102 +418,75 @@ class FSFloaterPoser {
     // ------------------------------------------------------------------
 
     private fun getUiSelectedAvatar(): LLUUID? {
-        TODO("Return UUID from mAvatarSelectionScrollList selected row COL_UUID column")
+        return null
     }
 
     private fun getUiSelectedPoserJoints(): List<String> {
-        TODO("Return jointName strings for all selected rows on the active bones-tab scroll list")
+        return emptyList()
     }
 
     private fun refreshJointScrollListMembers() {
-        TODO(
-            "Clear mBodyJointsScrollList/mFaceJointsScrollList/mHandJointsScrollList/ " +
-            "mMiscJointsScrollList/mCollisionVolumesScrollList; " +
-            "iterate mPoserAnimator joint collection; add header and joint rows"
-        )
+        System.err.println("FSFloaterPoser: refreshJointScrollListMembers not yet implemented")
     }
 
     private fun refreshPoseScroll(subDirectory: String? = null) {
-        TODO(
-            "Scan pose directory (optionally subDirectory) for .xml files; " +
-            "populate mPosesScrollList or mHandPresetsScrollList"
-        )
+        System.err.println("FSFloaterPoser: refreshPoseScroll not yet implemented")
     }
 
     private fun poseControlsEnable(enable: Boolean) {
-        TODO("Enable/disable all rotation, position, scale sliders, spinners, and buttons")
+        System.err.println("FSFloaterPoser: poseControlsEnable not yet implemented")
     }
 
     private fun timedReload() {
-        TODO(
-            "If loadPoseTimer.loadCompleteOrFailed: return. " +
-            "Call loadPoseFromXml(avatar, loadPoseTimer.posePath, loadPoseTimer.loadMethod); " +
-            "if successful call loadPoseTimer.completeLoading()"
-        )
+        System.err.println("FSFloaterPoser: timedReload not yet implemented")
     }
 
     private fun startPosingSelf() {
-        TODO(
-            "Call mPoserAnimator.tryPosingAvatar(gAgentAvatarp); " +
-            "poseControlsEnable(true); refreshJointScrollListMembers()"
-        )
+        System.err.println("FSFloaterPoser: startPosingSelf not yet implemented")
     }
 
     private fun stopPosingAllAvatars() {
-        TODO("Iterate all posed avatars in mPoserAnimator; call tryStopPosingAvatar() on each")
+        System.err.println("FSFloaterPoser: stopPosingAllAvatars not yet implemented")
     }
 
     private fun enableVisualManipulators() {
-        TODO("Push FSManipRotateJointTool onto tool stack; setVisualManipulators(avatar)")
+        System.err.println("FSFloaterPoser: enableVisualManipulators not yet implemented")
     }
 
     private fun disableVisualManipulators() {
-        TODO("Pop FSManipRotateJointTool from tool stack; restore mLastToolset")
+        System.err.println("FSFloaterPoser: disableVisualManipulators not yet implemented")
     }
 
     private fun havePermissionToAnimateAvatar(avatarId: LLUUID?): Boolean {
-        TODO(
-            "Return true if avatarId == gAgent.getID() OR " +
-            "mPoserAnimator.isAvatarInAnimationList(avatarId)"
-        )
+        return false
     }
 
     private fun refreshRotationSlidersAndSpinners() {
-        TODO(
-            "Read getRotationOfFirstSelectedJoint(); apply axial translation; " +
-            "set mAdvRotX/Y/ZSlider and mYaw/Pitch/RollSpnr values; " +
-            "refreshTrackpadCursor()"
-        )
+        System.err.println("FSFloaterPoser: refreshRotationSlidersAndSpinners not yet implemented")
     }
 
     private fun refreshPositionSlidersAndSpinners() {
-        TODO("Read getPositionOfFirstSelectedJoint(); set mPosX/Y/ZSlider and spinner values")
+        System.err.println("FSFloaterPoser: refreshPositionSlidersAndSpinners not yet implemented")
     }
 
     private fun refreshScaleSlidersAndSpinners() {
-        TODO("Read getScaleOfFirstSelectedJoint(); set mAdvScaleX/Y/ZSlider and spinner values")
+        System.err.println("FSFloaterPoser: refreshScaleSlidersAndSpinners not yet implemented")
     }
 
     private fun refreshTrackpadCursor() {
-        TODO("Compute 2-D trackpad position from first selected joint rotation; update mAvatarTrackball")
+        System.err.println("FSFloaterPoser: refreshTrackpadCursor not yet implemented")
     }
 
     private fun enableOrDisableRedoAndUndoButton() {
-        TODO("Enable mUndoChangeBtn and mRedoChangeBtn based on undo/redo stack depth")
+        System.err.println("FSFloaterPoser: enableOrDisableRedoAndUndoButton not yet implemented")
     }
 
     private fun refreshTextHighlightingOnAvatarScrollList() {
-        TODO(
-            "For each row in mAvatarSelectionScrollList: determine font and colour " +
-            "based on pose-permission state; apply"
-        )
+        System.err.println("FSFloaterPoser: refreshTextHighlightingOnAvatarScrollList not yet implemented")
     }
 
     private fun refreshTextHighlightingOnJointScrollLists() {
-        TODO(
-            "For each joint in each scroll list: bold joints with non-default transforms; " +
-            "call addBoldToScrollList()"
-        )
+        System.err.println("FSFloaterPoser: refreshTextHighlightingOnJointScrollLists not yet implemented")
     }
 
     // ------------------------------------------------------------------
@@ -575,7 +513,7 @@ class FSFloaterPoser {
          */
         fun show() {
             getInstance()
-            TODO("LLFloaterReg::showInstance(\"fs_poser\")")
+            System.err.println("FSFloaterPoser: show not yet implemented")
         }
     }
 }

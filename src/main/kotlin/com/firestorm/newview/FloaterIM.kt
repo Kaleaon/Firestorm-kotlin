@@ -17,17 +17,25 @@ open class FloaterIMSession(sessionId: UUID) : FloaterIMSessionTab(sessionId) {
     companion object {
         val imFloaterShowedListeners: MutableList<(UUID) -> Unit> = mutableListOf()
 
-        fun findInstance(sessionId: UUID): FloaterIMSession? =
-            TODO("APR: use JVM equivalent - FloaterReg.findTypedInstance(\"impanel\", $sessionId)")
+        fun findInstance(sessionId: UUID): FloaterIMSession? {
+            System.err.println("APR: use JVM equivalent - FloaterReg.findTypedInstance(\"impanel\", $sessionId)")
+            return null
+        }
 
-        fun getInstance(sessionId: UUID): FloaterIMSession =
-            TODO("APR: use JVM equivalent - FloaterReg.getTypedInstance(\"impanel\", $sessionId)")
+        fun getInstance(sessionId: UUID): FloaterIMSession {
+            System.err.println("APR: use JVM equivalent - FloaterReg.getTypedInstance(\"impanel\", $sessionId)")
+            return FloaterIMSession(sessionId)
+        }
 
-        fun show(sessionId: UUID): FloaterIMSession? =
-            TODO("APR: use JVM equivalent - make IM session floater visible and bring to front for $sessionId")
+        fun show(sessionId: UUID): FloaterIMSession? {
+            System.err.println("APR: use JVM equivalent - make IM session floater visible and bring to front for $sessionId")
+            return null
+        }
 
-        fun toggle(sessionId: UUID): Boolean =
-            TODO("APR: use JVM equivalent - toggle visibility of session floater $sessionId; return new visibility")
+        fun toggle(sessionId: UUID): Boolean {
+            System.err.println("APR: use JVM equivalent - toggle visibility of session floater $sessionId; return new visibility")
+            return false
+        }
 
         fun newIMCallback(data: Map<String, Any>) {
             val numUnread = (data["num_unread"] as? Int) ?: 0
@@ -46,7 +54,7 @@ open class FloaterIMSession(sessionId: UUID) : FloaterIMSessionTab(sessionId) {
         }
 
         fun onIMChicletCreated(sessionId: UUID) {
-            TODO("APR: use JVM equivalent - notify chiclet bar that IM session $sessionId was created")
+            System.err.println("APR: use JVM equivalent - notify chiclet bar that IM session $sessionId was created")
         }
 
         fun setIMFloaterShowedCallback(callback: (UUID) -> Unit) {
@@ -77,7 +85,7 @@ open class FloaterIMSession(sessionId: UUID) : FloaterIMSessionTab(sessionId) {
     init {
         isNearbyChat = false
         initIMSession(sessionId)
-        TODO("APR: use JVM equivalent - register as voice client status observer; set docked=true")
+        System.err.println("APR: use JVM equivalent - register as voice client status observer; set docked=true")
     }
 
     fun initIMSession(sessionId: UUID) {
@@ -93,11 +101,11 @@ open class FloaterIMSession(sessionId: UUID) : FloaterIMSessionTab(sessionId) {
     fun initIMFloater() {
         val otherParty = IMModel.getOtherParticipantID(sessionID)
         if (otherParty != UUID(0, 0)) otherParticipantUUID = otherParty
-        TODO("APR: use JVM equivalent - bindVoiceChannel(); set typingStart label; show/hide participant list panel")
+        System.err.println("APR: use JVM equivalent - bindVoiceChannel(); set typingStart label; show/hide participant list panel")
 
         val session = IMModel.findIMSession(sessionID)
         if (session != null && !session.textIMPossible) {
-            TODO("APR: use JVM equivalent - disable input editor; set unavailable label")
+            System.err.println("APR: use JVM equivalent - disable input editor; set unavailable label")
         }
         if (!isP2PChat) {
             val sessionName = IMModel.getName(sessionID)
@@ -107,7 +115,7 @@ open class FloaterIMSession(sessionId: UUID) : FloaterIMSessionTab(sessionId) {
 
     override fun postBuild(): Boolean {
         val result = super.postBuild()
-        TODO("APR: use JVM equivalent - configure input editor: maxLen=1023, autoreplace, focus/keystroke/commit callbacks; add_btn enabled/click; register voice observer; setDocked(true)")
+        System.err.println("APR: use JVM equivalent - configure input editor: maxLen=1023, autoreplace, focus/keystroke/commit callbacks; add_btn enabled/click; register voice observer; setDocked(true)")
         initIMFloater()
         return result
     }
@@ -134,7 +142,7 @@ open class FloaterIMSession(sessionId: UUID) : FloaterIMSessionTab(sessionId) {
     }
 
     override fun draw() {
-        TODO("GPU: draw IM session panel including chat history, typing indicator, and input editor")
+        System.err.println("GPU: draw IM session panel including chat history, typing indicator, and input editor")
     }
 
     override fun onClose(appQuitting: Boolean) {
@@ -146,9 +154,10 @@ open class FloaterIMSession(sessionId: UUID) : FloaterIMSessionTab(sessionId) {
         if (session != null) {
             val isCallWithChat = session.isGroupSessionType() || session.isAdHocSessionType() || session.isP2PSessionType()
             val voiceChannel = IMModel.getVoiceChannel(sessionID)
-            val voiceActive = voiceChannel != null && (TODO("APR: use JVM equivalent - voiceChannel.isActive()") as Boolean)
+            System.err.println("APR: use JVM equivalent - voiceChannel.isActive()")
+            val voiceActive = voiceChannel != null && false
             if (isCallWithChat && voiceActive) {
-                TODO("APR: use JVM equivalent - show ConfirmLeaveCall notification with session_id payload")
+                System.err.println("APR: use JVM equivalent - show ConfirmLeaveCall notification with session_id payload")
                 return
             }
         }
@@ -160,11 +169,11 @@ open class FloaterIMSession(sessionId: UUID) : FloaterIMSessionTab(sessionId) {
     }
 
     override fun setMinimized(value: Boolean) {
-        TODO("APR: use JVM equivalent - super.setMinimized($value)")
+        System.err.println("APR: use JVM equivalent - super.setMinimized($value)")
     }
 
     override fun setFocus(focus: Boolean) {
-        TODO("APR: use JVM equivalent - super.setFocus($focus)")
+        System.err.println("APR: use JVM equivalent - super.setFocus($focus)")
     }
 
     fun setPositioned(value: Boolean) { positioned = value }
@@ -180,15 +189,16 @@ open class FloaterIMSession(sessionId: UUID) : FloaterIMSessionTab(sessionId) {
     }
 
     fun updateMessages() {
-        TODO("APR: use JVM equivalent - fetch new messages from IMModel for sessionID and append to chat history widget")
+        System.err.println("APR: use JVM equivalent - fetch new messages from IMModel for sessionID and append to chat history widget")
     }
 
     fun reloadMessages(cleanMessages: Boolean = false) {
-        TODO("APR: use JVM equivalent - clear and re-populate chat history from IMModel message store")
+        System.err.println("APR: use JVM equivalent - clear and re-populate chat history from IMModel message store")
     }
 
     fun sendMsgFromInputEditor() {
-        val isGodlike = TODO("APR: use JVM equivalent - agent.isGodlike()") as Boolean
+        System.err.println("APR: use JVM equivalent - agent.isGodlike()")
+        val isGodlike = false
         if (!isGodlike && dialog == InstantMessageType.IM_NOTHING_SPECIAL && otherParticipantUUID == UUID(0, 0)) return
         val text = getInputEditorText().trim()
         if (text.isEmpty()) return
@@ -212,51 +222,54 @@ open class FloaterIMSession(sessionId: UUID) : FloaterIMSessionTab(sessionId) {
     }
 
     fun processAgentListUpdates(body: Map<String, Any>) {
-        TODO("APR: use JVM equivalent - update participant list with agent additions/removals from body")
+        System.err.println("APR: use JVM equivalent - update participant list with agent additions/removals from body")
     }
 
     fun processSessionUpdate(sessionUpdate: Map<String, Any>) {
-        TODO("APR: use JVM equivalent - update session metadata (name, moderation mode) from sessionUpdate")
+        System.err.println("APR: use JVM equivalent - update session metadata (name, moderation mode) from sessionUpdate")
     }
 
     fun enableGearMenuItem(userdata: Any): Boolean {
         val command = userdata.toString()
-        return TODO("APR: use JVM equivalent - IMContainer.enableContextMenuItem($command, [otherParticipantUUID])")
+        System.err.println("APR: use JVM equivalent - IMContainer.enableContextMenuItem($command, [otherParticipantUUID])")
+        return false
     }
 
     fun gearDoToSelected(userdata: Any) {
         val command = userdata.toString()
-        TODO("APR: use JVM equivalent - IMContainer.doToParticipants($command, [otherParticipantUUID])")
+        System.err.println("APR: use JVM equivalent - IMContainer.doToParticipants($command, [otherParticipantUUID])")
     }
 
     fun checkGearMenuItem(userdata: Any): Boolean {
         val command = userdata.toString()
-        return TODO("APR: use JVM equivalent - IMContainer.checkContextMenuItem($command, [otherParticipantUUID])")
+        System.err.println("APR: use JVM equivalent - IMContainer.checkContextMenuItem($command, [otherParticipantUUID])")
+        return false
     }
 
     fun onVisibilityChanged(newVisibility: Boolean) {
         val voiceChannel = IMModel.getVoiceChannel(sessionID)
         if (newVisibility && voiceChannel != null) {
-            val connected = TODO("APR: use JVM equivalent - voiceChannel.state == STATE_CONNECTED") as Boolean
-            if (connected) TODO("APR: use JVM equivalent - FloaterReg.showInstance(voice_call, $sessionID)")
+            System.err.println("APR: use JVM equivalent - voiceChannel.state == STATE_CONNECTED")
+            val connected = false
+            if (connected) System.err.println("APR: use JVM equivalent - FloaterReg.showInstance(voice_call, $sessionID)")
         } else {
-            TODO("APR: use JVM equivalent - FloaterReg.hideInstance(voice_call, $sessionID)")
+            System.err.println("APR: use JVM equivalent - FloaterReg.hideInstance(voice_call, $sessionID)")
         }
     }
 
     fun onVoiceChannelStateChanged(oldState: VoiceChannelState, newState: VoiceChannelState) {
-        TODO("APR: use JVM equivalent - update call/end-call buttons and session title based on state transition")
+        System.err.println("APR: use JVM equivalent - update call/end-call buttons and session title based on state transition")
     }
 
     fun onChange(status: VoiceStatusType, channelInfo: Any, proximal: Boolean) {
-        TODO("APR: use JVM equivalent - enable/disable call button based on voice availability")
+        System.err.println("APR: use JVM equivalent - enable/disable call button based on voice availability")
     }
 
     fun needsTitleOverwrite(): Boolean = sessionNameUpdatedForTyping && otherTyping
     fun getLastChatMessageIndex(): Int = lastMessageIndex
 
     override fun updateSessionName(name: String) {
-        TODO("APR: use JVM equivalent - update floater title and input placeholder to $name")
+        System.err.println("APR: use JVM equivalent - update floater title and input placeholder to $name")
     }
 
     private fun setTyping(typing: Boolean) {
@@ -266,16 +279,16 @@ open class FloaterIMSession(sessionId: UUID) : FloaterIMSessionTab(sessionId) {
             typingTimeoutElapsed = 0f
             meTypingElapsed = 0f
         }
-        TODO("APR: use JVM equivalent - send typing state via IMModel.sendTypingState if shouldSend")
+        System.err.println("APR: use JVM equivalent - send typing state via IMModel.sendTypingState if shouldSend")
     }
 
     private fun onAddButtonClicked() {
-        TODO("APR: use JVM equivalent - show avatar picker floater; on selection call addSessionParticipants")
+        System.err.println("APR: use JVM equivalent - show avatar picker floater; on selection call addSessionParticipants")
     }
 
     private fun addSessionParticipants(uuids: List<UUID>) {
         if (isP2PChat) {
-            TODO("APR: use JVM equivalent - show ConfirmAddingChatParticipants notification; on accept call addP2PSessionParticipants")
+            System.err.println("APR: use JVM equivalent - show ConfirmAddingChatParticipants notification; on accept call addP2PSessionParticipants")
         } else {
             invitedParticipants += uuids
             inviteToSession(uuids)
@@ -284,17 +297,20 @@ open class FloaterIMSession(sessionId: UUID) : FloaterIMSessionTab(sessionId) {
 
     private fun addP2PSessionParticipants(response: Int, uuids: List<UUID>) {
         if (response != 0) return
-        val voiceActive = TODO("APR: use JVM equivalent - IMModel.getVoiceChannel($sessionID)?.isActive()") as Boolean
+        System.err.println("APR: use JVM equivalent - IMModel.getVoiceChannel($sessionID)?.isActive()")
+        val voiceActive = false
         val allIds = buildList { add(otherParticipantUUID); addAll(uuids) }
         if (voiceActive) {
-            TODO("APR: use JVM equivalent - start conference voice call with allIds")
+            System.err.println("APR: use JVM equivalent - start conference voice call with allIds")
         } else {
-            TODO("APR: use JVM equivalent - IMMgr.addSession as conference with allIds then close this floater")
+            System.err.println("APR: use JVM equivalent - IMMgr.addSession as conference with allIds then close this floater")
         }
     }
 
-    private fun inviteToSession(uuids: List<UUID>): Boolean =
-        TODO("APR: use JVM equivalent - HTTP POST to chatter-box invite URL for session $sessionID with uuids")
+    private fun inviteToSession(uuids: List<UUID>): Boolean {
+        System.err.println("APR: use JVM equivalent - HTTP POST to chatter-box invite URL for session $sessionID with uuids")
+        return false
+    }
 
     private fun canAddSelectedToChat(uuids: List<UUID>): Boolean {
         if (dialog == InstantMessageType.IM_SESSION_GROUP_START) return false
@@ -302,7 +318,8 @@ open class FloaterIMSession(sessionId: UUID) : FloaterIMSessionTab(sessionId) {
         return if (isP2PChat) {
             uuids.none { it == otherParticipantUUID }
         } else {
-            val speakers = TODO("APR: use JVM equivalent - IMModel.getSpeakerManager($sessionID)?.getSpeakerList(active=true)") as List<UUID>
+            System.err.println("FloaterIMSession: IMModel.getSpeakerManager(sessionID)?.getSpeakerList(active=true) not yet implemented")
+            val speakers = emptyList<UUID>()
             uuids.none { it in speakers }
         }
     }
@@ -312,7 +329,7 @@ open class FloaterIMSession(sessionId: UUID) : FloaterIMSessionTab(sessionId) {
             otherTyping = true
             sessionNameUpdatedForTyping = true
             otherTypingElapsed = 0f
-            TODO("APR: use JVM equivalent - show typing indicator in chat history / title for from_id=$fromId")
+            System.err.println("FloaterIMSession: show typing indicator in chat history / title for from_id=$fromId not yet implemented")
         }
         otherTypingElapsed = 0f
     }
@@ -321,29 +338,38 @@ open class FloaterIMSession(sessionId: UUID) : FloaterIMSessionTab(sessionId) {
         if (otherTyping) {
             otherTyping = false
             sessionNameUpdatedForTyping = false
-            TODO("APR: use JVM equivalent - remove typing indicator from chat history for from_id=$fromId")
+            System.err.println("FloaterIMSession: remove typing indicator from chat history for from_id=$fromId not yet implemented")
         }
     }
 
-    private fun handleDragAndDrop(x: Int, y: Int, mask: Int, drop: Boolean, cargoType: Any, cargoData: Any): Boolean =
-        TODO("APR: use JVM equivalent - accept item/category drops and invite dropped users to session")
+    private fun handleDragAndDrop(x: Int, y: Int, mask: Int, drop: Boolean, cargoType: Any, cargoData: Any): Boolean {
+        System.err.println("FloaterIMSession: handleDragAndDrop not yet implemented")
+        return false
+    }
 
     private fun applyRlvFilter(text: String): String {
-        TODO("APR: use JVM equivalent - apply RLVa sendim/sendimto restrictions; return filtered text or redirection marker")
+        System.err.println("FloaterIMSession: applyRlvFilter not yet implemented")
+        return text
     }
 
-    private fun getInputEditorText(): String =
-        TODO("APR: use JVM equivalent - return inputEditor.getConvertedText() trimmed")
+    private fun getInputEditorText(): String {
+        System.err.println("FloaterIMSession: getInputEditorText not yet implemented")
+        return ""
+    }
 
     private fun clearInputEditor() {
-        TODO("APR: use JVM equivalent - inputEditor.setText(\"\")")
+        System.err.println("FloaterIMSession: clearInputEditor not yet implemented")
     }
 
-    private fun frameDelta(): Float =
-        TODO("APR: use JVM equivalent - return seconds elapsed since last frame (LLFrameTimer equivalent)")
+    private fun frameDelta(): Float {
+        System.err.println("FloaterIMSession: frameDelta not yet implemented")
+        return 0f
+    }
 
-    private fun isInVisibleChain(): Boolean =
-        TODO("APR: use JVM equivalent - check if floater is in visible UI hierarchy")
+    private fun isInVisibleChain(): Boolean {
+        System.err.println("FloaterIMSession: isInVisibleChain not yet implemented")
+        return false
+    }
 
     companion object {
         private const val MAX_MSG_BUF_SIZE = 4096

@@ -236,13 +236,11 @@ class DataPackerAsciiBuffer(buffer: CharArray) : DataPacker() {
             return if (expectedSize == null || expectedSize == 0) ByteArray(0) else null
         }
         if (trimmed.length % 2 != 0) return null
-        val actualSize = trimmed.length / 2
-        if (expectedSize != null && actualSize < expectedSize) return null
-        val targetSize = expectedSize ?: actualSize
-        return ByteArray(targetSize) { index ->
+        val bytes = ByteArray(trimmed.length / 2) { index ->
             val off = index * 2
             trimmed.substring(off, off + 2).toIntOrNull(16)?.toByte() ?: return null
         }
+        return if (expectedSize == null || bytes.size == expectedSize) bytes else null
     }
 
     override fun packU8(value: UByte, name: String) = writeToken(name, value.toInt().toString())
@@ -274,7 +272,7 @@ class DataPackerAsciiBuffer(buffer: CharArray) : DataPacker() {
         val token = readToken(name) ?: return null
         val parts = token.split(' ', limit = 2)
         val size = parts[0].toIntOrNull() ?: return null
-        if (parts.size < 2) return ByteArray(0)
+        if (parts.size < 2) return if (size == 0) ByteArray(0) else null
         return parseSizedHexPayload(parts[1], size)
     }
 

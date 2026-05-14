@@ -103,6 +103,32 @@ class LLWearableTest {
         wearable.clearModified()
         assertFalse(wearable.isModified)
     }
+
+    @Test
+    fun `importLegacyStream rejects malformed data`() {
+        val wearable = LLWearable(LLWearableType.SHIRT)
+        wearable.addVisualParam(LLVisualParam(VisualParamInfo(1, "sleeve", 0, 0f, 1f, 0f)))
+
+        assertFalse(
+            wearable.importLegacyStream(
+                """
+                LLWearable version 22
+                parameters 1
+                1 nope
+                """.trimIndent()
+            )
+        )
+
+        assertFalse(
+            wearable.importLegacyStream(
+                """
+                LLWearable version 22
+                textures 1
+                0 not-a-uuid
+                """.trimIndent()
+            )
+        )
+    }
 }
 
 class LLPolyMorphTargetTest {
@@ -224,5 +250,12 @@ class LLBakedTextureTest {
         assertTrue(bake.isLocallyDirty)
         @Suppress("USELESS_IS_CHECK")
         assertTrue(bake.getBakedImage() == null)
+    }
+
+    @Test
+    fun `bake rejects invalid dimensions`() {
+        val bake = LLBakedTexture(BakedTextureIndex.HEAD)
+        assertFalse(bake.bake(0, 128))
+        assertFalse(bake.isValid())
     }
 }

@@ -1,5 +1,21 @@
 package com.firestorm.llmath
 
+import kotlin.math.abs
+import kotlin.math.acos
+import kotlin.math.asin
+import kotlin.math.atan
+import kotlin.math.atan2
+import kotlin.math.ceil
+import kotlin.math.cos
+import kotlin.math.exp
+import kotlin.math.floor
+import kotlin.math.ln
+import kotlin.math.log10
+import kotlin.math.round
+import kotlin.math.sin
+import kotlin.math.sqrt
+import kotlin.math.tan
+
 class LLCalcParser(private val variables: Map<String, Double> = emptyMap()) {
 
     private var pos = 0
@@ -99,28 +115,71 @@ class LLCalcParser(private val variables: Map<String, Double> = emptyMap()) {
         skipWs()
         if (pos < input.length && input[pos] == '(') {
             pos++
-            val arg = parseExpr()
+            val args = mutableListOf<Double>()
             skipWs()
+            if (pos < input.length && input[pos] != ')') {
+                while (true) {
+                    args += parseExpr()
+                    skipWs()
+                    if (pos < input.length && input[pos] == ',') {
+                        pos++
+                        skipWs()
+                        continue
+                    }
+                    break
+                }
+            }
             if (pos >= input.length || input[pos] != ')') throw IllegalArgumentException("Missing ')'")
             pos++
-            return when (name.lowercase()) {
-                "sqrt" -> Math.sqrt(arg)
-                "abs"  -> Math.abs(arg)
-                "sin"  -> Math.sin(arg)
-                "cos"  -> Math.cos(arg)
-                "tan"  -> Math.tan(arg)
-                "log"  -> Math.log(arg)
-                "log10" -> Math.log10(arg)
-                "floor" -> Math.floor(arg)
-                "ceil"  -> Math.ceil(arg)
-                "round" -> Math.round(arg).toDouble()
-                else -> throw IllegalArgumentException("Unknown function: $name")
-            }
+            return applyFunction(name, args)
         }
         return when (name.lowercase()) {
             "pi" -> Math.PI
             "e"  -> Math.E
             else -> variables[name] ?: throw IllegalArgumentException("Unknown variable: $name")
+        }
+    }
+
+    private fun applyFunction(name: String, args: List<Double>): Double {
+        fun unary(block: (Double) -> Double): Double {
+            require(args.size == 1) { "Function $name expects 1 argument" }
+            return block(args[0])
+        }
+
+        fun binary(block: (Double, Double) -> Double): Double {
+            require(args.size == 2) { "Function $name expects 2 arguments" }
+            return block(args[0], args[1])
+        }
+
+        fun ternary(block: (Double, Double, Double) -> Double): Double {
+            require(args.size == 3) { "Function $name expects 3 arguments" }
+            return block(args[0], args[1], args[2])
+        }
+
+        return when (name.lowercase()) {
+            "sqrt" -> unary { if (it < 0.0) Double.NaN else sqrt(it) }
+            "abs" -> unary(::abs)
+            "sin" -> unary(::sin)
+            "cos" -> unary(::cos)
+            "tan" -> unary(::tan)
+            "asin" -> unary { if (it in -1.0..1.0) asin(it) else Double.NaN }
+            "acos" -> unary { if (it in -1.0..1.0) acos(it) else Double.NaN }
+            "atan" -> unary(::atan)
+            "log" -> unary { if (it > 0.0) ln(it) else Double.NaN }
+            "log10" -> unary { if (it > 0.0) log10(it) else Double.NaN }
+            "exp" -> unary(::exp)
+            "floor" -> unary(::floor)
+            "ceil" -> unary(::ceil)
+            "round" -> unary { round(it) }
+            "min" -> binary(::minOf)
+            "max" -> binary(::maxOf)
+            "atan2" -> binary(::atan2)
+            "clamp" -> ternary { value, min, max ->
+                val lower = minOf(min, max)
+                val upper = maxOf(min, max)
+                value.coerceIn(lower, upper)
+            }
+            else -> throw IllegalArgumentException("Unknown function: $name")
         }
     }
 }

@@ -58,9 +58,16 @@ class CrashLock {
     fun isLockPresent(filename: String): Boolean = fileExists(filename)
 
     fun isProcessAlive(pid: UInt, pname: String): Boolean {
+        if (pid == 0U || pname.isBlank()) return false
+        val expectedName = File(pname).name
         return ProcessHandle.allProcesses()
             .filter { it.pid() == pid.toLong() }
-            .anyMatch { h -> h.info().command().orElse("").endsWith(pname) }
+            .anyMatch { handle ->
+                val command = handle.info().command().orElse("")
+                if (command.isBlank()) return@anyMatch false
+                val commandName = File(command).name
+                command == pname || commandName == expectedName
+            }
     }
 
     fun isWaiting(): Boolean = System.currentTimeMillis() < expiryMs

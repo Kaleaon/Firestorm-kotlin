@@ -46,4 +46,16 @@ class DataPackerAsciiBufferTest {
         val payload = reader.unpackBinaryData("empty")
         assertEquals(0, payload?.size)
     }
+
+    @Test
+    fun unpackBinaryDataRejectsMissingPayloadWhenDeclaredSizeIsNonZero() {
+        val reader = DataPackerAsciiBuffer("2\n".toCharArray())
+        assertNull(reader.unpackBinaryData("blob"))
+    }
+
+    @Test
+    fun unpackBinaryDataRejectsPayloadsLargerThanDeclaredSize() {
+        val reader = DataPackerAsciiBuffer("1 0001\n".toCharArray())
+        assertNull(reader.unpackBinaryData("blob"))
+    }
 }

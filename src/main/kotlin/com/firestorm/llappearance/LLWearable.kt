@@ -66,33 +66,31 @@ class LLWearable(
     fun importLegacyStream(data: String): Boolean {
         val lines = data.lines().map { it.trim() }.filter { it.isNotEmpty() }
         if (lines.isEmpty()) return false
+        val whitespace = Regex("\\s+")
         var i = 0
         while (i < lines.size) {
             val line = lines[i++]
             when {
                 line.startsWith("parameters ") -> {
-                    val count = line.removePrefix("parameters ").trim().toIntOrNull() ?: 0
+                    val count = line.removePrefix("parameters ").trim().toIntOrNull()?.takeIf { it >= 0 } ?: return false
                     repeat(count) {
-                        if (i < lines.size) {
-                            val parts = lines[i++].split(" ")
-                            if (parts.size >= 2) {
-                                val id = parts[0].toIntOrNull() ?: return@repeat
-                                val w = parts[1].toFloatOrNull() ?: return@repeat
-                                visualParams[id]?.setWeight(w)
-                            }
-                        }
+                        if (i >= lines.size) return false
+                        val parts = lines[i++].split(whitespace)
+                        if (parts.size < 2) return false
+                        val id = parts[0].toIntOrNull() ?: return false
+                        val w = parts[1].toFloatOrNull() ?: return false
+                        visualParams[id]?.setWeight(w)
                     }
                 }
                 line.startsWith("textures ") -> {
-                    val count = line.removePrefix("textures ").trim().toIntOrNull() ?: 0
+                    val count = line.removePrefix("textures ").trim().toIntOrNull()?.takeIf { it >= 0 } ?: return false
                     repeat(count) {
-                        if (i < lines.size) {
-                            val parts = lines[i++].split(" ")
-                            if (parts.size >= 2) {
-                                val idx = parts[0].toIntOrNull() ?: return@repeat
-                                textures[idx] = LLUUID(parts[1])
-                            }
-                        }
+                        if (i >= lines.size) return false
+                        val parts = lines[i++].split(whitespace)
+                        if (parts.size < 2) return false
+                        val idx = parts[0].toIntOrNull() ?: return false
+                        val textureId = LLUUID.fromString(parts[1]) ?: return false
+                        textures[idx] = textureId
                     }
                 }
             }

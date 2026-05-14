@@ -50,9 +50,18 @@ class LLBakedTexture(val index: BakedTextureIndex) {
     }
 
     fun bake(width: Int = 512, height: Int = 512): Boolean {
-        bakedImage = ImageRaw(width, height, 4)
+        if (width <= 0 || height <= 0) return false
+        bakedImage = ImageRaw(width, height, 4).apply {
+            clear(0, 0, 0, 0)
+            comment = if (layerList.isEmpty()) {
+                "Bake:${index.name}"
+            } else {
+                "Bake:${index.name}:${layerList.joinToString(",")}"
+            }
+        }
         isLocallyDirty = false
         needsUpdate = false
+        isUploaded = false
         resultId = LLUUID.generate()
         return true
     }

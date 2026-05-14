@@ -2,6 +2,7 @@ package com.firestorm.llcrashlogger
 
 import java.nio.file.Files
 import kotlin.test.Test
+import kotlin.test.assertFalse
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
@@ -35,5 +36,12 @@ class CrashLockTest {
         } finally {
             Files.deleteIfExists(tempLock)
         }
+    }
+
+    @Test
+    fun isProcessAliveRejectsInvalidIdentifiers() {
+        val crashLock = CrashLock()
+        assertFalse(crashLock.isProcessAlive(0u, "java"))
+        assertFalse(crashLock.isProcessAlive(ProcessHandle.current().pid().toUInt(), ""))
     }
 }

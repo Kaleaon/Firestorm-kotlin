@@ -5,15 +5,15 @@ import java.util.UUID
 val CACHE_REFRESH_TIME: Float = 2.5f
 
 fun sendParcelSelectObjects(parcelLocalId: Int, returnType: UInt, returnIds: MutableSet<UUID>? = null) {
-    TODO("APR: use JVM equivalent for LLMessageSystem::send ParcelSelectObjects")
+    System.err.println("APR: use JVM equivalent for LLMessageSystem::send ParcelSelectObjects")
 }
 
 fun sendOtherCleanTimeMessage(parcelLocalId: Int, otherCleanTime: Int) {
-    TODO("APR: use JVM equivalent for LLMessageSystem::send ParcelSetOtherCleanTime")
+    System.err.println("APR: use JVM equivalent for LLMessageSystem::send ParcelSetOtherCleanTime")
 }
 
 fun sendReturnObjectsMessage(parcelLocalId: Int, returnType: Int, ownerIds: MutableSet<UUID>? = null) {
-    TODO("APR: use JVM equivalent for LLMessageSystem::send ParcelReturnObjects")
+    System.err.println("APR: use JVM equivalent for LLMessageSystem::send ParcelReturnObjects")
 }
 
 class LLFloaterLand(seed: LLSD) : LLFloater(seed) {
@@ -253,7 +253,7 @@ class LLPanelLandGeneral(
             landSize: Int, salePrice: Int, authorizedName: String,
             callback: () -> Unit
         ) {
-            TODO("APR: use JVM equivalent for sale-change confirmation dialog")
+            System.err.println("APR: use JVM equivalent for sale-change confirmation dialog")
         }
     }
 
@@ -926,7 +926,7 @@ class LLPanelLandObjects(private val mParcel: LLParcelSelection?) : LLPanel() {
         }
 
         fun onClickRefresh(panel: LLPanelLandObjects) {
-            TODO("APR: use JVM equivalent for send_places_query to refresh parcel object owners list")
+            System.err.println("APR: use JVM equivalent for send_places_query to refresh parcel object owners list")
         }
 
         fun onDoubleClickOwner(panel: LLPanelLandObjects) {
@@ -938,7 +938,7 @@ class LLPanelLandObjects(private val mParcel: LLParcelSelection?) : LLPanel() {
         }
 
         fun onCommitList(panel: LLPanelLandObjects) {
-            TODO("APR: use JVM equivalent for parcel object list commit selection handling")
+            System.err.println("APR: use JVM equivalent for parcel object list commit selection handling")
         }
 
         fun onLostFocus(panel: LLPanelLandObjects) {
@@ -956,7 +956,7 @@ class LLPanelLandObjects(private val mParcel: LLParcelSelection?) : LLPanel() {
         }
 
         fun processParcelObjectOwnersReply(msg: LLMessageSystem) {
-            TODO("APR: use JVM equivalent for processing ParcelObjectOwnersReply network message")
+            System.err.println("APR: use JVM equivalent for processing ParcelObjectOwnersReply network message")
         }
     }
 }
@@ -1028,15 +1028,16 @@ class LLPanelLandOptions(private val mParcel: LLParcelSelection?) : LLPanel() {
     }
 
     open fun refresh() {
-        TODO("APR: use JVM equivalent for full land options panel refresh from parcel data")
+        System.err.println("APR: use JVM equivalent for full land options panel refresh from parcel data")
     }
 
     private fun refreshSearch() {
-        TODO("APR: use JVM equivalent for refreshing show-in-search checkbox and category selector")
+        System.err.println("APR: use JVM equivalent for refreshing show-in-search checkbox and category selector")
     }
 
     private fun getDirectoryFee(): Int {
-        TODO("APR: use JVM equivalent for LLAgentBenefits directory fee lookup")
+        System.err.println("APR: use JVM equivalent for LLAgentBenefits directory fee lookup")
+        return 0
     }
 
     private fun onClickTeleport() {
@@ -1047,19 +1048,19 @@ class LLPanelLandOptions(private val mParcel: LLParcelSelection?) : LLPanel() {
 
     companion object {
         fun onCommitAny(panel: LLPanelLandOptions) {
-            TODO("APR: use JVM equivalent for committing land option changes to parcel and sending update")
+            System.err.println("APR: use JVM equivalent for committing land option changes to parcel and sending update")
         }
 
         fun onClickSet(panel: LLPanelLandOptions) {
-            TODO("APR: use JVM equivalent for setting landing point to current agent position")
+            System.err.println("APR: use JVM equivalent for setting landing point to current agent position")
         }
 
         fun onClickClear(panel: LLPanelLandOptions) {
-            TODO("APR: use JVM equivalent for clearing landing point from parcel")
+            System.err.println("APR: use JVM equivalent for clearing landing point from parcel")
         }
 
         fun toggleSeeAvatars(panel: LLPanelLandOptions) {
-            TODO("APR: use JVM equivalent for toggling see-avatars parcel flag")
+            System.err.println("APR: use JVM equivalent for toggling see-avatars parcel flag")
         }
     }
 }
@@ -1130,52 +1131,52 @@ class LLPanelLandAccess(private val mParcel: LLParcelSelection?) : LLPanel() {
         return true
     }
 
-    fun refresh() { TODO("APR: use JVM equivalent for access panel refresh from parcel data") }
-    fun refreshUi() { TODO("APR: use JVM equivalent for access panel UI state refresh") }
-    fun refreshNames() { TODO("APR: use JVM equivalent for access panel name list refresh") }
+    fun refresh() { System.err.println("APR: use JVM equivalent for access panel refresh from parcel data") }
+    fun refreshUi() { System.err.println("APR: use JVM equivalent for access panel UI state refresh") }
+    fun refreshNames() { System.err.println("APR: use JVM equivalent for access panel name list refresh") }
     open fun draw() { super.draw() }
 
-    fun onClickAddAccess() { TODO("APR: use JVM equivalent for showing avatar picker for access list") }
-    fun onClickAddBanned() { TODO("APR: use JVM equivalent for showing ban duration floater") }
-    fun onClickRemoveAccess() { TODO("APR: use JVM equivalent for removing selected entry from access list") }
-    fun onClickRemoveBanned() { TODO("APR: use JVM equivalent for removing selected entry from ban list") }
-    fun callbackAvatarCBBanned(ids: List<UUID>) { TODO("APR: use JVM equivalent for processing banned avatars") }
-    fun callbackAvatarCBBanned2(ids: List<UUID>, duration: Int) { TODO("APR: use JVM equivalent for processing banned avatars with duration") }
-    fun callbackAvatarCBAccess(ids: List<UUID>) { TODO("APR: use JVM equivalent for processing allowed avatars") }
+    fun onClickAddAccess() { System.err.println("APR: use JVM equivalent for showing avatar picker for access list") }
+    fun onClickAddBanned() { System.err.println("APR: use JVM equivalent for showing ban duration floater") }
+    fun onClickRemoveAccess() { System.err.println("APR: use JVM equivalent for removing selected entry from access list") }
+    fun onClickRemoveBanned() { System.err.println("APR: use JVM equivalent for removing selected entry from ban list") }
+    fun callbackAvatarCBBanned(ids: List<UUID>) { System.err.println("APR: use JVM equivalent for processing banned avatars") }
+    fun callbackAvatarCBBanned2(ids: List<UUID>, duration: Int) { System.err.println("APR: use JVM equivalent for processing banned avatars with duration") }
+    fun callbackAvatarCBAccess(ids: List<UUID>) { System.err.println("APR: use JVM equivalent for processing allowed avatars") }
 
     fun onClickExportAccess() { onClickExportList(mListAccess, "access_list.csv") }
     fun onClickExportBanned() { onClickExportList(mListBanned, "ban_list.csv") }
 
     fun onClickExportList(list: LLNameListCtrl?, filename: String) {
-        TODO("APR: use JVM equivalent for exporting name list to file")
+        System.err.println("APR: use JVM equivalent for exporting name list to file")
     }
 
     fun exportListCallback(list: LLNameListCtrl?, filenames: List<String>) {
-        TODO("APR: use JVM equivalent for writing name list export file")
+        System.err.println("APR: use JVM equivalent for writing name list export file")
     }
 
     fun onClickImportAccess() { onClickImportList(mListAccess) }
     fun onClickImportBanned() { onClickImportList(mListBanned) }
 
     fun onClickImportList(list: LLNameListCtrl?) {
-        TODO("APR: use JVM equivalent for importing name list from file")
+        System.err.println("APR: use JVM equivalent for importing name list from file")
     }
 
     fun importListCallback(list: LLNameListCtrl?, filenames: List<String>) {
-        TODO("APR: use JVM equivalent for reading name list import file and applying to parcel")
+        System.err.println("APR: use JVM equivalent for reading name list import file and applying to parcel")
     }
 
     companion object {
         fun onCommitPublicAccess(panel: LLPanelLandAccess) {
-            TODO("APR: use JVM equivalent for committing public-access flag change")
+            System.err.println("APR: use JVM equivalent for committing public-access flag change")
         }
 
         fun onCommitAny(panel: LLPanelLandAccess) {
-            TODO("APR: use JVM equivalent for committing any access panel change to parcel")
+            System.err.println("APR: use JVM equivalent for committing any access panel change to parcel")
         }
 
         fun onCommitGroupCheck(panel: LLPanelLandAccess) {
-            TODO("APR: use JVM equivalent for committing group-access check change")
+            System.err.println("APR: use JVM equivalent for committing group-access check change")
         }
     }
 }
@@ -1184,7 +1185,7 @@ class LLPanelLandCovenant(private val mParcel: LLParcelSelection?) : LLPanel() {
 
     companion object {
         fun updateCovenant(source: LLTextBase) {
-            TODO("APR: use JVM equivalent for updating covenant text from source text base")
+            System.err.println("APR: use JVM equivalent for updating covenant text from source text base")
         }
 
         fun updateCovenantText(text: String) {
@@ -1217,7 +1218,7 @@ class LLPanelLandCovenant(private val mParcel: LLParcelSelection?) : LLPanel() {
     }
 
     fun refresh() {
-        TODO("APR: use JVM equivalent for covenant panel refresh, including region-change detection and timed re-fetch")
+        System.err.println("APR: use JVM equivalent for covenant panel refresh, including region-change detection and timed re-fetch")
     }
 }
 
@@ -1238,19 +1239,21 @@ class LLPanelLandExperiences(private val mParcel: LLParcelSelection?) : LLPanel(
     }
 
     fun experienceAdded(id: UUID, xpType: UInt, accessType: UInt) {
-        TODO("APR: use JVM equivalent for adding an experience to the parcel")
+        System.err.println("APR: use JVM equivalent for adding an experience to the parcel")
     }
 
     fun experienceRemoved(id: UUID, accessType: UInt) {
-        TODO("APR: use JVM equivalent for removing an experience from the parcel")
+        System.err.println("APR: use JVM equivalent for removing an experience from the parcel")
     }
 
     private fun setupList(controlName: String, xpType: UInt, accessType: UInt): LLPanelExperienceListEditor {
-        TODO("APR: use JVM equivalent for setting up experience list editor panel")
+        System.err.println("APR: use JVM equivalent for setting up experience list editor panel")
+        @Suppress("UNCHECKED_CAST")
+        return null as LLPanelExperienceListEditor
     }
 
     private fun refreshPanel(panel: LLPanelExperienceListEditor?, xpType: UInt) {
-        TODO("APR: use JVM equivalent for refreshing experience list editor panel from parcel data")
+        System.err.println("APR: use JVM equivalent for refreshing experience list editor panel from parcel data")
     }
 }
 
@@ -1272,19 +1275,22 @@ abstract class LLPanelLandEnvironment(private val mParcel: LLParcelSelection?) :
     override fun getParcel(): LLParcel? = mParcel?.getParcel()
 
     override fun canEdit(): Boolean {
-        TODO("APR: use JVM equivalent for checking if the current agent can edit the parcel environment")
+        System.err.println("APR: use JVM equivalent for checking if the current agent can edit the parcel environment")
+        return false
     }
 
     override fun getParcelId(): Int {
-        TODO("APR: use JVM equivalent for getting the current parcel's local ID")
+        System.err.println("APR: use JVM equivalent for getting the current parcel's local ID")
+        return 0
     }
 
     override fun refreshFromSource() {
         if (!isSameRegion()) return
-        TODO("APR: use JVM equivalent for requesting parcel environment info from the server")
+        System.err.println("APR: use JVM equivalent for requesting parcel environment info from the server")
     }
 
     private fun isSameRegion(): Boolean {
-        TODO("APR: use JVM equivalent for checking if the selected parcel is in the agent's current region")
+        System.err.println("APR: use JVM equivalent for checking if the selected parcel is in the agent's current region")
+        return false
     }
 }

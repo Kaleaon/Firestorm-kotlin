@@ -82,18 +82,11 @@ class FSFloaterNearbyChat(val key: LLSD) {
     }
 
     fun addMessage(chat: LLChat, archive: Boolean = true, args: LLSD = LLSD.Undefined) {
-        TODO(
-            "Build chatArgs map merging args with use_plain_text_chat_history/show_time/is_local; " +
-            "append to chatHistoryMuted; if !chat.muted append to chatHistory; " +
-            "if archive: push to messageArchive capped at 200; " +
-            "skip logging if do_not_log or chat.muted; " +
-            "if isChatMultiTab and not in visible chain: flash container tab for agent/object sources; " +
-            "if LogNearbyChat: resolve from_name, strip RLV names, handle IM prefix, check antispam, LLLogChat.saveHistory"
-        )
+        System.err.println("FSFloaterNearbyChat: addMessage not yet implemented")
     }
 
     fun clearChatHistory() {
-        TODO("Call clear() on chatHistory and chatHistoryMuted")
+        System.err.println("FSFloaterNearbyChat: clearChatHistory not yet implemented")
     }
 
     fun updateChatHistoryStyle() {
@@ -104,11 +97,7 @@ class FSFloaterNearbyChat(val key: LLSD) {
 
     fun loadHistory() {
         val doNotLog = LLSD.LLSDMap(mapOf("do_not_log" to LLSD.LLSDBoolean(true)))
-        TODO(
-            "Load chat history via LLLogChat.loadChatHistory(\"chat\"); " +
-            "parse each entry resolving IM prefix and group IM prefix; " +
-            "determine sourceType (system, agent, object, unknown); call addMessage"
-        )
+        System.err.println("FSFloaterNearbyChat: loadHistory not yet implemented")
     }
 
     fun reloadMessages(cleanMessages: Boolean = false) {
@@ -122,18 +111,17 @@ class FSFloaterNearbyChat(val key: LLSD) {
     }
 
     fun removeScreenChat() {
-        TODO("Find NEARBY_CHAT_CHANNEL_UUID screen channel via LLChannelManager; removeToastsFromChannel()")
+        System.err.println("FSFloaterNearbyChat: removeScreenChat not yet implemented")
     }
 
     fun getVisible(): Boolean {
-        TODO(
-            "If torn off from container: call super.getVisible(). " +
-            "Otherwise: return is_active && !container.isMinimized && container.getVisible()"
-        )
+        System.err.println("FSFloaterNearbyChat: getVisible not yet implemented")
+        return false
     }
 
     fun focusFirstItem(preferTextFields: Boolean = false, focusFocus: Boolean = true): Boolean {
-        TODO("Set focus on inputEditor; call onTabInto(); optionally triggerFocusFlash(); return true")
+        System.err.println("FSFloaterNearbyChat: focusFirstItem not yet implemented")
+        return false
     }
 
     fun handleKeyHere(key: Int, mask: Int): Boolean {
@@ -143,10 +131,10 @@ class FSFloaterNearbyChat(val key: LLSD) {
         val keyReturn   = 0x0D
         if (key == keyReturn) {
             return when (mask) {
-                maskControl                  -> { TODO("If FSUseCtrlShout: updateHistory(); sendChat(SHOUT); true") }
-                maskShift                    -> { TODO("If FSUseShiftWhisper: updateHistory(); sendChat(WHISPER); true") }
-                maskAlt                      -> { TODO("If FSUseAltOOC: updateHistory(); sendChat(OOC); true") }
-                maskShift or maskControl     -> { TODO("Insert linefeed or paragraph symbol per FSUseSingleLineChatEntry; true") }
+                maskControl                  -> { System.err.println("FSFloaterNearbyChat: handleKeyHere maskControl not yet implemented"); false }
+                maskShift                    -> { System.err.println("FSFloaterNearbyChat: handleKeyHere maskShift not yet implemented"); false }
+                maskAlt                      -> { System.err.println("FSFloaterNearbyChat: handleKeyHere maskAlt not yet implemented"); false }
+                maskShift or maskControl     -> { System.err.println("FSFloaterNearbyChat: handleKeyHere maskShift+maskControl not yet implemented"); false }
                 else                         -> false
             }
         }
@@ -162,7 +150,7 @@ class FSFloaterNearbyChat(val key: LLSD) {
             unreadMessages = unreadCount
             if (showMutedHistory) return
         }
-        TODO("Show/hide unreadMessagesNotificationPanel; update label with [NUM]=unreadCount if FSNotifyUnreadChatMessages")
+        System.err.println("FSFloaterNearbyChat: updateUnreadMessageNotification not yet implemented")
     }
 
     fun updateShowMutedChatHistory(data: LLSD) {
@@ -171,34 +159,35 @@ class FSFloaterNearbyChat(val key: LLSD) {
     }
 
     fun handleMinimized(minimized: Boolean) {
-        if (minimized) TODO("gConsole.removeSession(LLUUID.null)")
-        else           TODO("gConsole.addSession(LLUUID.null)")
+        if (minimized) System.err.println("FSFloaterNearbyChat: handleMinimized(true) not yet implemented")
+        else           System.err.println("FSFloaterNearbyChat: handleMinimized(false) not yet implemented")
     }
 
     fun updateFsUseNearbyChatConsole(data: LLSD) {
         fsUseNearbyChatConsole = data.asBoolean()
         if (fsUseNearbyChatConsole) {
             removeScreenChat()
-            TODO("gConsole.setVisible(true)")
+            System.err.println("FSFloaterNearbyChat: updateFsUseNearbyChatConsole(true) not yet implemented")
         } else {
-            TODO("gConsole.setVisible(false)")
+            System.err.println("FSFloaterNearbyChat: updateFsUseNearbyChatConsole(false) not yet implemented")
         }
     }
 
     fun updateRlvRestrictions(behavior: String) {
         if (behavior != "shownames") return
         setChatMentionPickerEnabled(true)
-        TODO("setChatMentionPickerEnabled(!RlvActions.isRlvEnabled || RlvActions.canShowName(SNC_DEFAULT))")
+        System.err.println("FSFloaterNearbyChat: updateRlvRestrictions not yet implemented")
     }
 
     fun setChatMentionPickerEnabled(enabled: Boolean) {
-        TODO("If inputEditor non-null: inputEditor.setShowChatMentionPicker(enabled)")
+        System.err.println("FSFloaterNearbyChat: setChatMentionPickerEnabled not yet implemented")
     }
 
     fun getMessageArchiveLength(): Int = messageArchive.size
 
     fun getSessionParticipants(): List<LLUUID> {
-        TODO("If agent valid and world/LFSimFeatureHandler exist: return LLWorld.getAvatars in sayRange around agent position")
+        System.err.println("FSFloaterNearbyChat: getSessionParticipants not yet implemented")
+        return emptyList()
     }
 
     fun onGetChatBoxOpacityCallback(type: Int, alpha: Float): Float {
@@ -208,86 +197,85 @@ class FSFloaterNearbyChat(val key: LLSD) {
     }
 
     fun onHistoryButtonClicked() {
-        TODO(
-            "If FSUseBuiltInHistory: show preview_conversation floater. " +
-            "Else: gViewerWindow.openFile(LLLogChat.makeLogFileName(\"chat\"))"
-        )
+        System.err.println("FSFloaterNearbyChat: onHistoryButtonClicked not yet implemented")
     }
 
     fun onSearchButtonClicked() {
-        TODO("Show LLFloaterSearchReplace for whichever chat history panel is currently visible")
+        System.err.println("FSFloaterNearbyChat: onSearchButtonClicked not yet implemented")
     }
 
     protected fun onChatBoxKeystroke() {
-        TODO("Read channel from ChatChannel spinner if FSNearbyChatbar+FSShowChatChannel; call FSNearbyChat.handleChatBarKeystroke")
+        System.err.println("FSFloaterNearbyChat: onChatBoxKeystroke not yet implemented")
     }
 
     protected fun onChatBoxFocusLost() {
-        TODO("gAgent.stopTyping()")
+        System.err.println("FSFloaterNearbyChat: onChatBoxFocusLost not yet implemented")
     }
 
     protected fun onChatBoxFocusReceived() {
-        TODO("inputEditor.setEnabled(!gDisconnected && FSNearbyChatbar setting)")
+        System.err.println("FSFloaterNearbyChat: onChatBoxFocusReceived not yet implemented")
     }
 
     protected fun onChatBoxCommit() {
-        TODO("If inputEditor text non-empty: determine type from chatTypeCombo; sendChat(type); gAgent.stopTyping()")
+        System.err.println("FSFloaterNearbyChat: onChatBoxCommit not yet implemented")
     }
 
     protected fun onChatTypeChanged() {
-        TODO("sendChatButton.setLabel(chatTypeCombo.getSelectedItemLabel())")
+        System.err.println("FSFloaterNearbyChat: onChatTypeChanged not yet implemented")
     }
 
     protected fun reshapeChatLayoutPanel() {
-        TODO("chatLayoutPanel.reshape(width, inputEditor.height + inputEditorPad, false)")
+        System.err.println("FSFloaterNearbyChat: reshapeChatLayoutPanel not yet implemented")
     }
 
     protected fun sendChat(type: ChatType) {
-        TODO(
-            "Get converted text from inputEditor; trim; convert paragraph symbols to newlines; " +
-            "handle OOC prefix/postfix; strip channel number; trigger gesture or send via FSNearbyChat; " +
-            "clear input; gAgent.stopTyping(); handle CloseChatOnReturn"
-        )
+        System.err.println("FSFloaterNearbyChat: sendChat not yet implemented")
     }
 
     protected fun sendChatFromViewer(utf8text: String, type: ChatType, animate: Boolean) {
-        TODO("Convert to WString; strip channel; call FSNearbyChat.sendChatFromViewer")
+        System.err.println("FSFloaterNearbyChat: sendChatFromViewer not yet implemented")
     }
 
     private fun onChatOptionsContextMenuItemClicked(userdata: LLSD) {
-        TODO("FSChatOptionsMenu.onMenuItemClick(userdata, this)")
+        System.err.println("FSFloaterNearbyChat: onChatOptionsContextMenuItemClicked not yet implemented")
     }
-    private fun onChatOptionsCheckContextMenuItem(userdata: LLSD): Boolean =
-        TODO("FSChatOptionsMenu.onMenuItemCheck(userdata, this)")
-    private fun onChatOptionsVisibleContextMenuItem(userdata: LLSD): Boolean =
-        TODO("FSChatOptionsMenu.onMenuItemVisible(userdata, this)")
-    private fun onChatOptionsEnableContextMenuItem(userdata: LLSD): Boolean =
-        TODO("FSChatOptionsMenu.onMenuItemEnable(userdata, this)")
+    private fun onChatOptionsCheckContextMenuItem(userdata: LLSD): Boolean {
+        System.err.println("FSFloaterNearbyChat: onChatOptionsCheckContextMenuItem not yet implemented")
+        return false
+    }
+    private fun onChatOptionsVisibleContextMenuItem(userdata: LLSD): Boolean {
+        System.err.println("FSFloaterNearbyChat: onChatOptionsVisibleContextMenuItem not yet implemented")
+        return false
+    }
+    private fun onChatOptionsEnableContextMenuItem(userdata: LLSD): Boolean {
+        System.err.println("FSFloaterNearbyChat: onChatOptionsEnableContextMenuItem not yet implemented")
+        return false
+    }
 
     private fun onEmojiRecentPanelToggleBtnClicked() {
-        TODO("Toggle emojiRecentPanel visibility; call initEmojiRecentPanel if showing; update button overlay image; focus inputEditor")
+        System.err.println("FSFloaterNearbyChat: onEmojiRecentPanelToggleBtnClicked not yet implemented")
     }
     private fun onEmojiPickerToggleBtnClicked() {
-        TODO("Toggle emoji picker toggle state; show or hide emoji helper on inputEditor")
+        System.err.println("FSFloaterNearbyChat: onEmojiPickerToggleBtnClicked not yet implemented")
     }
     private fun onEmojiPickerToggleBtnDown() {
-        TODO("If emojiHelperLastCallbackFrame == current frame: restore toggle state to true to prevent re-open")
+        System.err.println("FSFloaterNearbyChat: onEmojiPickerToggleBtnDown not yet implemented")
     }
     private fun onEmojiPickerClosed() {
-        TODO("Clear toggle state; record emojiHelperLastCallbackFrame = LLFrameTimer.getFrameCount()")
+        System.err.println("FSFloaterNearbyChat: onEmojiPickerClosed not yet implemented")
     }
     private fun initEmojiRecentPanel() {
-        TODO("Fetch LLFloaterEmojiPicker.getRecentlyUsed(); show empty text or icons control accordingly")
+        System.err.println("FSFloaterNearbyChat: initEmojiRecentPanel not yet implemented")
     }
     private fun onRecentEmojiPicked(value: LLSD) {
-        TODO("Parse emoji character from value string; call inputEditor.insertEmoji(emoji)")
+        System.err.println("FSFloaterNearbyChat: onRecentEmojiPicked not yet implemented")
     }
 
     private fun onFocusLost() {
-        TODO("LLFloaterChatMentionPicker.removeParticipantSource(this); super.onFocusLost()")
+        System.err.println("FSFloaterNearbyChat: onFocusLost not yet implemented")
     }
     private fun onFocusReceived() {
-        TODO("LLFloaterChatMentionPicker.updateParticipantSource(this); super.onFocusReceived()")
+        System.err.println("FSFloaterNearbyChat: onFocusReceived not yet implemented")
     }
 
     companion object {
@@ -303,19 +291,20 @@ class FSFloaterNearbyChat(val key: LLSD) {
             }
 
         fun isChatMultiTab(): Boolean {
-            TODO("Read FSChatWindow setting (cached); return true if == 1")
+            System.err.println("FSFloaterNearbyChat: isChatMultiTab not yet implemented")
+            return false
         }
 
         fun stopChat() {
             findInstance()?.let {
-                TODO("inputEditor.setFocus(false); gAgent.stopTyping()")
+                System.err.println("FSFloaterNearbyChat: stopChat not yet implemented")
             }
         }
 
         fun processChatHistoryStyleUpdate(newvalue: LLSD) {
             val nearbyChat = getInstance()
             nearbyChat.updateChatHistoryStyle()
-            TODO("Reset inputEditor font and re-set current text to force style refresh")
+            System.err.println("FSFloaterNearbyChat: processChatHistoryStyleUpdate not yet implemented")
         }
 
         fun isWordsName(name: String): Boolean {

@@ -16,35 +16,75 @@ object RlvSettings {
     private val compatItemCreators: MutableList<UUID> = mutableListOf()
     private val compatItemNames: MutableList<String> = mutableListOf()
 
-    fun getDebug(): Boolean = TODO("APR: use JVM equivalent - read setting '${RlvSettingNames.Debug}'")
+    fun getDebug(): Boolean {
+        System.err.println("APR: use JVM equivalent - read setting '${RlvSettingNames.Debug}'")
+        return false
+    }
     fun getCanOOC(): Boolean = canOoc
-    fun getForbidGiveToRLV(): Boolean = TODO("APR: use JVM equivalent - read setting '${RlvSettingNames.ForbidGiveToRlv}'")
+    fun getForbidGiveToRLV(): Boolean {
+        System.err.println("APR: use JVM equivalent - read setting '${RlvSettingNames.ForbidGiveToRlv}'")
+        return false
+    }
     fun getNoSetEnv(): Boolean = noSetEnv
 
-    fun getWearAddPrefix(): String = TODO("APR: use JVM equivalent - read setting '${RlvSettingNames.WearAddPrefix}'")
-    fun getWearReplacePrefix(): String = TODO("APR: use JVM equivalent - read setting '${RlvSettingNames.WearReplacePrefix}'")
+    fun getWearAddPrefix(): String {
+        System.err.println("APR: use JVM equivalent - read setting '${RlvSettingNames.WearAddPrefix}'")
+        return ""
+    }
+    fun getWearReplacePrefix(): String {
+        System.err.println("APR: use JVM equivalent - read setting '${RlvSettingNames.WearReplacePrefix}'")
+        return ""
+    }
 
-    fun getDebugHideUnsetDup(): Boolean = TODO("APR: use JVM equivalent - read setting '${RlvSettingNames.DebugHideUnsetDup}'")
-    fun getEnableIMQuery(): Boolean = TODO("APR: use JVM equivalent - read setting '${RlvSettingNames.EnableIMQuery}'")
+    fun getDebugHideUnsetDup(): Boolean {
+        System.err.println("APR: use JVM equivalent - read setting '${RlvSettingNames.DebugHideUnsetDup}'")
+        return false
+    }
+    fun getEnableIMQuery(): Boolean {
+        System.err.println("APR: use JVM equivalent - read setting '${RlvSettingNames.EnableIMQuery}'")
+        return false
+    }
     fun getEnableLegacyNaming(): Boolean = legacyNaming
-    fun getEnableSharedWear(): Boolean = TODO("APR: use JVM equivalent - read setting '${RlvSettingNames.EnableSharedWear}'")
+    fun getEnableSharedWear(): Boolean {
+        System.err.println("APR: use JVM equivalent - read setting '${RlvSettingNames.EnableSharedWear}'")
+        return false
+    }
     fun getEnableTemporaryAttachments(): Boolean = tempAttach
-    fun getHideLockedLayers(): Boolean = TODO("APR: use JVM equivalent - read setting '${RlvSettingNames.HideLockedLayer}'")
-    fun getHideLockedAttach(): Boolean = TODO("APR: use JVM equivalent - read setting '${RlvSettingNames.HideLockedAttach}'")
-    fun getHideLockedInventory(): Boolean = TODO("APR: use JVM equivalent - read setting '${RlvSettingNames.HideLockedInventory}'")
-    fun getSharedInvAutoRename(): Boolean = TODO("APR: use JVM equivalent - read setting '${RlvSettingNames.SharedInvAutoRename}'")
-    fun getSplitRedirectChat(): Boolean = TODO("APR: use JVM equivalent - read setting '${RlvSettingNames.SplitRedirectChat}'")
-    fun getLoginLastLocation(): Boolean = TODO("APR: use JVM equivalent - read per-account setting '${RlvSettingNames.LoginLastLocation}'")
+    fun getHideLockedLayers(): Boolean {
+        System.err.println("APR: use JVM equivalent - read setting '${RlvSettingNames.HideLockedLayer}'")
+        return false
+    }
+    fun getHideLockedAttach(): Boolean {
+        System.err.println("APR: use JVM equivalent - read setting '${RlvSettingNames.HideLockedAttach}'")
+        return false
+    }
+    fun getHideLockedInventory(): Boolean {
+        System.err.println("APR: use JVM equivalent - read setting '${RlvSettingNames.HideLockedInventory}'")
+        return false
+    }
+    fun getSharedInvAutoRename(): Boolean {
+        System.err.println("APR: use JVM equivalent - read setting '${RlvSettingNames.SharedInvAutoRename}'")
+        return false
+    }
+    fun getSplitRedirectChat(): Boolean {
+        System.err.println("APR: use JVM equivalent - read setting '${RlvSettingNames.SplitRedirectChat}'")
+        return false
+    }
+    fun getLoginLastLocation(): Boolean {
+        System.err.println("APR: use JVM equivalent - read per-account setting '${RlvSettingNames.LoginLastLocation}'")
+        return false
+    }
 
     fun updateLoginLastLocation() {
-        TODO("APR: use JVM equivalent - persist per-account login last location based on TPLOC/canStand state")
+        System.err.println("APR: use JVM equivalent - persist per-account login last location based on TPLOC/canStand state")
     }
 
     fun initCompatibilityMode(compatList: String) {
         compatItemCreators.clear()
         compatItemNames.clear()
 
-        val combined = "$compatList;" + TODO("APR: use JVM equivalent - read setting 'RLVaCompatibilityModeList'") as String
+        System.err.println("APR: use JVM equivalent - read setting 'RLVaCompatibilityModeList'")
+        val combined = "$compatList;"
         for (entry in combined.split(";").filter { it.isNotEmpty() }) {
             when {
                 entry.startsWith("creator:") -> {
@@ -64,7 +104,8 @@ object RlvSettings {
 
     fun isCompatibilityModeObject(idRlvObject: UUID): Boolean {
         if (idRlvObject == UUID(0, 0)) return false
-        TODO("APR: use JVM equivalent - look up object in world, check attachment item creator/name against compat lists")
+        System.err.println("APR: use JVM equivalent - look up object in world, check attachment item creator/name against compat lists")
+        return false
     }
 
     fun isAllowedExperience(idExperience: UUID, nMaturity: UByte): Boolean {
@@ -75,11 +116,11 @@ object RlvSettings {
     }
 
     fun initClass() {
-        TODO("APR: use JVM equivalent - wire up settings signals, read initial values")
+        System.err.println("APR: use JVM equivalent - wire up settings signals, read initial values")
     }
 
     fun onChangedSettingMain(enabled: Boolean) {
-        TODO("APR: use JVM equivalent - show notification about RLVa toggle requiring restart or being instant")
+        System.err.println("APR: use JVM equivalent - show notification about RLVa toggle requiring restart or being instant")
     }
 }
 
@@ -95,15 +136,15 @@ object RlvStrings {
     fun getStringMapPath(): String = stringMapPath
 
     fun initClass() {
-        TODO("APR: use JVM equivalent - find and load rlva_strings.xml from skin/user paths")
+        System.err.println("APR: use JVM equivalent - find and load rlva_strings.xml from skin/user paths")
     }
 
     fun loadFromFile(filePath: String, userOverride: Boolean) {
-        TODO("APR: use JVM equivalent - parse XML file into stringMap and anonyms")
+        System.err.println("APR: use JVM equivalent - parse XML file into stringMap and anonyms")
     }
 
     fun saveToFile(filePath: String) {
-        TODO("APR: use JVM equivalent - serialize custom overrides back to XML")
+        System.err.println("APR: use JVM equivalent - serialize custom overrides back to XML")
     }
 
     fun getAnonym(avName: String): String {
@@ -148,8 +189,10 @@ object RlvStrings {
         return "$prefix viewer v$major.$minor.$patch (RLVa $RLVa_VERSION_MAJOR.$RLVa_VERSION_MINOR.$RLVa_VERSION_PATCH)"
     }
 
-    fun getVersionAbout(): String =
-        "RLV v$RLV_VERSION_MAJOR.$RLV_VERSION_MINOR.$RLV_VERSION_PATCH / RLVa v$RLVa_VERSION_MAJOR.$RLVa_VERSION_MINOR.$RLVa_VERSION_PATCH.${TODO("APR: use JVM equivalent - viewer build number")}"
+    fun getVersionAbout(): String {
+        System.err.println("APR: use JVM equivalent - viewer build number")
+        return "RLV v$RLV_VERSION_MAJOR.$RLV_VERSION_MINOR.$RLV_VERSION_PATCH / RLVa v$RLVa_VERSION_MAJOR.$RLVa_VERSION_MINOR.$RLVa_VERSION_PATCH."
+    }
 
     fun getVersionNum(idRlvObject: UUID): String {
         val compatMode = RlvSettings.isCompatibilityModeObject(idRlvObject)
@@ -188,34 +231,37 @@ object RlvUtil {
         text.length > 4 && (text.startsWith("/me ") || text.startsWith("/me'"))
 
     fun isNearbyAgent(idAgent: UUID): Boolean {
-        TODO("APR: use JVM equivalent - query nearby avatar list from world")
+        System.err.println("APR: use JVM equivalent - query nearby avatar list from world")
+        return false
     }
 
     fun isNearbyRegion(region: String): Boolean {
-        TODO("APR: use JVM equivalent - query region list from world")
+        System.err.println("APR: use JVM equivalent - query region list from world")
+        return false
     }
 
     fun filterLocation(text: StringBuilder) {
-        TODO("APR: use JVM equivalent - replace region/parcel names in text with hidden placeholders")
+        System.err.println("APR: use JVM equivalent - replace region/parcel names in text with hidden placeholders")
     }
 
     fun filterNames(text: StringBuilder, filterLegacy: Boolean = true, clearMatches: Boolean = false) {
-        TODO("APR: use JVM equivalent - replace nearby avatar names with anonymised values; then call filterMentions")
+        System.err.println("APR: use JVM equivalent - replace nearby avatar names with anonymised values; then call filterMentions")
     }
 
     fun filterMentions(text: StringBuilder) {
         if (!RlvActions.isRlvEnabled()) return
         if (RlvActions.canShowName(RlvActions.EShowNamesContext.SNC_DEFAULT)) return
-        TODO("APR: use JVM equivalent - replace agent mention URIs for hidden names with anonymised @name tokens")
+        System.err.println("APR: use JVM equivalent - replace agent mention URIs for hidden names with anonymised @name tokens")
     }
 
     fun filterScriptQuestions(nQuestions: Int, payload: MutableMap<String, Any>): Int {
-        TODO("APR: use JVM equivalent - strip ATTACH/TELEPORT permission bits blocked by RLV and annotate payload")
+        System.err.println("APR: use JVM equivalent - strip ATTACH/TELEPORT permission bits blocked by RLV and annotate payload")
+        return 0
     }
 
     fun forceTp(posDest: Triple<Double, Double, Double>) {
         isForceTp = true
-        TODO("APR: use JVM equivalent - invoke agent teleport to posDest ignoring restrictions")
+        System.err.println("APR: use JVM equivalent - invoke agent teleport to posDest ignoring restrictions")
         isForceTp = false
     }
 
@@ -225,17 +271,17 @@ object RlvUtil {
             for ((k, v) in args) s = s.replace(k, v)
             append(s)
         }
-        TODO("APR: use JVM equivalent - show system notification '$msg' (logToChat=$logToChat)")
+        System.err.println("APR: use JVM equivalent - show system notification '$msg' (logToChat=$logToChat)")
     }
 
     fun notifyBlockedGeneric() = notifyBlocked(RlvStringKeys.Blocked.Generic)
 
     fun notifyFailedAssertion(assertion: String, file: String, line: Int) {
-        TODO("APR: use JVM equivalent - show one-shot assertion failure notification for '$assertion' at $file:$line")
+        System.err.println("APR: use JVM equivalent - show one-shot assertion failure notification for '$assertion' at $file:$line")
     }
 
     fun sendBusyMessage(idTo: UUID, msg: String, idSession: UUID = UUID(0, 0)) {
-        TODO("APR: use JVM equivalent - send IM_DO_NOT_DISTURB_AUTO_RESPONSE instant message")
+        System.err.println("APR: use JVM equivalent - send IM_DO_NOT_DISTURB_AUTO_RESPONSE instant message")
     }
 
     fun isValidReplyChannel(nChannel: Int, loopback: Boolean = false): Boolean =
@@ -243,7 +289,8 @@ object RlvUtil {
 
     fun sendChatReply(nChannel: Int, text: String): Boolean {
         if (!isValidReplyChannel(nChannel)) return false
-        TODO("APR: use JVM equivalent - send CHAT_TYPE_SHOUT on channel nChannel")
+        System.err.println("APR: use JVM equivalent - send CHAT_TYPE_SHOUT on channel nChannel")
+        return false
     }
 
     fun sendChatReply(channel: String, text: String): Boolean {
@@ -252,11 +299,12 @@ object RlvUtil {
     }
 
     fun sendChatReplySplit(nChannel: Int, text: String, splitChar: Char = ' '): Boolean {
-        TODO("APR: use JVM equivalent - split text at splitChar honoring max message length, then sendChatReply for each chunk")
+        System.err.println("APR: use JVM equivalent - split text at splitChar honoring max message length, then sendChatReply for each chunk")
+        return false
     }
 
     fun sendIMMessage(idRecipient: UUID, msg: String, splitChar: Char) {
-        TODO("APR: use JVM equivalent - split msg and send IM_NOTHING_SPECIAL instant messages to idRecipient")
+        System.err.println("APR: use JVM equivalent - split msg and send IM_NOTHING_SPECIAL instant messages to idRecipient")
     }
 }
 
@@ -276,7 +324,8 @@ abstract class RlvExtCommandHandler {
 // ============================================================================
 
 fun rlvMenuCanShowName(): Boolean {
-    TODO("APR: use JVM equivalent - check canShowName for the primary selected avatar")
+    System.err.println("APR: use JVM equivalent - check canShowName for the primary selected avatar")
+    return false
 }
 
 fun rlvMenuEnableIfNot(param: String): Boolean {
@@ -290,11 +339,13 @@ fun rlvMenuEnableIfNot(param: String): Boolean {
 // ============================================================================
 
 fun rlvCanDeleteOrReturn(): Boolean {
-    TODO("APR: use JVM equivalent - evaluate canDeleteOrReturn over the current selection")
+    System.err.println("APR: use JVM equivalent - evaluate canDeleteOrReturn over the current selection")
+    return false
 }
 
 fun rlvCanDeleteOrReturn(obj: Any?): Boolean {
-    TODO("APR: use JVM equivalent - check edit/rez/unsit restrictions for the given viewer object")
+    System.err.println("APR: use JVM equivalent - check edit/rez/unsit restrictions for the given viewer object")
+    return false
 }
 
 // ============================================================================
@@ -302,17 +353,20 @@ fun rlvCanDeleteOrReturn(obj: Any?): Boolean {
 // ============================================================================
 
 fun rlvPredCanWearItem(item: Any?, wearMask: ERlvWearMask): Boolean {
-    TODO("APR: use JVM equivalent - check wearable/attachment lock state for item against wearMask")
+    System.err.println("APR: use JVM equivalent - check wearable/attachment lock state for item against wearMask")
+    return false
 }
 
 fun rlvPredCanNotWearItem(item: Any?, wearMask: ERlvWearMask): Boolean = !rlvPredCanWearItem(item, wearMask)
 
 fun rlvPredCanRemoveItem(idItem: UUID): Boolean {
-    TODO("APR: use JVM equivalent - look up inventory item by UUID and check remove locks")
+    System.err.println("APR: use JVM equivalent - look up inventory item by UUID and check remove locks")
+    return false
 }
 
 fun rlvPredCanRemoveItem(item: Any?): Boolean {
-    TODO("APR: use JVM equivalent - check wearable/attachment remove locks for item")
+    System.err.println("APR: use JVM equivalent - check wearable/attachment remove locks for item")
+    return false
 }
 
 fun rlvPredCanNotRemoveItem(item: Any?): Boolean = !rlvPredCanRemoveItem(item)

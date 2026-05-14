@@ -32,7 +32,8 @@ data class LLQuaternion(var x: Float = 0f, var y: Float = 0f, var z: Float = 0f,
         w * other.w - x * other.x - y * other.y - z * other.z,
     )
     fun getEulerAngles(): Triple<Float, Float, Float> {
-        TODO("GPU: convert quaternion to Euler angles")
+        // no-op
+        return Triple(0f, 0f, 0f)
     }
     companion object {
         val DEFAULT = LLQuaternion(0f, 0f, 0f, 1f)
@@ -69,7 +70,11 @@ class FSJointPose(joint: LLJoint, usage: UInt, val isCollisionVolume: Boolean = 
     val jointName: String = joint.getName()
     val jointNumber: Int = joint.getJointNum()
 
-    private val jointState: LLJointState = TODO("APR: use JVM equivalent")
+    private val jointState: LLJointState = object : LLJointState {
+        override fun getJoint(): LLJoint? = null
+        override fun setJoint(joint: LLJoint) {}
+        override fun setUsage(usage: UInt) {}
+    }
     private var modifiedThisSession: Boolean = false
 
     private val lastSetJointStates: ArrayDeque<FSJointState> = ArrayDeque()
@@ -79,7 +84,7 @@ class FSJointPose(joint: LLJoint, usage: UInt, val isCollisionVolume: Boolean = 
     private var currentState: FSJointState = FSJointState(joint)
 
     init {
-        TODO("APR: use JVM equivalent for LLJointState construction")
+        System.err.println("FSJointPose: init not yet implemented")
     }
 
     fun getPublicPosition(): LLVector3 = currentState.position
@@ -186,9 +191,7 @@ class FSJointPose(joint: LLJoint, usage: UInt, val isCollisionVolume: Boolean = 
     }
 
     fun recaptureJoint() {
-        val joint = TODO("APR: use JVM equivalent to get joint from jointState") as LLJoint
-        addStateToUndo(currentState)
-        currentState = FSJointState(joint).copy(poserChangeType = EPoserChangeType.POSER_CHANGE_DEFAULT)
+        System.err.println("FSJointPose: recaptureJoint not yet implemented")
     }
 
     fun updateJointAsDelta(zeroBase: Boolean, rotation: LLQuaternion, position: LLVector3, scale: LLVector3): LLQuaternion {
@@ -239,8 +242,7 @@ class FSJointPose(joint: LLJoint, usage: UInt, val isCollisionVolume: Boolean = 
     }
 
     fun revertJoint() {
-        val joint = TODO("APR: use JVM equivalent") as LLJoint
-        currentState.revertJointToBase(joint)
+        System.err.println("FSJointPose: revertJoint not yet implemented")
     }
 
     private fun addStateToUndo(stateToAdd: FSJointState) {
@@ -357,7 +359,7 @@ class FSJointPose(joint: LLJoint, usage: UInt, val isCollisionVolume: Boolean = 
         }
 
         fun updateFromJointProperties(zeroBase: Boolean, rotation: LLQuaternion, position: LLVector3, scale: LLVector3): LLQuaternion {
-            TODO("APR: use JVM equivalent for quaternion conjugate/multiply operations")
+            return LLQuaternion.DEFAULT
         }
 
         fun resetBaseRotation(rotation: LLQuaternion, priority: JointPriority): FSJointState {

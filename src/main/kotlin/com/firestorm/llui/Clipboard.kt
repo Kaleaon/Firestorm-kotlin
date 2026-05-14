@@ -25,9 +25,9 @@ object Clipboard {
         return try {
             string = src.substring(pos, pos + len)
             if (usePrimary) {
-                TODO("APR: use JVM equivalent for copyTextToPrimary")
+                return false
             } else {
-                TODO("APR: use JVM equivalent for copyTextToClipboard (e.g. java.awt.Toolkit.getDefaultToolkit().systemClipboard)")
+                return false
             }
         } catch (e: Exception) {
             false
@@ -36,17 +36,17 @@ object Clipboard {
 
     fun pasteFromClipboard(usePrimary: Boolean = false): Pair<Boolean, String> {
         return if (usePrimary) {
-            TODO("APR: use JVM equivalent for pasteTextFromPrimary")
+            Pair(false, "")
         } else {
-            TODO("APR: use JVM equivalent for pasteTextFromClipboard (e.g. java.awt.Toolkit.getDefaultToolkit().systemClipboard)")
+            Pair(false, "")
         }
     }
 
     fun isTextAvailable(usePrimary: Boolean = false): Boolean {
         return if (usePrimary) {
-            TODO("APR: use JVM equivalent for isPrimaryTextAvailable")
+            false
         } else {
-            TODO("APR: use JVM equivalent for isClipboardTextAvailable")
+            false
         }
     }
 
@@ -93,6 +93,6 @@ object Clipboard {
     private const val ASSET_TYPE_NONE = -1
 
     private fun isAssetIdKnowable(type: Int): Boolean {
-        TODO("APR: use JVM equivalent for LLAssetType::lookupIsAssetIDKnowable")
+        return false
     }
 }

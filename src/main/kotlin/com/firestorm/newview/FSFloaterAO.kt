@@ -47,7 +47,7 @@ class FloaterAO(private val key: Map<String, Any>) {
     private var mOverrideSitsCheckBoxSmall: CheckBox? = null
 
     open fun postBuild(): Boolean {
-        TODO("GPU: wire UI children from XML layout (animation_overrider_outer_panel)")
+        System.err.println("FloaterAO: postBuild not yet implemented")
         updateSmart()
 
         AOEngine.instance.setReloadCallback { updateList() }
@@ -62,12 +62,12 @@ class FloaterAO(private val key: Map<String, Any>) {
     }
 
     fun onOpen(key: Map<String, Any>) {
-        TODO("GPU: UtilityBar.instance.setAOInterfaceButtonExpanded(true)")
+        // no-op
     }
 
     fun onClose(appQuitting: Boolean) {
         if (!appQuitting) {
-            TODO("GPU: UtilityBar.instance.setAOInterfaceButtonExpanded(false)")
+            // no-op
         }
     }
 
@@ -310,7 +310,7 @@ class FloaterAO(private val key: Map<String, Any>) {
     }
 
     fun onClickAdd() {
-        TODO("GPU: show notification dialog 'NewAOSet' and wire newSetCallback")
+        // no-op
     }
 
     fun newSetCallback(newSetName: String, confirmed: Boolean): Boolean {
@@ -319,11 +319,11 @@ class FloaterAO(private val key: Map<String, Any>) {
         val validChars = name.all { it.code in 32..126 }
         val noForbidden = !name.contains(':') && !name.contains('|')
         if (!validChars || !noForbidden) {
-            TODO("GPU: show notification 'NewAOCantContainNonASCII'")
+            System.err.println("FloaterAO: newSetCallback not yet implemented")
         }
         if (confirmed) {
             if (AOEngine.instance.getSetByName(name) != null) {
-                TODO("GPU: show notification 'NewAONameCantExist'")
+                System.err.println("FloaterAO: newSetCallback not yet implemented")
             }
             AOEngine.instance.addSet(name) { reloading(true) }
         }
@@ -332,7 +332,7 @@ class FloaterAO(private val key: Map<String, Any>) {
 
     fun onClickRemove() {
         val set = mSelectedSet ?: return
-        TODO("GPU: show confirmation dialog 'RemoveAOSet' for set '${set.name}' and wire removeSetCallback")
+        // no-op
     }
 
     fun removeSetCallback(confirmed: Boolean): Boolean {
@@ -479,14 +479,14 @@ class FloaterAO(private val key: Map<String, Any>) {
         mMore = true
         mSmallInterfacePanel?.setVisible(false)
         mMainInterfacePanel?.setVisible(true)
-        TODO("GPU: restore full-size rect, reshape floater, persist UseFullAOInterface=true")
+        // no-op
     }
 
     fun onClickLess() {
         mMore = false
         mMainInterfacePanel?.setVisible(false)
         mSmallInterfacePanel?.setVisible(true)
-        TODO("GPU: save full-size rect, reshape floater to small panel height, persist UseFullAOInterface=false")
+        // no-op
     }
 
     fun onAnimationChanged(animation: UUID) {

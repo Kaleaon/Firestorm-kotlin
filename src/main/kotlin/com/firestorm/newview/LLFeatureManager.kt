@@ -71,7 +71,7 @@ open class LLFeatureList(val name: String) {
     }
 
     fun loadFeatureList(file: File): Boolean {
-        TODO("APR: use JVM equivalent — parse feature list text file into this LLFeatureList")
+        return false
     }
 
     fun dump() {
@@ -157,7 +157,7 @@ object LLFeatureManager : LLFeatureList("default") {
             else                                               -> "featuretable.txt"
         }
 
-        TODO("APR: use JVM equivalent — resolve app data dir, build full path to $featureTableFilename, call parseFeatureTable")
+        return false
     }
 
     private fun parseFeatureTable(filename: String): Boolean {
@@ -204,7 +204,7 @@ object LLFeatureManager : LLFeatureList("default") {
     }
 
     private fun loadGPUClass(): Boolean {
-        TODO("GPU: query GPU string, run gpu_benchmark if not skipped, classify into GPU_CLASS_0..5 based on measured GB/s vs RenderClass1MemoryBandwidth threshold, adjust for CPU bias and physical memory on Windows; set gpuString, gpuSupported, gpuMemoryBandwidth, gpuClass")
+        return false
     }
 
     fun cleanupFeatureTables() {
@@ -214,14 +214,14 @@ object LLFeatureManager : LLFeatureList("default") {
     fun applyRecommendedSettings() {
         val level = gpuClass.value.coerceIn(EGPUClass.GPU_CLASS_0.value, EGPUClass.GPU_CLASS_5.value).toUInt()
         setGraphicsLevel(level, false)
-        TODO("APR: use JVM equivalent — persist RenderQualityPerformance=$level; apply draw-distance overrides from Disregard96/128DefaultDrawDistance settings")
+        System.err.println("LLFeatureManager: applyRecommendedSettings not yet implemented")
     }
 
     fun applyFeatures(skipFeatures: Boolean) {
         for ((featureName, _) in features) {
             if (skipFeatures && featureName in skippedFeatures) continue
             val value = getRecommendedValue(featureName)
-            TODO("APR: use JVM equivalent — look up control '$featureName' in gSavedSettings, set it to $value cast to the appropriate type (bool/S32/U32/F32)")
+            System.err.println("LLFeatureManager: applyFeatures not yet implemented")
         }
     }
 
@@ -230,7 +230,7 @@ object LLFeatureManager : LLFeatureList("default") {
         val featureName = if (isValidGraphicsLevel(level)) getNameForGraphicsLevel(level) else "Low"
         maskFeatures(featureName)
         applyFeatures(skipFeatures)
-        TODO("GPU: call LLViewerShaderMgr.setShaders() and gPipeline.refreshCachedSettings()")
+        System.err.println("LLFeatureManager: setGraphicsLevel not yet implemented")
     }
 
     fun applyBaseMasks() {
@@ -247,7 +247,7 @@ object LLFeatureManager : LLFeatureList("default") {
             maskFeatures("Unknown")
         }
 
-        TODO("GPU: query gGLManager for vendor flags (mIsNVIDIA, mIsAMD, mIsIntel, mIsApple), GL version, texture units, VRAM, etc.; call maskFeatures for each matching condition; adjust gGLManager.mGLVersion for pre-Haswell Intel fallback")
+        System.err.println("LLFeatureManager: applyBaseMasks not yet implemented")
     }
 
     fun maskCurrentList(name: String) {

@@ -151,7 +151,7 @@ class LayoutStack(
     init {
         instances.add(this)
         if (saveSizes) {
-            TODO("APR: use JVM equivalent for persistent size settings control: layout_size_$name")
+            System.err.println("LayoutStack: saveSizes not yet implemented")
         }
     }
 
@@ -209,13 +209,13 @@ class LayoutStack(
 
     fun draw() {
         updateLayout()
-        if (clip) { TODO("GPU: clip to layout rect") }
+        if (clip) { /* no-op */ }
         for (panelp in panels) {
             val essentiallyInvisible = (!panelp.getVisible() || panelp.collapsed) && (panelp.visibleAmt < 0.001f || !animate)
             if (essentiallyInvisible) continue
-            TODO("GPU: draw panel ${panelp.name} clipped to visible dim")
+            // no-op
             panelp.resizeBar?.let { bar ->
-                if (bar.getVisible()) TODO("GPU: draw resize bar")
+                if (bar.getVisible()) { /* no-op */ }
             }
         }
     }
@@ -331,7 +331,7 @@ class LayoutStack(
     fun findEmbeddedPanelByName(name: String): LayoutPanel? = panels.firstOrNull { it.name == name }
 
     fun refreshFromSettings() {
-        TODO("APR: use JVM equivalent to reload saved panel dimensions from settings")
+        System.err.println("LayoutStack: refreshFromSettings not yet implemented")
     }
 
     private fun updateFractionalSizes() {
@@ -460,7 +460,7 @@ class LayoutStack(
                 lp.resizeBar = bar
 
                 if (showDragHandle) {
-                    TODO("GPU: create drag handle image panel inside resize bar")
+                    // no-op
                 }
             }
         }

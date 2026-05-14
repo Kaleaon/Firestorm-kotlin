@@ -90,23 +90,28 @@ class LLFilteredCollector(
 class LLInventoryListener {
 
     fun getItemsInfo(itemIds: List<UUID>): LLInventoryResponse {
-        TODO("APR: use JVM equivalent - query gInventory for each UUID in itemIds, populate LLInventoryResponse")
+        System.err.println("LLInventoryListener: getItemsInfo not yet implemented")
+        return LLInventoryResponse()
     }
 
     fun getFolderTypeNames(): Map<String, String> {
-        TODO("APR: use JVM equivalent - return LLFolderType type name table")
+        System.err.println("LLInventoryListener: getFolderTypeNames not yet implemented")
+        return emptyMap()
     }
 
     fun getAssetTypeNames(): Map<String, String> {
-        TODO("APR: use JVM equivalent - return LLAssetType type name table")
+        System.err.println("LLInventoryListener: getAssetTypeNames not yet implemented")
+        return emptyMap()
     }
 
     fun getBasicFolderID(ftName: String): UUID {
-        TODO("APR: use JVM equivalent - look up gInventory category UUID for folder type name '$ftName'")
+        System.err.println("LLInventoryListener: getBasicFolderID not yet implemented")
+        return UUID(0L, 0L)
     }
 
     fun getDirectDescendants(folderId: UUID): LLInventoryResponse {
-        TODO("APR: use JVM equivalent - fetch direct descendants of folderId from gInventory")
+        System.err.println("LLInventoryListener: getDirectDescendants not yet implemented")
+        return LLInventoryResponse()
     }
 
     fun collectDescendantsIf(
@@ -117,6 +122,7 @@ class LLInventoryListener {
         limit: Int = 0,
         filterLinks: EFilterLink = EFilterLink.INCLUDE_LINKS
     ): LLInventoryResponse {
-        TODO("APR: use JVM equivalent - collect descendants of folderId matching name/desc/type/linkFilter from gInventory, respecting limit")
+        System.err.println("LLInventoryListener: collectDescendantsIf not yet implemented")
+        return LLInventoryResponse()
     }
 }

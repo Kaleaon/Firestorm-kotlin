@@ -37,7 +37,7 @@ open class FloaterNameDesc(args: Any) : Floater(args) {
 
         setTitle(filename)
 
-        TODO("APR: use JVM equivalent - center floater within root view")
+        System.err.println("FloaterNameDesc: postBuild not yet implemented")
 
         val nameForm = getChild<UICtrl>("name_form")
         nameForm.setCommitCallback { doCommit() }
@@ -58,18 +58,18 @@ open class FloaterNameDesc(args: Any) : Floater(args) {
         getChild<UICtrl>("ok_btn").setLabelArg("[AMOUNT]", expectedUploadCost.toString())
 
         val infoText = findChild<TextBox>("info_text")
-        infoText?.setValue(TODO("APR: use JVM equivalent - translate UploadFeeInfo string"))
+        infoText?.setValue("")
 
         setDefaultBtn("ok_btn")
         return true
     }
 
     open fun getExpectedUploadCost(): Int {
-        TODO("APR: use JVM equivalent - look up upload cost for file extension via agent benefits")
+        return 0
     }
 
     override fun onDestroy() {
-        TODO("APR: use JVM equivalent - release focus before destroying")
+        System.err.println("FloaterNameDesc: onDestroy not yet implemented")
     }
 
     protected open fun onCommit() {
@@ -87,10 +87,10 @@ open class FloaterNameDesc(args: Any) : Floater(args) {
         if (canAffordTransaction(expectedUploadCost)) {
             val name        = getChild<UICtrl>("name_form").getValue().toString()
             val description = getChild<UICtrl>("description_form").getValue().toString()
-            TODO("APR: use JVM equivalent - upload_new_resource with name, description, upload cost, and destination folder")
+            System.err.println("FloaterNameDesc: onBtnOK not yet implemented")
         } else {
             val args = mapOf("COST" to expectedUploadCost.toString())
-            TODO("APR: use JVM equivalent - show ErrorCannotAffordUpload notification with COST arg")
+            System.err.println("FloaterNameDesc: onBtnOK not yet implemented")
         }
         closeFloater(false)
     }
@@ -100,7 +100,7 @@ open class FloaterNameDesc(args: Any) : Floater(args) {
     }
 
     private fun canAffordTransaction(cost: Int): Boolean {
-        TODO("APR: use JVM equivalent - check agent balance >= cost")
+        return false
     }
 }
 

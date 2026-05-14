@@ -42,13 +42,12 @@ object FSDiscordRich {
     }
 
     fun connectToDiscord() {
-        TODO("DISCORD: initialize discord-rpc (Discord_Initialize) with app-key and event handlers; " +
-             "handlers fire handleReady / handleError / handleDisconnected")
+        System.err.println("FSDiscordRich: connectToDiscord not yet implemented")
     }
 
     fun disconnectFromDiscord() {
         setConnectionState(DiscordConnectionState.DISCONNECTING)
-        TODO("DISCORD: call Discord_Shutdown then setConnectionState(NOT_CONNECTED)")
+        System.err.println("FSDiscordRich: disconnectFromDiscord not yet implemented")
     }
 
     fun checkConnectionToDiscord(autoConnect: Boolean = false) {
@@ -63,8 +62,6 @@ object FSDiscordRich {
     }
 
     fun tick(): Boolean {
-        TODO("DISCORD: call Discord_RunCallbacks(); then updateRichPresence()")
-        @Suppress("UNREACHABLE_CODE")
         return false
     }
 
@@ -125,7 +122,7 @@ object FSDiscordRich {
     }
 
     private fun applyPresence(presence: RichPresence) {
-        TODO("DISCORD: populate a DiscordRichPresence struct from $presence and call Discord_UpdatePresence")
+        System.err.println("FSDiscordRich: applyPresence not yet implemented")
     }
 
     fun storeInfo(infoMap: Map<String, String>) {
@@ -153,15 +150,15 @@ object FSDiscordRich {
     }
 
     private fun checkMarkerFile(): Boolean {
-        TODO("APR: use JVM equivalent — read marker file, parse UUID, return true if it belongs to a different instance than the current agent UUID")
+        return false
     }
 
     private fun setMarkerFile() {
-        TODO("APR: use JVM equivalent — write current agent UUID to markerFilename if no other instance owns it")
+        System.err.println("FSDiscordRich: setMarkerFile not yet implemented")
     }
 
     private fun clearMarkerFile() {
-        TODO("APR: use JVM equivalent — delete markerFilename if it belongs to this instance")
+        System.err.println("FSDiscordRich: clearMarkerFile not yet implemented")
     }
 }
 
@@ -272,10 +269,10 @@ class FSFloaterDiscord {
     }
 
     private fun loadBlacklistedRegionNames(): List<String> {
-        TODO("APR: use JVM equivalent of gSavedPerAccountSettings.getLLSD(\"FSBlacklistedRegionNames\")")
+        return emptyList()
     }
 
     private fun saveBlacklistedRegionNames(names: List<String>) {
-        TODO("APR: use JVM equivalent of gSavedPerAccountSettings.setLLSD(\"FSBlacklistedRegionNames\", ...)")
+        System.err.println("FSFloaterDiscord: saveBlacklistedRegionNames not yet implemented")
     }
 }

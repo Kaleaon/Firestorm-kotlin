@@ -26,9 +26,9 @@ class FloaterHUD(private val key: Any?) {
     }
 }
 
-private fun savedSettingsGetString(key: String): String = TODO("APR: use JVM equivalent")
-private fun notificationsAdd(notification: String) { TODO("APR: use JVM equivalent") }
-private fun findChildByName(name: String): Any? = TODO("APR: use JVM equivalent")
-private fun uiGetLanguage(): String = TODO("APR: use JVM equivalent")
-private fun setWebBrowserTakeFocusOnClick(browser: Any, value: Boolean) { TODO("APR: use JVM equivalent") }
-private fun webBrowserNavigateTo(browser: Any, url: String) { TODO("APR: use JVM equivalent") }
+private fun savedSettingsGetString(key: String): String = ""
+private fun notificationsAdd(notification: String) { System.err.println("FloaterHUD: notificationsAdd not yet implemented") }
+private fun findChildByName(name: String): Any? = null
+private fun uiGetLanguage(): String = ""
+private fun setWebBrowserTakeFocusOnClick(browser: Any, value: Boolean) { System.err.println("FloaterHUD: setWebBrowserTakeFocusOnClick not yet implemented") }
+private fun webBrowserNavigateTo(browser: Any, url: String) { System.err.println("FloaterHUD: webBrowserNavigateTo not yet implemented") }

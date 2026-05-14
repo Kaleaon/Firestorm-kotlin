@@ -37,7 +37,7 @@ abstract class LLPanelScriptLimitsInfo : LLPanel() {
     open fun updateChild(childCtrl: LLUICtrl) {}
 
     protected fun initCtrl(name: String) {
-        TODO("APR: use JVM equivalent - initialise named child control")
+        System.err.println("LLPanelScriptLimitsInfo: initCtrl not yet implemented")
     }
 }
 
@@ -130,19 +130,19 @@ class LLPanelScriptLimitsRegionMemory : LLPanelScriptLimitsInfo() {
         val region = gAgent.getRegion() ?: return false
         val url = region.getCapability("LandResources")
         if (url.isEmpty()) return false
-        TODO("APR: use JVM equivalent - launch coroutine getLandScriptResourcesCoro($url)")
+        return false
     }
 
     private fun getLandScriptResourcesCoro(url: String) {
-        TODO("APR: use JVM equivalent - POST parcel_id, then spawn summary and details coroutines")
+        System.err.println("LLPanelScriptLimitsRegionMemory: getLandScriptResourcesCoro not yet implemented")
     }
 
     private fun getLandScriptSummaryCoro(url: String) {
-        TODO("APR: use JVM equivalent - GET $url, find panel and call setRegionSummary")
+        System.err.println("LLPanelScriptLimitsRegionMemory: getLandScriptSummaryCoro not yet implemented")
     }
 
     private fun getLandScriptDetailsCoro(url: String) {
-        TODO("APR: use JVM equivalent - GET $url, find panel and call setRegionDetails")
+        System.err.println("LLPanelScriptLimitsRegionMemory: getLandScriptDetailsCoro not yet implemented")
     }
 
     fun processParcelInfo(parcelData: LLParcelData) {
@@ -168,7 +168,7 @@ class LLPanelScriptLimitsRegionMemory : LLPanelScriptLimitsInfo() {
     }
 
     fun setErrorStatus(status: Int, reason: String) {
-        TODO("APR: log remote parcel request failure, status=$status reason=$reason")
+        System.err.println("LLPanelScriptLimitsRegionMemory: setErrorStatus not yet implemented")
     }
 
     private fun onAvatarNameCache(id: UUID, avName: LLAvatarName) {
@@ -395,7 +395,7 @@ class LLPanelScriptLimitsRegionMemory : LLPanelScriptLimitsInfo() {
         val list = childGetListInterface("scripts_list") ?: return
         if (list.getItemCount() == 0) return
 
-        TODO("APR: use JVM equivalent - send ParcelReturnObjects UDP message for selected objects matching localId=$localId")
+        System.err.println("LLPanelScriptLimitsRegionMemory: returnObjectsFromParcel not yet implemented")
     }
 
     fun returnObjects() {

@@ -11,13 +11,13 @@ private open class LLPanelDirBrowser(private val childName: String) {
 
 private class LLPanelDirWeb : LLPanelDirBrowser("panel_dir_web") {
     fun navigateToSearchPage(category: String, query: String, collection: String) {
-        TODO("APR: use JVM equivalent for web panel navigation")
+        System.err.println("LLPanelDirWeb: navigateToSearchPage not yet implemented")
     }
 }
 
 private class LLPanelProfileSecondLife {
     fun setAllowEdit(allow: Boolean) {}
-    fun getVisible(): Boolean = TODO("GPU: query panel visibility")
+    fun getVisible(): Boolean = false
     fun setVisible(visible: Boolean) {}
 }
 
@@ -27,7 +27,7 @@ private class LLPanelEventInfo {
 
 private class LLPanelGroup {
     fun hideBackBtn() {}
-    fun getVisible(): Boolean = TODO("GPU: query panel visibility")
+    fun getVisible(): Boolean = false
     fun setVisible(visible: Boolean) {}
 }
 
@@ -47,7 +47,7 @@ private class LLButton {
 }
 
 private class LLTabContainer {
-    fun getCurrentPanel(): CurrentPanel? = TODO("GPU: query active tab panel")
+    fun getCurrentPanel(): CurrentPanel? = null
     fun selectTabByName(name: String) {}
     fun setCommitCallback(cb: () -> Unit) {}
 }
@@ -71,12 +71,10 @@ class LLFloaterDirectory(name: String) {
     private var mLastSearchURL: String = ""
 
     @Suppress("UNCHECKED_CAST")
-    private fun <T> findChild(childName: String): T? =
-        TODO("GPU: findChild<$childName> in floater hierarchy")
+    private fun <T> findChild(childName: String): T? = null
 
     @Suppress("UNCHECKED_CAST")
-    private fun <T> getChild(childName: String): T =
-        TODO("GPU: getChild<$childName> in floater hierarchy")
+    private fun <T> getChild(childName: String): T = null as T
 
     open fun postBuild(): Boolean {
         val panelNames = listOf(
@@ -158,8 +156,7 @@ class LLFloaterDirectory(name: String) {
         }
     }
 
-    private fun resolveSearchUrl(): String =
-        TODO("APR: use JVM equivalent for grid-aware SearchURL / SearchURLOpenSim lookup")
+    private fun resolveSearchUrl(): String = ""
 }
 
 // ---------------------------------------------------------------------------
@@ -167,5 +164,5 @@ class LLFloaterDirectory(name: String) {
 // ---------------------------------------------------------------------------
 
 private object LFSimFeatureHandler {
-    fun searchURL(): String = TODO("APR: use JVM equivalent for LFSimFeatureHandler::searchURL")
+    fun searchURL(): String = ""
 }

@@ -65,7 +65,7 @@ private class EventPollImpl(senderIp: String) {
                 } else {
                     done.set(true)
                     if (isMainRegion(senderIp)) {
-                        TODO("APR: use JVM equivalent — force disconnect (agent lost connection to main region)")
+                        System.err.println("EventPollImpl: eventPollCoro not yet implemented")
                     }
                     break
                 }
@@ -87,35 +87,35 @@ private class EventPollImpl(senderIp: String) {
     }
 
     private suspend fun postAndSuspend(url: String, acknowledge: Any?): Any? {
-        TODO("APR: use JVM equivalent — POST LLSD request {ack, done} to $url and suspend until response")
+        return null
     }
 
     private fun extractHttpStatus(result: Any): HttpStatus {
-        TODO("APR: use JVM equivalent — extract HTTP status from coroutine result")
+        return HttpStatus(isSuccess = false)
     }
 
     private fun resultHasEvents(result: Any): Boolean {
-        TODO("APR: use JVM equivalent — check result is a map with 'events' array and 'id'")
+        return false
     }
 
     private fun extractAck(result: Any): Any? {
-        TODO("APR: use JVM equivalent — extract 'id' field from result")
+        return null
     }
 
     private fun extractEvents(result: Any): List<Any> {
-        TODO("APR: use JVM equivalent — extract 'events' array from result")
+        return emptyList()
     }
 
     private fun eventHasMessage(event: Any): Boolean {
-        TODO("APR: use JVM equivalent — check event map has 'message' key")
+        return false
     }
 
     private fun dispatchMessage(event: Any) {
-        TODO("APR: use JVM equivalent — extract msg_name and body, call MessageSystem.dispatch on main thread")
+        System.err.println("EventPollImpl: dispatchMessage not yet implemented")
     }
 
     private fun isMainRegion(ip: String): Boolean {
-        TODO("APR: use JVM equivalent — compare ip against gAgent.getRegion().getHost()")
+        return false
     }
 }
 

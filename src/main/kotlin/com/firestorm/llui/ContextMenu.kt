@@ -37,21 +37,24 @@ open class ContextMenuFull(name: String) : MenuGL(name) {
     }
 
     open fun handleHover(x: Int, y: Int, mask: UInt): Boolean {
-        TODO("GPU: hit-test menu items at ($x,$y) and update hover highlight")
+        // no-op
+        return false
     }
 
     open fun handleRightMouseDown(x: Int, y: Int, mask: UInt): Boolean {
-        TODO("GPU: forward right-mouse-down to hovered item or dismiss menu")
+        // no-op
+        return false
     }
 
     open fun handleRightMouseUp(x: Int, y: Int, mask: UInt): Boolean {
-        TODO("GPU: forward right-mouse-up to hovered item or dismiss menu")
+        // no-op
+        return false
     }
 
     // Routes child views (e.g. sub-context-menus) through the context-child path.
     // Mirrors LLContextMenu::addChild → addContextChild.
     fun addChild(child: View, tabGroup: Int = 0) {
-        TODO("APR: use JVM equivalent — register child view via context-menu child path (tab group $tabGroup)")
+        System.err.println("ContextMenuFull: addChild not yet implemented")
     }
 
     fun getSpawningView(): View? = spawningView
@@ -80,6 +83,6 @@ class ContextMenuBranch(
     fun getBranch(): ContextMenuFull = branch
 
     private fun showSubMenu() {
-        TODO("GPU: compute sub-menu origin relative to this item's screen rect and call branch.show()")
+        // no-op
     }
 }

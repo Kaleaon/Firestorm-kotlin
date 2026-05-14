@@ -125,21 +125,21 @@ object SideTray {
      * Makes [name]'s panel visible and brings the side tray into view.
      */
     fun showPanel(name: String) {
-        TODO("SideTray.showPanel('$name') — requires UI framework integration")
+        System.err.println("SideTray: showPanel not yet implemented")
     }
 
     /**
      * Hides the panel identified by [name].
      */
     fun hidePanel(name: String) {
-        TODO("SideTray.hidePanel('$name') — requires UI framework integration")
+        System.err.println("SideTray: hidePanel not yet implemented")
     }
 
     /**
      * Toggles the visibility of the panel identified by [name].
      */
     fun togglePanel(name: String) {
-        TODO("SideTray.togglePanel('$name') — requires UI framework integration")
+        System.err.println("SideTray: togglePanel not yet implemented")
     }
 
     // ------------------------------------------------------------------
@@ -154,7 +154,7 @@ object SideTray {
      */
     fun collapse() {
         expanded = false
-        TODO("SideTray.collapse() — requires UI framework integration")
+        System.err.println("SideTray: collapse not yet implemented")
     }
 
     /**
@@ -162,6 +162,6 @@ object SideTray {
      */
     fun expand() {
         expanded = true
-        TODO("SideTray.expand() — requires UI framework integration")
+        System.err.println("SideTray: expand not yet implemented")
     }
 }

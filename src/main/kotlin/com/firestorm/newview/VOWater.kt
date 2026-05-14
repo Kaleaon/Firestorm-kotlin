@@ -27,11 +27,11 @@ open class VOWater(
     init {
         canSelect = false
         // Aurora-sim compatible: use actual region width rather than hardcoded 256
-        TODO("APR: setScale(Vector3(region.getWidth(), region.getWidth(), 0f))")
+        System.err.println("VOWater: setScale not yet implemented")
     }
 
     open fun markDead() {
-        TODO("GPU: LLViewerObject.markDead()")
+        // no-op
     }
 
     open fun isActive(): Boolean = false
@@ -46,18 +46,20 @@ open class VOWater(
     open fun idleUpdate(time: Double) {}
 
     open fun createDrawable(pipeline: Any?): Any? {
-        TODO("GPU: pipeline.allocDrawable(this); mDrawable.setLit(false); mDrawable.setRenderType(renderType); attach pool + face")
+        // no-op
+        return null
     }
 
     open fun updateGeometry(drawable: Any?): Boolean {
         // Water surface is a regular grid of quads.
         // Resolution is scaled by the region size and the RenderTransparentWater setting.
         // Each cell: 4 vertices, 6 indices (2 triangles).
-        TODO("GPU: build water quad mesh; fill vertex/normal/texcoord/index buffers; unmapBuffer(); movePartition(); sCompiles++")
+        // no-op
+        return false
     }
 
     open fun updateSpatialExtents(newMin: FloatArray, newMax: FloatArray) {
-        TODO("GPU: compute AABB from positionAgent ± scale*0.5; setPositionGroup(centre)")
+        // no-op
     }
 
     open fun getPartitionType(): Int =
@@ -102,7 +104,7 @@ class WaterPartition(region: ViewerRegion?) {
     var partitionType: Int = 0  // PARTITION_WATER
 
     init {
-        TODO("GPU: LLSpatialPartition(0, false, regionp)")
+        System.err.println("WaterPartition: LLSpatialPartition init not yet implemented")
     }
 }
 

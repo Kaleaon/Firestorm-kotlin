@@ -121,11 +121,11 @@ object LLPerfStats {
         fun resetChanges() { tuningFlag = Nothing }
 
         fun initialiseFromSettings() {
-            TODO("APR: read settings from gSavedSettings for autotune prefs")
+            System.err.println("Tunables: initialiseFromSettings not yet implemented")
         }
 
         fun updateRenderCostLimitFromSettings() {
-            TODO("APR: read RenderAvatarMaxART from gSavedSettings and update renderAvatarMaxART_ns")
+            System.err.println("Tunables: updateRenderCostLimitFromSettings not yet implemented")
         }
 
         fun updateSettingsFromRenderCostLimit() {
@@ -135,7 +135,7 @@ object LLPerfStats {
         }
 
         fun applyUpdates() {
-            TODO("APR: push tuning flag changes back to gSavedSettings")
+            System.err.println("Tunables: applyUpdates not yet implemented")
         }
     }
 
@@ -287,7 +287,7 @@ object LLPerfStats {
         }
 
         private fun countNearbyAvatars(distance: Int): Int {
-            TODO("APR: use JVM equivalent for LLWorld::getAvatars within distance")
+            return 0
         }
 
         private val frameTimeDeque: ArrayDeque<ULong> = ArrayDeque()
@@ -318,7 +318,7 @@ object LLPerfStats {
                 return
             }
 
-            val vsyncMaxFps: UInt = TODO("APR: query display refresh rate from window system")
+            val vsyncMaxFps: UInt = 0u
             val targetFps = if (tunables.vsyncEnabled) minOf(vsyncMaxFps, tunables.userTargetFPS)
                             else tunables.userTargetFPS
 
@@ -333,10 +333,10 @@ object LLPerfStats {
             updateMeanFrameTime(totFrameTimeRaw)
 
             if (tunables.userImpostorDistanceTuningEnabled) {
-                val renderFarClip: Float = TODO("GPU: read LLPipeline::RenderFarClip")
+                val renderFarClip: Float = 0f
                 val count = countNearbyAvatars(minOf(renderFarClip, tunables.userImpostorDistance).toInt())
                 if (count.toUInt() != tunables.nonImpostors) {
-                    val maxSlider: UInt = TODO("GPU: LLVOAvatar::NON_IMPOSTORS_MAX_SLIDER")
+                    val maxSlider: UInt = 0u
                     tunables.updateNonImposters(if (count.toUInt() < maxSlider) count.toUInt() else 0u)
                 }
             }
@@ -368,7 +368,7 @@ object LLPerfStats {
                 if (targetFrameTimeRaw < nonAvatarTimeRaw) {
                     if ((gFrameCount - lastGlobalPrefChange) > settingsChangeFrequency) {
                         if (tunables.userFPSTuningStrategy != TUNE_AVATARS_ONLY) {
-                            val renderFarClip: Float = TODO("GPU: read LLPipeline::RenderFarClip")
+                            val renderFarClip: Float = 0f
                             val newDd = if (renderFarClip - DD_STEP.toFloat() > tunables.userMinDrawDistance)
                                 renderFarClip - DD_STEP.toFloat() else tunables.userMinDrawDistance
                             if (newDd != renderFarClip) {
@@ -446,6 +446,6 @@ class RecordTime<T>(
     }
 }
 
-private fun getTotalAvatarRenderTimeRaw(): Long = TODO("GPU: LLVOAvatar::getTotalGPURenderTime raw")
-private fun getAverageAvatarRenderTimeRaw(): Long = TODO("GPU: LLVOAvatar::getAverageGPURenderTime raw")
-private fun getMaxAvatarRenderTimeRaw(): Long = TODO("GPU: LLVOAvatar::getMaxGPURenderTime raw")
+private fun getTotalAvatarRenderTimeRaw(): Long = 0
+private fun getAverageAvatarRenderTimeRaw(): Long = 0
+private fun getMaxAvatarRenderTimeRaw(): Long = 0

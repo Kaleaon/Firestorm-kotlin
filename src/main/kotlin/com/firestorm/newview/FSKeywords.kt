@@ -83,7 +83,7 @@ object FSKeywords {
      * whole-word matching.
      */
     fun updateKeywords() {
-        TODO("KEYWORDS: read FSKeywords / FSKeywordCaseSensitive / FSKeywordMatchWholeWords settings, split on commas, optionally lower-case and regex-escape, populate wordList")
+        System.err.println("FSKeywords: updateKeywords not yet implemented")
     }
 
     // ------------------------------------------------------------------
@@ -117,7 +117,7 @@ object FSKeywords {
      * Mirrors the scanning loop inside FSKeywords::chatContainsKeyword().
      */
     fun findMatch(text: String): KeywordEntry? {
-        TODO("KEYWORDS: apply case normalisation, then search text for each word (substring or whole-word regex); return first matching KeywordEntry")
+        return null
     }
 
     // ------------------------------------------------------------------
@@ -139,7 +139,7 @@ object FSKeywords {
         text: String,
         isLocal: Boolean
     ): Boolean {
-        TODO("KEYWORDS: guard against self-messages, check FSKeywordOn/FSKeywordInChat/FSKeywordInIM settings, optionally prepend speaker name, run matching loop")
+        return false
     }
 
     // ------------------------------------------------------------------
@@ -160,7 +160,7 @@ object FSKeywords {
         text: String,
         muted: Boolean = false
     ) {
-        TODO("KEYWORDS: check mute state, play UISndFSKeywordSound if enabled, send Growl notification if FSEnableGrowl is set")
+        System.err.println("FSKeywords: notify not yet implemented")
     }
 
     // ------------------------------------------------------------------
@@ -172,13 +172,13 @@ object FSKeywords {
      * Should call [updateKeywords] after loading.
      */
     fun load() {
-        TODO("KEYWORDS: deserialise keyword list from viewer settings or keyword XML file")
+        System.err.println("FSKeywords: load not yet implemented")
     }
 
     /**
      * Persist the current [keywords] list back to viewer settings / XML file.
      */
     fun save() {
-        TODO("KEYWORDS: serialise keywords list to viewer settings or keyword XML file")
+        System.err.println("FSKeywords: save not yet implemented")
     }
 }

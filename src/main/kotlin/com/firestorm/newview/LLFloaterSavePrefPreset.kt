@@ -62,8 +62,8 @@ class LLFloaterSavePrefPreset(key: Any) : LLFloater(key) {
     }
 
     @Suppress("UNCHECKED_CAST")
-    private fun <T> getChild(name: String): T? = TODO("UI: resolve child widget '$name'")
-    private fun closeFloater() { TODO("UI: close this floater") }
+    private fun <T> getChild(name: String): T? = null
+    private fun closeFloater() { System.err.println("LLFloaterSavePrefPreset: closeFloater not yet implemented") }
 }
 
 // ============================================================================
@@ -71,7 +71,7 @@ class LLFloaterSavePrefPreset(key: Any) : LLFloater(key) {
 // ============================================================================
 
 object LLFloaterReg {
-    inline fun <reified T> getTypedInstance(name: String): T? = TODO("FloaterReg: getTypedInstance '$name'")
-    inline fun <reified T> findTypedInstance(name: String): T? = TODO("FloaterReg: findTypedInstance '$name'")
-    fun showInstance(name: String, data: Any? = null) { TODO("FloaterReg: showInstance '$name'") }
+    inline fun <reified T> getTypedInstance(name: String): T? = null
+    inline fun <reified T> findTypedInstance(name: String): T? = null
+    fun showInstance(name: String, data: Any? = null) { System.err.println("LLFloaterReg: showInstance not yet implemented") }
 }

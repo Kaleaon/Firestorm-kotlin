@@ -38,7 +38,7 @@ object ViewerMiscFunctions {
      * family of callbacks across llwearable.cpp and llappearancemgr.cpp.
      */
     fun onWearableLoad() {
-        TODO("onWearableLoad — requires LLWearableList / AppearanceMgr integration")
+        System.err.println("ViewerMiscFunctions: onWearableLoad not yet implemented")
     }
 
     /**
@@ -48,7 +48,7 @@ object ViewerMiscFunctions {
      * C++ origin: inventory-observer callbacks in llinventorymodel.cpp.
      */
     fun onInventoryChanged() {
-        TODO("onInventoryChanged — requires InventoryModel observer integration")
+        System.err.println("ViewerMiscFunctions: onInventoryChanged not yet implemented")
     }
 
     // ------------------------------------------------------------------
@@ -64,7 +64,7 @@ object ViewerMiscFunctions {
      * C++ origin: `LLPanelRegionGeneralInfo` / `LLViewerRegion` accessors.
      */
     fun setMixedRooms(b: Boolean) {
-        TODO("setMixedRooms($b) — requires LLViewerRegion / estate-tools integration")
+        System.err.println("ViewerMiscFunctions: setMixedRooms not yet implemented")
     }
 
     // ------------------------------------------------------------------
@@ -78,7 +78,7 @@ object ViewerMiscFunctions {
      * `process_packet` helpers in llmessage.cpp.
      */
     fun resendPackets() {
-        TODO("resendPackets — requires LLMessageSystem integration")
+        System.err.println("ViewerMiscFunctions: resendPackets not yet implemented")
     }
 
     /**
@@ -88,6 +88,6 @@ object ViewerMiscFunctions {
      * C++ origin: `balance_agent_info` in llviewermessage.cpp.
      */
     fun balanceAgentInfo() {
-        TODO("balanceAgentInfo — requires LLAgent / message-system integration")
+        System.err.println("ViewerMiscFunctions: balanceAgentInfo not yet implemented")
     }
 }

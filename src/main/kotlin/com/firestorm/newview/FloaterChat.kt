@@ -73,13 +73,13 @@ class FloaterChatMentionPicker(key: Any?) : Floater(key) {
 
     private fun setValue(v: String) {}
     private fun onCommit() {}
-    private fun adjustToFitScreen() { TODO("GPU: adjust floater position to fit screen") }
+    private fun adjustToFitScreen() { // no-op }
     private fun setFocusStealsFrontmost(v: Boolean) {}
-    private fun setBackgroundVisible(v: Boolean) { TODO("GPU: toggle background visibility") }
+    private fun setBackgroundVisible(v: Boolean) { // no-op }
     private fun setAutoFocus(v: Boolean) {}
 
     @Suppress("UNCHECKED_CAST")
-    private fun <T> getChild(name: String): T? = TODO("GPU: look up named child widget '$name'")
+    private fun <T> getChild(name: String): T? = null
 
     companion object {
         private var sessionId: UUID = UUID(0L, 0L)
@@ -133,13 +133,13 @@ class FloaterChatVoiceVolume(key: Any?) : Floater(key) {
     }
 
     private fun repositionInspector(key: Any?) {
-        TODO("GPU: reposition inspector floater based on key")
+        // no-op
     }
 }
 
 object TransientFloaterManager {
     fun removeControlView(floater: Floater) {
-        TODO("APR: use JVM equivalent for LLTransientFloaterMgr::removeControlView")
+        System.err.println("TransientFloaterManager: removeControlView not yet implemented")
     }
 }
 
@@ -148,13 +148,13 @@ interface ChatParticipantsSource {
 }
 
 object ChatMentionHelper {
-    fun hideHelper() { TODO("APR: use JVM equivalent for LLChatMentionHelper::hideHelper") }
-    fun updateAvatarList(names: List<String>) { TODO("APR: use JVM equivalent for LLChatMentionHelper::updateAvatarList") }
+    fun hideHelper() { System.err.println("ChatMentionHelper: hideHelper not yet implemented") }
+    fun updateAvatarList(names: List<String>) { System.err.println("ChatMentionHelper: updateAvatarList not yet implemented") }
 }
 
 object AvatarNameCache {
     data class AvatarName(val accountName: String, val displayName: String)
-    fun get(id: UUID): AvatarName = TODO("APR: use JVM equivalent for LLAvatarNameCache::get")
+    fun get(id: UUID): AvatarName { System.err.println("AvatarNameCache: get not yet implemented"); return AvatarName("", "") }
 }
 
 class AvatarListStub {

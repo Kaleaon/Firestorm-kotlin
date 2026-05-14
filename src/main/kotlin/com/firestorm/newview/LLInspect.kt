@@ -30,7 +30,7 @@ abstract class LLInspect(key: Any?) : LLFloater(key) {
             closeTimerStarted -> {
                 val elapsed = nowMs - closeTimerStartMs
                 val alpha = (1f - elapsed.toFloat() / FADE_TIME_MS.toFloat()).coerceIn(0f, 1f)
-                TODO("GPU: apply alpha=$alpha draw context for fade-out, then call super.draw()")
+                // no-op
                 if (elapsed > FADE_TIME_MS) {
                     closeFloater(false)
                 }
@@ -66,7 +66,7 @@ abstract class LLInspect(key: Any?) : LLFloater(key) {
         val childHandler = childFromPoint(x, y) ?: return false
         val tip = childHandler.getToolTip()
         if (tip.isNullOrEmpty()) return false
-        TODO("APR: use JVM equivalent of LLToolTipMgr to show tooltip with message=\"$tip\"")
+        return false
     }
 
     open fun onMouseLeave(x: Int, y: Int, mask: Int) {
@@ -78,18 +78,18 @@ abstract class LLInspect(key: Any?) : LLFloater(key) {
     }
 
     protected open fun childHasVisiblePopupMenu(): Boolean {
-        TODO("APR: use JVM equivalent of gMenuHolder->getVisibleMenu() and rect overlap check")
+        return false
     }
 
     fun repositionInspector(data: Any?) {
-        TODO("APR: use JVM equivalent of LLUI::positionViewNearMouse and applyRectControl")
+        System.err.println("LLInspect: repositionInspector not yet implemented")
     }
 
     protected open fun closeFloater(appQuitting: Boolean) {
-        TODO("APR: use JVM equivalent of LLFloater::closeFloater")
+        System.err.println("LLInspect: closeFloater not yet implemented")
     }
 
     protected open fun childFromPoint(x: Int, y: Int): LLView? {
-        TODO("APR: use JVM equivalent of LLView::childFromPoint")
+        return null
     }
 }

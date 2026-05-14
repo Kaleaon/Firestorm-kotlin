@@ -53,27 +53,27 @@ object LFSimFeatureHandler {
     private var currencySymbolOverride: String = ""
 
     init {
-        TODO("APR: gAgent.addRegionChangedCallback { handleRegionChange() }; then call setSupportedFeatures()")
+        System.err.println("LFSimFeatureHandler: init not yet implemented")
     }
 
     fun exportPolicy(): ExportSupport {
-        TODO("APR: return if isInSecondLife -> EXPORT_UNDEFINED else if supportsExport -> EXPORT_ALLOWED else EXPORT_DENIED")
+        return ExportSupport.EXPORT_UNDEFINED
     }
 
     fun handleRegionChange() {
-        TODO("APR: get current region from gAgent; if region.simulatorFeaturesReceived() -> setSupportedFeatures() else region.setSimulatorFeaturesReceivedCallback { onSimulatorFeaturesReceived(it) }")
+        System.err.println("LFSimFeatureHandler: handleRegionChange not yet implemented")
     }
 
     fun onSimulatorFeaturesReceived(regionId: UUID) {
-        TODO("APR: if gAgent.getRegion()?.regionID == regionId -> setSupportedFeatures()")
+        System.err.println("LFSimFeatureHandler: onSimulatorFeaturesReceived not yet implemented")
     }
 
     fun setSupportedFeatures() {
-        TODO("APR: fetch simulator features LLSD from current region; if !isInSecondLife && has 'OpenSimExtras' -> read all OpenSim extras into fields (supportsExport, mapServerURL, sayRange, shoutRange, whisperRange, gridStatusRSS, gridStatusURL, hyperGridPrefix, FPS fields, searchURL, destinationGuideURL, avatarPickerURL, helperUriOverride, currencySymbolOverride, region prim scale limits); else reset to SL defaults; update hasAvatarPicker/hasDestinationGuide; call Tea.setRegionCurrency and updateCurrencySymbols if symbol changed")
+        System.err.println("LFSimFeatureHandler: setSupportedFeatures not yet implemented")
     }
 
     fun updateCurrencySymbols() {
-        TODO("APR: LLFloaterBuyCurrency.updateCurrencySymbols(); gStatusBar?.updateCurrencySymbols()")
+        System.err.println("LFSimFeatureHandler: updateCurrencySymbols not yet implemented")
     }
 
     fun simSupportsExport(): Boolean = supportsExport.get()

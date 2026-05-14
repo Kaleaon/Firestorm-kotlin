@@ -240,7 +240,7 @@ class NotificationEntry(
     fun setIgnored(ignore: Boolean) { ignored = ignore }
 
     fun playSound() {
-        TODO("APR: use JVM equivalent for make_ui_sound(${templatep?.soundName})")
+        System.err.println("NotificationEntry: playSound not yet implemented")
     }
 
     fun getResponseTemplate(type: ResponseTemplateType = ResponseTemplateType.WITHOUT_DEFAULT_BUTTON): MutableMap<String, Any> {
@@ -582,11 +582,13 @@ object Notifications : NotificationChannelBase(NotificationFilters::includeEvery
     }
 
     fun loadTemplates(): Boolean {
-        TODO("APR: use JVM equivalent to load notifications.xml from skin directory")
+        System.err.println("Notifications: loadTemplates not yet implemented")
+        return false
     }
 
     fun loadVisibilityRules(): Boolean {
-        TODO("APR: use JVM equivalent to load notification_visibility.xml")
+        System.err.println("Notifications: loadVisibilityRules not yet implemented")
+        return false
     }
 
     fun createDefaultChannels() {
@@ -869,14 +871,14 @@ abstract class PostponedNotification {
     fun lookupName(id: UUID, isGroup: Boolean) {
         fromId = id
         if (isGroup) {
-            TODO("APR: use JVM equivalent for gCacheName->getGroup")
+            System.err.println("PostponedNotification: lookupName not yet implemented")
         } else {
             fetchAvatarName(id)
         }
     }
 
     private fun fetchAvatarName(id: UUID) {
-        TODO("APR: use JVM equivalent for LLAvatarNameCache::get")
+        System.err.println("PostponedNotification: fetchAvatarName not yet implemented")
     }
 
     protected fun finalizeName(name: String) {

@@ -27,7 +27,7 @@ class FloaterMap(key: Any) : Floater(key) {
     private var map: NetMap? = null
 
     companion object {
-        fun getInstance(): FloaterMap? = TODO("APR: use JVM equivalent - FloaterReg::getTypedInstance")
+        fun getInstance(): FloaterMap? = null
     }
 
     override fun postBuild(): Boolean {
@@ -71,7 +71,7 @@ class FloaterMap(key: Any) : Floater(key) {
         setIsChrome(true)
         getDragHandle()?.setTitleVisible(true)
 
-        TODO("APR: use JVM equivalent - gFloaterView->adjustToFitScreen")
+        System.err.println("FloaterMap: postBuild not yet implemented")
         return true
     }
 
@@ -96,9 +96,9 @@ class FloaterMap(key: Any) : Floater(key) {
 
     override fun draw() {
         var rotation = 0f
-        val rotateMap = TODO("APR: use JVM equivalent - gSavedSettings.getBOOL(MiniMapRotate)") as? Boolean ?: true
+        val rotateMap = false
         if (rotateMap) {
-            val atAxis = TODO("APR: use JVM equivalent - LLViewerCamera::getInstance()->getAtAxis()") as? FloatArray
+            val atAxis: FloatArray? = null
             rotation = atan2(atAxis?.get(0) ?: 0f, atAxis?.get(1) ?: 0f)
         }
 
@@ -114,7 +114,7 @@ class FloaterMap(key: Any) : Floater(key) {
         setDirectionPos(textBoxSouthWest, rotation + pi + halfPi / 2f)
         setDirectionPos(textBoxSouthEast, rotation + pi + halfPi + halfPi / 2f)
 
-        val cameraMouselook = TODO("APR: use JVM equivalent - gAgentCamera.cameraMouselook()") as? Boolean ?: false
+        val cameraMouselook = false
         if (cameraMouselook) {
             setMouseOpaque(false)
             getDragHandle()?.setMouseOpaque(false)
@@ -126,7 +126,7 @@ class FloaterMap(key: Any) : Floater(key) {
     }
 
     fun getCurrentTransparency(): Float {
-        TODO("APR: use JVM equivalent - gSavedSettings.getF32(FSMiniMapOpacity)")
+        return 0f
     }
 
     override fun setMinimized(minimized: Boolean) {
@@ -187,7 +187,7 @@ class FloaterMap(key: Any) : Floater(key) {
 
     private fun stretchMiniMap(width: Int, height: Int) {
         val m = map ?: return
-        val mapRect = TODO("APR: use JVM equivalent - LLRect.setLeftTopAndSize") as? Any
+        val mapRect: Any? = null
         m.reshape(width, height, true)
         m.setRect(mapRect)
     }

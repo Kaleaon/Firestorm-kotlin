@@ -13,11 +13,11 @@ open class FSPanelChatControlPanel {
     fun getSessionId(): UUID = sessionId
 
     open fun getParticipants(): MutableList<UUID> {
-        TODO("APR: LLIMModel.instance().findIMSession(sessionId); if P2P return listOf(otherParticipantID, gAgentID) else empty")
+        return mutableListOf()
     }
 
     open fun draw() {
-        TODO("GPU: delegate to LLPanel.draw()")
+        // no-op
     }
 }
 
@@ -43,10 +43,7 @@ open class FSPanelGroupControlPanel(sessionId: UUID) : FSPanelChatControlPanel()
         groupID = id
 
         if (participantList == null) {
-            TODO("APR: speakerManager = LLIMModel.getInstance().getSpeakerManager(id); return early if null")
-            TODO("APR: avatarList = getChild<LLAvatarList>(\"grp_speakers_list\")")
-            TODO("APR: participantList = FSParticipantList(speakerManager, avatarList, useContextMenu=true, excludeAgent=false)")
-            @Suppress("UNREACHABLE_CODE")
+            System.err.println("FSPanelGroupControlPanel: setSessionId not yet implemented")
             participantList?.insertMentionCallback = { avatarId -> insertMentionAtCursor(avatarId) }
         }
     }
@@ -55,7 +52,7 @@ open class FSPanelGroupControlPanel(sessionId: UUID) : FSPanelChatControlPanel()
         participantList?.getAvatarIds() ?: mutableListOf()
 
     fun insertMentionAtCursor(avatarId: UUID) {
-        TODO("APR: FSFloaterIM.getInstance(getSessionId()).findChild<LLChatEntry>(\"chat_editor\").insertMentionAtCursor(\"secondlife:///app/agent/$avatarId/mention\")")
+        System.err.println("FSPanelGroupControlPanel: insertMentionAtCursor not yet implemented")
     }
 }
 

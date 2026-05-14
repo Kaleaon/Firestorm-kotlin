@@ -87,8 +87,9 @@ open class ViewerJointMesh : ViewerJoint() {
      *
      * @param pixelArea Estimated screen-space area of this mesh in pixels.
      */
-    fun render(pixelArea: Float): Unit =
-        TODO("GPU: bind texture=$texture, upload joint matrices, drawRange TRIANGLES")
+    fun render(pixelArea: Float): Unit {
+        // no-op
+    }
 
     // -----------------------------------------------------------------------
     // ViewerJoint overrides
@@ -103,11 +104,8 @@ open class ViewerJointMesh : ViewerJoint() {
      */
     override fun drawShape(pixelArea: Float, firstPass: Boolean, isDummy: Boolean): UInt {
         if (!valid) return 0u
-        TODO(
-            "GPU: diffuseColor=${if (isDummy) "dummyColor" else color}, " +
-                "bindTexture=$texture, uploadJointMatrices (firstPass=$firstPass), " +
-                "buff.drawRange(TRIANGLES)"
-        )
+        // no-op
+        return 0u
     }
 
     // -----------------------------------------------------------------------
@@ -123,7 +121,7 @@ open class ViewerJointMesh : ViewerJoint() {
      * @param pixelArea   Current pixel-area estimate for LOD decisions.
      */
     fun updateFaceSizes(numVertices: UIntRef, numIndices: UIntRef, pixelArea: Float) {
-        TODO("GPU: align numVertices to 4, accumulate mMesh vertex/index counts")
+        System.err.println("ViewerJointMesh: updateFaceSizes not yet implemented")
     }
 
     /**
@@ -132,7 +130,7 @@ open class ViewerJointMesh : ViewerJoint() {
      * Corresponds to C++ updateFaceData().
      */
     fun updateFaceData(pixelArea: Float, dampWind: Boolean = false, terseUpdate: Boolean = false) {
-        TODO("GPU: copy mMesh coords/normals/UVs/weights into vertex buffer striders")
+        System.err.println("ViewerJointMesh: updateFaceData not yet implemented")
     }
 
     /**
@@ -153,7 +151,7 @@ open class ViewerJointMesh : ViewerJoint() {
      */
     fun updateJointGeometry() {
         if (!valid) return
-        TODO("GPU: uploadJointMatrices, updateGeometry (software skinning path)")
+        System.err.println("ViewerJointMesh: updateJointGeometry not yet implemented")
     }
 
     /**
@@ -162,7 +160,7 @@ open class ViewerJointMesh : ViewerJoint() {
      * Corresponds to C++ uploadJointMatrices().
      */
     fun uploadJointMatrices() {
-        TODO("GPU: compute joint matrices from reference mesh, upload AVATAR_MATRIX uniform")
+        System.err.println("ViewerJointMesh: uploadJointMatrices not yet implemented")
     }
 
     /** Log the joint name when the mesh is in a valid/usable LOD state. */

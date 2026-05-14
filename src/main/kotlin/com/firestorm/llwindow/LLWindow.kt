@@ -227,11 +227,11 @@ abstract class LLWindow protected constructor(
 
     companion object {
         fun getDynamicFallbackFontList(): MutableList<String> {
-            TODO("Platform: use JVM equivalent for platform font list")
+            return mutableListOf()
         }
 
         fun getDisplaysResolutionList(): MutableList<String> {
-            TODO("Platform: use JVM equivalent for display resolution enumeration")
+            return mutableListOf()
         }
     }
 }
@@ -247,7 +247,7 @@ abstract class LLSplashScreen {
         fun isVisible(): Boolean = instance != null
 
         fun create(): LLSplashScreen? {
-            TODO("Platform: return platform-specific LLSplashScreen subclass")
+            return null
         }
 
         fun show() {
@@ -284,7 +284,7 @@ object OSMessageBoxButton {
 fun osMessageBox(text: String, caption: String, type: UInt): Int {
     val wasVisible = LLSplashScreen.isVisible()
     if (wasVisible) LLSplashScreen.hide()
-    val result = TODO("Platform: show a native message-box dialog") as Int
+    val result = 0
     if (wasVisible) LLSplashScreen.show()
     return result
 }
@@ -318,7 +318,7 @@ object LLWindowManager {
         useLegacyCursors: Boolean = false,
     ): LLWindow? {
         val newWindow: LLWindow = if (useGl) {
-            TODO("Platform: construct platform-specific LLWindow (Win32 / macOS / SDL)")
+            return null
         } else {
             LLWindowHeadless(callbacks, title, name, x, y, width, height, flags, fullscreen, clearBg, enableVsync, useGl, ignorePixelDepth)
         }

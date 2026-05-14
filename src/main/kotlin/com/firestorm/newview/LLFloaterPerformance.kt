@@ -261,7 +261,7 @@ class LLFloaterPerformance(key: LLSD) : LLFloater(key) {
         hudList.updateColumns(true)
 
         val avatar = gAgentAvatarp
-        TODO("GPU: gPipeline.profileAvatar(avatar, true)")
+        // no-op
 
         val begin = avatar.mAttachmentPoints.iterator()
 
@@ -305,7 +305,7 @@ class LLFloaterPerformance(key: LLSD) : LLFloater(key) {
 
                     val obj = hudList.addElement(item)
                     val valueText = obj?.getColumn(1) as? LLScrollListText
-                    TODO("GPU: valueText?.setAlignment(LLFontGL.HCENTER)")
+                    // no-op
                 }
             }
         }
@@ -321,7 +321,7 @@ class LLFloaterPerformance(key: LLSD) : LLFloater(key) {
         objectList.updateColumns(true)
 
         val avatar = gAgentAvatarp
-        TODO("GPU: gPipeline.profileAvatar(avatar, true)")
+        // no-op
 
         var maxGpuTime = -1f
         for (entry in avatar.mAttachmentPoints) {
@@ -363,7 +363,7 @@ class LLFloaterPerformance(key: LLSD) : LLFloater(key) {
 
                     val obj = objectList.addElement(item)
                     val valueText = obj?.getColumn(1) as? LLScrollListText
-                    TODO("GPU: valueText?.setAlignment(LLFontGL.HCENTER)")
+                    // no-op
                 }
             }
         }
@@ -411,7 +411,7 @@ class LLFloaterPerformance(key: LLSD) : LLFloater(key) {
                 val avItem = nearbyList.addElement(item)
                 if (avItem != null) {
                     val valueText = avItem.getColumn(1) as? LLScrollListText
-                    TODO("GPU: valueText?.setAlignment(LLFontGL.HCENTER)")
+                    // no-op
 
                     val nameText = avItem.getColumn(2) as? LLScrollListText
                     if (nameText != null) {

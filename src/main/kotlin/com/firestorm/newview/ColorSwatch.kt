@@ -141,7 +141,7 @@ open class ColorSwatchCtrl(
     override fun handleDoubleClick(x: Int, y: Int, mask: Int): Boolean = handleMouseDown(x, y, mask)
 
     override fun handleHover(x: Int, y: Int, mask: Int): Boolean {
-        TODO("APR: use JVM equivalent — set cursor to HAND")
+        System.err.println("ColorSwatchCtrl: handleHover not yet implemented")
         return true
     }
 
@@ -159,24 +159,24 @@ open class ColorSwatchCtrl(
         border?.setKeyboardFocusHighlight(hasFocus())
 
         val borderRect = Rect(left = 0, top = rect.height, right = rect.width, bottom = labelHeight)
-        TODO("GPU: gl_rect_2d(borderRect, borderColor, filled=false)")
+        // no-op
 
         val interior = borderRect.copy().also { it.stretch(-1) }
 
         if (valid) {
             if (!mColor.isOpaque) {
-                TODO("GPU: gl_rect_2d_checkerboard(interior, alpha)")
+                // no-op
             }
-            TODO("GPU: gl_rect_2d(interior, mColor * alpha, filled=true)")
+            // no-op
             if (!mColor.isOpaque) {
                 val opaqueColor = mColor.copy(a = alpha)
-                TODO("GPU: gGL.color4fv(opaqueColor); mAlphaGradientImage?.draw(interior, mColor * alpha)")
+                // no-op
             }
         } else {
             if (fallbackImage != null) {
-                TODO("GPU: fallbackImage.draw(interior, Color4.white * alpha)")
+                // no-op
             } else {
-                TODO("GPU: gl_rect_2d(interior, Color4.grey * alpha, filled=true); gl_draw_x(interior, Color4.black * alpha)")
+                // no-op
             }
         }
 

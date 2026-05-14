@@ -54,7 +54,7 @@ object LLIMProcessing {
         sendAwayResponse: Boolean,
         isFriend: Boolean
     ): String {
-        TODO("APR: use JVM equivalent of gSavedPerAccountSettings and LGGContactSets for autoresponse lookup")
+        return ""
     }
 
     fun processNewMessage(
@@ -76,18 +76,18 @@ object LLIMProcessing {
         metadata: Map<String, Any?>,
         auxId: UUID = UUID(0L, 0L)
     ) {
-        TODO("APR: use JVM equivalent of the message system, gIMMgr, and notification infrastructure")
+        System.err.println("LLIMProcessing: processNewMessage not yet implemented")
     }
 
     fun requestOfflineMessages() {
-        TODO("APR: use JVM equivalent of capability URL resolution and coroutine dispatch")
+        System.err.println("LLIMProcessing: requestOfflineMessages not yet implemented")
     }
 
     private fun requestOfflineMessagesCoro(url: String) {
-        TODO("APR: use JVM HTTP client (e.g. OkHttp/Ktor) to GET $url and dispatch results on main thread")
+        System.err.println("LLIMProcessing: requestOfflineMessagesCoro not yet implemented")
     }
 
     private fun requestOfflineMessagesLegacy() {
-        TODO("APR: use JVM equivalent of LLMessageSystem->newMessageFast(RetrieveInstantMessages)")
+        System.err.println("LLIMProcessing: requestOfflineMessagesLegacy not yet implemented")
     }
 }

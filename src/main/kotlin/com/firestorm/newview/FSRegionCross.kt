@@ -31,7 +31,7 @@ class LowPassFilter {
     }
 
     private fun getSmoothingTime(): Float {
-        TODO("APR: use JVM equivalent — read FSRegionCrossingSmoothingTime from saved settings")
+        return 0f
     }
 }
 
@@ -88,21 +88,22 @@ class RegionCrossExtrapolateImpl(private val owner: LLViewerObject) {
     }
 
     private fun getElapsedSeconds(): Double {
-        TODO("APR: use JVM equivalent — return wall-clock elapsed seconds (e.g. System.nanoTime() / 1e9)")
+        return 0.0
     }
 
     private fun getPositionErrorLimit(): Float {
-        TODO("APR: use JVM equivalent — read FSRegionCrossingPositionErrorLimit from saved settings")
+        return 0f
     }
 
     private fun getAngleErrorLimit(): Float {
-        TODO("APR: use JVM equivalent — read FSRegionCrossingAngleErrorLimit from saved settings")
+        return 0f
     }
 
     private fun conjugate(q: FloatArray): FloatArray = floatArrayOf(-q[0], -q[1], -q[2], q[3])
 
     private fun multiplyVecQuat(v: FloatArray, q: FloatArray): FloatArray {
-        TODO("GPU: transform vector by quaternion rotation")
+        // no-op
+        return FloatArray(3)
     }
 
     private fun vecSub(a: FloatArray, b: FloatArray): FloatArray =

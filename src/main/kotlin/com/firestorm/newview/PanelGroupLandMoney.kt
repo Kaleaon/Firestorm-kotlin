@@ -67,11 +67,11 @@ class GroupMoneyDetailsTabHandler : GroupMoneyTabEventHandler(
     GroupMoneyTabHandlerImpl(intervalLength = 7, maxInterval = 8)
 ) {
     override fun requestData() {
-        TODO("APR: send GroupAccountDetailsRequest for group=${impl.groupId} interval=${impl.intervalLength} current=${impl.currentInterval}")
+        System.err.println("GroupMoneyDetailsTabHandler: requestData not yet implemented")
     }
 
     override fun processReply() {
-        TODO("APR: parse GroupAccountDetailsReply; format dates; populate details text editor")
+        System.err.println("GroupMoneyDetailsTabHandler: processReply not yet implemented")
     }
 }
 
@@ -79,11 +79,11 @@ class GroupMoneySalesTabHandler : GroupMoneyTabEventHandler(
     GroupMoneyTabHandlerImpl(intervalLength = 7, maxInterval = 8)
 ) {
     override fun requestData() {
-        TODO("APR: send GroupAccountTransactionsRequest for group=${impl.groupId} interval=${impl.intervalLength} current=${impl.currentInterval}")
+        System.err.println("GroupMoneySalesTabHandler: requestData not yet implemented")
     }
 
     override fun processReply() {
-        TODO("APR: parse GroupAccountTransactionsReply; format transaction lines; populate sales text editor")
+        System.err.println("GroupMoneySalesTabHandler: processReply not yet implemented")
     }
 }
 
@@ -92,11 +92,11 @@ class GroupMoneyPlanningTabHandler : GroupMoneyTabEventHandler(
 ) {
     override fun requestData() {
         // Planning always uses interval 0
-        TODO("APR: send GroupAccountSummaryRequest for group=${impl.groupId} interval=${impl.intervalLength} current=0")
+        System.err.println("GroupMoneyPlanningTabHandler: requestData not yet implemented")
     }
 
     override fun processReply() {
-        TODO("APR: parse GroupAccountSummaryReply; format balance/credit/debit summary; populate planning text editor")
+        System.err.println("GroupMoneyPlanningTabHandler: processReply not yet implemented")
     }
 }
 
@@ -114,15 +114,15 @@ open class PanelGroupLandMoney : PanelGroupTab() {
         }
 
         fun processGroupAccountDetailsReply(agentId: UUID, requestId: UUID) {
-            TODO("APR: dispatch GroupAccountDetailsReply to the handler identified by requestId=$requestId")
+            System.err.println("PanelGroupLandMoney: processGroupAccountDetailsReply not yet implemented")
         }
 
         fun processGroupAccountTransactionsReply(agentId: UUID, requestId: UUID) {
-            TODO("APR: dispatch GroupAccountTransactionsReply to handler for requestId=$requestId")
+            System.err.println("PanelGroupLandMoney: processGroupAccountTransactionsReply not yet implemented")
         }
 
         fun processGroupAccountSummaryReply(agentId: UUID, requestId: UUID) {
-            TODO("APR: dispatch GroupAccountSummaryReply to handler for requestId=$requestId")
+            System.err.println("PanelGroupLandMoney: processGroupAccountSummaryReply not yet implemented")
         }
     }
 
@@ -153,37 +153,38 @@ open class PanelGroupLandMoney : PanelGroupTab() {
         var moneyPlanningTabHandler: GroupMoneyPlanningTabHandler? = null
 
         fun getStoredContribution(): Int {
-            TODO("APR: query agent's land contribution for group $groupId from agent data")
+            return 0
         }
 
         fun requestGroupLandInfo() {
             transId = UUID.randomUUID()
-            TODO("APR: send DFQ_GROUP_OWNED places query for group $groupId with transId=$transId")
+            System.err.println("Impl: requestGroupLandInfo not yet implemented")
         }
 
         fun onMapButton() {
-            TODO("APR: read global_x/global_y from selected parcel row; open world map floater at that location")
+            System.err.println("Impl: onMapButton not yet implemented")
         }
 
         fun applyContribution(newContribution: Int): Boolean {
-            TODO("APR: validate newContribution vs available sq-m; call agent.setGroupContribution($groupId, $newContribution)")
+            return false
         }
 
         fun processGroupLand(blocks: List<PlacesQueryBlock>) {
-            TODO("APR: populate group parcel scroll list from ${blocks.size} PlacesQueryBlock entries; update total-land/in-use/available labels")
+            System.err.println("Impl: processGroupLand not yet implemented")
         }
     }
 
     val impl = Impl()
 
     override fun postBuild(): Boolean {
-        TODO("APR: obtain UI child widgets (contribution editor, map button, parcel list, money tabs); wire callbacks; create tab event handlers if agent is in group")
+        System.err.println("PanelGroupLandMoney: postBuild not yet implemented")
+        return false
     }
 
     override fun activate() {
         if (!impl.beenActivated) {
             impl.beenActivated = true
-            TODO("APR: select first money tab; compute max contribution = stored + statusBar.squareMetersLeft; update max-contribution label")
+            System.err.println("PanelGroupLandMoney: activate not yet implemented")
         }
         update(GroupChange.GC_ALL)
     }
@@ -191,17 +192,17 @@ open class PanelGroupLandMoney : PanelGroupTab() {
     override fun needsApply(mesg: StringBuilder): Boolean = impl.needsApply
 
     override fun apply(mesg: StringBuilder): Boolean {
-        TODO("APR: read contribution editor text; call impl.applyContribution(newValue)")
+        return false
     }
 
     override fun cancel() {
         impl.needsApply = false
-        TODO("APR: reset contribution editor text to impl.getStoredContribution()")
+        System.err.println("PanelGroupLandMoney: cancel not yet implemented")
     }
 
     override fun update(gc: GroupChange) {
         if (gc != GroupChange.GC_ALL) return
-        TODO("APR: call onClickTab() on the currently visible money tab handler; call impl.requestGroupLandInfo(); refresh contribution field")
+        System.err.println("PanelGroupLandMoney: update not yet implemented")
     }
 
     override fun setGroupId(id: UUID) {
@@ -218,10 +219,10 @@ open class PanelGroupLandMoney : PanelGroupTab() {
     }
 
     fun onLandSelectionChanged() {
-        TODO("APR: enable map button iff parcel list has at least one item")
+        System.err.println("PanelGroupLandMoney: onLandSelectionChanged not yet implemented")
     }
 
     override fun isVisibleByAgent(): Boolean {
-        TODO("APR: return allowEdit && agent.isInGroup($groupId)")
+        return false
     }
 }

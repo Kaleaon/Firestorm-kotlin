@@ -39,17 +39,17 @@ object LLPathfindingManager {
     // ---- system lifecycle ----
 
     fun initSystem() {
-        TODO("APR: use JVM equivalent of LLPathingLib::initSystem()")
+        System.err.println("LLPathfindingManager: initSystem not yet implemented")
     }
 
     fun quitSystem() {
-        TODO("APR: use JVM equivalent of LLPathingLib::quitSystem()")
+        System.err.println("LLPathfindingManager: quitSystem not yet implemented")
     }
 
     // ---- capability / region queries ----
 
     fun isPathfindingViewEnabled(): Boolean {
-        TODO("APR: use JVM equivalent of LLPathingLib::getInstance() != NULL")
+        return false
     }
 
     fun isPathfindingEnabledForCurrentRegion(): Boolean =
@@ -59,7 +59,7 @@ object LLPathfindingManager {
         getRetrieveNavMeshURLForRegion(region).isNotEmpty()
 
     fun isAllowViewTerrainProperties(): Boolean {
-        TODO("APR: use JVM equivalent of gAgent.isGodlike() || region.canManageEstate()")
+        return false
     }
 
     // ---- nav mesh ----
@@ -249,30 +249,28 @@ object LLPathfindingManager {
     // ---- coroutine stubs (replace with JVM async HTTP) ----
 
     private fun navMeshStatusRequestCoro(url: String, regionHandle: ULong, isGetStatusOnly: Boolean) {
-        TODO("APR: use JVM equivalent — GET $url, parse LLPathfindingNavMeshStatus, call navMesh handle* methods")
+        System.err.println("LLPathfindingManager: navMeshStatusRequestCoro not yet implemented")
     }
 
     private fun navAgentStateRequestCoro(url: String) {
-        TODO("APR: use JVM equivalent — GET $url, read '$AGENT_STATE_CAN_REBAKE_FIELD', call handleAgentState()")
+        System.err.println("LLPathfindingManager: navAgentStateRequestCoro not yet implemented")
     }
 
     private fun navMeshRebakeCoro(url: String, callback: RebakeNavMeshCallback) {
-        TODO("APR: use JVM equivalent — POST $url {\"command\":\"rebuild\"}, call callback(success)")
+        System.err.println("LLPathfindingManager: navMeshRebakeCoro not yet implemented")
     }
 
     // putData == null → GET; non-null → PUT
     private fun linksetObjectsCoro(url: String, responder: LinksetsResponder, putData: Map<String, Any>?) {
-        TODO("APR: use JVM equivalent — ${if (putData == null) "GET" else "PUT"} $url, " +
-                "call responder.handleObjectLinksetsResult / handleObjectLinksetsError")
+        System.err.println("LLPathfindingManager: linksetObjectsCoro not yet implemented")
     }
 
     private fun linksetTerrainCoro(url: String, responder: LinksetsResponder, putData: Map<String, Any>?) {
-        TODO("APR: use JVM equivalent — ${if (putData == null) "GET" else "PUT"} $url, " +
-                "call responder.handleTerrainLinksetsResult / handleTerrainLinksetsError")
+        System.err.println("LLPathfindingManager: linksetTerrainCoro not yet implemented")
     }
 
     private fun charactersCoro(url: String, requestId: RequestId, callback: ObjectRequestCallback) {
-        TODO("APR: use JVM equivalent — GET $url, wrap result in LLPathfindingCharacterList, call callback")
+        System.err.println("LLPathfindingManager: charactersCoro not yet implemented")
     }
 
     // ---- internal state updates (invoked from sim-push message handlers) ----
@@ -337,7 +335,7 @@ object LLPathfindingManager {
     }
 
     private fun getCurrentRegion(): ViewerRegion? {
-        TODO("APR: use JVM equivalent of gAgent.getRegion()")
+        return null
     }
 
     // ---- LinksetsResponder — coordinates parallel object + terrain HTTP responses ----

@@ -11,8 +11,7 @@ class FSNearbyChatBarListener {
     }
 
     private fun registerEventApi() {
-        TODO("APR: use JVM equivalent for LLEventAPI registration under name 'LLChatBar' " +
-            "with description 'LLChatBar listener to (e.g.) sendChat, etc.'")
+        System.err.println("FSNearbyChatBarListener: registerEventApi not yet implemented")
     }
 
     private fun sendChat(chatData: Map<String, Any>) {
@@ -45,15 +44,15 @@ class FSNearbyChatBarListener {
     }
 
     private fun sendChatFromViewer(text: String, type: EChatType, playAnim: Boolean) {
-        TODO("APR: use JVM equivalent for FSNearbyChat::instance().sendChatFromViewer")
+        System.err.println("FSNearbyChatBarListener: sendChatFromViewer not yet implemented")
     }
 
     private fun getElapsedSeconds(): Double {
-        TODO("APR: use JVM equivalent for LLTimer::getElapsedSeconds()")
+        return 0.0
     }
 
     private fun getPlayChatAnim(): Boolean {
-        TODO("APR: use JVM equivalent for gSavedSettings.getBOOL('PlayChatAnim')")
+        return false
     }
 
     enum class EChatType { NORMAL, WHISPER, SHOUT }

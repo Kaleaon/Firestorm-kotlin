@@ -186,7 +186,7 @@ open class FlatListView(
 
     fun scrollToShowFirstSelectedItem() {
         if (selectedItemPairs.isEmpty()) return
-        TODO("APR: use JVM equivalent for scrollToShowRect of first selected item")
+        System.err.println("FlatListView: scrollToShowFirstSelectedItem not yet implemented")
     }
 
     fun selectFirstItem() {
@@ -246,7 +246,7 @@ open class FlatListView(
     }
 
     protected open fun rearrangeItems() {
-        TODO("GPU: reposition all visible item panels vertically using itemPad spacing")
+        // no-op
     }
 
     protected fun getItemPair(item: Panel): ItemPair? =
@@ -334,14 +334,14 @@ open class FlatListView(
     }
 
     protected fun notifyParentItemsRectChanged() {
-        TODO("APR: use JVM equivalent for notifying parent of size_changes dimensions")
+        System.err.println("FlatListView: notifyParentItemsRectChanged not yet implemented")
     }
 
     protected fun getLastSelectedItemRect(): Rect =
         selectedItemPairs.lastOrNull()?.panel?.rect ?: Rect()
 
     protected fun ensureSelectedVisible() {
-        TODO("APR: use JVM equivalent for scrollToShowRect of last selected item")
+        System.err.println("FlatListView: ensureSelectedVisible not yet implemented")
     }
 
     fun handleKeyHere(key: Int, mask: Int): Boolean {
@@ -358,7 +358,7 @@ open class FlatListView(
             }
             KEY_UP -> { if (!selectNextItemPair(true, resetSel) && resetSel) resetSelection() }
             KEY_DOWN -> { if (!selectNextItemPair(false, resetSel) && resetSel) resetSelection() }
-            KEY_ESCAPE -> { if (mask == MASK_NONE) TODO("APR: use JVM equivalent for setFocus(false)") }
+            KEY_ESCAPE -> { if (mask == MASK_NONE) System.err.println("FlatListView: handleKeyHere KEY_ESCAPE not yet implemented") }
         }
         if ((key == KEY_UP || key == KEY_DOWN) && selectedItemPairs.isNotEmpty()) {
             ensureSelectedVisible(); handled = true

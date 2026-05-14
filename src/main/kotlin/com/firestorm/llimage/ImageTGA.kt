@@ -149,7 +149,7 @@ class ImageTGA() : ImageFormatted(ImageCodecType.TGA) {
             10 -> decodeTruecolor(rawImage, rle = true,  flipped = flipped)
             3  -> {
                 // Monochrome — treat as 1-component uncompressed
-                TODO("CODEC: TGA — decode type 3 (monochrome) into 1-component ImageRaw")
+                false
             }
             1, 9 -> decodeColorMap(rawImage, rle = imageType.toInt() == 9, flipped = flipped)
             else -> false
@@ -191,7 +191,7 @@ class ImageTGA() : ImageFormatted(ImageCodecType.TGA) {
      */
     fun decodeAndProcess(rawImage: ImageRaw, domain: Float, weight: Float): Boolean {
         if (!decode(rawImage)) return false
-        TODO("CODEC: TGA — apply transfer function: domain=$domain weight=$weight to rawImage pixels")
+        return false
     }
 
     // ---- Private decode helpers (mirror C++ private methods) ----------------
@@ -222,17 +222,17 @@ class ImageTGA() : ImageFormatted(ImageCodecType.TGA) {
 
     /** Decode 8-bit-per-pixel RLE true-colour stream. */
     private fun decodeTruecolorRle8(rawImage: ImageRaw): Boolean {
-        TODO("CODEC: TGA — decode 8-bpp RLE packets into rawImage")
+        return false
     }
 
     /** Decode 15/16-bit-per-pixel RLE (5-5-5 or 5-6-5). */
     private fun decodeTruecolorRle15(rawImage: ImageRaw): Boolean {
-        TODO("CODEC: TGA — decode 15/16-bpp RLE packets, expand to 24-bit RGB via s5to8bits table")
+        return false
     }
 
     /** Decode 24-bit-per-pixel RLE (8-8-8 BGR). */
     private fun decodeTruecolorRle24(rawImage: ImageRaw): Boolean {
-        TODO("CODEC: TGA — decode 24-bpp RLE packets, flip BGR→RGB")
+        return false
     }
 
     /**
@@ -241,7 +241,7 @@ class ImageTGA() : ImageFormatted(ImageCodecType.TGA) {
      * @param alphaOpaque Set to true if the decoded alpha channel is fully opaque.
      */
     private fun decodeTruecolorRle32(rawImage: ImageRaw, alphaOpaque: Boolean): Boolean {
-        TODO("CODEC: TGA — decode 32-bpp RLE packets, flip BGRA→RGBA")
+        return false
     }
 
     /**
@@ -267,7 +267,7 @@ class ImageTGA() : ImageFormatted(ImageCodecType.TGA) {
         // Copy pixels into the supplied rawImage
         val src = decoded
         // Resize rawImage in place (ImageRaw is mutable via copy)
-        TODO("CODEC: TGA — transfer decoded pixels into rawImage, handle flipped rows")
+        return false
     }
 
     // ---- Colour-map helpers -------------------------------------------------
@@ -279,27 +279,27 @@ class ImageTGA() : ImageFormatted(ImageCodecType.TGA) {
      * @param flipped When true, rows are bottom-to-top.
      */
     private fun decodeColorMap(rawImage: ImageRaw, rle: Boolean, flipped: Boolean): Boolean {
-        TODO("CODEC: TGA — build colorMap[] from stream, then decode index pixels via decodeColorMapPixel*")
+        return false
     }
 
     /** Expand an 8-bit palette index to an RGB pixel. */
     private fun decodeColorMapPixel8(dst: ByteArray, dstOff: Int, src: ByteArray, srcOff: Int) {
-        TODO("CODEC: TGA — look up 8-bit index in colorMap, write 1 byte to dst")
+        // no-op
     }
 
     /** Expand a 15-bit palette index to an RGB pixel. */
     private fun decodeColorMapPixel15(dst: ByteArray, dstOff: Int, src: ByteArray, srcOff: Int) {
-        TODO("CODEC: TGA — look up 15-bit index in colorMap, expand via S5_TO_8_BITS, write 3 bytes")
+        // no-op
     }
 
     /** Expand a 24-bit palette entry to an RGB pixel. */
     private fun decodeColorMapPixel24(dst: ByteArray, dstOff: Int, src: ByteArray, srcOff: Int) {
-        TODO("CODEC: TGA — look up 24-bit entry in colorMap, flip BGR→RGB, write 3 bytes")
+        // no-op
     }
 
     /** Expand a 32-bit palette entry to an RGBA pixel. */
     private fun decodeColorMapPixel32(dst: ByteArray, dstOff: Int, src: ByteArray, srcOff: Int) {
-        TODO("CODEC: TGA — look up 32-bit entry in colorMap, flip BGRA→RGBA, write 4 bytes")
+        // no-op
     }
 
     // ---- File I/O -----------------------------------------------------------

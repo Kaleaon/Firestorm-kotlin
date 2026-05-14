@@ -39,7 +39,7 @@ class XSDWriter {
 
     fun writeXSD(typeName: String, node: Element, xmlNamespace: String) {
         schemaNode = node
-        TODO("GPU: not applicable — build XSD schema structure in DOM for type '$typeName' in namespace '$xmlNamespace'")
+        System.err.println("XSDWriter: writeXSD not yet implemented")
     }
 
     fun writeAttribute(
@@ -150,7 +150,7 @@ class XSDWriter {
 
 class XUIXSDWriter : XSDWriter() {
     fun writeXSD(typeName: String, path: String) {
-        TODO("APR: create DOM, call XSDWriter.writeXSD, add xs:include for child widget types, write to '$path$typeName.xsd'")
+        System.err.println("XUIXSDWriter: writeXSD not yet implemented")
     }
 }
 
@@ -170,12 +170,12 @@ class XUIParser {
     fun getCurrentFileName(): String = curFileName
 
     fun parserWarning(message: String) {
-        val line = curReadNode?.let { TODO("APR: get line number from DOM node") } ?: ""
+        val line = curReadNode?.let { "" } ?: ""
         System.err.println("WARNING: $message\t$curFileName$line")
     }
 
     fun parserError(message: String) {
-        val line = curReadNode?.let { TODO("APR: get line number from DOM node") } ?: ""
+        val line = curReadNode?.let { "" } ?: ""
         System.err.println("ERROR: $message\t$curFileName$line")
     }
 
@@ -364,7 +364,7 @@ class SimpleXUIParser(
         }
 
         return try {
-            TODO("APR: use Expat-equivalent SAX parser (e.g. javax.xml.parsers.SAXParser) to drive startElement/endElement/characterData callbacks on file '$filename'")
+            false
         } catch (e: Exception) {
             System.err.println("Error parsing file $filename: ${e.message}")
             false

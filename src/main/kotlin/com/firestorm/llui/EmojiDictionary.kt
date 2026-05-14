@@ -131,27 +131,27 @@ object EmojiDictionary {
     }
 
     private fun loadTranslations() {
-        TODO("APR: use JVM equivalent — find and parse $SKINNED_CATEGORY_FILENAME, populate translations map")
+        System.err.println("EmojiDictionary: loadTranslations not yet implemented")
     }
 
     private fun loadGroups() {
-        TODO("APR: use JVM equivalent — parse $COMMON_GROUP_FILENAME, populate groups/skipCategories/category2Group")
+        System.err.println("EmojiDictionary: loadGroups not yet implemented")
     }
 
     private fun loadEmojis() {
-        TODO("APR: use JVM equivalent — find and parse $SKINNED_EMOJI_FILENAME, populate emojis/emoji2Descr/category2Descrs/shortCode2Descr")
+        System.err.println("EmojiDictionary: loadEmojis not yet implemented")
     }
 
     private fun loadIcon(sd: Any?): WChar {
-        TODO("APR: use JVM equivalent — extract single-codepoint 'Character' field from LLSD/XML node")
+        return 0
     }
 
     private fun loadCategories(sd: Any?): MutableList<String> {
-        TODO("APR: use JVM equivalent — extract 'Categories' array from LLSD/XML node")
+        return mutableListOf()
     }
 
     private fun loadShortCodes(sd: Any?): MutableList<String> {
-        TODO("APR: use JVM equivalent — extract 'ShortCodes' array from LLSD/XML node and lowercase each entry")
+        return mutableListOf()
     }
 
     private fun translateCategories(categories: MutableList<String>) {

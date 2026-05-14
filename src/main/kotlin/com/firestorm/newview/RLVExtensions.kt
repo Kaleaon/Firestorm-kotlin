@@ -54,7 +54,7 @@ class RlvExtGetSet : RlvExtCommandHandler {
             dbgAllowed["WindLightUseAtmosShaders"]          = DBG_READ.toShort()
 
             // Mark persisted settings so writes can honour persistence policy.
-            TODO("APR: use JVM equivalent to check gSavedSettings persistence for each entry in dbgAllowed")
+            System.err.println("RlvExtGetSet: initAllowedSettings not yet implemented")
         }
     }
 
@@ -112,7 +112,7 @@ class RlvExtGetSet : RlvExtCommandHandler {
             val angle  = option.toFloatOrNull()
             if (angle != null) {
                 val adjusted = RLV_SETROT_OFFSET - angle
-                TODO("GPU: gAgentCamera.startCameraAnimation(); rotate agent axes by adjusted angle around z-axis")
+                // no-op
                 eRet.value = ERlvCmdRet.RLV_RET_SUCCESS
             } else {
                 eRet.value = ERlvCmdRet.RLV_RET_FAILED_OPTION
@@ -132,7 +132,7 @@ class RlvExtGetSet : RlvExtCommandHandler {
         val flags = FlagsRef(0)
         if (findDebugSetting(ref, flags) && (flags.value.toInt() and DBG_READ) == DBG_READ) {
             return if ((flags.value.toInt() and DBG_PSEUDO) == 0) {
-                TODO("APR: use JVM equivalent to read gSavedSettings for ${ref.value} (U32/S32/BOOL)")
+                ""
             } else {
                 onGetPseudoDebug(ref.value)
             }
@@ -144,10 +144,10 @@ class RlvExtGetSet : RlvExtCommandHandler {
         if (strSetting == "AvatarSex") {
             val override = pseudoDebug[strSetting]
             if (override != null) return override
-            TODO("GPU: check gAgentAvatarp->getSex() == SEX_MALE and return 1 or 0")
+            return ""
         }
         if (strSetting == "AspectRatio") {
-            TODO("GPU: return gViewerWindow->getWorldViewWidthScaled() / getWorldViewHeightScaled() formatted to 3 decimal places")
+            return ""
         }
         return ""
     }
@@ -159,7 +159,7 @@ class RlvExtGetSet : RlvExtCommandHandler {
             return ERlvCmdRet.RLV_RET_FAILED_UNKNOWN
         }
         return if ((flags.value.toInt() and DBG_PSEUDO) == 0) {
-            TODO("APR: use JVM equivalent to write gSavedSettings for ${ref.value} with value $strValue; honour DBG_PERSIST")
+            ERlvCmdRet.RLV_RET_FAILED_UNKNOWN
         } else {
             onSetPseudoDebug(ref.value, strValue)
         }

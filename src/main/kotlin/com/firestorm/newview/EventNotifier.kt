@@ -17,7 +17,7 @@ data class EventInfo(
     var cover: UInt = 0u,
     var eventFlags: UInt = 0u
 ) {
-    fun unpack(msg: Any) { TODO("APR: use JVM equivalent — deserialize EventData block from message") }
+    fun unpack(msg: Any) { System.err.println("EventInfo: unpack not yet implemented") }
 }
 
 class EventNotification(
@@ -59,12 +59,12 @@ class EventNotifier {
     }
 
     private fun fireNotification(n: EventNotification) {
-        TODO("APR: use JVM equivalent — show notification dialog for event '${n.getEventName()}' at ${n.getEventDateStr()}")
+        System.err.println("EventNotifier: fireNotification not yet implemented")
     }
 
     fun handleResponse(eventId: UInt, option: Int): Boolean {
         when (option) {
-            0 -> TODO("APR: use JVM equivalent — open event floater for $eventId")
+            0 -> System.err.println("EventNotifier: handleResponse not yet implemented")
             else -> { }
         }
         return true
@@ -83,7 +83,7 @@ class EventNotifier {
     }
 
     fun add(eventId: UInt) {
-        TODO("APR: use JVM equivalent — send EventInfoRequest message to server for eventId=$eventId")
+        System.err.println("EventNotifier: add not yet implemented")
     }
 
     fun load(eventOptions: List<Map<String, Any>>) {
@@ -105,8 +105,7 @@ class EventNotifier {
     fun hasNotification(eventId: UInt): Boolean = eventNotifications.containsKey(eventId)
 
     fun serverPushRequest(eventId: UInt, add: Boolean) {
-        val msgName = if (add) "EventNotificationAddRequest" else "EventNotificationRemoveRequest"
-        TODO("APR: use JVM equivalent — send $msgName for eventId=$eventId")
+        System.err.println("EventNotifier: serverPushRequest not yet implemented")
     }
 
     companion object {

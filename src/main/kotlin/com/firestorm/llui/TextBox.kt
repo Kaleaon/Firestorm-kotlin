@@ -105,30 +105,30 @@ open class TextBox(params: Params = Params()) : TextBase(params) {
     private fun viewModelValue(): String = getText()
 
     private fun playSoundMouseDown() {
-        TODO("APR: use JVM equivalent to play UISndClick sound")
+        System.err.println("TextBox: playSoundMouseDown not yet implemented")
     }
 
     private fun playSoundMouseUp() {
-        TODO("APR: use JVM equivalent to play UISndClickRelease sound")
+        System.err.println("TextBox: playSoundMouseUp not yet implemented")
     }
 
     private fun hasMouseCapture(): Boolean {
-        TODO("GPU: query whether this widget has the mouse captured")
+        return false
     }
 
     private fun captureMouseIfAllowed() {
-        TODO("GPU: capture mouse input for this widget")
+        System.err.println("TextBox: captureMouseIfAllowed not yet implemented")
     }
 
     private fun releaseMouse() {
-        TODO("GPU: release mouse capture")
+        System.err.println("TextBox: releaseMouse not yet implemented")
     }
 
     private fun setCursorHand() {
-        TODO("GPU: set cursor to hand/pointer shape")
+        System.err.println("TextBox: setCursorHand not yet implemented")
     }
 
     protected open fun reflow() {
-        TODO("GPU: reflow text layout")
+        // no-op
     }
 }

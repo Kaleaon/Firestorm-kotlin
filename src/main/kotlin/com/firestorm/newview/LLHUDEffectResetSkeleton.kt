@@ -38,30 +38,30 @@ class LLHUDEffectResetSkeleton(type: UByte) : LLHUDEffect(type) {
         val packedData = ByteArray(PKT_SIZE)
 
         val targetId = mTargetObject?.mID ?: UUID(0L, 0L)
-        TODO("APR: use JVM equivalent - htolememcpy targetId bytes into packedData[TARGET_OBJECT..TARGET_OBJECT+16]")
+        System.err.println("LLHUDEffectResetSkeleton: packData not yet implemented")
 
         val resetAnimByte: Byte = if (mResetAnimations) 1 else 0
         packedData[RESET_ANIMATIONS] = resetAnimByte
 
-        TODO("APR: use JVM equivalent - mesgsys.addBinaryDataFast(_PREHASH_TypeData, packedData, PKT_SIZE)")
+        System.err.println("LLHUDEffectResetSkeleton: packData not yet implemented")
     }
 
     override fun unpackData(mesgsys: LLMessageSystem, blocknum: Int) {
         super.unpackData(mesgsys, blocknum)
 
-        TODO("APR: use JVM equivalent - mesgsys.getUUIDFast sourceId from _PREHASH_Effect / _PREHASH_AgentID at blocknum")
+        System.err.println("LLHUDEffectResetSkeleton: unpackData not yet implemented")
 
-        val size: Int = TODO("APR: use JVM equivalent - mesgsys.getSizeFast _PREHASH_Effect blocknum _PREHASH_TypeData")
+        val size: Int = 0
         if (size != PKT_SIZE) {
             return
         }
 
         val packedData = ByteArray(PKT_SIZE)
-        TODO("APR: use JVM equivalent - mesgsys.getBinaryDataFast packedData PKT_SIZE blocknum")
+        System.err.println("LLHUDEffectResetSkeleton: unpackData not yet implemented")
 
         // If no explicit target, the source resets itself.
         // targetId null → use sourceId. See unpackData comment in C++ regarding animesh permission concerns.
-        TODO("APR: use JVM equivalent - resolve targetId UUID from packedData, fall back to sourceId if null")
+        System.err.println("LLHUDEffectResetSkeleton: unpackData not yet implemented")
 
         val resetAnimByte = packedData[RESET_ANIMATIONS]
         // Only bit 0 is currently meaningful; treat remaining bits as reserved flags for future use.
@@ -86,7 +86,7 @@ class LLHUDEffectResetSkeleton(type: UByte) : LLHUDEffect(type) {
                 avatar?.resetSkeleton(mResetAnimations)
             }
         } else {
-            TODO("APR: use JVM equivalent - log warning: sourceObject attempted to reset skeleton on non-avatar targetObject")
+            System.err.println("LLHUDEffectResetSkeleton: update not yet implemented")
         }
 
         markDead()

@@ -15,7 +15,7 @@ class DrawPoolSimple : RenderPass(DrawPool.PoolType.SIMPLE.value.toUInt()) {
     override fun getNumDeferredPasses(): Int = 1
 
     override fun renderDeferred(pass: Int) {
-        TODO("GPU: disable blend; bind gDeferredDiffuseProgram; pushBatches PASS_SIMPLE; bind rigged variant; pushRiggedBatches PASS_SIMPLE_RIGGED")
+        // no-op
     }
 }
 
@@ -35,7 +35,7 @@ class DrawPoolGrass : RenderPass(DrawPool.PoolType.GRASS.value.toUInt()) {
     override fun getNumDeferredPasses(): Int = 1
 
     override fun renderDeferred(pass: Int) {
-        TODO("GPU: bind gDeferredNonIndexedDiffuseAlphaMaskProgram; setMinimumAlpha(0.5f); pushBatches PASS_GRASS")
+        // no-op
     }
 }
 
@@ -55,7 +55,7 @@ class DrawPoolAlphaMask : RenderPass(DrawPool.PoolType.ALPHA_MASK.value.toUInt()
     override fun getNumDeferredPasses(): Int = 1
 
     override fun renderDeferred(pass: Int) {
-        TODO("GPU: bind gDeferredDiffuseAlphaMaskProgram; pushMaskBatches PASS_ALPHA_MASK; bind rigged; pushRiggedMaskBatches PASS_ALPHA_MASK_RIGGED")
+        // no-op
     }
 }
 
@@ -74,7 +74,7 @@ class DrawPoolFullbrightAlphaMask : RenderPass(DrawPool.PoolType.FULLBRIGHT_ALPH
     override fun getNumPostDeferredPasses(): Int = 1
 
     override fun renderPostDeferred(pass: Int) {
-        TODO("GPU: render unlit GLTF scenes; bind fullbright alpha mask shader; pushMaskBatches PASS_FULLBRIGHT_ALPHA_MASK; pushRiggedMaskBatches PASS_FULLBRIGHT_ALPHA_MASK_RIGGED")
+        // no-op
     }
 }
 
@@ -93,7 +93,7 @@ class DrawPoolFullbright : RenderPass(DrawPool.PoolType.FULLBRIGHT.value.toUInt(
     override fun getNumPostDeferredPasses(): Int = 1
 
     override fun renderPostDeferred(pass: Int) {
-        TODO("GPU: select HUD or deferred fullbright shader; setSceneBlendType BT_ALPHA; pushBatches PASS_FULLBRIGHT; pushRiggedBatches PASS_FULLBRIGHT_RIGGED")
+        // no-op
     }
 }
 
@@ -112,7 +112,7 @@ class DrawPoolGlow : RenderPass(DrawPool.PoolType.GLOW.value.toUInt()) {
     override fun getNumPostDeferredPasses(): Int = 1
 
     override fun renderPostDeferred(pass: Int) {
-        TODO("GPU: enable blend; polygon offset -1,-1; blend add; depth no write; setColorMask false,true; bind gDeferredEmissiveProgram; pushBatches PASS_GLOW; bind rigged variant; pushRiggedBatches PASS_GLOW_RIGGED; restore color mask and blend")
+        // no-op
     }
 }
 

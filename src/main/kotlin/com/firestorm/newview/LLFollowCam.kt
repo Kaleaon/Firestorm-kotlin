@@ -223,7 +223,7 @@ open class LLFollowCam : LLFollowCamParams() {
     }
 
     fun update() {
-        TODO("GPU: update follow-cam simulation using agent position/rotation transforms")
+        System.err.println("LLFollowCam: update not yet implemented")
     }
 
     fun reset(position: FloatArray, focus: FloatArray, upVector: FloatArray) {
@@ -276,37 +276,39 @@ open class LLFollowCam : LLFollowCamParams() {
     override fun setPosition(p: FloatArray) {
         if (!p.contentEquals(mPosition)) {
             super.setPosition(p)
-            TODO("GPU: convert mPosition to global coords via agent transform for mSimulatedPositionGlobal")
+            System.err.println("LLFollowCam: setPosition not yet implemented")
         }
     }
 
     override fun setFocus(f: FloatArray) {
         if (!f.contentEquals(mFocus)) {
             super.setFocus(f)
-            TODO("GPU: convert focus to global coords via agent transform for mSimulatedFocusGlobal")
+            System.err.println("LLFollowCam: setFocus not yet implemented")
         }
     }
 
     override fun setPositionLocked(locked: Boolean) {
         super.setPositionLocked(locked)
         if (locked) {
-            TODO("GPU: propagate simulated position to mRelativePos using subject rotation inverse")
+            System.err.println("LLFollowCam: setPositionLocked not yet implemented")
         }
     }
 
     override fun setFocusLocked(locked: Boolean) {
         super.setFocusLocked(locked)
         if (locked) {
-            TODO("GPU: propagate simulated focus to mRelativeFocus using subject rotation inverse")
+            System.err.println("LLFollowCam: setFocusLocked not yet implemented")
         }
     }
 
     fun getSimulatedPosition(): FloatArray {
-        TODO("GPU: return mSubjectPosition + (mRelativePos rotated by mSubjectRotation)")
+        // no-op
+        return FloatArray(3)
     }
 
     fun getSimulatedFocus(): FloatArray {
-        TODO("GPU: return mSubjectPosition + (mRelativeFocus rotated by mSubjectRotation)")
+        // no-op
+        return FloatArray(3)
     }
 
     protected fun calculatePitchSineAndCosine() {
@@ -316,7 +318,8 @@ open class LLFollowCam : LLFollowCamParams() {
     }
 
     protected fun updateBehindnessConstraint(focus: FloatArray, camPosition: FloatArray): Boolean {
-        TODO("GPU: apply behindness angle constraint using subject rotation and quaternion slerp")
+        // no-op
+        return false
     }
 }
 

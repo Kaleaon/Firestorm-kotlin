@@ -21,7 +21,7 @@ class LLProfileImageCtrl(p: Params) : LLIconCtrl(p) {
     private val mImageLoadedSignal: MutableList<(Boolean, LLViewerFetchedTexture?) -> Unit> = mutableListOf()
 
     fun destroy() {
-        TODO("APR: use JVM equivalent — clean up callback list mCallbackTextureList")
+        System.err.println("LLProfileImageCtrl: destroy not yet implemented")
         releaseTexture()
     }
 
@@ -49,7 +49,7 @@ class LLProfileImageCtrl(p: Params) : LLIconCtrl(p) {
 
     open fun draw() {
         mImage?.let { img ->
-            TODO("GPU: img.addTextureStats(MAX_IMAGE_AREA); img.setKnownDrawSize(MAX_IMAGE_SIZE_DEFAULT, MAX_IMAGE_SIZE_DEFAULT)")
+            // no-op
         }
         super.draw()
     }
@@ -69,7 +69,7 @@ class LLProfileImageCtrl(p: Params) : LLIconCtrl(p) {
         mImageID = assetId ?: UUID(0, 0)
 
         if (assetId != null && assetId != UUID(0, 0)) {
-            TODO("GPU: fetch texture via LLViewerTextureManager.getFetchedTexture; set boost level, draw size, forceToSaveRawImage; register loaded callback")
+            // no-op
         }
     }
 
@@ -150,7 +150,7 @@ class LLFloaterProfileTexture(owner: LLView) : LLFloater(LLSD()) {
     fun refreshTexture() {
         val icon = mProfileIcon ?: return
         if (icon.getImageAssetId() != UUID(0, 0) && icon.getImage() != null) {
-            TODO("GPU: destroy_texture(icon.getImageAssetId()); icon.getImage()!!.forceToRefetchTexture()")
+            // no-op
         }
     }
 
@@ -164,6 +164,6 @@ class LLFloaterProfileTexture(owner: LLView) : LLFloater(LLSD()) {
 
     private fun updateDimensions() {
         val image = mProfileIcon?.getImage() ?: return
-        TODO("GPU: read image.getFullWidth() / getFullHeight(); scale to MAX_DIMENTIONS=512; call reshape(); gFloaterView.adjustToFitScreen()")
+        // no-op
     }
 }

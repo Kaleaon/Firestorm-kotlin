@@ -223,8 +223,8 @@ class ImageBMP : ImageFormatted(ImageCodecType.BMP) {
 
         // Mirror C++ setSize(width, height, components)
         // (ImageFormatted subclasses track dimensions separately; stub here)
-        TODO("CODEC: BMP — store width=$width height=$height components=$components " +
-                "on the parent ImageFormatted (requires width/height/components fields)")
+        System.err.println("ImageBMP: updateData not yet implemented")
+        return false
     }
 
     /**
@@ -248,8 +248,8 @@ class ImageBMP : ImageFormatted(ImageCodecType.BMP) {
             setLastError("ImageBMP trying to decode an image with no data!")
             return false
         }
-        TODO("CODEC: BMP — dispatch on bitsPerPixel to the appropriate decode helper, " +
-                "then verticalFlip if originAtTop (javax.imageio.ImageIO.read is the JVM shortcut)")
+        System.err.println("ImageBMP: decode not yet implemented")
+        return false
     }
 
     /**
@@ -265,9 +265,8 @@ class ImageBMP : ImageFormatted(ImageCodecType.BMP) {
      */
     override fun encode(rawImage: ImageRaw, encodeTime: Float): Boolean {
         resetLastError()
-        TODO("CODEC: BMP — write BMP file header + BITMAPINFOHEADER + optional palette " +
-                "then BGR pixel rows with 4-byte row alignment " +
-                "(javax.imageio.ImageIO.write is the JVM shortcut)")
+        System.err.println("ImageBMP: encode not yet implemented")
+        return false
     }
 
     // ---- private decode helpers (correspond to C++ protected methods) -------
@@ -280,7 +279,8 @@ class ImageBMP : ImageFormatted(ImageCodecType.BMP) {
      * Rows are padded to the next 4-byte boundary in the source.
      */
     private fun decodeColorTable8(dst: ByteArray, src: ByteArray, srcOffset: Int): Boolean {
-        TODO("CODEC: BMP — map palette indices to RGB triples, skipping 4-byte row padding")
+        System.err.println("ImageBMP: decodeColorTable8 not yet implemented")
+        return false
     }
 
     /**
@@ -288,7 +288,8 @@ class ImageBMP : ImageFormatted(ImageCodecType.BMP) {
      * Defaults to 5-5-5 (RGB555) if no masks are provided.
      */
     private fun decodeColorMask16(dst: ByteArray, src: ByteArray, srcOffset: Int): Boolean {
-        TODO("CODEC: BMP — extract R/G/B via bitfieldMask shifts from 16-bit words")
+        System.err.println("ImageBMP: decodeColorMask16 not yet implemented")
+        return false
     }
 
     /**
@@ -297,7 +298,8 @@ class ImageBMP : ImageFormatted(ImageCodecType.BMP) {
      * Rows are padded to the next 4-byte boundary in the source.
      */
     private fun decodeTruecolor24(dst: ByteArray, src: ByteArray, srcOffset: Int): Boolean {
-        TODO("CODEC: BMP — swap B/G/R → R/G/B, skipping 4-byte row padding")
+        System.err.println("ImageBMP: decodeTruecolor24 not yet implemented")
+        return false
     }
 
     /**
@@ -306,7 +308,8 @@ class ImageBMP : ImageFormatted(ImageCodecType.BMP) {
      * Alpha channel is not carried through (matches C++ comment "alpha is not supported").
      */
     private fun decodeColorMask32(dst: ByteArray, src: ByteArray, srcOffset: Int): Boolean {
-        TODO("CODEC: BMP — extract R/G/B via bitfieldMask shifts from 32-bit dwords")
+        System.err.println("ImageBMP: decodeColorMask32 not yet implemented")
+        return false
     }
 
     /**

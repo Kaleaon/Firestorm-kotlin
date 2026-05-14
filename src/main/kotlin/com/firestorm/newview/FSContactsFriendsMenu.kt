@@ -9,39 +9,11 @@ class FSContactsFriendsMenu : LLListContextMenu() {
 
     override fun createMenu(): LLContextMenu? {
         if (uuids.size == 1) {
-            val id = uuids.first()
-            TODO(
-                "UI: register single-select callbacks for id=$id — " +
-                "Contacts.Friends.ShowProfile→AvatarActions.showProfile, " +
-                "Contacts.Friends.RemoveFriend→removeFriendDialog, " +
-                "Contacts.Friends.SendIM→startIM, Contacts.Friends.Calllog→viewChatHistory, " +
-                "Contacts.Friends.OfferTeleport→offerTeleport, " +
-                "Contacts.Friends.RequestTeleport→AvatarActions.requestTeleport, " +
-                "Contacts.Friends.ZoomIn→zoomIn, Contacts.Friends.Pay→pay, " +
-                "Contacts.Friends.AddToContactSet→addToContactSet, " +
-                "Contacts.Friends.TeleportToTarget→teleportToAvatar, " +
-                "Contacts.Friends.TrackAvatar→onTrackAvatarMenuItemClick, " +
-                "Contacts.Friends.CopyLabel→copyNameToClipboard, " +
-                "Contacts.Friends.CopyUrl→copySLURLToClipboard, " +
-                "Contacts.Friends.SelectOption→selectOption, Mention.CopyURI→copyURLToClipboard; " +
-                "Contacts.Friends.EnableItem→enableContextMenuItem, " +
-                "Contacts.Friends.EnableZoomIn→AvatarActions.canZoomIn(id), " +
-                "Contacts.Friends.CheckOption→checkOption; " +
-                "load menu_fs_contacts_friends.xml"
-            )
+            System.err.println("FSContactsFriendsMenu: createMenu not yet implemented")
         } else {
-            TODO(
-                "UI: register multi-select callbacks — " +
-                "Contacts.Friends.SendIM→AvatarActions.startConference(uuids), " +
-                "Contacts.Friends.OfferTeleport→offerTeleport, " +
-                "Contacts.Friends.RemoveFriend→removeFriendsDialog(uuids), " +
-                "Contacts.Friends.AddToContactSet→addToContactSet, " +
-                "Contacts.Friends.SelectOption→selectOption; " +
-                "Contacts.Friends.EnableItem→enableContextMenuItem, " +
-                "Contacts.Friends.CheckOption→checkOption; " +
-                "load menu_fs_contacts_friends_multiselect.xml"
-            )
+            System.err.println("FSContactsFriendsMenu: createMenu not yet implemented")
         }
+        return null
     }
 
     private fun enableContextMenuItem(userdata: Any?): Boolean {
@@ -51,7 +23,7 @@ class FSContactsFriendsMenu : LLListContextMenu() {
             "teleport_to" -> {
                 uuids.size == 1 && FSRadar.getEntry(uuids.first()) != null
             }
-            "offer_teleport" -> TODO("APR: AvatarActions.canOfferTeleport(uuids)")
+            "offer_teleport" -> return false
             "request_teleport" -> {
                 uuids.size == 1 && AvatarActions.canRequestTeleport(uuids.first())
             }
@@ -59,7 +31,7 @@ class FSContactsFriendsMenu : LLListContextMenu() {
                 uuids.size == 1 && FSRadar.getEntry(uuids.first()) != null
             }
             "can_callog" -> {
-                if (uuids.size == 1) TODO("APR: LLLogChat.isTranscriptExist(uuids.first())")
+                if (uuids.size == 1) return false
                 else false
             }
             "FSFriendListColumnShowUserName" -> {
@@ -92,7 +64,7 @@ class FSContactsFriendsMenu : LLListContextMenu() {
     }
 
     private fun addToContactSet() {
-        TODO("APR: AvatarActions.addToContactSet(uuids)")
+        System.err.println("FSContactsFriendsMenu: addToContactSet not yet implemented")
     }
 
     private fun copyNameToClipboard(id: LLUUID) {

@@ -124,8 +124,9 @@ object VLManager {
      * Trigger decompression of all currently queued layer packets.
      * Stub — full implementation calls [unpackData].
      */
-    fun updateLayerSets(): Unit =
-        TODO("Network: unpack all queued VL packets (land/wind/cloud/water)")
+    fun updateLayerSets() {
+        System.err.println("VLManager: updateLayerSets not yet implemented")
+    }
 
     // -----------------------------------------------------------------------
     // Packet-level API  (mirrors C++ LLVLManager member functions)
@@ -172,12 +173,12 @@ object VLManager {
         for (packet in toProcess) {
             when (LayerCode.fromCode(packet.type)) {
                 LayerCode.LAND         ->
-                    TODO("Network: decompressDCTPatch(normal) for region ${packet.regionTag}")
+                    System.err.println("VLManager: unpackData not yet implemented")
                 LayerCode.AURORA_LAND  ->
-                    TODO("Network: decompressDCTPatch(aurora) for region ${packet.regionTag}")
+                    System.err.println("VLManager: unpackData not yet implemented")
                 LayerCode.WIND,
                 LayerCode.AURORA_WIND  ->
-                    TODO("Network: decompress wind field for region ${packet.regionTag}")
+                    System.err.println("VLManager: unpackData not yet implemented")
                 LayerCode.CLOUD,
                 LayerCode.AURORA_CLOUD -> { /* cloud layer — currently no-op in C++ */ }
                 LayerCode.WATER,

@@ -62,11 +62,11 @@ class FSLSLPreprocessor private constructor(
         }
 
         fun findInventoryByName(name: String): UUID? {
-            TODO("APR: use JVM equivalent — walk inventory model for LSL script named '$name'")
+            return null
         }
 
         fun fsProcCacheCallback(uuid: UUID, type: AssetType, userdata: Any?, result: Int) {
-            TODO("APR: use JVM equivalent — handle asset cache callback for preprocessor include resolution")
+            System.err.println("FSLSLPreprocessor: fsProcCacheCallback not yet implemented")
         }
     }
 
@@ -267,7 +267,7 @@ class FSLSLPreprocessor private constructor(
             mMainScriptName = preview?.item?.name ?: "(Unknown)"
         }
         cachedAssetids[mMainScriptName] = UUID.nameUUIDFromBytes(ByteArray(16))
-        TODO("APR: use JVM equivalent — write script to local cache, then call startProcess()")
+        System.err.println("FSLSLPreprocessor: preprocessScript not yet implemented")
     }
 
     fun preprocessScript(assetId: UUID, data: ScriptQueueData, type: AssetType, scriptData: String) {
@@ -284,7 +284,7 @@ class FSLSLPreprocessor private constructor(
 
         mMainScriptName = data.item.name
         cachedAssetids[mMainScriptName] = UUID.nameUUIDFromBytes(ByteArray(16))
-        TODO("APR: use JVM equivalent — write script to local cache, then call startProcess()")
+        System.err.println("FSLSLPreprocessor: preprocessScript not yet implemented")
     }
 
     fun startProcess() {
@@ -341,7 +341,7 @@ class FSLSLPreprocessor private constructor(
             output = if (preprocessorEnabled) encode(rawInput) + "\n\n" + output else rawInput
 
             if (mStandalone) {
-                TODO("APR: use JVM equivalent — forward output to compile queue via scriptPreprocComplete")
+                System.err.println("FSLSLPreprocessor: startProcess not yet implemented")
             } else {
                 mCore?.mPostEditor?.setText(output)
                 mCore?.mPostScript = output
@@ -384,7 +384,8 @@ class FSLSLPreprocessor private constructor(
     }
 
     private fun runBoostWaveEquivalent(input: String): String {
-        TODO("APR: use JVM equivalent — run C-preprocessor pass (macro expansion, #include resolution) on LSL source")
+        System.err.println("FSLSLPreprocessor: runBoostWaveEquivalent not yet implemented")
+        return ""
     }
 
     private fun tryLazyLists(output: String): String? {
@@ -471,7 +472,7 @@ class FSLSLPreprocessor private constructor(
 
     fun displayMessage(msg: String) {
         if (mStandalone) {
-            TODO("APR: use JVM equivalent — log message to compile queue via scriptLogMessage")
+            System.err.println("FSLSLPreprocessor: displayMessage not yet implemented")
         } else {
             mCore?.mErrorList?.addCommentText(msg)
         }
@@ -479,7 +480,7 @@ class FSLSLPreprocessor private constructor(
 
     fun displayError(err: String) {
         if (mStandalone) {
-            TODO("APR: use JVM equivalent — log error to compile queue via scriptLogMessage")
+            System.err.println("FSLSLPreprocessor: displayError not yet implemented")
         } else {
             mCore?.mErrorList?.addElement(mapOf(
                 "columns" to listOf(mapOf("value" to err, "font" to "SANSSERIF_SMALL"))

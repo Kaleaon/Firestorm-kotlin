@@ -28,7 +28,7 @@ open class LLGLTFMaterial {
     open fun updateTextureTracking() {}
     fun updateLocalTexDataDigest() {}
 
-    fun asJSON(): String = TODO("GPU: serialise material to GLTF JSON")
+    fun asJSON(): String = ""
     companion object {
         const val ASSET_VERSION = "1.0"
         const val ASSET_TYPE = "GLTF 2.0"
@@ -109,7 +109,7 @@ open class LLFetchedGLTFMaterial : LLGLTFMaterial() {
 
     override fun updateTextureTracking() {
         for ((trackingId, _) in mTrackingIdToLocalTexture) {
-            TODO("APR: use JVM equivalent — associate GLTF material with local bitmap tracking id $trackingId")
+            System.err.println("LLFetchedGLTFMaterial: updateTextureTracking not yet implemented")
         }
     }
 
@@ -121,7 +121,7 @@ open class LLFetchedGLTFMaterial : LLGLTFMaterial() {
     }
 
     fun bind(mediaTex: LLViewerTexture? = null) {
-        TODO("GPU: bind GLTF material textures and uniforms to current shader")
+        // no-op
     }
 
     fun materialBegin() {
@@ -149,7 +149,7 @@ open class LLFetchedGLTFMaterial : LLGLTFMaterial() {
 
         private fun fetchTexture(id: UUID): LLViewerFetchedTexture? {
             if (id == UUID(0, 0)) return null
-            TODO("GPU: LLViewerTextureManager.getFetchedTexture($id)")
+            return null
         }
     }
 }

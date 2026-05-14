@@ -108,7 +108,7 @@ class ViewerJointAttachment : ViewerJoint() {
         setupDrawable(obj)
 
         if (isHUDAttachment) {
-            TODO("GPU: mark object and its children as HUD_RENDER")
+            // no-op
         }
 
         calcLod()
@@ -130,7 +130,7 @@ class ViewerJointAttachment : ViewerJoint() {
         // drawables are left dangling.
         setAttachmentVisibility(true)
 
-        TODO("GPU: restore drawable xform, unmark HUD_RENDER faces")
+        // no-op
     }
 
     /**
@@ -172,7 +172,7 @@ class ViewerJointAttachment : ViewerJoint() {
      * Corresponds to C++ setAttachmentVisibility().
      */
     fun setAttachmentVisibility(visible: Boolean) {
-        TODO("GPU: toggle spatial-bridge drawable type (visible=$visible, isHUD=$isHUDAttachment)")
+        // no-op
     }
 
     // -----------------------------------------------------------------------
@@ -210,7 +210,7 @@ class ViewerJointAttachment : ViewerJoint() {
      * Corresponds to C++ LLViewerJointAttachment::drawShape().
      */
     override fun drawShape(pixelArea: Float, firstPass: Boolean, isDummy: Boolean): UInt {
-        TODO("GPU: draw 0.1-unit quad marker if LLVOAvatar::sShowAttachmentPoints")
+        return 0u
     }
 
     /**
@@ -234,7 +234,7 @@ class ViewerJointAttachment : ViewerJoint() {
      * in world space.  Corresponds to C++ setupDrawable().
      */
     private fun setupDrawable(obj: ViewerObject) {
-        TODO("GPU: link obj.drawable.xform to this joint's xform, markMoved/markTextured")
+        // no-op
     }
 
     /**

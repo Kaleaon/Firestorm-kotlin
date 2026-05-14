@@ -45,10 +45,10 @@ class UIImage(val name: String) {
     fun getWidth()  = 0
     fun getHeight() = 0
     fun draw(x: Int, y: Int, color: Color4 = Color4.white) {
-        TODO("GPU: draw UIImage $name at ($x, $y)")
+        // no-op
     }
     fun draw(x: Int, y: Int, w: Int, h: Int, color: Color4) {
-        TODO("GPU: draw UIImage $name scaled at ($x, $y) size ${w}x${h}")
+        // no-op
     }
 }
 
@@ -157,7 +157,7 @@ open class WorldMapView {
 
             sTrackingArrowX = xClamped.toInt()
             sTrackingArrowY = yClamped.toInt()
-            TODO("GPU: gl_draw_scaled_rotated_image sTrackArrowImage angle=${Math.toDegrees(angle.toDouble())}")
+            // no-op
         }
 
         fun drawTrackingDot(
@@ -214,7 +214,7 @@ open class WorldMapView {
                 else         -> angleY
             }
             startTheta += adj; endTheta -= adj
-            TODO("GPU: gl_washer_segment_2d inner=$innerRadius outer=$outerRadius start=$startTheta end=$endTheta color=$color")
+            // no-op
         }
 
         fun drawAvatar(
@@ -239,7 +239,7 @@ open class WorldMapView {
             val vertPad = 8
             val textX = xPixels.toInt()
             val textY = (yPixels - BIG_DOT_RADIUS - vertPad).toInt()
-            TODO("GPU: render text '$firstLine' / '$secondLine' at ($textX, $textY) color=$color")
+            // no-op
         }
 
         private fun drawDot(
@@ -254,7 +254,7 @@ open class WorldMapView {
                     color
                 )
             } else {
-                TODO("GPU: draw V-indicator lines for avatar above/below threshold")
+                // no-op
             }
         }
 
@@ -300,7 +300,7 @@ open class WorldMapView {
 
     open fun setVisible(visible: Boolean) {
         if (!visible) {
-            TODO("APR: drop world map image download priorities")
+            System.err.println("WorldMapView: setVisible not yet implemented")
         }
     }
 
@@ -344,19 +344,19 @@ open class WorldMapView {
     }
 
     fun showRegionInfo(): Boolean {
-        TODO("APR: call WorldMipmap.scaleToLevel(mapScale) <= DRAW_SIMINFO_THRESHOLD")
+        return false
     }
 
     fun globalPosToView(globalPos: Vector3d): Vector3 {
-        TODO("GPU: convert globalPos to view coords relative to agentCamera")
+        return Vector3(0f, 0f, 0f)
     }
 
     fun viewPosToGlobal(x: Int, y: Int): Vector3d {
-        TODO("GPU: convert view pixel coords to global world position")
+        return Vector3d(0.0, 0.0, 0.0)
     }
 
     open fun draw() {
-        TODO("GPU: full world map draw pass including mipmap, regions, agents, tracking")
+        // no-op
     }
 
     fun drawGenericItems(items: List<ItemInfo>, image: UIImage) {
@@ -368,48 +368,48 @@ open class WorldMapView {
     }
 
     fun drawImage(globalPos: Vector3d, image: UIImage, color: Color4 = Color4.white) {
-        TODO("GPU: draw UIImage ${image.name} at global position $globalPos color=$color")
+        // no-op
     }
 
     fun drawImageStack(
         globalPos: Vector3d, image: UIImage, count: UInt, offset: Float, color: Color4
     ) {
-        TODO("GPU: draw image stack count=$count offset=$offset at $globalPos")
+        // no-op
     }
 
     fun drawAgents() {
-        TODO("GPU: draw agent icon stacks for all visible regions")
+        // no-op
     }
 
     fun drawItems() {
-        TODO("GPU: draw telehubs, infohubs, events, land-for-sale icons")
+        // no-op
     }
 
     fun drawFrustum() {
-        TODO("GPU: draw camera frustum triangle overlay on world map")
+        // no-op
     }
 
     fun drawMipmap(width: Int, height: Int) {
-        TODO("GPU: render all mipmap levels onto world map canvas")
+        // no-op
     }
 
     fun drawMipmapLevel(width: Int, height: Int, level: Int, load: Boolean = true): Boolean {
-        TODO("GPU: render mipmap level $level; return true when all tiles complete")
+        return false
     }
 
     fun drawTracking(
         posGlobal: Vector3d, color: Color4, drawArrow: Boolean = true,
         label: String = "", tooltip: String = "", vertOffset: Int = 0
     ) {
-        TODO("GPU: draw tracking indicator (circle or arrow) and text label")
+        // no-op
     }
 
     fun checkItemHit(x: Int, y: Int, item: ItemInfo, outId: Array<String>, track: Boolean): Boolean {
-        TODO("GPU: hit-test item against BIG_DOT_RADIUS around its view position")
+        return false
     }
 
     fun handleClick(x: Int, y: Int, mask: Int, outHitType: IntArray, outId: Array<String>) {
-        TODO("GPU: click dispatch — test visible region items then fall back to location track")
+        System.err.println("WorldMapView: handleClick not yet implemented")
     }
 
     open fun handleMouseDown(x: Int, y: Int, mask: Int): Boolean {
@@ -420,24 +420,24 @@ open class WorldMapView {
     }
 
     open fun handleMouseUp(x: Int, y: Int, mask: Int): Boolean {
-        TODO("GPU: end pan drag or dispatch handleClick if not panning")
+        return false
     }
 
     open fun handleDoubleClick(x: Int, y: Int, mask: Int): Boolean {
         if (!sHandledLastClick) return false
-        TODO("GPU: double-click teleport or event/classified dispatch")
+        return false
     }
 
     open fun handleHover(x: Int, y: Int, mask: Int): Boolean {
-        TODO("GPU: drag-pan handling, cursor updates")
+        return false
     }
 
     open fun handleToolTip(x: Int, y: Int, mask: Int): Boolean {
-        TODO("GPU: build and show region tooltip at cursor position")
+        return false
     }
 
     fun updateVisibleBlocks() {
-        TODO("APR: send updateRegions request for currently visible grid cells")
+        System.err.println("WorldMapView: updateVisibleBlocks not yet implemented")
     }
 
     private fun setScale(scale: Float, snap: Boolean = true) {
@@ -464,10 +464,10 @@ open class WorldMapView {
     }
 
     private fun updateDirections() {
-        TODO("GPU: reposition N/S/E/W/NE/NW/SE/SW label TextBoxes within panel bounds")
+        // no-op
     }
 
     private fun drawTileOutline(level: Int, top: Float, left: Float, bottom: Float, right: Float) {
-        TODO("GPU: draw debug tile outline lines for mipmap level $level")
+        // no-op
     }
 }

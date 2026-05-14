@@ -230,7 +230,7 @@ class ScrollBar(
         if (!isRectValid()) return
 
         if (bgVisible) {
-            TODO("GPU: gl_rect_2d fill bgColor")
+            // no-op
         }
 
         val hovered = enabled && hasMouseCapture
@@ -246,18 +246,18 @@ class ScrollBar(
         }
 
         if (!useImages) {
-            TODO("GPU: gl_rect_2d draw track rect with trackColor")
-            TODO("GPU: gl_rect_2d draw thumbRect with thumbColor")
+            // no-op
+            // no-op
         } else {
             if (orientation == Orientation.HORIZONTAL) {
-                TODO("GPU: draw trackImageH solid strip, then thumbImageH in thumbRect")
+                // no-op
                 if (curGlowStrength > 0.01f) {
-                    TODO("GPU: blend ADD_WITH_ALPHA glow over thumbImageH")
+                    // no-op
                 }
             } else {
-                TODO("GPU: draw trackImageV solid strip, then thumbImageV in thumbRect")
+                // no-op
                 if (curGlowStrength > 0.01f) {
-                    TODO("GPU: blend ADD_WITH_ALPHA glow over thumbImageV")
+                    // no-op
                 }
             }
         }

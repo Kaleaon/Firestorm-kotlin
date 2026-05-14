@@ -589,7 +589,7 @@ class LLInventoryGallery(params: Params = Params()) : LLPanel(), LLEditMenuHandl
 
     private fun removeLastRow() {
         rowCount--
-        TODO("GPU: remove lastRowPanel from galleryPanel, push to unusedRowPanels, update lastRowPanel")
+        // GPU: remove lastRowPanel from galleryPanel, push to unusedRowPanels, update lastRowPanel
     }
 
     private fun moveRowUp(row: Int) { moveRow(row, rowCount - 1 - row + 1) }

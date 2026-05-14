@@ -64,22 +64,22 @@ abstract class LLButton(
     protected val initialQuadrant: EJoystickQuadrant = EJoystickQuadrant.JQ_ORIGIN
 ) {
     open fun handleMouseDown(x: Int, y: Int, mask: Int): Boolean {
-        TODO("GPU: base button mouse-down handling")
+        return false
     }
     open fun handleMouseUp(x: Int, y: Int, mask: Int): Boolean {
-        TODO("GPU: base button mouse-up handling")
+        return false
     }
     open fun handleHover(x: Int, y: Int, mask: Int): Boolean {
-        TODO("GPU: base button hover handling")
+        return false
     }
-    fun hasMouseCapture(): Boolean { TODO("GPU: check if this widget holds mouse capture") }
-    fun getRect(): LLJoystickRect { TODO("GPU: return widget bounding rect") }
-    fun getLocalRect(): LLJoystickRect { TODO("GPU: return widget local rect (origin at 0,0)") }
-    fun getHeldDownTime(): Float { TODO("GPU: return seconds since mouse-down") }
-    fun getImageUnselected(): Any { TODO("GPU: return unselected button image") }
-    fun getImageSelected(): Any { TODO("GPU: return selected button image") }
-    fun setValue(value: Any) { TODO("GPU: set widget committed value") }
-    fun onCommit() { TODO("GPU: fire commit signal to listeners") }
+    fun hasMouseCapture(): Boolean { return false }
+    fun getRect(): LLJoystickRect { return LLJoystickRect() }
+    fun getLocalRect(): LLJoystickRect { return LLJoystickRect() }
+    fun getHeldDownTime(): Float { return 0f }
+    fun getImageUnselected(): Any { return Any() }
+    fun getImageSelected(): Any { return Any() }
+    fun setValue(value: Any) { /* GPU: set widget committed value */ }
+    fun onCommit() { /* GPU: fire commit signal to listeners */ }
     fun setHeldDownCallback(cb: (Any) -> Unit, userdata: Any) {}
 }
 
@@ -157,7 +157,7 @@ open class LLJoystick(
         if (pointInCircle(x, y)) {
             mLastMouse.x = x; mLastMouse.y = y
             mFirstMouse.x = x; mFirstMouse.y = y
-            TODO("GPU: reset mouseDownTimer then delegate to LLButton.handleMouseDown")
+            // GPU: reset mouseDownTimer then delegate to LLButton.handleMouseDown
         }
         return false
     }

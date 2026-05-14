@@ -1062,8 +1062,10 @@ private fun avatarNameCacheGetAsync(id: UUID, callback: (AvatarName) -> Unit) {
     System.err.println("ChatBarAsCmdline: avatarNameCacheGetAsync not yet implemented")
 }
 
-private fun fsRadarGetRadarList(): Map<UUID, RadarEntry> =
-    TODO("APR: use JVM equivalent for FSRadar::getInstance()->getRadarList()")
+private fun fsRadarGetRadarList(): Map<UUID, RadarEntry> {
+    System.err.println("ChatBarAsCmdline: fsRadarGetRadarList not yet implemented")
+    return emptyMap()
+}
 
 private fun isValidUUID(s: String): Boolean = runCatching { UUID.fromString(s) }.isSuccess
 
@@ -1072,11 +1074,15 @@ private fun parseUUID(s: String): UUID? = runCatching { UUID.fromString(s) }.get
 private fun isNullUUID(id: UUID): Boolean =
     id == UUID.fromString("00000000-0000-0000-0000-000000000000")
 
-private fun urlEscape(s: String): String =
-    TODO("APR: use JVM equivalent for LLWeb::escapeURL")
+private fun urlEscape(s: String): String {
+    System.err.println("ChatBarAsCmdline: urlEscape not yet implemented")
+    return ""
+}
 
-private fun slurl(scheme: String, id: UUID, action: String): String =
-    TODO("APR: use JVM equivalent for LLSLURL(...).getSLURLString()")
+private fun slurl(scheme: String, id: UUID, action: String): String {
+    System.err.println("ChatBarAsCmdline: slurl not yet implemented")
+    return ""
+}
 
 private fun trans(key: String, args: Map<String, String> = emptyMap()): String =
     TODO("APR: use JVM equivalent for LLTrans::getString")

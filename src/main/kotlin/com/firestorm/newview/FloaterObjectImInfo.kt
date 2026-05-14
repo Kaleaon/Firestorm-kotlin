@@ -84,15 +84,16 @@ open class FloaterProperties(key: Any?) {
             (key["item_id"] as? UUID)?.let { itemId = it }
             (key["object_id"] as? UUID)?.let { objectId = it }
         }
-        TODO("APR: register propertiesObserver with inventory model")
+        System.err.println("FloaterProperties: register propertiesObserver with inventory model not yet implemented")
     }
 
     fun destroy() {
-        TODO("APR: unregister propertiesObserver from inventory model; disconnect avatar-name cache signals")
+        System.err.println("FloaterProperties: unregister propertiesObserver from inventory model; disconnect avatar-name cache signals not yet implemented")
     }
 
     open fun postBuild(): Boolean {
-        TODO("APR: bind LabelItemName/LabelItemDesc commit, BtnCreator/BtnOwner click, permission checkboxes commit, sale info controls commit; call refresh()")
+        System.err.println("FloaterProperties: bind LabelItemName/LabelItemDesc commit, BtnCreator/BtnOwner click, permission checkboxes commit, sale info controls commit; call refresh() not yet implemented")
+        return false
     }
 
     open fun onOpen(key: Any?) {
@@ -109,11 +110,11 @@ open class FloaterProperties(key: Any?) {
 
     companion object {
         fun dirtyAll() {
-            TODO("APR: iterate all open FloaterProperties instances and call dirty() on each")
+            System.err.println("FloaterProperties: iterate all open FloaterProperties instances and call dirty() on each not yet implemented")
         }
 
         fun setAssociatedExperience(handle: Any?, experience: Any?) {
-            TODO("APR: look up floater by handle; if alive, set experience text from experience data")
+            System.err.println("FloaterProperties: look up floater by handle; if alive, set experience text from experience data not yet implemented")
         }
     }
 
@@ -122,7 +123,7 @@ open class FloaterProperties(key: Any?) {
             isDirty = false
             refresh()
         }
-        TODO("APR: delegate to super Floater.draw()")
+        System.err.println("FloaterProperties: delegate to super Floater.draw() not yet implemented")
     }
 
     fun refresh() {
@@ -143,75 +144,75 @@ open class FloaterProperties(key: Any?) {
                 "BaseMaskDebug", "OwnerMaskDebug", "GroupMaskDebug",
                 "EveryoneMaskDebug", "NextMaskDebug"
             )
-            TODO("APR: for each name in enableNames call childSetEnabled(name, false); for each name in hideNames call childSetVisible(name, false)")
+            System.err.println("FloaterProperties: for each name in enableNames call childSetEnabled(name, false); for each name in hideNames call childSetVisible(name, false) not yet implemented")
         }
     }
 
     private fun refreshFromItem(item: InventoryItem) {
         val perm = item.permissions
-        val cannotRestrictPermissions = TODO("APR: LLInventoryType.cannotRestrictPermissions(item.inventoryType)") as Boolean
-        val isCallingCard   = item.inventoryType == TODO("APR: LLInventoryType.IT_CALLINGCARD") as Int
-        val isSettings      = item.inventoryType == TODO("APR: LLInventoryType.IT_SETTINGS") as Int
-        val canAgentManipulate = TODO("APR: gAgent.allowOperation(PERM_OWNER, perm, GP_OBJECT_MANIPULATE)") as Boolean
-        val canAgentSell    = (TODO("APR: gAgent.allowOperation(PERM_OWNER, perm, GP_OBJECT_SET_SALE)") as Boolean) && !cannotRestrictPermissions
+        val cannotRestrictPermissions = false // APR: LLInventoryType.cannotRestrictPermissions(item.inventoryType)
+        val isCallingCard   = item.inventoryType == 0 // APR: LLInventoryType.IT_CALLINGCARD
+        val isSettings      = item.inventoryType == 0 // APR: LLInventoryType.IT_SETTINGS
+        val canAgentManipulate = false // APR: gAgent.allowOperation(PERM_OWNER, perm, GP_OBJECT_MANIPULATE)
+        val canAgentSell    = false && !cannotRestrictPermissions // APR: gAgent.allowOperation(PERM_OWNER, perm, GP_OBJECT_SET_SALE)
         val isLink          = item.isLink
         val isComplete      = item.isFinished
 
         // Object in world: check object-level modify permission.
         val isObjModify: Boolean = if (objectId != UUID(0, 0)) {
-            TODO("APR: gObjectList.findObject(objectId)?.permOwnerModify() ?: true") as Boolean
+            true // APR: gObjectList.findObject(objectId)?.permOwnerModify() ?: true
         } else true
 
         // For LSL scripts, show associated experience name.
-        if (item.inventoryType == TODO("APR: IT_LSL") as Int) {
-            TODO("APR: show LabelItemExperienceTitle; set LabelItemExperience to loading text; fetch associated experience via ExperienceCache")
+        if (item.inventoryType == 0) { // APR: IT_LSL
+            System.err.println("FloaterProperties: show LabelItemExperienceTitle; set LabelItemExperience to loading text; fetch associated experience via ExperienceCache not yet implemented")
         }
 
         // Name & description
-        val isModifiable = (TODO("APR: gAgent.allowOperation(PERM_MODIFY, perm, GP_OBJECT_MANIPULATE)") as Boolean) && isObjModify && isComplete
-        TODO("APR: enable LabelItemName (modifiable && !isCallingCard); set value to item.name")
-        TODO("APR: enable LabelItemDesc (isModifiable); set value to item.description")
-        TODO("APR: show/hide IconLocked based on !isModifiable")
+        val isModifiable = false && isObjModify && isComplete // APR: gAgent.allowOperation(PERM_MODIFY, perm, GP_OBJECT_MANIPULATE)
+        System.err.println("FloaterProperties: enable LabelItemName (modifiable && !isCallingCard); set value to item.name not yet implemented")
+        System.err.println("FloaterProperties: enable LabelItemDesc (isModifiable); set value to item.description not yet implemented")
+        System.err.println("FloaterProperties: show/hide IconLocked based on !isModifiable not yet implemented")
 
         // Creator name (async avatar name lookup)
         if (item.creatorId != UUID(0, 0)) {
-            TODO("APR: disable BtnCreator; set LabelCreatorName to waiting text; request avatar name async; enable BtnCreator and set name in callback")
+            System.err.println("FloaterProperties: disable BtnCreator; set LabelCreatorName to waiting text; request avatar name async; enable BtnCreator and set name in callback not yet implemented")
         } else {
-            TODO("APR: disable BtnCreator/LabelCreatorTitle/LabelCreatorName; set LabelCreatorName to 'unknown'")
+            System.err.println("FloaterProperties: disable BtnCreator/LabelCreatorTitle/LabelCreatorName; set LabelCreatorName to 'unknown' not yet implemented")
         }
 
         // Owner name (async, supports group ownership)
         if (perm.isOwned) {
-            TODO("APR: disable BtnOwner; set LabelOwnerName to waiting text; if group-owned lookup group name else lookup avatar name; enable BtnOwner in callback")
+            System.err.println("FloaterProperties: disable BtnOwner; set LabelOwnerName to waiting text; if group-owned lookup group name else lookup avatar name; enable BtnOwner in callback not yet implemented")
         } else {
-            TODO("APR: disable BtnOwner/LabelOwnerTitle/LabelOwnerName; set LabelOwnerName to 'public'")
+            System.err.println("FloaterProperties: disable BtnOwner/LabelOwnerTitle/LabelOwnerName; set LabelOwnerName to 'public' not yet implemented")
         }
 
         // Acquired date
         if (item.creationDate == 0L) {
-            TODO("APR: set LabelAcquiredDate to 'unknown'")
+            System.err.println("FloaterProperties: set LabelAcquiredDate to 'unknown' not yet implemented")
         } else {
             val dateStr = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
                 .withZone(ZoneOffset.UTC)
                 .format(Instant.ofEpochSecond(item.creationDate))
-            TODO("APR: set LabelAcquiredDate to dateStr")
+            System.err.println("FloaterProperties: set LabelAcquiredDate to dateStr not yet implemented")
         }
 
         // Owner permissions label
-        TODO("APR: set OwnerLabel to 'you can' or 'owner can' based on canAgentManipulate")
+        System.err.println("FloaterProperties: set OwnerLabel to 'you can' or 'owner can' based on canAgentManipulate not yet implemented")
 
         // Owner permission checkboxes (read-only)
-        TODO("APR: set CheckOwnerModify/Copy/Transfer values from maskOwner bits; all disabled")
-        TODO("APR: set CheckOwnerExport value from maskOwner PERM_EXPORT bit; disabled")
+        System.err.println("FloaterProperties: set CheckOwnerModify/Copy/Transfer values from maskOwner bits; all disabled not yet implemented")
+        System.err.println("FloaterProperties: set CheckOwnerExport value from maskOwner PERM_EXPORT bit; disabled not yet implemented")
 
         // Debug permission display
-        if (TODO("APR: gSavedSettings.getBOOL('DebugPermissions')") as Boolean) {
+        if (false) { // APR: gSavedSettings.getBOOL('DebugPermissions')
             val slamPerm          = (item.flags and InventoryItemFlags.OBJECT_SLAM_PERM) != 0u
             val overwriteGroup    = (item.flags and InventoryItemFlags.OBJECT_PERM_OVERWRITE_GROUP) != 0u
             val overwriteEveryone = (item.flags and InventoryItemFlags.OBJECT_PERM_OVERWRITE_EVERYONE) != 0u
-            TODO("APR: format and set BaseMaskDebug, OwnerMaskDebug, GroupMaskDebug, EveryoneMaskDebug, NextMaskDebug text; set all visible")
+            System.err.println("FloaterProperties: format and set BaseMaskDebug, OwnerMaskDebug, GroupMaskDebug, EveryoneMaskDebug, NextMaskDebug text; set all visible not yet implemented")
         } else {
-            TODO("APR: hide all *MaskDebug children")
+            System.err.println("FloaterProperties: hide all *MaskDebug children not yet implemented")
         }
 
         // Group / everyone sharing
@@ -219,66 +220,67 @@ open class FloaterProperties(key: Any?) {
         val isGroupModify = (perm.maskGroup and Perm.MODIFY) != 0u
         val isGroupMove   = (perm.maskGroup and Perm.MOVE) != 0u
         if (isLink || cannotRestrictPermissions) {
-            TODO("APR: disable CheckShareWithGroup, CheckEveryoneCopy")
+            System.err.println("FloaterProperties: disable CheckShareWithGroup, CheckEveryoneCopy not yet implemented")
         } else if (isObjModify && canAgentManipulate) {
-            TODO("APR: enable CheckShareWithGroup; enable CheckEveryoneCopy only when owner can copy+transfer")
+            System.err.println("FloaterProperties: enable CheckShareWithGroup; enable CheckEveryoneCopy only when owner can copy+transfer not yet implemented")
         } else {
-            TODO("APR: disable CheckShareWithGroup, CheckEveryoneCopy")
+            System.err.println("FloaterProperties: disable CheckShareWithGroup, CheckEveryoneCopy not yet implemented")
         }
-        TODO("APR: enable CheckOwnerExport only when agent is the item creator")
+        System.err.println("FloaterProperties: enable CheckOwnerExport only when agent is the item creator not yet implemented")
 
         val fullGroupShare = isGroupCopy && isGroupModify && isGroupMove
         val noGroupShare   = !isGroupCopy && !isGroupModify && !isGroupMove
         when {
-            fullGroupShare -> TODO("APR: set CheckShareWithGroup = true, tentative = false")
-            noGroupShare   -> TODO("APR: set CheckShareWithGroup = false, tentative = false")
-            else           -> TODO("APR: set CheckShareWithGroup tentative = true, value = true")
+            fullGroupShare -> System.err.println("FloaterProperties: set CheckShareWithGroup = true, tentative = false not yet implemented")
+            noGroupShare   -> System.err.println("FloaterProperties: set CheckShareWithGroup = false, tentative = false not yet implemented")
+            else           -> System.err.println("FloaterProperties: set CheckShareWithGroup tentative = true, value = true not yet implemented")
         }
-        TODO("APR: set CheckEveryoneCopy from maskEveryone PERM_COPY bit")
+        System.err.println("FloaterProperties: set CheckEveryoneCopy from maskEveryone PERM_COPY bit not yet implemented")
 
         // Sale info
         val saleInfo     = item.saleInfo
         val isForSale    = saleInfo.isForSale
         val canSell      = isObjModify && canAgentSell &&
-            (TODO("APR: gAgent.allowOperation(PERM_TRANSFER, perm, GP_OBJECT_MANIPULATE)") as Boolean)
+            false // APR: gAgent.allowOperation(PERM_TRANSFER, perm, GP_OBJECT_MANIPULATE)
         if (canSell) {
-            TODO("APR: enable CheckPurchase (isComplete), NextOwnerLabel, CheckNextOwnerModify/Copy/Transfer with base-mask guards; enable ComboBoxSaleType/EditCost when isComplete && isForSale")
+            System.err.println("FloaterProperties: enable CheckPurchase (isComplete), NextOwnerLabel, CheckNextOwnerModify/Copy/Transfer with base-mask guards; enable ComboBoxSaleType/EditCost when isComplete && isForSale not yet implemented")
         } else {
-            TODO("APR: disable CheckPurchase, NextOwnerLabel, CheckNextOwnerModify/Copy/Transfer, ComboBoxSaleType, Edit Cost")
+            System.err.println("FloaterProperties: disable CheckPurchase, NextOwnerLabel, CheckNextOwnerModify/Copy/Transfer, ComboBoxSaleType, Edit Cost not yet implemented")
         }
         if (isSettings) {
-            TODO("APR: hide next-owner copy/transfer and sale-type combo; these are not relevant for environment settings items")
+            System.err.println("FloaterProperties: hide next-owner copy/transfer and sale-type combo; these are not relevant for environment settings items not yet implemented")
         }
-        TODO("APR: set CheckPurchase value from isForSale; set ComboBoxSaleType and Edit Cost values from saleInfo")
+        System.err.println("FloaterProperties: set CheckPurchase value from isForSale; set ComboBoxSaleType and Edit Cost values from saleInfo not yet implemented")
 
         // Next-owner permissions
-        TODO("APR: set CheckNextOwnerModify/Copy/Transfer values from maskNextOwner bits")
+        System.err.println("FloaterProperties: set CheckNextOwnerModify/Copy/Transfer values from maskNextOwner bits not yet implemented")
     }
 
     private fun findItem(): InventoryItem? {
-        TODO("APR: if objectId is non-null look up in object inventory; else look up in agent inventory by itemId")
+        System.err.println("FloaterProperties: if objectId is non-null look up in object inventory; else look up in agent inventory by itemId not yet implemented")
+        return null
     }
 
     // UI callbacks
 
     protected fun onClickCreator() {
-        TODO("APR: open agent profile for creator UUID")
+        System.err.println("FloaterProperties: open agent profile for creator UUID not yet implemented")
     }
 
     protected fun onClickOwner() {
-        TODO("APR: if group owned open group info; else open agent profile for owner UUID")
+        System.err.println("FloaterProperties: if group owned open group info; else open agent profile for owner UUID not yet implemented")
     }
 
     protected fun onCommitName() {
-        TODO("APR: read name field value; update item name via inventory model")
+        System.err.println("FloaterProperties: read name field value; update item name via inventory model not yet implemented")
     }
 
     protected fun onCommitDescription() {
-        TODO("APR: read description field value; update item description via inventory model")
+        System.err.println("FloaterProperties: read description field value; update item description via inventory model not yet implemented")
     }
 
     protected fun onCommitPermissions() {
-        TODO("APR: collect checkbox values; build new permissions mask; call updateInventoryItem or object message to apply")
+        System.err.println("FloaterProperties: collect checkbox values; build new permissions mask; call updateInventoryItem or object message to apply not yet implemented")
     }
 
     protected fun onCommitSaleInfo() {
@@ -290,20 +292,20 @@ open class FloaterProperties(key: Any?) {
     }
 
     private fun updateSaleInfo() {
-        TODO("APR: read CheckPurchase, ComboBoxSaleType, Edit Cost; build SaleInfo; send update to inventory or object message")
+        System.err.println("FloaterProperties: read CheckPurchase, ComboBoxSaleType, Edit Cost; build SaleInfo; send update to inventory or object message not yet implemented")
     }
 
     // Avatar-name cache async callbacks (FS extension to avoid stale names on first open)
     fun onCreatorNameCallback(avId: UUID, avName: String, perm: Permissions) {
-        TODO("APR: enable BtnCreator; set LabelCreatorName to avName.userName; enable BtnCreator click action based on perm")
+        System.err.println("FloaterProperties: enable BtnCreator; set LabelCreatorName to avName.userName; enable BtnCreator click action based on perm not yet implemented")
     }
 
     fun onOwnerNameCallback(avId: UUID, avName: String) {
-        TODO("APR: enable BtnOwner; set LabelOwnerName to avName.userName")
+        System.err.println("FloaterProperties: enable BtnOwner; set LabelOwnerName to avName.userName not yet implemented")
     }
 
     fun onGroupOwnerNameCallback(name: String) {
-        TODO("APR: set LabelOwnerName to group name; keep BtnOwner pointing to group-info action")
+        System.err.println("FloaterProperties: set LabelOwnerName to group name; keep BtnOwner pointing to group-info action not yet implemented")
     }
 }
 
@@ -311,6 +313,6 @@ class MultiProperties : FloaterProperties(null) {
     // Hosts multiple FloaterProperties panels in a tabbed multi-floater,
     // analogous to LLMultiFloater in C++.
     init {
-        TODO("APR: initialise multi-floater tab container")
+        System.err.println("MultiProperties: initialise multi-floater tab container not yet implemented")
     }
 }

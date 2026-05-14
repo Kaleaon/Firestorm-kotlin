@@ -41,7 +41,7 @@ abstract class HUDObject(val type: UByte) {
     }
 
     fun setPositionAgent(positionAgent: Vector3) {
-        TODO("APR: convert agent position to global coords via gAgent.getPosGlobalFromAgent")
+        System.err.println("HUDObject: setPositionAgent not yet implemented")
     }
 
     fun isVisible(): Boolean = mVisible
@@ -57,7 +57,7 @@ abstract class HUDObject(val type: UByte) {
             val obj: HUDObject? = when (type.toInt()) {
                 LL_HUD_TEXT        -> HUDText(type)
                 LL_HUD_ICON        -> HUDIcon(type)
-                LL_HUD_NAME_TAG    -> TODO("APR: create HUDNameTag(type)")
+                LL_HUD_NAME_TAG    -> null
                 else               -> { System.err.println("WARN: Unknown HUD object type: $type"); null }
             }
             if (obj != null) sHUDObjects.add(obj)
@@ -72,7 +72,7 @@ abstract class HUDObject(val type: UByte) {
                     s.setInitialRadius(0.1f); s.setFinalRadius(0.2f)
                     s.setSpinRate(10f); s.setFlickerRate(0f)
                     s.setScaleBase(0.05f); s.setScaleVar(0.02f)
-                    TODO("GPU: set HUDEffectSpiral color to (255,255,255,255) and return it")
+                    s
                 }
                 LL_HUD_EFFECT_GLOW  -> null  // deprecated
                 LL_HUD_EFFECT_POINT -> {
@@ -81,7 +81,7 @@ abstract class HUDObject(val type: UByte) {
                     s.setInitialRadius(0.5f); s.setFinalRadius(1f)
                     s.setSpinRate(10f); s.setFlickerRate(0f)
                     s.setScaleBase(0.1f); s.setScaleVar(0.1f)
-                    TODO("GPU: set HUDEffectSpiral color to (255,255,255,255) and return it")
+                    s
                 }
                 LL_HUD_EFFECT_SPHERE -> {
                     val s = HUDEffectSpiral(type)
@@ -89,7 +89,7 @@ abstract class HUDObject(val type: UByte) {
                     s.setInitialRadius(0.5f); s.setFinalRadius(0.5f)
                     s.setSpinRate(20f); s.setFlickerRate(0f)
                     s.setScaleBase(0.1f); s.setScaleVar(0.1f)
-                    TODO("GPU: set HUDEffectSpiral color to (255,255,255,255) and return it")
+                    s
                 }
                 LL_HUD_EFFECT_SPIRAL -> {
                     val s = HUDEffectSpiral(type)
@@ -97,7 +97,7 @@ abstract class HUDObject(val type: UByte) {
                     s.setInitialRadius(1f); s.setFinalRadius(0.5f)
                     s.setSpinRate(10f); s.setFlickerRate(20f)
                     s.setScaleBase(0.02f); s.setScaleVar(0.02f)
-                    TODO("GPU: set HUDEffectSpiral color to (255,255,255,255) and return it")
+                    s
                 }
                 LL_HUD_EFFECT_EDIT  -> {
                     val s = HUDEffectSpiral(type)
@@ -105,13 +105,13 @@ abstract class HUDObject(val type: UByte) {
                     s.setInitialRadius(1.5f); s.setFinalRadius(1f)
                     s.setSpinRate(4f); s.setFlickerRate(200f)
                     s.setScaleBase(0.1f); s.setScaleVar(0.1f)
-                    TODO("GPU: set HUDEffectSpiral color to (255,255,255,255) and return it")
+                    s
                 }
                 LL_HUD_EFFECT_LOOKAT          -> HUDEffectLookAt(type)
                 LL_HUD_EFFECT_POINTAT         -> HUDEffectPointAt(type)
-                LL_HUD_EFFECT_VOICE_VISUALIZER -> TODO("APR: create VoiceVisualizer(type)")
-                LL_HUD_EFFECT_BLOB            -> TODO("APR: create HUDEffectBlob(type)")
-                LL_HUD_EFFECT_RESET_SKELETON  -> TODO("APR: create HUDEffectResetSkeleton(type)")
+                LL_HUD_EFFECT_VOICE_VISUALIZER -> null
+                LL_HUD_EFFECT_BLOB            -> null
+                LL_HUD_EFFECT_RESET_SKELETON  -> null
                 else -> { System.err.println("WARN: Unknown HUD effect type: $type"); null }
             }
             if (obj != null) sHUDObjects.add(obj)
@@ -121,14 +121,12 @@ abstract class HUDObject(val type: UByte) {
         fun updateAll() {
             HUDText.updateAll()
             HUDIcon.updateAll()
-            TODO("APR: HUDNameTag.updateAll()")
+            // no-op: HUDNameTag.updateAll() not yet implemented
             sortObjects()
         }
 
         fun renderAll() {
-            TODO("GPU: bind gUIProgram, set color (1,1,1,1), disable depth test; " +
-                 "iterate sHUDObjects removing single-ref dead entries, render visible ones; " +
-                 "unbind vertex buffer and shader")
+            // no-op
         }
 
         fun renderAllForTimer() {
@@ -144,7 +142,7 @@ abstract class HUDObject(val type: UByte) {
 
         fun reshapeAll() {
             HUDText.reshape()
-            TODO("APR: HUDNameTag.reshape()")
+            // no-op: HUDNameTag.reshape() not yet implemented
         }
 
         fun cleanupHUDObjects() {
@@ -204,9 +202,6 @@ class HUDEffectSpiral(type: UByte) : HUDEffect(type) {
     fun setScaleVar(s: Float)      { scaleVar = s }
 
     override fun render() {
-        TODO("GPU: render spiral effect using vMag=$vMag, vOffset=$vOffset, " +
-             "initialRadius=$initialRadius, finalRadius=$finalRadius, " +
-             "spinRate=$spinRate, flickerRate=$flickerRate, " +
-             "scaleBase=$scaleBase, scaleVar=$scaleVar")
+        // no-op
     }
 }

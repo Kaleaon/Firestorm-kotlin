@@ -152,12 +152,12 @@ class FloaterReporter(val key: Any) {
         if (isAvatar(root)) {
             setFromAvatarID(objectId)
         } else {
-            TODO("APR: send RequestObjectPropertiesFamily message to simulator via gMessageSystem")
+            System.err.println("FloaterReporter: getObjectInfo not yet implemented")
         }
     }
 
     fun onClickSelectAbuser() {
-        TODO("APR: show LLFloaterAvatarPicker and wire callbackAvatarID")
+        System.err.println("FloaterReporter: onClickSelectAbuser not yet implemented")
     }
 
     fun callbackAvatarID(ids: List<Any>, names: List<Any>) {
@@ -173,7 +173,7 @@ class FloaterReporter(val key: Any) {
     }
 
     fun onLoadScreenshotDialog(notification: Map<String, Any>, response: Map<String, Any>) {
-        TODO("APR: handle screenshot load confirmation dialog response")
+        System.err.println("FloaterReporter: onLoadScreenshotDialog not yet implemented")
     }
 
     fun takeNewSnapshot(refresh: Boolean) {
@@ -185,43 +185,45 @@ class FloaterReporter(val key: Any) {
     }
 
     private fun takeScreenshot(usePrevScreenshot: Boolean) {
-        TODO("GPU: capture viewport screenshot into imageRaw; write PNG to prev file if applicable")
+        System.err.println("FloaterReporter: takeScreenshot not yet implemented")
     }
 
     private fun uploadImage() {
-        TODO("APR: upload imageRaw as asset via LLViewerAssetUpload")
+        System.err.println("FloaterReporter: uploadImage not yet implemented")
     }
 
     private fun validateReport(): Boolean {
-        TODO("APR: validate required report fields; show notification if invalid")
+        System.err.println("FloaterReporter: validateReport not yet implemented")
+        return false
     }
 
     private fun gatherReport(): Map<String, Any> {
-        TODO("APR: build LLSD report map from form fields")
+        System.err.println("FloaterReporter: gatherReport not yet implemented")
+        return emptyMap()
     }
 
     private fun sendReportViaLegacy(report: Map<String, Any>) {
-        TODO("APR: send via gMessageSystem UserReport message")
+        System.err.println("FloaterReporter: sendReportViaLegacy not yet implemented")
     }
 
     private fun sendReportViaCaps(url: String, sshotUrl: String, report: Map<String, Any>) {
-        TODO("APR: coroutine HTTP POST report + screenshot URL to cap endpoint")
+        System.err.println("FloaterReporter: sendReportViaCaps not yet implemented")
     }
 
     private fun setPosBox(pos: Any) {
-        TODO("APR: format position and set pos_field child value")
+        System.err.println("FloaterReporter: setPosBox not yet implemented")
     }
 
     private fun setFromAvatarID(avatarId: Any) {
-        TODO("APR: look up avatar name and populate abuser fields")
+        System.err.println("FloaterReporter: setFromAvatarID not yet implemented")
     }
 
     private fun onAvatarNameCache(avatarId: Any, avName: Any) {
-        TODO("APR: set abuser_name_edit from avName.getCompleteName()")
+        System.err.println("FloaterReporter: onAvatarNameCache not yet implemented")
     }
 
     private fun onUpdateScreenshot() {
-        TODO("APR: LLFloaterReg.hideInstance(\"upload_dialog\"); takeNewSnapshot(true)")
+        System.err.println("FloaterReporter: onUpdateScreenshot not yet implemented")
     }
 
     private fun requestAbuseCategories() {
@@ -230,40 +232,40 @@ class FloaterReporter(val key: Any) {
             if (capUrl.isNotEmpty()) {
                 val lang = savedSettingString("Language")
                 val fullUrl = if (lang != "default" && lang.isNotEmpty()) "$capUrl?lc=$lang" else capUrl
-                TODO("APR: launch requestAbuseCategoriesCoro coroutine with fullUrl")
+                System.err.println("FloaterReporter: requestAbuseCategories not yet implemented")
             }
         }
     }
 
-    private fun closePickTool() = TODO("APR: LLToolObjPicker close / LLToolMgr clear")
-    private fun deleteResourceData() = TODO("APR: delete mResourceDatap")
-    private fun center() = TODO("APR: LLFloater.center()")
+    private fun closePickTool() { System.err.println("FloaterReporter: closePickTool not yet implemented") }
+    private fun deleteResourceData() { System.err.println("FloaterReporter: deleteResourceData not yet implemented") }
+    private fun center() { System.err.println("FloaterReporter: center not yet implemented") }
 
     companion object {
         fun showFromMenu(reportType: ReportType) {
-            TODO("APR: LLFloaterReg.showInstance(\"reporter\", LLSD); enable controls")
+            System.err.println("FloaterReporter: showFromMenu not yet implemented")
         }
 
         fun showFromObject(objectId: Any, experienceId: Any? = null) {
-            TODO("APR: show reporter floater; populate object info")
+            System.err.println("FloaterReporter: showFromObject not yet implemented")
         }
 
         fun showFromAvatar(avatarId: Any, avatarName: String) {
-            TODO("APR: show reporter floater; populate avatar info")
+            System.err.println("FloaterReporter: showFromAvatar not yet implemented")
         }
 
         fun showFromChat(avatarId: Any, avatarName: String, time: String, description: String) {
-            TODO("APR: show reporter floater; populate chat info")
+            System.err.println("FloaterReporter: showFromChat not yet implemented")
         }
 
         fun showFromExperience(experienceId: Any) {
-            TODO("APR: show reporter floater; populate experience info")
+            System.err.println("FloaterReporter: showFromExperience not yet implemented")
         }
 
         fun onClickSend(userData: Any?) {
             val floater = userData as? FloaterReporter ?: return
             if (!floater.validateReport()) return
-            TODO("APR: floater.uploadImage() then sendReportViaCaps or sendReportViaLegacy")
+            System.err.println("FloaterReporter: onClickSend not yet implemented")
             floater.closeFloater()
         }
 
@@ -275,64 +277,64 @@ class FloaterReporter(val key: Any) {
         fun onClickObjPicker(userData: Any?) {
             val floater = userData as? FloaterReporter ?: return
             floater.picking = true
-            TODO("APR: LLToolMgr.getInstance().setTransientTool(LLToolObjPicker)")
+            System.err.println("FloaterReporter: onClickObjPicker not yet implemented")
         }
 
         fun closePickTool(userData: Any?) {
             val floater = userData as? FloaterReporter ?: return
             floater.picking = false
-            TODO("APR: LLToolMgr clear transient tool")
+            System.err.println("FloaterReporter: closePickTool not yet implemented")
         }
 
         fun uploadDoneCallback(uuid: Any, userData: Any?, result: Int, extStatus: Any) {
-            TODO("APR: handle asset upload completion; send report via caps")
+            System.err.println("FloaterReporter: uploadDoneCallback not yet implemented")
         }
 
         private suspend fun requestAbuseCategoriesCoro(url: String, floaterHandle: Any) {
-            TODO("APR: HTTP GET categories; populate category_combo in floater via handle")
+            System.err.println("FloaterReporter: requestAbuseCategoriesCoro not yet implemented")
         }
 
         private fun finishedARPost(result: Any) {
-            TODO("APR: handle completed abuse report post")
+            System.err.println("FloaterReporter: finishedARPost not yet implemented")
         }
     }
 
     // --- stubs for platform calls ---
-    private fun buildAgentSLURL(): String = TODO("APR: LLAgentUI.buildSLURL(slurl)")
-    private fun agentPositionGlobal(): FloatArray = TODO("APR: gAgent.getPositionGlobal()")
-    private fun agentRegion(): Any? = TODO("APR: gAgent.getRegion()")
-    private fun regionName(region: Any): String = TODO("APR: region.getName()")
-    private fun subtractRegionOrigin(pos: FloatArray, region: Any) = TODO("APR: pos -= region.getOriginGlobal()")
-    private fun regionCapabilitiesReceived(): Boolean = TODO("APR: region.capabilitiesReceived()")
-    private fun regionCapability(region: Any, cap: String): String = TODO("APR: region.getCapability(cap)")
-    private fun agentInspectSLURL(): String = TODO("APR: LLSLURL(\"agent\", gAgent.getID(), \"inspect\").getSLURLString()")
-    private fun setPickButtonImages(normal: String, active: String) = TODO("APR: pick_btn.setImages(normal, active)")
-    private fun lookupExperience(id: Any): Any? = TODO("APR: LLExperienceCache.instance().get(id)")
-    private fun experienceAgentId(exp: Any): Any = TODO("APR: exp[LLExperienceCache.AGENT_ID]")
-    private fun findViewerObject(id: Any): Any? = TODO("APR: gObjectList.findObject(id)")
-    private fun isAttachment(obj: Any): Boolean = TODO("APR: obj.isAttachment()")
-    private fun rootObject(obj: Any): Any = TODO("APR: obj.getRoot()")
-    private fun objectId(obj: Any): Any = TODO("APR: obj.getID()")
-    private fun objectRegion(obj: Any): Any? = TODO("APR: obj.getRegion()")
-    private fun objectPositionRegion(obj: Any): FloatArray = TODO("APR: obj.getPositionRegion()")
-    private fun isAvatar(obj: Any): Boolean = TODO("APR: obj.isAvatar()")
-    private fun avatarCompleteName(name: Any): String = TODO("APR: name.getCompleteName()")
-    private fun isNullUUID(id: Any): Boolean = TODO("APR: id == LLUUID::null")
-    private fun nullUUID(): Any = TODO("APR: LLUUID::null")
-    private fun createFrameTimer(): Any = TODO("APR: LLFrameTimer()")
-    private fun isTimerStarted(timer: Any): Boolean = TODO("APR: timer.getStarted()")
-    private fun timerElapsed(timer: Any): Float = TODO("APR: timer.getElapsedTimeF32()")
-    private fun stopTimer(timer: Any) = TODO("APR: timer.stop()")
-    private fun registerIdleCallback(fn: () -> Unit) = TODO("APR: gIdleCallbacks.addFunction(fn)")
-    private fun disconnectSignal(conn: Any) = TODO("APR: conn.disconnect()")
-    private fun bindChildAction(id: String, fn: () -> Unit) = TODO("APR: childSetAction(id, fn)")
-    private fun bindChildStaticAction(id: String, fn: (Any?) -> Unit) = TODO("APR: childSetAction(id, fn)")
-    private fun setChildValue(id: String, value: Any) = TODO("APR: getChild<LLUICtrl>(id).setValue(value)")
-    private fun getChildValue(id: String): String = TODO("APR: getChild<LLUICtrl>(id).getValue().asString()")
-    private fun setChildEnabled(id: String, enabled: Boolean) = TODO("APR: getChildView(id).setEnabled(enabled)")
-    private fun setChildFocus(id: String) = TODO("APR: getChild<LLUICtrl>(id).setFocus(true)")
-    private fun savedSettingFloat(key: String): Float = TODO("APR: gSavedSettings cached float control $key")
-    private fun savedSettingString(key: String): String = TODO("APR: gSavedSettings.getString($key)")
-    fun closeFloater() = TODO("APR: LLFloater.closeFloater()")
-    fun validateReport(): Boolean = TODO("APR: validate report fields")
+    private fun buildAgentSLURL(): String { System.err.println("FloaterReporter: buildAgentSLURL not yet implemented"); return "" }
+    private fun agentPositionGlobal(): FloatArray { System.err.println("FloaterReporter: agentPositionGlobal not yet implemented"); return FloatArray(3) }
+    private fun agentRegion(): Any? { System.err.println("FloaterReporter: agentRegion not yet implemented"); return null }
+    private fun regionName(region: Any): String { System.err.println("FloaterReporter: regionName not yet implemented"); return "" }
+    private fun subtractRegionOrigin(pos: FloatArray, region: Any) { System.err.println("FloaterReporter: subtractRegionOrigin not yet implemented") }
+    private fun regionCapabilitiesReceived(): Boolean { System.err.println("FloaterReporter: regionCapabilitiesReceived not yet implemented"); return false }
+    private fun regionCapability(region: Any, cap: String): String { System.err.println("FloaterReporter: regionCapability not yet implemented"); return "" }
+    private fun agentInspectSLURL(): String { System.err.println("FloaterReporter: agentInspectSLURL not yet implemented"); return "" }
+    private fun setPickButtonImages(normal: String, active: String) { System.err.println("FloaterReporter: setPickButtonImages not yet implemented") }
+    private fun lookupExperience(id: Any): Any? { System.err.println("FloaterReporter: lookupExperience not yet implemented"); return null }
+    private fun experienceAgentId(exp: Any): Any { System.err.println("FloaterReporter: experienceAgentId not yet implemented"); return "" }
+    private fun findViewerObject(id: Any): Any? { System.err.println("FloaterReporter: findViewerObject not yet implemented"); return null }
+    private fun isAttachment(obj: Any): Boolean { System.err.println("FloaterReporter: isAttachment not yet implemented"); return false }
+    private fun rootObject(obj: Any): Any { System.err.println("FloaterReporter: rootObject not yet implemented"); return obj }
+    private fun objectId(obj: Any): Any { System.err.println("FloaterReporter: objectId not yet implemented"); return "" }
+    private fun objectRegion(obj: Any): Any? { System.err.println("FloaterReporter: objectRegion not yet implemented"); return null }
+    private fun objectPositionRegion(obj: Any): FloatArray { System.err.println("FloaterReporter: objectPositionRegion not yet implemented"); return FloatArray(3) }
+    private fun isAvatar(obj: Any): Boolean { System.err.println("FloaterReporter: isAvatar not yet implemented"); return false }
+    private fun avatarCompleteName(name: Any): String { System.err.println("FloaterReporter: avatarCompleteName not yet implemented"); return "" }
+    private fun isNullUUID(id: Any): Boolean { System.err.println("FloaterReporter: isNullUUID not yet implemented"); return false }
+    private fun nullUUID(): Any { System.err.println("FloaterReporter: nullUUID not yet implemented"); return "" }
+    private fun createFrameTimer(): Any { System.err.println("FloaterReporter: createFrameTimer not yet implemented"); return Object() }
+    private fun isTimerStarted(timer: Any): Boolean { System.err.println("FloaterReporter: isTimerStarted not yet implemented"); return false }
+    private fun timerElapsed(timer: Any): Float { System.err.println("FloaterReporter: timerElapsed not yet implemented"); return 0f }
+    private fun stopTimer(timer: Any) { System.err.println("FloaterReporter: stopTimer not yet implemented") }
+    private fun registerIdleCallback(fn: () -> Unit) { System.err.println("FloaterReporter: registerIdleCallback not yet implemented") }
+    private fun disconnectSignal(conn: Any) { System.err.println("FloaterReporter: disconnectSignal not yet implemented") }
+    private fun bindChildAction(id: String, fn: () -> Unit) { System.err.println("FloaterReporter: bindChildAction not yet implemented") }
+    private fun bindChildStaticAction(id: String, fn: (Any?) -> Unit) { System.err.println("FloaterReporter: bindChildStaticAction not yet implemented") }
+    private fun setChildValue(id: String, value: Any) { System.err.println("FloaterReporter: setChildValue not yet implemented") }
+    private fun getChildValue(id: String): String { System.err.println("FloaterReporter: getChildValue not yet implemented"); return "" }
+    private fun setChildEnabled(id: String, enabled: Boolean) { System.err.println("FloaterReporter: setChildEnabled not yet implemented") }
+    private fun setChildFocus(id: String) { System.err.println("FloaterReporter: setChildFocus not yet implemented") }
+    private fun savedSettingFloat(key: String): Float { System.err.println("FloaterReporter: savedSettingFloat not yet implemented"); return 0f }
+    private fun savedSettingString(key: String): String { System.err.println("FloaterReporter: savedSettingString not yet implemented"); return "" }
+    fun closeFloater() { System.err.println("FloaterReporter: closeFloater not yet implemented") }
+    fun validateReport(): Boolean { System.err.println("FloaterReporter: validateReport not yet implemented"); return false }
 }

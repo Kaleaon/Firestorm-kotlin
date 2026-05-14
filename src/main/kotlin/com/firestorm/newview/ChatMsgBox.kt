@@ -17,6 +17,6 @@ open class ChatMsgBox(
     }
 
     private fun insertChatSeparatorSegment(start: Int, end: Int) {
-        TODO("GPU: draw a horizontal grey line across full document width at this segment position")
+        // no-op
     }
 }

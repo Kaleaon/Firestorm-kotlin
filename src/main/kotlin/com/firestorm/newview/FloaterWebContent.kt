@@ -105,7 +105,7 @@ class FloaterWebContent(private val params: WebContentParams) :
     }
 
     private fun initializeUrlHistory() {
-        TODO("APR: clear address combo then populate from LLURLHistory.getURLHistory('browser')")
+        System.err.println("FloaterWebContent: initializeUrlHistory not yet implemented")
     }
 
     override fun onOpen(key: Any) {
@@ -127,7 +127,7 @@ class FloaterWebContent(private val params: WebContentParams) :
     }
 
     override fun onClose(appQuitting: Boolean) {
-        TODO("GPU: ViewerMedia.proxyWindowClosed($uuid)")
+        System.err.println("FloaterWebContent: onClose not yet implemented")
         instances.remove(uuid)
     }
 
@@ -202,7 +202,7 @@ class FloaterWebContent(private val params: WebContentParams) :
     }
 
     fun geometryChanged(x: Int, y: Int, width: Int, height: Int) {
-        TODO("APR: adjust floater rect to accommodate requested browser geometry, clamped to window bounds")
+        System.err.println("FloaterWebContent: geometryChanged not yet implemented")
     }
 
     fun onClickBack()    { webBrowser?.navigateBack() }
@@ -211,14 +211,14 @@ class FloaterWebContent(private val params: WebContentParams) :
     fun onClickReload() {
         val plugin = webBrowser?.getMediaPlugin()
         if (plugin != null) {
-            TODO("GPU: plugin.browseReload(ignoreCache = true)")
+            System.err.println("FloaterWebContent: onClickReload not yet implemented")
         } else {
             webBrowser?.navigateTo(currentUrl)
         }
     }
 
     fun onClickStop() {
-        TODO("GPU: webBrowser.getMediaPlugin()?.browseStop()")
+        System.err.println("FloaterWebContent: onClickStop not yet implemented")
         btnReload?.setVisible(true)
         btnStop?.setVisible(false)
     }
@@ -230,7 +230,7 @@ class FloaterWebContent(private val params: WebContentParams) :
 
     fun onPopExternal() {
         val url = addressCombo?.getValue()?.asString()?.trim() ?: return
-        if (url.isNotEmpty()) TODO("APR: Web.loadUrlExternal($url)")
+        if (url.isNotEmpty()) System.err.println("FloaterWebContent: onPopExternal not yet implemented")
     }
 
     fun onTestUrl(url: String) {
@@ -239,7 +239,7 @@ class FloaterWebContent(private val params: WebContentParams) :
     }
 
     private fun openMedia(p: WebContentParams) {
-        TODO("GPU: ViewerMedia.proxyWindowOpened(p.target, p.id)")
+        System.err.println("FloaterWebContent: openMedia not yet implemented")
         webBrowser?.setHomePageUrl(p.url)
         webBrowser?.setTarget(p.target)
         webBrowser?.navigateTo(p.url)
@@ -257,7 +257,7 @@ class FloaterWebContent(private val params: WebContentParams) :
         if (!p.showChrome) setResizeLimits(100, 100)
 
         if (p.preferredMediaWidth > 0 && p.preferredMediaHeight > 0) {
-            TODO("APR: update layout stack then call geometryChanged to resize floater to preferred dimensions")
+            System.err.println("FloaterWebContent: preferred media dimensions resize not yet implemented")
         }
     }
 
@@ -271,11 +271,11 @@ class FloaterWebContent(private val params: WebContentParams) :
 
         currentUrl = url.trim()
 
-        TODO("APR: LLURLHistory.removeURL('browser', currentUrl); LLURLHistory.addURL('browser', currentUrl)")
+        System.err.println("FloaterWebContent: setCurrentUrl URL history update not yet implemented")
 
         val secureUrl = currentUrl.startsWith("https://", ignoreCase = true)
         secureLockIcon?.setVisible(secureUrl)
-        TODO("APR: set address combo left-text padding to ${if (secureUrl) 22 else 2}")
+        System.err.println("FloaterWebContent: setCurrentUrl address combo padding not yet implemented")
 
         displayUrl = currentUrl
         addressCombo?.remove(currentUrl)

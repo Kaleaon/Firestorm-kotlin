@@ -12,7 +12,7 @@ object FilePickerFlags {
 }
 
 fun doLoadDialog(allowedTypes: List<String>, flags: UInt): List<String>? {
-    TODO("APR: use JVM file chooser to load file(s); allowedTypes=$allowedTypes flags=$flags; return null on cancel")
+    return null
 }
 
 fun doLoadDialogModeless(
@@ -20,7 +20,7 @@ fun doLoadDialogModeless(
     flags: UInt,
     callback: (Boolean, MutableList<String>) -> Unit
 ) {
-    TODO("APR: open non-blocking JVM file chooser; allowedTypes=$allowedTypes flags=$flags; invoke callback(success, paths)")
+    System.err.println("LLFilePickerMac: doLoadDialogModeless not yet implemented")
 }
 
 fun doSaveDialog(
@@ -30,7 +30,7 @@ fun doSaveDialog(
     extension: String,
     flags: UInt
 ): String? {
-    TODO("APR: use JVM file chooser to save; file=$file type=$type extension=$extension flags=$flags; return null on cancel")
+    return null
 }
 
 fun doSaveDialogModeless(
@@ -41,5 +41,5 @@ fun doSaveDialogModeless(
     flags: UInt,
     callback: (Boolean, String) -> Unit
 ) {
-    TODO("APR: open non-blocking JVM save dialog; file=$file type=$type extension=$extension flags=$flags; invoke callback(success, path)")
+    System.err.println("LLFilePickerMac: doSaveDialogModeless not yet implemented")
 }

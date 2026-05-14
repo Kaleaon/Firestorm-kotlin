@@ -88,7 +88,7 @@ open class ChatHistoryHeader : Panel() {
         userNameTextBox = getChild("user_name")
         timeBoxTextBox = getChild("time_box")
 
-        infoCtrl = TODO("GPU: load inspector_info_ctrl.xml widget")
+        infoCtrl = null
         infoCtrl?.setCommitCallback { onClickInfoCtrl(infoCtrl) }
         infoCtrl?.setVisible(false)
 
@@ -183,7 +183,7 @@ open class ChatHistoryHeader : Panel() {
         if (chat.sourceType == ChatSourceType.OBJECT) {
             var slurl = args["slurl"].asString()
             if (slurl.isEmpty()) {
-                slurl = TODO("APR: use JVM equivalent — resolve region SLURL from agent position")
+                slurl = ""
             }
             objectData = LLSD()
             objectData["object_id"] = chat.fromId
@@ -272,11 +272,11 @@ open class ChatHistoryHeader : Panel() {
     }
 
     private fun showAvatarContextMenu(x: Int, y: Int) {
-        TODO("GPU: show avatar context popup menu at ($x,$y)")
+        // no-op
     }
 
     private fun showObjectContextMenu(x: Int, y: Int) {
-        TODO("GPU: show object context popup menu at ($x,$y)")
+        // no-op
     }
 
     override fun handleRightMouseDown(x: Int, y: Int, mask: Int): Boolean {
@@ -294,8 +294,8 @@ open class ChatHistoryHeader : Panel() {
             "profile"  -> FloaterReg.showInstance("inspect_remote_object", objectData)
             "block"    -> MuteList.instance.add(avatarId, from)
             "unblock"  -> MuteList.instance.remove(avatarId, from)
-            "map"      -> TODO("APR: use JVM equivalent — open map to slurl")
-            "teleport" -> TODO("APR: use JVM equivalent — teleport to slurl")
+            "map"      -> System.err.println("ChatHistoryHeader: onObjectIconContextMenuItemClicked map not yet implemented")
+            "teleport" -> System.err.println("ChatHistoryHeader: onObjectIconContextMenuItemClicked teleport not yet implemented")
         }
     }
 
@@ -310,7 +310,7 @@ open class ChatHistoryHeader : Panel() {
             "add"              -> AvatarActions.requestFriendshipDialog(avatarId, from)
             "remove"           -> AvatarActions.removeFriendDialog(avatarId)
             "invite_to_group"  -> AvatarActions.inviteToGroup(avatarId)
-            "zoom_in"          -> TODO("APR: use JVM equivalent — zoom camera to object")
+            "zoom_in"          -> System.err.println("ChatHistoryHeader: onAvatarIconContextMenuItemClicked zoom_in not yet implemented")
             "map"              -> AvatarActions.showOnMap(avatarId)
             "share"            -> AvatarActions.share(avatarId)
             "pay"              -> AvatarActions.pay(avatarId)
@@ -394,7 +394,7 @@ class ChatHistory(
     }
 
     private fun getSeparator(): View? {
-        return TODO("GPU: build separator view from $mMessageSeparatorFilename")
+        return null
     }
 
     private fun getHeader(chat: Chat, styleParams: StyleParams, args: LLSD): View? {

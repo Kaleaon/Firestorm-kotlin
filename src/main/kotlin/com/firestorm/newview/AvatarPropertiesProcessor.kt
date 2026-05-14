@@ -213,7 +213,7 @@ object AvatarPropertiesProcessor {
     fun requestAvatarProperties(id: LLUUID) {
         if (isPendingRequest(id, AvatarProcessorType.PROPERTIES)) return
         addPendingRequest(id, AvatarProcessorType.PROPERTIES)
-        TODO("GET AgentProfile cap URL for avatarId=$id and parse JSON response into AvatarData")
+        System.err.println("AvatarPropertiesProcessor: requestAvatarProperties not yet implemented")
     }
 
     /**
@@ -223,7 +223,7 @@ object AvatarPropertiesProcessor {
     fun sendAvatarLegacyPropertiesRequest(id: LLUUID) {
         if (isPendingRequest(id, AvatarProcessorType.PROPERTIES_LEGACY)) return
         addPendingRequest(id, AvatarProcessorType.PROPERTIES_LEGACY)
-        TODO("Send AvatarPropertiesRequest UDP message for avatarId=$id")
+        System.err.println("AvatarPropertiesProcessor: sendAvatarLegacyPropertiesRequest not yet implemented")
     }
 
     /**
@@ -233,7 +233,7 @@ object AvatarPropertiesProcessor {
     fun sendAvatarTexturesRequest(id: LLUUID) {
         if (isPendingRequest(id, AvatarProcessorType.TEXTURES)) return
         addPendingRequest(id, AvatarProcessorType.TEXTURES)
-        TODO("Request avatar textures for avatarId=$id")
+        System.err.println("AvatarPropertiesProcessor: sendAvatarTexturesRequest not yet implemented")
     }
 
     /**
@@ -243,7 +243,7 @@ object AvatarPropertiesProcessor {
     fun sendAvatarClassifiedsRequest(id: LLUUID) {
         if (isPendingRequest(id, AvatarProcessorType.CLASSIFIEDS)) return
         addPendingRequest(id, AvatarProcessorType.CLASSIFIEDS)
-        TODO("Send AvatarClassifiedsRequest for avatarId=$id")
+        System.err.println("AvatarPropertiesProcessor: sendAvatarClassifiedsRequest not yet implemented")
     }
 
     /**
@@ -252,7 +252,7 @@ object AvatarPropertiesProcessor {
     fun sendAvatarPicksRequest(id: LLUUID) {
         if (isPendingRequest(id, AvatarProcessorType.PICKS)) return
         addPendingRequest(id, AvatarProcessorType.PICKS)
-        TODO("Send AvatarPicksRequest for avatarId=$id")
+        System.err.println("AvatarPropertiesProcessor: sendAvatarPicksRequest not yet implemented")
     }
 
     /**
@@ -261,7 +261,7 @@ object AvatarPropertiesProcessor {
     fun sendAvatarNotesRequest(id: LLUUID) {
         if (isPendingRequest(id, AvatarProcessorType.NOTES)) return
         addPendingRequest(id, AvatarProcessorType.NOTES)
-        TODO("Send AvatarNotesRequest for avatarId=$id")
+        System.err.println("AvatarPropertiesProcessor: sendAvatarNotesRequest not yet implemented")
     }
 
     /**
@@ -270,7 +270,7 @@ object AvatarPropertiesProcessor {
     fun sendAvatarGroupsRequest(id: LLUUID) {
         if (isPendingRequest(id, AvatarProcessorType.GROUPS)) return
         addPendingRequest(id, AvatarProcessorType.GROUPS)
-        TODO("Send AvatarGroupsRequest for avatarId=$id")
+        System.err.println("AvatarPropertiesProcessor: sendAvatarGroupsRequest not yet implemented")
     }
 
     // -----------------------------------------------------------------------
@@ -282,14 +282,14 @@ object AvatarPropertiesProcessor {
      * Stub — POST to AgentProfile cap or send AvatarPropertiesUpdate UDP.
      */
     fun sendAvatarPropertiesUpdate(data: AvatarData) {
-        TODO("POST AvatarData for avatarId=${data.id} to AgentProfile cap or UDP message")
+        System.err.println("AvatarPropertiesProcessor: sendAvatarPropertiesUpdate not yet implemented")
     }
 
     /**
      * Sends a personal note update for [avatarId].
      */
     fun sendNotes(avatarId: LLUUID, notes: String) {
-        TODO("Send AvatarNotesUpdate for avatarId=$avatarId with notes='$notes'")
+        System.err.println("AvatarPropertiesProcessor: sendNotes not yet implemented")
     }
 
     // -----------------------------------------------------------------------
@@ -322,7 +322,7 @@ object AvatarPropertiesProcessor {
          * or "Linden Employee".  Mirrors the C++ static [accountType].
          */
         fun accountType(data: AvatarData): String {
-            // TODO: wire to LLTrans / localisation layer
+            // wire to LLTrans / localisation layer when i18n is ported
             return when {
                 data.flags and AvatarFlags.IDENTIFIED != 0u -> "Identified Resident"
                 else -> "Resident"

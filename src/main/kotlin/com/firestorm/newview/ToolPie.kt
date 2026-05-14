@@ -27,28 +27,28 @@ data class PickInfo(
     val objectFace: Int = -1,
     val hudIcon: Any? = null,
 ) {
-    fun getObject(): ViewerObjectStub? = TODO("APR: gObjectList.findObject(objectId)")
-    fun isPosGlobalZero(): Boolean = TODO("APR: mPosGlobal.isExactlyZero()") as Boolean
+    fun getObject(): ViewerObjectStub? = null
+    fun isPosGlobalZero(): Boolean = false
     fun isValid(): Boolean = pickType != PickType.INVALID
 }
 
 // Minimal stub so ToolPie compiles without the full object hierarchy.
 open class ViewerObjectStub {
-    open fun isHUDAttachment(): Boolean = TODO("APR: object flag")
-    open fun isAttachment(): Boolean = TODO("APR: object flag")
-    open fun isAvatar(): Boolean = TODO("APR: object flag")
-    open fun isAgentAvatar(): Boolean = TODO("APR: object flag")
-    open fun isSelf(): Boolean = TODO("APR: object flag")
-    open fun flagHandleTouch(): Boolean = TODO("APR: object flag")
-    open fun flagUsePhysics(): Boolean = TODO("APR: object flag")
-    open fun flagTakesMoney(): Boolean = TODO("APR: object flag")
-    open fun allowOpen(): Boolean = TODO("APR: permission check")
-    open fun getClickAction(): UByte = TODO("APR: prim property") as UByte
-    open fun permYouOwner(): Boolean = TODO("APR: permission check")
-    open fun getRootEdit(): ViewerObjectStub? = TODO("APR: walk to link root")
-    open fun getParent(): ViewerObjectStub? = TODO("APR: scene-graph parent")
-    open fun getID(): String = TODO("APR: UUID as string")
-    open fun getAvatar(): ViewerObjectStub? = TODO("APR: avatar link")
+    open fun isHUDAttachment(): Boolean = false
+    open fun isAttachment(): Boolean = false
+    open fun isAvatar(): Boolean = false
+    open fun isAgentAvatar(): Boolean = false
+    open fun isSelf(): Boolean = false
+    open fun flagHandleTouch(): Boolean = false
+    open fun flagUsePhysics(): Boolean = false
+    open fun flagTakesMoney(): Boolean = false
+    open fun allowOpen(): Boolean = false
+    open fun getClickAction(): UByte = ClickAction.NONE
+    open fun permYouOwner(): Boolean = false
+    open fun getRootEdit(): ViewerObjectStub? = null
+    open fun getParent(): ViewerObjectStub? = null
+    open fun getID(): String = ""
+    open fun getAvatar(): ViewerObjectStub? = null
 }
 
 private const val CAMERA_MODE_MOUSELOOK = 3
@@ -107,10 +107,8 @@ object ToolPie : Tool("Pie") {
         mouseDownX = x
         mouseDownY = y
 
-        val transparentPick: PickInfo =
-            TODO("APR: gViewerWindow.pickImmediate(x, y, includeTransparent=true, rigged=false, particle=false, unselectable=true)") as PickInfo
-        val visiblePick: PickInfo =
-            TODO("APR: gViewerWindow.pickImmediate(x, y, includeTransparent=false, rigged=false)") as PickInfo
+        val transparentPick: PickInfo = PickInfo()
+        val visiblePick: PickInfo = PickInfo()
         val transpObj = transparentPick.getObject()
         val visibleObj = visiblePick.getObject()
 
@@ -136,14 +134,11 @@ object ToolPie : Tool("Pie") {
     }
 
     override fun handleRightMouseDown(x: Int, y: Int, mask: Int): Boolean {
-        val pickReflectionProbe: Boolean =
-            TODO("APR: gSavedSettings.getBOOL(\"SelectReflectionProbes\")") as Boolean
-        pick = (TODO("APR: gViewerWindow.pickImmediate(x, y, transparent=FSEnableRightclickOnTransparentObjects, rigged=true, particle=true, unselectable=true, reflectionProbe=pickReflectionProbe)") as PickInfo)
-            .copy(keyMask = mask)
+        val pickReflectionProbe: Boolean = false
+        pick = PickInfo().copy(keyMask = mask)
 
-        val cameraMode: Int = TODO("APR: gAgentCamera.getCameraMode()") as Int
-        val enableInMouselook: Boolean =
-            TODO("APR: gSavedSettings.getBOOL(\"FSEnableRightclickMenuInMouselook\")") as Boolean
+        val cameraMode: Int = 0
+        val enableInMouselook: Boolean = false
         if (cameraMode != CAMERA_MODE_MOUSELOOK || enableInMouselook) {
             handleRightClickPick()
         }
@@ -156,12 +151,12 @@ object ToolPie : Tool("Pie") {
     }
 
     private fun handleScrollWheelAny(x: Int, y: Int, clicksX: Int, clicksY: Int): Boolean {
-        val uvX: Float = TODO("APR: hoverPick.uvCoords.x") as Float
-        val uvY: Float = TODO("APR: hoverPick.uvCoords.y") as Float
+        val uvX: Float = -1f
+        val uvY: Float = -1f
         return if (uvX >= 0f && uvY >= 0f) {
-            TODO("APR: ViewerMediaFocus.getInstance().handleScrollWheel(hoverPick.uvCoords, clicksX, clicksY)") as Boolean
+            false
         } else {
-            TODO("APR: ViewerMediaFocus.getInstance().handleScrollWheel(x, y, clicksX, clicksY)") as Boolean
+            false
         }
     }
 
@@ -177,7 +172,7 @@ object ToolPie : Tool("Pie") {
         val mask = pick.keyMask
 
         if (pick.pickType == PickType.PARCEL_WALL) {
-            TODO("APR: show parcel info or buy pass")
+            System.err.println("ToolPie: show parcel info or buy pass not yet implemented")
             return super.handleMouseDown(x, y, mask)
         }
 
@@ -185,14 +180,14 @@ object ToolPie : Tool("Pie") {
         var parent: ViewerObjectStub? = null
 
         if (pick.pickType != PickType.LAND) {
-            TODO("APR: ViewerParcelMgr.getInstance().deselectLand()")
+            System.err.println("ToolPie: ViewerParcelMgr.getInstance().deselectLand() not yet implemented")
         }
         parent = obj?.getRootEdit()
 
         if (handleMediaClick(pick)) return true
 
         if (useClickAction(mask, obj, parent)) {
-            TODO("APR: RlvActions interaction checks")
+            System.err.println("ToolPie: RlvActions interaction checks not yet implemented")
 
             val objAction = obj?.getClickAction() ?: ClickAction.NONE
             val parentAction = parent?.getClickAction() ?: ClickAction.NONE
@@ -201,15 +196,14 @@ object ToolPie : Tool("Pie") {
                 parentAction != ClickAction.NONE -> parentAction
                 else -> ClickAction.NONE
             }
-            TODO("APR: RlvActions per-action buy/pay checks, clear clickAction if blocked")
+            System.err.println("ToolPie: RlvActions per-action buy/pay checks, clear clickAction if blocked not yet implemented")
 
             when (clickAction) {
                 ClickAction.TOUCH -> { /* fall through to touch handling */ }
                 ClickAction.SIT -> {
-                    val blockSit: Boolean =
-                        TODO("APR: gSavedSettings.getBOOL(\"FSBlockClickSit\")") as Boolean
-                    if (!blockSit && TODO("APR: isAgentAvatarValid() && !gAgentAvatarp.isSitting()") as Boolean) {
-                        TODO("APR: handle_object_sit_or_stand(); gFocusMgr.setKeyboardFocus(null)")
+                    val blockSit: Boolean = false
+                    if (!blockSit && false) {
+                        System.err.println("ToolPie: handle_object_sit_or_stand(); gFocusMgr.setKeyboardFocus(null) not yet implemented")
                         return true
                     }
                 }
@@ -218,8 +212,8 @@ object ToolPie : Tool("Pie") {
                         (obj?.flagTakesMoney() == true || parent?.flagTakesMoney() == true)
                     ) {
                         clickActionObject = obj
-                        leftClickSelection = TODO("APR: ToolSelect.handleObjectSelection(pick, false, true)")
-                        if (TODO("APR: SelectMgr.getInstance().selectGetAllValid()") as Boolean)
+                        leftClickSelection = null
+                        if (false)
                             selectionPropertiesReceived()
                         return true
                     }
@@ -227,8 +221,8 @@ object ToolPie : Tool("Pie") {
                 ClickAction.BUY -> {
                     if (clickActionBuyEnabled) {
                         clickActionObject = parent
-                        leftClickSelection = TODO("APR: ToolSelect.handleObjectSelection(pick, false, true, true)")
-                        if (TODO("APR: SelectMgr.getInstance().selectGetAllValid()") as Boolean)
+                        leftClickSelection = null
+                        if (false)
                             selectionPropertiesReceived()
                         return true
                     }
@@ -236,21 +230,21 @@ object ToolPie : Tool("Pie") {
                 ClickAction.OPEN -> {
                     if (parent?.allowOpen() == true) {
                         clickActionObject = parent
-                        leftClickSelection = TODO("APR: ToolSelect.handleObjectSelection(pick, false, true, true)")
-                        if (TODO("APR: SelectMgr.getInstance().selectGetAllValid()") as Boolean)
+                        leftClickSelection = null
+                        if (false)
                             selectionPropertiesReceived()
                     }
                     return true
                 }
-                ClickAction.PLAY -> { TODO("APR: handle_click_action_play()"); return true }
-                ClickAction.OPEN_MEDIA -> { TODO("APR: handle_click_action_open_media(obj)"); return true }
-                ClickAction.ZOOM -> { TODO("APR: zoom camera to object bounding box"); return true }
+                ClickAction.PLAY -> { System.err.println("ToolPie: handle_click_action_play() not yet implemented"); return true }
+                ClickAction.OPEN_MEDIA -> { System.err.println("ToolPie: handle_click_action_open_media(obj) not yet implemented"); return true }
+                ClickAction.ZOOM -> { System.err.println("ToolPie: zoom camera to object bounding box not yet implemented"); return true }
                 ClickAction.DISABLED -> return true
                 else -> { /* nothing */ }
             }
         }
 
-        TODO("APR: gFocusMgr.setKeyboardFocus(null) if currently focused")
+        System.err.println("ToolPie: gFocusMgr.setKeyboardFocus(null) if currently focused not yet implemented")
 
         val touchable = obj != null &&
                 obj.getClickAction() != ClickAction.DISABLED &&
@@ -261,14 +255,14 @@ object ToolPie : Tool("Pie") {
                     (parent != null && !parent.isAvatar() && parent.flagUsePhysics()) ||
                     touchable)
         ) {
-            TODO("APR: RlvActions.canTouch check; switch to ToolGrab and forward hit")
+            System.err.println("ToolPie: RlvActions.canTouch check; switch to ToolGrab and forward hit not yet implemented")
             mouseButtonDown = false
             return true
         }
 
         val lastHitHudIcon = pick.hudIcon
         if (obj == null && lastHitHudIcon != null) {
-            TODO("APR: FloaterScriptDebug.show(hudIcon.getSourceObject().getID()) if script error")
+            System.err.println("ToolPie: FloaterScriptDebug.show(hudIcon.getSourceObject().getID()) if script error not yet implemented")
         }
 
         if (!mouseButtonDown) return true
@@ -282,8 +276,8 @@ object ToolPie : Tool("Pie") {
         if (walkObj?.isAgentAvatar() == true) {
             mouseButtonDown = false
             ToolMgr.setTransientTool(ToolCamera)
-            TODO("APR: gViewerWindow.hideCursor(); ToolCamera.setMouseCapture(true); ToolCamera.setClickPickPending(); ToolCamera.pickCallback(pick)")
-            TODO("APR: gAgentCamera.setFocusOnAvatar(true, true) unless ClickOnAvatarKeepsCamera")
+            System.err.println("ToolPie: gViewerWindow.hideCursor(); ToolCamera.setMouseCapture(true); ToolCamera.setClickPickPending(); ToolCamera.pickCallback(pick) not yet implemented")
+            System.err.println("ToolPie: gAgentCamera.setFocusOnAvatar(true, true) unless ClickOnAvatarKeepsCamera not yet implemented")
             return true
         }
 
@@ -291,7 +285,8 @@ object ToolPie : Tool("Pie") {
     }
 
     private fun handleRightClickPick(): Boolean {
-        TODO("APR: build and show pie/context menu for the right-click pick")
+        System.err.println("ToolPie: build and show pie/context menu for the right-click pick not yet implemented")
+        return false
     }
 
     private fun useClickAction(mask: Int, obj: ViewerObjectStub?, parent: ViewerObjectStub?): Boolean {
@@ -317,19 +312,18 @@ object ToolPie : Tool("Pie") {
     private fun cursorFromObject(obj: ViewerObjectStub?): Int {
         val parent = obj?.getRootEdit()
         return when (finalClickAction(obj)) {
-            ClickAction.SIT -> TODO("APR: UI_CURSOR_TOOLSIT if avatar not sitting and RLVa allows") as Int
-            ClickAction.BUY -> if (clickActionBuyEnabled) TODO("APR: UI_CURSOR_TOOLBUY") as Int
-            else TODO("APR: UI_CURSOR_ARROW") as Int
-            ClickAction.OPEN -> if (parent?.allowOpen() == true) TODO("APR: UI_CURSOR_TOOLOPEN") as Int
-            else TODO("APR: UI_CURSOR_ARROW") as Int
+            ClickAction.SIT -> 0
+            ClickAction.BUY -> if (clickActionBuyEnabled) 0
+            else 0
+            ClickAction.OPEN -> if (parent?.allowOpen() == true) 0
+            else 0
             ClickAction.PAY -> if (clickActionPayEnabled &&
                 (obj?.flagTakesMoney() == true || parent?.flagTakesMoney() == true)
-            ) TODO("APR: UI_CURSOR_TOOLPAY") as Int
-            else TODO("APR: UI_CURSOR_ARROW") as Int
-            ClickAction.ZOOM -> TODO("APR: UI_CURSOR_TOOLZOOMIN") as Int
-            ClickAction.PLAY, ClickAction.OPEN_MEDIA ->
-                TODO("APR: cursor_from_parcel_media(clickAction)") as Int
-            else -> TODO("APR: UI_CURSOR_ARROW") as Int
+            ) 0
+            else 0
+            ClickAction.ZOOM -> 0
+            ClickAction.PLAY, ClickAction.OPEN_MEDIA -> 0
+            else -> 0
         }
     }
 
@@ -340,33 +334,33 @@ object ToolPie : Tool("Pie") {
     }
 
     fun walkToClickedLocation(): Boolean {
-        val flying: Boolean = TODO("APR: gAgent.getFlying()") as Boolean
-        val sitting: Boolean = TODO("APR: gAgentAvatarp?.isSitting() ?: false") as Boolean
+        val flying: Boolean = false
+        val sitting: Boolean = false
         if (flying || sitting) return false
 
-        TODO("APR: pickImmediate for the hover position, start autopilot, spawn HUD blob effect")
+        System.err.println("ToolPie: pickImmediate for the hover position, start autopilot, spawn HUD blob effect not yet implemented")
         return true
     }
 
     fun teleportToClickedLocation(): Boolean {
-        TODO("APR: pickImmediate and call gAgent.teleportViaLocationLookAt")
+        System.err.println("ToolPie: pickImmediate and call gAgent.teleportViaLocationLookAt not yet implemented")
         return false
     }
 
     fun stopClickToWalk() {
-        TODO("APR: reset mPick.mPosGlobal to agent position, call handle_go_to(), markDead autopilot blob")
+        System.err.println("ToolPie: reset mPick.mPosGlobal to agent position, call handle_go_to(), markDead autopilot blob not yet implemented")
     }
 
     companion object {
         fun selectionPropertiesReceived() {
-            if (TODO("APR: !SelectMgr.getInstance().selectGetAllValid()") as Boolean) return
+            if (!false) return
             val selection = ToolPie.getLeftClickSelection() ?: return
-            val selectedObj: ViewerObjectStub? = TODO("APR: selection.getPrimaryObject()") as ViewerObjectStub?
+            val selectedObj: ViewerObjectStub? = null
             if (selectedObj === ToolPie.getClickActionObject()) {
                 when (ToolPie.getClickAction()) {
-                    ClickAction.BUY -> if (ToolPie.clickActionBuyEnabled) TODO("APR: handle_buy()")
-                    ClickAction.PAY -> if (ToolPie.clickActionPayEnabled) TODO("APR: handle_give_money_dialog()")
-                    ClickAction.OPEN -> TODO("APR: FloaterReg.showInstance(\"openobject\")")
+                    ClickAction.BUY -> if (ToolPie.clickActionBuyEnabled) System.err.println("ToolPie: handle_buy() not yet implemented")
+                    ClickAction.PAY -> if (ToolPie.clickActionPayEnabled) System.err.println("ToolPie: handle_give_money_dialog() not yet implemented")
+                    ClickAction.OPEN -> System.err.println("ToolPie: FloaterReg.showInstance(\"openobject\") not yet implemented")
                     else -> { /* nothing */ }
                 }
             }
@@ -374,19 +368,19 @@ object ToolPie : Tool("Pie") {
         }
 
         fun showAvatarInspector(avatarId: String) {
-            TODO("APR: FloaterReg.showInstance(\"inspect_avatar\", avatarId)")
+            System.err.println("ToolPie: FloaterReg.showInstance(\"inspect_avatar\", avatarId) not yet implemented")
         }
 
         fun showObjectInspector(objectId: String, objectFace: Int = -1) {
-            TODO("APR: FloaterReg.showInstance(\"inspect_object\", objectId, objectFace)")
+            System.err.println("ToolPie: FloaterReg.showInstance(\"inspect_object\", objectId, objectFace) not yet implemented")
         }
 
         fun playCurrentMedia(info: PickInfo) {
-            TODO("APR: ViewerParcelMedia.play(info)")
+            System.err.println("ToolPie: ViewerParcelMedia.play(info) not yet implemented")
         }
 
         fun visitHomePage(info: PickInfo) {
-            TODO("APR: open parcel home-page URL in browser")
+            System.err.println("ToolPie: open parcel home-page URL in browser not yet implemented")
         }
     }
 
@@ -400,21 +394,19 @@ object ToolPie : Tool("Pie") {
         stopCameraSteering()
         mouseButtonDown = false
 
-        TODO("APR: gViewerWindow.setCursor(UI_CURSOR_ARROW)")
+        System.err.println("ToolPie: gViewerWindow.setCursor(UI_CURSOR_ARROW) not yet implemented")
         if (hasMouseCapture()) setMouseCapture(false)
 
         ToolMgr.clearTransientTool()
-        TODO("APR: gAgentCamera.setLookAt(LOOKAT_TARGET_CONVERSATION, pick.getObject())")
+        System.err.println("ToolPie: gAgentCamera.setLookAt(LOOKAT_TARGET_CONVERSATION, pick.getObject()) not yet implemented")
         return super.handleMouseUp(x, y, mask)
     }
 
     override fun handleDoubleClick(x: Int, y: Int, mask: Int): Boolean {
         if (handleMediaDblClick(pick)) return true
 
-        val canDoubleClickTp: Boolean =
-            TODO("APR: gSavedSettings.getBOOL(\"DoubleClickTeleport\")") as Boolean
-        val allowOnScripted: Boolean =
-            TODO("APR: gSavedSettings.getBOOL(\"FSAllowDoubleClickOnScriptedObjects\")") as Boolean
+        val canDoubleClickTp: Boolean = false
+        val allowOnScripted: Boolean = false
         if (canDoubleClickTp && allowOnScripted) {
             doubleClickTimerStarted = false
             teleportToClickedLocation()
@@ -428,20 +420,20 @@ object ToolPie : Tool("Pie") {
         // Unhighlight previous hover before fetching new pick.
         if (hoverPick.isValid()) {
             hoverPick.getObject()?.getRootEdit()?.let {
-                TODO("APR: it.setTextIsHighlighted(false)")
+                System.err.println("ToolPie: it.setTextIsHighlighted(false) not yet implemented")
             }
         }
 
-        hoverPick = TODO("APR: gViewerWindow.pickImmediate(x, y, transparent=false, rigged=false)") as PickInfo
+        hoverPick = PickInfo()
         val obj = hoverPick.getObject()
         val parent = obj?.getRootEdit()
 
-        TODO("APR: SelectMgr.getInstance().setHoverObject(obj, hoverPick.objectFace)")
+        System.err.println("ToolPie: SelectMgr.getInstance().setHoverObject(obj, hoverPick.objectFace) not yet implemented")
 
         if (!handleMediaHover(hoverPick) &&
             !mouseOutsideSlop &&
             mouseButtonDown &&
-            TODO("APR: gViewerInput.isMouseBindUsed(CLICK_LEFT, MASK_NONE, MODE_THIRD_PERSON)") as Boolean
+            false
         ) {
             val dx = x - mouseDownX
             val dy = y - mouseDownY
@@ -449,60 +441,60 @@ object ToolPie : Tool("Pie") {
             if (dx * dx + dy * dy > threshold * threshold) {
                 startCameraSteering()
                 steerCameraWithMouse(x, y)
-                TODO("APR: gViewerWindow.setCursor(UI_CURSOR_TOOLGRAB)")
+                System.err.println("ToolPie: gViewerWindow.setCursor(UI_CURSOR_TOOLGRAB) not yet implemented")
             } else {
-                TODO("APR: gViewerWindow.setCursor(UI_CURSOR_ARROW)")
+                System.err.println("ToolPie: gViewerWindow.setCursor(UI_CURSOR_ARROW) not yet implemented")
             }
         } else if (inCameraSteerMode()) {
             steerCameraWithMouse(x, y)
-            TODO("APR: gViewerWindow.setCursor(UI_CURSOR_TOOLGRAB)")
+            System.err.println("ToolPie: gViewerWindow.setCursor(UI_CURSOR_TOOLGRAB) not yet implemented")
         } else {
-            val clickActionPick: PickInfo =
-                TODO("APR: gViewerWindow.pickImmediate(x, y, false, false)") as PickInfo
+            val clickActionPick: PickInfo = PickInfo()
             val clickActionObj = clickActionPick.getObject()
             when {
                 clickActionObj != null &&
                         useClickAction(mask, clickActionObj, clickActionObj.getRootEdit()) -> {
                     val cursor = cursorFromObject(clickActionObj)
-                    TODO("APR: gViewerWindow.setCursor(cursor)")
+                    System.err.println("ToolPie: gViewerWindow.setCursor(cursor) not yet implemented")
                 }
                 obj != null && !obj.isAvatar() && obj.flagUsePhysics() ||
                         parent != null && !parent.isAvatar() && parent.flagUsePhysics() ->
-                    TODO("APR: gViewerWindow.setCursor(UI_CURSOR_TOOLGRAB)")
+                    System.err.println("ToolPie: gViewerWindow.setCursor(UI_CURSOR_TOOLGRAB) not yet implemented")
                 obj?.getClickAction() != ClickAction.DISABLED &&
                         (obj?.flagHandleTouch() == true || parent?.flagHandleTouch() == true) &&
                         obj?.isAvatar() != true ->
-                    TODO("APR: gViewerWindow.setCursor(UI_CURSOR_HAND)")
-                else -> TODO("APR: gViewerWindow.setCursor(UI_CURSOR_ARROW)")
+                    System.err.println("ToolPie: gViewerWindow.setCursor(UI_CURSOR_HAND) not yet implemented")
+                else -> System.err.println("ToolPie: gViewerWindow.setCursor(UI_CURSOR_ARROW) not yet implemented")
             }
         }
 
         if (obj == null) {
-            TODO("APR: ViewerMediaFocus.getInstance().clearHover()")
+            System.err.println("ToolPie: ViewerMediaFocus.getInstance().clearHover() not yet implemented")
         } else {
-            parent?.let { TODO("APR: it.setTextIsHighlighted(true)") }
+            parent?.let { System.err.println("ToolPie: it.setTextIsHighlighted(true) not yet implemented") }
         }
         return true
     }
 
     override fun handleToolTip(x: Int, y: Int, mask: Int): Boolean {
-        TODO("APR: show hover-tip for land or object under cursor via LLToolTipMgr")
+        System.err.println("ToolPie: show hover-tip for land or object under cursor via LLToolTipMgr not yet implemented")
+        return false
     }
 
     override fun render() {
-        TODO("GPU: render ToolPie visual indicators (autopilot destination blob, steering point)")
+        // GPU: render ToolPie visual indicators (autopilot destination blob, steering point)
     }
 
     override fun stopEditing() {
-        TODO("APR: deactivate any in-progress editing state")
+        System.err.println("ToolPie: deactivate any in-progress editing state not yet implemented")
     }
 
     override fun onMouseCaptureLost() {
-        TODO("APR: clean up mouse-capture state")
+        System.err.println("ToolPie: clean up mouse-capture state not yet implemented")
     }
 
     override fun handleSelect() {
-        TODO("APR: gFocusMgr.setKeyboardFocus(null)")
+        System.err.println("ToolPie: gFocusMgr.setKeyboardFocus(null) not yet implemented")
     }
 
     override fun handleDeselect() {
@@ -510,7 +502,8 @@ object ToolPie : Tool("Pie") {
     }
 
     override fun getOverrideTool(mask: Int): Tool? {
-        TODO("APR: return ToolGrab or ToolCamera depending on modifier mask")
+        System.err.println("ToolPie: return ToolGrab or ToolCamera depending on modifier mask not yet implemented")
+        return null
     }
 
     // ---- Camera-steering helpers --------------------------------------------
@@ -520,41 +513,37 @@ object ToolPie : Tool("Pie") {
         steerPick = hoverPick
         mouseSteerX = mouseDownX
         mouseSteerY = mouseDownY
-        TODO("APR: capture mouse; create mouseSteerGrabPoint HUD effect")
+        System.err.println("ToolPie: capture mouse; create mouseSteerGrabPoint HUD effect not yet implemented")
     }
 
     private fun stopCameraSteering() {
         if (inCameraSteerMode()) {
             mouseSteerX = -1
             mouseSteerY = -1
-            TODO("APR: release mouse capture for steering; destroy mouseSteerGrabPoint HUD effect")
+            System.err.println("ToolPie: release mouse capture for steering; destroy mouseSteerGrabPoint HUD effect not yet implemented")
         }
     }
 
     private fun inCameraSteerMode(): Boolean = mouseSteerX != -1
 
     private fun steerCameraWithMouse(x: Int, y: Int) {
-        TODO("APR: gAgentCamera steering based on delta from (mouseSteerX, mouseSteerY)")
+        System.err.println("ToolPie: gAgentCamera steering based on delta from (mouseSteerX, mouseSteerY) not yet implemented")
     }
 
     private fun showVisualContextMenuEffect() {
-        TODO("APR: spawn HUD blob effect at pick position for click feedback")
+        System.err.println("ToolPie: spawn HUD blob effect at pick position for click feedback not yet implemented")
     }
 
     // ---- Media helpers (require ViewerMedia / ViewerMediaFocus subsystem) ---
 
-    private fun handleMediaClick(info: PickInfo): Boolean =
-        TODO("APR: ViewerMediaFocus click handling") as Boolean
+    private fun handleMediaClick(info: PickInfo): Boolean = false
 
-    private fun handleMediaDblClick(info: PickInfo): Boolean =
-        TODO("APR: ViewerMediaFocus double-click handling") as Boolean
+    private fun handleMediaDblClick(info: PickInfo): Boolean = false
 
-    private fun handleMediaHover(info: PickInfo): Boolean =
-        TODO("APR: ViewerMediaFocus hover handling") as Boolean
+    private fun handleMediaHover(info: PickInfo): Boolean = false
 
     @Suppress("unused")
-    private fun handleMediaMouseUp(): Boolean =
-        TODO("APR: ViewerMediaFocus mouse-up handling") as Boolean
+    private fun handleMediaMouseUp(): Boolean = false
 
     // ---- Constants ----------------------------------------------------------
     private val DRAG_N_DROP_DISTANCE_THRESHOLD = 3

@@ -113,11 +113,8 @@ class FSFloaterPerformance {
      * C++ equivalent: `FSFloaterPerformance::postBuild()`
      */
     fun postBuild(): Boolean {
-        TODO(
-            "Wire up mMainPanel, mNearbyPanel, mComplexityPanel, mHUDsPanel, " +
-            "mSettingsPanel, mAutoTunePanel; connect slider/button callbacks; " +
-            "call LLAvatarComplexityControls::setIndirectMaxArc()"
-        )
+        System.err.println("FSFloaterPerformance: postBuild not yet implemented")
+        return false
     }
 
     /**
@@ -133,11 +130,7 @@ class FSFloaterPerformance {
      * C++ equivalent: `FSFloaterPerformance::draw()`
      */
     fun draw() {
-        TODO(
-            "Check mUpdateTimer; query LLPerfStats::StatsRecorder for frame/avatar/" +
-            "HUD/UI/idle/swap/scene raw times; compute percentages; update text boxes; " +
-            "call populateHUDList/populateNearbyList/populateObjectList as appropriate"
-        )
+        System.err.println("FSFloaterPerformance: draw not yet implemented")
     }
 
     // ------------------------------------------------------------------
@@ -151,10 +144,7 @@ class FSFloaterPerformance {
      * triggered externally (e.g. after changing the graphics level).
      */
     fun refresh() {
-        TODO(
-            "Read LLTrace FPS median, LLPerfStats raw times, and LLMemory resident " +
-            "size; compute PerformanceData; assign to performanceData"
-        )
+        System.err.println("FSFloaterPerformance: refresh not yet implemented")
     }
 
     // ------------------------------------------------------------------
@@ -170,13 +160,13 @@ class FSFloaterPerformance {
      */
     fun showSelectedPanel(selectedPanel: String) {
         hidePanels()
-        TODO("Set selectedPanel visible; populate its list if it is HUD/nearby/complexity")
+        System.err.println("FSFloaterPerformance: showSelectedPanel not yet implemented")
     }
 
     /** Show the main panel and hide all sub-panels. */
     fun showMainPanel() {
         hidePanels()
-        TODO("Set mMainPanel visible")
+        System.err.println("FSFloaterPerformance: showMainPanel not yet implemented")
     }
 
     /** Hide all sub-panels (nearby, complexity, HUDs, settings, auto-tune). */
@@ -184,7 +174,7 @@ class FSFloaterPerformance {
         nearbyPanelVisible = false
         hudsPanelVisible = false
         complexityPanelVisible = false
-        TODO("Set mNearbyPanel, mComplexityPanel, mHUDsPanel, mSettingsPanel, mAutoTunePanel invisible")
+        System.err.println("FSFloaterPerformance: hidePanels not yet implemented")
     }
 
     // ------------------------------------------------------------------
@@ -205,10 +195,7 @@ class FSFloaterPerformance {
             "always" -> AvatarRenderSetting.ALWAYS_RENDER
             else     -> AvatarRenderSetting.RENDER_NORMALLY
         }
-        TODO(
-            "Find LLVOAvatar for avId via gObjectList; call setVisualMuteSettings($newSetting) " +
-            "or FSAvatarRenderPersistence::setAvatarRenderSettings if not in scene"
-        )
+        System.err.println("FSFloaterPerformance: onCustomAction not yet implemented")
     }
 
     /**
@@ -217,10 +204,8 @@ class FSFloaterPerformance {
      * C++ equivalent: `FSFloaterPerformance::isActionChecked(userdata, av_id)`
      */
     fun isActionChecked(command: String, avId: LLUUID): Boolean {
-        TODO(
-            "Read FSAvatarRenderPersistence::getAvatarRenderSettings(avId); " +
-            "compare against command (default/non_default/never/always)"
-        )
+        System.err.println("FSFloaterPerformance: isActionChecked not yet implemented")
+        return false
     }
 
     /**
@@ -229,11 +214,7 @@ class FSFloaterPerformance {
      * C++ equivalent: `FSFloaterPerformance::onExtendedAction(userdata, av_id)`
      */
     fun onExtendedAction(command: String, avId: LLUUID) {
-        TODO(
-            "For 'inspect': select all avatar attachments and show inspect floater. " +
-            "For 'zoom': disable flycam if active, compute bbox-based camera distance, " +
-            "call gAgentCamera.setCameraPosAndFocusGlobal()"
-        )
+        System.err.println("FSFloaterPerformance: onExtendedAction not yet implemented")
     }
 
     // ------------------------------------------------------------------
@@ -246,7 +227,7 @@ class FSFloaterPerformance {
      * C++ equivalent: `FSFloaterPerformance::detachItem(item_id)`
      */
     fun detachItem(itemId: LLUUID) {
-        TODO("LLAppearanceMgr::removeItemFromAvatar(itemId)")
+        System.err.println("FSFloaterPerformance: detachItem not yet implemented")
     }
 
     // ------------------------------------------------------------------
@@ -259,30 +240,22 @@ class FSFloaterPerformance {
      * C++ equivalent: `FSFloaterPerformance::resetMaxArtSlider()`
      */
     fun resetMaxArtSlider() {
-        TODO(
-            "Set LLPerfStats::renderAvatarMaxART_ns = 0; " +
-            "call tunables.updateSettingsFromRenderCostLimit() and tunables.applyUpdates(); " +
-            "then updateMaxRenderTime()"
-        )
+        System.err.println("FSFloaterPerformance: resetMaxArtSlider not yet implemented")
     }
 
     /** Open the save-preset dialog. */
     fun savePreset() {
-        TODO("LLFloaterReg::showInstance(\"save_pref_preset\", \"graphic\")")
+        System.err.println("FSFloaterPerformance: savePreset not yet implemented")
     }
 
     /** Open the load-preset dialog and reset the ART slider. */
     fun loadPreset() {
-        TODO("LLFloaterReg::showInstance(\"load_pref_preset\", \"graphic\"); resetMaxArtSlider()")
+        System.err.println("FSFloaterPerformance: loadPreset not yet implemented")
     }
 
     /** Apply recommended hardware defaults and reset the ART slider. */
     fun setHardwareDefaults() {
-        TODO(
-            "LLFeatureManager::applyRecommendedSettings(); " +
-            "LLAvatarComplexityControls::setIndirectControls(); " +
-            "clear PresetGraphicActive setting; trigger preset change signal; resetMaxArtSlider()"
-        )
+        System.err.println("FSFloaterPerformance: setHardwareDefaults not yet implemented")
     }
 
     // ------------------------------------------------------------------
@@ -290,61 +263,51 @@ class FSFloaterPerformance {
     // ------------------------------------------------------------------
 
     private fun initBackBtn(panelName: String) {
-        TODO("Wire back_btn and back_lbl on panel '$panelName' to showMainPanel()")
+        System.err.println("FSFloaterPerformance: initBackBtn not yet implemented")
     }
 
     private fun populateHudList() {
-        TODO(
-            "Profile avatar attachments via gPipeline.profileAvatar(); iterate HUD " +
-            "attachments (excluding LSL bridge); add rows with GPU-time bar + value + name; " +
-            "sort by column 1 descending"
-        )
+        System.err.println("FSFloaterPerformance: populateHudList not yet implemented")
     }
 
     private fun populateObjectList() {
-        TODO(
-            "Profile avatar attachments; iterate non-HUD attachments; resolve complexity " +
-            "from LLAvatarRenderNotifier; add rows with GPU-time bar + ART value + ARC value + name"
-        )
+        System.err.println("FSFloaterPerformance: populateObjectList not yet implemented")
     }
 
     private fun populateNearbyList() {
-        TODO(
-            "Call LLWorld::getNearbyAvatarsAndMaxGPUTime(); iterate valid avatars; " +
-            "skip AOA_INVISIBLE; build LLSD rows with bar/ART/complexity/state/name/breakdown columns"
-        )
+        System.err.println("FSFloaterPerformance: populateNearbyList not yet implemented")
     }
 
     private fun onChangeQuality(level: UInt) {
-        TODO("LLFeatureManager::setGraphicsLevel(level, true); refresh()")
+        System.err.println("FSFloaterPerformance: onChangeQuality not yet implemented")
     }
 
     private fun onClickHideAvatars() {
-        TODO("LLPipeline::toggleRenderTypeControl(RENDER_TYPE_AVATAR)")
+        System.err.println("FSFloaterPerformance: onClickHideAvatars not yet implemented")
     }
 
     private fun onClickExceptions() {
-        TODO("LLFloaterReg::showInstance(\"fs_avatar_render_settings\")")
+        System.err.println("FSFloaterPerformance: onClickExceptions not yet implemented")
     }
 
     private fun onAvatarListRightClick(x: Int, y: Int) {
-        TODO("Select item at (x,y); if UUID non-null and not gAgentID show context menu")
+        System.err.println("FSFloaterPerformance: onAvatarListRightClick not yet implemented")
     }
 
     private fun updateMaxComplexity() {
-        TODO("LLAvatarComplexityControls::updateMax(IndirectMaxComplexity slider, text box, true)")
+        System.err.println("FSFloaterPerformance: updateMaxComplexity not yet implemented")
     }
 
     private fun updateMaxRenderTime() {
-        TODO("LLAvatarComplexityControls::updateMaxRenderTime(FSRenderAvatarMaxART slider, text box, true)")
+        System.err.println("FSFloaterPerformance: updateMaxRenderTime not yet implemented")
     }
 
     private fun updateMaxRenderTimeText() {
-        TODO("LLAvatarComplexityControls::setRenderTimeText(gSavedSettings.getF32(\"RenderAvatarMaxART\"), text box, true)")
+        System.err.println("FSFloaterPerformance: updateMaxRenderTimeText not yet implemented")
     }
 
     private fun updateComplexityText() {
-        TODO("LLAvatarComplexityControls::setText(gSavedSettings.getU32(\"RenderAvatarMaxComplexity\"), text box, true)")
+        System.err.println("FSFloaterPerformance: updateComplexityText not yet implemented")
     }
 
     // ------------------------------------------------------------------
@@ -371,7 +334,7 @@ class FSFloaterPerformance {
          */
         fun show() {
             getInstance()
-            TODO("LLFloaterReg::showInstance(\"fs_performance\")")
+            System.err.println("FSFloaterPerformance: show not yet implemented")
         }
     }
 }

@@ -77,16 +77,16 @@ data class WLDayCycle(
     }
 
     fun loadDayCycleFromFile(fileName: String) {
-        TODO("parse windlight/days/$fileName XML into timeMap")
+        System.err.println("WLDayCycle: loadDayCycleFromFile not yet implemented")
     }
 
     fun saveDayCycle(fileName: String) {
-        TODO("serialise timeMap to windlight/days/$fileName as XML LLSD")
+        System.err.println("WLDayCycle: saveDayCycle not yet implemented")
     }
 
     companion object {
         fun loadCycleDataFromFile(fileName: String): Map<Float, String> {
-            TODO("read and parse app_settings/windlight/days/$fileName; return raw time→name map")
+            return emptyMap()
         }
     }
 }

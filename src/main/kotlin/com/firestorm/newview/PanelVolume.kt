@@ -136,7 +136,7 @@ class PanelVolume : Panel() {
     }
 
     override fun draw() {
-        TODO("GPU: draw panel volume UI")
+        // no-op
     }
 
     override fun clearCtrls() {
@@ -206,7 +206,7 @@ class PanelVolume : Panel() {
         val rootVolobjp: VOVolume? = if (rootObjectp?.getPCode() == LL_PCODE_VOLUME) rootObjectp as? VOVolume else null
 
         if (objectp == null) {
-            TODO("APR: use JVM equivalent - forfeit keyboard focus")
+            System.err.println("PanelVolume: forfeit keyboard focus not yet implemented")
             clearCtrls()
             return
         }
@@ -428,95 +428,95 @@ class PanelVolume : Panel() {
     }
 
     private fun refreshCost() {
-        TODO("APR: use JVM equivalent - recalculate and display object render cost")
+        System.err.println("PanelVolume: refreshCost not yet implemented")
     }
 
     fun sendIsLight() {
-        TODO("APR: use JVM equivalent - send light enabled flag to sim")
+        System.err.println("PanelVolume: sendIsLight not yet implemented")
     }
 
     fun sendIsReflectionProbe() {
-        TODO("APR: use JVM equivalent - confirm or immediately send reflection probe flag")
+        System.err.println("PanelVolume: sendIsReflectionProbe not yet implemented")
     }
 
     fun doSendIsReflectionProbe(notification: LLSD, response: LLSD) {
-        TODO("APR: use JVM equivalent - callback after confirm dialog for reflection probe")
+        System.err.println("PanelVolume: doSendIsReflectionProbe not yet implemented")
     }
 
     fun sendIsFlexible() {
-        TODO("APR: use JVM equivalent - send flexible object flag to sim")
+        System.err.println("PanelVolume: sendIsFlexible not yet implemented")
     }
 
     private fun sendPhysicsShapeType(ctrl: UICtrl?, userdata: Any?) {
-        TODO("APR: use JVM equivalent - send physics shape type to sim")
+        System.err.println("PanelVolume: sendPhysicsShapeType not yet implemented")
     }
 
     private fun sendPhysicsGravity(ctrl: UICtrl?, userdata: Any?) {
-        TODO("APR: use JVM equivalent - send physics gravity to sim")
+        System.err.println("PanelVolume: sendPhysicsGravity not yet implemented")
     }
 
     private fun sendPhysicsFriction(ctrl: UICtrl?, userdata: Any?) {
-        TODO("APR: use JVM equivalent - send physics friction to sim")
+        System.err.println("PanelVolume: sendPhysicsFriction not yet implemented")
     }
 
     private fun sendPhysicsRestitution(ctrl: UICtrl?, userdata: Any?) {
-        TODO("APR: use JVM equivalent - send physics restitution to sim")
+        System.err.println("PanelVolume: sendPhysicsRestitution not yet implemented")
     }
 
     private fun sendPhysicsDensity(ctrl: UICtrl?, userdata: Any?) {
-        TODO("APR: use JVM equivalent - send physics density to sim")
+        System.err.println("PanelVolume: sendPhysicsDensity not yet implemented")
     }
 
     private fun handleResponseChangeToFlexible(notification: LLSD, response: LLSD) {
-        TODO("APR: use JVM equivalent - callback after confirm dialog for flexible object change")
+        System.err.println("PanelVolume: handleResponseChangeToFlexible not yet implemented")
     }
 
     fun onLightCancelColor(data: LLSD) {
-        TODO("APR: use JVM equivalent - revert light color on cancel")
+        System.err.println("PanelVolume: onLightCancelColor not yet implemented")
     }
 
     fun onLightSelectColor(data: LLSD) {
-        TODO("APR: use JVM equivalent - apply selected light color")
+        System.err.println("PanelVolume: onLightSelectColor not yet implemented")
     }
 
     fun onLightCancelTexture(data: LLSD) {
-        TODO("APR: use JVM equivalent - revert light texture on cancel")
+        System.err.println("PanelVolume: onLightCancelTexture not yet implemented")
     }
 
     fun onLightSelectTexture(data: LLSD) {
-        TODO("APR: use JVM equivalent - apply selected light texture")
+        System.err.println("PanelVolume: onLightSelectTexture not yet implemented")
     }
 
     fun onCopyFeatures() {
-        TODO("APR: use JVM equivalent - copy volume features (physics, flex, etc.) to clipboard")
+        System.err.println("PanelVolume: onCopyFeatures not yet implemented")
     }
 
     fun onPasteFeatures() {
-        TODO("APR: use JVM equivalent - paste volume features from clipboard")
+        System.err.println("PanelVolume: onPasteFeatures not yet implemented")
     }
 
     fun onCopyLight() {
-        TODO("APR: use JVM equivalent - copy light parameters to clipboard")
+        System.err.println("PanelVolume: onCopyLight not yet implemented")
     }
 
     fun onPasteLight() {
-        TODO("APR: use JVM equivalent - paste light parameters from clipboard")
+        System.err.println("PanelVolume: onPasteLight not yet implemented")
     }
 
     fun onFSCopyFeatures() {
-        TODO("APR: use JVM equivalent - FS extended copy features")
+        System.err.println("PanelVolume: onFSCopyFeatures not yet implemented")
     }
 
     fun onFSPasteFeatures() {
-        TODO("APR: use JVM equivalent - FS extended paste features")
+        System.err.println("PanelVolume: onFSPasteFeatures not yet implemented")
     }
 
     fun onCommitIsFlexible(ctrl: UICtrl?, userdata: Any?) {
-        TODO("APR: use JVM equivalent - toggle flexible object state")
+        System.err.println("PanelVolume: onCommitIsFlexible not yet implemented")
     }
 
     fun onCommitAnimatedMeshCheckbox(ctrl: UICtrl?, userdata: Any?) {
-        TODO("APR: use JVM equivalent - toggle animated mesh state")
+        System.err.println("PanelVolume: onCommitAnimatedMeshCheckbox not yet implemented")
     }
 
     companion object {
@@ -527,7 +527,7 @@ class PanelVolume : Panel() {
         }
 
         @JvmStatic fun onCommitLight(ctrl: UICtrl?, userdata: Any?) {
-            TODO("APR: use JVM equivalent - read and send all light params from UI")
+            System.err.println("PanelVolume: onCommitLight not yet implemented")
         }
 
         @JvmStatic fun onCommitIsReflectionProbe(ctrl: UICtrl?, userdata: Any?) {
@@ -535,23 +535,23 @@ class PanelVolume : Panel() {
         }
 
         @JvmStatic fun onCommitProbe(ctrl: UICtrl?, userdata: Any?) {
-            TODO("APR: use JVM equivalent - read and send reflection probe params from UI")
+            System.err.println("PanelVolume: onCommitProbe not yet implemented")
         }
 
         @JvmStatic fun onCommitFlexible(ctrl: UICtrl?, userdata: Any?) {
-            TODO("APR: use JVM equivalent - read and send flexible object params from UI")
+            System.err.println("PanelVolume: onCommitFlexible not yet implemented")
         }
 
         @JvmStatic fun onCommitPhysicsParam(ctrl: UICtrl?, userdata: Any?) {
-            TODO("APR: use JVM equivalent - read and send physics param from UI")
+            System.err.println("PanelVolume: onCommitPhysicsParam not yet implemented")
         }
 
         @JvmStatic fun onCommitMaterial(ctrl: UICtrl?, userdata: Any?) {
-            TODO("APR: use JVM equivalent - read and send material type from UI")
+            System.err.println("PanelVolume: onCommitMaterial not yet implemented")
         }
 
         @JvmStatic fun setLightTextureID(assetId: Uuid, itemId: Uuid, volobjp: VOVolume?) {
-            TODO("APR: use JVM equivalent - set light texture on volume object")
+            System.err.println("PanelVolume: setLightTextureID not yet implemented")
         }
     }
 }

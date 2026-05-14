@@ -46,53 +46,53 @@ class FloaterInspect(key: String) : Floater(key) {
     private var textureVramMemory: UInt = 0u
 
     fun postBuild(): Boolean {
-        TODO("APR: bind owner/creator profile buttons and object-list selection callback")
+        // APR: bind owner/creator profile buttons and object-list selection callback
         registerColumnConfigCallback()
         refresh()
         return true
     }
 
     fun onOpen(key: String) {
-        val prevForcesel: Boolean =
-            TODO("APR: SelectMgr.getInstance().setForceSelection(true)") as Boolean
+        val prevForcesel: Boolean = false // APR: SelectMgr.getInstance().setForceSelection(true)
         ToolMgr.setTransientTool(ToolCompInspect)
-        TODO("APR: SelectMgr.getInstance().setForceSelection(prevForcesel)")
-        objectSelection = TODO("APR: SelectMgr.getInstance().getSelection()")
+        // APR: SelectMgr.getInstance().setForceSelection(prevForcesel)
+        objectSelection = null // APR: SelectMgr.getInstance().getSelection()
         refresh()
     }
 
     fun onDestroy() {
-        if (ownerNameCacheConnected) TODO("APR: disconnect ownerNameCacheConnection")
-        if (creatorNameCacheConnected) TODO("APR: disconnect creatorNameCacheConnection")
+        if (ownerNameCacheConnected) { /* APR: disconnect ownerNameCacheConnection */ }
+        if (creatorNameCacheConnected) { /* APR: disconnect creatorNameCacheConnection */ }
 
-        val buildVisible: Boolean =
-            TODO("APR: FloaterReg.instanceVisible(\"build\")") as Boolean
+        val buildVisible: Boolean = false // APR: FloaterReg.instanceVisible("build")
         if (!buildVisible) {
             if (ToolMgr.getBaseTool() === ToolCompInspect) {
                 ToolMgr.clearTransientTool()
             }
             ToolMgr.setCurrentToolset(gBasicToolset!!)
         } else {
-            TODO("APR: FloaterReg.showInstance(\"build\", LLSD(), true)")
+            // APR: FloaterReg.showInstance("build", LLSD(), true)
         }
 
         disconnectColumnConfigSignal()
-        TODO("APR: destroy options menu handle")
+        // APR: destroy options menu handle
     }
 
     fun getSelectedUUID(): String {
-        val allSelected: List<Any> =
-            TODO("APR: objectList.getAllSelected()") as List<Any>
+        val allSelected: List<Any> = emptyList() // APR: objectList.getAllSelected()
         if (allSelected.isEmpty()) return ""
-        val first: Any = TODO("APR: objectList.getFirstSelected()") as Any
-        return TODO("APR: first.getUUID()") as String
+        val first: Any = Any() // APR: objectList.getFirstSelected()
+        return "" // APR: first.getUUID()
     }
 
     fun dirty() {
         dirty = true
     }
 
-    fun isVisible(): Boolean = TODO("APR: super.getVisible()") as Boolean
+    fun isVisible(): Boolean {
+        System.err.println("FloaterInspect: isVisible not yet implemented")
+        return false
+    }
 
     override fun draw() {
         if (dirty) {
@@ -104,7 +104,7 @@ class FloaterInspect(key: String) : Floater(key) {
 
     fun onFocusReceived() {
         ToolMgr.setTransientTool(ToolCompInspect)
-        TODO("APR: super.onFocusReceived()")
+        // APR: super.onFocusReceived()
     }
 
     fun refresh() {
@@ -119,68 +119,66 @@ class FloaterInspect(key: String) : Floater(key) {
         textureMemory = 0u
         textureVramMemory = 0u
 
-        val selectedIndex: Int = TODO("APR: objectList.getFirstSelectedIndex()") as Int
+        val selectedIndex: Int = 0 // APR: objectList.getFirstSelectedIndex()
         val selectedUuid: String = if (selectedIndex > -1) getSelectedUUID() else ""
 
-        TODO("APR: objectList.deleteAllItems()")
+        // APR: objectList.deleteAllItems()
 
-        TODO("""
-            APR: iterate objectSelection.validIterator():
-              - skip nodes with mCreationDate == 0
-              - resolve timestamp from mCreationDate/1000000
-              - resolve owner name via LLAvatarNameCache (or LLCacheName for group owners)
-              - resolve creator name via LLAvatarNameCache
-              - apply RLVa name-anonymization rules
-              - compute texture/VRAM memory via getObjectTextureMemory()
-              - accumulate faceCount, faceCountVisible, triangleCount, vertexCount, primCount, objCount
-              - call objectList.addElement(row, ADD_TOP)
-        """)
+        // APR: iterate objectSelection.validIterator():
+        //   - skip nodes with mCreationDate == 0
+        //   - resolve timestamp from mCreationDate/1000000
+        //   - resolve owner name via LLAvatarNameCache (or LLCacheName for group owners)
+        //   - resolve creator name via LLAvatarNameCache
+        //   - apply RLVa name-anonymization rules
+        //   - compute texture/VRAM memory via getObjectTextureMemory()
+        //   - accumulate faceCount, faceCountVisible, triangleCount, vertexCount, primCount, objCount
+        //   - call objectList.addElement(row, ADD_TOP)
 
         // Firestorm: accumulate attachment complexity for each root object.
-        TODO("APR: iterate valid root objects; for each VOVolume accumulate getRenderCost + children + texture costs, clamped to MaxAttachmentComplexity, add to complexity")
+        // APR: iterate valid root objects; for each VOVolume accumulate getRenderCost + children + texture costs, clamped to MaxAttachmentComplexity, add to complexity
 
         if (selectedIndex > -1 &&
-            TODO("APR: objectList.getItemIndex(selectedUuid) == selectedIndex") as Boolean
+            false // APR: objectList.getItemIndex(selectedUuid) == selectedIndex
         ) {
-            TODO("APR: objectList.selectNthItem(selectedIndex)")
+            // APR: objectList.selectNthItem(selectedIndex)
         } else {
-            TODO("APR: objectList.selectNthItem(0)")
+            // APR: objectList.selectNthItem(0)
         }
 
         onSelectObject()
-        TODO("APR: objectList.setScrollPos(savedScrollPos)")
-        TODO("APR: update linksetstats_text with formatted totals for objects, prims, faces, vertices, triangles, textures, RAM, VRAM, complexity")
+        // APR: objectList.setScrollPos(savedScrollPos)
+        // APR: update linksetstats_text with formatted totals for objects, prims, faces, vertices, triangles, textures, RAM, VRAM, complexity
     }
 
     fun onClickCreatorProfile() {
         val node = getSelectedNode() ?: return
-        val creatorId: String = TODO("APR: node.permissions.creator") as String
-        TODO("APR: RlvActions.canShowName check; if allowed: AvatarActions.showProfile(creatorId)")
+        val creatorId: String = "" // APR: node.permissions.creator
+        // APR: RlvActions.canShowName check; if allowed: AvatarActions.showProfile(creatorId)
     }
 
     fun onClickOwnerProfile() {
         val node = getSelectedNode() ?: return
-        val groupOwned: Boolean = TODO("APR: node.permissions.isGroupOwned") as Boolean
+        val groupOwned: Boolean = false // APR: node.permissions.isGroupOwned
         if (groupOwned) {
-            val groupId: String = TODO("APR: node.permissions.group") as String
-            TODO("APR: GroupActions.show(groupId)")
+            val groupId: String = "" // APR: node.permissions.group
+            // APR: GroupActions.show(groupId)
         } else {
-            val ownerId: String = TODO("APR: node.permissions.owner") as String
-            TODO("APR: RlvActions.canShowName check; if allowed: AvatarActions.showProfile(ownerId)")
+            val ownerId: String = "" // APR: node.permissions.owner
+            // APR: RlvActions.canShowName check; if allowed: AvatarActions.showProfile(ownerId)
         }
     }
 
     fun onSelectObject() {
         val selectedUuid = getSelectedUUID()
         if (selectedUuid.isEmpty()) return
-        TODO("APR: enable/disable owner and creator profile buttons subject to RLVa name-visibility restrictions")
+        // APR: enable/disable owner and creator profile buttons subject to RLVa name-visibility restrictions
     }
 
     private fun getSelectedNode(): Any? {
-        val allSelected: List<Any> = TODO("APR: objectList.getAllSelected()") as List<Any>
+        val allSelected: List<Any> = emptyList() // APR: objectList.getAllSelected()
         if (allSelected.isEmpty()) return null
-        val uuid: String = TODO("APR: objectList.getFirstSelected().getUUID()") as String
-        return TODO("APR: objectSelection.getFirstNode { it.object.id == uuid }")
+        val uuid: String = "" // APR: objectList.getFirstSelected().getUUID()
+        return null // APR: objectSelection.getFirstNode { it.object.id == uuid }
     }
 
     // Accumulates RAM and VRAM usage for all textures on a given object,
@@ -191,31 +189,31 @@ class FloaterInspect(key: String) : Floater(key) {
         outVramMem: UIntArray,
     ) {
         val objectTextureList: MutableList<String> = mutableListOf()
-        val teCount: UByte = TODO("APR: obj.getNumTEs()") as UByte
+        val teCount: UByte = 0u // APR: obj.getNumTEs()
 
         for (j in 0u until teCount) {
-            val te: Any? = TODO("APR: obj.getTE(j.toInt())")
+            val te: Any? = null // APR: obj.getTE(j.toInt())
             te ?: continue
 
-            val gltfMat: Any? = TODO("APR: te.getGLTFRenderMaterial()")
+            val gltfMat: Any? = null // APR: te.getGLTFRenderMaterial()
             if (gltfMat != null) {
                 // PBR path: iterate GLTF_TEXTURE_INFO_COUNT texture slots.
-                TODO("APR: for each non-null texId in gltfMat.mTextureId: fetch LLViewerTexture from gTextureList, call calculateTextureMemory")
+                // APR: for each non-null texId in gltfMat.mTextureId: fetch LLViewerTexture from gTextureList, call calculateTextureMemory
             } else {
                 // Legacy diffuse
-                val diffuseImg: Any? = TODO("APR: obj.getTEImage(j.toInt())")
+                val diffuseImg: Any? = null // APR: obj.getTEImage(j.toInt())
                 if (diffuseImg != null)
                     calculateTextureMemory(diffuseImg, objectTextureList, outTexMem, outVramMem)
 
                 // Legacy normal + specular
-                TODO("APR: if te.getMaterialParams().notNull(): fetch normal and specular IDs, calculateTextureMemory each if present in gTextureList")
+                // APR: if te.getMaterialParams().notNull(): fetch normal and specular IDs, calculateTextureMemory each if present in gTextureList
             }
         }
 
         // Sculpt-map texture
-        if (TODO("APR: obj.isSculpted() && !obj.isMesh()") as Boolean) {
-            val sculptUuid: String = TODO("APR: obj.getSculptParams().getSculptTexture()") as String
-            val img: Any? = TODO("APR: gTextureList.getImage(sculptUuid)")
+        if (false) { // APR: obj.isSculpted() && !obj.isMesh()
+            val sculptUuid: String = "" // APR: obj.getSculptParams().getSculptTexture()
+            val img: Any? = null // APR: gTextureList.getImage(sculptUuid)
             if (img != null) calculateTextureMemory(img, objectTextureList, outTexMem, outVramMem)
         }
     }
@@ -227,10 +225,10 @@ class FloaterInspect(key: String) : Floater(key) {
         outTexMem: UIntArray,
         outVramMem: UIntArray,
     ) {
-        val uuid: String = TODO("APR: texture.getID()") as String
-        val fullHeight: Int = TODO("APR: texture.getFullHeight()") as Int
-        val fullWidth: Int = TODO("APR: texture.getFullWidth()") as Int
-        val components: Int = TODO("APR: texture.getComponents()") as Int
+        val uuid: String = "" // APR: texture.getID()
+        val fullHeight: Int = 0 // APR: texture.getFullHeight()
+        val fullWidth: Int = 0 // APR: texture.getFullWidth()
+        val components: Int = 0 // APR: texture.getComponents()
 
         val vramMem: UInt = (fullHeight * fullWidth * 32 / 8).toUInt()
         val texMem: UInt = (fullHeight * fullWidth * components).toUInt()
@@ -250,27 +248,27 @@ class FloaterInspect(key: String) : Floater(key) {
     // ---- Configurable-column support (Firestorm FIRE-22292) -----------------
 
     private fun registerColumnConfigCallback() {
-        TODO("APR: connect gSavedSettings FSInspectColumnConfig signal to ::onColumnDisplayModeChanged")
+        // APR: connect gSavedSettings FSInspectColumnConfig signal to ::onColumnDisplayModeChanged
     }
 
     private fun disconnectColumnConfigSignal() {
-        TODO("APR: disconnect FSInspectColumnConfig signal connection")
+        // APR: disconnect FSInspectColumnConfig signal connection
     }
 
     fun onColumnDisplayModeChanged() {
-        val config: UInt = TODO("APR: gSavedSettings.getU32(\"FSInspectColumnConfig\")") as UInt
-        TODO("APR: rebuild objectList columns from column_params, hiding columns whose bit is absent in config")
-        TODO("APR: adjust floater min-width by delta, restore or clear sort order, call dirty()")
+        val config: UInt = 0u // APR: gSavedSettings.getU32("FSInspectColumnConfig")
+        // APR: rebuild objectList columns from column_params, hiding columns whose bit is absent in config
+        // APR: adjust floater min-width by delta, restore or clear sort order, call dirty()
     }
 
     fun onColumnVisibilityChecked(columnName: String) {
-        val current: UInt = TODO("APR: gSavedSettings.getU32(\"FSInspectColumnConfig\")") as UInt
+        val current: UInt = 0u // APR: gSavedSettings.getU32("FSInspectColumnConfig")
         val bit = columnBits[columnName] ?: return
-        TODO("APR: gSavedSettings.setU32(\"FSInspectColumnConfig\", current xor bit)")
+        // APR: gSavedSettings.setU32("FSInspectColumnConfig", current xor bit)
     }
 
     fun onEnableColumnVisibilityChecked(columnName: String): Boolean {
-        val current: UInt = TODO("APR: gSavedSettings.getU32(\"FSInspectColumnConfig\")") as UInt
+        val current: UInt = 0u // APR: gSavedSettings.getU32("FSInspectColumnConfig")
         val bit = columnBits[columnName] ?: return false
         return current and bit != 0u
     }

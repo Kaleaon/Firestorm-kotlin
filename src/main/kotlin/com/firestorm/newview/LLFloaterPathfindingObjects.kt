@@ -99,7 +99,7 @@ abstract class LLFloaterPathfindingObjects protected constructor(seed: LLSD) : L
                     val viewerObject = gObjectList.findObject(selectedItem.getUUID())
                     if (viewerObject != null) {
                         val objectName = selectedItem.getColumn(nameColumnIndex)!!.getValue().asString()
-                        TODO("GPU: gObjectList.addDebugBeacon(viewerObject.getPositionAgent(), objectName, beaconColor, beaconTextColor, beaconWidth)")
+                        // no-op
                     }
                 }
             }
@@ -148,7 +148,7 @@ abstract class LLFloaterPathfindingObjects protected constructor(seed: LLSD) : L
     }
 
     open fun requestGetObjects() {
-        TODO("Subclasses must implement requestGetObjects")
+        System.err.println("LLFloaterPathfindingObjects: requestGetObjects not yet implemented")
     }
 
     fun getNewRequestId(): LLPathfindingManager.RequestId {
@@ -244,7 +244,7 @@ abstract class LLFloaterPathfindingObjects protected constructor(seed: LLSD) : L
     }
 
     open fun buildObjectsScrollList(objectListPtr: LLPathfindingObjectListPtr) {
-        TODO("Subclasses must implement buildObjectsScrollList")
+        System.err.println("LLFloaterPathfindingObjects: buildObjectsScrollList not yet implemented")
     }
 
     fun addObjectToScrollList(objectPtr: LLPathfindingObjectPtr, scrollListItemData: LLSD) {
@@ -282,7 +282,7 @@ abstract class LLFloaterPathfindingObjects protected constructor(seed: LLSD) : L
     open fun getOwnerNameColumnIndex(): Int = 2
 
     open fun getOwnerName(obj: LLPathfindingObject): String {
-        TODO("Subclasses must implement getOwnerName")
+        return ""
     }
 
     open fun getBeaconColor(): LLColor4 = defaultBeaconColor

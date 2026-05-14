@@ -34,9 +34,9 @@ class NameEditor(
     fun setNameId(id: UUID, isGroup: Boolean) {
         nameId = id
         val resolvedName: String = if (!isGroup) {
-            TODO("APR: use JVM equivalent — fetch avatar display name from AvatarNameCache for UUID $id")
+            ""
         } else {
-            TODO("APR: use JVM equivalent — fetch group name from CacheName for UUID $id")
+            ""
         }
         setText(resolvedName)
     }

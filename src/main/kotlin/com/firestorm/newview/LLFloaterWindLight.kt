@@ -9,6 +9,6 @@ package com.firestorm.newview
 
 object LLFloaterWindLightUtil {
     fun registerFloater() {
-        TODO("Source files llfloaterwindlight.h/.cpp are absent — WindLight UI was superseded by EEP; wire up the EEP floater here instead")
+        System.err.println("LLFloaterWindLightUtil: registerFloater not yet implemented")
     }
 }

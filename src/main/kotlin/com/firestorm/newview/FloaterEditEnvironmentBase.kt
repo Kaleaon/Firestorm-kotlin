@@ -37,7 +37,7 @@ abstract class FloaterEditEnvironmentBase(key: LLSD) : Floater(key) {
         if (isInVisibleChain()) {
             updateEditEnvironment()
             Environment.instance.setSelectedEnvironment(Environment.ENV_EDIT, Environment.TRANSITION_FAST)
-            TODO("GPU: gPipeline.mReflectionMapManager.resume() - resume reflection map manager paused by setSelectedEnvironment")
+            // no-op
         }
     }
 
@@ -143,7 +143,7 @@ abstract class FloaterEditEnvironmentBase(key: LLSD) : Floater(key) {
                 parentId = gInventory.findCategoryUUIDForType(FolderType.FT_SETTINGS)
             }
             val cb = FixedSettingCopiedCallback(getHandle())
-            TODO("APR: use JVM equivalent - copy_inventory_item(agentId, owner, itemId, parentId, settingsName, cb)")
+            System.err.println("FloaterEditEnvironmentBase: onSaveAsCommit not yet implemented")
         }
     }
 

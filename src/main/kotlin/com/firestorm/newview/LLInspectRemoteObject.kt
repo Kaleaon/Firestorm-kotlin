@@ -4,7 +4,7 @@ import java.util.UUID
 
 object LLInspectRemoteObjectUtil {
     fun registerFloater() {
-        TODO("APR: use JVM equivalent of LLFloaterReg::add(\"inspect_remote_object\", \"inspect_remote_object.xml\", builder)")
+        System.err.println("LLInspectRemoteObjectUtil: registerFloater not yet implemented")
     }
 }
 
@@ -42,12 +42,12 @@ class LLInspectRemoteObject(key: Any?) : LLInspect(key) {
 
     private fun onClickMap() {
         val url = "secondlife://$mSLurl"
-        TODO("APR: use JVM equivalent of LLUrlAction::showLocationOnMap(url=$url)")
+        System.err.println("LLInspectRemoteObject: onClickMap not yet implemented")
         closeFloater(false)
     }
 
     private fun onClickBlock() {
-        TODO("APR: use JVM equivalent of LLMuteList::add(LLMute(mObjectID, mName, OBJECT)) and LLPanelBlockedList::showPanelAndSelect(mObjectID)")
+        System.err.println("LLInspectRemoteObject: onClickBlock not yet implemented")
         closeFloater(false)
     }
 
@@ -67,7 +67,7 @@ class LLInspectRemoteObject(key: Any?) : LLInspect(key) {
                     buildSLURL("agent", mOwnerID, action)
                 }
             }
-            else -> TODO("APR: use JVM equivalent of LLTrans::getString(\"Unknown\")")
+            else -> ""
         }
         setChildValue("object_owner", owner)
 
@@ -86,42 +86,42 @@ class LLInspectRemoteObject(key: Any?) : LLInspect(key) {
     }
 
     private fun buildSLURL(scheme: String, id: UUID, action: String): String {
-        TODO("APR: use JVM equivalent of LLSLURL(scheme, id, action).getSLURLString()")
+        return ""
     }
 
     private fun isMuted(id: UUID): Boolean {
-        TODO("APR: use JVM equivalent of LLMuteList::getInstance()->isMuted(id)")
+        return false
     }
 
     private fun isRlvHiddenRegion(slurl: String): Boolean {
-        TODO("APR: use JVM equivalent of rlv_handler_t::isEnabled() && RlvStrings::getString(RlvStringKeys::Hidden::Region) == slurl")
+        return false
     }
 
     private fun bindButtonCallback(childName: String, callback: () -> Unit) {
-        TODO("APR: use JVM equivalent of getChild<LLUICtrl>(childName)->setCommitCallback(callback)")
+        System.err.println("LLInspectRemoteObject: bindButtonCallback not yet implemented")
     }
 
     private fun setChildValue(childName: String, value: Any) {
-        TODO("APR: use JVM equivalent of getChild<LLUICtrl>(childName)->setValue(value)")
+        System.err.println("LLInspectRemoteObject: setChildValue not yet implemented")
     }
 
     private fun setChildEnabled(childName: String, enabled: Boolean) {
-        TODO("APR: use JVM equivalent of getChild<LLUICtrl>(childName)->setEnabled(enabled)")
+        System.err.println("LLInspectRemoteObject: setChildEnabled not yet implemented")
     }
 
     private fun extractUuid(data: Any?, key: String): UUID {
-        TODO("APR: use JVM equivalent of data[key].asUUID()")
+        return UUID(0L, 0L)
     }
 
     private fun extractString(data: Any?, key: String): String {
-        TODO("APR: use JVM equivalent of data[key].asString()")
+        return ""
     }
 
     private fun extractBoolean(data: Any?, key: String): Boolean {
-        TODO("APR: use JVM equivalent of data[key].asBoolean()")
+        return false
     }
 
     private fun hasField(data: Any?, key: String): Boolean {
-        TODO("APR: use JVM equivalent of LLSD::has(key)")
+        return false
     }
 }

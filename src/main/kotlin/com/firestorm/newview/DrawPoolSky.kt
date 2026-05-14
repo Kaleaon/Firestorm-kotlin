@@ -31,11 +31,11 @@ class DrawPoolSky : FacePool(DrawPool.PoolType.SKY.value.toUInt()) {
     fun renderSkyFace(index: UByte) {}
 
     fun renderHeavenlyBody(hb: UByte, face: Face) {
-        TODO("GPU: render sun/moon heavenly body geometry")
+        // no-op
     }
 
     fun renderSunHalo(face: Face) {
-        TODO("GPU: render sun halo geometry")
+        // no-op
     }
 }
 

@@ -47,34 +47,34 @@ class MediaImpl(
 
     var navState: NavState = NavState.NONE
 
-    fun hasMedia(): Boolean = TODO("GPU: return mMediaSource != null && mMediaSource.isRunning")
+    fun hasMedia(): Boolean { System.err.println("MediaImpl: hasMedia not yet implemented"); return false }
 
-    fun play()  { TODO("GPU: play media plugin") }
-    fun stop()  { TODO("GPU: stop media plugin") }
-    fun pause() { TODO("GPU: pause media plugin") }
-    fun start() { TODO("GPU: start / unpause media plugin") }
-    fun unload() { TODO("GPU: destroy media plugin; reset state") }
+    fun play()  { System.err.println("MediaImpl: play not yet implemented") }
+    fun stop()  { System.err.println("MediaImpl: stop not yet implemented") }
+    fun pause() { System.err.println("MediaImpl: pause not yet implemented") }
+    fun start() { System.err.println("MediaImpl: start not yet implemented") }
+    fun unload() { System.err.println("MediaImpl: unload not yet implemented") }
 
     fun navigateTo(url: String, mimeType: String = "", rediscoverType: Boolean = false, serverRequest: Boolean = false) {
         this.mediaUrl = url
         this.navigateServerRequest = serverRequest
-        TODO("GPU: navigate media plugin to url; track nav state")
+        System.err.println("MediaImpl: navigateTo not yet implemented")
     }
 
-    fun setVolume(v: Float) { volume = v; TODO("GPU: update plugin volume") }
-    fun setMute(mute: Boolean) { TODO("GPU: mute plugin") }
-    fun updateVolume() { TODO("GPU: recalculate effective volume from global + local + mute state; apply to plugin") }
+    fun setVolume(v: Float) { volume = v; System.err.println("MediaImpl: setVolume not yet implemented") }
+    fun setMute(mute: Boolean) { System.err.println("MediaImpl: setMute not yet implemented") }
+    fun updateVolume() { System.err.println("MediaImpl: updateVolume not yet implemented") }
 
-    fun updateTexture() { TODO("GPU: update media texture from plugin pixel buffer") }
+    fun updateTexture() { System.err.println("MediaImpl: updateTexture not yet implemented") }
 
-    fun focus(hasFocus: Boolean) { TODO("GPU: relay focus to plugin") }
+    fun focus(hasFocus: Boolean) { System.err.println("MediaImpl: focus not yet implemented") }
 
-    fun clearCache() { TODO("GPU: clear plugin browser cache") }
+    fun clearCache() { System.err.println("MediaImpl: clearCache not yet implemented") }
 
     fun setSize(width: Int, height: Int) {
         mediaWidth = width
         mediaHeight = height
-        TODO("GPU: resize plugin")
+        System.err.println("MediaImpl: setSize not yet implemented")
     }
 
     fun isAutoPlayable(): Boolean = autoPlay && !isDisabled
@@ -168,7 +168,7 @@ object ViewerMedia {
             existing.mediaHeight = mediaEntry.heightPixels
             existing.autoPlay    = mediaEntry.autoPlay
             existing.mediaEntryUrl = mediaEntry.currentUrl
-            TODO("GPU: propagate autoScale/loop/size to media plugin if loaded")
+            System.err.println("ViewerMedia: updateMediaImpl (propagate autoScale/loop/size to plugin) not yet implemented")
             val urlChanged = existing.mediaEntryUrl != previousUrl
             if (existing.mediaEntryUrl.isEmpty()) {
                 if (urlChanged) existing.unload()
@@ -242,7 +242,8 @@ object ViewerMedia {
 
     fun setMaxInstances(maxInstances: Int) {
         val effectiveMax = maxInstances.coerceAtLeast(MEDIA_INSTANCES_MIN_LIMIT)
-        this.maxInstances = TODO("IPC: reduce by 2 if physical RAM < 8GB, else use effectiveMax") as Int
+        System.err.println("ViewerMedia: setMaxInstances (RAM-based reduction) not yet implemented")
+        this.maxInstances = effectiveMax
     }
 
     fun setOnlyAudibleMediaTextureId(textureId: LLUUID) {
@@ -250,69 +251,70 @@ object ViewerMedia {
     }
 
     fun updateMedia(idle: Boolean = false) {
-        TODO("IPC: prioritise impl list; drive plugin updates; manage texture uploads; enforce maxInstances; update anyMediaShowing / anyMediaPlaying")
+        System.err.println("ViewerMedia: updateMedia not yet implemented")
     }
 
     fun getCurrentUserAgent(): String {
-        TODO("IPC: build 'SecondLife/<version> (<channel>; <skin> skin)' user-agent string")
+        System.err.println("ViewerMedia: getCurrentUserAgent not yet implemented")
+        return ""
     }
 
     fun updateBrowserUserAgent() {
         val ua = getCurrentUserAgent()
         impls.forEach { impl ->
-            TODO("GPU: if impl.mediaSource?.pluginSupportsMediaBrowser() == true impl.mediaSource?.setBrowserUserAgent($ua)")
+            System.err.println("ViewerMedia: updateBrowserUserAgent not yet implemented")
         }
     }
 
-    fun clearAllCookies() { impls.forEach { TODO("GPU: if it.mediaSource != null it.mediaSource?.clearCookies()") } }
+    fun clearAllCookies() { impls.forEach { System.err.println("ViewerMedia: clearAllCookies not yet implemented") } }
     fun clearAllCaches()  { impls.forEach { it.clearCache() } }
-    fun setCookiesEnabled(enabled: Boolean) { TODO("GPU: propagate cookie flag to all plugins") }
+    fun setCookiesEnabled(enabled: Boolean) { System.err.println("ViewerMedia: setCookiesEnabled not yet implemented") }
 
     fun setProxyConfig(enable: Boolean, host: String, port: Int) {
-        TODO("GPU: propagate proxy settings to all plugins")
+        System.err.println("ViewerMedia: setProxyConfig not yet implemented")
     }
 
     fun hasInWorldMedia(): Boolean = impls.any { !it.isParcelMedia }
     fun hasParcelMedia(): Boolean  = impls.any { it.isParcelMedia }
 
-    fun getParcelAudioURL(): String { TODO("IPC: return URL of current parcel audio stream") }
-    fun hasParcelAudio(): Boolean   { TODO("IPC: return whether parcel audio URL is non-empty") }
-    fun isParcelMediaPlaying(): Boolean { TODO("IPC: check parcel media play state") }
-    fun isParcelAudioPlaying(): Boolean { TODO("IPC: check parcel audio play state") }
+    fun getParcelAudioURL(): String { System.err.println("ViewerMedia: getParcelAudioURL not yet implemented"); return "" }
+    fun hasParcelAudio(): Boolean   { System.err.println("ViewerMedia: hasParcelAudio not yet implemented"); return false }
+    fun isParcelMediaPlaying(): Boolean { System.err.println("ViewerMedia: isParcelMediaPlaying not yet implemented"); return false }
+    fun isParcelAudioPlaying(): Boolean { System.err.println("ViewerMedia: isParcelAudioPlaying not yet implemented"); return false }
 
     fun muteListChanged() {
-        impls.forEach { TODO("IPC: re-evaluate mute state for each impl") }
+        impls.forEach { System.err.println("ViewerMedia: muteListChanged not yet implemented") }
     }
 
     fun openIdSetup(openIdUrl: String, openIdToken: String) {
-        TODO("IPC: launch openIDSetupCoro")
+        System.err.println("ViewerMedia: openIdSetup not yet implemented")
     }
 
     fun proxyWindowOpened(target: String, uuid: String) {
-        TODO("IPC: find impl by uuid; set target")
+        System.err.println("ViewerMedia: proxyWindowOpened not yet implemented")
     }
 
     fun proxyWindowClosed(uuid: String) {
-        TODO("IPC: find impl by uuid; unload")
+        System.err.println("ViewerMedia: proxyWindowClosed not yet implemented")
     }
 
     fun createSpareBrowserMediaSource() {
-        TODO("GPU: pre-create a browser plugin for fast first-use")
+        System.err.println("ViewerMedia: createSpareBrowserMediaSource not yet implemented")
     }
 
     fun getSpareBrowserMediaSource(): Any? {
-        TODO("GPU: return and clear spare browser plugin")
+        return null
     }
 
     fun getHeaders(): Map<String, String> {
-        TODO("IPC: build standard HTTP headers map including OpenID cookie")
+        return emptyMap()
     }
 
     fun getOpenIdCookie(mediaInstance: MediaCtrl): Boolean {
-        TODO("IPC: inject the openid cookie into mediaInstance")
+        return false
     }
 
     fun onTeleportFinished() {
-        TODO("IPC: resume or restart paused media after teleport completes")
+        System.err.println("ViewerMedia: onTeleportFinished not yet implemented")
     }
 }

@@ -93,7 +93,7 @@ class HUDEffectLookAt(type: UByte) : HUDEffect(type) {
     private var attentions: AttentionSet = GIRL_ATTENTIONS
 
     // Mirrors FS LLCachedControl<S32> mDebugLookAt – 0 = off
-    var debugLookAt: Int = TODO("APR: read 'DebugLookAt' from saved per-account settings")
+    var debugLookAt: Int = 0 // APR: read 'DebugLookAt' from saved per-account settings
 
     init {
         clearLookAtTarget()
@@ -108,7 +108,7 @@ class HUDEffectLookAt(type: UByte) : HUDEffect(type) {
 
     override fun markDead() {
         mSourceObject?.let {
-            TODO("APR: remove animation data 'LookAtPoint' from source avatar")
+            System.err.println("STUB: APR: remove animation data 'LookAtPoint' from source avatar")
         }
         mSourceObject = null
         clearLookAtTarget()
@@ -126,7 +126,7 @@ class HUDEffectLookAt(type: UByte) : HUDEffect(type) {
         targetOffsetGlobal = Vector3d.ZERO
         targetType = LookAtType.NONE
         mSourceObject?.let {
-            TODO("APR: stop ANIM_AGENT_HEAD_ROT motion on source avatar")
+            System.err.println("STUB: APR: stop ANIM_AGENT_HEAD_ROT motion on source avatar")
         }
     }
 
@@ -142,8 +142,7 @@ class HUDEffectLookAt(type: UByte) : HUDEffect(type) {
 
         val currentTime = elapsed()
 
-        val fsLimitEnabled: Boolean = TODO("APR: read 'FSLookAtTargetLimitDistance' from settings")
-        @Suppress("UNREACHABLE_CODE")
+        val fsLimitEnabled: Boolean = false // APR: read 'FSLookAtTargetLimitDistance' from settings
         val lookAtShouldClamp = fsLimitEnabled &&
             attentions[targetType].name !in setOf("None", "Idle", "Respond", "Conversation", "FreeLook", "AutoListen")
 
@@ -166,20 +165,16 @@ class HUDEffectLookAt(type: UByte) : HUDEffect(type) {
             if (obj != null) {
                 if (lookAtShouldClamp) {
                     if (obj.isAvatar()) {
-                        val isSelf: Boolean = TODO("APR: check if obj is self avatar")
-                        @Suppress("UNREACHABLE_CODE")
+                        val isSelf: Boolean = false // APR: check if obj is self avatar
                         if (!isSelf) {
-                            val headPos: Vector3 = TODO("APR: get avatar head world position")
-                            @Suppress("UNREACHABLE_CODE")
-                            targetOffsetGlobal = TODO("APR: convert headPos to global coords")
-                            @Suppress("UNREACHABLE_CODE")
+                            val headPos: Vector3 = Vector3.ZERO // APR: get avatar head world position
+                            targetOffsetGlobal = Vector3d(headPos.x.toDouble(), headPos.y.toDouble(), headPos.z.toDouble()) // APR: convert headPos to global coords
                             mTargetObject = null
                         } else {
                             targetOffsetGlobal = Vector3d(position.x.toDouble(), position.y.toDouble(), position.z.toDouble())
                         }
                     } else {
-                        targetOffsetGlobal = TODO("APR: compute global offset from obj position + position * objRotation")
-                        @Suppress("UNREACHABLE_CODE")
+                        targetOffsetGlobal = Vector3d(position.x.toDouble(), position.y.toDouble(), position.z.toDouble()) // APR: compute global offset from obj position + position * objRotation
                         mTargetObject = null
                     }
                 } else {
@@ -188,14 +183,12 @@ class HUDEffectLookAt(type: UByte) : HUDEffect(type) {
                 }
             } else {
                 mTargetObject = null
-                targetOffsetGlobal = TODO("APR: convert agent position to global coords")
+                targetOffsetGlobal = Vector3d.ZERO // APR: convert agent position to global coords
             }
 
             if (lookAtShouldClamp && mTargetObject == null) {
-                val maxRadius: Float = TODO("APR: read 'FSLookAtTargetMaxDistance' from settings")
-                @Suppress("UNREACHABLE_CODE")
-                val headPosGlobal: Vector3d = TODO("APR: get agent head position in global coords")
-                @Suppress("UNREACHABLE_CODE")
+                val maxRadius: Float = 0f // APR: read 'FSLookAtTargetMaxDistance' from settings
+                val headPosGlobal: Vector3d = Vector3d.ZERO // APR: get agent head position in global coords
                 val distance: Float = distVec(targetOffsetGlobal, headPosGlobal)
                 if (distance > maxRadius) {
                     val vec = (targetOffsetGlobal - headPosGlobal) * (maxRadius / distance).toDouble()
@@ -204,12 +197,12 @@ class HUDEffectLookAt(type: UByte) : HUDEffect(type) {
 
                 val lookAtChanged = (targetTypeParm != targetType) ||
                     ((distVecSquared(
-                        TODO("APR: convert targetOffsetGlobal to agent coords"),
+                        Vector3.ZERO, // APR: convert targetOffsetGlobal to agent coords
                         lastSentOffsetGlobal
                     ) > MIN_DELTAPOS_FOR_UPDATE_SQUARED) &&
                         ((currentTime - lastSendTime) > (1f / MAX_SENDS_PER_SEC)))
                 if (lookAtChanged) {
-                    lastSentOffsetGlobal = TODO("APR: convert targetOffsetGlobal to agent coords")
+                    lastSentOffsetGlobal = Vector3.ZERO // APR: convert targetOffsetGlobal to agent coords
                     setDuration(attentions[targetTypeParm].timeout)
                     setNeedsSendToSim(true)
                 }
@@ -236,14 +229,11 @@ class HUDEffectLookAt(type: UByte) : HUDEffect(type) {
         if (sourceObj == null) { markDead(); return }
         if (!sourceObj.isAvatar()) { markDead(); return }
 
-        val isSelf: Boolean = TODO("APR: check if sourceObj is self avatar")
-        @Suppress("UNREACHABLE_CODE")
+        val isSelf: Boolean = false // APR: check if sourceObj is self avatar
         if (!isSelf) { markDead(); return }
 
-        val isPrivate: Boolean = TODO("APR: read 'PrivateLookAtTarget' from settings")
-        @Suppress("UNREACHABLE_CODE")
-        val isLocalPrivate: Boolean = TODO("APR: read 'PrivateLocalLookAtTarget' from settings")
-        @Suppress("UNREACHABLE_CODE")
+        val isPrivate: Boolean = false // APR: read 'PrivateLookAtTarget' from settings
+        val isLocalPrivate: Boolean = false // APR: read 'PrivateLocalLookAtTarget' from settings
         if (isLocalPrivate && isPrivate) { markDead(); return }
 
         var effectiveType = targetType
@@ -258,28 +248,28 @@ class HUDEffectLookAt(type: UByte) : HUDEffect(type) {
 
         super.packData(mesgsys)
 
-        TODO("APR: pack PKT_SIZE binary blob into mesgsys TypeData: " +
-             "source UUID @ SOURCE_AVATAR, target UUID @ TARGET_OBJECT, " +
-             "effectiveOffset @ TARGET_POS, effectiveType ordinal @ LOOKAT_TYPE")
+        // APR: pack PKT_SIZE binary blob into mesgsys TypeData:
+        // source UUID @ SOURCE_AVATAR, target UUID @ TARGET_OBJECT,
+        // effectiveOffset @ TARGET_POS, effectiveType ordinal @ LOOKAT_TYPE
+        System.err.println("STUB: APR: packData binary blob not implemented")
 
         lastSendTime = elapsed()
     }
 
     override fun unpackData(mesgsys: Any, blocknum: Int) {
-        val dataId: UUID = TODO("APR: read UUID from Effect/ID field in block $blocknum")
-        @Suppress("UNREACHABLE_CODE")
-        val ownLookAt: HUDEffectLookAt? = TODO("APR: get gAgentCamera.mLookAt")
-        @Suppress("UNREACHABLE_CODE")
+        val dataId: UUID = UUID(0, 0) // APR: read UUID from Effect/ID field in block $blocknum
+        val ownLookAt: HUDEffectLookAt? = null // APR: get gAgentCamera.mLookAt
         if (ownLookAt != null && dataId == ownLookAt.getID()) return
 
         super.unpackData(mesgsys, blocknum)
 
-        TODO("APR: unpack binary blob: " +
-             "sourceId @ SOURCE_AVATAR, targetId @ TARGET_OBJECT, " +
-             "new_target Vector3d @ TARGET_POS, lookAtType U8 @ LOOKAT_TYPE; " +
-             "find source/target objects in gObjectList; " +
-             "call setTargetObjectAndOffset or setTargetPosGlobal; " +
-             "set targetType; call clearLookAtTarget if NONE")
+        // APR: unpack binary blob:
+        // sourceId @ SOURCE_AVATAR, targetId @ TARGET_OBJECT,
+        // new_target Vector3d @ TARGET_POS, lookAtType U8 @ LOOKAT_TYPE;
+        // find source/target objects in gObjectList;
+        // call setTargetObjectAndOffset or setTargetPosGlobal;
+        // set targetType; call clearLookAtTarget if NONE
+        System.err.println("STUB: APR: unpackData binary blob not implemented")
     }
 
     override fun update() {
@@ -289,8 +279,7 @@ class HUDEffectLookAt(type: UByte) : HUDEffect(type) {
         val srcObj = mSourceObject
         if (srcObj == null || srcObj.isDead()) { markDead(); return }
 
-        val isMale: Boolean = TODO("APR: check source avatar sex (SEX_MALE)")
-        @Suppress("UNREACHABLE_CODE")
+        val isMale: Boolean = false // APR: check source avatar sex (SEX_MALE)
         attentions = if (isMale) BOY_ATTENTIONS else GIRL_ATTENTIONS
 
         val time = elapsed()
@@ -301,12 +290,11 @@ class HUDEffectLookAt(type: UByte) : HUDEffect(type) {
 
         if (targetType != LookAtType.NONE) {
             if (calcTargetPosition()) {
-                val disableLookAt: Boolean = TODO("APR: read 'DisableLookAtAnimation' from settings")
-                @Suppress("UNREACHABLE_CODE")
+                val disableLookAt: Boolean = false // APR: read 'DisableLookAtAnimation' from settings
                 if (disableLookAt) {
-                    TODO("APR: stop ANIM_AGENT_HEAD_ROT motion on source avatar")
+                    System.err.println("STUB: APR: stop ANIM_AGENT_HEAD_ROT motion on source avatar")
                 } else {
-                    TODO("APR: start ANIM_AGENT_HEAD_ROT motion on source avatar if stopped")
+                    System.err.println("STUB: APR: start ANIM_AGENT_HEAD_ROT motion on source avatar if stopped")
                 }
             }
         }
@@ -314,17 +302,14 @@ class HUDEffectLookAt(type: UByte) : HUDEffect(type) {
 
     override fun render() {
         if (debugLookAt == 0 || mSourceObject == null) return
-        val hideOwn: Boolean = TODO("APR: read 'DebugLookAtHideOwn' from per-account settings")
-        @Suppress("UNREACHABLE_CODE")
-        val isPrivate: Boolean = TODO("APR: read 'PrivateLookAtTarget' from settings")
-        @Suppress("UNREACHABLE_CODE")
-        val isSelf: Boolean = TODO("APR: check if mSourceObject is self avatar")
-        @Suppress("UNREACHABLE_CODE")
+        val hideOwn: Boolean = false // APR: read 'DebugLookAtHideOwn' from per-account settings
+        val isPrivate: Boolean = false // APR: read 'PrivateLookAtTarget' from settings
+        val isSelf: Boolean = false // APR: check if mSourceObject is self avatar
         if ((hideOwn || isPrivate) && isSelf) return
 
-        TODO("GPU: render crosshair lines at targetPos + sourceAvatar head position; " +
-             "optionally draw line back to source object (ExodusLookAtLines setting); " +
-             "optionally render avatar name label (DebugLookAtShowNames setting)")
+        // GPU: render crosshair lines at targetPos + sourceAvatar head position;
+        // optionally draw line back to source object (ExodusLookAtLines setting);
+        // optionally render avatar name label (DebugLookAtShowNames setting)
     }
 
     fun calcTargetPosition(): Boolean {
@@ -332,12 +317,11 @@ class HUDEffectLookAt(type: UByte) : HUDEffect(type) {
         val localOffset: Vector3 = if (targetObj != null) {
             Vector3(targetOffsetGlobal.x.toFloat(), targetOffsetGlobal.y.toFloat(), targetOffsetGlobal.z.toFloat())
         } else {
-            TODO("APR: convert targetOffsetGlobal from global to agent coords")
+            Vector3.ZERO // APR: convert targetOffsetGlobal from global to agent coords
         }
 
         val sourceAvatar = mSourceObject ?: return false
-        val isBuilt: Boolean = TODO("APR: check source avatar isBuilt()")
-        @Suppress("UNREACHABLE_CODE")
+        val isBuilt: Boolean = false // APR: check source avatar isBuilt()
         if (!isBuilt) return false
 
         if (targetObj != null) {
@@ -345,19 +329,17 @@ class HUDEffectLookAt(type: UByte) : HUDEffect(type) {
             if (drawable != null) {
                 val targetRot: Quaternion
                 if (targetObj.isAvatar()) {
-                    val isSelfLookingSelf: Boolean = TODO("APR: check both source and target are self")
-                    @Suppress("UNREACHABLE_CODE")
+                    val isSelfLookingSelf: Boolean = false // APR: check both source and target are self
                     if (isSelfLookingSelf && targetOffsetGlobal.magnitudeSquared() < MIN_TARGET_OFFSET_SQUARED) {
                         targetOffsetGlobal = Vector3d(1.0, 0.0, 0.0)
                     }
-                    targetPos = TODO("APR: get target avatar head world position")
+                    targetPos = Vector3.ZERO // APR: get target avatar head world position
                     targetRot = when (targetType) {
                         LookAtType.MOUSELOOK, LookAtType.FREELOOK -> Quaternion.DEFAULT
-                        else -> TODO("APR: get appropriate root/pelvis world rotation from target avatar")
+                        else -> Quaternion.DEFAULT // APR: get appropriate root/pelvis world rotation from target avatar
                     }
                 } else {
-                    val generation: Int = TODO("APR: get drawable generation")
-                    @Suppress("UNREACHABLE_CODE")
+                    val generation: Int = 0 // APR: get drawable generation
                     if (generation == -1) {
                         targetPos = targetObj.getPositionAgent()
                         targetRot = targetObj.getWorldRotation()
@@ -366,7 +348,7 @@ class HUDEffectLookAt(type: UByte) : HUDEffect(type) {
                         targetRot = targetObj.getRenderRotation()
                     }
                 }
-                targetPos = TODO("APR: targetPos + (localOffset * targetRot)")
+                targetPos = Vector3.ZERO // APR: targetPos + (localOffset * targetRot)
             } else {
                 targetPos = localOffset
             }
@@ -374,18 +356,16 @@ class HUDEffectLookAt(type: UByte) : HUDEffect(type) {
             targetPos = localOffset
         }
 
-        val headPos: Vector3 = TODO("APR: get source avatar head world position")
-        @Suppress("UNREACHABLE_CODE")
+        val headPos: Vector3 = Vector3.ZERO // APR: get source avatar head world position
         targetPos = targetPos - headPos
 
         if (!targetPos.isFinite()) return false
 
-        val disableLookAt: Boolean = TODO("APR: read 'DisableLookAtAnimation' from settings")
-        @Suppress("UNREACHABLE_CODE")
+        val disableLookAt: Boolean = false // APR: read 'DisableLookAtAnimation' from settings
         if (disableLookAt) {
-            TODO("APR: call sourceAvatar.removeAnimationData('LookAtPoint')")
+            System.err.println("STUB: APR: call sourceAvatar.removeAnimationData('LookAtPoint')")
         } else {
-            TODO("APR: call sourceAvatar.setAnimationData('LookAtPoint', targetPos)")
+            System.err.println("STUB: APR: call sourceAvatar.setAnimationData('LookAtPoint', targetPos)")
         }
 
         return true
@@ -397,8 +377,9 @@ class HUDEffectLookAt(type: UByte) : HUDEffect(type) {
         private fun loadAttentions() {
             if (attentionsLoaded) return
             attentionsLoaded = true
-            TODO("APR: parse attentions.xml from LL_PATH_CHARACTER directory; " +
-                 "override BOY_ATTENTIONS and GIRL_ATTENTIONS timeout/priority values")
+            // APR: parse attentions.xml from LL_PATH_CHARACTER directory;
+            // override BOY_ATTENTIONS and GIRL_ATTENTIONS timeout/priority values
+            System.err.println("STUB: APR: loadAttentions from attentions.xml not implemented")
         }
     }
 }

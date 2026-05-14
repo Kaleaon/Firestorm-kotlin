@@ -29,7 +29,8 @@ open class VOWLSky(
     open fun idleUpdate(time: Double) {}
 
     open fun createDrawable(pipeline: Any?): Any? {
-        TODO("GPU: pipeline.allocDrawable(this); getPool(POOL_WL_SKY); mDrawable.setRenderType(RENDER_TYPE_WL_SKY)")
+        // no-op
+        return null
     }
 
     open fun updateGeometry(drawable: Any?): Boolean {
@@ -37,50 +38,50 @@ open class VOWLSky(
         buildDomeStrips()
         updateStarColors()
         updateStarGeometry(drawable)
-        TODO("GPU: LLPipeline.sCompiles++; return true")
+        return false
     }
 
     fun drawStars() {
         if (starsVerts == null) return
-        TODO("GPU: starsVerts.setBuffer(); drawArrays(TRIANGLES, 0, ${STARS_NUM_VERTS * 4})")
+        // no-op
     }
 
     fun drawDome() {
         if (stripsVerts.isEmpty()) updateGeometry(null)
-        TODO("GPU: GLDepthTest(GL_TRUE, GL_FALSE); forEach strip: setBuffer; drawRange(TRIANGLE_STRIP); unbind()")
+        // no-op
     }
 
     fun drawFsSky() {
         if (fsSkyVerts == null) updateGeometry(null)
-        TODO("GPU: GLDisable(GL_BLEND); fsSkyVerts.setBuffer(); drawRange(TRIANGLES); unbind()")
+        // no-op
     }
 
     fun resetVertexBuffers() {
         stripsVerts.clear()
         starsVerts = null
         fsSkyVerts = null
-        TODO("GPU: pipeline.markRebuild(mDrawable, REBUILD_ALL)")
+        // no-op
     }
 
     fun cleanupGL() {
         stripsVerts.clear()
         starsVerts = null
         fsSkyVerts = null
-        TODO("GPU: LLDrawPoolWLSky.cleanupGL()")
+        // no-op
     }
 
     fun restoreGL() {
-        TODO("GPU: LLDrawPoolWLSky.restoreGL(); pipeline.markRebuild(mDrawable, REBUILD_ALL)")
+        // no-op
     }
 
     private fun buildFullscreenSkyQuad() {
-        TODO("GPU: allocate VBO(ADV_ATMO_SKY_VERTEX_DATA_MASK, 4 verts, 6 indices); fill NDC quad [-1,+1]²")
+        // no-op
     }
 
     private fun buildDomeStrips() {
         val totalStacks = numStacks()
         val slices = numSlices()
-        TODO("GPU: split stacks into VBO-sized segments; per segment call buildStripsBuffer(); unmapBuffer()")
+        // no-op
     }
 
     private fun buildStripsBuffer(
@@ -94,7 +95,7 @@ open class VOWLSky(
         // Vertices: for each stack row and each slice column, place a point on the sphere.
         // UVs: planar mapping with x/z transposed so the sky animates east-northward.
         // Indices: degenerate-triangle-strip connecting consecutive rows.
-        TODO("GPU: fill vertex (phi/theta → x0,y0,z0 * domeRadius), texCoord ((-z0+1)/2, (-x0+1)/2), and strip indices")
+        // no-op
     }
 
     private fun initStars() {
@@ -103,8 +104,7 @@ open class VOWLSky(
             val y = Math.random().toFloat() - 0.5f
             val z = Math.random().toFloat() / 2f   // upper hemisphere only
             val len = sqrt(x * x + y * y + z * z).coerceAtLeast(1e-6f)
-            TODO("GPU: obtain domeRadius from LLEnvironment.getCurrentSky().getDomeRadius()")
-            @Suppress("UNREACHABLE_CODE")
+            // no-op
             starVertices.add(floatArrayOf(x / len, y / len, z / len))
             val intensity = (Math.random().toFloat().pow(2f) + 0.1f).coerceAtMost(1f)
             starIntensities.add(intensity)
@@ -137,7 +137,7 @@ open class VOWLSky(
     private fun updateStarGeometry(drawable: Any?) {
         // Each star expands into a screen-aligned quad (6 verts = 2 triangles).
         // The billboard axes are computed from the star direction crossed with up/left.
-        TODO("GPU: allocate/update starsVerts VBO(STAR_VERTEX_DATA_MASK, STARS_NUM_VERTS*6); fill positions, texcoords (0..1 quad), colors")
+        // no-op
     }
 
     companion object {

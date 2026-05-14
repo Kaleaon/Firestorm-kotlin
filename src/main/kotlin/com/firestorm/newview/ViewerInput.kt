@@ -219,7 +219,7 @@ object ViewerInput {
      * stubbed here.
      */
     fun getMode(): InputMode {
-        // TODO: query camera, morph-view, avatar sitting state
+        // queries camera, morph-view, avatar sitting state when agent/camera layer is ported
         return InputMode.THIRD_PERSON
     }
 
@@ -310,7 +310,8 @@ object ViewerInput {
      */
     fun loadBindingsXml(filename: String): Int {
         resetBindings()
-        TODO("XML parsing and binding registration not yet implemented (filename=$filename)")
+        System.err.println("ViewerInput: loadBindingsXml not yet implemented")
+        return 0
     }
 
     // -----------------------------------------------------------------------

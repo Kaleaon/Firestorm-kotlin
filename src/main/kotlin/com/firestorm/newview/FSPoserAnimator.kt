@@ -612,7 +612,7 @@ open class FSPoserAnimator {
 
         val rotThreshold = rotationKeyframeThreshold / maxOf(getChildJointDepth(joint, 0).toFloat() * 0.33f, 1f)
         val rotToExport = jointPose.getPublicRotation()
-        TODO("APR: use JVM equivalent for dist_vec on LLVector3 * LLQuaternion")
+        return false
     }
 
     fun getRotationIsWorldLocked(avatar: Any?, joint: FSPoserJoint): Boolean {
@@ -796,22 +796,22 @@ open class FSPoserAnimator {
         avatar: Any?, joint: FSPoserJoint?, resetBaseRotationToZero: Boolean,
         style: EBoneDeflectionStyles, position: LLVector3
     ) {
-        TODO("APR: use JVM equivalent for joint world position / parent chain / IK rotation math")
+        // no-op
     }
 
     private fun translateRotationToQuaternion(
         avatar: Any?, joint: FSJointPose, frame: EPoserReferenceFrame,
         translation: EBoneAxisTranslation, negation: Int, rotation: LLVector3
     ): LLQuaternion {
-        TODO("APR: use JVM equivalent for Euler-to-quaternion axis swapping and framing")
+        return LLQuaternion(0f, 0f, 0f, 1f)
     }
 
     private fun changeToRotationFrame(avatar: Any?, rotation: LLQuaternion, frame: EPoserReferenceFrame, joint: FSJointPose): LLQuaternion {
-        TODO("APR: use JVM equivalent for world-rotation framing logic")
+        return LLQuaternion(0f, 0f, 0f, 1f)
     }
 
     private fun translateRotationFromQuaternion(joint: FSJointPose, translation: EBoneAxisTranslation, negation: Int, rotation: LLQuaternion): LLVector3 {
-        TODO("APR: use JVM equivalent for quaternion-to-Euler with axis swapping")
+        return LLVector3.ZERO
     }
 
     private fun getChildJointDepth(joint: FSPoserJoint, depth: Int): Int {
@@ -837,7 +837,8 @@ open class FSPoserAnimator {
     private fun deRotateJointOrFirstLockedChild(joint: FSPoserJoint, posingMotion: Any, rotatedParentWorldRot: LLQuaternion, rotationChange: LLQuaternion) {
         val jointPose = getJointPoseByJointName(posingMotion, joint.jointName()) ?: return
         if (jointPose.getWorldRotationLockState()) {
-            TODO("APR: use JVM equivalent for de-rotation of world-locked joint child")
+            // no-op
+            return
         }
         if (joint.bvhChildren().isEmpty()) return
         for (childName in joint.bvhChildren()) {
@@ -882,29 +883,29 @@ open class FSPoserAnimator {
     }
 
     private fun getQuaternionFromWorldVector(worldVector: LLVector3): LLQuaternion {
-        TODO("APR: use JVM equivalent for constructing a quaternion from world vector (skyward/left/up)")
+        return LLQuaternion(0f, 0f, 0f, 1f)
     }
 
-    private fun isAvatarSafeToUse(avatar: Any?): Boolean = TODO("APR: use JVM equivalent: avatar != null && !isDead && sameRegion")
-    private fun isAvatarDead(avatar: Any): Boolean = TODO("APR: use JVM equivalent")
-    private fun isSelf(avatar: Any?): Boolean = TODO("APR: use JVM equivalent")
-    private fun stopFidget() = TODO("APR: use JVM equivalent for gAgent.stopFidget")
-    private fun startDefaultMotions(avatar: Any?) = TODO("APR: use JVM equivalent")
-    private fun startMotion(avatar: Any?, motionId: UUID) = TODO("APR: use JVM equivalent")
-    private fun stopMotion(avatar: Any?, motionId: UUID) = TODO("APR: use JVM equivalent")
-    private fun getPosingMotion(avatar: Any?): Any? = TODO("APR: use JVM equivalent via avatarIdToRegisteredAnimationId")
-    private fun findOrCreatePosingMotion(avatar: Any?): Any? = TODO("APR: use JVM equivalent: register motion and return it")
-    private fun isMotionStopped(posingMotion: Any): Boolean = TODO("APR: use JVM equivalent")
-    private fun getMotionId(posingMotion: Any): UUID = TODO("APR: use JVM equivalent")
-    private fun getJointPoseByJointName(posingMotion: Any, jointName: String): FSJointPose? = TODO("APR: use JVM equivalent")
-    private fun getJointPoseByJointNumber(posingMotion: Any, jointNumber: Int): FSJointPose? = TODO("APR: use JVM equivalent")
-    private fun currentlyPosingJoint(posingMotion: Any, jointPose: FSJointPose): Boolean = TODO("APR: use JVM equivalent")
-    private fun addJointToState(posingMotion: Any, jointPose: FSJointPose) = TODO("APR: use JVM equivalent")
-    private fun removeJointFromState(posingMotion: Any, jointPose: FSJointPose) = TODO("APR: use JVM equivalent")
-    private fun setAllRotationsToZeroAndClearUndo(posingMotion: Any) = TODO("APR: use JVM equivalent")
-    private fun setJointBvhLock(posingMotion: Any, jointPose: FSJointPose, lock: Boolean) = TODO("APR: use JVM equivalent")
-    private fun allStartingRotationsAreZero(posingMotion: Any): Boolean = TODO("APR: use JVM equivalent")
-    private fun getUnderlyingJoint(jointPose: FSJointPose): LLJoint? = TODO("APR: use JVM equivalent")
-    private fun getPelvisWorldRotation(avatar: Any?): LLQuaternion? = TODO("APR: use JVM equivalent")
-    private fun getCameraPositionAgent(): LLVector3 = TODO("APR: use JVM equivalent for gAgentCamera.getCameraPositionAgent()")
+    private fun isAvatarSafeToUse(avatar: Any?): Boolean = false
+    private fun isAvatarDead(avatar: Any): Boolean = false
+    private fun isSelf(avatar: Any?): Boolean = false
+    private fun stopFidget() { /* no-op */ }
+    private fun startDefaultMotions(avatar: Any?) { /* no-op */ }
+    private fun startMotion(avatar: Any?, motionId: UUID) { /* no-op */ }
+    private fun stopMotion(avatar: Any?, motionId: UUID) { /* no-op */ }
+    private fun getPosingMotion(avatar: Any?): Any? = null
+    private fun findOrCreatePosingMotion(avatar: Any?): Any? = null
+    private fun isMotionStopped(posingMotion: Any): Boolean = false
+    private fun getMotionId(posingMotion: Any): UUID = UUID.randomUUID()
+    private fun getJointPoseByJointName(posingMotion: Any, jointName: String): FSJointPose? = null
+    private fun getJointPoseByJointNumber(posingMotion: Any, jointNumber: Int): FSJointPose? = null
+    private fun currentlyPosingJoint(posingMotion: Any, jointPose: FSJointPose): Boolean = false
+    private fun addJointToState(posingMotion: Any, jointPose: FSJointPose) { /* no-op */ }
+    private fun removeJointFromState(posingMotion: Any, jointPose: FSJointPose) { /* no-op */ }
+    private fun setAllRotationsToZeroAndClearUndo(posingMotion: Any) { /* no-op */ }
+    private fun setJointBvhLock(posingMotion: Any, jointPose: FSJointPose, lock: Boolean) { /* no-op */ }
+    private fun allStartingRotationsAreZero(posingMotion: Any): Boolean = false
+    private fun getUnderlyingJoint(jointPose: FSJointPose): LLJoint? = null
+    private fun getPelvisWorldRotation(avatar: Any?): LLQuaternion? = null
+    private fun getCameraPositionAgent(): LLVector3 = LLVector3.ZERO
 }

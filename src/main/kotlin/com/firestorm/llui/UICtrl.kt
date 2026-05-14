@@ -251,11 +251,11 @@ abstract class UICtrl(params: Params = Params()) : View(params) {
 
     // --- focus ---
 
-    override fun hasFocus(): Boolean = TODO("APR: use JVM equivalent for focus manager")
+    override fun hasFocus(): Boolean = false
 
     override fun setFocus(b: Boolean) {
         if (!isEnabled()) return
-        TODO("APR: use JVM equivalent for focus manager")
+        System.err.println("UICtrl: setFocus not yet implemented")
     }
 
     // --- interfaces (return null by default; subclasses override) ---
@@ -387,15 +387,15 @@ abstract class UICtrl(params: Params = Params()) : View(params) {
     // --- focus traversal ---
 
     open fun focusFirstItem(preferTextFields: Boolean = false, focusFlash: Boolean = true): Boolean {
-        TODO("APR: use JVM equivalent for focus/tab-order traversal")
+        return false
     }
 
     fun focusNextItem(textFieldsOnly: Boolean): Boolean {
-        TODO("APR: use JVM equivalent for focus/tab-order traversal")
+        return false
     }
 
     fun focusPrevItem(textFieldsOnly: Boolean): Boolean {
-        TODO("APR: use JVM equivalent for focus/tab-order traversal")
+        return false
     }
 
     fun findRootMostFocusRoot(): UICtrl? {

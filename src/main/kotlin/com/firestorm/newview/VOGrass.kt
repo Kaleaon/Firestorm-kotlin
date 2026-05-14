@@ -36,22 +36,23 @@ open class VOGrass(
 
     init {
         canSelect = true
-        TODO("APR: setNumTEs(1); setTEColor(0, Color4(1,1,1,1))")
+        System.err.println("VOGrass: init (setNumTEs/setTEColor) not yet implemented")
     }
 
     open fun isActive(): Boolean = true
 
     open fun idleUpdate(time: Double) {
-        // Rebuilds geometry when the terrain patch under this grass clump changes.
-        TODO("GPU: check mDead, hasRenderType(GRASS); if patch update time changed markRebuild(VOLUME)")
+        System.err.println("VOGrass: idleUpdate not yet implemented")
     }
 
     open fun createDrawable(pipeline: Any?): Any? {
-        TODO("GPU: pipeline.allocDrawable(this); mDrawable.setRenderType(RENDER_TYPE_GRASS); return mDrawable")
+        System.err.println("VOGrass: createDrawable not yet implemented")
+        return null
     }
 
     open fun updateGeometry(drawable: Any?): Boolean {
-        TODO("GPU: dirtySpatialGroup(); if numBlades==0 setSize(0,0) else plantBlades(); return true")
+        System.err.println("VOGrass: updateGeometry not yet implemented")
+        return false
     }
 
     open fun getGeometry(
@@ -66,33 +67,34 @@ open class VOGrass(
         // Generates numBlades grass quads using Gaussian-distributed positions and
         // pre-baked wind-rotation tables (expX/expY/rotX/rotY/dzX/dzY/wMod).
         // Each blade = 8 vertices, 12 indices (4 back-to-back triangles for double-sided rendering).
-        TODO("GPU: fill vertex/normal/texcoord/color/index streams from speciesTable and blade tables")
+        System.err.println("VOGrass: getGeometry not yet implemented")
     }
 
     fun updateFaceSize(idx: Int) {}
 
     open fun updateTextures() {
-        TODO("GPU: getTEImage(0).addTextureStats(mPixelArea)")
+        System.err.println("VOGrass: updateTextures not yet implemented")
     }
 
     open fun updateLOD(): Boolean {
         // LOD = number of blades, scaled by (scale.x*scale.y / distanceToCamera).
         // Doubles or halves numBlades when distance changes enough; rebuilds geometry.
-        TODO("GPU: compute tan_angle, num_blades; markRebuild(ALL) if numBlades changes")
+        System.err.println("VOGrass: updateLOD not yet implemented")
+        return false
     }
 
     fun setPixelAreaAndAngle() {
-        TODO("APR: compute range from agent camera; appAngle = atan2(maxScale, range)*RAD_TO_DEG; pixelArea = pixels_per_meter^2 * 25")
+        System.err.println("VOGrass: setPixelAreaAndAngle not yet implemented")
     }
 
     fun plantBlades() {
         // Sets up the face's size, position, and extents but does not push any
         // geometry; actual vertex data is filled by getGeometry().
-        TODO("GPU: face.setSize(numBlades*8, numBlades*12); face.setState(GLOBAL); mDrawable.movePartition()")
+        System.err.println("VOGrass: plantBlades not yet implemented")
     }
 
     fun updateDrawable(forceDamped: Boolean) {
-        TODO("GPU: if drawable.notNull updateXform(true); markRebuild(ALL); clearChanged(SHIFTED)")
+        System.err.println("VOGrass: updateDrawable not yet implemented")
     }
 
     open fun lineSegmentIntersect(
@@ -110,7 +112,8 @@ open class VOGrass(
     ): Boolean {
         // Ray-triangle test for each blade using the same blade geometry as getGeometry().
         // Returns true at the closest transparent (or opaque if pickTransparent) hit.
-        TODO("GPU: per-blade LLTriangleRayIntersect on 4 triangles; barycentric tex-coord lookup for alpha test")
+        System.err.println("VOGrass: lineSegmentIntersect not yet implemented")
+        return false
     }
 
     open fun processUpdateMessage(
@@ -118,17 +121,18 @@ open class VOGrass(
         updateType: Int,
         dp: Any?,
     ): UInt {
-        TODO("APR: LLViewerObject.processUpdateMessage; updateSpecies(); zero out any accidental velocity")
+        System.err.println("VOGrass: processUpdateMessage not yet implemented")
+        return 0u
     }
 
     open fun exportFile(position: FloatArray) {
-        TODO("APR: write grass state to file")
+        System.err.println("VOGrass: exportFile not yet implemented")
     }
 
     open fun getPartitionType(): Int = PARTITION_GRASS
 
     private fun updateSpecies() {
-        TODO("APR: species = getAttachmentState(); resolve unknown species; setTEImage from speciesTable")
+        System.err.println("VOGrass: updateSpecies not yet implemented")
     }
 
     var canSelect: Boolean = false
@@ -153,7 +157,7 @@ open class VOGrass(
         val wMod: FloatArray = FloatArray(GRASS_MAX_BLADES)
 
         fun initClass() {
-            TODO("APR: parse grass.xml; fill speciesTable and per-blade layout tables")
+            System.err.println("VOGrass: initClass not yet implemented")
             // For each blade i:
             //   u = sqrt(-2 * ln(rand)); v = 2*PI*rand
             //   x = u*sin(v)*SD; y = u*cos(v)*SD; rot = rand(PI)
@@ -179,10 +183,10 @@ class GrassPartition(region: ViewerRegion?) {
     private val faceList: MutableList<Any> = mutableListOf()
 
     fun addGeometryCount(group: Any?, vertexCount: UInt, indexCount: UInt) {
-        TODO("GPU: iterate drawables in group; accumulate face geometry counts; skip faces that exceed 65536 vertex budget")
+        System.err.println("GrassPartition: addGeometryCount not yet implemented")
     }
 
     fun getGeometry(group: Any?) {
-        TODO("GPU: sort faceList back-to-front; fill shared VBO; build LLDrawInfo batches by texture")
+        System.err.println("GrassPartition: getGeometry not yet implemented")
     }
 }

@@ -67,7 +67,7 @@ object AvatarRenderInfoAccountant {
     }
 
     private fun avatarRenderInfoGetCoro(url: String, regionHandle: ULong) {
-        TODO("APR: use JVM equivalent - issue HTTP GET to $url, parse agent weights, call AvatarRenderNotifier.updateNotificationRegion")
+        System.err.println("AvatarRenderInfoAccountant: avatarRenderInfoGetCoro not yet implemented")
         // Pseudocode of the original coroutine:
         //   val result = httpGet(url, timeout = SECS_BETWEEN_REGION_REQUEST, retries = 0)
         //   val world = LLWorld.getInstance() ?: return
@@ -86,7 +86,7 @@ object AvatarRenderInfoAccountant {
     }
 
     private fun avatarRenderInfoReportCoro(url: String, regionHandle: ULong) {
-        TODO("APR: use JVM equivalent - gather local avatar complexities, HTTP POST to $url")
+        System.err.println("AvatarRenderInfoAccountant: avatarRenderInfoReportCoro not yet implemented")
         // Pseudocode of the original coroutine:
         //   val world = LLWorld.getInstance() ?: return
         //   val regionp = world.getRegionFromHandle(regionHandle) ?: return
@@ -113,6 +113,6 @@ object AvatarRenderInfoAccountant {
     }
 
     private fun launchCoroutine(block: suspend () -> Unit) {
-        TODO("APR: use JVM equivalent - launch a coroutine/thread for $block")
+        System.err.println("AvatarRenderInfoAccountant: launchCoroutine not yet implemented")
     }
 }

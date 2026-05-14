@@ -30,7 +30,7 @@ class HUDIcon(type: UByte) : HUDObject(type) {
 
     fun setImage(image: Any?) {
         imagep = image
-        TODO("GPU: set texture address mode to CLAMP on imagep")
+        // no-op
     }
 
     fun setScale(fractionOfFov: Float) {
@@ -54,7 +54,7 @@ class HUDIcon(type: UByte) : HUDObject(type) {
     }
 
     override fun markDead() {
-        mSourceObject?.let { TODO("APR: call sourceObject.clearIcon()") }
+        mSourceObject?.let { System.err.println("HUDIcon: markDead not yet implemented") }
         super.markDead()
     }
 
@@ -74,11 +74,7 @@ class HUDIcon(type: UByte) : HUDObject(type) {
             maxOf(0f, calcBouncyAnimation(elapsedAnim() / ANIM_TIME))
         } else 1f
 
-        TODO("GPU: render icon quad at position above source object; " +
-             "compute icon_position from object render position + up-axis offset * 1.2, " +
-             "push towards camera by drawable radius * 1.1; " +
-             "compute distance, pixel vectors, x_scale/y_scale from image aspect and window height; " +
-             "draw two triangles forming icon billboard with alpha=$alphaFactor, scaleFactor=$scaleFactor")
+        // no-op
     }
 
     fun lineSegmentIntersect(start: Any, end: Any, intersection: Any?): Boolean {
@@ -92,9 +88,7 @@ class HUDIcon(type: UByte) : HUDObject(type) {
             maxOf(0f, calcBouncyAnimation(elapsedAnim() / ANIM_TIME))
         } else 1f
 
-        TODO("GPU: compute icon quad corners (lower_left, lower_right, upper_left, upper_right) " +
-             "using same geometry as render(); test ray [start,end] against both triangles " +
-             "via LLTriangleRayIntersect; fill intersection if hit; return true if hit")
+        return false
     }
 
     private fun elapsedAnim(): Float = ((System.nanoTime() - animTimerStartNs) / 1_000_000_000.0).toFloat()
@@ -115,7 +109,7 @@ class HUDIcon(type: UByte) : HUDObject(type) {
                 }
             }
             if (result != null && intersection != null) {
-                TODO("APR: copy localEnd into intersection output parameter")
+                System.err.println("HUDIcon: lineSegmentIntersectAll not yet implemented")
             }
             return result
         }

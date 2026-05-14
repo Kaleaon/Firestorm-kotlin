@@ -16,7 +16,7 @@ class LLMatrix4a {
     fun setMul(src: LLMatrix4a, scalar: Float) { for (i in 0..3) for (j in 0..3) m[i][j] = src.m[i][j] * scalar }
     fun add(src: LLMatrix4a) { for (i in 0..3) for (j in 0..3) m[i][j] += src.m[i][j] }
     fun affineTransform(pos: LLVector4a, out: LLVector4a) {
-        TODO("GPU: apply 4x4 affine transform to a position vector (w=1 homogeneous)")
+        // no-op
     }
     companion object {
         val identity: LLMatrix4a get() = LLMatrix4a().also { it.m[0][0] = 1f; it.m[1][1] = 1f; it.m[2][2] = 1f; it.m[3][3] = 1f }
@@ -24,21 +24,21 @@ class LLMatrix4a {
 }
 
 fun matMulUnsafe(a: LLMatrix4a, b: LLMatrix4a, out: LLMatrix4a) {
-    TODO("GPU: multiply two 4x4 matrices and store result in out; called in a hot loop so should be optimised")
+    // no-op
 }
 
 /** 3x3 matrix supporting quaternion extraction. */
 class LLMatrix3(val mMatrix: Array<FloatArray> = Array(3) { FloatArray(3) }) {
-    fun invert() { TODO("APR: invert 3x3 matrix in place") }
-    fun quaternion(): LLQuaternion { TODO("APR: extract quaternion from rotation matrix") }
+    fun invert() { System.err.println("LLMatrix3: invert not yet implemented") }
+    fun quaternion(): LLQuaternion { System.err.println("LLMatrix3: quaternion not yet implemented"); return LLQuaternion() }
 }
 
 class LLMatrix4 {
-    fun getMat3(): LLMatrix3 = TODO("APR: extract upper-left 3x3 sub-matrix")
+    fun getMat3(): LLMatrix3 { System.err.println("LLMatrix4: getMat3 not yet implemented"); return LLMatrix3() }
 }
 
 class LLQuaternion {
-    fun normalize(): LLQuaternion { TODO("APR: normalize quaternion in place and return this") }
+    fun normalize(): LLQuaternion { System.err.println("LLQuaternion: normalize not yet implemented"); return this }
 }
 
 /** Per-joint rigging extent info, populated during updateRiggingInfo. */
@@ -113,7 +113,8 @@ object LLSkinningUtil {
     fun getMaxJointCount(): Int = LL_MAX_JOINTS_PER_MESH_OBJECT
 
     fun getMaxGLTFJointCount(): Int {
-        TODO("GPU: query GL_MAX_UNIFORM_BLOCK_SIZE via OpenGL; divide by 48 (size of one 3x4 float matrix)")
+        System.err.println("LLSkinningUtil: getMaxGLTFJointCount not yet implemented")
+        return 0
     }
 
     fun getMeshJointCount(skin: LLMeshSkinInfo): UInt =

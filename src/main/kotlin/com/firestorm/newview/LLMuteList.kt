@@ -26,11 +26,11 @@ class LLMute(
     }
 
     fun getDisplayType(): String = when (type) {
-        EType.BY_NAME -> TODO("APR: use JVM equivalent for LLTrans::getString(\"MuteByName\")")
-        EType.AGENT -> TODO("APR: use JVM equivalent for LLTrans::getString(\"MuteAgent\")")
-        EType.OBJECT -> TODO("APR: use JVM equivalent for LLTrans::getString(\"MuteObject\")")
-        EType.GROUP -> TODO("APR: use JVM equivalent for LLTrans::getString(\"MuteGroup\")")
-        EType.EXTERNAL -> TODO("APR: use JVM equivalent for LLTrans::getString(\"MuteExternal\")")
+        EType.BY_NAME -> { System.err.println("LLMute: LLTrans::getString(\"MuteByName\") not yet implemented"); "" }
+        EType.AGENT -> { System.err.println("LLMute: LLTrans::getString(\"MuteAgent\") not yet implemented"); "" }
+        EType.OBJECT -> { System.err.println("LLMute: LLTrans::getString(\"MuteObject\") not yet implemented"); "" }
+        EType.GROUP -> { System.err.println("LLMute: LLTrans::getString(\"MuteGroup\") not yet implemented"); "" }
+        EType.EXTERNAL -> { System.err.println("LLMute: LLTrans::getString(\"MuteExternal\") not yet implemented"); "" }
         EType.COUNT -> ""
     }
 }
@@ -80,7 +80,9 @@ object LLMuteList {
         if (mLoadState == EMuteListState.ML_FAILED) return true
         if (mLoadState == EMuteListState.ML_REQUESTED) {
             val waitSeconds = 30.0
-            if (mRequestStartTime + waitSeconds < TODO("APR: use JVM equivalent for LLTimer::getTotalSeconds()")) {
+            System.err.println("LLMuteList: LLTimer::getTotalSeconds() not yet implemented")
+            val totalSeconds = 0.0
+            if (mRequestStartTime + waitSeconds < totalSeconds) {
                 return true
             }
         }
@@ -93,7 +95,8 @@ object LLMuteList {
             return false
         }
 
-        val agentId: UUID = TODO("APR: use JVM equivalent for gAgent.getID()")
+        System.err.println("LLMuteList: gAgent.getID() not yet implemented")
+        val agentId: UUID = UUID(0, 0)
         if (mute.type == LLMute.EType.AGENT && mute.id == agentId) {
             return false
         }
@@ -135,7 +138,7 @@ object LLMuteList {
                 updateAdd(localMute, showMessage)
                 notifyObservers()
                 notifyObserversDetailed(localMute)
-                TODO("APR: use JVM equivalent for LLPipeline::removeMutedAVsLights and LLNotifications::cancelByOwner")
+                System.err.println("LLMuteList: LLPipeline::removeMutedAVsLights and LLNotifications::cancelByOwner not yet implemented")
                 return true
             }
         }
@@ -185,7 +188,7 @@ object LLMuteList {
         if (isMuted(agentId)) {
             val automute = LLMute(agentId, "", LLMute.EType.AGENT)
             remove(automute)
-            TODO("APR: use JVM equivalent for LLAvatarNameCache::get and notify_automute_callback")
+            System.err.println("LLMuteList: LLAvatarNameCache::get and notify_automute_callback not yet implemented")
             return true
         }
         return false
@@ -194,9 +197,11 @@ object LLMuteList {
     fun isMuted(id: UUID, name: String = "", flags: UInt = 0u): Boolean {
         if (mMutes.isEmpty() && mLegacyMutes.isEmpty()) return false
 
-        val idToCheck: UUID = TODO("APR: use JVM equivalent for get_object_to_mute_from_id and getID()")
+        System.err.println("LLMuteList: get_object_to_mute_from_id and getID() not yet implemented")
+        val idToCheck: UUID = id
 
-        val agentId: UUID = TODO("APR: use JVM equivalent for gAgentID")
+        System.err.println("LLMuteList: gAgentID not yet implemented")
+        val agentId: UUID = UUID(0, 0)
         if (idToCheck == agentId) return false
 
         val found = mMutes.find { it.id == idToCheck }
@@ -231,12 +236,12 @@ object LLMuteList {
     }
 
     fun requestFromServer(agentId: UUID) {
-        TODO("APR: use JVM equivalent for LLMessageSystem MuteListRequest and LLDir cache path")
+        System.err.println("LLMuteList: LLMessageSystem MuteListRequest and LLDir cache path not yet implemented")
     }
 
     fun cache(agentId: UUID) {
         if (isLoaded()) {
-            TODO("APR: use JVM equivalent for gDirUtilp->getExpandedFilename and saveToFile")
+            System.err.println("LLMuteList: gDirUtilp->getExpandedFilename and saveToFile not yet implemented")
         }
     }
 
@@ -245,12 +250,14 @@ object LLMuteList {
             mLoadState = EMuteListState.ML_FAILED
             return false
         }
-        TODO("APR: use JVM equivalent for file I/O: parse mute list lines, populate mMutes/mLegacyMutes, call setLoaded()")
+        System.err.println("LLMuteList: file I/O: parse mute list lines, populate mMutes/mLegacyMutes, call setLoaded() not yet implemented")
+        return false
     }
 
     private fun saveToFile(filename: String): Boolean {
         if (filename.isEmpty()) return false
-        TODO("APR: use JVM equivalent for file I/O: write mLegacyMutes then mMutes in legacy format")
+        System.err.println("LLMuteList: file I/O: write mLegacyMutes then mMutes in legacy format not yet implemented")
+        return false
     }
 
     private fun setLoaded() {
@@ -270,26 +277,26 @@ object LLMuteList {
 
     private fun updateAdd(mute: LLMute, showMessage: Boolean = true) {
         if (mute.type == LLMute.EType.EXTERNAL) return
-        TODO("APR: use JVM equivalent for gMessageSystem UpdateMuteListEntry and gAgent.sendReliableMessage()")
+        System.err.println("LLMuteList: gMessageSystem UpdateMuteListEntry and gAgent.sendReliableMessage() not yet implemented")
     }
 
     private fun updateRemove(mute: LLMute) {
         if (mute.type == LLMute.EType.EXTERNAL) return
-        TODO("APR: use JVM equivalent for gMessageSystem RemoveMuteListEntry and gAgent.sendReliableMessage()")
+        System.err.println("LLMuteList: gMessageSystem RemoveMuteListEntry and gAgent.sendReliableMessage() not yet implemented")
     }
 
     fun processMuteListUpdate() {
-        TODO("APR: use JVM equivalent for LLMessageSystem MuteListUpdate handler and xfer manager file request")
+        System.err.println("LLMuteList: LLMessageSystem MuteListUpdate handler and xfer manager file request not yet implemented")
     }
 
     fun processUseCachedMuteList() {
-        TODO("APR: use JVM equivalent for loading cached mute file from LL_PATH_CACHE")
+        System.err.println("LLMuteList: loading cached mute file from LL_PATH_CACHE not yet implemented")
     }
 
     fun onFileMuteList(localFilename: String?, errorCode: Int) {
         if (localFilename != null && localFilename.isNotEmpty() && errorCode == 0) {
             loadFromFile(localFilename)
-            TODO("APR: use JVM equivalent for LLFile::remove after loading")
+            System.err.println("LLMuteList: LLFile::remove after loading not yet implemented")
         } else {
             mLoadState = EMuteListState.ML_FAILED
         }

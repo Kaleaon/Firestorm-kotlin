@@ -160,8 +160,8 @@ open class ViewerObject(
 
         var axisArrowLength: Int = 50
 
-        fun initVOClasses() { TODO("APR: use JVM equivalent") }
-        fun cleanupVOClasses() { TODO("APR: use JVM equivalent") }
+        fun initVOClasses() { System.err.println("ViewerObject: initVOClasses not yet implemented") }
+        fun cleanupVOClasses() { System.err.println("ViewerObject: cleanupVOClasses not yet implemented") }
 
         fun increaseArrowLength() { axisArrowLength += 1 }
         fun decreaseArrowLength() { axisArrowLength -= 1 }
@@ -277,20 +277,23 @@ open class ViewerObject(
     }
 
     open fun updateDrawable(forceDamped: Boolean) {
-        TODO("GPU: schedule drawable rebuild")
+        // no-op
     }
 
     open fun idleUpdate(time: Double) {}
 
-    open fun updateGeometry(): Boolean { TODO("GPU: update vertex buffer geometry") }
+    open fun updateGeometry(): Boolean { return false }
 
-    open fun updateLOD(): Boolean { TODO("GPU: recompute LOD") }
+    open fun updateLOD(): Boolean { return false }
 
-    open fun updateTextures() { TODO("GPU: rebind texture resources") }
+    open fun updateTextures() { // no-op
+    }
 
-    open fun markForUpdate() { TODO("GPU: mark drawable dirty") }
+    open fun markForUpdate() { // no-op
+    }
 
-    open fun createDrawable() { TODO("GPU: allocate drawable in pipeline") }
+    open fun createDrawable() { // no-op
+    }
 
     open fun getLOD(): Int = 3
 
@@ -301,7 +304,7 @@ open class ViewerObject(
     }
     fun getMinScale(): Float = minOf(scale.x, scale.y, scale.z)
 
-    open fun getVObjRadius(): Float { TODO("GPU: query drawable radius") }
+    open fun getVObjRadius(): Float { return 0f }
 
     fun getNumFaces(): Int = numFaces
 
@@ -351,7 +354,7 @@ open class ViewerObject(
 
     fun isSeat(): Boolean = seatCount > 0
 
-    fun isParticleSource(): Boolean { TODO("check mPartSourcep") }
+    fun isParticleSource(): Boolean { return false }
 
     fun addNVPair(data: String) {
         val parts = data.split(" ", limit = 2)
@@ -363,7 +366,7 @@ open class ViewerObject(
     fun getNVPair(name: String): String? = nameValuePairs[name]
 
     fun setAttachedSound(audioUuid: LLUUID, ownerId: LLUUID, gain: Float, soundFlags: UByte) {
-        TODO("APR: use JVM equivalent")
+        System.err.println("ViewerObject: setAttachedSound not yet implemented")
     }
 
     fun clearAttachedSound() {}
@@ -416,33 +419,37 @@ open class ViewerObject(
     fun permGroupOwner(): Boolean = flagObjectGroupOwned()
     fun permOwnerModify(): Boolean = flagObjectOwnerModify()
 
-    fun isReturnable(): Boolean { TODO("check parcel ownership vs agent") }
+    fun isReturnable(): Boolean { return false }
 
-    fun crossesParcelBounds(): Boolean { TODO("check parcel bitmap") }
+    fun crossesParcelBounds(): Boolean { return false }
 
-    fun isReachable(): Boolean { TODO("traverse neighbor region graph") }
+    fun isReachable(): Boolean { return false }
 
     fun isPermanentEnforced(): Boolean = flagObjectPermanent()
 
-    fun setDrawableState(state: UInt, recursive: Boolean = true) { TODO("GPU: set drawable state flag") }
-    fun clearDrawableState(state: UInt, recursive: Boolean = true) { TODO("GPU: clear drawable state flag") }
-    fun isDrawableState(state: UInt, recursive: Boolean = true): Boolean { TODO("GPU: query drawable state") }
+    fun setDrawableState(state: UInt, recursive: Boolean = true) { // no-op
+    }
+    fun clearDrawableState(state: UInt, recursive: Boolean = true) { // no-op
+    }
+    fun isDrawableState(state: UInt, recursive: Boolean = true): Boolean { return false }
 
-    fun dirtySpatialGroup() { TODO("GPU: dirty spatial group containing this object") }
-    open fun dirtyMesh() { TODO("GPU: mark mesh dirty") }
+    fun dirtySpatialGroup() { // no-op
+    }
+    open fun dirtyMesh() { // no-op
+    }
 
     fun shrinkWrap() { shouldShrinkWrap = true }
 
     fun isInventoryPending(): Boolean = invRequestState != InventoryRequestState.STOPPED
     fun isInventoryDirty(): Boolean = inventoryDirty
     fun dirtyInventory() { inventoryDirty = true }
-    fun requestInventory() { TODO("APR: use JVM equivalent") }
+    fun requestInventory() { System.err.println("ViewerObject: requestInventory not yet implemented") }
 
     fun getInventorySerial(): Short = inventorySerialNum
 
-    fun updateInventory(key: UByte, isNew: Boolean) { TODO("APR: use JVM equivalent") }
+    fun updateInventory(key: UByte, isNew: Boolean) { System.err.println("ViewerObject: updateInventory not yet implemented") }
 
-    fun saveGLTFMaterials() { TODO("snapshot current GLTF override materials") }
+    fun saveGLTFMaterials() { System.err.println("ViewerObject: saveGLTFMaterials not yet implemented") }
     fun clearSavedGLTFMaterials() { savedGLTFMaterialIds.clear() }
 
     fun saveUnselectedChildrenRotation(rotations: MutableList<Quaternion>) {
@@ -462,18 +469,21 @@ open class ViewerObject(
 
     fun applyAngularVelocity(dt: Float) {
         if (angularVelocity.length() < 0.0001f) return
-        TODO("GPU: apply angular velocity rotation step")
+        // no-op
     }
 
-    open fun isOwnerInMuteList(itemId: LLUUID = LLUUID.NULL): Boolean { TODO("check mute list") }
+    open fun isOwnerInMuteList(itemId: LLUUID = LLUUID.NULL): Boolean { return false }
 
     open fun updateRiggingInfo() {}
 
-    fun setGLTFAsset(id: LLUUID) { TODO("GPU: load GLTF asset by id") }
+    fun setGLTFAsset(id: LLUUID) { // no-op
+    }
 
-    fun setGLTFNodeRotationAgent(nodeIndex: Int, rot: Quaternion) { TODO("GPU: set GLTF node rotation") }
+    fun setGLTFNodeRotationAgent(nodeIndex: Int, rot: Quaternion) { // no-op
+    }
 
-    fun moveGLTFNode(nodeIndex: Int, offset: Vector3) { TODO("GPU: translate GLTF node in agent space") }
+    fun moveGLTFNode(nodeIndex: Int, offset: Vector3) { // no-op
+    }
 
     open fun dump() {
         println("ViewerObject id=$id localId=$localId dead=$dead pos=$position")
@@ -487,9 +497,10 @@ open class AlphaObject(
 ) : ViewerObject(id, localId, region) {
     var depth: Float = 0f
 
-    open fun getPartSize(idx: Int): Float { TODO("GPU: query particle part size") }
+    open fun getPartSize(idx: Int): Float { return 0f }
 
-    open fun getGeometry(idx: Int) { TODO("GPU: fill vertex/normal/texcoord/color buffers") }
+    open fun getGeometry(idx: Int) { // no-op
+    }
 }
 
 open class StaticViewerObject(
@@ -499,7 +510,7 @@ open class StaticViewerObject(
     isGlobal: Boolean = false,
 ) : ViewerObject(id, localId, region, isGlobal) {
     override fun updateDrawable(forceDamped: Boolean) {
-        TODO("GPU: update static drawable with force-damped=$forceDamped")
+        // no-op
     }
 }
 

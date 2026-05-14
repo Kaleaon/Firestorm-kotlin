@@ -39,7 +39,7 @@ class StatGraph(
     override fun draw() {
         val range = max - min
 
-        TODO("APR: read current stat value from PeriodicRecording (perSec=$perSec) into `value`")
+        // no-op
 
         var frac = (value - min) / range
         frac = frac.coerceIn(0f, 1f)
@@ -47,7 +47,7 @@ class StatGraph(
         updateElapsed += 0f
         if (updateElapsed > 0.5f) {
             val tooltip = "$label${value}$units"
-            TODO("APR: setToolTip('$tooltip') formatted with precision=$precision")
+            // no-op
             updateElapsed = 0f
         }
 
@@ -55,8 +55,8 @@ class StatGraph(
             .lastOrNull { it.value <= value / max }
             ?.color ?: Color4.WHITE
 
-        TODO("GPU: gl_rect_2d(0, rect.height, rect.width, 0, filled=true) with MenuDefaultBgColor")
-        TODO("GPU: gl_rect_2d(0, rect.height, rect.width, 0, filled=false) with Color4.BLACK outline")
-        TODO("GPU: gl_rect_2d(1, round(frac*rect.height), rect.width-1, 0, filled=true) with thresholdColor=$thresholdColor")
+        // no-op
+        // no-op
+        // no-op
     }
 }

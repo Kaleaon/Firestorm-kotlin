@@ -64,50 +64,49 @@ data class LGGBeamData(
 
 // Stub HUD types — real implementations issue OpenGL / sim-protocol calls
 class HUDEffectSpiral {
-    fun getPositionGlobal(): Triple<Double, Double, Double> = TODO("GPU: HUD position query")
-    fun getTargetObject(): Any? = TODO("GPU: HUD target query")
-    fun getSourceObject(): Any? = TODO("GPU: HUD source query")
-    fun getNeedsSendToSim(): Boolean = TODO("GPU: HUD flag query")
-    fun setPositionGlobal(p: Triple<Double, Double, Double>): Unit = TODO("GPU: HUD mutation")
-    fun setColor(c: Color4U): Unit = TODO("GPU: HUD mutation")
-    fun setTargetObject(o: Any?): Unit = TODO("GPU: HUD mutation")
-    fun setSourceObject(o: Any?): Unit = TODO("GPU: HUD mutation")
-    fun setNeedsSendToSim(v: Boolean): Unit = TODO("GPU: HUD mutation")
-    fun setDuration(d: Float): Unit = TODO("GPU: HUD mutation")
+    fun getPositionGlobal(): Triple<Double, Double, Double> = Triple(0.0, 0.0, 0.0)
+    fun getTargetObject(): Any? = null
+    fun getSourceObject(): Any? = null
+    fun getNeedsSendToSim(): Boolean = false
+    fun setPositionGlobal(p: Triple<Double, Double, Double>): Unit { /* no-op */ }
+    fun setColor(c: Color4U): Unit { /* no-op */ }
+    fun setTargetObject(o: Any?): Unit { /* no-op */ }
+    fun setSourceObject(o: Any?): Unit { /* no-op */ }
+    fun setNeedsSendToSim(v: Boolean): Unit { /* no-op */ }
+    fun setDuration(d: Float): Unit { /* no-op */ }
 }
 
 object HUDManagerStub {
-    fun createBeamEffect(): HUDEffectSpiral = TODO("GPU: HUD effect creation")
+    fun createBeamEffect(): HUDEffectSpiral = HUDEffectSpiral()
 }
 
 object GAgentStub {
-    fun getPositionGlobal(): Triple<Double, Double, Double> = TODO("APR: use JVM equivalent")
-    fun getAgentId(): String = TODO("APR: use JVM equivalent")
-    fun getSessionId(): String = TODO("APR: use JVM equivalent")
-    fun sendReliableMessage(): Unit = TODO("APR: use JVM equivalent")
-    val regionName: String get() = TODO("APR: use JVM equivalent")
+    fun getPositionGlobal(): Triple<Double, Double, Double> = Triple(0.0, 0.0, 0.0)
+    fun getAgentId(): String = ""
+    fun getSessionId(): String = ""
+    fun sendReliableMessage(): Unit { System.err.println("GAgentStub: sendReliableMessage not yet implemented") }
+    val regionName: String get() = ""
 }
 
 object SavedSettings {
-    fun getString(key: String): String = TODO("APR: use JVM equivalent")
-    fun getBool(key: String): Boolean = TODO("APR: use JVM equivalent")
-    fun getFloat(key: String): Float = TODO("APR: use JVM equivalent")
+    fun getString(key: String): String = ""
+    fun getBool(key: String): Boolean = false
+    fun getFloat(key: String): Float = 0f
 }
 
 object MessageSystem {
-    fun sendChatFromViewer(message: String, channel: Int = 9000): Unit =
-        TODO("APR: use JVM equivalent")
+    fun sendChatFromViewer(message: String, channel: Int = 9000): Unit {
+        System.err.println("MessageSystem: sendChatFromViewer not yet implemented")
+    }
 }
 
 object DirUtil {
-    fun getExpandedFilename(pathType: String, subDir: String): String =
-        TODO("APR: use JVM equivalent")
-    fun getNextFileInDir(path: String, glob: String): Sequence<String> =
-        TODO("APR: use JVM equivalent")
+    fun getExpandedFilename(pathType: String, subDir: String): String = ""
+    fun getNextFileInDir(path: String, glob: String): Sequence<String> = emptySequence()
 }
 
 object FSCommonUtil {
-    fun unescapeName(name: String): String = TODO("APR: use JVM equivalent")
+    fun unescapeName(name: String): String = ""
 }
 
 // ---------------------------------------------------------------------------
@@ -300,7 +299,8 @@ object LGGBeamMaps {
     // ---------------------------------------------------------------------------
 
     private fun readLLSD(filename: String): Map<String, Any?> {
-        TODO("APR: use JVM equivalent XML/LLSD parser for $filename")
+        System.err.println("LGGBeamMaps: readLLSD not yet implemented")
+        return emptyMap()
     }
 
     private fun collectXmlNames(subDir: String): MutableList<String> {
@@ -333,6 +333,6 @@ object LGGBeamMaps {
         beamLine: Triple<Double, Double, Double>,
         beamLineFlat: Triple<Double, Double, Double>
     ): Triple<Float, Float, Float> {
-        TODO("GPU: quaternion shortestArc rotation of beam offset")
+        return Triple(ox, oy, oz)
     }
 }

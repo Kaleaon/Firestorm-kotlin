@@ -121,7 +121,8 @@ class TargetingMotion(id: LLUUID) : LLMotion(id) {
         //   newTorsoRot = totalRot * ~torsoJoint!!.rotation
         //
         //   torsoState.rotation = newTorsoRot
-        TODO("Apply torso aim rotation via nlerp smoothing and constraint (requires Quaternion.nlerp / .constrain helpers)")
+        System.err.println("TargetingMotion: onUpdate not yet implemented")
+        return false
     }
 
     override fun onDeactivate() {

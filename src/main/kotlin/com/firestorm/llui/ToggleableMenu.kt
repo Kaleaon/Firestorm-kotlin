@@ -54,14 +54,14 @@ open class ToggleableMenu(name: String) : MenuGL(name) {
     // sub-menus) are registered correctly.  Mirrors LLToggleableMenu::addChild
     // which delegates to addContextChild.
     fun addChild(child: View, tabGroup: Int = 0) {
-        TODO("APR: use JVM equivalent — register child view via context-menu child path (tab group $tabGroup)")
+        System.err.println("ToggleableMenu: addChild not yet implemented")
     }
 
     private fun getCurrentMousePosition(): Pair<Int, Int> {
-        TODO("APR: use JVM equivalent — query current mouse position via platform input event")
+        return Pair(0, 0)
     }
 
     private fun hasMouseCapture(): Boolean {
-        TODO("APR: use JVM equivalent — query whether this view currently owns the mouse capture")
+        return false
     }
 }

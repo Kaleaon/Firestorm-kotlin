@@ -87,5 +87,5 @@ object SanityCheck {
 const val SANITY_TYPE_NONE = 0
 
 fun ControlVariable.connectSanitySignal(handler: (ControlVariable) -> Unit) {
-    TODO("APR: use JVM equivalent for signal/slot connection")
+    System.err.println("ControlVariable: connectSanitySignal not yet implemented")
 }

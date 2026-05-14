@@ -14,11 +14,12 @@ class LLPluginInstance(private val owner: LLPluginInstanceMessageListener?) {
     private var pluginLoaded: Boolean = false
 
     fun load(pluginDir: String, pluginFile: String): Int {
-        TODO("Platform: load native DSO via System.load / JNI equivalent; dir=$pluginDir file=$pluginFile")
+        System.err.println("LLPluginInstance: load not yet implemented")
+        return 0
     }
 
     fun sendMessage(message: String) {
-        TODO("Platform: forward message string to loaded native plugin send function")
+        System.err.println("LLPluginInstance: sendMessage not yet implemented")
     }
 
     fun idle() {

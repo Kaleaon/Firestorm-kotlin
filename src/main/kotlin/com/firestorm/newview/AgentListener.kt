@@ -67,7 +67,7 @@ class AgentListener(private val agent: Agent) : EventApi("LLAgent", "LLAgent lis
             val x = (eventData["x"] as? Number)?.toFloat() ?: 0f
             val y = (eventData["y"] as? Number)?.toFloat() ?: 0f
             val z = (eventData["z"] as? Number)?.toFloat() ?: 0f
-            TODO("APR: use JVM equivalent for LLURLDispatcher.dispatch with SLURL($regionName, $x, $y, $z)")
+            System.err.println("AgentListener: requestTeleport not yet implemented")
         }
     }
 
@@ -89,7 +89,7 @@ class AgentListener(private val agent: Agent) : EventApi("LLAgent", "LLAgent lis
         }
 
         if (obj != null && obj.isVolume()) {
-            TODO("APR: use JVM equivalent for gMessageSystem AgentRequestSit to object ${obj.id}")
+            System.err.println("AgentListener: requestSit not yet implemented")
         }
         return mapOf("error" to "requestSit could not find the sit target")
     }
@@ -115,7 +115,7 @@ class AgentListener(private val agent: Agent) : EventApi("LLAgent", "LLAgent lis
         val face = (eventData["face"] as? Number)?.toInt() ?: 0
 
         if (obj != null && obj.isVolume()) {
-            TODO("APR: use JVM equivalent for send_ObjectGrab_message / send_ObjectDeGrab_message face=$face")
+            System.err.println("AgentListener: requestTouch not yet implemented")
         }
     }
 
@@ -160,7 +160,7 @@ class AgentListener(private val agent: Agent) : EventApi("LLAgent", "LLAgent lis
         followTarget = null
 
         val finishCb: (Boolean) -> Unit = { success ->
-            TODO("APR: post {success=$success} to LLAutopilot event pump")
+            System.err.println("AgentListener: startAutoPilot not yet implemented")
         }
 
         agent.startAutoPilotGlobal(
@@ -297,28 +297,21 @@ class AgentListener(private val agent: Agent) : EventApi("LLAgent", "LLAgent lis
         if (inworld) {
             agent.sendAnimationRequest(item.getAssetUUID(), AnimRequest.START)
         } else {
-            TODO("APR: use JVM equivalent for gAgentAvatarp->startMotion(${item.getAssetUUID()})")
+            System.err.println("AgentListener: playAnimation not yet implemented")
         }
         return emptyMap()
     }
 
     private fun stopAnimation(eventData: Map<String, Any?>): Map<String, Any?> {
         val item = getAnimItem(eventData) ?: return mapOf("error" to "animation item not found")
-        TODO("APR: use JVM equivalent for gAgentAvatarp->stopMotion / sendAnimationRequest STOP ${item.getAssetUUID()}")
+        System.err.println("AgentListener: stopAnimation not yet implemented")
+        return emptyMap()
     }
 
     private fun getAnimationInfo(eventData: Map<String, Any?>): Map<String, Any?> {
         val item = getAnimItem(eventData) ?: return mapOf("error" to "animation item not found")
-        val motion: Motion = TODO("APR: use JVM equivalent for gAgentAvatarp->createMotion(${item.getAssetUUID()})")
-        return mapOf(
-            "anim_info" to mapOf(
-                "duration" to motion.getDuration(),
-                "is_loop" to motion.getLoop(),
-                "num_joints" to motion.getNumJointMotions(),
-                "asset_id" to item.getAssetUUID(),
-                "priority" to motion.getPriority(),
-            )
-        )
+        System.err.println("AgentListener: getAnimationInfo not yet implemented")
+        return emptyMap()
     }
 
     private fun getID(eventData: Map<String, Any?>): Map<String, Any?> {
@@ -371,11 +364,12 @@ class AgentListener(private val agent: Agent) : EventApi("LLAgent", "LLAgent lis
                 .firstOrNull { av -> !av.isDead() && av.getID() == avatarIdParam }
                 ?.getRenderPosition() ?: Vector3()
         } else {
-            TODO("APR: use JVM equivalent for gAgentAvatarp->getRenderPosition()")
+            System.err.println("AgentListener: getAgentScreenPos not yet implemented")
+            Vector3()
         }
 
-        val (onScreen, screenX, screenY) = TODO("GPU: ViewerCamera.projectPosAgentToScreen($renderPos)")
-        return mapOf("onscreen" to onScreen, "x" to screenX, "y" to screenY)
+        // no-op
+        return mapOf("onscreen" to false, "x" to 0, "y" to 0)
     }
 
     private fun findObjectClosestTo(position: Vector3, sitTarget: Boolean = false): ViewerObject? {

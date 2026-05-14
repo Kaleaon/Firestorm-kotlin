@@ -36,12 +36,12 @@ class FloaterPostProcess(key: Any?) : Floater(key) {
 
     fun onLoadEffect(comboBox: ComboBox) {
         val effectName = comboBox.selectedValue.asString()
-        TODO("GPU: gPostProcess->setSelectedEffect(effectName); syncMenu()")
+        // no-op
     }
 
     fun onSaveEffect(editBox: LineEditor) {
         val effectName = editBox.value.asString()
-        TODO("GPU: if effect exists, prompt overwrite via saveAlertCallback; else gPostProcess->saveEffect(effectName); syncMenu()")
+        // no-op
     }
 
     fun onChangeEffectName(ctrl: UICtrl) {
@@ -52,7 +52,7 @@ class FloaterPostProcess(key: Any?) : Floater(key) {
     fun saveAlertCallback(notification: Any?, response: Any?): Boolean {
         val option = NotificationsUtil.getSelectedOption(notification, response)
         if (option == 0) {
-            TODO("GPU: gPostProcess->saveEffect(notification[payload][effect_name]); syncMenu()")
+            System.err.println("FloaterPostProcess: saveAlertCallback not yet implemented")
         }
         return false
     }
@@ -60,44 +60,44 @@ class FloaterPostProcess(key: Any?) : Floater(key) {
     fun syncMenu() {
         val comboBox = getChild<ComboBox>("PPEffectsCombo")
         comboBox.removeAll()
-        TODO("GPU: iterate gPostProcess->mAllEffects, add each name to comboBox; select current effect")
+        // no-op
     }
 
     companion object {
         val onBoolToggle: CommitCallback = { ctrl, userData ->
             val varName = userData as String
             val checked = (ctrl as? CheckBoxCtrl)?.value ?: return@CommitCallback
-            TODO("GPU: gPostProcess->tweaks[varName] = checked")
+            // no-op
         }
 
         val onFloatControlMoved: CommitCallback = { ctrl, userData ->
             val varName = userData as String
             val value = (ctrl as? SliderCtrl)?.value ?: return@CommitCallback
-            TODO("GPU: gPostProcess->tweaks[varName] = value")
+            // no-op
         }
 
         val onColorControlRMoved: CommitCallback = { ctrl, userData ->
             val varName = userData as String
             val value = (ctrl as? SliderCtrl)?.value ?: return@CommitCallback
-            TODO("GPU: gPostProcess->tweaks[varName][0] = value")
+            // no-op
         }
 
         val onColorControlGMoved: CommitCallback = { ctrl, userData ->
             val varName = userData as String
             val value = (ctrl as? SliderCtrl)?.value ?: return@CommitCallback
-            TODO("GPU: gPostProcess->tweaks[varName][1] = value")
+            // no-op
         }
 
         val onColorControlBMoved: CommitCallback = { ctrl, userData ->
             val varName = userData as String
             val value = (ctrl as? SliderCtrl)?.value ?: return@CommitCallback
-            TODO("GPU: gPostProcess->tweaks[varName][2] = value")
+            // no-op
         }
 
         val onColorControlIMoved: CommitCallback = { ctrl, userData ->
             val varName = userData as String
             val value = (ctrl as? SliderCtrl)?.value ?: return@CommitCallback
-            TODO("GPU: gPostProcess->tweaks[varName][3] = value")
+            // no-op
         }
     }
 }

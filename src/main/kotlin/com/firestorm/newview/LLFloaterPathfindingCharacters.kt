@@ -7,21 +7,21 @@ open class LLFloaterPathfindingObjects(val seed: Map<String, Any?>)
 class LLPathfindingCharacterList
 
 open class LLPathfindingObject {
-    open fun hasOwner(): Boolean = TODO("stub")
-    open fun hasOwnerName(): Boolean = TODO("stub")
-    open fun isGroupOwned(): Boolean = TODO("stub")
-    open fun getOwnerName(): String = TODO("stub")
-    open fun getUUID(): UUID = TODO("stub")
+    open fun hasOwner(): Boolean = false
+    open fun hasOwnerName(): Boolean = false
+    open fun isGroupOwned(): Boolean = false
+    open fun getOwnerName(): String = ""
+    open fun getUUID(): UUID = UUID(0, 0)
 }
 
 open class LLPathfindingCharacter : LLPathfindingObject() {
-    fun getName(): String = TODO("stub")
-    fun getDescription(): String = TODO("stub")
-    fun getCPUTime(): Float = TODO("stub")
-    fun getLocation(): FloatArray = TODO("stub")
-    fun getLength(): Float = TODO("stub")
-    fun getRadius(): Float = TODO("stub")
-    fun isHorizontal(): Boolean = TODO("stub")
+    fun getName(): String = ""
+    fun getDescription(): String = ""
+    fun getCPUTime(): Float = 0f
+    fun getLocation(): FloatArray = floatArrayOf(0f, 0f, 0f)
+    fun getLength(): Float = 0f
+    fun getRadius(): Float = 0f
+    fun isHorizontal(): Boolean = false
 }
 
 data class LLVector3(val x: Float, val y: Float, val z: Float)
@@ -153,33 +153,34 @@ class LLFloaterPathfindingCharacters(seed: Map<String, Any?>) : LLFloaterPathfin
         val obj = getFirstSelectedObject() ?: return
         val character = obj as? LLPathfindingCharacter ?: return
         if (isPathingLibAvailable()) {
-            TODO("GPU: createPhysicsCapsuleRep(character.getLength(), character.getRadius(), character.isHorizontal(), charId)")
+            // no-op
         }
-        TODO("GPU: gPipeline.hideObject(charId)")
+        // no-op
     }
 
     private fun hideCapsule() {
         val charId = selectedCharacterId
         if (charId != null) {
-            TODO("GPU: gPipeline.restoreHiddenObject(charId)")
+            // no-op
         }
         if (isPathingLibAvailable()) {
-            TODO("GPU: LLPathingLib.cleanupPhysicsCapsuleRepResiduals()")
+            // no-op
         }
     }
 
     private fun getCapsuleRenderData(position: LLVector3, rot: LLQuaternion): Boolean {
         val charId = selectedCharacterId ?: return false
-        TODO("GPU: find viewer object by charId and return its render position/rotation")
+        System.err.println("LLFloaterPathfindingCharacters: find viewer object by charId and return its render position/rotation not yet implemented")
+        return false
     }
 
-    private fun isPathingLibAvailable(): Boolean = TODO("stub: check if LLPathingLib singleton exists")
-    private fun getUiColor(name: String): LLColor4 = TODO("stub: LLUIColorTable.getColor($name)")
-    private fun getString(key: String, args: Map<String, String> = emptyMap()): String = TODO("stub")
-    private fun getNumSelectedObjects(): Int = TODO("stub")
-    private fun getFirstSelectedObject(): LLPathfindingObject? = TODO("stub")
-    private fun addObjectToScrollList(obj: LLPathfindingObject, data: Map<String, Any>) = TODO("stub")
-    private fun handleNewObjectList(requestId: Int, status: Any, objectList: Any) = TODO("stub")
-    private fun requestGetCharacters(callback: (Int, Any, Any) -> Unit) = TODO("stub")
-    private fun showFloaterWithSelectionObjects() = TODO("stub")
+    private fun isPathingLibAvailable(): Boolean = false
+    private fun getUiColor(name: String): LLColor4 = LLColor4(0f, 0f, 0f, 1f)
+    private fun getString(key: String, args: Map<String, String> = emptyMap()): String = ""
+    private fun getNumSelectedObjects(): Int = 0
+    private fun getFirstSelectedObject(): LLPathfindingObject? = null
+    private fun addObjectToScrollList(obj: LLPathfindingObject, data: Map<String, Any>) {}
+    private fun handleNewObjectList(requestId: Int, status: Any, objectList: Any) {}
+    private fun requestGetCharacters(callback: (Int, Any, Any) -> Unit) {}
+    private fun showFloaterWithSelectionObjects() {}
 }

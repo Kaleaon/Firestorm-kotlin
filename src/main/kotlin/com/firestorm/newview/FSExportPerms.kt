@@ -179,89 +179,86 @@ object ExportPermsCheck {
 
 /** Stub: a selection node as seen by the export-perms checker. */
 class ExportSelectNode {
-    val permissions: ExportObjectPermissions get() = TODO("Platform: node->mPermissions")
-    fun getObject(): ExportViewerObject? = TODO("Platform: node->getObject()")
+    val permissions: ExportObjectPermissions get() = ExportObjectPermissions()
+    fun getObject(): ExportViewerObject? = null
 }
 
 /** Stub: object-level permissions. */
 class ExportObjectPermissions {
-    val creator: LLUUID get() = TODO("Platform: permissions->getCreator()")
-    fun allowOpenSimExportBy(agentId: LLUUID): Boolean =
-        TODO("Platform: permissions->allowOpenSimExportBy(agentId)")
+    val creator: LLUUID get() = LLUUID(UUID.fromString("00000000-0000-0000-0000-000000000000"))
+    fun allowOpenSimExportBy(agentId: LLUUID): Boolean = false
 }
 
 /** Stub: inventory-item permission mask. */
 class ExportInventoryPermissions {
-    val creator: LLUUID get() = TODO("Platform: perms.getCreator()")
-    val maskOwner: Int get() = TODO("Platform: perms.getMaskOwner()")
-    val maskBase: Int get() = TODO("Platform: perms.getMaskBase()")
+    val creator: LLUUID get() = LLUUID(UUID.fromString("00000000-0000-0000-0000-000000000000"))
+    val maskOwner: Int get() = 0
+    val maskBase: Int get() = 0
 }
 
 /** Stub: viewer-object facets relevant to export. */
 class ExportViewerObject {
-    val isOwnedByAgent: Boolean get() = TODO("Platform: object->permYouOwner()")
-    val canModify: Boolean get() = TODO("Platform: object->permModify()")
-    val canCopy: Boolean get() = TODO("Platform: object->permCopy()")
-    val canTransfer: Boolean get() = TODO("Platform: object->permTransfer()")
+    val isOwnedByAgent: Boolean get() = false
+    val canModify: Boolean get() = false
+    val canCopy: Boolean get() = false
+    val canTransfer: Boolean get() = false
     /** Triple of (x, y, z) scale components. */
-    val scale: Triple<Float, Float, Float> get() = TODO("Platform: object->getScale()")
-    val isSculpted: Boolean get() = TODO("Platform: volobjp->isSculpted()")
-    val isMesh: Boolean get() = TODO("Platform: volobjp->isMesh()")
-    val sculptParams: ExportSculptParams? get() = TODO("Platform: object->getSculptParams()")
+    val scale: Triple<Float, Float, Float> get() = Triple(0f, 0f, 0f)
+    val isSculpted: Boolean get() = false
+    val isMesh: Boolean get() = false
+    val sculptParams: ExportSculptParams? get() = null
 }
 
 /** Stub: sculpt-parameter block. */
 class ExportSculptParams {
-    val sculptTexture: LLUUID get() = TODO("Platform: sculpt_params->getSculptTexture()")
+    val sculptTexture: LLUUID get() = LLUUID(UUID.fromString("00000000-0000-0000-0000-000000000000"))
 }
 
 /** Stub: fetched-texture comment map. */
 class ExportFetchedTexture {
-    val comments: Map<String, String> get() = TODO("Platform: imagep->mComment")
+    val comments: Map<String, String> get() = emptyMap()
 }
 
 /** Stub: texture manager. */
 object ExportTextureManager {
-    fun getFetchedTexture(id: LLUUID): ExportFetchedTexture? =
-        TODO("Platform: LLViewerTextureManager::getFetchedTexture(id)")
+    fun getFetchedTexture(id: LLUUID): ExportFetchedTexture? = null
 }
 
 /** Stub: inventory item with asset-id lookup. */
 class ExportInventoryItem {
-    val name: String get() = TODO("Platform: items[i]->getName()")
-    val description: String get() = TODO("Platform: items[i]->getDescription()")
-    val permissions: ExportInventoryPermissions get() = TODO("Platform: items[i]->getPermissions()")
+    val name: String get() = ""
+    val description: String get() = ""
+    val permissions: ExportInventoryPermissions get() = ExportInventoryPermissions()
 }
 
 /** Stub: inventory model. */
 object ExportInventory {
-    fun findItemsByAssetId(assetId: LLUUID): List<ExportInventoryItem> =
-        TODO("Platform: gInventory.collectDescendentsIf(LLUUID::null, ..., LLAssetIDMatches(assetId))")
+    fun findItemsByAssetId(assetId: LLUUID): List<ExportInventoryItem> = emptyList()
 }
 
 /** Stub: agent identity. */
 object ExportAgent {
-    val id: LLUUID get() = TODO("Platform: gAgentID")
+    val id: LLUUID get() = LLUUID(UUID.fromString("00000000-0000-0000-0000-000000000000"))
 }
 
 /** Stub: grid-type query. */
 object ExportGridManager {
-    fun isInSecondLife(): Boolean = TODO("Platform: LLGridManager::getInstance()->isInSecondLife()")
-    fun isInOpenSim(): Boolean = TODO("Platform: LLGridManager::getInstance()->isInOpenSim()")
+    fun isInSecondLife(): Boolean = false
+    fun isInOpenSim(): Boolean = false
 }
 
 /** Stub: OpenSim simulator-feature export policy. */
 object ExportSimFeatureHandler {
-    fun exportPolicy(): ExportPolicy = TODO("Platform: LFSimFeatureHandler::instance().exportPolicy()")
+    fun exportPolicy(): ExportPolicy = ExportPolicy.EXPORT_UNDEFINED
 }
 
 /** Stub: region max prim scale. */
 object ExportWorld {
-    val regionMaxPrimScale: Float get() = TODO("Platform: LLWorld::getInstance()->getRegionMaxPrimScale()")
+    val regionMaxPrimScale: Float get() = 0f
 }
 
 /** Stub: mesh-repository creator lookup. */
 object ExportMeshRepository {
     fun getCreatorFromHeader(assetId: LLUUID): LLUUID =
-        TODO("Platform: gMeshRepo.getCreatorFromHeader(assetId)")
+        LLUUID(UUID.fromString("00000000-0000-0000-0000-000000000000"))
 }

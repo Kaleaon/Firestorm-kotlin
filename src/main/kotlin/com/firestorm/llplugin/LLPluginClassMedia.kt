@@ -260,7 +260,7 @@ class LLPluginClassMedia(private var owner: LLPluginClassMediaOwner?) : LLPlugin
                 textureSharedMemorySize = newsize
                 textureSharedMemoryName = p.addSharedMemory(textureSharedMemorySize)
                 if (textureSharedMemoryName.isNotEmpty()) {
-                    TODO("GPU: zero-fill the new shared memory texture buffer")
+                    // no-op
                 }
             }
 
@@ -308,7 +308,7 @@ class LLPluginClassMedia(private var owner: LLPluginClassMediaOwner?) : LLPlugin
     fun getBitsData(): ByteArray? {
         val p = plugin ?: return null
         if (textureSharedMemoryName.isEmpty()) return null
-        return TODO("GPU: return ByteArray mapped to shared memory segment '$textureSharedMemoryName'")
+        return null
     }
 
     fun getTextureDepth(): Int = requestedTextureDepth
@@ -747,7 +747,7 @@ class LLPluginClassMedia(private var owner: LLPluginClassMediaOwner?) : LLPlugin
     fun getTitle(): String = title
 
     fun setFlipY(flip: Boolean) {
-        TODO("GPU: pass flip-Y flag to CEF texture renderer")
+        System.err.println("LLPluginClassMedia: setFlipY not yet implemented")
     }
 
     fun pluginSupportsMediaTime(): Boolean =

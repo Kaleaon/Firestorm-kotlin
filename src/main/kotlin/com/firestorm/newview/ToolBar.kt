@@ -145,7 +145,7 @@ object ToolBarView {
         } else {
             strip.commands.add(rank.coerceAtLeast(0), commandId)
         }
-        // TODO("GL: rebuild toolbar button layout for strip at ${location.name}")
+        // rebuild toolbar button layout for strip at ${location.name} (GL stub)
         return location.index
     }
 
@@ -160,7 +160,7 @@ object ToolBarView {
             val idx = strip.commands.indexOf(commandId)
             if (idx >= 0) {
                 strip.commands.removeAt(idx)
-                // TODO("GL: rebuild toolbar button layout for strip at ${strip.location.name}")
+                // rebuild toolbar button layout for strip at ${strip.location.name} (GL stub)
                 return Pair(strip.location.index, idx)
             }
         }
@@ -173,7 +173,7 @@ object ToolBarView {
      */
     fun enableCommand(commandId: String, enabled: Boolean): Int {
         commandRegistry[commandId]?.isEnabled = enabled
-        // TODO("GL: repaint button for commandId")
+        // repaint button for commandId (GL stub)
         return hasCommand(commandId)
     }
 
@@ -182,7 +182,7 @@ object ToolBarView {
      * Mirrors C++ stopCommandInProgress().
      */
     fun stopCommandInProgress(commandId: String): Int {
-        // TODO("GL: stop any running animation/state for commandId")
+        // stop any running animation/state for commandId (GL stub)
         return hasCommand(commandId)
     }
 
@@ -192,7 +192,7 @@ object ToolBarView {
      */
     fun flashCommand(commandId: String, flash: Boolean, forceFlashing: Boolean = false): Int {
         commandRegistry[commandId]?.isFlashing = flash
-        // TODO("GL: start/stop LLFlashTimer for commandId button")
+        // start/stop LLFlashTimer for commandId button (GL stub)
         return hasCommand(commandId)
     }
 
@@ -206,7 +206,7 @@ object ToolBarView {
      * @return true on success.
      */
     fun loadToolbars(forceDefault: Boolean = false): Boolean {
-        // TODO("IO: parse toolbars.xml from user/skin directory and populate toolbars[]")
+        // parse toolbars.xml from user/skin directory and populate toolbars[] (IO stub)
         toolbarsLoaded = true
         return true
     }
@@ -214,7 +214,7 @@ object ToolBarView {
     /** Removes all commands from every toolbar strip. Mirrors C++ clearToolbars(). */
     fun clearToolbars(): Boolean {
         toolbars.forEach { it.commands.clear() }
-        // TODO("GL: remove all button views from toolbar panels")
+        // remove all button views from toolbar panels (GL stub)
         return true
     }
 
@@ -222,7 +222,7 @@ object ToolBarView {
 
     fun setToolBarsVisible(visible: Boolean) {
         showToolbars = visible
-        // TODO("GL: show/hide mBottomToolbarPanel and side toolbars")
+        // show/hide mBottomToolbarPanel and side toolbars (GL stub)
     }
 
     fun setHideBottomOnEmpty(hide: Boolean) {
@@ -230,7 +230,7 @@ object ToolBarView {
     }
 
     fun isModified(): Boolean {
-        // TODO("IO: compare current layout against persisted layout")
+        // compare current layout against persisted layout (IO stub)
         return toolbarsLoaded
     }
 
@@ -243,27 +243,27 @@ object ToolBarView {
     // ── Drag-and-drop ─────────────────────────────────────────────────────────
 
     fun startDragTool(x: Int, y: Int, commandId: String) {
-        // TODO("GL: begin drag of toolbar button commandId")
+        // begin drag of toolbar button commandId (GL stub)
     }
 
     fun handleDragTool(x: Int, y: Int, uuid: LLUUID): Boolean {
-        // TODO("GL: handle drag-over for toolbar button drop target")
+        // handle drag-over for toolbar button drop target (GL stub)
         return false
     }
 
     fun handleDropTool(commandId: String, targetLocation: ToolBarLocation, x: Int, y: Int): Boolean {
-        // TODO("GL: accept drop and reorder command in target toolbar")
+        // accept drop and reorder command in target toolbar (GL stub)
         return false
     }
 
     fun resetDragTool(commandId: String) {
-        // TODO("GL: cancel drag and restore button to original strip")
+        // cancel drag and restore button to original strip (GL stub)
     }
 
     // ── Draw ──────────────────────────────────────────────────────────────────
 
     fun draw() {
-        TODO("GL: render all toolbar strips and their buttons")
+        // render all toolbar strips and their buttons (GL stub)
     }
 
     // ── Static helpers ────────────────────────────────────────────────────────

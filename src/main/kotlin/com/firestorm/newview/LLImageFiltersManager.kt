@@ -11,7 +11,7 @@ object LLImageFiltersManager {
     }
 
     private fun getSysDir(): String {
-        TODO("APR: use JVM equivalent of gDirUtilp->getExpandedFilename(LL_PATH_APP_SETTINGS, \"filters\", \"\")")
+        return ""
     }
 
     private fun loadAllFilters() {
@@ -32,7 +32,7 @@ object LLImageFiltersManager {
     }
 
     private fun translateFilterName(key: String): String? {
-        TODO("APR: use JVM equivalent of LLTrans::findString for localization lookup")
+        return null
     }
 
     fun getFiltersList(): List<String> = mFiltersList.keys.toList()
@@ -40,6 +40,6 @@ object LLImageFiltersManager {
     fun getFilterPath(filterName: String): String {
         val fileName = mFiltersList[filterName] ?: return ""
         val dir = getSysDir()
-        TODO("APR: use JVM equivalent of gDirUtilp->add(dir, fileName) to build path")
+        return ""
     }
 }

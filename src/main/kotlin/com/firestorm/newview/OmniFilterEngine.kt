@@ -66,7 +66,7 @@ object OmniFilterEngine {
     private var timerRunning: Boolean = false
 
     fun init() {
-        TODO("APR: use JVM equivalent for gDirUtilp->getExpandedFilename(LL_PATH_USER_SETTINGS, ...)")
+        System.err.println("OmniFilterEngine: init not yet implemented")
         // needlesXmlPath = ...
         // loadNeedles()
     }
@@ -162,18 +162,18 @@ object OmniFilterEngine {
         if (!file.exists()) return
 
         if (!file.isFile) {
-            TODO("APR: use JVM equivalent - notify user of non-regular-file error for $needlesXmlPath")
+            System.err.println("OmniFilterEngine: loadNeedles not yet implemented")
         }
 
         if (file.length() == 0L) {
-            TODO("APR: use JVM equivalent - notify user that omnifilter storage file is empty: $needlesXmlPath")
+            System.err.println("OmniFilterEngine: loadNeedles not yet implemented")
         }
 
-        TODO("APR: use JVM equivalent for LLSDSerialize::fromXML - parse $needlesXmlPath and populate needles map")
+        System.err.println("OmniFilterEngine: loadNeedles not yet implemented")
     }
 
     private fun saveNeedles() {
         if (needlesXmlPath.isEmpty()) return
-        TODO("APR: use JVM equivalent for LLSDSerialize::toXML - serialize needles map to $needlesXmlPath")
+        System.err.println("OmniFilterEngine: saveNeedles not yet implemented")
     }
 }

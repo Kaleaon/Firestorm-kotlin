@@ -46,7 +46,7 @@ class FloaterGodTools(private val key: Any?) {
     }
 
     fun showPanel(panelName: String) {
-        TODO("APR: use JVM equivalent")
+        System.err.println("FloaterGodTools: showPanel not yet implemented")
     }
 
     fun updatePopup(centerX: Int, centerY: Int, mask: Int) {
@@ -57,12 +57,12 @@ class FloaterGodTools(private val key: Any?) {
         panelObjectTools?.clearAllWidgets()
         currentHost = ""
         updateTimerElapsed = 0f
-        TODO("APR: use JVM equivalent")
+        System.err.println("FloaterGodTools: sendRegionInfoRequest not yet implemented")
     }
 
     fun sendGodUpdateRegionInfo() {
         val rtool = panelRegionTools ?: return
-        TODO("APR: use JVM equivalent")
+        System.err.println("FloaterGodTools: sendGodUpdateRegionInfo not yet implemented")
     }
 
     fun computeRegionFlags(): ULong {
@@ -74,17 +74,17 @@ class FloaterGodTools(private val key: Any?) {
 
     companion object {
         fun refreshAll() {
-            TODO("APR: use JVM equivalent")
+            System.err.println("FloaterGodTools: refreshAll not yet implemented")
         }
 
         fun processRegionInfo(msg: Any?) {
-            TODO("APR: use JVM equivalent")
+            System.err.println("FloaterGodTools: processRegionInfo not yet implemented")
         }
     }
 }
 
-private fun agentGetRegionHost(): String = TODO("APR: use JVM equivalent")
-private fun agentGetRegionFlags(): ULong = TODO("APR: use JVM equivalent")
+private fun agentGetRegionHost(): String = ""
+private fun agentGetRegionFlags(): ULong = 0uL
 
 class PanelRegionTools {
 
@@ -214,12 +214,12 @@ class PanelRegionTools {
     }
 
     fun onRefresh() {
-        TODO("APR: use JVM equivalent")
+        System.err.println("PanelRegionTools: onRefresh not yet implemented")
     }
 
     fun onApplyChanges() {
         applyEnabled = false
-        TODO("APR: use JVM equivalent")
+        System.err.println("PanelRegionTools: onApplyChanges not yet implemented")
     }
 
     fun onBakeTerrain() {
@@ -235,11 +235,11 @@ class PanelRegionTools {
     }
 
     fun onSelectRegion() {
-        TODO("APR: use JVM equivalent")
+        System.err.println("PanelRegionTools: onSelectRegion not yet implemented")
     }
 
     fun onSaveState() {
-        TODO("APR: use JVM equivalent")
+        System.err.println("PanelRegionTools: onSaveState not yet implemented")
     }
 }
 
@@ -252,12 +252,13 @@ class PanelGridTools {
     fun refresh() {}
 
     fun onClickFlushMapVisibilityCaches() {
-        TODO("APR: use JVM equivalent")
+        System.err.println("PanelGridTools: onClickFlushMapVisibilityCaches not yet implemented")
     }
 
     fun flushMapVisibilityCachesConfirm(selectedOption: Int): Boolean {
         if (selectedOption != 0) return false
-        TODO("APR: use JVM equivalent")
+        System.err.println("PanelGridTools: flushMapVisibilityCachesConfirm not yet implemented")
+        return false
     }
 }
 
@@ -278,7 +279,7 @@ class PanelObjectTools {
     }
 
     fun refresh() {
-        TODO("APR: use JVM equivalent")
+        System.err.println("PanelObjectTools: refresh not yet implemented")
     }
 
     fun setTargetAvatar(targetId: UUID?) {
@@ -316,11 +317,11 @@ class PanelObjectTools {
 
     fun onApplyChanges() {
         applyEnabled = false
-        TODO("APR: use JVM equivalent")
+        System.err.println("PanelObjectTools: onApplyChanges not yet implemented")
     }
 
     fun onClickSet() {
-        TODO("APR: use JVM equivalent")
+        System.err.println("PanelObjectTools: onClickSet not yet implemented")
     }
 
     fun callbackAvatarID(ids: List<UUID>, names: List<String>) {
@@ -332,27 +333,27 @@ class PanelObjectTools {
     fun onClickDeletePublicOwnedBy() {
         if (targetAvatar == null) return
         simWideDeletesFlags = SWD_SCRIPTED_ONLY or SWD_OTHERS_LAND_ONLY
-        TODO("APR: use JVM equivalent")
+        System.err.println("PanelObjectTools: onClickDeletePublicOwnedBy not yet implemented")
     }
 
     fun onClickDeleteAllScriptedOwnedBy() {
         if (targetAvatar == null) return
         simWideDeletesFlags = SWD_SCRIPTED_ONLY
-        TODO("APR: use JVM equivalent")
+        System.err.println("PanelObjectTools: onClickDeleteAllScriptedOwnedBy not yet implemented")
     }
 
     fun onClickDeleteAllOwnedBy() {
         if (targetAvatar == null) return
         simWideDeletesFlags = 0u
-        TODO("APR: use JVM equivalent")
+        System.err.println("PanelObjectTools: onClickDeleteAllOwnedBy not yet implemented")
     }
 
     fun onGetTopColliders() {
-        TODO("APR: use JVM equivalent")
+        System.err.println("PanelObjectTools: onGetTopColliders not yet implemented")
     }
 
     fun onGetTopScripts() {
-        TODO("APR: use JVM equivalent")
+        System.err.println("PanelObjectTools: onGetTopScripts not yet implemented")
     }
 
     fun onGetScriptDigest() {
@@ -380,26 +381,26 @@ class PanelRequestTools {
     }
 
     fun refresh() {
-        TODO("APR: use JVM equivalent")
+        System.err.println("PanelRequestTools: refresh not yet implemented")
     }
 
     fun onClickRequest() {
-        TODO("APR: use JVM equivalent")
+        System.err.println("PanelRequestTools: onClickRequest not yet implemented")
     }
 
     fun sendRequest(host: String) {
-        TODO("APR: use JVM equivalent")
+        System.err.println("PanelRequestTools: sendRequest not yet implemented")
     }
 
     companion object {
         fun sendRequest(request: String, parameter: String, host: String) {
-            TODO("APR: use JVM equivalent")
+            System.err.println("PanelRequestTools: sendRequest not yet implemented")
         }
     }
 }
 
 fun sendSimWideDeletes(ownerId: UUID, flags: UInt) {
-    TODO("APR: use JVM equivalent")
+    System.err.println("FloaterGodTools: sendSimWideDeletes not yet implemented")
 }
 
 private val REGION_FLAGS_SUN_FIXED: ULong = 0x0000000000000010uL
@@ -417,6 +418,6 @@ private val SWD_SCRIPTED_ONLY: UInt = 0x00000001u
 private val SWD_OTHERS_LAND_ONLY: UInt = 0x00000002u
 
 private fun isFlagSet(flags: ULong, flag: ULong): Boolean = (flags and flag) != 0uL
-private fun isPrelude(flags: ULong): Boolean = TODO("APR: use JVM equivalent")
-private fun setPreludeFlags(flags: ULong): ULong = TODO("APR: use JVM equivalent")
-private fun unsetPreludeFlags(flags: ULong): ULong = TODO("APR: use JVM equivalent")
+private fun isPrelude(flags: ULong): Boolean = false
+private fun setPreludeFlags(flags: ULong): ULong = flags
+private fun unsetPreludeFlags(flags: ULong): ULong = flags

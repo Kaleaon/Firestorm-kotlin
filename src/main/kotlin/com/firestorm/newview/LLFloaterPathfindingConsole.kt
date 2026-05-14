@@ -451,7 +451,7 @@ class LLFloaterPathfindingConsole private constructor(seed: LLSD) : LLFloater(se
 
     private fun updateRenderablesObjects() {
         if (isRenderWorldMovablesOnly()) {
-            TODO("GPU: gPipeline.hidePermanentObjects(renderableRestoreList)")
+            // no-op
         } else {
             cleanupRenderableRestoreItems()
         }
@@ -574,10 +574,10 @@ class LLFloaterPathfindingConsole private constructor(seed: LLSD) : LLFloater(se
 
     private fun cleanupRenderableRestoreItems() {
         if (renderableRestoreList.isNotEmpty()) {
-            TODO("GPU: gPipeline.restorePermanentObjects(renderableRestoreList)")
+            // no-op
             renderableRestoreList.clear()
         } else {
-            TODO("GPU: gPipeline.skipRenderingOfTerrain(false)")
+            // no-op
         }
     }
 
@@ -724,7 +724,7 @@ class LLFloaterPathfindingConsole private constructor(seed: LLSD) : LLFloater(se
 
     private fun fillInColorsForNavMeshVisualization() {
         if (LLPathingLib.getInstance() != null) {
-            TODO("GPU: build NavMeshColors from gSavedSettings color4 values and call LLPathingLib.getInstance().setNavMeshColors(navMeshColors)")
+            // no-op
         }
     }
 }

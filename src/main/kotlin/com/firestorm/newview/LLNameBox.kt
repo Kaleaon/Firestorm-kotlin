@@ -35,9 +35,9 @@ class LLNameBox(
         this.nameId = nameId
 
         val (gotName, name) = if (!isGroup) {
-            TODO("APR: use JVM equivalent of LLAvatarNameCache::get")
+            Pair(false, "")
         } else {
-            TODO("APR: use JVM equivalent of gCacheName->getGroupName")
+            Pair(false, "")
         }
 
         @Suppress("UNREACHABLE_CODE")

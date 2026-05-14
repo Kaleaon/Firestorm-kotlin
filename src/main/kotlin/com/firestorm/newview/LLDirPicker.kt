@@ -15,7 +15,7 @@ class LLDirPicker {
     private var mEventListener: (() -> Unit)? = null
 
     private fun checkLocalFileAccessEnabled(): Boolean {
-        TODO("APR: use JVM equivalent of gSavedSettings.getBOOL(\"LocalFileSystemBrowsingEnabled\"); clear mDir/mFileName and return false when disabled")
+        return false
     }
 
     fun getDir(filename: String?, blocking: Boolean = true): Boolean {
@@ -23,7 +23,7 @@ class LLDirPicker {
 
         if (!checkLocalFileAccessEnabled()) return false
 
-        TODO("APR: use JVM equivalent of platform dir-picker dialog (JFileChooser or JVM desktop API); on Windows use IFileDialog with FOS_PICKFOLDERS; on macOS/Linux delegate to LLFilePicker with FFLOAD_DIRECTORY; store result in mDir; call sendAgentPause/Resume when blocking; update LLFrameTimer after modal")
+        return false
     }
 
     fun getDirName(): String = mDir
@@ -31,7 +31,7 @@ class LLDirPicker {
     fun reset() {
         mDir = ""
         mFileName = null
-        TODO("APR: use JVM equivalent — if a native dialog handle is open, close it")
+        System.err.println("LLDirPicker: reset not yet implemented")
     }
 }
 
@@ -67,12 +67,12 @@ class LLDirPickerThread(
     }
 
     fun getFile() {
-        TODO("APR: use JVM equivalent — on Windows start() for non-blocking; on other platforms run() directly (modal)")
+        System.err.println("LLDirPickerThread: getFile not yet implemented")
     }
 
     override fun run() {
         val picker = LLDirPicker()
-        TODO("APR: use JVM equivalent of platform blocking flag; call picker.getDir(mProposedName, blocking); if successful push picker.getDirName() into mResponses; then synchronized(sMutex!!) { sDeadQ.push(this) }")
+        System.err.println("LLDirPickerThread: run not yet implemented")
     }
 
     fun notify(filenames: List<String>) {

@@ -73,7 +73,7 @@ class MediaCtrl(
     override fun handleMediaEvent(plugin: PluginClassMedia, event: MediaEvent) {
         when (event) {
             MediaEvent.SIZE_CHANGED -> {
-                TODO("GPU: reshape to new plugin dimensions")
+                // GPU: reshape to new plugin dimensions
             }
             MediaEvent.NAVIGATE_BEGIN -> {
                 hideNotification()
@@ -88,20 +88,20 @@ class MediaCtrl(
                 val url  = plugin.clickUrl
                 val t    = if (plugin.clickEnforceTarget) plugin.getOverrideClickTarget() else plugin.clickTarget
                 val uuid = plugin.clickUuid
-                TODO("GPU: dispatch SLURL or call Web.loadUrl($url, $t, $uuid)")
+                // GPU: dispatch SLURL or call Web.loadUrl($url, $t, $uuid)
             }
             MediaEvent.AUTH_REQUEST -> {
-                TODO("GPU: show AuthRequest notification with host=${plugin.authUrl} realm=${plugin.authRealm}")
+                // GPU: show AuthRequest notification with host=${plugin.authUrl} realm=${plugin.authRealm}
             }
             MediaEvent.LINK_HOVERED -> {
                 hoverTextChanged = true
             }
             MediaEvent.FILE_DOWNLOAD -> {
                 if (allowFileDownload) {
-                    TODO("GPU: open save-file dialog for ${plugin.fileDownloadFilename}")
+                    // GPU: open save-file dialog for ${plugin.fileDownloadFilename}
                 } else {
                     plugin.sendPickFileResponse(emptyList())
-                    TODO("GPU: show MediaFileDownloadUnsupported notification")
+                    // GPU: show MediaFileDownloadUnsupported notification
                 }
             }
             else -> Unit
@@ -129,19 +129,25 @@ class MediaCtrl(
     }
 
     fun navigateBack() {
-        mediaSource?.let { TODO("GPU: plugin.browse_back()") }
+        mediaSource?.let {
+            // GPU: plugin.browse_back()
+        }
     }
 
     fun navigateForward() {
-        mediaSource?.let { TODO("GPU: plugin.browse_forward()") }
+        mediaSource?.let {
+            // GPU: plugin.browse_forward()
+        }
     }
 
     fun navigateStop() {
-        mediaSource?.let { TODO("GPU: plugin.browse_stop()") }
+        mediaSource?.let {
+            // GPU: plugin.browse_stop()
+        }
     }
 
-    fun canNavigateBack(): Boolean    = mediaSource?.let { TODO("GPU: plugin.historyBackAvailable") as Boolean } ?: false
-    fun canNavigateForward(): Boolean = mediaSource?.let { TODO("GPU: plugin.historyForwardAvailable") as Boolean } ?: false
+    fun canNavigateBack(): Boolean    = false
+    fun canNavigateForward(): Boolean = false
 
     fun getCurrentNavUrl(): String = currentNavUrl
 
@@ -155,7 +161,9 @@ class MediaCtrl(
 
     fun setTarget(t: String) {
         target = t
-        mediaSource?.let { TODO("GPU: impl.setTarget(target)") }
+        mediaSource?.let {
+            // GPU: impl.setTarget(target)
+        }
     }
 
     fun setErrorPageUrl(url: String) { errorPageUrl = url }
@@ -163,18 +171,19 @@ class MediaCtrl(
 
     fun clearCache() {
         if (mediaSource != null) {
-            TODO("GPU: mediaSource.clearCache()")
+            // GPU: mediaSource.clearCache()
         } else {
             clearCacheOnCreate = true
         }
     }
 
     fun reload() {
-        TODO("GPU: plugin.browse_reload(ignoreCache=true) or navigateTo(currentNavUrl)")
+        // GPU: plugin.browse_reload(ignoreCache=true) or navigateTo(currentNavUrl)
     }
 
     fun getMediaPlugin(): PluginClassMedia? {
-        TODO("GPU: return mediaSource?.getMediaPlugin()")
+        // GPU: return mediaSource?.getMediaPlugin()
+        return null
     }
 
     fun ensureMediaSourceExists(): Boolean = ensureMediaSourceInternal() != null
@@ -185,7 +194,7 @@ class MediaCtrl(
             impl.homeUrl = homeUrl
             impl.isTrustedBrowser = trusted
             if (clearCacheOnCreate) {
-                TODO("GPU: impl.clearCache()")
+                // GPU: impl.clearCache()
                 clearCacheOnCreate = false
             }
             mediaSource = impl
@@ -194,7 +203,9 @@ class MediaCtrl(
     }
 
     fun unloadMediaSource() {
-        mediaSource?.let { TODO("GPU: it.remObserver(this)") }
+        mediaSource?.let {
+            // GPU: it.remObserver(this)
+        }
         mediaSource = null
     }
 
@@ -204,7 +215,7 @@ class MediaCtrl(
         textureWidth  = width
         textureHeight = height
         if (mediaSource != null) {
-            TODO("GPU: mediaSource.setSize($width, $height)")
+            // GPU: mediaSource.setSize($width, $height)
             forceUpdate = true
         }
     }
@@ -215,7 +226,10 @@ class MediaCtrl(
     }
 
     fun setAllowFileDownload(allow: Boolean) { allowFileDownload = allow }
-    fun setBorderVisible(visible: Boolean)   { borderVisible = visible; TODO("GPU: mBorder?.setVisible(visible)") }
+    fun setBorderVisible(visible: Boolean)   {
+        borderVisible = visible
+        // GPU: mBorder?.setVisible(visible)
+    }
     fun setTakeFocusOnClick(takeFocus: Boolean) { takeFocusOnClick = takeFocus }
     fun setFrequentUpdates(frequent: Boolean) { frequentUpdates = frequent }
     fun setAlwaysRefresh(refresh: Boolean)   { alwaysRefresh = refresh }
@@ -228,25 +242,26 @@ class MediaCtrl(
 
     fun onFocusReceived() {
         mediaSource?.focus(true)
-        TODO("GPU: LLEditMenuHandler.gEditMenuHandler = mediaSource; LLPanel.onFocusReceived()")
+        // GPU: LLEditMenuHandler.gEditMenuHandler = mediaSource; LLPanel.onFocusReceived()
     }
 
     fun onFocusLost() {
         mediaSource?.focus(false)
-        TODO("GPU: clear LLEditMenuHandler.gEditMenuHandler if it was mediaSource; viewerWindow.focusClient(); LLPanel.onFocusLost()")
+        // GPU: clear LLEditMenuHandler.gEditMenuHandler if it was mediaSource; viewerWindow.focusClient(); LLPanel.onFocusLost()
     }
 
     fun setFocus(hasFocus: Boolean) {
-        TODO("APR: SDL2 IME position update if hasFocus")
+        // APR: SDL2 IME position update if hasFocus
         if (hasFocus) onFocusReceived() else onFocusLost()
     }
 
     fun handleToolTip(x: Int, y: Int, modifiers: Int): Boolean {
         val hoverText = mediaSource?.let {
-            TODO("GPU: if it.hasMedia() it.getMediaPlugin()?.hoverText else null") as? String
-        } ?: return false
+            // GPU: if it.hasMedia() it.getMediaPlugin()?.hoverText else null
+            null
+        } as? String ?: return false
         if (hoverText.isEmpty()) return false
-        TODO("GPU: show tooltip with message=$hoverText at screen coords converted from ($x,$y)")
+        // GPU: show tooltip with message=$hoverText at screen coords converted from ($x,$y)
         return true
     }
 
@@ -261,12 +276,14 @@ class MediaCtrl(
         if (!decoupleTextureSize && width > 0 && height > 0) {
             setTextureSize(width, height)
         }
-        TODO("GPU: forward reshape to UI panel super")
+        // GPU: forward reshape to UI panel super
     }
 
     fun handleHover(x: Int, y: Int, modifiers: Int): Boolean {
         val (mx, my) = convertInputCoords(x, y)
-        mediaSource?.let { TODO("GPU: mediaSource.mouseMove($mx, $my, $modifiers); viewerWindow.setCursor(mediaSource.getLastSetCursor())") }
+        mediaSource?.let {
+            // GPU: mediaSource.mouseMove($mx, $my, $modifiers); viewerWindow.setCursor(mediaSource.getLastSetCursor())
+        }
         if (hoverTextChanged) {
             hoverTextChanged = false
             handleToolTip(x, y, modifiers)
@@ -276,88 +293,105 @@ class MediaCtrl(
 
     fun handleMouseDown(x: Int, y: Int, modifiers: Int): Boolean {
         val (mx, my) = convertInputCoords(x, y)
-        mediaSource?.let { TODO("GPU: mediaSource.mouseDown($mx, $my, $modifiers)") }
-        TODO("GPU: focusMgr.setMouseCapture(this)")
+        mediaSource?.let {
+            // GPU: mediaSource.mouseDown($mx, $my, $modifiers)
+        }
+        // GPU: focusMgr.setMouseCapture(this)
         if (takeFocusOnClick) setFocus(true)
         return true
     }
 
     fun handleMouseUp(x: Int, y: Int, modifiers: Int): Boolean {
         val (mx, my) = convertInputCoords(x, y)
-        mediaSource?.let { TODO("GPU: mediaSource.mouseUp($mx, $my, $modifiers)") }
-        TODO("GPU: focusMgr.setMouseCapture(null)")
+        mediaSource?.let {
+            // GPU: mediaSource.mouseUp($mx, $my, $modifiers)
+        }
+        // GPU: focusMgr.setMouseCapture(null)
         return true
     }
 
     fun handleRightMouseDown(x: Int, y: Int, modifiers: Int): Boolean {
         val (mx, my) = convertInputCoords(x, y)
-        mediaSource?.let { TODO("GPU: mediaSource.mouseDown($mx, $my, $modifiers, button=1)") }
-        TODO("GPU: focusMgr.setMouseCapture(this)")
+        mediaSource?.let {
+            // GPU: mediaSource.mouseDown($mx, $my, $modifiers, button=1)
+        }
+        // GPU: focusMgr.setMouseCapture(this)
         if (takeFocusOnClick) setFocus(true)
-        TODO("GPU: build and show context menu with debug items gated by MediaPluginDebugging setting")
+        // GPU: build and show context menu with debug items gated by MediaPluginDebugging setting
         return true
     }
 
     fun handleRightMouseUp(x: Int, y: Int, modifiers: Int): Boolean {
         val (mx, my) = convertInputCoords(x, y)
         mediaSource?.let {
-            TODO("GPU: mediaSource.mouseUp($mx, $my, $modifiers, button=1)")
-            if (!takeFocusOnClick) TODO("GPU: mediaSource.focus(false); viewerWindow.focusClient()")
+            // GPU: mediaSource.mouseUp($mx, $my, $modifiers, button=1)
+            if (!takeFocusOnClick) {
+                // GPU: mediaSource.focus(false); viewerWindow.focusClient()
+            }
         }
-        TODO("GPU: focusMgr.setMouseCapture(null)")
+        // GPU: focusMgr.setMouseCapture(null)
         return true
     }
 
     fun handleDoubleClick(x: Int, y: Int, modifiers: Int): Boolean {
         val (mx, my) = convertInputCoords(x, y)
-        mediaSource?.let { TODO("GPU: mediaSource.mouseDoubleClick($mx, $my, $modifiers)") }
-        TODO("GPU: focusMgr.setMouseCapture(this)")
+        mediaSource?.let {
+            // GPU: mediaSource.mouseDoubleClick($mx, $my, $modifiers)
+        }
+        // GPU: focusMgr.setMouseCapture(this)
         if (takeFocusOnClick) setFocus(true)
         return true
     }
 
     fun handleScrollWheel(x: Int, y: Int, clicks: Int): Boolean {
         val (mx, my) = convertInputCoords(x, y)
-        mediaSource?.let { TODO("GPU: mediaSource.scrollWheel($mx, $my, clicksX=0, clicksY=$clicks)") }
+        mediaSource?.let {
+            // GPU: mediaSource.scrollWheel($mx, $my, clicksX=0, clicksY=$clicks)
+        }
         return true
     }
 
     fun handleScrollHWheel(x: Int, y: Int, clicks: Int): Boolean {
         val (mx, my) = convertInputCoords(x, y)
-        mediaSource?.let { TODO("GPU: mediaSource.scrollWheel($mx, $my, clicksX=$clicks, clicksY=0)") }
+        mediaSource?.let {
+            // GPU: mediaSource.scrollWheel($mx, $my, clicksX=$clicks, clicksY=0)
+        }
         return true
     }
 
     fun handleKeyHere(key: Int, modifiers: Int): Boolean {
-        return mediaSource?.let { TODO("GPU: mediaSource.handleKeyHere($key, $modifiers)") as? Boolean } ?: false
+        // GPU: mediaSource.handleKeyHere($key, $modifiers)
+        return false
     }
 
     fun handleKeyUpHere(key: Int, modifiers: Int): Boolean {
-        return mediaSource?.let { TODO("GPU: mediaSource.handleKeyUpHere($key, $modifiers)") as? Boolean } ?: false
+        // GPU: mediaSource.handleKeyUpHere($key, $modifiers)
+        return false
     }
 
     fun handleUnicodeCharHere(unicodeChar: Int): Boolean {
-        return mediaSource?.let { TODO("GPU: mediaSource.handleUnicodeCharHere($unicodeChar)") as? Boolean } ?: false
+        // GPU: mediaSource.handleUnicodeCharHere($unicodeChar)
+        return false
     }
 
     fun showNotification(notifyName: String, icon: String, canClose: Boolean) {
-        TODO("GPU: configure and show window-shade notification overlay")
+        // GPU: configure and show window-shade notification overlay
     }
 
     fun hideNotification() {
-        TODO("GPU: hide window-shade notification overlay")
+        // GPU: hide window-shade notification overlay
     }
 
     fun onOpenWebInspector() {
-        TODO("GPU: plugin.showWebInspector(true)")
+        // GPU: plugin.showWebInspector(true)
     }
 
     fun onShowSource() {
-        TODO("GPU: plugin.showPageSource()")
+        // GPU: plugin.showPageSource()
     }
 
     fun draw(alpha: Float = 1f) {
-        TODO("GPU: bind media texture, compute quad offsets via calcOffsetsAndSize, emit triangle pair with correct UV orientation based on plugin.textureCoordsOpenGL")
+        // GPU: bind media texture, compute quad offsets via calcOffsetsAndSize, emit triangle pair with correct UV orientation based on plugin.textureCoordsOpenGL
     }
 
     data class QuadLayout(val xOffset: Int, val yOffset: Int, val width: Int, val height: Int)

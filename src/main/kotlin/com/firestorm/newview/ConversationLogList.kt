@@ -351,92 +351,138 @@ data class Conversation(
 )
 
 object ConversationLog {
-    val instance: ConversationLog get() = TODO("APR: use JVM equivalent")
-    val isLoggingEnabled: Boolean get() = TODO("APR: use JVM equivalent")
-    val isLogEmpty: Boolean get() = TODO("APR: use JVM equivalent")
-    fun getConversations(): List<Conversation> = TODO("APR: use JVM equivalent")
-    fun getConversation(sessionId: UUID): Conversation? = TODO("APR: use JVM equivalent")
-    fun addObserver(observer: ConversationLogObserver): Unit = TODO("APR: use JVM equivalent")
-    fun removeObserver(observer: ConversationLogObserver): Unit = TODO("APR: use JVM equivalent")
-    fun removeConversation(conversation: Conversation): Unit = TODO("APR: use JVM equivalent")
+    val instance: ConversationLog get() = ConversationLog
+    val isLoggingEnabled: Boolean get() = false
+    val isLogEmpty: Boolean get() = true
+    fun getConversations(): List<Conversation> = emptyList()
+    fun getConversation(sessionId: UUID): Conversation? = null
+    fun addObserver(observer: ConversationLogObserver): Unit {
+        System.err.println("ConversationLog: addObserver not yet implemented")
+    }
+    fun removeObserver(observer: ConversationLogObserver): Unit {
+        System.err.println("ConversationLog: removeObserver not yet implemented")
+    }
+    fun removeConversation(conversation: Conversation): Unit {
+        System.err.println("ConversationLog: removeConversation not yet implemented")
+    }
 }
 
 object SavedSettings {
-    val instance: SavedSettings get() = TODO("APR: use JVM equivalent")
-    fun getBool(key: String): Boolean = TODO("APR: use JVM equivalent")
-    fun setBool(key: String, value: Boolean): Unit = TODO("APR: use JVM equivalent")
-    fun getUInt(key: String): UInt = TODO("APR: use JVM equivalent")
-    fun getInt(key: String): Int = TODO("APR: use JVM equivalent")
+    val instance: SavedSettings get() = SavedSettings
+    fun getBool(key: String): Boolean = false
+    fun setBool(key: String, value: Boolean): Unit {
+        System.err.println("SavedSettings: setBool not yet implemented")
+    }
+    fun getUInt(key: String): UInt = 0u
+    fun getInt(key: String): Int = 0
 }
 
 object AvatarActions {
-    fun startIM(id: UUID): Unit = TODO("APR: use JVM equivalent")
-    fun startCall(id: UUID): Unit = TODO("APR: use JVM equivalent")
-    fun showProfile(id: UUID): Unit = TODO("APR: use JVM equivalent")
-    fun offerTeleport(id: UUID): Unit = TODO("APR: use JVM equivalent")
-    fun teleportRequest(id: UUID): Unit = TODO("APR: use JVM equivalent")
-    fun requestFriendshipDialog(id: UUID): Unit = TODO("APR: use JVM equivalent")
-    fun removeFriendDialog(id: UUID): Unit = TODO("APR: use JVM equivalent")
-    fun inviteToGroup(id: UUID): Unit = TODO("APR: use JVM equivalent")
-    fun showOnMap(id: UUID): Unit = TODO("APR: use JVM equivalent")
-    fun share(id: UUID): Unit = TODO("APR: use JVM equivalent")
-    fun pay(id: UUID): Unit = TODO("APR: use JVM equivalent")
-    fun toggleBlock(id: UUID): Unit = TODO("APR: use JVM equivalent")
-    fun isFriend(id: UUID): Boolean = TODO("APR: use JVM equivalent")
-    fun isBlocked(id: UUID): Boolean = TODO("APR: use JVM equivalent")
-    fun canCall(): Boolean = TODO("APR: use JVM equivalent")
-    fun canOfferTeleport(id: UUID): Boolean = TODO("APR: use JVM equivalent")
-    fun canRequestTeleport(id: UUID): Boolean = TODO("APR: use JVM equivalent")
+    fun startIM(id: UUID): Unit {
+        System.err.println("AvatarActions: startIM not yet implemented")
+    }
+    fun startCall(id: UUID): Unit {
+        System.err.println("AvatarActions: startCall not yet implemented")
+    }
+    fun showProfile(id: UUID): Unit {
+        System.err.println("AvatarActions: showProfile not yet implemented")
+    }
+    fun offerTeleport(id: UUID): Unit {
+        System.err.println("AvatarActions: offerTeleport not yet implemented")
+    }
+    fun teleportRequest(id: UUID): Unit {
+        System.err.println("AvatarActions: teleportRequest not yet implemented")
+    }
+    fun requestFriendshipDialog(id: UUID): Unit {
+        System.err.println("AvatarActions: requestFriendshipDialog not yet implemented")
+    }
+    fun removeFriendDialog(id: UUID): Unit {
+        System.err.println("AvatarActions: removeFriendDialog not yet implemented")
+    }
+    fun inviteToGroup(id: UUID): Unit {
+        System.err.println("AvatarActions: inviteToGroup not yet implemented")
+    }
+    fun showOnMap(id: UUID): Unit {
+        System.err.println("AvatarActions: showOnMap not yet implemented")
+    }
+    fun share(id: UUID): Unit {
+        System.err.println("AvatarActions: share not yet implemented")
+    }
+    fun pay(id: UUID): Unit {
+        System.err.println("AvatarActions: pay not yet implemented")
+    }
+    fun toggleBlock(id: UUID): Unit {
+        System.err.println("AvatarActions: toggleBlock not yet implemented")
+    }
+    fun isFriend(id: UUID): Boolean = false
+    fun isBlocked(id: UUID): Boolean = false
+    fun canCall(): Boolean = false
+    fun canOfferTeleport(id: UUID): Boolean = false
+    fun canRequestTeleport(id: UUID): Boolean = false
 }
 
 object GroupActions {
-    fun startIM(id: UUID): Unit = TODO("APR: use JVM equivalent")
-    fun startCall(id: UUID): Unit = TODO("APR: use JVM equivalent")
-    fun show(id: UUID): Unit = TODO("APR: use JVM equivalent")
+    fun startIM(id: UUID): Unit {
+        System.err.println("GroupActions: startIM not yet implemented")
+    }
+    fun startCall(id: UUID): Unit {
+        System.err.println("GroupActions: startCall not yet implemented")
+    }
+    fun show(id: UUID): Unit {
+        System.err.println("GroupActions: show not yet implemented")
+    }
 }
 
 object Agent {
-    val instance: Agent get() = TODO("APR: use JVM equivalent")
-    fun isInGroup(id: UUID): Boolean = TODO("APR: use JVM equivalent")
-    val isGodlike: Boolean get() = TODO("APR: use JVM equivalent")
+    val instance: Agent get() = Agent
+    fun isInGroup(id: UUID): Boolean = false
+    val isGodlike: Boolean get() = false
 }
 
 object AvatarTracker {
-    val instance: AvatarTracker get() = TODO("APR: use JVM equivalent")
-    fun isBuddyOnline(id: UUID): Boolean = TODO("APR: use JVM equivalent")
-    fun isAgentMappable(id: UUID): Boolean = TODO("APR: use JVM equivalent")
+    val instance: AvatarTracker get() = AvatarTracker
+    fun isBuddyOnline(id: UUID): Boolean = false
+    fun isAgentMappable(id: UUID): Boolean = false
 }
 
 object RlvActions {
-    fun canPayAvatar(id: UUID): Boolean = TODO("APR: use JVM equivalent")
+    fun canPayAvatar(id: UUID): Boolean = false
 }
 
 object FloaterReg {
-    fun showInstance(name: String, id: UUID): Unit = TODO("APR: use JVM equivalent")
+    fun showInstance(name: String, id: UUID): Unit {
+        System.err.println("FloaterReg: showInstance not yet implemented")
+    }
 }
 
 object LogChat {
-    fun makeLogFileName(name: String): String = TODO("APR: use JVM equivalent")
+    fun makeLogFileName(name: String): String = ""
 }
 
 object FileUtils {
-    fun fileExists(path: String): Boolean = TODO("APR: use JVM equivalent")
+    fun fileExists(path: String): Boolean = false
 }
 
 object ViewerWindow {
-    val instance: ViewerWindow get() = TODO("APR: use JVM equivalent")
-    val isInitialized: Boolean get() = TODO("APR: use JVM equivalent")
-    fun openFile(path: String): Unit = TODO("APR: use JVM equivalent")
+    val instance: ViewerWindow get() = ViewerWindow
+    val isInitialized: Boolean get() = false
+    fun openFile(path: String): Unit {
+        System.err.println("ViewerWindow: openFile not yet implemented")
+    }
 }
 
 object NotificationsUtil {
-    fun add(name: String): Unit = TODO("APR: use JVM equivalent")
+    fun add(name: String): Unit {
+        System.err.println("NotificationsUtil: add not yet implemented")
+    }
 }
 
 object Trans {
-    fun getString(key: String): String = TODO("APR: use JVM equivalent")
+    fun getString(key: String): String = ""
 }
 
 class ContextMenu(val name: String) {
-    fun show(x: Int, y: Int): Unit = TODO("GPU: render context menu popup")
+    fun show(x: Int, y: Int): Unit {
+        // no-op: render context menu popup not yet implemented
+    }
 }

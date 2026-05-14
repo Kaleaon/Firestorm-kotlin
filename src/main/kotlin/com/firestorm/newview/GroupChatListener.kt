@@ -64,18 +64,23 @@ class GroupChatListener : EventApi(
         return true
     }
 
-    private fun groupActionsIsInGroup(groupId: UUID): Boolean =
-        TODO("APR: use JVM equivalent for LLGroupActions::isInGroup")
+    private fun groupActionsIsInGroup(groupId: UUID): Boolean {
+        return false
+    }
 
-    private fun groupActionsStartIm(groupId: UUID): UUID? =
-        TODO("APR: use JVM equivalent for LLGroupActions::startIM, returns null when null UUID returned")
+    private fun groupActionsStartIm(groupId: UUID): UUID? {
+        return null
+    }
 
-    private fun groupActionsEndIm(groupId: UUID): Unit =
-        TODO("APR: use JVM equivalent for LLGroupActions::endIM")
+    private fun groupActionsEndIm(groupId: UUID): Unit {
+        System.err.println("GroupChatListener: groupActionsEndIm not yet implemented")
+    }
 
-    private fun imMgrComputeSessionId(type: Int, groupId: UUID): UUID =
-        TODO("APR: use JVM equivalent for gIMMgr->computeSessionID")
+    private fun imMgrComputeSessionId(type: Int, groupId: UUID): UUID {
+        return UUID(0L, 0L)
+    }
 
-    private fun imModelSendMessage(message: String, sessionId: UUID, groupId: UUID, imType: Int): Unit =
-        TODO("APR: use JVM equivalent for LLIMModel::sendMessage")
+    private fun imModelSendMessage(message: String, sessionId: UUID, groupId: UUID, imType: Int): Unit {
+        System.err.println("GroupChatListener: imModelSendMessage not yet implemented")
+    }
 }

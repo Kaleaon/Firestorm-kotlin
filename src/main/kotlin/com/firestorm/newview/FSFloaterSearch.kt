@@ -91,25 +91,26 @@ class FSPanelSearchPeople : FSSearchPanelBase() {
     private var queryId: LLUUID = LLUUID.NULL
 
     override fun focusDefaultElement() {
-        TODO("Focus the people-search combo box")
+        System.err.println("FSPanelSearchPeople: focusDefaultElement not yet implemented")
     }
 
     fun postBuild(): Boolean {
-        TODO("Wire find button, result list, next/back buttons to callbacks")
+        System.err.println("FSPanelSearchPeople: postBuild not yet implemented")
+        return false
     }
 
-    private fun onBtnFind()     { TODO("Validate query length (>= MIN_SEARCH_STRING_SIZE) then call find()") }
-    private fun onSelectItem()  { TODO("Notify parent FSFloaterSearch via onSelectedItem()") }
-    private fun onBtnNext()     { startSearch += RESULT_PAGE_SIZE; TODO("Re-run find() with updated startSearch") }
-    private fun onBtnBack()     { startSearch = maxOf(0, startSearch - RESULT_PAGE_SIZE); TODO("Re-run find()") }
-    private fun find()          { TODO("Send AVATAR_QUERY message and set queryId") }
+    private fun onBtnFind()     { System.err.println("FSPanelSearchPeople: onBtnFind not yet implemented") }
+    private fun onSelectItem()  { System.err.println("FSPanelSearchPeople: onSelectItem not yet implemented") }
+    private fun onBtnNext()     { startSearch += RESULT_PAGE_SIZE; System.err.println("FSPanelSearchPeople: onBtnNext not yet implemented") }
+    private fun onBtnBack()     { startSearch = maxOf(0, startSearch - RESULT_PAGE_SIZE); System.err.println("FSPanelSearchPeople: onBtnBack not yet implemented") }
+    private fun find()          { System.err.println("FSPanelSearchPeople: find not yet implemented") }
     private fun resetSearch()   { numResultsReturned = 0; startSearch = 0; resultsReceived = 0 }
-    private fun showNextButton(results: Int): Int { TODO("Return adjusted result count; hide/show the next-page button") }
+    private fun showNextButton(results: Int): Int { System.err.println("FSPanelSearchPeople: showNextButton not yet implemented"); return results }
 
     companion object {
         /** Handle an incoming avatar-search reply message. */
         fun processSearchReply(msg: Any?) {
-            TODO("Decode LLMessageSystem reply and populate the result list")
+            System.err.println("FSPanelSearchPeople: processSearchReply not yet implemented")
         }
     }
 }
@@ -123,22 +124,23 @@ class FSPanelSearchGroups : FSSearchPanelBase() {
     private var queryId: LLUUID = LLUUID.NULL
 
     override fun focusDefaultElement() {
-        TODO("Focus the groups-search combo box")
+        System.err.println("FSPanelSearchGroups: focusDefaultElement not yet implemented")
     }
 
     fun postBuild(): Boolean {
-        TODO("Wire find button, result list, next/back buttons to callbacks")
+        System.err.println("FSPanelSearchGroups: postBuild not yet implemented")
+        return false
     }
 
-    private fun onBtnFind()    { TODO("Validate and call find()") }
-    private fun onSelectItem() { TODO("Notify parent FSFloaterSearch") }
-    private fun onBtnNext()    { startSearch += RESULT_PAGE_SIZE; TODO("Re-run find()") }
-    private fun onBtnBack()    { startSearch = maxOf(0, startSearch - RESULT_PAGE_SIZE); TODO("Re-run find()") }
-    private fun find()         { TODO("Send GROUP_QUERY message") }
+    private fun onBtnFind()    { System.err.println("FSPanelSearchGroups: onBtnFind not yet implemented") }
+    private fun onSelectItem() { System.err.println("FSPanelSearchGroups: onSelectItem not yet implemented") }
+    private fun onBtnNext()    { startSearch += RESULT_PAGE_SIZE; System.err.println("FSPanelSearchGroups: onBtnNext not yet implemented") }
+    private fun onBtnBack()    { startSearch = maxOf(0, startSearch - RESULT_PAGE_SIZE); System.err.println("FSPanelSearchGroups: onBtnBack not yet implemented") }
+    private fun find()         { System.err.println("FSPanelSearchGroups: find not yet implemented") }
     private fun resetSearch()  { numResultsReturned = 0; startSearch = 0; resultsReceived = 0 }
 
     companion object {
-        fun processSearchReply(msg: Any?) { TODO("Decode group-search reply") }
+        fun processSearchReply(msg: Any?) { System.err.println("FSPanelSearchGroups: processSearchReply not yet implemented") }
     }
 }
 
@@ -151,22 +153,23 @@ class FSPanelSearchPlaces : FSSearchPanelBase() {
     private var queryId: LLUUID = LLUUID.NULL
 
     override fun focusDefaultElement() {
-        TODO("Focus the places-search combo box")
+        System.err.println("FSPanelSearchPlaces: focusDefaultElement not yet implemented")
     }
 
     fun postBuild(): Boolean {
-        TODO("Wire find button, result list, category combo, next/back buttons")
+        System.err.println("FSPanelSearchPlaces: postBuild not yet implemented")
+        return false
     }
 
-    private fun onBtnFind()    { TODO("Validate and call find()") }
-    private fun onSelectItem() { TODO("Notify parent FSFloaterSearch") }
-    private fun onBtnNext()    { startSearch += RESULT_PAGE_SIZE; TODO("Re-run find()") }
-    private fun onBtnBack()    { startSearch = maxOf(0, startSearch - RESULT_PAGE_SIZE); TODO("Re-run find()") }
-    private fun find()         { TODO("Send PLACES_QUERY message") }
+    private fun onBtnFind()    { System.err.println("FSPanelSearchPlaces: onBtnFind not yet implemented") }
+    private fun onSelectItem() { System.err.println("FSPanelSearchPlaces: onSelectItem not yet implemented") }
+    private fun onBtnNext()    { startSearch += RESULT_PAGE_SIZE; System.err.println("FSPanelSearchPlaces: onBtnNext not yet implemented") }
+    private fun onBtnBack()    { startSearch = maxOf(0, startSearch - RESULT_PAGE_SIZE); System.err.println("FSPanelSearchPlaces: onBtnBack not yet implemented") }
+    private fun find()         { System.err.println("FSPanelSearchPlaces: find not yet implemented") }
     private fun resetSearch()  { numResultsReturned = 0; startSearch = 0; resultsReceived = 0 }
 
     companion object {
-        fun processSearchReply(msg: Any?) { TODO("Decode places-search reply") }
+        fun processSearchReply(msg: Any?) { System.err.println("FSPanelSearchPlaces: processSearchReply not yet implemented") }
     }
 }
 
@@ -183,18 +186,19 @@ class FSPanelSearchLand : FSSearchPanelBase() {
     private var minArea: Int = 0
 
     fun postBuild(): Boolean {
-        TODO("Wire find button, price editor, area editor, result list, next/back buttons")
+        System.err.println("FSPanelSearchLand: postBuild not yet implemented")
+        return false
     }
 
-    private fun onBtnFind()    { TODO("Validate and call find()") }
-    private fun onSelectItem() { TODO("Notify parent FSFloaterSearch") }
-    private fun onBtnNext()    { startSearch += RESULT_PAGE_SIZE; TODO("Re-run find()") }
-    private fun onBtnBack()    { startSearch = maxOf(0, startSearch - RESULT_PAGE_SIZE); TODO("Re-run find()") }
-    private fun find()         { TODO("Send LAND_QUERY message with price/area filters") }
+    private fun onBtnFind()    { System.err.println("FSPanelSearchLand: onBtnFind not yet implemented") }
+    private fun onSelectItem() { System.err.println("FSPanelSearchLand: onSelectItem not yet implemented") }
+    private fun onBtnNext()    { startSearch += RESULT_PAGE_SIZE; System.err.println("FSPanelSearchLand: onBtnNext not yet implemented") }
+    private fun onBtnBack()    { startSearch = maxOf(0, startSearch - RESULT_PAGE_SIZE); System.err.println("FSPanelSearchLand: onBtnBack not yet implemented") }
+    private fun find()         { System.err.println("FSPanelSearchLand: find not yet implemented") }
     private fun resetSearch()  { numResultsReturned = 0; startSearch = 0; resultsReceived = 0 }
 
     companion object {
-        fun processSearchReply(msg: Any?) { TODO("Decode land-search reply") }
+        fun processSearchReply(msg: Any?) { System.err.println("FSPanelSearchLand: processSearchReply not yet implemented") }
     }
 }
 
@@ -207,22 +211,23 @@ class FSPanelSearchClassifieds : FSSearchPanelBase() {
     private var queryId: LLUUID = LLUUID.NULL
 
     override fun focusDefaultElement() {
-        TODO("Focus the classifieds-search combo box")
+        System.err.println("FSPanelSearchClassifieds: focusDefaultElement not yet implemented")
     }
 
     fun postBuild(): Boolean {
-        TODO("Wire find button, category combo, result list, next/back buttons")
+        System.err.println("FSPanelSearchClassifieds: postBuild not yet implemented")
+        return false
     }
 
-    private fun onBtnFind()    { TODO("Validate and call find()") }
-    private fun onSelectItem() { TODO("Notify parent FSFloaterSearch") }
-    private fun onBtnNext()    { startSearch += RESULT_PAGE_SIZE; TODO("Re-run find()") }
-    private fun onBtnBack()    { startSearch = maxOf(0, startSearch - RESULT_PAGE_SIZE); TODO("Re-run find()") }
-    private fun find()         { TODO("Send CLASSIFIED_QUERY message") }
+    private fun onBtnFind()    { System.err.println("FSPanelSearchClassifieds: onBtnFind not yet implemented") }
+    private fun onSelectItem() { System.err.println("FSPanelSearchClassifieds: onSelectItem not yet implemented") }
+    private fun onBtnNext()    { startSearch += RESULT_PAGE_SIZE; System.err.println("FSPanelSearchClassifieds: onBtnNext not yet implemented") }
+    private fun onBtnBack()    { startSearch = maxOf(0, startSearch - RESULT_PAGE_SIZE); System.err.println("FSPanelSearchClassifieds: onBtnBack not yet implemented") }
+    private fun find()         { System.err.println("FSPanelSearchClassifieds: find not yet implemented") }
     private fun resetSearch()  { numResultsReturned = 0; startSearch = 0; resultsReceived = 0 }
 
     companion object {
-        fun processSearchReply(msg: Any?) { TODO("Decode classifieds-search reply") }
+        fun processSearchReply(msg: Any?) { System.err.println("FSPanelSearchClassifieds: processSearchReply not yet implemented") }
     }
 }
 
@@ -236,27 +241,28 @@ class FSPanelSearchEvents : FSSearchPanelBase() {
     private var queryId: LLUUID = LLUUID.NULL
 
     override fun focusDefaultElement() {
-        TODO("Focus the events-search combo box")
+        System.err.println("FSPanelSearchEvents: focusDefaultElement not yet implemented")
     }
 
     fun postBuild(): Boolean {
-        TODO("Wire find button, today/yesterday/tomorrow buttons, mode radio group, result list")
+        System.err.println("FSPanelSearchEvents: postBuild not yet implemented")
+        return false
     }
 
-    private fun onBtnFind()      { TODO("Validate and call find()") }
-    private fun onSelectItem()   { TODO("Notify parent FSFloaterSearch via onSelectedEvent()") }
-    private fun onBtnNext()      { startSearch += RESULT_PAGE_SIZE; TODO("Re-run find()") }
-    private fun onBtnBack()      { startSearch = maxOf(0, startSearch - RESULT_PAGE_SIZE); TODO("Re-run find()") }
+    private fun onBtnFind()      { System.err.println("FSPanelSearchEvents: onBtnFind not yet implemented") }
+    private fun onSelectItem()   { System.err.println("FSPanelSearchEvents: onSelectItem not yet implemented") }
+    private fun onBtnNext()      { startSearch += RESULT_PAGE_SIZE; System.err.println("FSPanelSearchEvents: onBtnNext not yet implemented") }
+    private fun onBtnBack()      { startSearch = maxOf(0, startSearch - RESULT_PAGE_SIZE); System.err.println("FSPanelSearchEvents: onBtnBack not yet implemented") }
     private fun onBtnToday()     { setDay(0) }
     private fun onBtnYesterday() { setDay(-1) }
     private fun onBtnTomorrow()  { setDay(1) }
-    private fun setDay(d: Int)   { day = d; TODO("Update day-label widget and re-run find()") }
-    private fun onSearchModeChanged() { TODO("Switch between All/PG/Mature event filter modes") }
-    private fun find()           { TODO("Send EVENT_QUERY message with day and mode filters") }
+    private fun setDay(d: Int)   { day = d; System.err.println("FSPanelSearchEvents: setDay not yet implemented") }
+    private fun onSearchModeChanged() { System.err.println("FSPanelSearchEvents: onSearchModeChanged not yet implemented") }
+    private fun find()           { System.err.println("FSPanelSearchEvents: find not yet implemented") }
     private fun resetSearch()    { numResultsReturned = 0; startSearch = 0; resultsReceived = 0 }
 
     companion object {
-        fun processSearchReply(msg: Any?) { TODO("Decode events-search reply") }
+        fun processSearchReply(msg: Any?) { System.err.println("FSPanelSearchEvents: processSearchReply not yet implemented") }
     }
 }
 
@@ -266,21 +272,22 @@ class FSPanelSearchWeb : FSSearchPanelBase() {
     private var resetFocusOnLoad: Boolean = false
 
     fun postBuild(): Boolean {
-        TODO("Find LLMediaCtrl child and set up category-path LLSD mapping")
+        System.err.println("FSPanelSearchWeb: postBuild not yet implemented")
+        return false
     }
 
     /** Load the search website for the given [query]. */
     fun loadURL(query: SearchQuery) {
-        TODO("Construct the search URL from query.category + query.query and load it in mWebBrowser")
+        System.err.println("FSPanelSearchWeb: loadURL not yet implemented")
     }
 
     override fun focusDefaultElement() {
         resetFocusOnLoad = true
-        TODO("Transfer focus to mWebBrowser once the page finishes loading")
+        System.err.println("FSPanelSearchWeb: focusDefaultElement not yet implemented")
     }
 
     fun draw() {
-        TODO("Handle resetFocusOnLoad flag after page load completes")
+        System.err.println("FSPanelSearchWeb: draw not yet implemented")
     }
 }
 
@@ -336,7 +343,8 @@ class FSFloaterSearch {
 
     /** Called after XML children are built; wires up all sub-panels and observers. */
     fun postBuild(): Boolean {
-        TODO("Instantiate sub-panels, find detail widgets, register observers")
+        System.err.println("FSFloaterSearch: postBuild not yet implemented")
+        return false
     }
 
     /**
@@ -346,13 +354,13 @@ class FSFloaterSearch {
      * field and optionally kick off an immediate search.
      */
     fun onOpen(key: LLSD) {
-        TODO("Decode key to SearchQuery, pre-fill search widget, optionally trigger search")
+        System.err.println("FSFloaterSearch: onOpen not yet implemented")
     }
 
     /** Called when the floater is closed; unregisters all observers. */
     fun onClose(appQuitting: Boolean) {
         results.clear()
-        TODO("Disconnect mRemoteParcelObserver, mAvatarPropertiesObserver, mGroupPropertiesRequest, mEventInfoConnection")
+        System.err.println("FSFloaterSearch: onClose not yet implemented")
     }
 
     // ------------------------------------------------------------------
@@ -370,7 +378,7 @@ class FSFloaterSearch {
     fun search(query: String, type: SearchType) {
         if (query.length < MIN_SEARCH_STRING_SIZE) return
         results.clear()
-        TODO("Switch on type, call the matching sub-panel's find() equivalent, switch active tab")
+        System.err.println("FSFloaterSearch: search not yet implemented")
     }
 
     /**
@@ -382,7 +390,7 @@ class FSFloaterSearch {
      */
     fun onSearchResults(newResults: List<SearchResult>) {
         results.addAll(newResults)
-        TODO("Update the scroll-list widget and show/hide the next-page button")
+        System.err.println("FSFloaterSearch: onSearchResults not yet implemented")
     }
 
     // ------------------------------------------------------------------
@@ -391,32 +399,33 @@ class FSFloaterSearch {
 
     /** Populate the details panel with parcel information. */
     fun displayParcelDetails(parcelData: Any?) {
-        TODO("Fill mDetailTitle, mDetailDesc, mDetailLocation, mDetailSnapshot from parcelData")
+        System.err.println("FSFloaterSearch: displayParcelDetails not yet implemented")
     }
 
     /** Populate the details panel with classified-ad information. */
     fun displayClassifiedDetails(classifiedInfo: Any?) {
-        TODO("Fill detail widgets from LLAvatarClassifiedInfo")
+        System.err.println("FSFloaterSearch: displayClassifiedDetails not yet implemented")
     }
 
     /** Populate the details panel with avatar profile information. */
     fun displayAvatarDetails(avatarData: Any?) {
-        TODO("Fill detail widgets from LLAvatarData")
+        System.err.println("FSFloaterSearch: displayAvatarDetails not yet implemented")
     }
 
     /** Populate the details panel with group information. */
     fun displayGroupDetails(groupData: Any?) {
-        TODO("Fill detail widgets from LLGroupMgrGroupData")
+        System.err.println("FSFloaterSearch: displayGroupDetails not yet implemented")
     }
 
     /** Populate the details panel with event information. */
     fun displayEventDetails(eventInfo: Any?): Boolean {
-        TODO("Fill detail widgets from LLEventInfo; return true if successful")
+        System.err.println("FSFloaterSearch: displayEventDetails not yet implemented")
+        return false
     }
 
     /** Set the parcel snapshot shown alongside an event. */
     fun displayEventParcelImage(parcelData: Any?) {
-        TODO("Update mDetailSnapshotParcel from parcel_data.snapshot_id")
+        System.err.println("FSFloaterSearch: displayEventParcelImage not yet implemented")
     }
 
     /**
@@ -425,31 +434,31 @@ class FSFloaterSearch {
      * @param started `true` to show the spinner; `false` to hide it.
      */
     fun setLoadingProgress(started: Boolean) {
-        TODO("Show or hide the LLLoadingIndicator child widget")
+        System.err.println("FSFloaterSearch: setLoadingProgress not yet implemented")
     }
 
     /** Called when an avatar display name is updated in the name cache. */
     fun avatarNameUpdatedCallback(id: LLUUID, avName: Any?) {
-        TODO("Refresh the detail-panel title if id == selectedId")
+        System.err.println("FSFloaterSearch: avatarNameUpdatedCallback not yet implemented")
     }
 
     /** Called when a group name resolves from the group manager. */
     fun groupNameUpdatedCallback(id: LLUUID, name: String, isGroup: Boolean) {
-        TODO("Refresh the detail-panel title if id == selectedId")
+        System.err.println("FSFloaterSearch: groupNameUpdatedCallback not yet implemented")
     }
 
     /** Invoked when the user selects a search result row. */
     fun onSelectedItem(selectedItem: LLUUID, type: SearchType) {
         selectedId = selectedItem
         hasSelection = true
-        TODO("Request details for selectedItem based on type, call setLoadingProgress(true)")
+        System.err.println("FSFloaterSearch: onSelectedItem not yet implemented")
     }
 
     /** Invoked when the user selects an event row (events use Int IDs). */
     fun onSelectedEvent(selectedEvent: Int) {
         eventId = selectedEvent.toUInt()
         hasSelection = true
-        TODO("Request event details via LLEventNotifier")
+        System.err.println("FSFloaterSearch: onSelectedEvent not yet implemented")
     }
 
     // ------------------------------------------------------------------
@@ -457,27 +466,27 @@ class FSFloaterSearch {
     // ------------------------------------------------------------------
 
     private fun resetVerbs() {
-        TODO("Disable all action buttons (profile, IM, teleport, map, etc.)")
+        System.err.println("FSFloaterSearch: resetVerbs not yet implemented")
     }
 
     private fun flushDetails() {
-        TODO("Clear all detail-panel widgets back to empty/placeholder state")
+        System.err.println("FSFloaterSearch: flushDetails not yet implemented")
     }
 
     private fun onTabChange() {
-        TODO("Call focusDefaultElement() on the newly-active sub-panel; reset selection")
+        System.err.println("FSFloaterSearch: onTabChange not yet implemented")
     }
 
     // Action button callbacks
-    private fun onBtnPeopleProfile()  { TODO("LLAvatarActions::showProfile(selectedId)") }
-    private fun onBtnPeopleIM()       { TODO("LLAvatarActions::startIM(selectedId)") }
-    private fun onBtnPeopleFriend()   { TODO("LLAvatarActions::requestFriendshipDialog(selectedId)") }
-    private fun onBtnGroupProfile()   { TODO("LLGroupActions::show(selectedId)") }
-    private fun onBtnGroupChat()      { TODO("LLGroupActions::startIM(selectedId)") }
-    private fun onBtnGroupJoin()      { TODO("LLGroupActions::join(selectedId)") }
-    private fun onBtnEventReminder()  { TODO("gEventNotifier.add(eventId)") }
-    private fun onBtnTeleport()       { TODO("LLAvatarActions::teleportTo(mParcelGlobal)") }
-    private fun onBtnMap()            { TODO("LLFloaterWorldMap::show(mParcelGlobal)") }
+    private fun onBtnPeopleProfile()  { System.err.println("FSFloaterSearch: onBtnPeopleProfile not yet implemented") }
+    private fun onBtnPeopleIM()       { System.err.println("FSFloaterSearch: onBtnPeopleIM not yet implemented") }
+    private fun onBtnPeopleFriend()   { System.err.println("FSFloaterSearch: onBtnPeopleFriend not yet implemented") }
+    private fun onBtnGroupProfile()   { System.err.println("FSFloaterSearch: onBtnGroupProfile not yet implemented") }
+    private fun onBtnGroupChat()      { System.err.println("FSFloaterSearch: onBtnGroupChat not yet implemented") }
+    private fun onBtnGroupJoin()      { System.err.println("FSFloaterSearch: onBtnGroupJoin not yet implemented") }
+    private fun onBtnEventReminder()  { System.err.println("FSFloaterSearch: onBtnEventReminder not yet implemented") }
+    private fun onBtnTeleport()       { System.err.println("FSFloaterSearch: onBtnTeleport not yet implemented") }
+    private fun onBtnMap()            { System.err.println("FSFloaterSearch: onBtnMap not yet implemented") }
 
     // ------------------------------------------------------------------
     // Companion object
@@ -494,7 +503,8 @@ class FSFloaterSearch {
          * Mirrors the LLFloaterReg::showInstance call pattern used in C++.
          */
         fun show(): FSFloaterSearch {
-            TODO("LLFloaterReg::showInstance(\"search\")")
+            System.err.println("FSFloaterSearch: show not yet implemented")
+            return instance ?: FSFloaterSearch().also { instance = it }
         }
 
         /**
@@ -505,7 +515,8 @@ class FSFloaterSearch {
          * @param panelName The name of the child panel as defined in the XUI XML.
          */
         fun getSearchPanel(panelName: String): FSSearchPanelBase? {
-            TODO("Return the matching sub-panel field by name")
+            System.err.println("FSFloaterSearch: getSearchPanel not yet implemented")
+            return null
         }
     }
 }

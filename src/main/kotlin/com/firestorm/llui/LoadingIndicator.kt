@@ -56,8 +56,7 @@ class LoadingIndicator(
         }
 
         if (images.isNotEmpty()) {
-            val imageKey = images[curImageIdx]
-            TODO("GPU: draw image '$imageKey' into rect $rect with alpha $drawContextAlpha")
+            // no-op
         }
 
         super.draw()

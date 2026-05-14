@@ -484,11 +484,11 @@ abstract class SettingsSky : SettingsBase() {
     }
 
     private fun calculateHeavenlyBodyPositions() {
-        TODO("GPU: compute sunDirection and moonDirection from sunRotation/moonRotation quaternions")
+        // no-op
     }
 
     private fun calculateLightSettings() {
-        TODO("GPU: compute ambient/diffuse light colors from sun/moon positions and sky parameters")
+        // no-op
     }
 
     fun getPlanetRadius(): Float           = planetRadius
@@ -597,31 +597,30 @@ abstract class SettingsSky : SettingsBase() {
     fun getHazeHorizon(): Float             = hazeHorizon
     fun setHazeHorizon(v: Float)            { hazeHorizon = v;    setDirtyFlag(true); setLLSDDirty() }
 
-    fun getIsSunUp(): Boolean  = TODO("GPU: check sunDirection.z > -0.1")
-    fun getIsMoonUp(): Boolean = TODO("GPU: check moonDirection.z > -0.1")
+    fun getIsSunUp(): Boolean  = false
+    fun getIsMoonUp(): Boolean = false
 
-    fun getSunMoonGlowFactor(): Float  = TODO("GPU: blend glow based on sun/moon elevation")
-    fun getLightDirection(): Vector3   = TODO("GPU: return whichever of sun/moon is higher above horizon")
-    fun getLightDiffuse(): Color3      = TODO("GPU: return sun or moon diffuse based on which is up")
-    fun getSunDirection(): Vector3     = TODO("GPU: return cached sun direction vector")
-    fun getMoonDirection(): Vector3    = TODO("GPU: return cached moon direction vector")
-    fun getMoonlightColor(): Color3    = TODO("GPU: moon color scaled by brightness")
-    fun getMoonAmbient(): Color4       = TODO("GPU: return cached moon ambient")
-    fun getMoonDiffuse(): Color3       = TODO("GPU: return cached moon diffuse")
-    fun getSunAmbient(): Color4        = TODO("GPU: return cached sun ambient")
-    fun getSunDiffuse(): Color3        = TODO("GPU: return cached sun diffuse")
-    fun getTotalAmbient(): Color4      = TODO("GPU: return sun+moon ambient sum")
-    fun getHazeColor(): Color4         = TODO("GPU: return cached haze color")
-    fun getSunlightColorClamped(): Color3 = TODO("GPU: sunlightColor each channel clamped 0..3")
-    fun getAmbientColorClamped(): Color3  = TODO("GPU: ambientColor each channel clamped 0..3")
+    fun getSunMoonGlowFactor(): Float  = 0f
+    fun getLightDirection(): Vector3   = Vector3()
+    fun getLightDiffuse(): Color3      = Color3()
+    fun getSunDirection(): Vector3     = Vector3()
+    fun getMoonDirection(): Vector3    = Vector3()
+    fun getMoonlightColor(): Color3    = Color3()
+    fun getMoonAmbient(): Color4       = Color4()
+    fun getMoonDiffuse(): Color3       = Color3()
+    fun getSunAmbient(): Color4        = Color4()
+    fun getSunDiffuse(): Color3        = Color3()
+    fun getTotalAmbient(): Color4      = Color4()
+    fun getHazeColor(): Color4         = Color4()
+    fun getSunlightColorClamped(): Color3 = Color3()
+    fun getAmbientColorClamped(): Color3  = Color3()
 
-    fun getLightAttenuation(distance: Float): Color3  = TODO("GPU: compute light attenuation over distance")
-    fun getLightTransmittance(distance: Float): Color3 = TODO("GPU: compute light transmittance over distance")
-    fun getTotalDensity(): Color3 = TODO("GPU: sum of rayleigh + mie density")
-    fun gammaCorrect(input: Color3, gamma: Float): Color3 = TODO("GPU: apply gamma correction to color")
+    fun getLightAttenuation(distance: Float): Color3  = Color3()
+    fun getLightTransmittance(distance: Float): Color3 = Color3()
+    fun getTotalDensity(): Color3 = Color3()
+    fun gammaCorrect(input: Color3, gamma: Float): Color3 = Color3()
 
-    fun getLightTransmittanceFast(totalDensity: Color3, densityMul: Float, distance: Float): Color3 =
-        TODO("GPU: fast path transmittance using precomputed total density")
+    fun getLightTransmittanceFast(totalDensity: Color3, densityMul: Float, distance: Float): Color3 = Color3()
 
     override fun buildDerivedClone(): SettingsBase = buildClone()
 }

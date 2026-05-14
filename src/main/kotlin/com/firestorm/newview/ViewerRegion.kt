@@ -137,15 +137,26 @@ class ViewerRegion(
             else -> ""
         }
 
-        fun isViewerCameraStatic(): Boolean = TODO("query camera motion state")
-        fun calcNewObjectCreationThrottle() { TODO("recalculate based on bandwidth") }
-        fun idleCleanup(maxUpdateTime: Float) { TODO("APR: use JVM equivalent") }
+        fun isViewerCameraStatic(): Boolean {
+            System.err.println("query camera motion state")
+            return false
+        }
+        fun calcNewObjectCreationThrottle() {
+            System.err.println("recalculate based on bandwidth")
+        }
+        fun idleCleanup(maxUpdateTime: Float) {
+            System.err.println("APR: use JVM equivalent")
+        }
 
         val regionCacheCleanup: MutableMap<UInt, Any> = mutableMapOf()
     }
 
-    fun loadObjectCache() { TODO("APR: use JVM equivalent") }
-    fun saveObjectCache() { TODO("APR: use JVM equivalent") }
+    fun loadObjectCache() {
+        System.err.println("APR: use JVM equivalent")
+    }
+    fun saveObjectCache() {
+        System.err.println("APR: use JVM equivalent")
+    }
 
     fun setOriginGlobal(o: Vector3d) { origin = o }
 
@@ -175,11 +186,13 @@ class ViewerRegion(
     fun getPosRegionFromGlobal(global: Vector3d): Vector3 = globalToLocal(global)
 
     fun getPosRegionFromAgent(agentPos: Vector3): Vector3 {
-        TODO("APR: use JVM equivalent - subtract agent region origin")
+        System.err.println("APR: use JVM equivalent - subtract agent region origin")
+        return Vector3.ZERO
     }
 
     fun getPosAgentFromRegion(regionPos: Vector3): Vector3 {
-        TODO("APR: use JVM equivalent - add agent region origin")
+        System.err.println("APR: use JVM equivalent - add agent region origin")
+        return Vector3.ZERO
     }
 
     fun getPosGlobalFromRegion(offset: Vector3): Vector3d = localToGlobal(offset)
@@ -205,7 +218,9 @@ class ViewerRegion(
 
     fun setWaterHeight(level: Float) { waterHeight = level }
     fun getWaterHeight(): Float = waterHeight
-    fun rebuildWater() { TODO("GPU: rebuild water surface mesh") }
+    fun rebuildWater() {
+        System.err.println("GPU: rebuild water surface mesh")
+    }
 
     fun isVoiceEnabled(): Boolean = (regionFlags and 0x0000000020000000uL) != 0uL
 
@@ -291,9 +306,13 @@ class ViewerRegion(
 
     fun getSimulatorFeatures(): Map<String, Any> = emptyMap()
 
-    fun setSimulatorFeatures(info: Map<String, Any>) { TODO("store simulator features LLSD") }
+    fun setSimulatorFeatures(info: Map<String, Any>) {
+        System.err.println("store simulator features LLSD")
+    }
 
-    fun requestSimulatorFeatures() { TODO("APR: use JVM equivalent - HTTP GET SimulatorFeatures cap") }
+    fun requestSimulatorFeatures() {
+        System.err.println("APR: use JVM equivalent - HTTP GET SimulatorFeatures cap")
+    }
 
     fun meshUploadEnabled(): Boolean = isCapabilityAvailable("MeshUploadFlag")
 
@@ -303,106 +322,178 @@ class ViewerRegion(
 
     fun avatarHoverHeightEnabled(): Boolean = isCapabilityAvailable("AgentPreferences")
 
-    fun getLandHeightRegion(regionPos: Vector3): Float { TODO("query terrain surface height") }
-
-    fun getCompositionXY(x: Int, y: Int): Float { TODO("query terrain composition texture") }
-
-    fun isOwnedSelf(pos: Vector3): Boolean { TODO("check parcel ownership against agent") }
-
-    fun isOwnedGroup(pos: Vector3): Boolean { TODO("check parcel group ownership") }
-
-    fun updateCoarseLocations() { TODO("APR: use JVM equivalent") }
-
-    fun dirtyHeights() { TODO("GPU: mark height patches dirty") }
-
-    fun dirtyAllPatches() { TODO("GPU: mark all terrain patches dirty") }
-
-    fun renderPropertyLines() { TODO("GPU: render parcel ownership lines") }
-
-    fun renderPropertyLinesOnMinimap(scalePixelsPerMeter: Float, parcelOutlineColor: FloatArray) {
-        TODO("GPU: render property lines on minimap")
+    fun getLandHeightRegion(regionPos: Vector3): Float {
+        System.err.println("query terrain surface height")
+        return 0f
     }
 
-    fun updateRenderMatrix() { TODO("GPU: recompute region render matrix") }
+    fun getCompositionXY(x: Int, y: Int): Float {
+        System.err.println("query terrain composition texture")
+        return 0f
+    }
 
-    fun idleUpdate(maxUpdateTime: Float) { TODO("step region idle update") }
+    fun isOwnedSelf(pos: Vector3): Boolean {
+        System.err.println("check parcel ownership against agent")
+        return false
+    }
 
-    fun lightIdleUpdate() { TODO("step region light idle update") }
+    fun isOwnedGroup(pos: Vector3): Boolean {
+        System.err.println("check parcel group ownership")
+        return false
+    }
 
-    fun forceUpdate() { TODO("force-complete all pending region updates") }
+    fun updateCoarseLocations() {
+        System.err.println("APR: use JVM equivalent")
+    }
 
-    fun connectNeighbor(neighbor: ViewerRegion, direction: UInt) { TODO("APR: use JVM equivalent") }
+    fun dirtyHeights() {
+        System.err.println("GPU: mark height patches dirty")
+    }
 
-    fun updateNetStats() { TODO("APR: use JVM equivalent") }
+    fun dirtyAllPatches() {
+        System.err.println("GPU: mark all terrain patches dirty")
+    }
+
+    fun renderPropertyLines() {
+        System.err.println("GPU: render parcel ownership lines")
+    }
+
+    fun renderPropertyLinesOnMinimap(scalePixelsPerMeter: Float, parcelOutlineColor: FloatArray) {
+        System.err.println("GPU: render property lines on minimap")
+    }
+
+    fun updateRenderMatrix() {
+        System.err.println("GPU: recompute region render matrix")
+    }
+
+    fun idleUpdate(maxUpdateTime: Float) {
+        System.err.println("step region idle update")
+    }
+
+    fun lightIdleUpdate() {
+        System.err.println("step region light idle update")
+    }
+
+    fun forceUpdate() {
+        System.err.println("force-complete all pending region updates")
+    }
+
+    fun connectNeighbor(neighbor: ViewerRegion, direction: UInt) {
+        System.err.println("APR: use JVM equivalent")
+    }
+
+    fun updateNetStats() {
+        System.err.println("APR: use JVM equivalent")
+    }
 
     fun getPacketsLost(): UInt = packetsLost.toUInt()
 
-    fun sendMessage() { TODO("APR: use JVM equivalent") }
+    fun sendMessage() {
+        System.err.println("APR: use JVM equivalent")
+    }
 
-    fun sendReliableMessage() { TODO("APR: use JVM equivalent") }
+    fun sendReliableMessage() {
+        System.err.println("APR: use JVM equivalent")
+    }
 
     fun requestPostCapability(capName: String, postData: Map<String, Any>,
                               onSuccess: (() -> Unit)? = null,
                               onFailure: (() -> Unit)? = null): Boolean {
         if (!isCapabilityAvailable(capName)) return false
-        TODO("APR: use JVM equivalent - coroutine HTTP POST to cap URL")
+        System.err.println("APR: use JVM equivalent - coroutine HTTP POST to cap URL")
+        return false
     }
 
     fun requestGetCapability(capName: String, onSuccess: (() -> Unit)? = null,
                              onFailure: (() -> Unit)? = null): Boolean {
         if (!isCapabilityAvailable(capName)) return false
-        TODO("APR: use JVM equivalent - coroutine HTTP GET to cap URL")
+        System.err.println("APR: use JVM equivalent - coroutine HTTP GET to cap URL")
+        return false
     }
 
-    fun setCacheID(id: LLUUID) { TODO("store VO cache id") }
+    fun setCacheID(id: LLUUID) {
+        System.err.println("store VO cache id")
+    }
 
     fun probeCache(localId: UInt, crc: UInt, flags: UInt): CacheMissType {
-        TODO("APR: use JVM equivalent - check VO cache")
+        System.err.println("APR: use JVM equivalent - check VO cache")
+        return CacheMissType.NONE
     }
 
-    fun getCacheEntry(localId: UInt, valid: Boolean = true): Any? { TODO("APR: use JVM equivalent") }
+    fun getCacheEntry(localId: UInt, valid: Boolean = true): Any? {
+        System.err.println("APR: use JVM equivalent")
+        return null
+    }
 
-    fun requestCacheMisses() { TODO("APR: use JVM equivalent") }
+    fun requestCacheMisses() {
+        System.err.println("APR: use JVM equivalent")
+    }
 
     fun addCacheMissFull(localId: UInt) { cacheMissList.add(Pair(localId, CacheMissType.TOTAL)) }
 
-    fun clearCachedVisibleObjects() { TODO("clear VO cache visible objects") }
+    fun clearCachedVisibleObjects() {
+        System.err.println("clear VO cache visible objects")
+    }
 
-    fun killCacheEntry(localId: UInt) { TODO("remove VO cache entry") }
+    fun killCacheEntry(localId: UInt) {
+        System.err.println("remove VO cache entry")
+    }
 
     fun dumpCache() { println("ViewerRegion cache: hits=$regionCacheHitCount misses=$regionCacheMissCount") }
 
-    fun clearVOCacheFromMemory() { TODO("release VO cache memory") }
+    fun clearVOCacheFromMemory() {
+        System.err.println("release VO cache memory")
+    }
 
-    fun unpackRegionHandshake() { TODO("APR: use JVM equivalent") }
+    fun unpackRegionHandshake() {
+        System.err.println("APR: use JVM equivalent")
+    }
 
     fun calculateCenterGlobal() { /* center is derived from origin + width/2 */ }
 
-    fun calculateCameraDistance() { TODO("query camera position and compute distance") }
+    fun calculateCameraDistance() {
+        System.err.println("query camera position and compute distance")
+    }
 
     fun findOrphans(parentId: UInt) { orphanMap.remove(parentId) }
 
-    fun objectIsReturnable(pos: Vector3, boxes: List<Any>): Boolean { TODO("check parcel return policy") }
+    fun objectIsReturnable(pos: Vector3, boxes: List<Any>): Boolean {
+        System.err.println("check parcel return policy")
+        return false
+    }
 
-    fun getSimHostName(): String { TODO("APR: resolve host DNS name") }
+    fun getSimHostName(): String {
+        System.err.println("APR: resolve host DNS name")
+        return ""
+    }
 
     fun setSeedCapabilityAndRequest(url: String) { setSeedCapability(url); requestSimulatorFeatures() }
 
     fun setInterestListMode(mode: String) { interestListMode = mode }
 
-    fun resetInterestList() { TODO("APR: use JVM equivalent") }
+    fun resetInterestList() {
+        System.err.println("APR: use JVM equivalent")
+    }
 
     fun materialsCapThrottled(): Boolean = false
 
-    fun resetMaterialsCapThrottle() { TODO("reset throttle timer") }
+    fun resetMaterialsCapThrottle() {
+        System.err.println("reset throttle timer")
+    }
 
     fun getMaxMaterialsPerTransaction(): UInt = 50u
 
-    fun removeFromCreatedList(localId: UInt) { TODO("remove from non-cacheable object set") }
+    fun removeFromCreatedList(localId: UInt) {
+        System.err.println("remove from non-cacheable object set")
+    }
 
-    fun addToCreatedList(localId: UInt) { TODO("add to non-cacheable object set") }
+    fun addToCreatedList(localId: UInt) {
+        System.err.println("add to non-cacheable object set")
+    }
 
-    fun updateReflectionProbes(fullUpdate: Boolean) { TODO("GPU: rebuild reflection probe list") }
+    fun updateReflectionProbes(fullUpdate: Boolean) {
+        System.err.println("GPU: rebuild reflection probe list")
+    }
 
     fun showReleaseNotes() { releaseNotesRequested = true }
 

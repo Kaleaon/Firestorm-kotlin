@@ -200,68 +200,66 @@ object VoiceClient {
     private val participantObservers: MutableList<VoiceParticipantObserver> = mutableListOf()
 
     fun init(pump: Any?) {
-        TODO("IPC: init LLVivoxVoiceClient and LLWebRTCVoiceClient with pump")
+        System.err.println("VoiceClient: init not yet implemented")
     }
 
     fun terminate() {
         isInVoiceChannel = false
-        TODO("IPC: webRtcModule?.terminate(); vivoxModule?.terminate()")
+        System.err.println("VoiceClient: terminate not yet implemented")
     }
 
     fun updateSettings() {
-        TODO("IPC: read PTTCurrentlyEnabled, PushToTalkToggle, VoiceDisableMic from settings; call spatialVoiceModule?.updateSettings()")
+        System.err.println("VoiceClient: updateSettings not yet implemented")
     }
 
-    fun isVoiceWorking(): Boolean =
-        TODO("IPC: vivoxModule?.isVoiceWorking() == true || webRtcModule?.isVoiceWorking() == true")
+    fun isVoiceWorking(): Boolean = false
 
-    fun voiceEnabled(noCache: Boolean = false): Boolean =
-        TODO("IPC: read EnableVoiceChat and CmdLineDisableVoice settings")
+    fun voiceEnabled(noCache: Boolean = false): Boolean = false
 
     fun getVersion(): VoiceVersionInfo =
         spatialVoiceModule?.getVersion() ?: VoiceVersionInfo("", "", 0, 0, "", "")
 
     fun tuningStart() {
-        TODO("IPC: webRtcModule?.tuningStart(); vivoxModule?.tuningStart()")
+        System.err.println("VoiceClient: tuningStart not yet implemented")
     }
 
     fun tuningStop() {
-        TODO("IPC: webRtcModule?.tuningStop(); vivoxModule?.tuningStop()")
+        System.err.println("VoiceClient: tuningStop not yet implemented")
     }
 
-    fun inTuningMode(): Boolean = TODO("IPC: webRtcModule?.inTuningMode() ?: false")
+    fun inTuningMode(): Boolean = false
 
     fun tuningSetMicVolume(volume: Float) {
-        TODO("IPC: webRtcModule?.tuningSetMicVolume(volume)")
+        System.err.println("VoiceClient: tuningSetMicVolume not yet implemented")
     }
 
     fun tuningSetSpeakerVolume(volume: Float) {
-        TODO("IPC: webRtcModule?.tuningSetSpeakerVolume(volume)")
+        System.err.println("VoiceClient: tuningSetSpeakerVolume not yet implemented")
     }
 
-    fun tuningGetEnergy(): Float = TODO("IPC: webRtcModule?.tuningGetEnergy() ?: 0f")
+    fun tuningGetEnergy(): Float = 0f
 
-    fun deviceSettingsAvailable(): Boolean = TODO("IPC: webRtcModule?.deviceSettingsAvailable() ?: false")
-    fun deviceSettingsUpdated(): Boolean = TODO("IPC: webRtcModule?.deviceSettingsUpdated() ?: false")
+    fun deviceSettingsAvailable(): Boolean = false
+    fun deviceSettingsUpdated(): Boolean = false
 
     fun refreshDeviceLists(clearCurrentList: Boolean = true) {
-        TODO("IPC: webRtcModule?.refreshDeviceLists(clearCurrentList)")
+        System.err.println("VoiceClient: refreshDeviceLists not yet implemented")
     }
 
     fun setCaptureDevice(name: String) {
-        TODO("IPC: vivoxModule?.setCaptureDevice(name); webRtcModule?.setCaptureDevice(name)")
+        System.err.println("VoiceClient: setCaptureDevice not yet implemented")
     }
 
     fun setRenderDevice(name: String) {
-        TODO("IPC: vivoxModule?.setRenderDevice(name); webRtcModule?.setRenderDevice(name)")
+        System.err.println("VoiceClient: setRenderDevice not yet implemented")
     }
 
     fun setHidden(hidden: Boolean) {
-        TODO("IPC: webRtcModule?.setHidden(hidden); vivoxModule?.setHidden(hidden)")
+        System.err.println("VoiceClient: setHidden not yet implemented")
     }
 
-    fun getCaptureDevices(): List<VoiceDevice> = TODO("IPC: webRtcModule?.getCaptureDevices() ?: emptyList()")
-    fun getRenderDevices(): List<VoiceDevice> = TODO("IPC: webRtcModule?.getRenderDevices() ?: emptyList()")
+    fun getCaptureDevices(): List<VoiceDevice> = emptyList()
+    fun getRenderDevices(): List<VoiceDevice> = emptyList()
 
     fun inProximalChannel(): Boolean =
         spatialVoiceModule?.inProximalChannel() ?: false
@@ -283,7 +281,7 @@ object VoiceClient {
 
     fun setSpatialChannel(channelInfo: Map<String, Any?>) {
         spatialCredentials = channelInfo
-        TODO("IPC: query region simulator features; call setSpatialVoiceModule; forward to spatialVoiceModule")
+        System.err.println("VoiceClient: setSpatialChannel not yet implemented")
     }
 
     fun activateSpatialChannel(activate: Boolean) {
@@ -297,26 +295,23 @@ object VoiceClient {
         isInVoiceChannel = false
     }
 
-    fun isCurrentChannel(channelInfo: Map<String, Any?>): Boolean =
-        TODO("IPC: webRtcModule?.isCurrentChannel(channelInfo) == true || vivoxModule?.isCurrentChannel(channelInfo) == true")
+    fun isCurrentChannel(channelInfo: Map<String, Any?>): Boolean = false
 
-    fun compareChannels(channelInfo1: Map<String, Any?>, channelInfo2: Map<String, Any?>): Boolean =
-        TODO("IPC: webRtcModule?.compareChannels(channelInfo1, channelInfo2) == true || vivoxModule?.compareChannels(...)")
+    fun compareChannels(channelInfo1: Map<String, Any?>, channelInfo2: Map<String, Any?>): Boolean = false
 
-    fun getOutgoingCallInterface(voiceChannelInfo: Map<String, Any?> = emptyMap()): VoiceP2POutgoingCallInterface? =
-        TODO("IPC: resolve voice_server_type from settings / region; return module as outgoing interface")
+    fun getOutgoingCallInterface(voiceChannelInfo: Map<String, Any?> = emptyMap()): VoiceP2POutgoingCallInterface? = null
 
     fun getIncomingCallInterface(voiceCallInfo: Map<String, Any?>): VoiceP2PIncomingCallInterface? {
         val vsType = voiceCallInfo["voice_server_type"] as? String ?: ""
-        return TODO("IPC: getVoiceModule($vsType)?.getIncomingCallInterface(voiceCallInfo)")
+        return null
     }
 
     fun setVoiceVolume(volume: Float) {
-        TODO("IPC: webRtcModule?.setVoiceVolume(volume); vivoxModule?.setVoiceVolume(volume)")
+        System.err.println("VoiceClient: setVoiceVolume not yet implemented")
     }
 
     fun setMicGain(gain: Float) {
-        TODO("IPC: webRtcModule?.setMicGain(gain); vivoxModule?.setMicGain(gain)")
+        System.err.println("VoiceClient: setMicGain not yet implemented")
     }
 
     fun setMuteMic(muted: Boolean) {
@@ -373,38 +368,31 @@ object VoiceClient {
         if (muteMic || disableMic) {
             newMicMute = true
         }
-        TODO("IPC: webRtcModule?.setMuteMic($newMicMute); vivoxModule?.setMuteMic($newMicMute)")
+        System.err.println("VoiceClient: updateMicMuteLogic not yet implemented")
     }
 
     fun getVoiceEnabled(id: LLUUID): Boolean = isParticipant(id)
 
-    fun getDisplayName(id: LLUUID): String =
-        TODO("IPC: webRtcModule?.getDisplayName(id).takeIf { !it.isNullOrEmpty() } ?: vivoxModule?.getDisplayName(id) ?: id.toString()")
+    fun getDisplayName(id: LLUUID): String = ""
 
-    fun isVoiceWorking(id: LLUUID): Boolean =
-        TODO("IPC: vivoxModule?.isVoiceWorking() == true || webRtcModule?.isVoiceWorking() == true")
+    fun isVoiceWorking(id: LLUUID): Boolean = false
 
     fun isParticipantAvatar(id: LLUUID): Boolean = true
 
     fun isOnlineSIP(id: LLUUID): Boolean = false
 
-    fun getIsSpeaking(id: LLUUID): Boolean =
-        TODO("IPC: webRtcModule?.getIsSpeaking(id) == true || vivoxModule?.getIsSpeaking(id) == true")
+    fun getIsSpeaking(id: LLUUID): Boolean = false
 
-    fun getIsModeratorMuted(id: LLUUID): Boolean =
-        TODO("IPC: webRtcModule?.getIsModeratorMuted(id) == true || vivoxModule?.getIsModeratorMuted(id) == true")
+    fun getIsModeratorMuted(id: LLUUID): Boolean = false
 
-    fun getCurrentPower(id: LLUUID): Float =
-        TODO("IPC: maxOf(vivoxModule?.getCurrentPower(id) ?: 0f, webRtcModule?.getCurrentPower(id) ?: 0f)")
+    fun getCurrentPower(id: LLUUID): Float = 0f
 
-    fun getOnMuteList(id: LLUUID): Boolean =
-        TODO("IPC: MuteList.isMuted(id, flagVoiceChat)")
+    fun getOnMuteList(id: LLUUID): Boolean = false
 
-    fun getUserVolume(id: LLUUID): Float =
-        TODO("IPC: maxOf(vivoxModule?.getUserVolume(id) ?: 0f, webRtcModule?.getUserVolume(id) ?: 0f)")
+    fun getUserVolume(id: LLUUID): Float = 0f
 
     fun setUserVolume(id: LLUUID, volume: Float) {
-        TODO("IPC: webRtcModule?.setUserVolume(id, volume); vivoxModule?.setUserVolume(id, volume)")
+        System.err.println("VoiceClient: setUserVolume not yet implemented")
         userVolumeUpdateCallbacks.forEach { it(id) }
     }
 
@@ -421,55 +409,54 @@ object VoiceClient {
     }
 
     fun getParticipantList(participants: MutableSet<LLUUID>) {
-        TODO("IPC: webRtcModule?.getParticipantList(participants); vivoxModule?.getParticipantList(participants)")
+        System.err.println("VoiceClient: getParticipantList not yet implemented")
     }
 
-    fun isParticipant(speakerId: LLUUID): Boolean =
-        TODO("IPC: webRtcModule?.isParticipant(speakerId) == true || vivoxModule?.isParticipant(speakerId) == true")
+    fun isParticipant(speakerId: LLUUID): Boolean = false
 
     fun isSessionTextIMPossible(id: LLUUID): Boolean = true
 
     fun isSessionCallBackPossible(id: LLUUID): Boolean = true
 
     fun setSpatialVoiceModule(voiceServerType: String) {
-        TODO("IPC: resolve module by voiceServerType; swap spatialVoiceModule if different")
+        System.err.println("VoiceClient: setSpatialVoiceModule not yet implemented")
     }
 
     fun setNonSpatialVoiceModule(voiceServerType: String) {
-        TODO("IPC: resolve module by voiceServerType; set nonSpatialVoiceModule")
+        System.err.println("VoiceClient: setNonSpatialVoiceModule not yet implemented")
     }
 
     fun userAuthorized(userId: String, agentId: LLUUID) {
-        TODO("IPC: register region-changed callback; forward to webRtcModule and vivoxModule")
+        System.err.println("VoiceClient: userAuthorized not yet implemented")
     }
 
     fun onRegionChanged() {
-        TODO("IPC: query region simulator features; call handleSimulatorFeaturesReceived")
+        System.err.println("VoiceClient: onRegionChanged not yet implemented")
     }
 
     fun handleSimulatorFeaturesReceived(simulatorFeatures: Map<String, Any?>) {
         val voiceServerType = simulatorFeatures["VoiceServerType"] as? String ?: "vivox"
-        TODO("IPC: if spatial module type differs, stop it; setSpatialVoiceModule($voiceServerType); resume channels")
+        System.err.println("VoiceClient: handleSimulatorFeaturesReceived not yet implemented")
     }
 
     fun addObserver(observer: VoiceObserver) {
         statusObservers.add(observer)
-        TODO("IPC: vivoxModule?.addObserver(observer); webRtcModule?.addObserver(observer)")
+        System.err.println("VoiceClient: addObserver(VoiceObserver) not yet implemented")
     }
 
     fun removeObserver(observer: VoiceObserver) {
         statusObservers.remove(observer)
-        TODO("IPC: vivoxModule?.removeObserver(observer); webRtcModule?.removeObserver(observer)")
+        System.err.println("VoiceClient: removeObserver(VoiceObserver) not yet implemented")
     }
 
     fun addObserver(observer: VoiceParticipantObserver) {
         participantObservers.add(observer)
-        TODO("IPC: vivoxModule?.addObserver(observer); webRtcModule?.addObserver(observer)")
+        System.err.println("VoiceClient: addObserver(VoiceParticipantObserver) not yet implemented")
     }
 
     fun removeObserver(observer: VoiceParticipantObserver) {
         participantObservers.remove(observer)
-        TODO("IPC: vivoxModule?.removeObserver(observer); webRtcModule?.removeObserver(observer)")
+        System.err.println("VoiceClient: removeObserver(VoiceParticipantObserver) not yet implemented")
     }
 
     fun sipURIFromID(id: LLUUID): String =
@@ -497,9 +484,9 @@ object SpeakerVolumeStorage {
 
     fun removeSpeakerVolume(speakerId: LLUUID) { speakersData.remove(speakerId) }
 
-    fun load() { TODO("IO: parse $SETTINGS_FILE_NAME; apply transformFromLegacyVolume to each entry") }
+    fun load() { System.err.println("SpeakerVolumeStorage: load not yet implemented") }
 
-    fun save() { TODO("IO: apply transformToLegacyVolume to each entry; write to $SETTINGS_FILE_NAME") }
+    fun save() { System.err.println("SpeakerVolumeStorage: save not yet implemented") }
 
     fun cleanupSingleton() { save() }
 

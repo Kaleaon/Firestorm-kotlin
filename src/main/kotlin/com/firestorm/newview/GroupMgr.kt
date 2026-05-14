@@ -195,34 +195,42 @@ object GroupMgr {
      * Request group properties from the server for [id].
      * Maps to `LLGroupMgr::sendGroupPropertiesRequest()`.
      */
-    fun requestGroupData(id: LLUUID): Unit = TODO("sendGroupPropertiesRequest $id")
+    fun requestGroupData(id: LLUUID) {
+        System.err.println("GroupMgr: requestGroupData not yet implemented")
+    }
 
     /**
      * Request full member list for [groupId].
      * Maps to `LLGroupMgr::sendGroupMembersRequest()` /
      * `sendCapGroupMembersRequest()`.
      */
-    fun requestGroupMembers(groupId: LLUUID): Unit = TODO("sendGroupMembersRequest $groupId")
+    fun requestGroupMembers(groupId: LLUUID) {
+        System.err.println("GroupMgr: requestGroupMembers not yet implemented")
+    }
 
     /**
      * Request role definitions for [groupId].
      * Maps to `LLGroupMgr::sendGroupRoleDataRequest()`.
      */
-    fun requestGroupRoleData(groupId: LLUUID): Unit = TODO("sendGroupRoleDataRequest $groupId")
+    fun requestGroupRoleData(groupId: LLUUID) {
+        System.err.println("GroupMgr: requestGroupRoleData not yet implemented")
+    }
 
     /**
      * Request role-to-member mapping for [groupId].
      * Maps to `LLGroupMgr::sendGroupRoleMembersRequest()`.
      */
-    fun requestGroupRoleMembers(groupId: LLUUID): Unit =
-        TODO("sendGroupRoleMembersRequest $groupId")
+    fun requestGroupRoleMembers(groupId: LLUUID) {
+        System.err.println("GroupMgr: requestGroupRoleMembers not yet implemented")
+    }
 
     /**
      * Send pending role-member changes for [groupId] to the server.
      * Maps to `LLGroupMgr::sendGroupRoleMemberChanges()`.
      */
-    fun sendGroupRoleMemberChanges(groupId: LLUUID): Unit =
-        TODO("sendGroupRoleMemberChanges $groupId")
+    fun sendGroupRoleMemberChanges(groupId: LLUUID) {
+        System.err.println("GroupMgr: sendGroupRoleMemberChanges not yet implemented")
+    }
 
     /**
      * Invite [invitees] to [groupId].
@@ -231,21 +239,25 @@ object GroupMgr {
      * In the C++ version each invitee is paired with a role UUID; this stub
      * accepts a flat list and assigns the Everyone role implicitly.
      */
-    fun sendGroupMemberInvites(groupId: LLUUID, invitees: List<LLUUID>): Unit =
-        TODO("sendGroupMemberInvites groupId=$groupId invitees=$invitees")
+    fun sendGroupMemberInvites(groupId: LLUUID, invitees: List<LLUUID>) {
+        System.err.println("GroupMgr: sendGroupMemberInvites not yet implemented")
+    }
 
     /**
      * Eject [memberIds] from [groupId].
      * Maps to `LLGroupMgr::sendGroupMemberEjects()`.
      */
-    fun sendGroupMemberEjects(groupId: LLUUID, memberIds: List<LLUUID>): Unit =
-        TODO("sendGroupMemberEjects groupId=$groupId members=$memberIds")
+    fun sendGroupMemberEjects(groupId: LLUUID, memberIds: List<LLUUID>) {
+        System.err.println("GroupMgr: sendGroupMemberEjects not yet implemented")
+    }
 
     /**
      * Submit updated group info (name, charter, etc.) for [groupId].
      * Maps to `LLGroupMgr::sendUpdateGroupInfo()`.
      */
-    fun sendUpdateGroupInfo(groupId: LLUUID): Unit = TODO("sendUpdateGroupInfo $groupId")
+    fun sendUpdateGroupInfo(groupId: LLUUID) {
+        System.err.println("GroupMgr: sendUpdateGroupInfo not yet implemented")
+    }
 
     /**
      * Submit a ban-list request of type [requestType] for [groupId].
@@ -256,7 +268,9 @@ object GroupMgr {
         requestType: BanRequestType,
         banAction: BanAction = BanAction.NO_ACTION,
         banList: List<LLUUID> = emptyList()
-    ): Unit = TODO("sendGroupBanRequest groupId=$groupId type=$requestType action=$banAction")
+    ) {
+        System.err.println("GroupMgr: sendGroupBanRequest not yet implemented")
+    }
 
     // -----------------------------------------------------------------------
     // Cache management

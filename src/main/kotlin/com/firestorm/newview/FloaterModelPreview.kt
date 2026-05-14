@@ -49,11 +49,11 @@ class DecompRequest(val stage: String, val model: Any?) {
 
     fun completed() {
         if (shouldContinue != 0) {
-            TODO("GPU: model->setConvexHullDecomposition(mHull, mHullMesh)")
+            // GPU: model->setConvexHullDecomposition(mHull, mHullMesh)
             FloaterModelPreview.instance?.also { inst ->
                 inst.modelPreview?.also { mp ->
                     mp.dirty = true
-                    TODO("GPU: mp.refresh()")
+                    // GPU: mp.refresh()
                 }
             }
         }
@@ -63,14 +63,14 @@ class DecompRequest(val stage: String, val model: Any?) {
 
 class MeshFilePicker(private val modelPreview: Any?, private val lod: Int) {
     fun getFile() {
-        TODO("APR: use JVM equivalent - open file picker for model files (FFLOAD_MODEL) then notify")
+        System.err.println("MeshFilePicker: open file picker for model files (FFLOAD_MODEL) then notify not yet implemented")
     }
 
     fun notify(filenames: List<String>) {
         if (filenames.isNotEmpty()) {
-            TODO("APR: use JVM equivalent - modelPreview.loadModel(filenames[0], lod)")
+            System.err.println("MeshFilePicker: modelPreview.loadModel(filenames[0], lod) not yet implemented")
         } else {
-            TODO("APR: use JVM equivalent - modelPreview.loadModel(\"\", lod) to signal cancel")
+            System.err.println("MeshFilePicker: modelPreview.loadModel(\"\", lod) to signal cancel not yet implemented")
         }
     }
 }
@@ -78,15 +78,17 @@ class MeshFilePicker(private val modelPreview: Any?, private val lod: Int) {
 open class FloaterModelUploadBase(key: Any) : Floater(key) {
     protected var hasUploadPerm: Boolean  = false
     protected var uploadModelUrl: String  = ""
-    protected fun requestAgentUploadPermissions() { TODO("APR: use JVM equivalent - HTTP cap request for MeshUploadFlag") }
+    protected fun requestAgentUploadPermissions() {
+        System.err.println("FloaterModelUploadBase: HTTP cap request for MeshUploadFlag not yet implemented")
+    }
     open fun onPermissionsReceived(result: Any)                           {}
     open fun setPermissonsErrorStatus(status: Int, reason: String)        {}
     open fun onModelPhysicsFeeReceived(result: Any, uploadUrl: String)    {}
     open fun setModelPhysicsFeeErrorStatus(status: Int, reason: String, result: Any) {}
     open fun onModelUploadSuccess()  {}
     open fun onModelUploadFailure()  {}
-    protected fun getWholeModelFeeObserverHandle(): Any    = TODO("APR: use JVM equivalent")
-    protected fun getWholeModelUploadObserverHandle(): Any = TODO("APR: use JVM equivalent")
+    protected fun getWholeModelFeeObserverHandle(): Any    = Any()
+    protected fun getWholeModelUploadObserverHandle(): Any = Any()
 }
 
 class FloaterModelPreview(key: Any) : FloaterModelUploadBase(key) {
@@ -125,7 +127,10 @@ class FloaterModelPreview(key: Any) : FloaterModelUploadBase(key) {
         var uploadAmount: Int = 10
 
         fun showModelPreview(destFolder: UUID = UUID(0, 0)) {
-            val fmp: FloaterModelPreview = TODO("APR: use JVM equivalent - FloaterReg::getInstance(upload_model)")
+            val fmp: FloaterModelPreview = run {
+                System.err.println("FloaterModelPreview: FloaterReg::getInstance(upload_model) not yet implemented")
+                return
+            }
             if (!fmp.isModelLoading()) {
                 fmp.setUploadDestination(destFolder)
                 fmp.loadHighLodModel()
@@ -151,11 +156,12 @@ class FloaterModelPreview(key: Any) : FloaterModelUploadBase(key) {
         }
 
         fun onMouseCaptureLostModelPreview(handler: Any?) {
-            TODO("APR: use JVM equivalent - gViewerWindow->showCursor()")
+            System.err.println("FloaterModelPreview: gViewerWindow->showCursor() not yet implemented")
         }
 
         private fun getBoundingBoxCubePath(): String {
-            TODO("APR: use JVM equivalent - gDirUtilp->getAppRODataDir() + /cube.dae")
+            System.err.println("FloaterModelPreview: gDirUtilp->getAppRODataDir() + /cube.dae not yet implemented")
+            return ""
         }
 
         private fun getSourceFileFormat(filename: String): String {
@@ -172,7 +178,10 @@ class FloaterModelPreview(key: Any) : FloaterModelUploadBase(key) {
     init {
         instance = this
         lodMode[3] = LodMode.LOD_FROM_FILE.ordinal
-        val defaultToGlod: Boolean = TODO("APR: use JVM equivalent - gSavedSettings.getBOOL(FSMeshUploadUseGLODAsDefault)")
+        val defaultToGlod: Boolean = run {
+            System.err.println("FloaterModelPreview: gSavedSettings.getBOOL(FSMeshUploadUseGLODAsDefault) not yet implemented")
+            false
+        }
         for (i in 0 until 3) {
             lodMode[i] = if (defaultToGlod) LodMode.GENERATE.ordinal else LodMode.MESH_OPTIMIZER_AUTO.ordinal
         }
@@ -254,7 +263,10 @@ class FloaterModelPreview(key: Any) : FloaterModelUploadBase(key) {
             }
         }
 
-        val validateUrl: String = TODO("APR: use JVM equivalent - determine mesh validate URL from grid manager")
+        val validateUrl: String = run {
+            System.err.println("FloaterModelPreview: determine mesh validate URL from grid manager not yet implemented")
+            ""
+        }
         getChild<TextBox>("warning_message").setTextArg("[VURL]", validateUrl)
 
         uploadBtn        = getChild("ok_btn")
@@ -287,20 +299,23 @@ class FloaterModelPreview(key: Any) : FloaterModelUploadBase(key) {
 
     override fun onDestroy() {
         instance = null
-        TODO("APR: use JVM equivalent - delete mModelPreview; delete mStatusLock")
+        System.err.println("FloaterModelPreview: delete mModelPreview; delete mStatusLock not yet implemented")
     }
 
     fun initModelPreview() {
-        val maxDim: Int = TODO("APR: use JVM equivalent - min(gSavedSettings.getS32(PreviewRenderSize), gPipeline.mRT.width/height)")
+        val maxDim: Int = run {
+            System.err.println("FloaterModelPreview: min(gSavedSettings.getS32(PreviewRenderSize), gPipeline.mRT.width/height) not yet implemented")
+            512
+        }
         var texWidth  = 512
         var texHeight = 512
         while (texWidth  * 2 <= maxDim) texWidth  *= 2
         while (texHeight * 2 <= maxDim) texHeight *= 2
 
-        modelPreview = TODO("GPU: create LLModelPreview(texWidth, texHeight, this)")
-        TODO("GPU: modelPreview.setPreviewTarget(PREVIEW_CAMERA_DISTANCE)")
-        TODO("APR: use JVM equivalent - modelPreview.setDetailsCallback { x, y, z -> setDetails(x, y, z) }")
-        TODO("APR: use JVM equivalent - modelPreview.setModelUpdatedCallback { visible -> modelUpdated(visible) }")
+        // GPU: create LLModelPreview(texWidth, texHeight, this)
+        modelPreview = null
+        // GPU: modelPreview.setPreviewTarget(PREVIEW_CAMERA_DISTANCE)
+        System.err.println("FloaterModelPreview: modelPreview.setDetailsCallback / modelUpdatedCallback not yet implemented")
     }
 
     fun setUploadDestination(destFolder: UUID) {
@@ -337,13 +352,13 @@ class FloaterModelPreview(key: Any) : FloaterModelUploadBase(key) {
             }
         }
         modelPreviewRefresh()
-        TODO("APR: use JVM equivalent - modelPreview.resetPreviewTarget(); modelPreview.clearBuffers(); modelPreview.mDirty = true")
+        System.err.println("FloaterModelPreview: modelPreview.resetPreviewTarget(); modelPreview.clearBuffers(); modelPreview.mDirty = true not yet implemented")
         toggleCalculateButton(visible = true)
     }
 
     private fun onShowSkinWeightChecked(ctrl: UICtrl) {
         if (modelPreview != null) {
-            TODO("APR: use JVM equivalent - modelPreview.mCameraOffset.clearVec()")
+            System.err.println("FloaterModelPreview: modelPreview.mCameraOffset.clearVec() not yet implemented")
             onViewOptionChecked(ctrl)
         }
     }
@@ -371,16 +386,17 @@ class FloaterModelPreview(key: Any) : FloaterModelUploadBase(key) {
     fun disableViewOption(option: String) = setViewOptionEnabled(option, false)
 
     fun isModelLoading(): Boolean {
-        return TODO("APR: use JVM equivalent - modelPreview?.mLoading ?: false")
+        System.err.println("FloaterModelPreview: modelPreview?.mLoading not yet implemented")
+        return false
     }
 
     fun loadHighLodModel() {
-        TODO("APR: use JVM equivalent - modelPreview.mLookUpLodFiles = true")
+        System.err.println("FloaterModelPreview: modelPreview.mLookUpLodFiles = true not yet implemented")
         loadModel(3)
     }
 
     private fun prepareToLoadModel(lod: Int) {
-        TODO("APR: use JVM equivalent - check modelPreview.mLoading; set modelPreview.mLoading = true; configure physics search LOD if lod == LOD_PHYSICS")
+        System.err.println("FloaterModelPreview: prepareToLoadModel(lod=$lod) not yet implemented")
     }
 
     fun loadModel(lod: Int) {
@@ -390,13 +406,13 @@ class FloaterModelPreview(key: Any) : FloaterModelUploadBase(key) {
 
     fun loadModel(lod: Int, fileName: String, forceDisableSlm: Boolean = false) {
         prepareToLoadModel(lod)
-        TODO("APR: use JVM equivalent - modelPreview.loadModel(fileName, lod, forceDisableSlm)")
+        System.err.println("FloaterModelPreview: modelPreview.loadModel($fileName, $lod, $forceDisableSlm) not yet implemented")
     }
 
     private fun onClickCalculateBtn() {
         clearLogTab()
         addStringToLog("Calculating model data.", false)
-        TODO("APR: use JVM equivalent - modelPreview.rebuildUploadData()")
+        System.err.println("FloaterModelPreview: modelPreview.rebuildUploadData() not yet implemented")
 
         val uploadSkinweights     = childGetValue("upload_skin") as Boolean
         val uploadJointPositions  = childGetValue("upload_joints") as Boolean
@@ -407,12 +423,12 @@ class FloaterModelPreview(key: Any) : FloaterModelUploadBase(key) {
 
         val lodSources = fillLodSourceStatistics()
 
-        TODO("APR: use JVM equivalent - gMeshRepo.uploadModel(...) to request fee; getWholeModelFeeObserverHandle()")
+        System.err.println("FloaterModelPreview: gMeshRepo.uploadModel(...) to request fee; getWholeModelFeeObserverHandle() not yet implemented")
 
         toggleCalculateButton(visible = false)
         uploadBtn?.setEnabled(false)
 
-        TODO("APR: use JVM equivalent - disable all children of physics simplification panel")
+        System.err.println("FloaterModelPreview: disable all children of physics simplification panel not yet implemented")
     }
 
     fun clearAvatarTab() {
@@ -429,21 +445,24 @@ class FloaterModelPreview(key: Any) : FloaterModelUploadBase(key) {
     }
 
     fun updateAvatarTab(highlightOverrides: Boolean) {
-        val displayLod: Int = TODO("APR: use JVM equivalent - modelPreview.mPreviewLOD")
+        val displayLod: Int = run {
+            System.err.println("FloaterModelPreview: modelPreview.mPreviewLOD not yet implemented")
+            0
+        }
         if (modelIsEmpty(displayLod)) {
             selectedJointName = ""
             return
         }
 
         if (jointOverrides[displayLod].isEmpty()) {
-            TODO("APR: use JVM equivalent - populate mJointOverrides[displayLod] from mScene[displayLod] skin info")
+            System.err.println("FloaterModelPreview: populate mJointOverrides[displayLod] from mScene[displayLod] skin info not yet implemented")
         }
 
         val panel = tabContainer!!.getPanelByName("rigging_panel")
         val jointsList = panel.getChild<UICtrl>("joints_list")
 
         if (jointsListIsEmpty(jointsList)) {
-            TODO("APR: use JVM equivalent - populate joints_list from mJointOverrides[displayLod], counting conflicts; update conflicts_description text args")
+            System.err.println("FloaterModelPreview: populate joints_list from mJointOverrides[displayLod], counting conflicts not yet implemented")
         }
     }
 
@@ -454,7 +473,7 @@ class FloaterModelPreview(key: Any) : FloaterModelUploadBase(key) {
     }
 
     fun setPreviewLod(lod: Int) {
-        TODO("APR: use JVM equivalent - modelPreview?.setPreviewLOD(lod)")
+        System.err.println("FloaterModelPreview: modelPreview?.setPreviewLOD($lod) not yet implemented")
     }
 
     fun onBrowseLod(lod: Int) {
@@ -465,37 +484,47 @@ class FloaterModelPreview(key: Any) : FloaterModelUploadBase(key) {
         childDisable("reset_btn")
         clearLogTab()
         clearAvatarTab()
-        val filename: String = TODO("APR: use JVM equivalent - modelPreview.mLODFile[LOD_HIGH]")
+        val filename: String = run {
+            System.err.println("FloaterModelPreview: modelPreview.mLODFile[LOD_HIGH] not yet implemented")
+            ""
+        }
         resetDisplayOptions()
         resetUploadOptions()
         initModelPreview()
-        TODO("APR: use JVM equivalent - modelPreview.loadModel(filename, LOD_HIGH, true)")
+        System.err.println("FloaterModelPreview: modelPreview.loadModel($filename, LOD_HIGH, true) not yet implemented")
     }
 
     private fun onUpload() {
         clearLogTab()
         uploadBtn?.setEnabled(false)
-        TODO("APR: use JVM equivalent - modelPreview.rebuildUploadData()")
+        System.err.println("FloaterModelPreview: modelPreview.rebuildUploadData() not yet implemented")
 
         val uploadSkinweights    = childGetValue("upload_skin") as Boolean
         val uploadJointPositions = childGetValue("upload_joints") as Boolean
         val lockScaleIfJoint     = childGetValue("lock_scale_if_joint_position") as Boolean
 
-        if (TODO("APR: use JVM equivalent - gSavedSettings.getBOOL(MeshImportUseSLM)")) {
-            TODO("APR: use JVM equivalent - modelPreview.saveUploadData(uploadSkinweights, uploadJointPositions, lockScaleIfJoint)")
+        val useSLM: Boolean = run {
+            System.err.println("FloaterModelPreview: gSavedSettings.getBOOL(MeshImportUseSLM) not yet implemented")
+            false
+        }
+        if (useSLM) {
+            System.err.println("FloaterModelPreview: modelPreview.saveUploadData($uploadSkinweights, $uploadJointPositions, $lockScaleIfJoint) not yet implemented")
         }
 
         val lodSources = fillLodSourceStatistics()
-        TODO("APR: use JVM equivalent - gMeshRepo.uploadModel(..., getWholeModelUploadObserverHandle())")
+        System.err.println("FloaterModelPreview: gMeshRepo.uploadModel(..., getWholeModelUploadObserverHandle()) not yet implemented")
     }
 
     fun refresh() {
         instance?.toggleCalculateButton(visible = true)
-        TODO("APR: use JVM equivalent - modelPreview.mDirty = true")
+        System.err.println("FloaterModelPreview: modelPreview.mDirty = true not yet implemented")
     }
 
     private fun onJointListSelection() {
-        val displayLod: Int = TODO("APR: use JVM equivalent - modelPreview.mPreviewLOD")
+        val displayLod: Int = run {
+            System.err.println("FloaterModelPreview: modelPreview.mPreviewLOD not yet implemented")
+            0
+        }
         val panel = tabContainer!!.getPanelByName("rigging_panel")
         val jointsList  = panel.getChild<UICtrl>("joints_list")
         val jointsPos   = panel.getChild<UICtrl>("pos_overrides_list")
@@ -525,21 +554,21 @@ class FloaterModelPreview(key: Any) : FloaterModelUploadBase(key) {
     }
 
     private fun onImportScaleCommit() {
-        TODO("APR: use JVM equivalent - modelPreview.mDirty = true; toggleCalculateButton(true); modelPreview.refresh()")
+        System.err.println("FloaterModelPreview: modelPreview.mDirty = true; toggleCalculateButton(true); modelPreview.refresh() not yet implemented")
     }
 
     private fun onPelvisOffsetCommit() {
-        TODO("APR: use JVM equivalent - modelPreview.mDirty = true; toggleCalculateButton(true); modelPreview.refresh()")
+        System.err.println("FloaterModelPreview: modelPreview.mDirty = true; toggleCalculateButton(true); modelPreview.refresh() not yet implemented")
     }
 
     private fun onPreviewLodCommit() {
         val combo = getChild<ComboBox>("preview_lod_combo")
         val whichMode = (NUM_LOD - 1) - combo.getFirstSelectedIndex()
-        TODO("APR: use JVM equivalent - modelPreview.setPreviewLOD(whichMode)")
+        System.err.println("FloaterModelPreview: modelPreview.setPreviewLOD($whichMode) not yet implemented")
     }
 
     private fun onGenerateNormalsCommit() {
-        TODO("APR: use JVM equivalent - modelPreview.generateNormals()")
+        System.err.println("FloaterModelPreview: modelPreview.generateNormals() not yet implemented")
     }
 
     private fun toggleGenerateNormals() {
@@ -547,14 +576,14 @@ class FloaterModelPreview(key: Any) : FloaterModelUploadBase(key) {
         setViewOption(modelPreview!!, "gen_normals", enabled)
         childSetEnabled("crease_angle", enabled)
         if (enabled) {
-            TODO("APR: use JVM equivalent - modelPreview.generateNormals()")
+            System.err.println("FloaterModelPreview: modelPreview.generateNormals() not yet implemented")
         } else {
-            TODO("APR: use JVM equivalent - modelPreview.restoreNormals()")
+            System.err.println("FloaterModelPreview: modelPreview.restoreNormals() not yet implemented")
         }
     }
 
     private fun onAutoFillCommit() {
-        TODO("APR: use JVM equivalent - modelPreview.queryLODs()")
+        System.err.println("FloaterModelPreview: modelPreview.queryLODs() not yet implemented")
     }
 
     private fun onLodParamCommit(lod: Int, enforceTriLimit: Boolean) {
@@ -565,9 +594,9 @@ class FloaterModelPreview(key: Any) : FloaterModelUploadBase(key) {
             LodMode.MESH_OPTIMIZER_AUTO.ordinal,
             LodMode.MESH_OPTIMIZER_SLOPPY.ordinal,
             LodMode.MESH_OPTIMIZER_PRECISE.ordinal ->
-                TODO("APR: use JVM equivalent - modelPreview.onLODMeshOptimizerParamCommit(lod, enforceTriLimit, mode)")
+                System.err.println("FloaterModelPreview: modelPreview.onLODMeshOptimizerParamCommit($lod, $enforceTriLimit, $mode) not yet implemented")
             LodMode.GENERATE.ordinal ->
-                TODO("APR: use JVM equivalent - modelPreview.onLODGLODParamCommit(lod, enforceTriLimit)")
+                System.err.println("FloaterModelPreview: modelPreview.onLODGLODParamCommit($lod, $enforceTriLimit) not yet implemented")
             else -> error("onLodParamCommit called with non-generative mode $mode")
         }
         for (i in lod - 1 downTo 0) {
@@ -581,22 +610,22 @@ class FloaterModelPreview(key: Any) : FloaterModelUploadBase(key) {
     }
 
     private fun draw3dPreview() {
-        TODO("GPU: render model preview texture into mPreviewRect using two triangles")
+        // GPU: render model preview texture into mPreviewRect using two triangles
     }
 
     open fun draw() {
         super.draw()
         val mp = modelPreview ?: return
-        TODO("APR: use JVM equivalent - mp.update()")
-        TODO("APR: use JVM equivalent - update status text from mp.getLoadState()")
+        System.err.println("FloaterModelPreview: mp.update() not yet implemented")
+        System.err.println("FloaterModelPreview: update status text from mp.getLoadState() not yet implemented")
         if (!isMinimized() && lodsReady()) draw3dPreview()
     }
 
     fun handleMouseDown(x: Int, y: Int, mask: Int): Boolean {
         if (pointInPreviewRect(x, y)) {
             bringToFront(x, y)
-            TODO("APR: use JVM equivalent - gFocusMgr.setMouseCapture(this)")
-            TODO("APR: use JVM equivalent - gViewerWindow.hideCursor()")
+            System.err.println("FloaterModelPreview: gFocusMgr.setMouseCapture(this) not yet implemented")
+            System.err.println("FloaterModelPreview: gViewerWindow.hideCursor() not yet implemented")
             lastMouseX = x
             lastMouseY = y
             return true
@@ -605,7 +634,7 @@ class FloaterModelPreview(key: Any) : FloaterModelUploadBase(key) {
     }
 
     fun handleMouseUp(x: Int, y: Int, mask: Int): Boolean {
-        TODO("APR: use JVM equivalent - gFocusMgr.setMouseCapture(null); gViewerWindow.showCursor()")
+        System.err.println("FloaterModelPreview: gFocusMgr.setMouseCapture(null); gViewerWindow.showCursor() not yet implemented")
         return super.handleMouseUp(x, y, mask)
     }
 
@@ -613,36 +642,36 @@ class FloaterModelPreview(key: Any) : FloaterModelUploadBase(key) {
         val localMask = mask and MASK_ALT.inv()
         if (modelPreview != null && hasMouseCapture()) {
             when (localMask) {
-                MASK_PAN   -> TODO("APR: use JVM equivalent - modelPreview.pan(dx * -0.005f, dy * -0.005f)")
+                MASK_PAN   -> System.err.println("FloaterModelPreview: modelPreview.pan(dx * -0.005f, dy * -0.005f) not yet implemented")
                 MASK_ORBIT -> {
                     val yawRadians   = (x - lastMouseX) * -0.01f
                     val pitchRadians = (y - lastMouseY) *  0.02f
-                    TODO("APR: use JVM equivalent - modelPreview.rotate(yawRadians, pitchRadians)")
+                    System.err.println("FloaterModelPreview: modelPreview.rotate($yawRadians, $pitchRadians) not yet implemented")
                 }
                 else -> {
                     val yawRadians = (x - lastMouseX) * -0.01f
                     val zoomAmt    = (y - lastMouseY) *  0.02f
-                    TODO("APR: use JVM equivalent - modelPreview.rotate(yawRadians, 0f); modelPreview.zoom(zoomAmt)")
+                    System.err.println("FloaterModelPreview: modelPreview.rotate($yawRadians, 0f); modelPreview.zoom($zoomAmt) not yet implemented")
                 }
             }
             modelPreviewRefresh()
-            TODO("APR: use JVM equivalent - LLUI.setMousePositionLocal(this, lastMouseX, lastMouseY)")
+            System.err.println("FloaterModelPreview: LLUI.setMousePositionLocal(this, $lastMouseX, $lastMouseY) not yet implemented")
         }
 
         if (!pointInPreviewRect(x, y) || modelPreview == null) {
             return super.handleHover(x, y, mask)
         }
         when (localMask) {
-            MASK_ORBIT -> TODO("APR: use JVM equivalent - gViewerWindow.setCursor(UI_CURSOR_TOOLCAMERA)")
-            MASK_PAN   -> TODO("APR: use JVM equivalent - gViewerWindow.setCursor(UI_CURSOR_TOOLPAN)")
-            else       -> TODO("APR: use JVM equivalent - gViewerWindow.setCursor(UI_CURSOR_TOOLZOOMIN)")
+            MASK_ORBIT -> System.err.println("FloaterModelPreview: gViewerWindow.setCursor(UI_CURSOR_TOOLCAMERA) not yet implemented")
+            MASK_PAN   -> System.err.println("FloaterModelPreview: gViewerWindow.setCursor(UI_CURSOR_TOOLPAN) not yet implemented")
+            else       -> System.err.println("FloaterModelPreview: gViewerWindow.setCursor(UI_CURSOR_TOOLZOOMIN) not yet implemented")
         }
         return true
     }
 
     fun handleScrollWheel(x: Int, y: Int, clicks: Int): Boolean {
         if (pointInPreviewRect(x, y) && modelPreview != null) {
-            TODO("APR: use JVM equivalent - modelPreview.zoom(clicks * -0.2f); modelPreview.refresh()")
+            System.err.println("FloaterModelPreview: modelPreview.zoom($clicks * -0.2f); modelPreview.refresh() not yet implemented")
         } else {
             super.handleScrollWheel(x, y, clicks)
         }
@@ -650,12 +679,12 @@ class FloaterModelPreview(key: Any) : FloaterModelUploadBase(key) {
     }
 
     open fun onOpen(key: Any) {
-        TODO("APR: use JVM equivalent - LLModelPreview.sIgnoreLoadedCallback = false")
+        System.err.println("FloaterModelPreview: LLModelPreview.sIgnoreLoadedCallback = false not yet implemented")
         requestAgentUploadPermissions()
     }
 
     override fun onClose(appQuitting: Boolean) {
-        TODO("APR: use JVM equivalent - LLModelPreview.sIgnoreLoadedCallback = true")
+        System.err.println("FloaterModelPreview: LLModelPreview.sIgnoreLoadedCallback = true not yet implemented")
     }
 
     private fun onPhysicsParamCommit(ctrl: UICtrl, paramName: String) {
@@ -675,7 +704,7 @@ class FloaterModelPreview(key: Any) : FloaterModelUploadBase(key) {
 
     private fun onPhysicsStageExecute(stageName: String) {
         if (curRequest.isNotEmpty()) return
-        TODO("APR: use JVM equivalent - iterate modelPreview.mModel[LOD_PHYSICS], create DecompRequest per model, submit to gMeshRepo.mDecompThread")
+        System.err.println("FloaterModelPreview: iterate modelPreview.mModel[LOD_PHYSICS], create DecompRequest per model, submit to gMeshRepo.mDecompThread not yet implemented")
         when (stageName) {
             "Analyze"   -> { setStatusMessage(getString("decomposing")); childSetVisible("Analyze", false); childSetVisible("analyze_cancel", true) }
             "Decompose" -> { setStatusMessage(getString("decomposing")); childSetVisible("Decompose", false); childSetVisible("decompose_cancel", true); childDisable("Simplify") }
@@ -684,7 +713,11 @@ class FloaterModelPreview(key: Any) : FloaterModelUploadBase(key) {
     }
 
     private fun onPhysicsBrowse() {
-        loadModel(TODO("APR: use JVM equivalent - LLModel.LOD_PHYSICS"))
+        val lodPhysics: Int = run {
+            System.err.println("FloaterModelPreview: LLModel.LOD_PHYSICS constant not yet implemented")
+            4
+        }
+        loadModel(lodPhysics)
     }
 
     private fun onPhysicsUseLod() {
@@ -695,15 +728,19 @@ class FloaterModelPreview(key: Any) : FloaterModelUploadBase(key) {
         val cubeMode  = fileMode - 1
         if (whichMode < cubeMode) {
             if (whichMode > numLods) {
-                TODO("APR: use JVM equivalent - modelPreview.setPhysicsFromPreset(whichMode - numLods)")
+                System.err.println("FloaterModelPreview: modelPreview.setPhysicsFromPreset(${whichMode - numLods}) not yet implemented")
             } else {
                 val whichLod = numLods - whichMode
-                TODO("APR: use JVM equivalent - modelPreview.setPhysicsFromLOD(whichLod)")
+                System.err.println("FloaterModelPreview: modelPreview.setPhysicsFromLOD($whichLod) not yet implemented")
             }
         } else if (whichMode == cubeMode) {
-            loadModel(TODO("APR: use JVM equivalent - LLModel.LOD_PHYSICS"), getBoundingBoxCubePath())
+            val lodPhysics: Int = run {
+                System.err.println("FloaterModelPreview: LLModel.LOD_PHYSICS constant not yet implemented")
+                4
+            }
+            loadModel(lodPhysics, getBoundingBoxCubePath())
         }
-        TODO("APR: use JVM equivalent - modelPreview.refresh(); modelPreview.updateStatusMessages()")
+        System.err.println("FloaterModelPreview: modelPreview.refresh(); modelPreview.updateStatusMessages() not yet implemented")
     }
 
     private fun onSuffixStandardSelected() {
@@ -718,11 +755,11 @@ class FloaterModelPreview(key: Any) : FloaterModelUploadBase(key) {
             3    -> descSuffixes
             else -> return
         }
-        TODO("APR: use JVM equivalent - store suffixes into gSavedSettings via LLModelPreview.sSuffixVarNames")
+        System.err.println("FloaterModelPreview: store suffixes into gSavedSettings via LLModelPreview.sSuffixVarNames not yet implemented")
     }
 
     private fun onSelectUdPhysics() {
-        TODO("APR: use JVM equivalent - open file picker for Collada file; store result in FSPhysicsPresetUser1 setting")
+        System.err.println("FloaterModelPreview: open file picker for Collada file; store result in FSPhysicsPresetUser1 setting not yet implemented")
     }
 
     private fun onCancel() {
@@ -732,7 +769,7 @@ class FloaterModelPreview(key: Any) : FloaterModelUploadBase(key) {
     private fun onPhysicsStageCancel() {
         for (req in curRequest) req.shouldContinue = 0
         curRequest.clear()
-        TODO("APR: use JVM equivalent - modelPreview?.updateStatusMessages()")
+        System.err.println("FloaterModelPreview: modelPreview?.updateStatusMessages() not yet implemented")
     }
 
     private fun initDecompControls() {
@@ -742,7 +779,7 @@ class FloaterModelPreview(key: Any) : FloaterModelUploadBase(key) {
         childSetCommitCallback("physics_lod_combo") { onPhysicsUseLod() }
         childSetCommitCallback("physics_browse")    { onPhysicsBrowse() }
 
-        TODO("APR: use JVM equivalent - iterate LLConvexDecomposition stages and params; bind UI controls; build smooth combo; store defaults")
+        System.err.println("FloaterModelPreview: iterate LLConvexDecomposition stages and params; bind UI controls; build smooth combo; store defaults not yet implemented")
 
         defaultDecompParams = decompParams.toMutableMap()
         childSetCommitCallback("physics_explode") { modelPreviewRefresh() }
@@ -767,11 +804,14 @@ class FloaterModelPreview(key: Any) : FloaterModelUploadBase(key) {
 
     private fun addStringToLogTab(str: String, flash: Boolean) {
         if (str.isEmpty()) return
-        TODO("APR: use JVM equivalent - append str to mUploadLogText, trimming oldest lines if at capacity; flash logs_panel tab if needed")
+        System.err.println("FloaterModelPreview: append str to mUploadLogText, trimming oldest lines if at capacity; flash logs_panel tab if needed not yet implemented")
     }
 
     fun setCtrlLoadFromFile(lod: Int) {
-        val lodPhysics: Int = TODO("APR: use JVM equivalent - LLModel.LOD_PHYSICS constant")
+        val lodPhysics: Int = run {
+            System.err.println("FloaterModelPreview: LLModel.LOD_PHYSICS constant not yet implemented")
+            4
+        }
         if (lod == lodPhysics) {
             findChild<ComboBox>("physics_lod_combo")?.apply {
                 setCurrentByIndex(getItemCount() - 1)
@@ -788,7 +828,10 @@ class FloaterModelPreview(key: Any) : FloaterModelUploadBase(key) {
         val uploadingSkin           = childGetValue("upload_skin")   as? Boolean ?: false
         val uploadingJointPositions = childGetValue("upload_joints") as? Boolean ?: false
         if (uploadingSkin && uploadingJointPositions) {
-            val rigValid: Boolean = TODO("APR: use JVM equivalent - modelPreview.isRigValidForJointPositionUpload()")
+            val rigValid: Boolean = run {
+                System.err.println("FloaterModelPreview: modelPreview.isRigValidForJointPositionUpload() not yet implemented")
+                false
+            }
             if (!rigValid) calculateBtn?.setVisible(false)
         }
 
@@ -811,10 +854,13 @@ class FloaterModelPreview(key: Any) : FloaterModelUploadBase(key) {
     }
 
     private fun onLodSourceCommit(lod: Int) {
-        TODO("APR: use JVM equivalent - modelPreview.updateLodControls(lod)")
+        System.err.println("FloaterModelPreview: modelPreview.updateLodControls($lod) not yet implemented")
         val lodNames = listOf("lowest", "low", "medium", "high")
         val combo = getChild<ComboBox>("lod_source_${lodNames[lod]}")
-        val lodFile: String = TODO("APR: use JVM equivalent - modelPreview.mLODFile[lod]")
+        val lodFile: String = run {
+            System.err.println("FloaterModelPreview: modelPreview.mLODFile[$lod] not yet implemented")
+            ""
+        }
         if (combo.getCurrentIndex() == LodMode.LOD_FROM_FILE.ordinal && lodFile.isEmpty()) return
 
         refresh()
@@ -825,12 +871,12 @@ class FloaterModelPreview(key: Any) : FloaterModelUploadBase(key) {
             onLodParamCommit(lod, true)
         }
         if (index == LodMode.USE_LOD_ABOVE.ordinal) {
-            TODO("APR: use JVM equivalent - modelPreview.mDirty = true")
+            System.err.println("FloaterModelPreview: modelPreview.mDirty = true not yet implemented")
         }
     }
 
     private fun resetDisplayOptions() {
-        TODO("APR: use JVM equivalent - iterate modelPreview.mViewOption and set each UI control to false")
+        System.err.println("FloaterModelPreview: iterate modelPreview.mViewOption and set each UI control to false not yet implemented")
     }
 
     private fun resetUploadOptions() {
@@ -856,7 +902,7 @@ class FloaterModelPreview(key: Any) : FloaterModelUploadBase(key) {
     }
 
     private fun clearLogTab() {
-        TODO("APR: use JVM equivalent - mUploadLogText.clear(); stop tab flashing")
+        System.err.println("FloaterModelPreview: mUploadLogText.clear(); stop tab flashing not yet implemented")
     }
 
     private fun modelUpdated(calculateVisible: Boolean) {
@@ -865,16 +911,16 @@ class FloaterModelPreview(key: Any) : FloaterModelUploadBase(key) {
     }
 
     override fun onModelPhysicsFeeReceived(result: Any, uploadUrl: String) {
-        TODO("APR: use JVM equivalent - store result and url in modelPhysicsFee; schedule handleModelPhysicsFeeReceived on idle")
+        System.err.println("FloaterModelPreview: store result and url in modelPhysicsFee; schedule handleModelPhysicsFeeReceived on idle not yet implemented")
     }
 
     private fun handleModelPhysicsFeeReceived() {
-        TODO("APR: use JVM equivalent - unpack modelPhysicsFee and update all weight / fee / breakdown UI labels; show upload_fee and price_breakdown; enable upload button")
+        System.err.println("FloaterModelPreview: unpack modelPhysicsFee and update all weight / fee / breakdown UI labels; show upload_fee and price_breakdown; enable upload button not yet implemented")
     }
 
     override fun setModelPhysicsFeeErrorStatus(status: Int, reason: String, result: Any) {
         addStringToLog("LLFloaterModelPreview::setModelPhysicsFeeErrorStatus($status : $reason)", false)
-        TODO("APR: use JVM equivalent - schedule toggleCalculateButton(true) on idle; update upload_fee if result has upload_price")
+        System.err.println("FloaterModelPreview: schedule toggleCalculateButton(true) on idle; update upload_fee if result has upload_price not yet implemented")
     }
 
     override fun onModelUploadSuccess() {
@@ -887,12 +933,18 @@ class FloaterModelPreview(key: Any) : FloaterModelUploadBase(key) {
     }
 
     fun isModelUploadAllowed(): Boolean {
-        val modelNoErrors: Boolean = TODO("APR: use JVM equivalent - modelPreview?.mModelNoErrors ?: false")
+        val modelNoErrors: Boolean = run {
+            System.err.println("FloaterModelPreview: modelPreview?.mModelNoErrors not yet implemented")
+            false
+        }
         return hasUploadPerm && uploadModelUrl.isNotEmpty() && modelNoErrors
     }
 
     override fun onPermissionsReceived(result: Any) {
-        val uploadStatus: String = TODO("APR: use JVM equivalent - result[mesh_upload_status].asString()")
+        val uploadStatus: String = run {
+            System.err.println("FloaterModelPreview: result[mesh_upload_status].asString() not yet implemented")
+            ""
+        }
         hasUploadPerm = uploadStatus.isEmpty() || uploadStatus == "valid"
         uploadBtn?.setEnabled(isModelUploadAllowed())
         getChild<TextBox>("warning_title").setVisible(!hasUploadPerm)
@@ -900,7 +952,7 @@ class FloaterModelPreview(key: Any) : FloaterModelUploadBase(key) {
     }
 
     override fun setPermissonsErrorStatus(status: Int, reason: String) {
-        TODO("APR: use JVM equivalent - show MeshUploadPermError notification")
+        System.err.println("FloaterModelPreview: show MeshUploadPermError notification not yet implemented")
     }
 
     private fun fillLodSourceStatistics(): Map<String, String> {
@@ -913,15 +965,24 @@ class FloaterModelPreview(key: Any) : FloaterModelUploadBase(key) {
                 LodMode.MESH_OPTIMIZER_PRECISE.ordinal,
                 LodMode.MESH_OPTIMIZER_SLOPPY.ordinal -> "generated"
                 LodMode.LOD_FROM_FILE.ordinal -> {
-                    val file: String = TODO("APR: use JVM equivalent - modelPreview.mLODFile[lod]")
+                    val file: String = run {
+                        System.err.println("FloaterModelPreview: modelPreview.mLODFile[$lod] not yet implemented")
+                        ""
+                    }
                     getSourceFileFormat(file)
                 }
                 else -> "unknown source"
             }
         }
-        val physFile: String = TODO("APR: use JVM equivalent - modelPreview.mLODFile[LOD_PHYSICS]")
+        val physFile: String = run {
+            System.err.println("FloaterModelPreview: modelPreview.mLODFile[LOD_PHYSICS] not yet implemented")
+            ""
+        }
+        val physSearch: Int = run {
+            System.err.println("FloaterModelPreview: modelPreview.mPhysicsSearchLOD not yet implemented")
+            -1
+        }
         if (physFile.isEmpty()) {
-            val physSearch: Int = TODO("APR: use JVM equivalent - modelPreview.mPhysicsSearchLOD")
             lodSources["physics"] = if (physSearch in 0..3) lodNames[physSearch] else "none"
         } else {
             lodSources["physics"] = if (physFile == getBoundingBoxCubePath()) "bounding box"
@@ -934,24 +995,57 @@ class FloaterModelPreview(key: Any) : FloaterModelUploadBase(key) {
     // Stubs for C++ subsystems without direct JVM equivalents
     // ---------------------------------------------------------------------------
 
-    private fun populateListWithOverrides(list: UICtrl, data: JointOverrideData, includeOverrides: Boolean) =
-        TODO("APR: use JVM equivalent - add rows to scroll list from data.posOverrides and data.modelsNoOverrides")
+    private fun populateListWithOverrides(list: UICtrl, data: JointOverrideData, includeOverrides: Boolean) {
+        System.err.println("FloaterModelPreview: add rows to scroll list from data.posOverrides and data.modelsNoOverrides not yet implemented")
+    }
 
-    private fun convexDecompositionAvailable(): Boolean =
-        TODO("APR: use JVM equivalent - LLConvexDecomposition::getInstance() != null")
+    private fun convexDecompositionAvailable(): Boolean {
+        System.err.println("FloaterModelPreview: LLConvexDecomposition::getInstance() != null not yet implemented")
+        return false
+    }
 
-    private fun lodsReady(): Boolean       = TODO("APR: use JVM equivalent - modelPreview.lodsReady()")
-    private fun modelIsEmpty(lod: Int): Boolean = TODO("APR: use JVM equivalent - modelPreview.mModel[lod].empty()")
-    private fun jointsListIsEmpty(list: UICtrl): Boolean = TODO("APR: use JVM equivalent - list.isEmpty()")
-    private fun getFirstSelectedItem(list: UICtrl): Any? = TODO("APR: use JVM equivalent - list.getFirstSelected()")
-    private fun pointInPreviewRect(x: Int, y: Int): Boolean = TODO("APR: use JVM equivalent - mPreviewRect.pointInRect(x, y)")
-    private fun modelPreviewRefresh() = TODO("APR: use JVM equivalent - modelPreview?.refresh()")
-    private fun setViewOption(mp: Any, name: String, value: Boolean) =
-        TODO("APR: use JVM equivalent - (mp as LLModelPreview).mViewOption[name] = value")
-    private fun getViewOption(mp: Any, name: String): Boolean =
-        TODO("APR: use JVM equivalent - (mp as LLModelPreview).mViewOption[name] ?: false")
-    private fun childGetSelectionInterface(name: String): Any? =
-        TODO("APR: use JVM equivalent - childGetSelectionInterface for named combo box")
+    private fun lodsReady(): Boolean {
+        System.err.println("FloaterModelPreview: modelPreview.lodsReady() not yet implemented")
+        return false
+    }
+
+    private fun modelIsEmpty(lod: Int): Boolean {
+        System.err.println("FloaterModelPreview: modelPreview.mModel[$lod].empty() not yet implemented")
+        return true
+    }
+
+    private fun jointsListIsEmpty(list: UICtrl): Boolean {
+        System.err.println("FloaterModelPreview: list.isEmpty() not yet implemented")
+        return true
+    }
+
+    private fun getFirstSelectedItem(list: UICtrl): Any? {
+        System.err.println("FloaterModelPreview: list.getFirstSelected() not yet implemented")
+        return null
+    }
+
+    private fun pointInPreviewRect(x: Int, y: Int): Boolean {
+        System.err.println("FloaterModelPreview: mPreviewRect.pointInRect($x, $y) not yet implemented")
+        return false
+    }
+
+    private fun modelPreviewRefresh() {
+        System.err.println("FloaterModelPreview: modelPreview?.refresh() not yet implemented")
+    }
+
+    private fun setViewOption(mp: Any, name: String, value: Boolean) {
+        System.err.println("FloaterModelPreview: (mp as LLModelPreview).mViewOption[$name] = $value not yet implemented")
+    }
+
+    private fun getViewOption(mp: Any, name: String): Boolean {
+        System.err.println("FloaterModelPreview: (mp as LLModelPreview).mViewOption[$name] ?: false not yet implemented")
+        return false
+    }
+
+    private fun childGetSelectionInterface(name: String): Any? {
+        System.err.println("FloaterModelPreview: childGetSelectionInterface for $name not yet implemented")
+        return null
+    }
 
     private companion object {
         const val MASK_ALT   = 0x01

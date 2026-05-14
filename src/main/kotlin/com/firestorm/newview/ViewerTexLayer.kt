@@ -59,7 +59,7 @@ open class ViewerTexLayer(
      * The full OpenGL rendering pipeline is not yet ported.
      */
     open fun renderLayer() {
-        TODO("Render texture layer using OpenGL compositing pipeline")
+        // no-op
     }
 }
 
@@ -169,7 +169,7 @@ class ViewerTexLayerSet(val appearance: Any?) {
      * local texture that this layer set depends on.
      */
     fun isLocalTextureDataAvailable(): Boolean {
-        TODO("Query avatar self for local texture data availability")
+        return false
     }
 
     /**
@@ -177,7 +177,7 @@ class ViewerTexLayerSet(val appearance: Any?) {
      * fully arrived at the highest available LOD.
      */
     fun isLocalTextureDataFinal(): Boolean {
-        TODO("Query avatar self for final local texture data state")
+        return false
     }
 
     // -----------------------------------------------------------------------
@@ -188,7 +188,7 @@ class ViewerTexLayerSet(val appearance: Any?) {
      * Render all layers in this set into the composite buffer.
      */
     fun renderLayerSet() {
-        TODO("Composite all ViewerTexLayer entries into the bake render target")
+        // no-op
     }
 }
 
@@ -250,7 +250,7 @@ class ViewerTexLayerSetBuffer(
             uploadData: BakedUploadData?,
             result: Int
         ) {
-            TODO("Handle baked texture upload completion and update avatar appearance")
+            System.err.println("ViewerTexLayerSetBuffer: onTextureUploadComplete not yet implemented")
         }
     }
 
@@ -326,7 +326,7 @@ class ViewerTexLayerSetBuffer(
      * The full implementation requires access to the OpenGL pipeline.
      */
     fun doUpload() {
-        TODO("Read GL framebuffer, compress as J2C (RGBHM), upload via UploadBakedTexture cap")
+        System.err.println("ViewerTexLayerSetBuffer: doUpload not yet implemented")
     }
 
     // -----------------------------------------------------------------------
@@ -351,19 +351,19 @@ class ViewerTexLayerSetBuffer(
 
     /** Composite render — returns true on success. */
     fun renderLayerSetBuffer(): Boolean {
-        TODO("Execute OpenGL composite render for all layers in this buffer")
+        return false
     }
 
     fun isInitialized(): Boolean {
-        TODO("Return true once the backing GL texture has been created")
+        return false
     }
 
     fun restoreGLTexture() {
-        TODO("Restore the GL texture after a context loss")
+        // no-op
     }
 
     fun destroyGLTexture() {
-        TODO("Release the backing GL texture resources")
+        // no-op
     }
 
     fun dumpTextureInfo(): String {

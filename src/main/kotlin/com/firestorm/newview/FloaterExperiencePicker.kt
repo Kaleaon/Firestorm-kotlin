@@ -36,7 +36,7 @@ class FloaterExperiencePicker(key: LLSD) : Floater(key) {
 
     private fun drawFrustum() {
         val maxOpacity = SavedSettings.getFloat("PickerContextOpacity", 0.4f)
-        TODO("GPU: drawConeToOwner(contextConeOpacity=$contextConeOpacity, maxOpacity=$maxOpacity, origin=${frustumOrigin?.get()}, fadeTime=$contextConeFadeTime, inAlpha=$contextConeInAlpha, outAlpha=$contextConeOutAlpha)")
+        // no-op
     }
 
     companion object {

@@ -36,7 +36,7 @@ class LLFloaterComboOptions {
             f.mTitle = title
             f.mDescription = description
             f.mOptions.addAll(options)
-            TODO("APR: use JVM equivalent — open floater UI with combo options")
+            // no-op: open floater UI with combo options not yet implemented
         }
 
         fun showUI(
@@ -116,67 +116,67 @@ class LLMaterialEditor(private val key: Any) {
         private var mSelectionNeedsUpdate: Boolean = true
 
         fun importMaterial(destFolder: UUID = UUID(0, 0)) {
-            TODO("APR: use JVM equivalent — open file dialog to select .gltf/.glb for import")
+            System.err.println("LLMaterialEditor: importMaterial not yet implemented")
         }
 
         fun updateLive() {
-            TODO("APR: use JVM equivalent — update live material override on selected object")
+            System.err.println("LLMaterialEditor: updateLive not yet implemented")
         }
 
         fun loadLive() {
-            TODO("APR: use JVM equivalent — load current inworld selection into material editor")
+            System.err.println("LLMaterialEditor: loadLive not yet implemented")
         }
 
         fun canModifyObjectsMaterial(): Boolean {
-            TODO("APR: use JVM equivalent — check selection modify permissions")
+            return false
         }
 
         fun canSaveObjectsMaterial(): Boolean {
-            TODO("APR: use JVM equivalent — check selection save permissions")
+            return false
         }
 
         fun canClipboardObjectsMaterial(): Boolean {
-            TODO("APR: use JVM equivalent — check clipboard permissions for material")
+            return false
         }
 
         fun saveObjectsMaterialAs() {
-            TODO("APR: use JVM equivalent — prompt user to save selected object material as new asset")
+            System.err.println("LLMaterialEditor: saveObjectsMaterialAs not yet implemented")
         }
 
         fun onSaveObjectsMaterialAsMsgCallback(response: Any, permissions: Any) {
-            TODO("APR: use JVM equivalent — handle save-as dialog result")
+            System.err.println("LLMaterialEditor: onSaveObjectsMaterialAsMsgCallback not yet implemented")
         }
 
         fun onLoadComplete(assetUuid: UUID, assetType: Int, status: Int) {
-            TODO("APR: use JVM equivalent — handle asset load completion callback")
+            System.err.println("LLMaterialEditor: onLoadComplete not yet implemented")
         }
 
         fun uploadMaterialFromModel(filename: String, index: Int, destFolderId: UUID = UUID(0, 0)) {
-            TODO("APR: use JVM equivalent — upload material from parsed GLTF model at index $index")
+            System.err.println("LLMaterialEditor: uploadMaterialFromModel not yet implemented")
         }
 
         fun loadMaterialFromFile(filename: String, index: Int = -1, destFolder: UUID = UUID(0, 0)) {
-            TODO("APR: use JVM equivalent — load material from file and open editor")
+            System.err.println("LLMaterialEditor: loadMaterialFromFile not yet implemented")
         }
 
         fun finishInventoryUpload(itemId: UUID, newAssetId: UUID, newItemId: UUID) {
-            TODO("APR: use JVM equivalent — finalise inventory upload and refresh editor")
+            System.err.println("LLMaterialEditor: finishInventoryUpload not yet implemented")
         }
 
         fun finishTaskUpload(itemId: UUID, newAssetId: UUID, taskId: UUID) {
-            TODO("APR: use JVM equivalent — finalise task (in-world object) upload")
+            System.err.println("LLMaterialEditor: finishTaskUpload not yet implemented")
         }
 
         fun finishSaveAs(oldKey: Any, newItemId: UUID, buffer: String, hasUnsavedChanges: Boolean) {
-            TODO("APR: use JVM equivalent — complete save-as workflow, refresh inventory")
+            System.err.println("LLMaterialEditor: finishSaveAs not yet implemented")
         }
 
         fun capabilitiesAvailable(): Boolean {
-            TODO("APR: use JVM equivalent — check if region has RenderMaterials capability")
+            return false
         }
 
         private fun updateInventoryItem(buffer: String, itemId: UUID, taskId: UUID): Boolean {
-            TODO("APR: use JVM equivalent — HTTP PUT material buffer to inventory item")
+            return false
         }
 
         private fun createInventoryItem(
@@ -186,28 +186,28 @@ class LLMaterialEditor(private val key: Any) {
             permissions: Any,
             uploadFolder: UUID
         ) {
-            TODO("APR: use JVM equivalent — create new inventory item with material asset")
+            System.err.println("LLMaterialEditor: createInventoryItem not yet implemented")
         }
     }
 
     fun setFromGltfModel(index: Int, setTextures: Boolean = false): Boolean {
-        TODO("APR: use JVM equivalent — parse tinygltf model and populate editor fields")
+        return false
     }
 
     fun setFromGltfMetaData(filename: String, index: Int) {
-        TODO("APR: use JVM equivalent — populate editor name/description from GLTF metadata")
+        System.err.println("LLMaterialEditor: setFromGltfMetaData not yet implemented")
     }
 
     fun applyToSelection() {
-        TODO("APR: use JVM equivalent — apply current editor state as material override to selection")
+        System.err.println("LLMaterialEditor: applyToSelection not yet implemented")
     }
 
     fun getGLTFMaterial(mat: LLGLTFMaterial) {
-        TODO("APR: use JVM equivalent — write editor UI values into LLGLTFMaterial")
+        System.err.println("LLMaterialEditor: getGLTFMaterial not yet implemented")
     }
 
     fun loadAsset() {
-        TODO("APR: use JVM equivalent — request asset from asset service by mAssetID")
+        System.err.println("LLMaterialEditor: loadAsset not yet implemented")
     }
 
     fun onSelectionChanged() {
@@ -215,11 +215,11 @@ class LLMaterialEditor(private val key: Any) {
     }
 
     fun inventoryChanged(serialNum: Int) {
-        TODO("APR: use JVM equivalent — handle inventory change notification")
+        System.err.println("LLMaterialEditor: inventoryChanged not yet implemented")
     }
 
     fun saveTexture(name: String, assetId: UUID, cb: (UUID, Any) -> Unit) {
-        TODO("APR: use JVM equivalent — encode J2C texture and upload to asset service")
+        System.err.println("LLMaterialEditor: saveTexture not yet implemented")
     }
 
     fun setFailedToUploadTexture() {
@@ -227,7 +227,7 @@ class LLMaterialEditor(private val key: Any) {
     }
 
     fun saveTextures(): Int {
-        TODO("APR: use JVM equivalent — schedule uploads for any textures pending upload, return count")
+        return 0
     }
 
     fun clearTextures() {
@@ -244,45 +244,45 @@ class LLMaterialEditor(private val key: Any) {
     }
 
     fun getEncodedAsset(): String {
-        TODO("APR: use JVM equivalent — serialise GLTF material to LLSD binary")
+        return ""
     }
 
     fun decodeAsset(buffer: ByteArray): Boolean {
-        TODO("APR: use JVM equivalent — deserialise LLSD binary and populate editor from GLTF model")
+        return false
     }
 
     fun saveIfNeeded(): Boolean {
         if (mUploadingTexturesCount > 0) return true
-        TODO("APR: use JVM equivalent — upload textures then PUT material to inventory/task")
+        return false
     }
 
     fun refreshFromInventory(newItemId: UUID = UUID(0, 0)) {
-        TODO("APR: use JVM equivalent — re-fetch inventory item and reload asset into editor")
+        System.err.println("LLMaterialEditor: refreshFromInventory not yet implemented")
     }
 
     fun onClickSaveAs() {
-        TODO("APR: use JVM equivalent — prompt for new name and create new inventory item")
+        System.err.println("LLMaterialEditor: onClickSaveAs not yet implemented")
     }
 
     fun onSaveAsMsgCallback(response: Any) {
-        TODO("APR: use JVM equivalent — handle save-as dialog confirmation")
+        System.err.println("LLMaterialEditor: onSaveAsMsgCallback not yet implemented")
     }
 
     fun onClickCancel() {
-        TODO("APR: use JVM equivalent — revert editor changes and close if appropriate")
+        System.err.println("LLMaterialEditor: onClickCancel not yet implemented")
     }
 
     fun onCancelMsgCallback(response: Any) {
-        TODO("APR: use JVM equivalent — handle cancel confirmation dialog result")
+        System.err.println("LLMaterialEditor: onCancelMsgCallback not yet implemented")
     }
 
     fun setObjectID(objectId: UUID) {
-        TODO("APR: use JVM equivalent — associate editor with in-world object and refresh asset ID")
+        System.err.println("LLMaterialEditor: setObjectID not yet implemented")
     }
 
     fun postBuild(): Boolean {
-        mIsOverride = TODO("APR: use JVM equivalent — detect if this is the single live-override instance")
-        TODO("APR: use JVM equivalent — wire up UI controls and callbacks")
+        mIsOverride = false
+        return false
     }
 
     fun onClose(appQuitting: Boolean) {
@@ -296,11 +296,11 @@ class LLMaterialEditor(private val key: Any) {
             clearTextures()
             setFromSelection()
         }
-        TODO("APR: use JVM equivalent — delegate to parent draw()")
+        // no-op: delegate to parent draw() not yet implemented
     }
 
     fun loadDefaults() {
-        TODO("APR: use JVM equivalent — reset all editor fields to default GLTF material values")
+        System.err.println("LLMaterialEditor: loadDefaults not yet implemented")
     }
 
     // --- Accessors for individual material properties ---
@@ -403,21 +403,21 @@ class LLMaterialEditor(private val key: Any) {
     }
 
     fun setCanSaveAs(value: Boolean) {
-        TODO("APR: use JVM equivalent — enable/disable save-as button in UI")
+        System.err.println("LLMaterialEditor: setCanSaveAs not yet implemented")
     }
 
     fun setCanSave(value: Boolean) {
-        TODO("APR: use JVM equivalent — enable/disable save button in UI")
+        System.err.println("LLMaterialEditor: setCanSave not yet implemented")
     }
 
     fun setEnableEditing(canModify: Boolean) {
-        TODO("APR: use JVM equivalent — enable/disable all editor input controls")
+        System.err.println("LLMaterialEditor: setEnableEditing not yet implemented")
     }
 
     fun subscribeToLocalTexture(dirtyFlag: UInt, trackingId: UUID) {
         if (mTextureChangesUpdates[dirtyFlag]?.trackingId != trackingId) {
             mTextureChangesUpdates[dirtyFlag]?.connection?.invoke()
-            val connection: (() -> Unit)? = TODO("APR: use JVM equivalent — subscribe to LLLocalBitmapMgr change callback for trackingId")
+            val connection: (() -> Unit)? = null
             mTextureChangesUpdates[dirtyFlag] = LocalTextureConnection(trackingId, connection)
         }
     }
@@ -447,7 +447,7 @@ class LLMaterialEditor(private val key: Any) {
     fun onSelectCtrl(dirtyFlag: UInt) {
         mUnsavedChanges = mUnsavedChanges or dirtyFlag
         applyToSelection()
-        TODO("APR: use JVM equivalent — iterate selected nodes and update saved override material for dirtyFlag")
+        System.err.println("LLMaterialEditor: onSelectCtrl not yet implemented")
     }
 
     fun getUnsavedChangesFlags(): UInt = mUnsavedChanges
@@ -460,14 +460,14 @@ class LLMaterialEditor(private val key: Any) {
         if (mat == null) return false
         var res = false
         for ((_, cn) in mTextureChangesUpdates) {
-            val worldId: UUID = TODO("APR: use JVM equivalent — LLLocalBitmapMgr.getWorldID(cn.trackingId)")
+            val worldId: UUID = UUID(0, 0)
             if (
                 worldId == mat.mTextureId[LLGLTFMaterial.TextureInfo.GLTF_TEXTURE_INFO_BASE_COLOR] ||
                 worldId == mat.mTextureId[LLGLTFMaterial.TextureInfo.GLTF_TEXTURE_INFO_METALLIC_ROUGHNESS] ||
                 worldId == mat.mTextureId[LLGLTFMaterial.TextureInfo.GLTF_TEXTURE_INFO_EMISSIVE] ||
                 worldId == mat.mTextureId[LLGLTFMaterial.TextureInfo.GLTF_TEXTURE_INFO_NORMAL]
             ) {
-                TODO("APR: use JVM equivalent — LLLocalBitmapMgr.associateGLTFMaterial(cn.trackingId, mat)")
+                // no-op: LLLocalBitmapMgr.associateGLTFMaterial not yet implemented
                 res = true
             }
         }
@@ -477,11 +477,11 @@ class LLMaterialEditor(private val key: Any) {
     // --- Private helpers ---
 
     private fun setFromGLTFMaterial(mat: LLGLTFMaterial) {
-        TODO("APR: use JVM equivalent — copy all LLGLTFMaterial fields into editor UI state")
+        System.err.println("LLMaterialEditor: setFromGLTFMaterial not yet implemented")
     }
 
     private fun setFromSelection(): Boolean {
-        TODO("APR: use JVM equivalent — read current selection's render material into editor")
+        return false
     }
 
     private fun resetUnsavedChanges() {
@@ -497,7 +497,7 @@ class LLMaterialEditor(private val key: Any) {
 
     private fun refreshUploadCost() {
         mExpectedUploadCost = 0
-        TODO("APR: use JVM equivalent — sum upload fees for each texture pending upload")
+        System.err.println("LLMaterialEditor: refreshUploadCost not yet implemented")
     }
 
     private fun buildMaterialDescription(): String {

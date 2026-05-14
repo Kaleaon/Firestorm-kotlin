@@ -54,7 +54,7 @@ open class PreviewGesture(key: LLSD) : Preview(key) {
     private var dirty: Boolean = false
 
     override fun draw() {
-        TODO("APR: call Floater.draw() — skip LLPreview.draw() to avoid description update")
+        System.err.println("PreviewGesture: draw not yet implemented")
     }
 
     override fun postBuild(): Boolean {
@@ -190,7 +190,7 @@ open class PreviewGesture(key: LLSD) : Preview(key) {
         if (!dirty || forceClose) return true
         if (!saveDialogShown) {
             saveDialogShown = true
-            TODO("APR: show SaveChanges notification dialog, bind handleSaveChangesDialog callback")
+            System.err.println("PreviewGesture: show SaveChanges notification dialog not yet implemented")
         }
         return false
     }
@@ -328,7 +328,7 @@ open class PreviewGesture(key: LLSD) : Preview(key) {
             val keyStr = stringFromKey(key.toByte())
             combo.add(keyStr, ADD_BOTTOM)
         }
-        TODO("APR: also add non-printable key names (F-keys, arrow keys, etc.) from LLKeyboard::stringFromKey range")
+        System.err.println("PreviewGesture: add non-printable key names not yet implemented")
         combo.setCurrentByIndex(0)
     }
 
@@ -337,7 +337,7 @@ open class PreviewGesture(key: LLSD) : Preview(key) {
         val oldValue = combo.getCurrentID()
         combo.removeAll()
         combo.add(getString("none_text"), LLUUID.NULL)
-        TODO("APR: add default (legacy) animation states from gUserAnimStates, then add copyable AT_ANIMATION items from inventory sorted by name")
+        System.err.println("PreviewGesture: addAnimations not yet implemented")
         combo.setCurrentByID(oldValue)
     }
 
@@ -345,14 +345,14 @@ open class PreviewGesture(key: LLSD) : Preview(key) {
         val combo = soundCombo ?: return
         combo.removeAll()
         combo.add(getString("none_text"), LLUUID.NULL)
-        TODO("APR: add copyable AT_SOUND items from inventory sorted by name")
+        System.err.println("PreviewGesture: addSounds not yet implemented")
     }
 
     private fun initDefaultGesture() {
         var item = addStep(StepType.ANIMATION)
         (item?.getUserdata() as? GestureStepAnimation)?.let { anim ->
             anim.animAssetId = LLUUID.NULL
-            TODO("APR: set anim.animAssetId = ANIM_AGENT_HELLO and anim.animName = LLTrans.getString('Wave')")
+            System.err.println("PreviewGesture: initDefaultGesture anim setup not yet implemented")
             updateLabel(item)
         }
 
@@ -364,7 +364,7 @@ open class PreviewGesture(key: LLSD) : Preview(key) {
 
         item = addStep(StepType.CHAT)
         (item?.getUserdata() as? GestureStepChat)?.let { chat ->
-            TODO("APR: chat.chatText = LLTrans.getString('HelloAvatar')")
+            System.err.println("PreviewGesture: initDefaultGesture chat setup not yet implemented")
             updateLabel(item)
         }
 
@@ -383,15 +383,15 @@ open class PreviewGesture(key: LLSD) : Preview(key) {
             return
         }
 
-        TODO("APR: call gAssetStorage.getAssetData(assetId, AT_GESTURE, onLoadComplete, itemUuid copy, high_priority=true); set mAssetStatus = PREVIEW_ASSET_LOADING")
+        System.err.println("PreviewGesture: loadAsset not yet implemented")
     }
 
     private fun loadUIFromGesture(gesture: MultiGesture) {
         triggerEditor?.setText(gesture.trigger)
         replaceEditor?.setText(gesture.replaceText)
 
-        TODO("APR: set modifierCombo selection from gesture.mask (MASK_NONE/MASK_SHIFT/MASK_CONTROL)")
-        TODO("APR: set keyCombo selection from gesture.key via LLKeyboard.stringFromKey")
+        System.err.println("PreviewGesture: loadUIFromGesture modifierCombo not yet implemented")
+        System.err.println("PreviewGesture: loadUIFromGesture keyCombo not yet implemented")
 
         val stepListCtrl = stepList ?: return
         for (step in gesture.steps) {
@@ -431,7 +431,7 @@ open class PreviewGesture(key: LLSD) : Preview(key) {
         val gesture = createGesture()
         val maxSize = gesture.getMaxSerialSize()
 
-        TODO("APR: serialize gesture into a char buffer; if size > 1000 show GestureSaveFailedTooManySteps; upload via LLBufferedAssetUploadInfo or gAssetStorage.storeAssetData; if active call GestureMgr.replaceGesture")
+        System.err.println("PreviewGesture: saveIfNeeded not yet implemented")
 
         dirty = false
     }
@@ -441,8 +441,8 @@ open class PreviewGesture(key: LLSD) : Preview(key) {
         gesture.trigger = triggerEditor?.getText() ?: ""
         gesture.replaceText = replaceEditor?.getText() ?: ""
 
-        TODO("APR: set gesture.mask from modifierCombo (CTRL_LABEL→MASK_CONTROL, SHIFT_LABEL→MASK_SHIFT, else MASK_NONE)")
-        TODO("APR: set gesture.key from keyCombo via LLKeyboard.keyFromString; KEY_NONE if index==0")
+        System.err.println("PreviewGesture: createGesture mask not yet implemented")
+        System.err.println("PreviewGesture: createGesture key not yet implemented")
 
         val dataList = stepList?.getAllData() ?: emptyList<ScrollListItem>()
         for (item in dataList) {
@@ -619,7 +619,7 @@ open class PreviewGesture(key: LLSD) : Preview(key) {
         } else {
             GestureMgr.deactivateGesture(itemUuid)
         }
-        TODO("APR: call gInventory.updateItem(item) and gInventory.notifyObservers()")
+        System.err.println("PreviewGesture: onCommitActive inventory update not yet implemented")
         refresh()
     }
 
@@ -703,7 +703,7 @@ open class PreviewGesture(key: LLSD) : Preview(key) {
                 false
             }
             else -> {
-                TODO("APR: call LLAppViewer.instance().abortQuit()")
+                System.err.println("PreviewGesture: abortQuit not yet implemented")
                 false
             }
         }
@@ -735,59 +735,51 @@ open class PreviewGesture(key: LLSD) : Preview(key) {
     }
 
     private fun areGesturesEnabled(): Boolean {
-        TODO("APR: read FSGesturesEnabled from gSavedPerAccountSettings")
-        @Suppress("UNREACHABLE_CODE")
+        System.err.println("PreviewGesture: areGesturesEnabled not yet implemented")
         return true
     }
 
     private fun agentId(): LLUUID {
-        TODO("APR: return gAgent.getID()")
-        @Suppress("UNREACHABLE_CODE")
+        System.err.println("PreviewGesture: agentId not yet implemented")
         return LLUUID.NULL
     }
 
     private fun noneLabel(): String {
-        TODO("APR: return LLTrans.getString('---')")
-        @Suppress("UNREACHABLE_CODE")
+        System.err.println("PreviewGesture: noneLabel not yet implemented")
         return "---"
     }
 
     private fun shiftLabel(): String {
-        TODO("APR: return LLTrans.getString('KBShift')")
-        @Suppress("UNREACHABLE_CODE")
+        System.err.println("PreviewGesture: shiftLabel not yet implemented")
         return "Shift"
     }
 
     private fun ctrlLabel(): String {
-        TODO("APR: return LLTrans.getString('KBCtrl')")
-        @Suppress("UNREACHABLE_CODE")
+        System.err.println("PreviewGesture: ctrlLabel not yet implemented")
         return "Ctrl"
     }
 
     private fun stringFromKey(key: Byte): String {
-        TODO("APR: return LLKeyboard.stringFromKey(key)")
-        @Suppress("UNREACHABLE_CODE")
+        System.err.println("PreviewGesture: stringFromKey not yet implemented")
         return key.toChar().toString()
     }
 
     private fun getString(key: String): String {
-        TODO("APR: look up localised string from floater XML by key '$key'")
-        @Suppress("UNREACHABLE_CODE")
+        System.err.println("PreviewGesture: getString not yet implemented")
         return key
     }
 
     private fun getItem(): InventoryItemRef? {
-        TODO("APR: return gInventory.getItem(mItemUUID) cast to InventoryItemRef")
-        @Suppress("UNREACHABLE_CODE")
+        System.err.println("PreviewGesture: getItem not yet implemented")
         return null
     }
 
     private fun setAssetStatus(status: Int) {
-        TODO("APR: set mAssetStatus = status")
+        System.err.println("PreviewGesture: setAssetStatus not yet implemented")
     }
 
     private fun closeFloater() {
-        TODO("APR: call super.closeFloater()")
+        System.err.println("PreviewGesture: closeFloater not yet implemented")
     }
 
     companion object {
@@ -797,17 +789,16 @@ open class PreviewGesture(key: LLSD) : Preview(key) {
         private const val PREVIEW_ASSET_ERROR = 3
 
         fun show(itemId: LLUUID, objectId: LLUUID): PreviewGesture {
-            TODO("APR: call FloaterReg.showTypedInstance<PreviewGesture>('preview_gesture', LLSD(itemId), TAKE_FOCUS_YES); set objectId; start background fetch for animation and sound folders")
-            @Suppress("UNREACHABLE_CODE")
+            System.err.println("PreviewGesture: show not yet implemented")
             return PreviewGesture(LLSD())
         }
 
         fun finishInventoryUpload(itemId: LLUUID, newAssetId: LLUUID) {
             if (GestureMgr.isGestureActive(itemId)) {
                 GestureMgr.replaceGesture(itemId, newAssetId)
-                TODO("APR: call gInventory.notifyObservers()")
+                System.err.println("PreviewGesture: finishInventoryUpload notifyObservers not yet implemented")
             }
-            TODO("APR: find PreviewGesture instance via FloaterReg for itemId and call onUpdateSucceeded()")
+            System.err.println("PreviewGesture: finishInventoryUpload onUpdateSucceeded not yet implemented")
         }
 
         private fun updateLabel(item: ScrollListItem?) {
@@ -820,20 +811,18 @@ open class PreviewGesture(key: LLSD) : Preview(key) {
             if (labels.size != 2) return ""
             val action = labels[1]
             val localizedAction = when (action) {
-                "None" -> TODO("APR: LLTrans.getString('GestureActionNone')")
-                "until animations are done" -> TODO("APR: get label from wait_anim_check checkbox child")
+                "None" -> ""
+                "until animations are done" -> ""
                 else -> action
             }
             return when (labels[0]) {
-                "Chat" -> TODO("APR: LLTrans.getString('Chat Message') + localizedAction")
-                "Sound" -> TODO("APR: LLTrans.getString('Sound') + localizedAction")
-                "Wait" -> TODO("APR: LLTrans.getString('Wait') + localizedAction")
-                "AnimFlagStop" -> TODO("APR: LLTrans.getString('AnimFlagStop') + localizedAction")
-                "AnimFlagStart" -> TODO("APR: LLTrans.getString('AnimFlagStart') + localizedAction")
+                "Chat" -> "Chat $localizedAction"
+                "Sound" -> "Sound $localizedAction"
+                "Wait" -> "Wait $localizedAction"
+                "AnimFlagStop" -> "AnimFlagStop $localizedAction"
+                "AnimFlagStart" -> "AnimFlagStart $localizedAction"
                 else -> ""
             }
-            @Suppress("UNREACHABLE_CODE")
-            return labels[0] + " " + labels[1]
         }
     }
 }

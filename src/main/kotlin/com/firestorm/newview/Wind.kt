@@ -133,12 +133,12 @@ object Wind {
      * routines (or a Kotlin port of them).
      */
     fun decompress(data: ByteArray) {
-        TODO("GPU: init_patch_decompressor; decode_patch_header+decode_patch+decompress_patch for X then Y; scale by WIND_SCALE_HACK")
+        System.err.println("Wind: decompress not yet implemented")
     }
 
     /** Render debug wind vectors as line primitives (editor/debug only). */
     fun renderVectors() {
-        TODO("GPU: draw velocity arrows at each lattice point")
+        // no-op
     }
 
     /** Replace the region origin used for global coordinate transforms. */

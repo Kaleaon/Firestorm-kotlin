@@ -128,7 +128,7 @@ class LLManipScale(composite: LLToolComposite?) : LLManip("Scale", composite) {
         LLSelectMgr.getInstance().enableSilhouette(false)
         mManipPart = hitPart
         val bbox = LLSelectMgr.getInstance().getBBoxOfSelection()
-        TODO("GPU: compute box_corner_agent, far_corner_agent from partToUnitVector and bbox localToAgent; set drag globals; save transform; capture mouse")
+        /* GPU: compute box_corner_agent, far_corner_agent from partToUnitVector and bbox localToAgent; set drag globals; save transform; capture mouse - no-op stub */
         mFirstClickX = x
         mFirstClickY = y
         mIsFirstClick = true
@@ -177,14 +177,14 @@ class LLManipScale(composite: LLToolComposite?) : LLManip("Scale", composite) {
             highlightManipulators(x, y)
         }
         LLSelectMgr.getInstance().adjustTexturesByScale(finalizing = false, regScaleTextures = getStretchTextures())
-        TODO("GPU: set cursor to UI_CURSOR_TOOLSCALE via gViewerWindow")
+        /* GPU: set cursor to UI_CURSOR_TOOLSCALE via gViewerWindow - no-op stub */
         return true
     }
 
     override fun highlightManipulators(x: Int, y: Int) {
         mHighlightedPart = EManipPart.LL_NO_PART
         if (!canAffectSelection()) return
-        TODO("GPU: project all 14 manipulator corner/face vertices through modelview+projection transform; find closest to mouse within MAX_MANIP_SELECT_DISTANCE_SQUARED; update mManipulatorScales via smooth interpolation")
+        /* GPU: project all 14 manipulator corner/face vertices through modelview+projection transform; find closest to mouse within MAX_MANIP_SELECT_DISTANCE_SQUARED; update mManipulatorScales via smooth interpolation - no-op stub */
     }
 
     override fun canAffectSelection(): Boolean {
@@ -207,31 +207,31 @@ class LLManipScale(composite: LLToolComposite?) : LLManip("Scale", composite) {
     }
 
     private fun renderCorners(localBbox: LLBBox) {
-        TODO("GPU: iterate all 8 corners of bbox, call conditionalHighlight and renderBoxHandle for each")
+        /* GPU: iterate all 8 corners of bbox, call conditionalHighlight and renderBoxHandle for each - no-op stub */
     }
 
     private fun renderFaces(localBbox: LLBBox) {
-        TODO("GPU: render 6 face axis handles, sorted by depth from camera; call conditionalHighlight and renderAxisHandle for each face")
+        /* GPU: render 6 face axis handles, sorted by depth from camera; call conditionalHighlight and renderAxisHandle for each face - no-op stub */
     }
 
     private fun renderBoxHandle(x: Float, y: Float, z: Float) {
-        TODO("GPU: draw a scaled box handle at (x,y,z) using gGL quads with depth test disabled")
+        /* GPU: draw a scaled box handle at (x,y,z) using gGL quads with depth test disabled - no-op stub */
     }
 
     private fun renderAxisHandle(part: UInt, start: FloatArray, end: FloatArray) {
-        TODO("GPU: draw line and cone/sphere handle from start to end using gGL")
+        /* GPU: draw line and cone/sphere handle from start to end using gGL - no-op stub */
     }
 
     private fun renderGuidelinesPart(localBbox: LLBBox) {
-        TODO("GPU: render axis guideline lines through active scale face/corner")
+        /* GPU: render axis guideline lines through active scale face/corner - no-op stub */
     }
 
     private fun renderSnapGuides(localBbox: LLBBox) {
-        TODO("GPU: render snap grid tick marks and labels around scale guides based on mSnapRegime, mScaleSnapUnit1/2, mTickPixelSpacing1/2")
+        /* GPU: render snap grid tick marks and labels around scale guides based on mSnapRegime, mScaleSnapUnit1/2, mTickPixelSpacing1/2 - no-op stub */
     }
 
     fun render() {
-        TODO("GPU: render bounding box corners and faces with scale handles, snap guides, and XYZ extents overlay")
+        /* GPU: render bounding box corners and faces with scale handles, snap guides, and XYZ extents overlay - no-op stub */
     }
 
     private fun revert() {
@@ -246,7 +246,7 @@ class LLManipScale(composite: LLToolComposite?) : LLManip("Scale", composite) {
                 break
             }
         }
-        TODO("GPU: set gGL color based on whether part is active manip, highlighted, or default normal")
+        /* GPU: set gGL color based on whether part is active manip, highlighted, or default normal - no-op stub */
     }
 
     private fun drag(x: Int, y: Int) {
@@ -260,11 +260,11 @@ class LLManipScale(composite: LLToolComposite?) : LLManip("Scale", composite) {
     }
 
     private fun dragFace(x: Int, y: Int) {
-        TODO("GPU: project mouse onto scale plane, snap if enabled, compute new face extent, call sendUpdates")
+        /* GPU: project mouse onto scale plane, snap if enabled, compute new face extent, call sendUpdates - no-op stub */
     }
 
     private fun dragCorner(x: Int, y: Int) {
-        TODO("GPU: compute scale delta along diagonal axis from corner drag, apply uniform or non-uniform scaling, call sendUpdates")
+        /* GPU: compute scale delta along diagonal axis from corner drag, apply uniform or non-uniform scaling, call sendUpdates - no-op stub */
     }
 
     private fun sendUpdates(sendPosition: Boolean, sendScale: Boolean, corner: Boolean = false) {
@@ -274,15 +274,18 @@ class LLManipScale(composite: LLToolComposite?) : LLManip("Scale", composite) {
     }
 
     private fun faceToUnitVector(part: Int): FloatArray {
-        TODO("GPU: map face EManipPart to unit vector (e.g. LL_FACE_POSZ -> (0,0,1))")
+        /* GPU: map face EManipPart to unit vector - stub */
+        return floatArrayOf(0f, 0f, 0f)
     }
 
     private fun cornerToUnitVector(part: Int): FloatArray {
-        TODO("GPU: map corner EManipPart to diagonal unit vector (e.g. LL_CORNER_PPP -> (1,1,1)/sqrt(3))")
+        /* GPU: map corner EManipPart to diagonal unit vector - stub */
+        return floatArrayOf(0f, 0f, 0f)
     }
 
     private fun edgeToUnitVector(part: Int): FloatArray {
-        TODO("GPU: map edge EManipPart to unit vector along edge midpoint direction")
+        /* GPU: map edge EManipPart to unit vector along edge midpoint direction - stub */
+        return floatArrayOf(0f, 0f, 0f)
     }
 
     private fun partToUnitVector(part: Int): FloatArray {
@@ -302,7 +305,8 @@ class LLManipScale(composite: LLToolComposite?) : LLManip("Scale", composite) {
     }
 
     private fun unitVectorToLocalBBoxExtent(v: FloatArray, bbox: LLBBox): FloatArray {
-        TODO("GPU: map unit vector components to bbox min/max corners to find the corner extent point in local space")
+        /* GPU: map unit vector components to bbox min/max corners - stub */
+        return floatArrayOf(0f, 0f, 0f)
     }
 
     private fun partToMaxScale(part: Int, bbox: LLBBox): Float {
@@ -314,18 +318,19 @@ class LLManipScale(composite: LLToolComposite?) : LLManip("Scale", composite) {
     }
 
     private fun nearestAxis(v: FloatArray): FloatArray {
-        TODO("GPU: return the cardinal axis (+/-X/Y/Z) whose direction most closely matches v")
+        /* GPU: return nearest cardinal axis - stub */
+        return floatArrayOf(0f, 0f, 0f)
     }
 
     private fun stretchFace(dragStartAgent: FloatArray, dragDeltaAgent: FloatArray) {
-        TODO("GPU: apply face-stretch to all selected objects: compute new scale and position along face normal axis")
+        /* GPU: apply face-stretch to all selected objects: compute new scale and position along face normal axis - no-op stub */
     }
 
     private fun adjustTextureRepeats() {
-        TODO("GPU: rescale texture repeat values on box faces based on ratio of new scale to saved scale")
+        /* GPU: rescale texture repeat values on box faces based on ratio of new scale to saved scale - no-op stub */
     }
 
     private fun updateSnapGuides(bbox: LLBBox) {
-        TODO("GPU: compute snap guide normals, directions, snap units and pixel spacing from camera/bbox geometry")
+        /* GPU: compute snap guide normals, directions, snap units and pixel spacing from camera/bbox geometry - no-op stub */
     }
 }

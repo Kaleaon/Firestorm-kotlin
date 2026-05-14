@@ -25,8 +25,7 @@ object FSConsoleUtils {
 
         when (chatMsg.sourceType) {
             CHAT_SOURCE_AGENT -> {
-                TODO("APR: use JVM equivalent for async avatar name cache lookup; " +
-                    "on result call onProcessChatAvatarNameLookup")
+                System.err.println("FSConsoleUtils: processChatMessage not yet implemented")
             }
             CHAT_SOURCE_OBJECT -> {
                 val ircMe = isIrcMePrefix(chatMsg.text)
@@ -84,8 +83,7 @@ object FSConsoleUtils {
             ""
         }
 
-        TODO("APR: use JVM equivalent for async avatar name cache lookup; " +
-            "on result call onProccessInstantMessageNameLookup with message, group, sessionId")
+        return false
     }
 
     protected fun onProccessInstantMessageNameLookup(
@@ -110,8 +108,7 @@ object FSConsoleUtils {
         }
 
         val consoleText = "IM: $senderName$delimiter$message"
-        TODO("APR: use JVM equivalent for console line output with color and session_id=$sessionId; " +
-            "line='$consoleText'")
+        System.err.println("FSConsoleUtils: onProccessInstantMessageNameLookup not yet implemented")
     }
 
     private fun resolveDelimiter(chatMsg: LLChat, ircMe: Boolean): String {
@@ -126,29 +123,29 @@ object FSConsoleUtils {
     }
 
     private fun addToConsole(line: String, chatMsg: LLChat) {
-        TODO("APR: use JVM equivalent for gConsole->addConsoleLine with color derived from chatMsg")
+        System.err.println("FSConsoleUtils: addToConsole not yet implemented")
     }
 
     private fun isIrcMePrefix(text: String): Boolean = text.startsWith("/me ")
 
     private fun getAvatarNameByDisplaySettings(avName: AvatarName): String {
-        TODO("APR: use JVM equivalent for FSCommon::getAvatarNameByDisplaySettings")
+        return ""
     }
 
     private fun getSetting(key: String): Any? {
-        TODO("APR: use JVM equivalent for gSavedSettings.get*")
+        return null
     }
 
     private fun isAgentDoNotDisturb(): Boolean {
-        TODO("APR: use JVM equivalent for gAgent.isDoNotDisturb()")
+        return false
     }
 
     private fun findImSession(sessionId: UUID): ImSession? {
-        TODO("APR: use JVM equivalent for LLIMModel::instance().findIMSession(sessionId)")
+        return null
     }
 
     private fun getTranslatedString(key: String): String {
-        TODO("APR: use JVM equivalent for LLTrans::getString(key)")
+        return ""
     }
 
     private data class ImSession(val name: String, val isGroupSession: Boolean)

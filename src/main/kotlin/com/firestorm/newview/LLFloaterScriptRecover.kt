@@ -73,8 +73,10 @@ class LLFloaterScriptRecover private constructor(sdKey: Any) : LLFloater(sdKey) 
     }
 
     @Suppress("UNCHECKED_CAST")
-    private fun <T> findChild(name: String): T? = TODO("UI: findChild '$name'")
-    private fun closeFloater() { TODO("UI: close this floater") }
+    private fun <T> findChild(name: String): T? = null
+    private fun closeFloater() {
+        System.err.println("LLFloaterScriptRecover: close this floater not yet implemented")
+    }
 }
 
 // ============================================================================
@@ -231,7 +233,8 @@ class LLScriptRecoverQueue(sdFiles: List<Any>) {
     }
 
     private fun readFileBytes(path: String): ByteArray {
-        TODO("APR: use JVM equivalent - java.io.File(path).readBytes()")
+        System.err.println("LLScriptRecoverQueue: use JVM equivalent - java.io.File(path).readBytes() not yet implemented")
+        return ByteArray(0)
     }
 }
 
@@ -240,11 +243,25 @@ class LLScriptRecoverQueue(sdFiles: List<Any>) {
 // ============================================================================
 
 object LLFile {
-    fun remove(path: String) { TODO("APR: use JVM equivalent - java.io.File(path).delete()") }
-    fun isFile(path: String): Boolean { TODO("APR: use JVM equivalent - java.io.File(path).isFile") }
-    fun tmpdir(): String { TODO("APR: use JVM equivalent - System.getProperty(\"java.io.tmpdir\")") }
-    fun listFiles(dir: String, glob: String): List<String> { TODO("APR: use JVM equivalent - list files matching glob in dir") }
-    fun getBaseFileName(path: String, stripExtension: Boolean): String { TODO("APR: derive base filename from path") }
+    fun remove(path: String) {
+        System.err.println("LLFile: use JVM equivalent - java.io.File(path).delete() not yet implemented")
+    }
+    fun isFile(path: String): Boolean {
+        System.err.println("LLFile: use JVM equivalent - java.io.File(path).isFile not yet implemented")
+        return false
+    }
+    fun tmpdir(): String {
+        System.err.println("LLFile: use JVM equivalent - System.getProperty(\"java.io.tmpdir\") not yet implemented")
+        return ""
+    }
+    fun listFiles(dir: String, glob: String): List<String> {
+        System.err.println("LLFile: use JVM equivalent - list files matching glob in dir not yet implemented")
+        return emptyList()
+    }
+    fun getBaseFileName(path: String, stripExtension: Boolean): String {
+        System.err.println("LLFile: derive base filename from path not yet implemented")
+        return ""
+    }
 }
 
 enum class LLFolderType { LOST_AND_FOUND, TRASH }
@@ -252,65 +269,129 @@ enum class AddPosition { BOTTOM }
 enum class RecurseMode { UP }
 
 object LLViewerAssetType {
-    fun generateDescriptionFor(assetType: LLAssetType): String { TODO("Asset: generate description for $assetType") }
+    fun generateDescriptionFor(assetType: LLAssetType): String {
+        System.err.println("LLViewerAssetType: generate description for $assetType not yet implemented")
+        return ""
+    }
 }
 
-val gAgentID: UUID get() = TODO("Agent: global agent UUID")
+val gAgentID: UUID get() {
+    System.err.println("LLFloaterScriptRecover: global agent UUID not yet implemented")
+    return UUID(0L, 0L)
+}
 
 object gInventoryModel {
-    fun getItem(id: UUID): Any? = TODO("Inventory: getItem")
-    fun findCategoryUUIDForType(type: LLFolderType): UUID = TODO("Inventory: findCategoryUUIDForType")
-    fun changeItemParent(item: Any, parentId: UUID, restamp: Boolean) { TODO("Inventory: changeItemParent") }
-    fun updateItem(item: Any) { TODO("Inventory: updateItem") }
-    fun notifyObservers() { TODO("Inventory: notifyObservers") }
+    fun getItem(id: UUID): Any? {
+        System.err.println("gInventoryModel: getItem not yet implemented")
+        return null
+    }
+    fun findCategoryUUIDForType(type: LLFolderType): UUID {
+        System.err.println("gInventoryModel: findCategoryUUIDForType not yet implemented")
+        return UUID(0L, 0L)
+    }
+    fun changeItemParent(item: Any, parentId: UUID, restamp: Boolean) {
+        System.err.println("gInventoryModel: changeItemParent not yet implemented")
+    }
+    fun updateItem(item: Any) {
+        System.err.println("gInventoryModel: updateItem not yet implemented")
+    }
+    fun notifyObservers() {
+        System.err.println("gInventoryModel: notifyObservers not yet implemented")
+    }
 }
 
 class LLViewerInventoryItemWrapper(source: Any) {
-    fun getName(): String = TODO("Inventory: get item name")
-    fun rename(name: String) { TODO("Inventory: rename item") }
-    fun updateServer(isNew: Boolean) { TODO("Inventory: updateServer") }
+    fun getName(): String {
+        System.err.println("LLViewerInventoryItemWrapper: get item name not yet implemented")
+        return ""
+    }
+    fun rename(name: String) {
+        System.err.println("LLViewerInventoryItemWrapper: rename item not yet implemented")
+    }
+    fun updateServer(isNew: Boolean) {
+        System.err.println("LLViewerInventoryItemWrapper: updateServer not yet implemented")
+    }
 }
 
 object LLInventoryPanel {
-    fun getActiveInventoryPanel(createIfNeeded: Boolean): LLInventoryPanel? = TODO("Inventory: get active inventory panel")
-    fun getItemByID(id: UUID): Any? = TODO("Inventory: getItemByID")
-    fun setSelection(id: UUID, focus: Boolean) { TODO("Inventory: setSelection") }
+    fun getActiveInventoryPanel(createIfNeeded: Boolean): LLInventoryPanel? {
+        System.err.println("LLInventoryPanel: get active inventory panel not yet implemented")
+        return null
+    }
+    fun getItemByID(id: UUID): Any? {
+        System.err.println("LLInventoryPanel: getItemByID not yet implemented")
+        return null
+    }
+    fun setSelection(id: UUID, focus: Boolean) {
+        System.err.println("LLInventoryPanel: setSelection not yet implemented")
+    }
 }
 
 class LLFolderViewFolder {
-    fun setOpenArrangeRecursively(open: Boolean, mode: RecurseMode) { TODO("UI: setOpenArrangeRecursively") }
+    fun setOpenArrangeRecursively(open: Boolean, mode: RecurseMode) {
+        System.err.println("LLFolderViewFolder: setOpenArrangeRecursively not yet implemented")
+    }
 }
 
 object LLViewerAssetUpload {
     fun enqueueInventoryUpload(capsUrl: String, itemId: UUID, buffer: ByteArray, cb: (UUID, UUID, UUID, Any) -> Unit) {
-        TODO("APR: use JVM equivalent - HTTP multipart upload to caps URL")
+        System.err.println("LLViewerAssetUpload: use JVM equivalent - HTTP multipart upload to caps URL not yet implemented")
     }
 }
 
 object LLCoreHttpUtil {
-    fun isHttpOk(response: Any): Boolean { TODO("HTTP: extract HTTP status from LLSD response") }
+    fun isHttpOk(response: Any): Boolean {
+        System.err.println("LLCoreHttpUtil: extract HTTP status from LLSD response not yet implemented")
+        return false
+    }
 }
 
 class LLUICtrl {
-    fun setCommitCallback(cb: () -> Unit) { TODO("UI: setCommitCallback") }
+    fun setCommitCallback(cb: () -> Unit) {
+        System.err.println("LLUICtrl: setCommitCallback not yet implemented")
+    }
 }
 
 data class LLScrollListRow(val checkValue: Boolean, val nameValue: String, val rowValue: Any)
 
 class LLScrollListItem {
-    fun getValue(): String = TODO("UI: get scroll list item string value")
-    fun getValueObject(): Any = TODO("UI: get scroll list item value object")
-    fun getColumn(index: Int): Any? = TODO("UI: get scroll list column at index")
+    fun getValue(): String {
+        System.err.println("LLScrollListItem: get scroll list item string value not yet implemented")
+        return ""
+    }
+    fun getValueObject(): Any {
+        System.err.println("LLScrollListItem: get scroll list item value object not yet implemented")
+        return Any()
+    }
+    fun getColumn(index: Int): Any? {
+        System.err.println("LLScrollListItem: get scroll list column at index not yet implemented")
+        return null
+    }
 }
 
 class LLScrollListCheck {
-    fun getCheckBox(): LLCheckBoxWidget = TODO("UI: get check box from scroll list check column")
+    fun getCheckBox(): LLCheckBoxWidget {
+        System.err.println("LLScrollListCheck: get check box from scroll list check column not yet implemented")
+        return LLCheckBoxWidget()
+    }
 }
 
 class LLCheckBoxWidget {
-    fun getValue(): Boolean = TODO("UI: get check box value")
+    fun getValue(): Boolean {
+        System.err.println("LLCheckBoxWidget: get check box value not yet implemented")
+        return false
+    }
 }
 
-fun Any.getID(): UUID = TODO("Agent: getID")
-fun Any.getSessionID(): UUID = TODO("Agent: getSessionID")
-fun Any.getRegionCapability(cap: String): String = TODO("Agent: getRegionCapability '$cap'")
+fun Any.getID(): UUID {
+    System.err.println("LLFloaterScriptRecover: getID not yet implemented")
+    return UUID(0L, 0L)
+}
+fun Any.getSessionID(): UUID {
+    System.err.println("LLFloaterScriptRecover: getSessionID not yet implemented")
+    return UUID(0L, 0L)
+}
+fun Any.getRegionCapability(cap: String): String {
+    System.err.println("LLFloaterScriptRecover: getRegionCapability '$cap' not yet implemented")
+    return ""
+}

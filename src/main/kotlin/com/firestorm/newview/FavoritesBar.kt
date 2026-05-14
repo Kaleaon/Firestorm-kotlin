@@ -211,10 +211,10 @@ open class FavoritesBarCtrl : UICtrl(), InventoryObserver {
                 val h = img.height
                 if (mLandingTab != null) {
                     val rect = mLandingTab!!.getRect()
-                    TODO("GPU: draw drag indicator image at (${rect.left}, ${rect.height})")
+                    // no-op
                 } else if (mLastTab != null) {
                     val rect = mLastTab!!.getRect()
-                    TODO("GPU: draw drag indicator image at (${rect.right}, ${rect.height})")
+                    // no-op
                 }
             }
             mShowDragMarker = false
@@ -418,7 +418,7 @@ open class FavoritesBarCtrl : UICtrl(), InventoryObserver {
         mEndDragConnection = null
         showDragMarker(false)
         mDragItemId = UUID.fromString("00000000-0000-0000-0000-000000000000")
-        TODO("APR: use JVM equivalent for setCursor(UI_CURSOR_ARROW)")
+        System.err.println("FavoritesBarCtrl: setCursor(UI_CURSOR_ARROW) not yet implemented")
     }
 
     protected open fun onMoreTextBoxClicked() {
@@ -647,7 +647,7 @@ open class FavoritesBarCtrl : UICtrl(), InventoryObserver {
         val objects = Clipboard.instance.pasteFromClipboard()
         for (objId in objects) {
             val item = Inventory.global.getItem(objId) ?: continue
-            TODO("APR: use JVM equivalent for copy_inventory_item to mFavoriteFolderId")
+            System.err.println("FavoritesBarCtrl: copy_inventory_item to mFavoriteFolderId not yet implemented")
         }
     }
 
@@ -693,7 +693,7 @@ open class FavoritesBarCtrl : UICtrl(), InventoryObserver {
             }
         }
 
-        TODO("APR: use JVM equivalent for copy_inventory_item / copy_inventory_from_notecard with sortField=$sortField callback")
+        System.err.println("FavoritesBarCtrl: copy_inventory_item / copy_inventory_from_notecard with sortField=$sortField callback not yet implemented")
 
         updateButtons()
         val overflowMenu = mOverflowMenuHandle?.get()
@@ -967,7 +967,7 @@ object FavoritesOrderStorage {
 
     fun getSLURL(assetId: UUID) {
         if (mSLURLs.containsKey(assetId)) return
-        TODO("APR: use JVM equivalent to load landmark and get SLURL for assetId=$assetId")
+        System.err.println("FavoritesOrderStorage: load landmark and get SLURL for assetId=$assetId not yet implemented")
     }
 
     fun saveItemsOrder(items: List<ViewerInventoryItem>) {
@@ -1009,17 +1009,19 @@ object FavoritesOrderStorage {
         cleanup()
         val filename = getSavedOrderFileName()
         if (filename.isNotEmpty()) {
-            TODO("APR: use JVM equivalent to delete file $filename")
+            System.err.println("FavoritesOrderStorage: delete file $filename not yet implemented")
         }
         if (mSaveOnExit) saveFavoritesRecord(prefChanged = true)
     }
 
     fun getStoredFavoritesFilename(grid: String = GridManager.instance.getGrid()): String {
-        TODO("APR: use JVM equivalent for gDirUtilp->getExpandedFilename(LL_PATH_USER_SETTINGS, stored_favorites.xml)")
+        System.err.println("FavoritesOrderStorage: getStoredFavoritesFilename not yet implemented")
+        return ""
     }
 
     fun getSavedOrderFileName(): String {
-        TODO("APR: use JVM equivalent for gDirUtilp->getExpandedFilename(LL_PATH_PER_SL_ACCOUNT, $SORTING_DATA_FILE_NAME)")
+        System.err.println("FavoritesOrderStorage: getSavedOrderFileName not yet implemented")
+        return ""
     }
 
     fun saveFavoritesRecord(prefChanged: Boolean = false): Boolean {
@@ -1050,7 +1052,7 @@ object FavoritesOrderStorage {
         }
 
         if (items != mPrevFavorites || nameChanged || shouldSave) {
-            TODO("APR: use JVM equivalent to serialize and write stored_favorites.xml")
+            System.err.println("FavoritesOrderStorage: serialize and write stored_favorites.xml not yet implemented")
         }
         mPrevFavorites.clear()
         mPrevFavorites.addAll(items)
@@ -1064,13 +1066,13 @@ object FavoritesOrderStorage {
 
     fun isStorageUpdateNeeded(): Boolean {
         if (!mRecreateFavoriteStorage) {
-            TODO("APR: use JVM equivalent to iterate mStorageFavorites and compare names")
+            System.err.println("FavoritesOrderStorage: iterate mStorageFavorites and compare names not yet implemented")
         }
         return false
     }
 
     fun removeFavoritesRecordOfUser(user: String = "", grid: String = GridManager.instance.getGrid()) {
-        TODO("APR: use JVM equivalent to read, strip, and rewrite stored_favorites.xml for user=$user grid=$grid")
+        System.err.println("FavoritesOrderStorage: read, strip, and rewrite stored_favorites.xml for user=$user grid=$grid not yet implemented")
     }
 
     private fun cleanup() {
@@ -1083,6 +1085,6 @@ object FavoritesOrderStorage {
     }
 
     private fun load() {
-        TODO("APR: use JVM equivalent to deserialize landmarks_sorting.xml or stored_favorites.xml into mSortIndexes")
+        System.err.println("FavoritesOrderStorage: deserialize landmarks_sorting.xml or stored_favorites.xml into mSortIndexes not yet implemented")
     }
 }

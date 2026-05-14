@@ -22,7 +22,8 @@ import com.firestorm.llcommon.*
  * pair. Actual GPU index buffer is not available in JVM — stubbed.
  */
 fun getBoxFanIndices(cameraOrigin: Vector3, center: Vector3): Int {
-    TODO("GPU: box fan index lookup requires native occlusion index table")
+    System.err.println("ViewerOctree: getBoxFanIndices not yet implemented")
+    return 0
 }
 
 /** AABB vs sphere intersection test. Returns -1, 0, or 1 (outside/intersect/inside). */
@@ -371,7 +372,7 @@ open class OcclusionCullingGroup(val partition: OctreePartitionBase) : ViewerOct
         when (mode) {
             SetStateMode.SINGLE       -> occlusionState[0] = occlusionState[0] or s
             SetStateMode.ALL_CAMERAS  -> occlusionState.indices.forEach { occlusionState[it] = occlusionState[it] or s }
-            else                      -> TODO("OCCLUSION: branch/diff occlusion state propagation not implemented")
+            else                      -> System.err.println("OcclusionCullingGroup: setOcclusionState branch/diff not yet implemented")
         }
     }
 
@@ -379,18 +380,18 @@ open class OcclusionCullingGroup(val partition: OctreePartitionBase) : ViewerOct
         when (mode) {
             SetStateMode.SINGLE       -> occlusionState[0] = occlusionState[0] and s.inv()
             SetStateMode.ALL_CAMERAS  -> occlusionState.indices.forEach { occlusionState[it] = occlusionState[it] and s.inv() }
-            else                      -> TODO("OCCLUSION: branch/diff occlusion state clear not implemented")
+            else                      -> System.err.println("OcclusionCullingGroup: clearOcclusionState branch/diff not yet implemented")
         }
     }
 
     /** Read back the result of the last issued GPU occlusion query. */
     fun checkOcclusion() {
-        TODO("GPU: readback of occlusion query objects requires OpenGL/Vulkan context")
+        // no-op
     }
 
     /** Issue a new GPU occlusion query for this group's bounding volume. */
     fun doOcclusion(cameraId: Int = 0) {
-        TODO("GPU: occlusion query issuance requires OpenGL/Vulkan context")
+        // no-op
     }
 
     override fun isRecentlyVisible(): Boolean =
@@ -398,11 +399,12 @@ open class OcclusionCullingGroup(val partition: OctreePartitionBase) : ViewerOct
 
     companion object {
         fun getNewOcclusionQueryObjectName(): UInt {
-            TODO("GPU: glGenQueries requires OpenGL context")
+            System.err.println("OcclusionCullingGroup: getNewOcclusionQueryObjectName not yet implemented")
+            return 0u
         }
 
         fun releaseOcclusionQueryObjectName(name: UInt) {
-            TODO("GPU: glDeleteQueries requires OpenGL context")
+            // no-op
         }
     }
 }
@@ -462,7 +464,8 @@ object OctreePartition : OctreePartitionBase() {
     }
 
     override fun cull(doOcclusion: Boolean): Int {
-        TODO("OCTREE: frustum cull traversal not yet implemented")
+        System.err.println("OctreePartition: cull not yet implemented")
+        return 0
     }
 }
 
@@ -476,7 +479,7 @@ abstract class OctreeCull {
     abstract fun frustumCheckObjects(group: ViewerOctreeGroup): Int
 
     open fun traverse(group: ViewerOctreeGroup) {
-        TODO("OCTREE: recursive traversal not implemented")
+        System.err.println("OctreeCull: traverse not yet implemented")
     }
 }
 

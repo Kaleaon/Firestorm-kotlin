@@ -92,7 +92,7 @@ class LLFloaterTopObjects(key: LLSD) : LLFloater(key) {
     }
 
     fun handleReply(msg: LLMessageSystem, data: Any?) {
-        TODO("APR: use JVM equivalent")
+        System.err.println("LLFloaterTopObjects: handleReply not yet implemented")
     }
 
     fun clearList() {
@@ -139,7 +139,7 @@ class LLFloaterTopObjects(key: LLSD) : LLFloater(key) {
         val filter = mFilter
         clearList()
 
-        TODO("APR: use JVM equivalent")
+        System.err.println("LLFloaterTopObjects: onRefresh not yet implemented")
     }
 
     fun disableRefreshBtn() {
@@ -147,7 +147,7 @@ class LLFloaterTopObjects(key: LLSD) : LLFloater(key) {
     }
 
     private fun initColumns(list: LLCtrlListInterface) {
-        TODO("APR: use JVM equivalent")
+        System.err.println("LLFloaterTopObjects: initColumns not yet implemented")
     }
 
     private fun onCommitObjectsList() {
@@ -171,7 +171,7 @@ class LLFloaterTopObjects(key: LLSD) : LLFloater(key) {
     }
 
     private fun returnObjects(all: Boolean) {
-        TODO("APR: use JVM equivalent")
+        System.err.println("LLFloaterTopObjects: returnObjects not yet implemented")
     }
 
     private fun onReturnAll() {
@@ -209,14 +209,14 @@ class LLFloaterTopObjects(key: LLSD) : LLFloater(key) {
         val name = firstSelected.getColumn(1)?.getValue()?.asString() ?: return
         val posString = firstSelected.getColumn(3)?.getValue()?.asString() ?: return
 
-        TODO("APR: use JVM equivalent")
+        System.err.println("LLFloaterTopObjects: showBeacon not yet implemented")
     }
 
     private fun onTeleportToObject() {
         val firstSelected = mObjectsScrollList?.getFirstSelected() ?: return
         val posString = firstSelected.getColumn(3)?.getValue()?.asString() ?: return
 
-        TODO("APR: use JVM equivalent")
+        System.err.println("LLFloaterTopObjects: onTeleportToObject not yet implemented")
     }
 
     private fun onKick() {

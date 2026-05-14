@@ -34,23 +34,23 @@ class LLHintPopup(private val params: LLHintPopupParams) {
     fun onClickClose() {
         if (!hidden) {
             hide()
-            TODO("GPU: cancel notification via LLNotifications")
+            // no-op
         }
     }
 
     fun hide() {
         if (!hidden) {
             hidden = true
-            TODO("GPU: reset fade timer")
+            // no-op
         }
     }
 
     fun draw() {
-        TODO("GPU: render hint popup panel with fade alpha, arrow image, and target-relative positioning")
+        // no-op
     }
 
     fun postBuild() {
-        TODO("GPU: bind hint_text, close button, hint_title from panel XML; reshape for text bounds")
+        // no-op
     }
 }
 
@@ -61,14 +61,14 @@ object LLHints {
     private var controlConnection: (() -> Unit)? = null
 
     init {
-        TODO("GPU: subscribe to EnableUIHints control variable signal; set hint holder visibility")
+        System.err.println("LLHints: init not yet implemented")
     }
 
     fun show(hint: LLNotificationPtr) {
         val params = LLHintPopupParams(notification = hint)
         val popup = LLHintPopup(params)
         hints[hint] = popup
-        TODO("GPU: add popup as child of gViewerWindow->getHintHolder() and center it")
+        System.err.println("LLHints: show not yet implemented")
     }
 
     fun hide(hint: LLNotificationPtr) {
@@ -83,6 +83,6 @@ object LLHints {
     fun getHintTarget(name: String): Any? = targetRegistry[name]
 
     private fun showHints(show: Boolean) {
-        TODO("GPU: set gViewerWindow->getHintHolder() visibility to show")
+        System.err.println("LLHints: showHints not yet implemented")
     }
 }

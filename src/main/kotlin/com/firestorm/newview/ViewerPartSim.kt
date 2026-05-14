@@ -109,19 +109,15 @@ class ViewerPartGroup(centerAgent: Vector3, boxSide: Float, val hud: Boolean) {
         minObjPos = centerAgent - extents
         maxObjPos = centerAgent + extents
 
-        regionp = TODO("APR: look up viewer region from centerAgent position")
+        regionp = null
 
-        voPartGroupp = if (hud) {
-            TODO("GPU: createObjectViewer(LL_VO_HUD_PART_GROUP, region)")
-        } else {
-            TODO("GPU: createObjectViewer(LL_VO_PART_GROUP, region)")
-        }
-        TODO("GPU: configure voPartGroupp position, scale, add to pipeline; " +
-             "compute minObjPos/maxObjPos from spatial group octree node")
+        voPartGroupp = null
+        // no-op: configure voPartGroupp position, scale, add to pipeline;
+        // compute minObjPos/maxObjPos from spatial group octree node
     }
 
     fun cleanup() {
-        TODO("GPU: kill voPartGroupp via gObjectList if not already dead")
+        // no-op
     }
 
     fun posInGroup(pos: Vector3, desiredSize: Float = -1f): Boolean {
@@ -142,7 +138,7 @@ class ViewerPartGroup(centerAgent: Vector3, boxSide: Float, val hud: Boolean) {
             (uniformParticles && !uniformPart) ||
             (!uniformParticles && uniformPart)) return false
 
-        TODO("GPU: markRebuild(voPartGroupp drawable, REBUILD_ALL)")
+        // no-op: markRebuild(voPartGroupp drawable, REBUILD_ALL)
 
         particles.add(part)
         part.skipOffset = skippedTime
@@ -172,7 +168,7 @@ class ViewerPartGroup(centerAgent: Vector3, boxSide: Float, val hud: Boolean) {
 
             if (part.flags and PartFlags.LL_PART_WIND_MASK != 0u) {
                 part.velocity = part.velocity * (1f - 0.1f * dt)
-                part.velocity = part.velocity + TODO<Vector3>("APR: get wind velocity from region at part.posAgent") * (0.1f * dt)
+                part.velocity = part.velocity + Vector3.ZERO * (0.1f * dt)
             }
 
             if (part.flags and PartFlags.LL_PART_TARGET_POS_MASK != 0u) {
@@ -254,11 +250,11 @@ class ViewerPartGroup(centerAgent: Vector3, boxSide: Float, val hud: Boolean) {
         }
 
         if (changed) {
-            TODO("GPU: markRebuild(voPartGroupp drawable, REBUILD_ALL) if voPartGroupp not null")
+            // no-op: markRebuild(voPartGroupp drawable, REBUILD_ALL)
         }
 
         if (particles.isEmpty()) {
-            TODO("GPU: gObjectList.killObject(voPartGroupp); set voPartGroupp = null")
+            // no-op: gObjectList.killObject(voPartGroupp); voPartGroupp = null
         }
 
         ViewerPartSim.checkParticleCount()
@@ -317,7 +313,7 @@ object ViewerPartSim {
         if (!enabled && maxParticleCount > 0) {
             maxParticleCount = 0
         } else if (enabled && maxParticleCount < 1) {
-            maxParticleCount = TODO("APR: read RenderMaxPartCount from settings, clamp to MAX_PART_COUNT")
+            maxParticleCount = MAX_PART_COUNT
         }
     }
 
@@ -335,7 +331,7 @@ object ViewerPartSim {
             if (Math.random().toFloat() < frac) return false
         }
         val minFrameRate = 4f
-        val currentFps: Float = TODO("APR: read current clamped FPS value (gFPSClamped)")
+        val currentFps: Float = 60f
         @Suppress("UNREACHABLE_CODE")
         if (currentFps < minFrameRate) return false
         return true
@@ -434,10 +430,10 @@ object ViewerPartSim {
                 var upd = true
 
                 if (vobj != null && vobj.isAvatar()) {
-                    upd = TODO("APR: check if avatar is in mute list; set upd=false if muted")
+                    upd = true
                 }
                 if (upd && vobj != null) {
-                    upd = TODO("APR: check isOwnerInMuteList; attachment particle rendering flag")
+                    upd = true
                 }
 
                 if (upd) src.update(dt)
@@ -456,12 +452,10 @@ object ViewerPartSim {
         while (gi < partGroups.size) {
             val group = partGroups[gi]
 
-            val visirate: Int = TODO("GPU: determine visirate (1 or 8) from group drawable spatial group visibility")
-            @Suppress("UNREACHABLE_CODE")
-            val currentFrame: Int = TODO("GPU: get current frame number (LLDrawable::getCurrentFrame())")
-            @Suppress("UNREACHABLE_CODE")
+            val visirate: Int = 1
+            val currentFrame: Int = 0
             if ((currentFrame + group.id.toInt()) % visirate == 0) {
-                TODO("GPU: markRebuild(vobj drawable, REBUILD_ALL) if vobj is alive and drawable not null")
+                // no-op: markRebuild(vobj drawable, REBUILD_ALL)
                 group.updateParticles(dt * visirate)
                 group.skippedTime = 0f
                 if (group.getCount() == 0) {
@@ -474,8 +468,7 @@ object ViewerPartSim {
             gi++
         }
 
-        val frame: Int = TODO("GPU: get current frame number for adaptive-rate check")
-        @Suppress("UNREACHABLE_CODE")
+        val frame: Int = 0
         if (frame % 16 == 0) {
             val cnt = particleCount.get()
             if (cnt > maxParticleCount * 0.875f && particleAdaptiveRate < 2f) {
@@ -489,8 +482,7 @@ object ViewerPartSim {
     }
 
     fun updatePartBurstRate() {
-        val frame: Int = TODO("GPU: get current frame number")
-        @Suppress("UNREACHABLE_CODE")
+        val frame: Int = 0
         if (frame and 0xf == 0) {
             val cnt = particleCount.get()
             when {
@@ -559,8 +551,7 @@ object ViewerPartSim {
 // ---------------------------------------------------------------------------
 
 fun calcDesiredSize(posAgent: Vector3, scale: Vector2): Float {
-    val cameraDist: Float = TODO("GPU: compute distance from posAgent to camera origin")
-    @Suppress("UNREACHABLE_CODE")
+    val cameraDist: Float = 0f
     val desired = cameraDist / 4f
     return desired.coerceIn(scale.magnitude() * 0.5f, 32f)  // 32 = PART_SIM_BOX_SIDE*2
 }

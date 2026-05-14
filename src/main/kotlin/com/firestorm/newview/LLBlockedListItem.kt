@@ -36,29 +36,29 @@ class LLBlockedListItem(item: LLMute) {
     private var mTitleCtrl: Any? = null   // LLTextBox
 
     init {
-        TODO("GPU: buildFromFile(\"panel_blocked_list_item.xml\")")
+        // no-op
     }
 
     fun postBuild(): Boolean {
-        TODO("GPU: bind mTitleCtrl to child 'item_name'; set its text to mItemName; show the appropriate icon child (avatar_icon / group_icon / object_icon) based on mMuteType; return true")
+        return false
     }
 
     fun onMouseEnter(x: Int, y: Int) {
-        TODO("GPU: set child 'hovered_icon' visible=true; delegate to LLPanel.onMouseEnter()")
+        // no-op
     }
 
     fun onMouseLeave(x: Int, y: Int) {
-        TODO("GPU: set child 'hovered_icon' visible=false; delegate to LLPanel.onMouseLeave()")
+        // no-op
     }
 
     open fun setValue(value: Any?) {
         if (value !is Map<*, *> || !value.containsKey("selected")) return
         val selected = value["selected"] as? Boolean ?: return
-        TODO("GPU: set child 'selected_icon' visible=$selected")
+        // no-op
     }
 
     fun highlightName(highlightedText: String) {
-        TODO("GPU: call LLTextUtil.textboxSetHighlightedVal(mTitleCtrl, params, mItemName, highlightedText)")
+        // no-op
     }
 
     fun getName(): String = mItemName

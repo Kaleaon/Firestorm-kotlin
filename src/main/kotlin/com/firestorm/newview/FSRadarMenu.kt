@@ -159,7 +159,8 @@ object FSFloaterRadarMenu {
                 1 -> VisualMuteSettings.AV_DO_NOT_RENDER
                 2 -> VisualMuteSettings.AV_ALWAYS_RENDER
                 else -> {
-                    TODO("APR: use JVM equivalent - log warn unknown visual mute setting value $mode")
+                    System.err.println("FSRadarMenu: use JVM equivalent - log warn unknown visual mute setting value $mode not yet implemented")
+                    return
                 }
             }
 
@@ -186,30 +187,35 @@ object FSFloaterRadarMenu {
                 1 -> VisualMuteSettings.AV_DO_NOT_RENDER
                 2 -> VisualMuteSettings.AV_ALWAYS_RENDER
                 else -> {
-                    TODO("APR: use JVM equivalent - log warn unknown visual mute setting value $mode")
+                    System.err.println("FSRadarMenu: use JVM equivalent - log warn unknown visual mute setting value $mode not yet implemented")
+                    return false
                 }
             }
             return FSAvatarRenderPersistence.getAvatarRenderSettings(mUUIDs.first()) == renderSetting
         }
 
         private fun rlvHasBehaviourShowInv(): Boolean {
-            TODO("APR: use JVM equivalent - query RLV handler for RLV_BHVR_SHOWINV")
+            System.err.println("FSRadarMenu: use JVM equivalent - query RLV handler for RLV_BHVR_SHOWINV not yet implemented")
+            return false
         }
 
         private fun findVOAvatar(id: UUID): LLVOAvatar? {
-            TODO("APR: use JVM equivalent - look up live avatar object by UUID from object list")
+            System.err.println("FSRadarMenu: use JVM equivalent - look up live avatar object by UUID from object list not yet implemented")
+            return null
         }
 
         private fun distVec(a: Vector3, b: Vector3): Float {
-            TODO("APR: use JVM equivalent - euclidean distance between two 3D positions")
+            System.err.println("FSRadarMenu: use JVM equivalent - euclidean distance between two 3D positions not yet implemented")
+            return 0f
         }
 
         private fun cullAvatarsByPixelArea(): Unit {
-            TODO("GPU: cull/re-evaluate avatar render queue by pixel area")
+            System.err.println("FSRadarMenu: cull/re-evaluate avatar render queue by pixel area not yet implemented")
         }
 
         private fun createFromFile(xmlFile: String, registrar: ActionRegistrar, enableRegistrar: EnableRegistrar): Any {
-            TODO("APR: use JVM equivalent - load XUI context menu from file with registered callbacks")
+            System.err.println("FSRadarMenu: use JVM equivalent - load XUI context menu from file with registered callbacks not yet implemented")
+            return Any()
         }
     }
 
@@ -230,91 +236,91 @@ object FSFloaterRadarMenu {
     }
 
     object LLAvatarActions {
-        fun showProfile(id: UUID): Unit = TODO("APR: use JVM equivalent")
-        fun requestFriendshipDialog(id: UUID): Unit = TODO("APR: use JVM equivalent")
-        fun removeFriendDialog(id: UUID): Unit = TODO("APR: use JVM equivalent")
-        fun removeFriendsDialog(ids: List<UUID>): Unit = TODO("APR: use JVM equivalent")
-        fun startIM(id: UUID): Unit = TODO("APR: use JVM equivalent")
-        fun startCall(id: UUID): Unit = TODO("APR: use JVM equivalent")
-        fun teleportRequest(id: UUID): Unit = TODO("APR: use JVM equivalent")
-        fun inviteToGroup(id: UUID): Unit = TODO("APR: use JVM equivalent")
-        fun getScriptInfo(id: UUID): Unit = TODO("APR: use JVM equivalent")
-        fun showOnMap(id: UUID): Unit = TODO("APR: use JVM equivalent")
-        fun share(id: UUID): Unit = TODO("APR: use JVM equivalent")
-        fun pay(id: UUID): Unit = TODO("APR: use JVM equivalent")
-        fun toggleBlock(id: UUID): Unit = TODO("APR: use JVM equivalent")
-        fun zoomIn(id: UUID): Unit = TODO("APR: use JVM equivalent")
-        fun report(id: UUID): Unit = TODO("APR: use JVM equivalent")
-        fun landEject(id: UUID): Unit = TODO("APR: use JVM equivalent")
-        fun landFreeze(id: UUID): Unit = TODO("APR: use JVM equivalent")
-        fun estateKick(id: UUID): Unit = TODO("APR: use JVM equivalent")
-        fun estateTeleportHome(id: UUID): Unit = TODO("APR: use JVM equivalent")
-        fun estateBan(id: UUID): Unit = TODO("APR: use JVM equivalent")
-        fun derender(id: UUID, permanent: Boolean): Unit = TODO("APR: use JVM equivalent")
-        fun viewChatHistory(id: UUID): Unit = TODO("APR: use JVM equivalent")
-        fun offerTeleport(ids: List<UUID>): Unit = TODO("APR: use JVM equivalent")
-        fun teleportTo(id: UUID): Unit = TODO("APR: use JVM equivalent")
-        fun track(id: UUID): Unit = TODO("APR: use JVM equivalent")
-        fun addToContactSet(ids: List<UUID>): Unit = TODO("APR: use JVM equivalent")
-        fun startConference(ids: List<UUID>, sessionId: UUID?): Unit = TODO("APR: use JVM equivalent")
-        fun startAdhocCall(ids: List<UUID>, sessionId: UUID?): Unit = TODO("APR: use JVM equivalent")
-        fun landEjectMultiple(ids: List<UUID>): Unit = TODO("APR: use JVM equivalent")
-        fun landFreezeMultiple(ids: List<UUID>): Unit = TODO("APR: use JVM equivalent")
-        fun estateKickMultiple(ids: List<UUID>): Unit = TODO("APR: use JVM equivalent")
-        fun estateTeleportHomeMultiple(ids: List<UUID>): Unit = TODO("APR: use JVM equivalent")
-        fun estateBanMultiple(ids: List<UUID>): Unit = TODO("APR: use JVM equivalent")
-        fun derenderMultiple(ids: List<UUID>, permanent: Boolean): Unit = TODO("APR: use JVM equivalent")
-        fun canBlock(id: UUID): Boolean = TODO("APR: use JVM equivalent")
-        fun isFriend(id: UUID): Boolean = TODO("APR: use JVM equivalent")
-        fun canCall(): Boolean = TODO("APR: use JVM equivalent")
-        fun canZoomIn(id: UUID): Boolean = TODO("APR: use JVM equivalent")
-        fun canLandFreezeOrEject(id: UUID): Boolean = TODO("APR: use JVM equivalent")
-        fun canEstateKickOrTeleportHome(id: UUID): Boolean = TODO("APR: use JVM equivalent")
-        fun canLandFreezeOrEjectMultiple(ids: List<UUID>, strict: Boolean): Boolean = TODO("APR: use JVM equivalent")
-        fun canEstateKickOrTeleportHomeMultiple(ids: List<UUID>, strict: Boolean): Boolean = TODO("APR: use JVM equivalent")
-        fun canOfferTeleport(ids: List<UUID>): Boolean = TODO("APR: use JVM equivalent")
-        fun canRequestTeleport(id: UUID): Boolean = TODO("APR: use JVM equivalent")
-        fun isBlocked(id: UUID): Boolean = TODO("APR: use JVM equivalent")
+        fun showProfile(id: UUID): Unit { System.err.println("LLAvatarActions: showProfile not yet implemented") }
+        fun requestFriendshipDialog(id: UUID): Unit { System.err.println("LLAvatarActions: requestFriendshipDialog not yet implemented") }
+        fun removeFriendDialog(id: UUID): Unit { System.err.println("LLAvatarActions: removeFriendDialog not yet implemented") }
+        fun removeFriendsDialog(ids: List<UUID>): Unit { System.err.println("LLAvatarActions: removeFriendsDialog not yet implemented") }
+        fun startIM(id: UUID): Unit { System.err.println("LLAvatarActions: startIM not yet implemented") }
+        fun startCall(id: UUID): Unit { System.err.println("LLAvatarActions: startCall not yet implemented") }
+        fun teleportRequest(id: UUID): Unit { System.err.println("LLAvatarActions: teleportRequest not yet implemented") }
+        fun inviteToGroup(id: UUID): Unit { System.err.println("LLAvatarActions: inviteToGroup not yet implemented") }
+        fun getScriptInfo(id: UUID): Unit { System.err.println("LLAvatarActions: getScriptInfo not yet implemented") }
+        fun showOnMap(id: UUID): Unit { System.err.println("LLAvatarActions: showOnMap not yet implemented") }
+        fun share(id: UUID): Unit { System.err.println("LLAvatarActions: share not yet implemented") }
+        fun pay(id: UUID): Unit { System.err.println("LLAvatarActions: pay not yet implemented") }
+        fun toggleBlock(id: UUID): Unit { System.err.println("LLAvatarActions: toggleBlock not yet implemented") }
+        fun zoomIn(id: UUID): Unit { System.err.println("LLAvatarActions: zoomIn not yet implemented") }
+        fun report(id: UUID): Unit { System.err.println("LLAvatarActions: report not yet implemented") }
+        fun landEject(id: UUID): Unit { System.err.println("LLAvatarActions: landEject not yet implemented") }
+        fun landFreeze(id: UUID): Unit { System.err.println("LLAvatarActions: landFreeze not yet implemented") }
+        fun estateKick(id: UUID): Unit { System.err.println("LLAvatarActions: estateKick not yet implemented") }
+        fun estateTeleportHome(id: UUID): Unit { System.err.println("LLAvatarActions: estateTeleportHome not yet implemented") }
+        fun estateBan(id: UUID): Unit { System.err.println("LLAvatarActions: estateBan not yet implemented") }
+        fun derender(id: UUID, permanent: Boolean): Unit { System.err.println("LLAvatarActions: derender not yet implemented") }
+        fun viewChatHistory(id: UUID): Unit { System.err.println("LLAvatarActions: viewChatHistory not yet implemented") }
+        fun offerTeleport(ids: List<UUID>): Unit { System.err.println("LLAvatarActions: offerTeleport not yet implemented") }
+        fun teleportTo(id: UUID): Unit { System.err.println("LLAvatarActions: teleportTo not yet implemented") }
+        fun track(id: UUID): Unit { System.err.println("LLAvatarActions: track not yet implemented") }
+        fun addToContactSet(ids: List<UUID>): Unit { System.err.println("LLAvatarActions: addToContactSet not yet implemented") }
+        fun startConference(ids: List<UUID>, sessionId: UUID?): Unit { System.err.println("LLAvatarActions: startConference not yet implemented") }
+        fun startAdhocCall(ids: List<UUID>, sessionId: UUID?): Unit { System.err.println("LLAvatarActions: startAdhocCall not yet implemented") }
+        fun landEjectMultiple(ids: List<UUID>): Unit { System.err.println("LLAvatarActions: landEjectMultiple not yet implemented") }
+        fun landFreezeMultiple(ids: List<UUID>): Unit { System.err.println("LLAvatarActions: landFreezeMultiple not yet implemented") }
+        fun estateKickMultiple(ids: List<UUID>): Unit { System.err.println("LLAvatarActions: estateKickMultiple not yet implemented") }
+        fun estateTeleportHomeMultiple(ids: List<UUID>): Unit { System.err.println("LLAvatarActions: estateTeleportHomeMultiple not yet implemented") }
+        fun estateBanMultiple(ids: List<UUID>): Unit { System.err.println("LLAvatarActions: estateBanMultiple not yet implemented") }
+        fun derenderMultiple(ids: List<UUID>, permanent: Boolean): Unit { System.err.println("LLAvatarActions: derenderMultiple not yet implemented") }
+        fun canBlock(id: UUID): Boolean { System.err.println("LLAvatarActions: canBlock not yet implemented"); return false }
+        fun isFriend(id: UUID): Boolean { System.err.println("LLAvatarActions: isFriend not yet implemented"); return false }
+        fun canCall(): Boolean { System.err.println("LLAvatarActions: canCall not yet implemented"); return false }
+        fun canZoomIn(id: UUID): Boolean { System.err.println("LLAvatarActions: canZoomIn not yet implemented"); return false }
+        fun canLandFreezeOrEject(id: UUID): Boolean { System.err.println("LLAvatarActions: canLandFreezeOrEject not yet implemented"); return false }
+        fun canEstateKickOrTeleportHome(id: UUID): Boolean { System.err.println("LLAvatarActions: canEstateKickOrTeleportHome not yet implemented"); return false }
+        fun canLandFreezeOrEjectMultiple(ids: List<UUID>, strict: Boolean): Boolean { System.err.println("LLAvatarActions: canLandFreezeOrEjectMultiple not yet implemented"); return false }
+        fun canEstateKickOrTeleportHomeMultiple(ids: List<UUID>, strict: Boolean): Boolean { System.err.println("LLAvatarActions: canEstateKickOrTeleportHomeMultiple not yet implemented"); return false }
+        fun canOfferTeleport(ids: List<UUID>): Boolean { System.err.println("LLAvatarActions: canOfferTeleport not yet implemented"); return false }
+        fun canRequestTeleport(id: UUID): Boolean { System.err.println("LLAvatarActions: canRequestTeleport not yet implemented"); return false }
+        fun isBlocked(id: UUID): Boolean { System.err.println("LLAvatarActions: isBlocked not yet implemented"); return false }
     }
 
     object LLNetMap {
-        fun setAvatarMarkColor(id: UUID, color: Any?): Unit = TODO("APR: use JVM equivalent")
-        fun clearAvatarMarkColor(id: UUID): Unit = TODO("APR: use JVM equivalent")
-        fun clearAvatarMarkColors(): Unit = TODO("APR: use JVM equivalent")
-        fun setAvatarMarkColors(ids: List<UUID>, color: Any?): Unit = TODO("APR: use JVM equivalent")
-        fun clearAvatarMarkColors(ids: List<UUID>): Unit = TODO("APR: use JVM equivalent")
+        fun setAvatarMarkColor(id: UUID, color: Any?): Unit { System.err.println("LLNetMap: setAvatarMarkColor not yet implemented") }
+        fun clearAvatarMarkColor(id: UUID): Unit { System.err.println("LLNetMap: clearAvatarMarkColor not yet implemented") }
+        fun clearAvatarMarkColors(): Unit { System.err.println("LLNetMap: clearAvatarMarkColors not yet implemented") }
+        fun setAvatarMarkColors(ids: List<UUID>, color: Any?): Unit { System.err.println("LLNetMap: setAvatarMarkColors not yet implemented") }
+        fun clearAvatarMarkColors(ids: List<UUID>): Unit { System.err.println("LLNetMap: clearAvatarMarkColors(ids) not yet implemented") }
     }
 
     object LLAvatarTracker {
-        fun isBuddyOnline(id: UUID): Boolean = TODO("APR: use JVM equivalent")
+        fun isBuddyOnline(id: UUID): Boolean { System.err.println("LLAvatarTracker: isBuddyOnline not yet implemented"); return false }
     }
 
     object RlvActions {
-        fun canPayAvatar(id: UUID): Boolean = TODO("APR: use JVM equivalent")
+        fun canPayAvatar(id: UUID): Boolean { System.err.println("RlvActions: canPayAvatar not yet implemented"); return false }
     }
 
     object LLLogChat {
-        fun isTranscriptExist(id: UUID): Boolean = TODO("APR: use JVM equivalent")
+        fun isTranscriptExist(id: UUID): Boolean { System.err.println("LLLogChat: isTranscriptExist not yet implemented"); return false }
     }
 
     object FSAvatarRenderPersistence {
-        fun setAvatarRenderSettings(id: UUID, setting: VisualMuteSettings): Unit = TODO("APR: use JVM equivalent")
-        fun getAvatarRenderSettings(id: UUID): VisualMuteSettings = TODO("APR: use JVM equivalent")
+        fun setAvatarRenderSettings(id: UUID, setting: VisualMuteSettings): Unit { System.err.println("FSAvatarRenderPersistence: setAvatarRenderSettings not yet implemented") }
+        fun getAvatarRenderSettings(id: UUID): VisualMuteSettings { System.err.println("FSAvatarRenderPersistence: getAvatarRenderSettings not yet implemented"); return VisualMuteSettings.AV_RENDER_NORMALLY }
     }
 
     object FSAvatarAlignBase {
         const val MAX_FACE_DISTANCE = 20.0f
-        fun getActive(): FSAvatarAlignInstance? = TODO("APR: use JVM equivalent")
+        fun getActive(): FSAvatarAlignInstance? { System.err.println("FSAvatarAlignBase: getActive not yet implemented"); return null }
     }
 
     class FSAvatarAlignInstance {
-        fun faceAvatar(avatar: LLVOAvatar): Unit = TODO("APR: use JVM equivalent")
+        fun faceAvatar(avatar: LLVOAvatar): Unit { System.err.println("FSAvatarAlignInstance: faceAvatar not yet implemented") }
     }
 
     object gAgent {
-        fun isGodlike(): Boolean = TODO("APR: use JVM equivalent")
-        fun getPositionAgent(): Vector3 = TODO("APR: use JVM equivalent")
+        fun isGodlike(): Boolean { System.err.println("gAgent: isGodlike not yet implemented"); return false }
+        fun getPositionAgent(): Vector3 { System.err.println("gAgent: getPositionAgent not yet implemented"); return Vector3(0f, 0f, 0f) }
     }
 
-    fun isAgentMappable(id: UUID): Boolean = TODO("APR: use JVM equivalent")
+    fun isAgentMappable(id: UUID): Boolean { System.err.println("FSFloaterRadarMenu: isAgentMappable not yet implemented"); return false }
 }

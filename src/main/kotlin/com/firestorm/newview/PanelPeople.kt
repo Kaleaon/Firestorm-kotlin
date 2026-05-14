@@ -83,7 +83,8 @@ private class AvatarItemDistanceComparator : AvatarItemComparator() {
     fun getAvatarsPositions(): Map<UUID, DoubleArray> = avatarsPositions
 
     override fun doCompare(item1: AvatarListItem, item2: AvatarListItem): Boolean {
-        TODO("APR: use JVM equivalent - compute squared distances from agent position")
+        System.err.println("AvatarItemDistanceComparator: doCompare not yet implemented")
+        return false
     }
 }
 
@@ -268,11 +269,12 @@ class PanelPeople : Panel(), FriendObserver, VoiceClientStatusObserver {
     }
 
     override fun onOpen(key: LLSD) {
-        TODO("APR: use JVM equivalent - handle tab pre-selection from key")
+        System.err.println("PanelPeople: onOpen not yet implemented")
     }
 
     override fun notifyChildren(info: LLSD): Boolean {
-        TODO("APR: use JVM equivalent - forward notification to child panels")
+        System.err.println("PanelPeople: notifyChildren not yet implemented")
+        return false
     }
 
     override fun onChange(status: StatusType, channelInfo: LLSD, proximal: Boolean) {
@@ -294,11 +296,12 @@ class PanelPeople : Panel(), FriendObserver, VoiceClientStatusObserver {
     fun getNearbyList(): AvatarList? = nearbyList
 
     fun updateNearbyList() {
-        TODO("APR: use JVM equivalent - populate nearby list from world avatars")
+        System.err.println("PanelPeople: updateNearbyList not yet implemented")
     }
 
     fun updateNearbyArrivalTime(): Boolean {
-        TODO("APR: use JVM equivalent - update arrival timestamps for nearby avatars")
+        System.err.println("PanelPeople: updateNearbyArrivalTime not yet implemented")
+        return false
     }
 
     private fun removePicker() {
@@ -306,82 +309,84 @@ class PanelPeople : Panel(), FriendObserver, VoiceClientStatusObserver {
     }
 
     private fun updateFriendListHelpText() {
-        TODO("APR: use JVM equivalent - toggle empty-friends help text visibility")
+        System.err.println("PanelPeople: updateFriendListHelpText not yet implemented")
     }
 
     private fun updateFriendList() {
-        TODO("APR: use JVM equivalent - sync friend lists from AvatarTracker buddy map")
+        System.err.println("PanelPeople: updateFriendList not yet implemented")
     }
 
     private fun updateRecentList() {
-        TODO("APR: use JVM equivalent - populate recent list from RecentPeople")
+        System.err.println("PanelPeople: updateRecentList not yet implemented")
     }
 
     private fun isItemsFreeOfFriends(uuids: List<UUID>): Boolean {
-        TODO("APR: use JVM equivalent - check none of the UUIDs are in the friend list")
+        System.err.println("PanelPeople: isItemsFreeOfFriends not yet implemented")
+        return false
     }
 
     private fun updateButtons() {
-        TODO("APR: use JVM equivalent - enable/disable action buttons based on selection")
+        System.err.println("PanelPeople: updateButtons not yet implemented")
     }
 
     private fun getActiveTabName(): String =
         tabContainer?.currentPanel?.name ?: ""
 
     private fun getCurrentItemID(): UUID {
-        TODO("APR: use JVM equivalent - get selected avatar/group UUID from active tab")
+        System.err.println("PanelPeople: getCurrentItemID not yet implemented")
+        return UUID.ZERO
     }
 
     private fun getCurrentItemIDs(selectedUuids: MutableList<UUID>) {
-        TODO("APR: use JVM equivalent - populate list with all selected UUIDs")
+        System.err.println("PanelPeople: getCurrentItemIDs not yet implemented")
     }
 
     private fun setSortOrder(list: AvatarList?, order: SortOrder, save: Boolean = true) {
-        TODO("APR: use JVM equivalent - apply comparator to list and optionally persist setting")
+        System.err.println("PanelPeople: setSortOrder not yet implemented")
     }
 
     private fun onFilterEdit(searchString: String) {
-        TODO("APR: use JVM equivalent - apply search string to active tab list")
+        System.err.println("PanelPeople: onFilterEdit not yet implemented")
     }
 
     private fun onGroupLimitInfo() {
-        TODO("APR: use JVM equivalent - show group limit info floater")
+        System.err.println("PanelPeople: onGroupLimitInfo not yet implemented")
     }
 
     private fun onTabSelected(param: LLSD) {
-        TODO("APR: use JVM equivalent - activate relevant updater and update buttons")
+        System.err.println("PanelPeople: onTabSelected not yet implemented")
     }
 
     private fun onAddFriendButtonClicked() {
-        TODO("APR: use JVM equivalent - open add-friend dialog")
+        System.err.println("PanelPeople: onAddFriendButtonClicked not yet implemented")
     }
 
     private fun onAddFriendWizButtonClicked() {
-        TODO("APR: use JVM equivalent - open add-friend wizard floater")
+        System.err.println("PanelPeople: onAddFriendWizButtonClicked not yet implemented")
     }
 
     private fun onDeleteFriendButtonClicked() {
-        TODO("APR: use JVM equivalent - confirm and remove selected friend")
+        System.err.println("PanelPeople: onDeleteFriendButtonClicked not yet implemented")
     }
 
     private fun onChatButtonClicked() {
-        TODO("APR: use JVM equivalent - open group chat for selected group")
+        System.err.println("PanelPeople: onChatButtonClicked not yet implemented")
     }
 
     private fun onGearButtonClicked(btn: UICtrl) {
-        TODO("APR: use JVM equivalent - show context gear menu")
+        System.err.println("PanelPeople: onGearButtonClicked not yet implemented")
     }
 
     private fun onImButtonClicked() {
-        TODO("APR: use JVM equivalent - start IM with selected avatar")
+        System.err.println("PanelPeople: onImButtonClicked not yet implemented")
     }
 
     private fun onMoreButtonClicked() {
-        TODO("APR: use JVM equivalent - show overflow actions menu")
+        System.err.println("PanelPeople: onMoreButtonClicked not yet implemented")
     }
 
     private fun onAvatarListDoubleClicked(ctrl: UICtrl) {
-        TODO("APR: use JVM equivalent - open profile or IM on double-click")
+        System.err.println("PanelPeople: onAvatarListDoubleClicked not yet implemented")
     }
 
     private fun onAvatarListCommitted(list: AvatarList) {
@@ -389,43 +394,47 @@ class PanelPeople : Panel(), FriendObserver, VoiceClientStatusObserver {
     }
 
     private fun onGroupPlusButtonValidate(): Boolean {
-        TODO("APR: use JVM equivalent - check group join limit before enabling button")
+        System.err.println("PanelPeople: onGroupPlusButtonValidate not yet implemented")
+        return false
     }
 
     private fun onGroupMinusButtonClicked() {
-        TODO("APR: use JVM equivalent - leave selected group")
+        System.err.println("PanelPeople: onGroupMinusButtonClicked not yet implemented")
     }
 
     private fun onGroupPlusMenuItemClicked(userdata: LLSD) {
-        TODO("APR: use JVM equivalent - create or join group based on menu item")
+        System.err.println("PanelPeople: onGroupPlusMenuItemClicked not yet implemented")
     }
 
     private fun onFriendsViewSortMenuItemClicked(userdata: LLSD) {
-        TODO("APR: use JVM equivalent - change friends list sort order")
+        System.err.println("PanelPeople: onFriendsViewSortMenuItemClicked not yet implemented")
     }
 
     private fun onNearbyViewSortMenuItemClicked(userdata: LLSD) {
-        TODO("APR: use JVM equivalent - change nearby list sort order")
+        System.err.println("PanelPeople: onNearbyViewSortMenuItemClicked not yet implemented")
     }
 
     private fun onGroupsViewSortMenuItemClicked(userdata: LLSD) {
-        TODO("APR: use JVM equivalent - change groups list sort order")
+        System.err.println("PanelPeople: onGroupsViewSortMenuItemClicked not yet implemented")
     }
 
     private fun onRecentViewSortMenuItemClicked(userdata: LLSD) {
-        TODO("APR: use JVM equivalent - change recent list sort order")
+        System.err.println("PanelPeople: onRecentViewSortMenuItemClicked not yet implemented")
     }
 
     private fun onFriendsViewSortMenuItemCheck(userdata: LLSD): Boolean {
-        TODO("APR: use JVM equivalent - return whether this sort order is active")
+        System.err.println("PanelPeople: onFriendsViewSortMenuItemCheck not yet implemented")
+        return false
     }
 
     private fun onRecentViewSortMenuItemCheck(userdata: LLSD): Boolean {
-        TODO("APR: use JVM equivalent - return whether this sort order is active")
+        System.err.println("PanelPeople: onRecentViewSortMenuItemCheck not yet implemented")
+        return false
     }
 
     private fun onNearbyViewSortMenuItemCheck(userdata: LLSD): Boolean {
-        TODO("APR: use JVM equivalent - return whether this sort order is active")
+        System.err.println("PanelPeople: onNearbyViewSortMenuItemCheck not yet implemented")
+        return false
     }
 
     private fun onFriendsAccordionExpandedCollapsed(ctrl: UICtrl, param: LLSD, avatarList: AvatarList) {
@@ -435,11 +444,11 @@ class PanelPeople : Panel(), FriendObserver, VoiceClientStatusObserver {
     }
 
     private fun showAccordion(tab: AccordionCtrlTab, show: Boolean) {
-        TODO("APR: use JVM equivalent - show/hide accordion tab")
+        System.err.println("PanelPeople: showAccordion not yet implemented")
     }
 
     private fun showFriendsAccordionsIfNeeded() {
-        TODO("APR: use JVM equivalent - make friends online/all accordion tabs visible")
+        System.err.println("PanelPeople: showFriendsAccordionsIfNeeded not yet implemented")
     }
 
     private fun onFriendListRefreshComplete(ctrl: UICtrl, param: LLSD) {
@@ -462,27 +471,28 @@ class PanelPeople : Panel(), FriendObserver, VoiceClientStatusObserver {
         findChild<UICtrl>(name)?.let { isAccordionCollapsedByUser(it) } ?: false
 
     private fun onContactSetsEnable(userdata: LLSD): Boolean {
-        TODO("APR: use JVM equivalent - check contact set action is applicable")
+        System.err.println("PanelPeople: onContactSetsEnable not yet implemented")
+        return false
     }
 
     private fun onContactSetsMenuItemClicked(userdata: LLSD) {
-        TODO("APR: use JVM equivalent - handle contact sets context menu action")
+        System.err.println("PanelPeople: onContactSetsMenuItemClicked not yet implemented")
     }
 
     private fun handlePickerCallback(ids: List<UUID>, set: String) {
-        TODO("APR: use JVM equivalent - add picked avatars to contact set")
+        System.err.println("PanelPeople: handlePickerCallback not yet implemented")
     }
 
     private fun moveSelectedContactsToSet() {
-        TODO("APR: use JVM equivalent - move selected avatars to chosen contact set")
+        System.err.println("PanelPeople: moveSelectedContactsToSet not yet implemented")
     }
 
     private fun refreshContactSets() {
-        TODO("APR: use JVM equivalent - repopulate contact set combo box")
+        System.err.println("PanelPeople: refreshContactSets not yet implemented")
     }
 
     private fun generateContactList(contactSet: String) {
-        TODO("APR: use JVM equivalent - populate contactSetList from named contact set")
+        System.err.println("PanelPeople: generateContactList not yet implemented")
     }
 
     private fun generateCurrentContactList() {
@@ -491,15 +501,17 @@ class PanelPeople : Panel(), FriendObserver, VoiceClientStatusObserver {
     }
 
     private fun updateContactSetListSorting() {
-        TODO("APR: use JVM equivalent - apply comparator based on current set sort preference")
+        System.err.println("PanelPeople: updateContactSetListSorting not yet implemented")
     }
 
     private fun shouldSortByOnlineStatusForCurrentSet(): Boolean {
-        TODO("APR: use JVM equivalent - check saved setting for current contact set")
+        System.err.println("PanelPeople: shouldSortByOnlineStatusForCurrentSet not yet implemented")
+        return false
     }
 
     private fun handleAvatarDropToCurrentContactSet(avatarId: UUID, drop: Boolean): Boolean {
-        TODO("APR: use JVM equivalent - validate/perform DnD avatar into contact set")
+        System.err.println("PanelPeople: handleAvatarDropToCurrentContactSet not yet implemented")
+        return false
     }
 
     private fun updateContactSets(type: LGGContactSets.ContactSetUpdate) {
@@ -508,16 +520,17 @@ class PanelPeople : Panel(), FriendObserver, VoiceClientStatusObserver {
     }
 
     private fun onColumnVisibilityChecked(userdata: LLSD) {
-        TODO("APR: use JVM equivalent - toggle radar column visibility")
+        System.err.println("PanelPeople: onColumnVisibilityChecked not yet implemented")
     }
 
     private fun onEnableColumnVisibilityChecked(userdata: LLSD): Boolean {
-        TODO("APR: use JVM equivalent - return whether radar column can be toggled")
+        System.err.println("PanelPeople: onEnableColumnVisibilityChecked not yet implemented")
+        return false
     }
 
     companion object {
         fun onAvatarPicked(ids: List<UUID>, names: List<AvatarName>) {
-            TODO("APR: use JVM equivalent - handle result from avatar picker floater")
+            System.err.println("PanelPeople: onAvatarPicked not yet implemented")
         }
     }
 }

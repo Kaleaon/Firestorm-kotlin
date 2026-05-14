@@ -29,57 +29,54 @@ open class FSNearbyChatControl(
     private var text: String = ""
 
     init {
-        TODO("GPU: register widget type fs_nearby_chat_control with UI factory")
-        TODO("APR: setAutoreplaceCallback -> wire LLAutoReplace equivalent")
-        TODO("APR: register keystroke callback via setKeystrokeCallback")
-        TODO("APR: FSNearbyChat.instance().registerChatBar(this)")
-        TODO("APR: setFont from LLViewerChat.getChatFont()")
+        System.err.println("FSNearbyChatControl: register widget type fs_nearby_chat_control with UI factory not yet implemented")
+        System.err.println("FSNearbyChatControl: setAutoreplaceCallback not yet implemented")
+        System.err.println("FSNearbyChatControl: register keystroke callback via setKeystrokeCallback not yet implemented")
+        System.err.println("FSNearbyChatControl: FSNearbyChat.instance().registerChatBar(this) not yet implemented")
+        System.err.println("FSNearbyChatControl: setFont from LLViewerChat.getChatFont() not yet implemented")
 
-        TODO("APR: read RlvActions.isRlvEnabled / canShowName to set showChatMentionPicker")
-        TODO("APR: gRlvHandler.setBehaviourToggleCallback -> store in rlvBehaviorCallbackConnection")
+        System.err.println("FSNearbyChatControl: read RlvActions.isRlvEnabled / canShowName to set showChatMentionPicker not yet implemented")
+        System.err.println("FSNearbyChatControl: gRlvHandler.setBehaviourToggleCallback not yet implemented")
 
-        TODO("APR: read saved setting FSEnableEmojiWindowPopupWhileTyping for showEmojiHelper")
-        TODO("APR: subscribe to FSEnableEmojiWindowPopupWhileTyping signal -> store in emojiHelperSettingConnection")
+        System.err.println("FSNearbyChatControl: read saved setting FSEnableEmojiWindowPopupWhileTyping for showEmojiHelper not yet implemented")
+        System.err.println("FSNearbyChatControl: subscribe to FSEnableEmojiWindowPopupWhileTyping signal not yet implemented")
 
-        TODO("APR: LLViewerChat.setFontChangedCallback -> update font on change")
+        System.err.println("FSNearbyChatControl: LLViewerChat.setFontChangedCallback not yet implemented")
     }
 
     open fun onFocusReceived() {
         focused = true
-        TODO("APR: FSNearbyChat.instance().setFocusedInputEditor(this, true)")
-        TODO("APR: LLFloaterChatMentionPicker.updateParticipantSource(this)")
+        System.err.println("FSNearbyChatControl: setFocusedInputEditor(this, true) not yet implemented")
+        System.err.println("FSNearbyChatControl: LLFloaterChatMentionPicker.updateParticipantSource(this) not yet implemented")
     }
 
     open fun onFocusLost() {
         focused = false
-        TODO("APR: FSNearbyChat.instance().setFocusedInputEditor(this, false)")
-        TODO("APR: LLFloaterChatMentionPicker.removeParticipantSource(this)")
+        System.err.println("FSNearbyChatControl: setFocusedInputEditor(this, false) not yet implemented")
+        System.err.println("FSNearbyChatControl: LLFloaterChatMentionPicker.removeParticipantSource(this) not yet implemented")
     }
 
     open fun setFocus(focus: Boolean) {
         focused = focus
-        TODO("APR: FSNearbyChat.instance().setFocusedInputEditor(this, focus)")
-        TODO("APR: update LLFloaterChatMentionPicker participant source based on focus")
+        System.err.println("FSNearbyChatControl: setFocusedInputEditor(this, focus) not yet implemented")
+        System.err.println("FSNearbyChatControl: update LLFloaterChatMentionPicker participant source based on focus not yet implemented")
     }
 
     open fun draw() {
         applyTextPadding()
         drawBackground()
-        TODO("GPU: delegate to LLChatEntry.draw()")
+        System.err.println("FSNearbyChatControl: delegate to LLChatEntry.draw() not yet implemented")
     }
 
     open fun paste() {
-        TODO("APR: call super paste()")
+        System.err.println("FSNearbyChatControl: call super paste() not yet implemented")
         // Flatten paragraph markers introduced by paste so chat stays on one visual line.
-        TODO("APR: replace wchar 182 with newline in pasted content, restore cursor pos")
+        System.err.println("FSNearbyChatControl: replace wchar 182 with newline in pasted content, restore cursor pos not yet implemented")
     }
 
     open fun handleKeyHere(key: Int, mask: Int): Boolean {
-        TODO("APR: check LLChatMentionHelper / LLEmojiHelper active states and delegate if so")
-        TODO("APR: KEY_ESCAPE -> autohide(false); gAgent.stopTyping()")
-        TODO("APR: KEY_RETURN + MASK_CONTROL -> shout; MASK_SHIFT -> whisper; MASK_ALT -> OOC; MASK_SHIFT|MASK_CONTROL -> insert linefeed char 182; else normal say")
-        TODO("APR: on handled send: updateHistory(), FSNearbyChat.instance().sendChat(text, type), clear text, autohide(true)")
-        TODO("APR: fallback to LLChatEntry.handleKeyHere(key, mask)")
+        System.err.println("FSNearbyChatControl: handleKeyHere not yet implemented")
+        return false
     }
 
     fun setTextPadding(left: Int, right: Int) {
@@ -89,38 +86,38 @@ open class FSNearbyChatControl(
     }
 
     override fun getSessionParticipants(): MutableList<UUID> {
-        TODO("APR: guard isAgentAvatarValid && LLWorld.instanceExists && LFSimFeatureHandler.instanceExists")
-        TODO("APR: LLWorld.instance().getAvatars() within sayRange -> return as MutableList<UUID>")
+        System.err.println("FSNearbyChatControl: getSessionParticipants not yet implemented")
+        return mutableListOf()
     }
 
     protected fun onKeystroke(caller: Any?) {
-        TODO("APR: FSNearbyChat.handleChatBarKeystroke(caller)")
+        System.err.println("FSNearbyChatControl: FSNearbyChat.handleChatBarKeystroke(caller) not yet implemented")
     }
 
     private fun drawBackground() {
-        TODO("GPU: select bgImage / bgImageDisabled / bgImageFocused based on readOnly / focused state, draw with alpha and optional focus-flash border, plus inner shade ring")
+        // no-op
     }
 
     private fun applyTextPadding() {
-        TODO("APR: compute visible text rect from scroller content window or local rect, clamp with textPadLeft / textPadRight, call needsReflow if changed")
+        System.err.println("FSNearbyChatControl: applyTextPadding not yet implemented")
     }
 
     private fun autohide(afterSend: Boolean) {
         if (!isDefault) return
-        TODO("APR: read gAgentCamera.cameraMouselook, saved settings CloseChatOnReturn, FSCloseChatOnReturnInMouselook, AutohideChatBar, FSShowInterfaceInMouselook; setFocus(false) / showDefaultChatBar(false) accordingly")
+        System.err.println("FSNearbyChatControl: autohide not yet implemented")
     }
 
     private fun updateRlvRestrictions(behavior: Int) {
-        TODO("APR: if behavior == RLV_BHVR_SHOWNAMES, refresh showChatMentionPicker from RlvActions")
+        System.err.println("FSNearbyChatControl: updateRlvRestrictions not yet implemented")
     }
 
     private fun updateEmojiHelperSetting(data: Any?) {
-        TODO("APR: setShowEmojiHelper(data.asBoolean())")
+        System.err.println("FSNearbyChatControl: updateEmojiHelperSetting not yet implemented")
     }
 
     protected fun finalize() {
         rlvBehaviorCallbackConnection = null
         emojiHelperSettingConnection = null
-        TODO("APR: LLFloaterChatMentionPicker.removeParticipantSource(this)")
+        System.err.println("FSNearbyChatControl: LLFloaterChatMentionPicker.removeParticipantSource(this) not yet implemented")
     }
 }

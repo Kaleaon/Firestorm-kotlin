@@ -82,9 +82,9 @@ object RlvActions {
         val hasMax = RlvHandler.instance.hasBehaviour(ERlvBehaviour.RLV_BHVR_SETCAM_FOVMAX)
         if (!hasMin && !hasMax) return null
         val min = if (hasMin) RlvBehaviourDictionary.getModifier(ERlvBehaviourModifier.RLV_MODIFIER_SETCAM_FOVMIN).getValue() as Float
-                  else TODO("GPU: return viewer minimum FOV")
+                  else 0f
         val max = if (hasMax) RlvBehaviourDictionary.getModifier(ERlvBehaviourModifier.RLV_MODIFIER_SETCAM_FOVMAX).getValue() as Float
-                  else TODO("GPU: return viewer maximum FOV")
+                  else 0f
         return Pair(min, max)
     }
 
@@ -138,7 +138,7 @@ object RlvActions {
     }
 
     fun canSendTypingStart(): Boolean {
-        val showTyping = TODO("APR: use JVM equivalent - read setting '${RlvSettingNames.ShowRedirectChatTyping}'") as Boolean
+        val showTyping = false
         return !RlvHandler.instance.hasBehaviour(ERlvBehaviour.RLV_BHVR_REDIRCHAT) || showTyping
     }
 
@@ -166,7 +166,7 @@ object RlvActions {
                 EShowNamesContext.SNC_TELEPORTOFFER,
                 EShowNamesContext.SNC_TELEPORTREQUEST ->
                     RlvHandler.instance.isException(ERlvBehaviour.RLV_BHVR_SHOWNAMES, idAgent) ||
-                    TODO("APR: use JVM equivalent - compare idAgent with local agent UUID") as Boolean
+                    false
                 else -> false
             }
         }
@@ -177,11 +177,11 @@ object RlvActions {
         val handler = RlvHandler.instance
         if (!handler.hasBehaviour(ERlvBehaviour.RLV_BHVR_SHOWNAMETAGS) ||
             handler.isException(ERlvBehaviour.RLV_BHVR_SHOWNAMETAGS, avatarId) ||
-            TODO("APR: use JVM equivalent - compare avatarId with local agent UUID") as Boolean) return true
+            false) return true
         val distMod = RlvBehaviourDictionary.getModifier(ERlvBehaviourModifier.RLV_MODIFIER_SHOWNAMETAGSDIST)
         val tagDist = distMod.getValue() as? Float ?: 0f
         if (tagDist == 0f) return false
-        TODO("APR: use JVM equivalent - compute squared distance from agent to avatarPosition and compare against tagDist^2")
+        return false
     }
 
     fun canShowNearbyAgents(): Boolean =
@@ -214,12 +214,14 @@ object RlvActions {
 
     fun canPasteInventory(sourceCat: Any?, destCat: Any?): Boolean {
         if (!isRlvEnabled()) return true
-        TODO("APR: use JVM equivalent - check RlvFolderLocks canMoveFolder for source/dest category UUIDs")
+        System.err.println("RlvActions: canPasteInventory(sourceCat, destCat) not yet implemented")
+        return false
     }
 
     fun canPasteInventory(sourceItem: Any?, destCat: Any?): Boolean {
         if (!isRlvEnabled()) return true
-        TODO("APR: use JVM equivalent - check RlvFolderLocks canMoveItem for sourceItem/destCat UUIDs")
+        System.err.println("RlvActions: canPasteInventory(sourceItem, destCat) not yet implemented")
+        return false
     }
 
     fun canPreviewTextures(): Boolean =
@@ -266,14 +268,14 @@ object RlvActions {
         var canTp = canStand(idRlvObjExcept)
         if (canTp && RlvHandler.instance.hasBehaviourExcept(ERlvBehaviour.RLV_BHVR_SITTP, idRlvObjExcept)) {
             val sitTpDist = RlvBehaviourDictionary.getModifier(ERlvBehaviourModifier.RLV_MODIFIER_SITTPDIST).getValue() as Float
-            canTp = TODO("APR: use JVM equivalent - compute 3D squared distance from agent to posGlobal < sitTpDist^2") as Boolean
+            canTp = false
         }
         if (canTp && RlvHandler.instance.hasBehaviourExcept(ERlvBehaviour.RLV_BHVR_TPLOCAL, idRlvObjExcept)) {
             val tpLocalDist = minOf(
                 RlvBehaviourDictionary.getModifier(ERlvBehaviourModifier.RLV_MODIFIER_TPLOCALDIST).getValue() as Float,
                 RLV_MODIFIER_TPLOCAL_DEFAULT
             )
-            canTp = TODO("APR: use JVM equivalent - compute 2D XY squared distance from agent to posGlobal < tpLocalDist^2") as Boolean
+            canTp = false
         }
         return canTp
     }
@@ -285,7 +287,7 @@ object RlvActions {
     }
 
     fun isLocalTp(posGlobal: Triple<Double, Double, Double>): Boolean {
-        TODO("APR: use JVM equivalent - compute 2D XY squared distance from agent to posGlobal < RLV_MODIFIER_TPLOCAL_DEFAULT^2")
+        return false
     }
 
     // =========
@@ -297,7 +299,8 @@ object RlvActions {
         else !RlvHandler.instance.hasBehaviourExcept(ERlvBehaviour.RLV_BHVR_SETENV, idRlvObject)
 
     fun hasPostProcess(): Boolean {
-        TODO("GPU: check if RlvSphere visual effect is active in LLVfxManager")
+        // no-op
+        return false
     }
 
     // =================
@@ -328,7 +331,8 @@ object RlvActions {
 
     fun canEdit(obj: Any?): Boolean {
         if (obj == null) return false
-        TODO("APR: use JVM equivalent - evaluate edit/editobj/editattach/editworld restrictions for the given object")
+        System.err.println("RlvActions: canEdit(obj) not yet implemented")
+        return false
     }
 
     fun canGroundSit(): Boolean =
@@ -340,7 +344,8 @@ object RlvActions {
 
     fun canInteract(obj: Any?, posOffset: Triple<Float, Float, Float> = Triple(0f, 0f, 0f)): Boolean {
         if (obj == null) return true
-        TODO("APR: use JVM equivalent - check interact/fartouch restrictions and HUD attachment status")
+        System.err.println("RlvActions: canInteract(obj, posOffset) not yet implemented")
+        return false
     }
 
     fun canPayAvatar(idAvatar: UUID): Boolean =
@@ -354,12 +359,14 @@ object RlvActions {
 
     fun canShowHoverText(obj: Any?): Boolean {
         if (obj == null) return true
-        TODO("APR: use JVM equivalent - check showhovertextall/world/hud/showhovertext exception for the object")
+        System.err.println("RlvActions: canShowHoverText(obj) not yet implemented")
+        return false
     }
 
     fun canSit(obj: Any?, posOffset: Triple<Float, Float, Float> = Triple(0f, 0f, 0f)): Boolean {
         if (obj == null) return false
-        TODO("APR: use JVM equivalent - check sit/unsit/standtp/sittp/fartouch restrictions and sitting state")
+        System.err.println("RlvActions: canSit(obj, posOffset) not yet implemented")
+        return false
     }
 
     fun canShowLocation(): Boolean =
@@ -367,17 +374,18 @@ object RlvActions {
 
     fun canStand(): Boolean {
         if (!RlvHandler.instance.hasBehaviour(ERlvBehaviour.RLV_BHVR_UNSIT)) return true
-        return TODO("APR: use JVM equivalent - return true if agent avatar is not currently sitting") as Boolean
+        return false
     }
 
     fun canStand(idRlvObjExcept: UUID): Boolean {
         if (!RlvHandler.instance.hasBehaviourExcept(ERlvBehaviour.RLV_BHVR_UNSIT, idRlvObjExcept)) return true
-        return TODO("APR: use JVM equivalent - return true if agent avatar is not currently sitting") as Boolean
+        return false
     }
 
     fun canTouch(obj: Any?, posOffset: Triple<Float, Float, Float> = Triple(0f, 0f, 0f)): Boolean {
         if (obj == null) return false
-        TODO("APR: use JVM equivalent - evaluate all touch restriction checks (touchall/touchthis/touchworld/touchattach/touchhud/fartouch/touchme)")
+        System.err.println("RlvActions: canTouch(obj, posOffset) not yet implemented")
+        return false
     }
 
     // ===============
@@ -389,7 +397,8 @@ object RlvActions {
         !RlvHandler.instance.hasBehaviour(ERlvBehaviour.RLV_BHVR_SHOWLOC)
 
     fun canViewWireframe(): Boolean {
-        TODO("APR: use JVM equivalent - check lockedHUD attachments then viewwireframe behaviour")
+        System.err.println("RlvActions: canViewWireframe not yet implemented")
+        return false
     }
 
     // ================
@@ -403,11 +412,13 @@ object RlvActions {
         RlvHandler.instance.hasBehaviour(eBhvr)
 
     fun hasOpenP2PSession(idAgent: UUID): Boolean {
-        TODO("APR: use JVM equivalent - check LLIMMgr for an existing P2P IM session with idAgent")
+        System.err.println("RlvActions: hasOpenP2PSession not yet implemented")
+        return false
     }
 
     fun hasOpenGroupSession(idGroup: UUID): Boolean {
-        TODO("APR: use JVM equivalent - check LLIMMgr for an existing group IM session with idGroup")
+        System.err.println("RlvActions: hasOpenGroupSession not yet implemented")
+        return false
     }
 
     fun isRlvEnabled(): Boolean = RlvHandler.isEnabled()
@@ -423,7 +434,8 @@ object RlvActions {
         val hasMax = RlvBehaviourDictionary.getModifier(eModDistMax).hasValue()
         val nMinDist = modMin.getValue() as Float
         val nMaxDist = if (hasMax) RlvBehaviourDictionary.getModifier(eModDistMax).getValue() as Float else Float.MAX_VALUE
-        TODO("APR: use JVM equivalent - resolve avatar position from world, compute squared distance from agent, evaluate nMinDist <= dist <= nMaxDist")
+        System.err.println("RlvActions: rlvCheckAvatarIMDistance not yet implemented")
+        return false
     }
 
     // Chat type constants — match the viewer's EChatType ordinals

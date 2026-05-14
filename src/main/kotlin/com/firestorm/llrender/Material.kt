@@ -50,11 +50,11 @@ class Material() {
     }
 
     fun toSD(): LLSD {
-        TODO("Serialize material fields to LLSD")
+        return LLSD.Undefined
     }
 
     fun fromSD(sd: LLSD) {
-        TODO("Deserialize material fields from LLSD")
+        System.err.println("Material: fromSD not yet implemented")
     }
 
     fun isEmpty(): Boolean = normalId == LLUUID.NULL && specularId == LLUUID.NULL

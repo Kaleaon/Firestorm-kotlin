@@ -71,7 +71,7 @@ object RlvHandler {
         if (!enabled) return
         val ids = objects.keys.toList()
         for (id in ids) processCommand(id, "clear", fromObj = true)
-        TODO("APR: use JVM equivalent - remove agent listener, disconnect signals, clear retained list")
+        System.err.println("RlvHandler: remove agent listener, disconnect signals, clear retained list not yet implemented")
         commandHandlers.clear()
         enabled = false
     }
@@ -219,27 +219,32 @@ object RlvHandler {
     }
 
     private fun processAddRemCommand(rlvCmd: RlvCommand): ERlvCmdRet {
-        TODO("APR: use JVM equivalent - look up behaviour handler in dictionary and execute add/rem command logic")
+        System.err.println("RlvHandler: processAddRemCommand not yet implemented")
+        return ERlvCmdRet.RLV_RET_UNKNOWN
     }
 
     private fun processForceCommand(rlvCmd: RlvCommand): ERlvCmdRet {
-        TODO("APR: use JVM equivalent - look up force handler in dictionary and execute force command logic")
+        System.err.println("RlvHandler: processForceCommand not yet implemented")
+        return ERlvCmdRet.RLV_RET_UNKNOWN
     }
 
     private fun processReplyCommand(rlvCmd: RlvCommand): ERlvCmdRet {
-        TODO("APR: use JVM equivalent - look up reply handler in dictionary and send reply via sendChatReply")
+        System.err.println("RlvHandler: processReplyCommand not yet implemented")
+        return ERlvCmdRet.RLV_RET_UNKNOWN
     }
 
     private fun processClearCommand(rlvCmd: RlvCommand): ERlvCmdRet {
-        TODO("APR: use JVM equivalent - remove all restrictions from the specified object and clean up state")
+        System.err.println("RlvHandler: processClearCommand not yet implemented")
+        return ERlvCmdRet.RLV_RET_UNKNOWN
     }
 
     fun processRetainedCommands(eBhvrFilter: ERlvBehaviour = ERlvBehaviour.RLV_BHVR_UNKNOWN, eTypeFilter: ERlvParamType = ERlvParamType.RLV_TYPE_UNKNOWN) {
-        TODO("APR: use JVM equivalent - replay commands from retained list matching the given filters")
+        System.err.println("RlvHandler: processRetainedCommands not yet implemented")
     }
 
     fun processIMQuery(idSender: UUID, strCommand: String): Boolean {
-        TODO("APR: use JVM equivalent - handle RLVa IM query protocol (@list/@clear style commands via IM)")
+        System.err.println("RlvHandler: processIMQuery not yet implemented")
+        return false
     }
 
     // -----------------------------------------------------------------------
@@ -296,11 +301,13 @@ object RlvHandler {
     // -----------------------------------------------------------------------
 
     fun filterChat(text: StringBuilder, filterEmote: Boolean): Boolean {
-        TODO("APR: use JVM equivalent - apply sendchat/recvchat/redirchat filters to text")
+        System.err.println("RlvHandler: filterChat not yet implemented")
+        return false
     }
 
     fun redirectChatOrEmote(text: String): Boolean {
-        TODO("APR: use JVM equivalent - redirect chat/emote to registered notify channels")
+        System.err.println("RlvHandler: redirectChatOrEmote not yet implemented")
+        return false
     }
 
     // -----------------------------------------------------------------------
@@ -308,43 +315,44 @@ object RlvHandler {
     // -----------------------------------------------------------------------
 
     fun onActiveGroupChanged() {
-        TODO("APR: use JVM equivalent - handle active group change, update idAgentGroup and notify @setgroup watchers")
+        System.err.println("RlvHandler: onActiveGroupChanged not yet implemented")
     }
 
     fun onAttach(attachObj: Any?, attachPt: Any?) {
-        TODO("APR: use JVM equivalent - process retained commands and check attachment locks on attach")
+        System.err.println("RlvHandler: onAttach not yet implemented")
     }
 
     fun onDetach(attachObj: Any?, attachPt: Any?) {
-        TODO("APR: use JVM equivalent - clear all restrictions held by the detaching object")
+        System.err.println("RlvHandler: onDetach not yet implemented")
     }
 
     fun onExperienceAttach(sdExperience: Map<String, Any>, strObjName: String) {
-        TODO("APR: use JVM equivalent - check if the experience is allowed and add to blocked objects if not")
+        System.err.println("RlvHandler: onExperienceAttach not yet implemented")
     }
 
     fun onExperienceEvent(sdEvent: Map<String, Any>) {
-        TODO("APR: use JVM equivalent - fetch attachment resources for experience-owned objects and resolve blocked list")
+        System.err.println("RlvHandler: onExperienceEvent not yet implemented")
     }
 
     fun onGC(): Boolean {
-        TODO("APR: use JVM equivalent - garbage-collect RlvObjects whose source objects have left the world")
+        System.err.println("RlvHandler: onGC not yet implemented")
+        return false
     }
 
     fun onLoginComplete() {
-        TODO("APR: use JVM equivalent - process retained commands after login is complete")
+        System.err.println("RlvHandler: onLoginComplete not yet implemented")
     }
 
     fun onSitOrStand(sitting: Boolean) {
-        TODO("APR: use JVM equivalent - update canCancelTp and handle standtp/sitground state")
+        System.err.println("RlvHandler: onSitOrStand not yet implemented")
     }
 
     fun onTeleportFailed() {
-        TODO("APR: use JVM equivalent - restore sit source and notify pending unsit actor")
+        System.err.println("RlvHandler: onTeleportFailed not yet implemented")
     }
 
     fun onTeleportFinished(posArrival: Triple<Double, Double, Double>) {
-        TODO("APR: use JVM equivalent - clear tplm/tploc retained state and trigger post-tp behaviour logic")
+        System.err.println("RlvHandler: onTeleportFinished not yet implemented")
     }
 
     // -----------------------------------------------------------------------

@@ -60,17 +60,17 @@ object UrlAction {
         val pathParts = uriPathParts(url)
         if (pathParts.size < 3) return
         val parcelId = uriUnescape(pathParts[2])
-        TODO("APR: use JVM equivalent — look up parcel position by id, then execute worldmap_global SLURL")
+        System.err.println("UrlAction: showParcelOnMap not yet implemented")
     }
 
     fun copyUrlToClipboard(url: String) {
-        TODO("APR: use JVM equivalent — copy url string to system clipboard")
+        System.err.println("UrlAction: copyUrlToClipboard not yet implemented")
     }
 
     fun copyLabelToClipboard(url: String) {
         val match = UrlMatch()
         if (UrlRegistry.findUrl(url, match)) {
-            TODO("APR: use JVM equivalent — copy match.label to system clipboard")
+            System.err.println("UrlAction: copyLabelToClipboard not yet implemented")
         }
     }
 

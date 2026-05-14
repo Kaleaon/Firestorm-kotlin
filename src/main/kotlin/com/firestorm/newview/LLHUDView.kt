@@ -5,17 +5,17 @@ var gHUDView: LLHUDView? = null
 class LLHUDView(rect: LLRect) : LLPanel() {
 
     init {
-        TODO("APR: use JVM equivalent - buildFromFile(\"panel_hud.xml\")")
+        System.err.println("LLHUDView: init not yet implemented")
         setShape(rect, true)
     }
 
     override fun draw() {
-        TODO("APR: use JVM equivalent - LLTracker.drawHUDArrow()")
+        System.err.println("LLHUDView: draw not yet implemented")
         super.draw()
     }
 
     override fun handleMouseDown(x: Int, y: Int, mask: Int): Boolean {
-        if (TODO<Boolean>("APR: use JVM equivalent - LLTracker.handleMouseDown(x, y)")) {
+        if (false) {
             return true
         }
         return super.handleMouseDown(x, y, mask)

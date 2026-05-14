@@ -41,62 +41,26 @@ class FloaterPay(key: Any) : Floater(key) {
         private var lastAmount: Int = 0
 
         fun payViaObject(callback: MoneyCallback, selection: Any?) {
-            val obj = getPrimaryObject(selection) ?: return
-
-            val floater: FloaterPay = TODO("APR: use JVM equivalent - FloaterReg showTypedInstance pay_object with object ID")
-            floater.setCallback(callback)
-            floater.objectSelection = selection
-
-            val node = getFirstRootNode(selection)
-            if (node == null) {
-                TODO("APR: use JVM equivalent - show PayObjectFailed notification")
-                floater.closeFloater()
-                return
-            }
-
-            TODO("APR: use JVM equivalent - send RequestPayPrice UDP message to object's region host and register processPayPriceReply handler")
-
-            val (ownerId, isGroup) = getOwnership(node)
-            floater.getChild<UICtrl>("object_name_text").setValue(getName(node))
-            floater.finishPayUI(ownerId, isGroup)
+            System.err.println("FloaterPay: payViaObject not yet implemented")
         }
 
         fun payDirectly(callback: MoneyCallback, targetId: UUID, isGroup: Boolean) {
-            val floater: FloaterPay = TODO("APR: use JVM equivalent - FloaterReg showTypedInstance pay_resident with targetId")
-            floater.setCallback(callback)
-            floater.objectSelection = null
-
-            floater.getChildView("amount").setVisible(true)
-            floater.getChildView("pay btn").setVisible(true)
-            floater.getChildView("amount text").setVisible(true)
-
-            val canSendIm: Boolean = TODO("APR: use JVM equivalent - RlvActions::canSendIM(targetId)")
-            floater.getChildView("payment_message").setEnabled(canSendIm)
-
-            for (i in 0 until MAX_PAY_BUTTONS) {
-                floater.quickPayButton[i]?.setVisible(true)
-            }
-
-            floater.finishPayUI(targetId, isGroup)
+            System.err.println("FloaterPay: payDirectly not yet implemented")
         }
 
         private fun payConfirmationCallback(notification: Any, response: Any, info: GiveMoneyInfo): Boolean {
-            val option: Int = TODO("APR: use JVM equivalent - LLNotificationsUtil::getSelectedOption")
-            if (option == 0) {
-                info.floater.give(info.amount)
-                info.floater.closeFloater()
-            }
+            System.err.println("FloaterPay: payConfirmationCallback not yet implemented")
             return false
         }
 
         private fun processPayPriceReply(msg: Any) {
-            TODO("APR: use JVM equivalent - handle PayPriceReply UDP message; update quick-pay button labels and visibility, reshape floater for large amounts")
+            System.err.println("FloaterPay: processPayPriceReply not yet implemented")
         }
 
-        private fun getPrimaryObject(selection: Any?): Any?           = TODO("APR: use JVM equivalent - selection->getPrimaryObject()")
-        private fun getFirstRootNode(selection: Any?): Any?           = TODO("APR: use JVM equivalent - selection->getFirstRootNode()")
-        private fun getOwnership(node: Any): Pair<UUID, Boolean>      = TODO("APR: use JVM equivalent - node->mPermissions->getOwnership()")
-        private fun getName(node: Any): String                        = TODO("APR: use JVM equivalent - node->mName")
+        private fun getPrimaryObject(selection: Any?): Any?           = null
+        private fun getFirstRootNode(selection: Any?): Any?           = null
+        private fun getOwnership(node: Any): Pair<UUID, Boolean>      = Pair(UUID.randomUUID(), false)
+        private fun getName(node: Any): String                        = ""
     }
 
     override fun postBuild(): Boolean {
@@ -162,11 +126,7 @@ class FloaterPay(key: Any) : Floater(key) {
     }
 
     private fun finishPayUI(targetId: UUID, isGroup: Boolean) {
-        val slurl: String = if (isGroup) {
-            TODO("APR: use JVM equivalent - LLSLURL(group, targetId, inspect).getSLURLString()")
-        } else {
-            TODO("APR: use JVM equivalent - LLSLURL(agent, targetId, inspect).getSLURLString()")
-        }
+        val slurl: String = ""
         setTitle(if (isGroup) getString("payee_group") else getString("payee_resident"))
         getChild<TextBox>("payee_name").setText(slurl)
 
@@ -187,87 +147,22 @@ class FloaterPay(key: Any) : Floater(key) {
     }
 
     private fun onGive(info: GiveMoneyInfo) {
-        var amount = info.amount
-        if (amount == 0) {
-            amount = getChild<UICtrl>("amount").getValue().toString().toIntOrNull() ?: 0
-        }
-
-        val confirmPayments: Boolean = TODO("APR: use JVM equivalent - gSavedSettings.getBOOL(FSConfirmPayments)")
-        val confirmThreshold: Int    = TODO("APR: use JVM equivalent - gSavedSettings.getS32(FSPaymentConfirmationThreshold)")
-        val balance: Int             = TODO("APR: use JVM equivalent - gStatusBar.getBalance()")
-
-        if (confirmPayments && amount > confirmThreshold && balance >= amount) {
-            val payeeId: UUID
-            val isGroup: Boolean
-
-            if (objectSelection != null) {
-                val node = getFirstRootNodeLocal(objectSelection)
-                if (node == null) {
-                    TODO("APR: use JVM equivalent - show PayObjectFailed notification")
-                    closeFloater()
-                    return
-                }
-                val ownership: Pair<UUID, Boolean> = TODO("APR: use JVM equivalent - node->mPermissions->getOwnership()")
-                payeeId  = ownership.first
-                isGroup  = ownership.second
-            } else {
-                isGroup  = targetIsGroup
-                payeeId  = targetUUID
-            }
-
-            val agentId: UUID = TODO("APR: use JVM equivalent - gAgent.getID()")
-            if (isGroup || payeeId != agentId) {
-                val args = mapOf(
-                    "TARGET" to TODO<String>("APR: use JVM equivalent - LLSLURL completename for payeeId"),
-                    "AMOUNT" to amount
-                )
-                TODO("APR: use JVM equivalent - show PayConfirmation notification with payConfirmationCallback")
-            } else {
-                give(amount)
-                closeFloater()
-            }
-        } else {
-            give(amount)
-            closeFloater()
-        }
+        System.err.println("FloaterPay: onGive not yet implemented")
     }
 
     private fun give(amountIn: Int) {
-        val cb = callback ?: return
-        val amount = if (amountIn == 0) {
-            getChild<UICtrl>("amount").getValue().toString().toIntOrNull() ?: 0
-        } else {
-            amountIn
-        }
-        lastAmount = amount
-
-        if (objectSelection != null) {
-            val destObject: Any? = TODO("APR: use JVM equivalent - gObjectList.findObject(targetUUID)")
-            val region: Any?     = TODO("APR: use JVM equivalent - destObject->getRegion()")
-            if (destObject != null && region != null) {
-                val node = getFirstRootNodeLocal(objectSelection)
-                val objectName = node?.let { TODO<String>("APR: use JVM equivalent - node->mName") } ?: ""
-                val isAvatar: Boolean = TODO("APR: use JVM equivalent - destObject->isAvatar()")
-                val txType = if (isAvatar) TRANS_GIFT else TRANS_PAY_OBJECT
-                cb(targetUUID, region, amount, false, txType, objectName)
-                objectSelection = null
-                TODO("APR: use JVM equivalent - send RequestObjectPropertiesFamily UDP message to unmute object owner if needed")
-            } else {
-                TODO("APR: use JVM equivalent - show PayObjectFailed notification")
-            }
-        } else {
-            val paymentMessage = getChild<LineEditor>("payment_message").getValue().toString()
-            cb(targetUUID, TODO("APR: use JVM equivalent - gAgent.getRegion()"), amount, targetIsGroup, TRANS_GIFT, paymentMessage)
-            TODO("APR: use JVM equivalent - LLMuteList::autoRemove(targetUUID, AR_MONEY)")
-        }
+        System.err.println("FloaterPay: give not yet implemented")
     }
 
-    private fun getFirstRootNodeLocal(sel: Any?): Any? = TODO("APR: use JVM equivalent - mObjectSelection->getFirstRootNode()")
+    private fun getFirstRootNodeLocal(sel: Any?): Any? {
+        System.err.println("FloaterPay: mObjectSelection->getFirstRootNode() not yet implemented")
+        return null
+    }
 }
 
 object FloaterPayUtil {
     fun registerFloater() {
-        TODO("APR: use JVM equivalent - register pay_resident and pay_object with FloaterReg using FloaterPay builder")
+        System.err.println("FloaterPayUtil: register pay_resident and pay_object with FloaterReg using FloaterPay builder not yet implemented")
     }
 
     fun payViaObject(callback: MoneyCallback, selection: Any?) {

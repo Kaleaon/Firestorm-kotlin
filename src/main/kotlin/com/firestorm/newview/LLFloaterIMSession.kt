@@ -616,7 +616,7 @@ class LLFloaterIMSession(private val sessionId: UUID)
                 this["method"] = "invite"
                 this["session-id"] = mSessionID
             }
-            TODO("APR: use JVM equivalent - LLCoreHttpUtil.HttpCoroutineAdapter.messageHttpPost($url, data)")
+            System.err.println("LLFloaterIMSession: sendInviteToSession not yet implemented")
         }
         return true
     }

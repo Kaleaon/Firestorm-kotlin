@@ -41,7 +41,8 @@ class LLExternalEditor {
         }
 
         private fun lookupSetting(key: String): String {
-            TODO("APR: use JVM equivalent — retrieve string setting '$key' from LLUI settings groups")
+            System.err.println("LLExternalEditor: lookupSetting not yet implemented")
+            return ""
         }
 
         private fun tokenize(str: String): MutableList<String> {

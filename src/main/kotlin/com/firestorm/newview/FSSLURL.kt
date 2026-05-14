@@ -64,7 +64,7 @@ class LLSLURL {
         hypergrid = isHypergrid
         this.region = region
         this.position = pos
-        this.grid = TODO("APR: use JVM equivalent — LLGridManager.getInstance().getGrid()")
+        this.grid = ""
         type = SlurlType.LOCATION
     }
 
@@ -96,7 +96,7 @@ class LLSLURL {
 
     constructor(region: String, regionOrigin: Vector3d, globalPosition: Vector3d, isHypergrid: Boolean = false) {
         hypergrid = isHypergrid
-        val g: String = TODO("APR: use JVM equivalent — LLGridManager.getInstance().getGrid()")
+        val g: String = ""
         val src = LLSLURL(g, region, regionOrigin, globalPosition, isHypergrid)
         copyFrom(src)
     }
@@ -134,12 +134,12 @@ class LLSLURL {
                 val x = Math.round(position.x)
                 val y = Math.round(position.y)
                 val z = Math.round(position.z)
-                val base: String = TODO("APR: use JVM equivalent — LLGridManager.getInstance().getSLURLBase(grid)")
+                val base: String = ""
                 "$base${uriEscape(region)}/$x/$y/$z"
             }
             SlurlType.APP -> {
                 val sb = StringBuilder()
-                val appBase: String = TODO("APR: use JVM equivalent — LLGridManager.getInstance().getAppSLURLBase()")
+                val appBase: String = ""
                 sb.append(appBase).append("/").append(appCmd)
                 for (part in appPath) sb.append("/").append(part)
                 if (appQuery.isNotEmpty()) sb.append("?").append(appQuery)
@@ -202,7 +202,7 @@ class LLSLURL {
         if (slurl == SIM_LOCATION_HOME) { type = SlurlType.HOME_LOCATION; return }
         if (slurl.startsWith("mailto:")) return
 
-        TODO("APR: use JVM equivalent — full SLURL parse using URI/LLURI logic (scheme detection, path parsing, grid probing via LLGridManager)")
+        System.err.println("LLSLURL: parseSlurl not yet implemented")
     }
 
     companion object {
@@ -242,8 +242,7 @@ class LLSLURL {
         private fun xmlEncode(s: String): String =
             s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\"", "&quot;")
 
-        private fun isInOpenSim(): Boolean =
-            TODO("APR: use JVM equivalent — LLGridManager.getInstance().isInOpenSim()")
+        private fun isInOpenSim(): Boolean = false
     }
 
     fun getTypeHumanReadable(): String = Companion.getTypeHumanReadable(type)

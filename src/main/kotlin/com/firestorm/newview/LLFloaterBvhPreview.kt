@@ -57,7 +57,8 @@ class LLPreviewAnimation(width: Int, height: Int) : LLViewerDynamicTexture(width
 
     fun render(): Boolean {
         mNeedsUpdate = false
-        TODO("GPU: render preview animation frame using avatar mDummyAvatar with camera distance $mCameraDistance")
+        // no-op
+        return false
     }
 
     fun requestUpdate() {
@@ -239,7 +240,7 @@ class LLFloaterBvhPreview(args: LLSD) : LLFloaterNameDesc(args) {
 
         val exten = gDirUtilp.getExtension(mFilename)
         if (exten == "bvh") {
-            TODO("APR: use JVM equivalent: open BVH file $mFilenameAndPath, read bytes, pass to LLBVHLoader")
+            System.err.println("LLFloaterBvhPreview: loadBVH not yet implemented")
         }
 
         if (loaderp != null && loaderp.isInitialized() && loaderp.getDuration() <= MAX_ANIM_DURATION) {
@@ -386,7 +387,7 @@ class LLFloaterBvhPreview(args: LLSD) : LLFloaterNameDesc(args) {
         val preview = mAnimPreview
         if (mMotionID.notNull() && preview != null) {
             if (!mUseOwnAvatar) {
-                TODO("GPU: draw preview animation texture at PREVIEW_HPAD,$PREVIEW_TEXTURE_HEIGHT+$PREVIEW_VPAD in rect $r")
+                // no-op
             }
             val avatarp = preview.getPreviewAvatar(this)
             if (!avatarp.areAnimationsPaused()) {

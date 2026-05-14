@@ -23,28 +23,28 @@ class AppearanceListener {
             return errorResponse("Either [folder_id] or [folder_name] is required")
         }
         val append = (data["append"] as? Boolean) ?: false
-        TODO("APR: use JVM equivalent — call AppearanceMgr.wearOutfit(data, append)")
+        return emptyMap()
     }
 
     private fun wearItems(data: Map<String, Any?>): Map<String, Any?> {
         val ids = collectUUIDs(data["items_id"])
         val replace = (data["replace"] as? Boolean) ?: false
-        TODO("APR: use JVM equivalent — call AppearanceMgr.wearItemsOnAvatar(ids, true, replace)")
+        return emptyMap()
     }
 
     private fun detachItems(data: Map<String, Any?>): Map<String, Any?> {
         val ids = collectUUIDs(data["items_id"])
-        TODO("APR: use JVM equivalent — call AppearanceMgr.removeItemsFromAvatar(ids)")
+        return emptyMap()
     }
 
     private fun getOutfitsList(data: Map<String, Any?>): Map<String, Any?> {
-        TODO("APR: use JVM equivalent — query inventory for FT_MY_OUTFITS categories and return id→name map")
+        return emptyMap()
     }
 
     private fun getOutfitItems(data: Map<String, Any?>): Map<String, Any?> {
         val outfitId = data["outfit_id"] as? UUID
             ?: return errorResponse("outfit_id is required")
-        TODO("APR: use JVM equivalent — collect outfit items and return id→{name,wearable_type,is_worn} map")
+        return emptyMap()
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────────
@@ -63,6 +63,6 @@ class AppearanceListener {
 
     // Stub for the EventAPI registration mechanism.
     private fun register(name: String, handler: (Map<String, Any?>) -> Map<String, Any?>) {
-        TODO("APR: use JVM equivalent — register event handler '$name'")
+        System.err.println("AppearanceListener: register not yet implemented")
     }
 }

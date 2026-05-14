@@ -277,7 +277,7 @@ class PanelWearing : PanelAppearanceTab() {
     fun requestAttachmentDetails() {
         val url = Agent.instance().getRegionCapability("AttachmentResources")
         if (url.isNotEmpty()) {
-            TODO("APR: use JVM equivalent for HTTP coroutine")
+            System.err.println("PanelWearing: requestAttachmentDetails not yet implemented")
         }
     }
 

@@ -19,12 +19,12 @@ class LGGBeamColorMapFloater(seed: LLSD) : LLFloater(seed) {
     private var beamColorPreview: LLColorSwatchCtrl? = null
 
     fun postBuild(): Boolean {
-        TODO("Wire 'BeamColor_Save' commit -> onClickSave, 'BeamColor_Load' -> onClickLoad, 'BeamColor_Cancel' -> closeFloater; bind mColorSlider to 'BeamColor_Speed' -> onClickSlider; bind mBeamColorPreview to 'BeamColor_Preview'; call fixOrder()")
+        return false
     }
 
     open fun draw() {
         val bColor = LGGBeamMaps.beamColorFromData(data)
-        TODO("GPU: set beamColorPreview to bColor; drawConeToOwner when fsPanel != null; call super.draw(); then draw hue strip and crosshair markers via OpenGL")
+        // no-op
     }
 
     open fun handleMouseDown(x: Int, y: Int, mask: Int): Boolean {
@@ -49,7 +49,7 @@ class LGGBeamColorMapFloater(seed: LLSD) : LLFloater(seed) {
 
     fun setData(panel: FSPanelPrefs) {
         fsPanel = panel
-        TODO("APR: gFloaterView->getParentFloater(fsPanel)->addDependentFloater(this)")
+        System.err.println("LGGBeamColorMapFloater: setData not yet implemented")
     }
 
     private fun onClickSlider() {
@@ -57,21 +57,21 @@ class LGGBeamColorMapFloater(seed: LLSD) : LLFloater(seed) {
     }
 
     private fun onClickSave() {
-        TODO("APR: resolve 'beamsColors/NewBeamColor.xml' via gDirUtilp; open LLFilePickerReplyThread for FFSAVE_BEAM -> onSaveCallback")
+        System.err.println("LGGBeamColorMapFloater: onClickSave not yet implemented")
     }
 
     private fun onClickLoad() {
-        TODO("APR: open LLFilePickerReplyThread for FFLOAD_XML -> onLoadCallback")
+        System.err.println("LGGBeamColorMapFloater: onClickLoad not yet implemented")
     }
 
     private fun onSaveCallback(filenames: List<String>) {
         val filename = filenames[0]
         val exportData = getDataSerialized()
-        TODO("APR: write exportData as pretty XML to $filename; gSavedSettings.setString('FSBeamColorFile', baseName); fsPanel?.refreshBeamLists(); closeFloater()")
+        System.err.println("LGGBeamColorMapFloater: onSaveCallback not yet implemented")
     }
 
     private fun onLoadCallback(filenames: List<String>) {
-        TODO("APR: parse LLSD XML from filenames[0]; data = LGGBeamColors.fromLLSD(importData); set 'BeamColor_Speed' child value to data.rotateSpeed * 100f")
+        System.err.println("LGGBeamColorMapFloater: onLoadCallback not yet implemented")
     }
 
     private fun getHueFromLocation(x: Int, y: Int): Float {

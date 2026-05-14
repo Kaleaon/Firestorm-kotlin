@@ -127,11 +127,11 @@ class FloaterAvatarPicker(val key: Any) {
         }
 
         suspend fun findByIdCoro(url: String, queryId: UUID, agentId: UUID, floaterKey: String) {
-            TODO("APR: use JVM equivalent")
+            System.err.println("FloaterAvatarPicker: findByIdCoro not yet implemented")
         }
 
         suspend fun findByNameCoro(url: String, queryId: UUID, name: String) {
-            TODO("APR: use JVM equivalent")
+            System.err.println("FloaterAvatarPicker: findByNameCoro not yet implemented")
         }
     }
 
@@ -155,7 +155,7 @@ class FloaterAvatarPicker(val key: Any) {
 
     fun onBtnFindUuid() {
         searchResultsUuid.clear()
-        TODO("APR: use JVM equivalent for UUID avatar name cache lookup")
+        System.err.println("FloaterAvatarPicker: UUID avatar name cache lookup not yet implemented")
     }
 
     fun onFindUuidAvatarNameCache(avId: UUID, avName: AvatarName) {
@@ -220,7 +220,8 @@ class FloaterAvatarPicker(val key: Any) {
         var allLoaded = true
         var empty = true
 
-        val avatarIds: List<UUID> = TODO("GPU: query world avatars in range")
+        System.err.println("FloaterAvatarPicker: query world avatars in range not yet implemented")
+        val avatarIds: List<UUID> = emptyList()
         for (av in avatarIds) {
             if (excludeAgentFromSearchResults && av == Agent.id) continue
             val avName = AvatarNameCache.get(av)
@@ -255,7 +256,7 @@ class FloaterAvatarPicker(val key: Any) {
     }
 
     fun populateContactSets() {
-        TODO("APR: use JVM equivalent for contact sets")
+        System.err.println("FloaterAvatarPicker: populateContactSets not yet implemented")
     }
 
     fun onContactSetSelected() {
@@ -263,7 +264,7 @@ class FloaterAvatarPicker(val key: Any) {
     }
 
     fun draw() {
-        TODO("GPU: drawFrustum cone to owner")
+        // no-op
         if (!nearMeListComplete && activeTab == "NearMePanel") {
             populateNearMe()
         }
@@ -296,7 +297,7 @@ class FloaterAvatarPicker(val key: Any) {
                     append("/?ids=")
                     append(agentId.toString())
                 }
-                TODO("APR: launch coroutine findByIdCoro($url, queryId, agentId, key.toString())")
+                System.err.println("FloaterAvatarPicker: launch coroutine findByIdCoro not yet implemented")
             } else {
                 processResponse(queryId, mapOf("failure_reason" to "ServerUnavailable"))
             }
@@ -309,10 +310,10 @@ class FloaterAvatarPicker(val key: Any) {
                     append("/?page_size=100&names=")
                     append(text.replace('.', ' '))
                 }
-                TODO("APR: launch coroutine findByNameCoro($url, queryId, key.toString())")
+                System.err.println("FloaterAvatarPicker: launch coroutine findByNameCoro not yet implemented")
             } else {
                 queryNameMap[queryId] = key.toString()
-                TODO("APR: send legacy AvatarPickerRequest message via gMessageSystem")
+                System.err.println("FloaterAvatarPicker: send legacy AvatarPickerRequest message via gMessageSystem not yet implemented")
             }
         }
     }
@@ -360,7 +361,7 @@ class FloaterAvatarPicker(val key: Any) {
         val item = list.firstOrNull { it.containsPoint(x, y) }
         if (item?.id != null && item.id != UUID(0, 0) && item.id != Agent.id) {
             if (drop) {
-                TODO("APR: open IM session for drag-and-drop")
+                System.err.println("FloaterAvatarPicker: open IM session for drag-and-drop not yet implemented")
             }
             return true
         }
@@ -409,7 +410,7 @@ class FloaterAvatarPicker(val key: Any) {
             "SearchPanelUUID" -> searchResultsUuid.any { it.selected }
             "ContactSetsPanel" -> {
                 if (!allowMultipleSelection) false
-                else TODO("APR: check contact set has members")
+                else { System.err.println("FloaterAvatarPicker: check contact set has members not yet implemented"); false }
             }
             else -> false
         }
@@ -424,17 +425,18 @@ class FloaterAvatarPicker(val key: Any) {
     }
 
     private fun collectContactSetMembers(): Pair<MutableList<UUID>, MutableList<AvatarName>> {
-        TODO("APR: collect members from LGGContactSets")
+        System.err.println("FloaterAvatarPicker: collectContactSetMembers not yet implemented")
+        return Pair(mutableListOf(), mutableListOf())
     }
 
-    private fun setSearchResultsEnabled(enabled: Boolean) { TODO("GPU: update UI state") }
-    private fun setOkBtnEnabled(enabled: Boolean) { TODO("GPU: update UI state") }
-    private fun closeFloater() { TODO("GPU: close floater") }
-    private fun isMinimized(): Boolean { TODO("GPU: query floater state"); return false }
-    private fun getEditText(): String { TODO("GPU: read Edit field"); return "" }
-    private fun isEditFocused(): Boolean { TODO("GPU: query focus"); return false }
-    private fun isEditUuidFocused(): Boolean { TODO("GPU: query focus"); return false }
-    private fun getString(key: String): String { TODO("GPU: look up localized string"); return key }
+    private fun setSearchResultsEnabled(enabled: Boolean) { System.err.println("FloaterAvatarPicker: setSearchResultsEnabled not yet implemented") }
+    private fun setOkBtnEnabled(enabled: Boolean) { System.err.println("FloaterAvatarPicker: setOkBtnEnabled not yet implemented") }
+    private fun closeFloater() { System.err.println("FloaterAvatarPicker: closeFloater not yet implemented") }
+    private fun isMinimized(): Boolean { System.err.println("FloaterAvatarPicker: isMinimized not yet implemented"); return false }
+    private fun getEditText(): String { System.err.println("FloaterAvatarPicker: getEditText not yet implemented"); return "" }
+    private fun isEditFocused(): Boolean { System.err.println("FloaterAvatarPicker: isEditFocused not yet implemented"); return false }
+    private fun isEditUuidFocused(): Boolean { System.err.println("FloaterAvatarPicker: isEditUuidFocused not yet implemented"); return false }
+    private fun getString(key: String): String { System.err.println("FloaterAvatarPicker: getString not yet implemented"); return key }
 }
 
 data class ScrollListItem(
@@ -443,36 +445,38 @@ data class ScrollListItem(
     val subLabel: String = "",
     var selected: Boolean = false
 ) {
-    fun containsPoint(x: Int, y: Int): Boolean { TODO("GPU: hit test") }
+    fun containsPoint(x: Int, y: Int): Boolean { System.err.println("ScrollListItem: containsPoint not yet implemented"); return false }
 }
 
 object Agent {
-    val id: UUID get() = TODO("APR: return current agent UUID")
-    val region: ViewerRegion? get() = TODO("APR: return current region")
+    val id: UUID get() { System.err.println("Agent: return current agent UUID not yet implemented"); return UUID(0, 0) }
+    val region: ViewerRegion? get() { System.err.println("Agent: return current region not yet implemented"); return null }
 }
 
 object AvatarNameCache {
-    fun get(id: UUID): AvatarName? = TODO("APR: look up avatar name cache")
-    fun defaultName(): String = TODO("APR: return cache default name placeholder")
+    fun get(id: UUID): AvatarName? { System.err.println("AvatarNameCache: get not yet implemented"); return null }
+    fun defaultName(): String { System.err.println("AvatarNameCache: defaultName not yet implemented"); return "" }
 }
 
 object AvatarTracker {
-    fun getBuddyList(): Map<UUID, Any> = TODO("APR: return buddy/friend map")
+    fun getBuddyList(): Map<UUID, Any> { System.err.println("AvatarTracker: getBuddyList not yet implemented"); return emptyMap() }
 }
 
 object FloaterReg {
-    inline fun <reified T> findInstance(type: String, key: Any): T? =
-        TODO("APR: look up floater registry")
+    inline fun <reified T> findInstance(type: String, key: Any): T? {
+        System.err.println("FloaterReg: findInstance not yet implemented")
+        return null
+    }
 }
 
 class ViewerRegion {
-    fun getCapability(name: String): String? = TODO("APR: capability lookup")
+    fun getCapability(name: String): String? { System.err.println("ViewerRegion: getCapability not yet implemented"); return null }
 }
 
 class MessageSystem {
-    fun getUUID(block: String, field: String, index: Int = 0): UUID = TODO("APR: message field read")
-    fun getString(block: String, field: String, index: Int = 0): String = TODO("APR: message field read")
-    fun getNumberOfBlocks(block: String): Int = TODO("APR: message block count")
+    fun getUUID(block: String, field: String, index: Int = 0): UUID { System.err.println("MessageSystem: getUUID not yet implemented"); return UUID(0, 0) }
+    fun getString(block: String, field: String, index: Int = 0): String { System.err.println("MessageSystem: getString not yet implemented"); return "" }
+    fun getNumberOfBlocks(block: String): Int { System.err.println("MessageSystem: getNumberOfBlocks not yet implemented"); return 0 }
 }
 
 object FloaterReg2

@@ -111,14 +111,14 @@ open class SpinCtrl(
 
     fun setLabel(label: String) {
         labelBox?.setText(label) ?: run {
-            TODO("GPU: warn — no label box present for setLabel on $name")
+            System.err.println("SpinCtrl: setLabel — no label box present for $name")
         }
         updateLabelColor()
     }
 
     open fun setLabelArg(key: String, text: String): Boolean {
         labelBox?.setTextArg(key, text) ?: run {
-            TODO("GPU: warn — no label box present for setLabelArg on $name")
+            System.err.println("SpinCtrl: setLabelArg — no label box present for $name")
         }
         updateLabelColor()
         return true

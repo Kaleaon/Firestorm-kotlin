@@ -58,7 +58,7 @@ class LLFloaterBump private constructor(key: LLSD) : LLFloater(key) {
     }
 
     protected fun onScrollListRightClicked(ctrl: LLUICtrl, x: Int, y: Int) {
-        TODO("APR: use JVM equivalent for scroll list right-click context menu")
+        System.err.println("LLFloaterBump: onScrollListRightClicked not yet implemented")
     }
 
     private fun updateList() {
@@ -101,7 +101,7 @@ class LLFloaterBump private constructor(key: LLSD) : LLFloater(key) {
 class FSBumpListMenu : LLListContextMenu() {
 
     override fun createMenu(): LLContextMenu {
-        TODO("APR: use JVM equivalent for createFromFile(\"menu_fs_bump_list.xml\")")
+        return LLContextMenu()
     }
 
     private fun onContextMenuItemClick(userdata: LLSD) {

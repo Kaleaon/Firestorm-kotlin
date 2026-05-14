@@ -92,11 +92,11 @@ class PanelGroup : GroupMgrObserver, VoiceClientStatusObserver {
 
         for (tab in tabs) tab.setGroupId(newGroupId)
 
-        buttonActivate?.let { TODO("GPU: set button visible based on membership") }
-        buttonJoin?.let { TODO("GPU: set button visible = false") }
+        buttonActivate?.let { /* GPU: set button visible based on membership - no-op stub */ }
+        buttonJoin?.let { /* GPU: set button visible = false - no-op stub */ }
 
         if (!isSameId) {
-            TODO("GPU: reset accordion / tab container state")
+            /* GPU: reset accordion / tab container state - no-op stub */
         }
 
         reposButtons()
@@ -110,7 +110,7 @@ class PanelGroup : GroupMgrObserver, VoiceClientStatusObserver {
 
     override fun onChange(status: StatusType, channelInfo: Map<String, Any>, proximal: Boolean) {
         if (status == StatusType.STATUS_JOINING || status == StatusType.STATUS_LEFT_CHANNEL) return
-        TODO("GPU: enable/disable call button based on voice availability")
+        /* GPU: enable/disable call button based on voice availability - no-op stub */
     }
 
     fun notifyObservers() {
@@ -119,7 +119,7 @@ class PanelGroup : GroupMgrObserver, VoiceClientStatusObserver {
 
     open fun update(gc: GroupChange) {
         val gdata = GroupMgr.getGroupData(groupId) ?: return
-        TODO("GPU: update group name control and join/activate button visibility")
+        /* GPU: update group name control and join/activate button visibility - no-op stub */
     }
 
     fun apply(): Boolean {
@@ -151,12 +151,12 @@ class PanelGroup : GroupMgrObserver, VoiceClientStatusObserver {
     fun draw() {
         if (refreshTimerRunning && System.currentTimeMillis() >= refreshTimerExpiry) {
             refreshTimerRunning = false
-            TODO("GPU: re-enable refresh button and accordion")
+            /* GPU: re-enable refresh button and accordion - no-op stub */
         }
 
         val mesg = StringBuilder()
         val enable = tabs.any { it.needsApply(mesg) }
-        TODO("GPU: set apply button enabled = $enable")
+        /* GPU: set apply button enabled = $enable - no-op stub */
     }
 
     fun refreshData() {
@@ -167,7 +167,7 @@ class PanelGroup : GroupMgrObserver, VoiceClientStatusObserver {
         GroupMgr.clearGroupData(groupId)
         setGroupId(groupId)
 
-        TODO("GPU: disable refresh button and accordion")
+        /* GPU: disable refresh button and accordion - no-op stub */
         refreshTimerExpiry = System.currentTimeMillis() + 5_000L
         refreshTimerRunning = true
     }
@@ -191,12 +191,12 @@ class PanelGroup : GroupMgrObserver, VoiceClientStatusObserver {
     }
 
     fun reshape(width: Int, height: Int, calledFromParent: Boolean = true) {
-        TODO("GPU: reshape panel to ${width}x${height}")
+        /* GPU: reshape panel to ${width}x${height} - no-op stub */
         reposButtons()
     }
 
     fun hideBackBtn() {
-        TODO("GPU: hide back button and background")
+        /* GPU: hide back button and background - no-op stub */
     }
 
     fun handleKeyHere(key: Int, mask: Int): Boolean {
@@ -212,7 +212,7 @@ class PanelGroup : GroupMgrObserver, VoiceClientStatusObserver {
     private fun onBtnJoin() {
         if (GroupActions.isInGroup(groupId)) {
             GroupActions.leave(groupId)
-            TODO("GPU: hide activate button")
+            /* GPU: hide activate button - no-op stub */
         } else {
             GroupActions.join(groupId)
         }
@@ -220,11 +220,11 @@ class PanelGroup : GroupMgrObserver, VoiceClientStatusObserver {
 
     private fun onBtnActivate() {
         GroupActions.activate(groupId)
-        TODO("GPU: disable activate button")
+        /* GPU: disable activate button - no-op stub */
     }
 
     private fun reposButton(buttonName: String) {
-        TODO("GPU: reposition button $buttonName by 2px")
+        /* GPU: reposition button $buttonName by 2px - no-op stub */
     }
 
     private fun reposButtons() {

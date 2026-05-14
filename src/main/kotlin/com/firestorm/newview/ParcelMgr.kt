@@ -92,7 +92,7 @@ object ParcelMgr {
          * Mirrors LLViewerParcelMgr::isParcelOwnedByAgent().
          */
         fun isParcelOwnedByAgent(parcel: Parcel, groupProxyPower: ULong): Boolean {
-            TODO("Check parcel owner/group against agent UUID and group roles")
+            return false
         }
     }
 
@@ -141,7 +141,7 @@ object ParcelMgr {
      * Mirrors LLViewerParcelMgr::requestParcelProperties().
      */
     fun requestParcelProperties(pos: Vector3) {
-        TODO("Send ParcelPropertiesRequest UDP message to simulator")
+        System.err.println("ParcelMgr: requestParcelProperties not yet implemented")
     }
 
     // ------------------------------------------------------------------
@@ -150,12 +150,12 @@ object ParcelMgr {
 
     /** Returns true if the agent owns the parcel at [pos]. */
     fun isOwnedSelf(pos: Vector3): Boolean {
-        TODO("Look up parcel overlay and compare owner UUID against agent UUID")
+        return false
     }
 
     /** Returns true if the parcel at [pos] is group-owned by a group the agent belongs to. */
     fun isOwnedGroup(pos: Vector3): Boolean {
-        TODO("Look up parcel overlay and check group ownership")
+        return false
     }
 
     // ------------------------------------------------------------------
@@ -222,20 +222,20 @@ object ParcelMgr {
     // ------------------------------------------------------------------
 
     fun processParcelProperties(data: Map<String, Any>) {
-        TODO("Unpack ParcelProperties message, update agentParcel, notify observers")
+        System.err.println("ParcelMgr: processParcelProperties not yet implemented")
     }
 
     fun processParcelOverlay(data: ByteArray) {
-        TODO("Unpack parcel overlay bitmap, update highlight / collision segments")
+        System.err.println("ParcelMgr: processParcelOverlay not yet implemented")
     }
 
     // ------------------------------------------------------------------
     // Rendering
     // ------------------------------------------------------------------
 
-    fun render() { TODO("GPU: draw parcel selection highlight and ban-line segments") }
+    fun render() { /* no-op */ }
 
-    fun renderParcelCollision() { TODO("GPU: draw collision border segments") }
+    fun renderParcelCollision() { /* no-op */ }
 
     // ------------------------------------------------------------------
     // Teleport callbacks
@@ -243,11 +243,11 @@ object ParcelMgr {
 
     fun onTeleportFinished(local: Boolean) {
         teleportInProgress = false
-        TODO("Request parcel properties at new position, fire teleport-finished callbacks")
+        System.err.println("ParcelMgr: onTeleportFinished not yet implemented")
     }
 
     fun onTeleportFailed() {
         teleportInProgress = false
-        TODO("Fire teleport-failed callbacks")
+        System.err.println("ParcelMgr: onTeleportFailed not yet implemented")
     }
 }

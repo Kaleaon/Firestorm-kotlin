@@ -148,7 +148,8 @@ class EstateSessionState : WebRTCSessionState() {
     override val isCallbackPossible: Boolean get() = false
 
     override fun processConnectionStates(): Boolean {
-        TODO("IPC: iterate neighboring regions; add/remove WebRTCSpatialConnection per region; delegate to super")
+        // IPC: iterate neighboring regions; add/remove WebRTCSpatialConnection per region; delegate to super
+        return false
     }
 }
 
@@ -228,72 +229,73 @@ abstract class WebRTCConnection(
 
     open fun setMuteMic(muted: Boolean) {
         this.muted = muted
-        TODO("GPU: webRTCDeviceInterface?.setMute(muted)")
+        // GPU: webRTCDeviceInterface?.setMute(muted)
     }
 
     open fun setSpeakerVolume(volume: Float) {
         speakerVolume = volume
-        TODO("GPU: audioInterface?.setSpeakerVolume(volume * VOLUME_SCALE_WEBRTC * PEER_GAIN_CONVERSION_FACTOR)")
+        // GPU: audioInterface?.setSpeakerVolume(volume * VOLUME_SCALE_WEBRTC * PEER_GAIN_CONVERSION_FACTOR)
     }
 
     fun setUserVolume(id: LLUUID, volume: Float) {
-        TODO("GPU: audioInterface?.setParticipantVolume(id, volume * PEER_GAIN_CONVERSION_FACTOR)")
+        // GPU: audioInterface?.setParticipantVolume(id, volume * PEER_GAIN_CONVERSION_FACTOR)
     }
 
     fun setUserMute(id: LLUUID, mute: Boolean) {
-        TODO("GPU: audioInterface?.setParticipantMute(id, mute)")
+        // GPU: audioInterface?.setParticipantMute(id, mute)
     }
 
     fun connectionStateMachine(): Boolean {
-        TODO("IPC: drive state machine; return true when still active")
+        // IPC: drive state machine; return true when still active
+        return false
     }
 
     fun sendJoin() {
-        TODO("IPC: send join JSON via WebRTC data channel")
+        // IPC: send join JSON via WebRTC data channel
     }
 
     fun sendData(data: String) {
-        TODO("IPC: forward data via WebRTC data channel")
+        // IPC: forward data via WebRTC data channel
     }
 
     fun processIceUpdates() {
-        TODO("IPC: POST ice candidates to voice server")
+        // IPC: POST ice candidates to voice server
     }
 
     fun onIceGatheringState(state: String) {
-        TODO("IPC: post to main queue; if complete mark iceCompleted")
+        // IPC: post to main queue; if complete mark iceCompleted
     }
 
     fun onIceCandidate(candidate: String) {
-        TODO("IPC: post to main queue; add candidate to iceCandidates")
+        // IPC: post to main queue; add candidate to iceCandidates
     }
 
     fun onOfferAvailable(sdp: String) {
-        TODO("IPC: post to main queue; store channelSdp; advance state")
+        // IPC: post to main queue; store channelSdp; advance state
     }
 
     fun onRenegotiationNeeded() {
-        TODO("IPC: post to main queue; restart session if up")
+        // IPC: post to main queue; restart session if up
     }
 
     fun onPeerConnectionClosed() {
-        TODO("IPC: post to main queue; advance to WAIT_FOR_CLOSE state")
+        // IPC: post to main queue; advance to WAIT_FOR_CLOSE state
     }
 
     fun onAudioEstablished() {
-        TODO("IPC: post to main queue; store audio interface; advance to WAIT_FOR_DATA_CHANNEL")
+        // IPC: post to main queue; store audio interface; advance to WAIT_FOR_DATA_CHANNEL
     }
 
     fun onDataReceived(data: String, binary: Boolean) {
-        TODO("IPC: post to main queue; parse JSON; update participant levels/speaking")
+        // IPC: post to main queue; parse JSON; update participant levels/speaking
     }
 
     fun onDataChannelReady() {
-        TODO("IPC: post to main queue; store data interface; advance to SESSION_UP; sendJoin()")
+        // IPC: post to main queue; store data interface; advance to SESSION_UP; sendJoin()
     }
 
     fun onVoiceConnectionRequestSuccess(body: Map<String, Any?>) {
-        TODO("IPC: extract SDP from body; set remote SDP on peer connection; post candidates; advance state")
+        // IPC: extract SDP from body; set remote SDP on peer connection; post candidates; advance state
     }
 
     open val isSpatial: Boolean get() = false
@@ -311,11 +313,11 @@ class WebRTCSpatialConnection(
 
     override fun setMuteMic(muted: Boolean) {
         this.muted = muted
-        TODO("GPU: webRTCDeviceInterface?.setMute(muted || hidden, delay)")
+        // GPU: webRTCDeviceInterface?.setMute(muted || hidden, delay)
     }
 
     override fun requestVoiceConnection() {
-        TODO("IPC: POST to region voice capability with parcelLocalId; call OnVoiceConnectionRequestSuccess on success")
+        // IPC: POST to region voice capability with parcelLocalId; call OnVoiceConnectionRequestSuccess on success
     }
 }
 
@@ -328,7 +330,7 @@ class WebRTCAdHocConnection(
     override val isSpatial: Boolean get() = false
 
     override fun requestVoiceConnection() {
-        TODO("IPC: POST to voice server with credentials; call OnVoiceConnectionRequestSuccess on success")
+        // IPC: POST to voice server with credentials; call OnVoiceConnectionRequestSuccess on success
     }
 }
 
@@ -444,24 +446,26 @@ object WebRTCVoiceClient : VoiceModuleInterface {
 
     override fun init(pump: Any?) {
         shuttingDown = false
-        TODO("GPU: llwebrtc::init(this); acquire device interface; setDevicesObserver; refreshDeviceLists(); launch voiceConnectionCoro")
+        // GPU: llwebrtc::init(this); acquire device interface; setDevicesObserver; refreshDeviceLists(); launch voiceConnectionCoro
     }
 
     override fun terminate() {
         if (shuttingDown) return
         voiceEnabled = false
         shuttingDown = true
-        TODO("GPU: llwebrtc::terminate(); clear webRTCDeviceInterface")
+        // GPU: llwebrtc::terminate(); clear webRTCDeviceInterface
     }
 
     override fun getVersion(): VoiceVersionInfo = voiceVersion
 
     override fun updateSettings() {
-        TODO("IPC: read VoiceEarLocation, VoiceInputAudioDevice, VoiceOutputAudioDevice, AudioLevelMic, echo/AGC/noise settings; apply to device interface")
+        // IPC: read VoiceEarLocation, VoiceInputAudioDevice, VoiceOutputAudioDevice, AudioLevelMic, echo/AGC/noise settings; apply to device interface
     }
 
-    override fun isVoiceWorking(): Boolean =
-        TODO("IPC: return isProcessingChannels || isInTuningMode")
+    override fun isVoiceWorking(): Boolean {
+        // IPC: return isProcessingChannels || isInTuningMode
+        return false
+    }
 
     override fun sipURIFromID(id: LLUUID): String = ""
 
@@ -470,7 +474,7 @@ object WebRTCVoiceClient : VoiceModuleInterface {
     override fun setHidden(hidden: Boolean) {
         this.hidden = hidden
         if (inSpatialChannel()) {
-            TODO("GPU: webRTCDeviceInterface?.setMute(hidden || muteMic, if hidden 0 else SET_HIDDEN_RESTORE_DELAY_MS)")
+            // GPU: webRTCDeviceInterface?.setMute(hidden || muteMic, if hidden 0 else SET_HIDDEN_RESTORE_DELAY_MS)
             if (hidden) {
                 WebRTCSessionState.forEach { it.setMuteMic(true) }
             } else {
@@ -487,14 +491,14 @@ object WebRTCVoiceClient : VoiceModuleInterface {
 
     override fun tuningStart() {
         if (!isInTuningMode) {
-            TODO("GPU: webRTCDeviceInterface?.setTuningMode(true)")
+            // GPU: webRTCDeviceInterface?.setTuningMode(true)
             isInTuningMode = true
         }
     }
 
     override fun tuningStop() {
         if (isInTuningMode) {
-            TODO("GPU: webRTCDeviceInterface?.setTuningMode(false)")
+            // GPU: webRTCDeviceInterface?.setTuningMode(false)
             isInTuningMode = false
         }
     }
@@ -504,7 +508,7 @@ object WebRTCVoiceClient : VoiceModuleInterface {
     override fun tuningSetMicVolume(volume: Float) {
         if (volume != tuningMicGain) {
             tuningMicGain = volume
-            TODO("GPU: webRTCDeviceInterface?.setTuningMicGain(volume)")
+            // GPU: webRTCDeviceInterface?.setTuningMicGain(volume)
         }
     }
 
@@ -513,7 +517,8 @@ object WebRTCVoiceClient : VoiceModuleInterface {
     }
 
     override fun tuningGetEnergy(): Float {
-        TODO("GPU: val rms = webRTCDeviceInterface?.getTuningAudioLevel() ?: 0f; return TUNING_LEVEL_START_POINT - TUNING_LEVEL_SCALE * rms")
+        // GPU: val rms = webRTCDeviceInterface?.getTuningAudioLevel() ?: 0f; return TUNING_LEVEL_START_POINT - TUNING_LEVEL_SCALE * rms
+        return 0f
     }
 
     override fun deviceSettingsAvailable(): Boolean = captureDevices.isNotEmpty() && renderDevices.isNotEmpty()
@@ -529,22 +534,22 @@ object WebRTCVoiceClient : VoiceModuleInterface {
             captureDevices.clear()
             renderDevices.clear()
         }
-        TODO("GPU: webRTCDeviceInterface?.refreshDevices()")
+        // GPU: webRTCDeviceInterface?.refreshDevices()
     }
 
     override fun setCaptureDevice(name: String) {
-        TODO("GPU: webRTCDeviceInterface?.setCaptureDevice(name)")
+        // GPU: webRTCDeviceInterface?.setCaptureDevice(name)
     }
 
     override fun setRenderDevice(name: String) {
-        TODO("GPU: webRTCDeviceInterface?.setRenderDevice(name)")
+        // GPU: webRTCDeviceInterface?.setRenderDevice(name)
     }
 
     override fun getCaptureDevices(): MutableList<VoiceDevice> = captureDevices
     override fun getRenderDevices(): MutableList<VoiceDevice> = renderDevices
 
     fun onDevicesChanged(renderList: List<Pair<String, String>>, captureList: List<Pair<String, String>>) {
-        TODO("IPC: post to main queue; call onDevicesChangedImpl")
+        // IPC: post to main queue; call onDevicesChangedImpl
     }
 
     fun onDevicesChangedImpl(renderList: List<Pair<String, String>>, captureList: List<Pair<String, String>>) {
@@ -553,13 +558,13 @@ object WebRTCVoiceClient : VoiceModuleInterface {
         if (renderDevices != newRender) {
             renderDevices.clear()
             renderDevices.addAll(newRender)
-            TODO("GPU: setRenderDevice(savedOutputDevice)")
+            // GPU: setRenderDevice(savedOutputDevice)
         }
         val newCapture = captureList.map { VoiceDevice(it.first, it.second) }
         if (captureDevices != newCapture) {
             captureDevices.clear()
             captureDevices.addAll(newCapture)
-            TODO("GPU: setCaptureDevice(savedInputDevice)")
+            // GPU: setCaptureDevice(savedInputDevice)
         }
         devicesListUpdated = true
     }
@@ -584,7 +589,8 @@ object WebRTCVoiceClient : VoiceModuleInterface {
     }
 
     override fun setSpatialChannel(channelInfo: Map<String, Any?>): Boolean {
-        TODO("IPC: parse channel_uri / channel_credentials from channelInfo; start estate or parcel session")
+        // IPC: parse channel_uri / channel_credentials from channelInfo; start estate or parcel session
+        return false
     }
 
     override fun leaveNonSpatialChannel() {
@@ -598,16 +604,18 @@ object WebRTCVoiceClient : VoiceModuleInterface {
     fun leaveChannel(stopTalking: Boolean) {
         session?.shutdownAllConnections()
         if (stopTalking) {
-            TODO("IPC: VoiceClient.setUserPTTState(false)")
+            // IPC: VoiceClient.setUserPTTState(false)
         }
     }
 
     override fun isCurrentChannel(channelInfo: Map<String, Any?>): Boolean {
-        TODO("IPC: compare channelInfo to current session channelId")
+        // IPC: compare channelInfo to current session channelId
+        return false
     }
 
     override fun compareChannels(channelInfo1: Map<String, Any?>, channelInfo2: Map<String, Any?>): Boolean {
-        TODO("IPC: compare channel_uri fields from both maps")
+        // IPC: compare channel_uri fields from both maps
+        return false
     }
 
     override fun getOutgoingCallInterface(): VoiceP2POutgoingCallInterface? = null
@@ -621,7 +629,7 @@ object WebRTCVoiceClient : VoiceModuleInterface {
 
     override fun setMicGain(volume: Float) {
         micGain = volume
-        TODO("GPU: webRTCDeviceInterface?.setMicGain(volume)")
+        // GPU: webRTCDeviceInterface?.setMicGain(volume)
     }
 
     override fun setVoiceEnabled(enabled: Boolean) {
@@ -656,7 +664,7 @@ object WebRTCVoiceClient : VoiceModuleInterface {
     }
 
     override fun userAuthorized(userId: String, agentId: LLUUID) {
-        TODO("IPC: store agentId; launch voiceConnectionCoro if not already running")
+        // IPC: store agentId; launch voiceConnectionCoro if not already running
     }
 
     override fun addObserver(observer: VoiceObserver) { statusObservers.add(observer) }
@@ -673,11 +681,11 @@ object WebRTCVoiceClient : VoiceModuleInterface {
         val channelInfo = getAudioSessionChannelInfo()
         val inSpatial = inSpatialChannel()
         statusObservers.toList().forEach { it.onChange(status, channelInfo, inSpatial) }
-        TODO("IPC: if not JOINING/LEFT/DISABLED — update agent voice connected state; trigger first-use speak hint")
+        // IPC: if not JOINING/LEFT/DISABLED — update agent voice connected state; trigger first-use speak hint
     }
 
     fun onConnectionEstablished(channelId: String, regionId: LLUUID) {
-        TODO("IPC: swap nextSession → session; addParticipant(agentId, regionId); notifyStatusObservers(LOGGED_IN / JOINED)")
+        // IPC: swap nextSession → session; addParticipant(agentId, regionId); notifyStatusObservers(LOGGED_IN / JOINED)
     }
 
     fun onConnectionShutDown(channelId: String, regionId: LLUUID) {
@@ -698,7 +706,7 @@ object WebRTCVoiceClient : VoiceModuleInterface {
     }
 
     fun updatePosition() {
-        TODO("IPC: read avatar/camera positions from agent; setListenerPosition; setAvatarPosition; enforceTether; updateNeighboringRegions")
+        // IPC: read avatar/camera positions from agent; setListenerPosition; setAvatarPosition; enforceTether; updateNeighboringRegions
     }
 
     private fun setListenerPosition(position: Vec3d, velocity: Vec3f, rot: Quaternion) {
@@ -744,15 +752,16 @@ object WebRTCVoiceClient : VoiceModuleInterface {
 
     fun updateOwnVolume() {
         val audioLevel = if (!muteMic) {
-            TODO("GPU: val rms = webRTCDeviceInterface?.getPeerConnectionAudioLevel() ?: 0f; LEVEL_START_POINT - LEVEL_SCALE * rms") as Float
+            // GPU: val rms = webRTCDeviceInterface?.getPeerConnectionAudioLevel() ?: 0f; LEVEL_START_POINT - LEVEL_SCALE * rms
+            0f
         } else 0f
         WebRTCSessionState.forEach { session ->
-            TODO("IPC: update own participant level in session to $audioLevel")
+            // IPC: update own participant level in session to audioLevel
         }
     }
 
     private fun updateNeighboringRegions() {
-        TODO("IPC: iterate 8 neighbor offsets at 2*MAX_AUDIO_DIST; collect region IDs into neighboringRegions")
+        // IPC: iterate 8 neighbor offsets at 2*MAX_AUDIO_DIST; collect region IDs into neighboringRegions
     }
 
     private fun inSpatialChannel(): Boolean =
@@ -768,18 +777,21 @@ object WebRTCVoiceClient : VoiceModuleInterface {
         session?.let { mapOf("channel_id" to it.channelId, "is_spatial" to it.isSpatial) } ?: emptyMap()
 
     private fun startEstateSession(): Boolean {
-        TODO("IPC: if not already in estate channel, create EstateSessionState; launch connection per region")
+        // IPC: if not already in estate channel, create EstateSessionState; launch connection per region
+        return false
     }
 
     private fun startParcelSession(channelId: String, parcelId: Int): Boolean {
-        TODO("IPC: create ParcelSessionState; launch WebRTCSpatialConnection")
+        // IPC: create ParcelSessionState; launch WebRTCSpatialConnection
+        return false
     }
 
     private fun startAdHocSession(channelInfo: Map<String, Any?>, notifyOnFirstJoin: Boolean, hangupOnLastLeave: Boolean): Boolean {
         val channelId = channelInfo["channel_uri"] as? String ?: return false
         val credentials = channelInfo["channel_credentials"] as? String ?: ""
         val adhoc = AdhocSessionState(channelId, credentials, notifyOnFirstJoin, hangupOnLastLeave)
-        TODO("IPC: WebRTCSessionState.addSession(channelId, adhoc); launch WebRTCAdHocConnection per region")
+        // IPC: WebRTCSessionState.addSession(channelId, adhoc); launch WebRTCAdHocConnection per region
+        return false
     }
 
     fun findParticipantById(channelId: String, id: LLUUID): WebRTCParticipant? =
@@ -799,7 +811,7 @@ object WebRTCVoiceClient : VoiceModuleInterface {
     }
 
     fun lookupName(id: LLUUID) {
-        TODO("IPC: query LLAvatarNameCache for id; call avatarNameResolved on result")
+        // IPC: query LLAvatarNameCache for id; call avatarNameResolved on result
     }
 
     fun avatarNameResolved(id: LLUUID, name: String) {
@@ -824,6 +836,6 @@ object WebRTCVoiceClient : VoiceModuleInterface {
     }
 
     fun voiceConnectionCoro() {
-        TODO("IPC: loop at UPDATE_THROTTLE_SECONDS; manage spatial/non-spatial sessions; update position; send position; updateOwnVolume; handle crash guard")
+        // IPC: loop at UPDATE_THROTTLE_SECONDS; manage spatial/non-spatial sessions; update position; send position; updateOwnVolume; handle crash guard
     }
 }

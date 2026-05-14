@@ -1057,7 +1057,7 @@ class LLFloaterEditExtDayCycle(key: LLSD) : LLFloaterEditEnvironmentBase(key) {
     }
 
     override fun doImportFromDisk() {
-        TODO("APR: use JVM equivalent – open a file chooser for legacy Windlight XML files")
+        System.err.println("LLFloaterEditExtDayCycle: doImportFromDisk not yet implemented")
     }
 
     private fun loadSettingFromFile(filenames: MutableList<String>) {

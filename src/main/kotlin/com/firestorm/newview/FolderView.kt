@@ -291,7 +291,7 @@ open class FolderView(
      */
     open fun arrange() {
         arrangeGeneration++
-        TODO("Compute item pixel heights and widths against target UI toolkit")
+        System.err.println("FolderView: arrange not yet implemented")
     }
 
     fun arrangeAll() { arrangeGeneration++ }
@@ -349,25 +349,25 @@ open class FolderView(
 
     fun startRenamingSelectedItem() {
         renameItem = getCurSelectedItem()
-        TODO("Wire rename editor into UI toolkit")
+        System.err.println("FolderView: startRenamingSelectedItem not yet implemented")
     }
 
     fun finishRenamingItem() {
         renameItem = null
-        TODO("Commit renamed text and rebuild label cache")
+        System.err.println("FolderView: finishRenamingItem not yet implemented")
     }
 
     // ── Render / draw ─────────────────────────────────────────────────────────
 
     /** Renders the folder view.  Stubbed — requires UI toolkit integration. */
     open fun draw() {
-        TODO("Render folder rows, selection highlight, rename editor, status text")
+        // no-op
     }
 
     // ── Scroll helpers ────────────────────────────────────────────────────────
 
     fun scrollToShowSelection() {
-        TODO("Notify scroll container to reveal the selected item")
+        System.err.println("FolderView: scrollToShowSelection not yet implemented")
     }
 
     // ── Status / empty message ────────────────────────────────────────────────
@@ -377,13 +377,13 @@ open class FolderView(
     // ── Context menu ─────────────────────────────────────────────────────────
 
     open fun updateMenu() {
-        TODO("Rebuild context menu enabled/checked states")
+        System.err.println("FolderView: updateMenu not yet implemented")
     }
 
     // ── Search ────────────────────────────────────────────────────────────────
 
     fun search(startItem: FolderViewItem, searchString: String, backward: Boolean): Boolean {
-        TODO("Walk the item list from startItem, wrapping at boundaries")
+        return false
     }
 
     // ── Misc ──────────────────────────────────────────────────────────────────

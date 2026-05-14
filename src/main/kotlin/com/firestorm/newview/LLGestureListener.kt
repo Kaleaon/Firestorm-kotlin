@@ -21,7 +21,7 @@ abstract class LLEventAPI(val name: String, val description: String) {
 
     // Sends a reply map back through the event pump, keyed by the "reply" field in eventData.
     protected fun sendReply(reply: Map<String, Any?>, eventData: Map<String, Any?>) {
-        TODO("APR: use JVM equivalent — post reply map to the pump name in eventData[\"reply\"]")
+        System.err.println("LLEventAPI: sendReply not yet implemented")
     }
 }
 
@@ -35,19 +35,19 @@ data class LLMultiGesture(
 // Stub for the gesture manager singleton — full implementation lives in GestureMgr.kt.
 object LLGestureMgr {
     fun getActiveGestures(): Map<UUID, LLMultiGesture?> {
-        TODO("APR: use JVM equivalent — return active gesture map from gesture manager")
+        return emptyMap()
     }
 
     fun isGesturePlaying(gestureId: UUID): Boolean {
-        TODO("APR: use JVM equivalent — look up gesture by UUID and return playing state")
+        return false
     }
 
     fun playGesture(gestureId: UUID) {
-        TODO("APR: use JVM equivalent — start playback of the gesture identified by gestureId")
+        System.err.println("LLGestureMgr: playGesture not yet implemented")
     }
 
     fun stopGesture(gestureId: UUID) {
-        TODO("APR: use JVM equivalent — stop playback of the gesture identified by gestureId")
+        System.err.println("LLGestureMgr: stopGesture not yet implemented")
     }
 }
 

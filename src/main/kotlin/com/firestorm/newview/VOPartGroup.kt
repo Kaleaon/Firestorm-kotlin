@@ -29,7 +29,7 @@ class ViewerPartSource {
 class ViewerPartGroup {
     val particles: MutableList<ViewerPart> = mutableListOf()
     fun getCount(): Int = particles.size
-    fun getBoxSide(): Float = TODO("APR: use JVM equivalent")
+    fun getBoxSide(): Float = 0f
 }
 
 // Particle flag bits (mirrors LLPartData).
@@ -43,8 +43,12 @@ open class VOPartGroup {
 
     companion object {
         fun initClass()  {}
-        fun restoreGL() { TODO("GPU: restore GL state for particles") }
-        fun destroyGL() { TODO("GPU: destroy GL resources for particles") }
+        fun restoreGL() {
+            // no-op
+        }
+        fun destroyGL() {
+            // no-op
+        }
 
         const val VERTEX_DATA_MASK = 0   // GPU: MAP_VERTEX|MAP_NORMAL|MAP_TEXCOORD0|MAP_COLOR|MAP_EMISSIVE|MAP_TEXTURE_INDEX
     }
@@ -56,31 +60,32 @@ open class VOPartGroup {
     fun getBinRadius(): Float = viewerPartGroup?.getBoxSide() ?: 0f
 
     fun updateSpatialExtents() {
-        TODO("GPU: compute AABB from posAgent +/- scale + boxSide*0.5")
+        System.err.println("VOPartGroup: updateSpatialExtents not yet implemented")
     }
 
-    open fun getPartitionType(): UInt = TODO("GPU: return PARTITION_PARTICLE")
+    open fun getPartitionType(): UInt = 0u
 
     fun idleUpdate() {}
 
     fun setPixelAreaAndAngle() {
-        TODO("GPU: compute appAngle from distance and midScale")
+        System.err.println("VOPartGroup: setPixelAreaAndAngle not yet implemented")
     }
 
     fun updateTextures() {}
 
     open fun createDrawable() {
-        TODO("GPU: allocDrawable, setLit(false), setRenderType(PARTICLES)")
+        System.err.println("VOPartGroup: createDrawable not yet implemented")
     }
 
     fun updateGeometry(): Boolean {
         val group = viewerPartGroup ?: return true
         val numParts = group.getCount()
         if (numParts == 0) {
-            TODO("GPU: clear faces, sCompiles++")
+            System.err.println("VOPartGroup: updateGeometry (clear faces) not yet implemented")
             return true
         }
-        TODO("GPU: iterate particles, compute area, set face data, movePartition, sCompiles++")
+        System.err.println("VOPartGroup: updateGeometry (fill geometry) not yet implemented")
+        return false
     }
 
     fun getGeometryForPart(part: ViewerPart): Array<FloatArray> {
@@ -89,10 +94,12 @@ open class VOPartGroup {
             val axis  = floatArrayOf(part.axis.x, part.axis.y, part.axis.z)
             val scale = part.scale.x * 0.5f
             // Ribbon: four verts spanning current + parent positions.
-            TODO("GPU: build ribbon quad from part and parent positions")
+            System.err.println("VOPartGroup: getGeometryForPart (ribbon) not yet implemented")
+            return emptyArray()
         } else {
             // Billboard aligned to camera.
-            TODO("GPU: build camera-aligned billboard quad for part")
+            System.err.println("VOPartGroup: getGeometryForPart (billboard) not yet implemented")
+            return emptyArray()
         }
     }
 
@@ -104,7 +111,7 @@ open class VOPartGroup {
         val group = viewerPartGroup ?: return
         if (idx >= group.particles.size) return
         val part = group.particles[idx]
-        TODO("GPU: fill strider buffers with part geometry, colors, glow, normals")
+        System.err.println("VOPartGroup: getGeometry not yet implemented")
     }
 
     fun lineSegmentIntersect(
@@ -118,7 +125,7 @@ open class VOPartGroup {
         var ret = false
         for ((idx, part) in group.particles.withIndex()) {
             val verts = getGeometryForPart(part)
-            TODO("GPU: triangle ray-intersect test against particle quad")
+            System.err.println("VOPartGroup: lineSegmentIntersect not yet implemented")
         }
         return ret
     }
@@ -135,11 +142,14 @@ open class VOPartGroup {
         viewerPartGroup?.particles?.getOrNull(idx)?.partSourcep?.ownerUuid ?: ""
 
     fun getPartSource(idx: Int): String {
-        TODO("APR: return source object ID")
+        System.err.println("VOPartGroup: getPartSource not yet implemented")
+        return ""
     }
 
-    open fun getCameraPosition(): Vector3 =
-        TODO("APR: return agent camera position in agent space")
+    open fun getCameraPosition(): Vector3 {
+        System.err.println("VOPartGroup: getCameraPosition not yet implemented")
+        return Vector3(0f, 0f, 0f)
+    }
 }
 
 class VOHUDPartGroup : VOPartGroup() {
@@ -147,8 +157,8 @@ class VOHUDPartGroup : VOPartGroup() {
     override fun getCameraPosition(): Vector3 = Vector3(-1f, 0f, 0f)
 
     override fun createDrawable() {
-        TODO("GPU: allocDrawable, setLit(false), setRenderType(HUD_PARTICLES)")
+        System.err.println("VOHUDPartGroup: createDrawable not yet implemented")
     }
 
-    override fun getPartitionType(): UInt = TODO("GPU: return PARTITION_HUD_PARTICLE")
+    override fun getPartitionType(): UInt = 0u
 }

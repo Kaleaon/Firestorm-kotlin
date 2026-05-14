@@ -54,7 +54,7 @@ class FSFloaterSplashScreenSettings(val key: Any) {
     }
 
     fun onOpen(key: Any) {
-        TODO("Platform: LLFloater::onOpen(key)")
+        System.err.println("FSFloaterSplashScreenSettings: onOpen not yet implemented")
         loadSettings()
     }
 
@@ -93,8 +93,9 @@ class FSFloaterSplashScreenSettings(val key: Any) {
     // -------------------------------------------------------------------------
 
     @Suppress("UNCHECKED_CAST")
-    private fun <T> getChild(name: String): T? =
-        TODO("Platform: getChild<LLCheckBoxCtrl>(\"$name\")")
+    private fun <T> getChild(name: String): T? {
+        return null
+    }
 }
 
 // =============================================================================
@@ -108,8 +109,10 @@ class SSCheckBoxCtrl {
 }
 
 object SplashSettings {
-    fun getBool(key: String): Boolean =
-        TODO("Platform: gSavedSettings.getBOOL(\"$key\")")
-    fun setBool(key: String, value: Boolean): Unit =
-        TODO("Platform: gSavedSettings.setBOOL(\"$key\", $value)")
+    fun getBool(key: String): Boolean {
+        return false
+    }
+    fun setBool(key: String, value: Boolean) {
+        System.err.println("SplashSettings: setBool not yet implemented")
+    }
 }

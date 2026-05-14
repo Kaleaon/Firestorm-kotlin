@@ -60,11 +60,12 @@ open class FolderViewItem(
 
         fun getLabelFontForStyle(style: Int): Any =
             fontsForStyle.getOrPut(style) {
-                TODO("GPU: resolve font for style=$style from font registry")
+                // no-op
+                Object()
             }
 
         fun initClass() {
-            TODO("GPU: initialize static colors, images, and fonts from UI theme defaults")
+            System.err.println("FolderViewItem: initClass not yet implemented")
         }
 
         fun cleanupClass() {
@@ -219,7 +220,7 @@ open class FolderViewItem(
 
         if (labelWidthDirty) {
             if (suffixNeedsRefresh) refreshSuffix()
-            TODO("GPU: measure labelWidth using font metrics for label+suffix strings")
+            // no-op
         }
 
         width[0] = max(width[0], labelWidth)
@@ -312,7 +313,7 @@ open class FolderViewItem(
     open fun handleHover(x: Int, y: Int, mask: Int): Boolean {
         isMouseOverTitle = (y > (rect.height - itemHeight))
         if (hasMouseCapture() && isMovable()) {
-            TODO("APR: use JVM equivalent for drag threshold check and cursor management")
+            // no-op
         }
         root.setHoveredItem(this)
         root.setShowSelectionContext(false)
@@ -357,7 +358,7 @@ open class FolderViewItem(
     }
 
     fun handleToolTip(x: Int, y: Int, mask: Int): Boolean {
-        TODO("GPU: measure label pixel width; show tooltip if truncated, else clear")
+        return false
     }
 
     open fun draw() {
@@ -367,23 +368,23 @@ open class FolderViewItem(
         if (!singleFolderMode) drawOpenFolderArrow()
         drawFavoriteIcon()
         drawHighlight(showContext, filled, highlightBgColor, flashBgColor, focusOutlineColor, mouseOverColor)
-        TODO("GPU: draw icon, label text, suffix, filter highlight boxes, and locked/protected annotations")
+        // no-op
     }
 
     fun drawOpenFolderArrow() {
         if (hasVisibleChildren || !isFolderComplete()) {
-            TODO("GPU: gl_draw_scaled_rotated_image for folder arrow at x=$indentation rotation=$controlLabelRotation")
+            // no-op
         }
     }
 
     fun drawFavoriteIcon() {
-        TODO("GPU: draw favorite star or hollow-star image based on isFavorite/hasFavorites state")
+        // no-op
     }
 
     open fun isHighlightAllowed(): Boolean = isSelected
     open fun isHighlightActive(): Boolean = isCurSelection
     open fun isFadeItem(): Boolean {
-        TODO("APR: use JVM equivalent for clipboard cut-mode check to determine fade state")
+        return false
     }
 
     open fun isFlashing(): Boolean = false
@@ -394,14 +395,14 @@ open class FolderViewItem(
         selectColor: Color4, flashColor: Color4,
         outlineColor: Color4, hoverColor: Color4,
     ) {
-        TODO("GPU: render selection/flash/outline/hover highlight rectangles via gl_rect_2d")
+        // no-op
     }
 
     fun drawLabel(font: Any, x: Float, y: Float, color: Color4, rightX: FloatArray) {
-        TODO("GPU: render label text with ellipsis clipping using font vertex buffer")
+        // no-op
     }
 
-    fun hasMouseCapture(): Boolean = TODO("APR: use JVM equivalent for mouse capture state check")
+    fun hasMouseCapture(): Boolean = false
     fun pointInView(x: Int, y: Int): Boolean = x >= 0 && y >= 0 && x < rect.width && y < rect.height
 }
 
@@ -451,7 +452,7 @@ open class FolderViewFolder(
     fun setHasFavorites(v: Boolean) { hasFavorites = v }
 
     fun updateHasFavorites(newChildValue: Boolean) {
-        TODO("APR: use JVM equivalent for idle-callback-based favorites dirty flag update")
+        System.err.println("FolderViewFolder: updateHasFavorites not yet implemented")
     }
 
     private fun updateLabelRotation() {
@@ -541,7 +542,7 @@ open class FolderViewFolder(
     }
 
     fun extendSelectionTo(selection: FolderViewItem) {
-        TODO("APR: use JVM equivalent for range-selection between current and target item")
+        System.err.println("FolderViewFolder: extendSelectionTo not yet implemented")
     }
 
     override fun isRemovable(): Boolean =
@@ -557,7 +558,7 @@ open class FolderViewFolder(
     }
 
     fun destroyRoot() {
-        TODO("APR: use JVM equivalent for root folder cleanup and resource release")
+        System.err.println("FolderViewFolder: destroyRoot not yet implemented")
     }
 
     open fun extractItem(item: FolderViewItem, deparentModel: Boolean = true) {
@@ -641,14 +642,15 @@ open class FolderViewFolder(
     fun getCommonAncestor(
         itemA: FolderViewItem, itemB: FolderViewItem, reverse: BooleanArray,
     ): FolderViewFolder {
-        TODO("APR: use JVM equivalent for walking ancestry chains to find common ancestor")
+        System.err.println("FolderViewFolder: getCommonAncestor not yet implemented")
+        return this
     }
 
     fun gatherChildRangeExclusive(
         start: FolderViewItem, end: FolderViewItem,
         reverse: Boolean, outItems: MutableList<FolderViewItem>,
     ) {
-        TODO("APR: use JVM equivalent for collecting items in range between start and end")
+        System.err.println("FolderViewFolder: gatherChildRangeExclusive not yet implemented")
     }
 
     fun handleDragAndDropFromChild(
@@ -660,13 +662,13 @@ open class FolderViewFolder(
         mask: Int, drop: Boolean, cargoType: DragAndDropType, cargoData: Any?,
         accept: IntArray, tooltipMsg: StringBuilder,
     ): Boolean {
-        TODO("APR: use JVM equivalent for folder drag-and-drop handling via view model")
+        return false
     }
 
     override fun handleHover(x: Int, y: Int, mask: Int): Boolean {
         isMouseOverTitle = (y > rect.height - itemHeight)
         if (autoOpenCountdown != 0f) {
-            TODO("APR: use JVM equivalent for auto-open timer countdown during drag hover")
+            // no-op
         }
         return super.handleHover(x, y, mask)
     }

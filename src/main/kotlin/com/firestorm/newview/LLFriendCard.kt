@@ -60,33 +60,33 @@ object LLFriendCardsManager : LLFriendObserver {
     fun getManagerState(): EManagerState = mState
 
     fun isItemInAnyFriendsList(item: LLViewerInventoryItem): Boolean {
-        TODO("APR: use JVM equivalent — query inventory model for calling-card items matching item.getCreatorUUID()")
+        return false
     }
 
     fun isObjDirectDescendentOfCategory(obj: LLInventoryObject?, cat: LLViewerInventoryCategory?): Boolean {
         if (obj == null || cat == null) return false
         if (!isCategoryInFriendFolder(cat)) return false
-        TODO("APR: use JVM equivalent — lock and scan direct descendents of cat for obj match by type+name or creator UUID")
+        return false
     }
 
     fun isCategoryInFriendFolder(cat: LLViewerInventoryCategory?): Boolean {
         if (cat == null) return false
-        TODO("APR: use JVM equivalent — check gInventory.isObjectDescendentOf(cat.getUUID(), findFriendFolderUUIDImpl())")
+        return false
     }
 
     fun isAnyFriendCategory(catID: UUID): Boolean {
-        TODO("APR: use JVM equivalent — compare catID to friend folder UUID or check descendant relationship")
+        return false
     }
 
     fun isAvatarDataStored(avatarID: UUID): Boolean =
         mBuddyIDSet.contains(avatarID)
 
     fun syncFriendCardsFolders() {
-        TODO("APR: use JVM equivalent — fetch calling-cards folder descendants then call ensureFriendsFolderExists()")
+        System.err.println("LLFriendCardsManager: syncFriendCardsFolders not yet implemented")
     }
 
     fun createAgentCallingCard() {
-        TODO("APR: use JVM equivalent — fetch calling-cards folder, check for agent card, create if missing")
+        System.err.println("LLFriendCardsManager: createAgentCallingCard not yet implemented")
     }
 
     // ---- private helpers ----
@@ -107,56 +107,56 @@ object LLFriendCardsManager : LLFriendObserver {
     }
 
     private fun findChildFolderUUID(parentFolderUUID: UUID, nonLocalizedName: String): UUID {
-        TODO("APR: use JVM equivalent — collectDescendentsIf with name-match functor")
+        return UUID(0L, 0L)
     }
 
     private fun findFirstCallingCardSubfolder(parentId: UUID): UUID {
-        TODO("APR: use JVM equivalent — getDirectDescendentsOf and find first FT_CALLINGCARD sub-category")
+        return UUID(0L, 0L)
     }
 
     private fun findFriendFolderUUIDImpl(): UUID {
-        TODO("APR: use JVM equivalent — findCategoryUUIDForType(FT_CALLINGCARD) then findFirstCallingCardSubfolder")
+        return UUID(0L, 0L)
     }
 
     private fun findFriendAllSubfolderUUIDImpl(): UUID {
-        TODO("APR: use JVM equivalent — findFriendFolderUUIDImpl then findFirstCallingCardSubfolder")
+        return UUID(0L, 0L)
     }
 
     private fun findFriendCardInventoryUUIDImpl(avatarID: UUID): UUID {
-        TODO("APR: use JVM equivalent — collectDescendents of Friends/All and match by creator UUID")
+        return UUID(0L, 0L)
     }
 
     private fun findMatchedFriendCards(avatarID: UUID): List<LLViewerInventoryItem> {
-        TODO("APR: use JVM equivalent — walk friend folder tree collecting items whose creator == avatarID")
+        return emptyList()
     }
 
     private fun fetchAndCheckFolderDescendents(folderId: UUID, cb: () -> Unit) {
-        TODO("APR: use JVM equivalent — async inventory fetch with callback on completion")
+        System.err.println("LLFriendCardsManager: fetchAndCheckFolderDescendents not yet implemented")
     }
 
     // Ensures Friends folder exists under Calling Cards; creates it and All sub-folder if absent,
     // then synchronises contents with the buddy list.
     private fun ensureFriendsFolderExists() {
-        TODO("APR: use JVM equivalent — findFriendFolderUUIDImpl; create FT_CALLINGCARD category if missing")
+        System.err.println("LLFriendCardsManager: ensureFriendsFolderExists not yet implemented")
     }
 
     private fun ensureFriendsAllFolderExists() {
-        TODO("APR: use JVM equivalent — findFriendAllSubfolderUUIDImpl; create FT_CALLINGCARD sub-category if missing")
+        System.err.println("LLFriendCardsManager: ensureFriendsAllFolderExists not yet implemented")
     }
 
     private fun syncFriendsFolder() {
-        TODO("APR: use JVM equivalent — copyBuddyList, check for agent calling card, create missing friend cards")
+        System.err.println("LLFriendCardsManager: syncFriendsFolder not yet implemented")
     }
 
     private fun addFriendCardToInventory(avatarID: UUID) {
-        TODO("APR: use JVM equivalent — check isManagerReady, findFriendCardInventoryUUIDImpl, isAvatarDataStored, then create_inventory_callingcard")
+        System.err.println("LLFriendCardsManager: addFriendCardToInventory not yet implemented")
     }
 
     private fun removeFriendCardFromInventory(avatarID: UUID) {
-        TODO("APR: use JVM equivalent — findMatchedFriendCards then gInventory.removeItem for each")
+        System.err.println("LLFriendCardsManager: removeFriendCardFromInventory not yet implemented")
     }
 
     private fun onFriendListUpdate(changedMask: UInt) {
-        TODO("APR: use JVM equivalent — dispatch ADD→addFriendCardToInventory, REMOVE→removeFriendCardFromInventory for each changed ID")
+        System.err.println("LLFriendCardsManager: onFriendListUpdate not yet implemented")
     }
 }

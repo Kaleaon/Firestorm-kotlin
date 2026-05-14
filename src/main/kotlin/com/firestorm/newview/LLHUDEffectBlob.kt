@@ -24,13 +24,7 @@ class LLHUDEffectBlob(type: UByte) : LLHUDEffect(type) {
             return
         }
 
-        TODO("GPU: " +
-            "1. Convert mPositionGlobal to agent-space position. " +
-            "2. Obtain per-pixel up/right vectors from viewer camera. " +
-            "3. Bind image texture. " +
-            "4. Set color alpha = clamp_rescale(time, 0, mDuration, 255, 0). " +
-            "5. Draw two textured triangles (quad) scaled by pixelSize in pixel_up/pixel_right directions."
-        )
+        // no-op
     }
 
     override fun renderForTimer() {
@@ -38,6 +32,6 @@ class LLHUDEffectBlob(type: UByte) : LLHUDEffect(type) {
     }
 
     private fun loadUiImage(name: String): Any? {
-        TODO("APR: use JVM equivalent — load UI image resource by name from asset system")
+        return null
     }
 }

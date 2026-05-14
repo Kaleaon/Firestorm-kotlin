@@ -41,13 +41,14 @@ abstract class CrashLogger {
     abstract fun cleanup(): Boolean
 
     open fun init(): Boolean {
-        TODO("APR: initialize HTTP stack and app dirs")
+        System.err.println("CrashLogger: init not yet implemented")
+        return false
 
         @Suppress("UNREACHABLE_CODE")
         run {
             productName = "Firestorm"
 
-            val logDir: String = TODO("APR: resolve LL_PATH_LOGS")
+            val logDir: String = ""
             val oldLog = "$logDir/crashreport.log.old"
             val logFile = "$logDir/crashreport.log"
             File(logFile).renameTo(File(oldLog))
@@ -110,19 +111,13 @@ abstract class CrashLogger {
             return false
         }
         crashSettings["CrashSubmitBehavior"] = crashBehaviorValue
-        TODO("APR: persist crashSettings to LL_PATH_USER_SETTINGS/$CRASH_SETTINGS_FILE")
+        System.err.println("CrashLogger: saveCrashBehaviorSetting not yet implemented")
+        return false
     }
 
     fun readFromXML(dest: MutableMap<String, Any>, filename: String): Boolean {
-        val path: String = TODO("APR: expand LL_PATH_DUMP/$filename")
-        @Suppress("UNREACHABLE_CODE")
-        return try {
-            val content = File(path).readText()
-            TODO("APR: parse XML content into dest map")
-        } catch (_: Exception) {
-            llwarns("CRASHREPORT") { "Failed to open $path" }
-            false
-        }
+        System.err.println("CrashLogger: readFromXML not yet implemented")
+        return false
     }
 
     fun mergeLogs(srcSd: Map<String, Any>) {
@@ -164,8 +159,7 @@ abstract class CrashLogger {
 
         crashInfo["DebugLog"] = debugLog.toMap()
 
-        val dumpDir: String = TODO("APR: expand LL_PATH_DUMP/stats.log")
-        @Suppress("UNREACHABLE_CODE")
+        val dumpDir: String = ""
         fileMap["StatsLog"] = dumpDir
 
         updateApplication("Encoding files...")
@@ -181,8 +175,7 @@ abstract class CrashLogger {
         }
 
         if (!hasMinidump) {
-            val pathname: String = TODO("APR: expand LL_PATH_DUMP/")
-            @Suppress("UNREACHABLE_CODE")
+            val pathname: String = ""
             run {
                 llwarns("CRASHREPORT") { "Searching for minidump in $pathname" }
                 File(pathname).listFiles()?.forEach { file ->
@@ -237,8 +230,7 @@ abstract class CrashLogger {
             llinfos("CRASHREPORT") { "POST crash data to $host" }
 
             return try {
-                val body = TODO("APR: serialize data map to LLSD XML/JSON body string") as String
-                @Suppress("UNREACHABLE_CODE")
+                val body = ""
                 val request = HttpRequest.newBuilder()
                     .uri(URI.create(host))
                     .timeout(Duration.ofSeconds(timeout.toLong()))
@@ -260,34 +252,8 @@ abstract class CrashLogger {
     }
 
     fun sendCrashLog(dumpDir: String): Boolean {
-        TODO("APR: set dump dir via gDirUtilp equivalent")
-        @Suppress("UNREACHABLE_CODE")
-        run {
-            val reportFile: String = TODO("APR: expand LL_PATH_LOGS/FirestormCrashReport.log")
-
-            @Suppress("UNREACHABLE_CODE")
-            gatherFiles()
-
-            val postData = constructPostData()
-
-            updateApplication("Sending reports...")
-
-            try {
-                val xml = TODO("APR: serialize postData to pretty XML string") as String
-                @Suppress("UNREACHABLE_CODE")
-                File(reportFile).writeText(xml)
-            } catch (_: Exception) {}
-
-            var sent = false
-            if (crashHost.isNotEmpty()) {
-                llwarns("CRASHREPORT") { "Sending crash data to server from CrashHostUrl '$crashHost'" }
-                updateApplication("Using override crash server... $crashHost")
-                sent = runCrashLogPost(crashHost, postData, "Sending to server", CRASH_UPLOAD_RETRIES, CRASH_UPLOAD_TIMEOUT)
-            }
-
-            sentCrashLogs = sent
-            return sent
-        }
+        System.err.println("CrashLogger: sendCrashLog not yet implemented")
+        return false
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -339,11 +305,11 @@ abstract class CrashLogger {
 
     fun commonCleanup() {
         termCurl()
-        TODO("APR: close crashreport.log via LLError.logToFile equivalent")
+        System.err.println("CrashLogger: commonCleanup not yet implemented")
     }
 
     private fun loadCrashSettingsFile() {
-        TODO("APR: load CRASH_SETTINGS_FILE from LL_PATH_USER_SETTINGS or LL_PATH_APP_SETTINGS into crashSettings")
+        System.err.println("CrashLogger: loadCrashSettingsFile not yet implemented")
     }
 
     // Returns command-line option data; implementation depends on the app framework.
@@ -354,11 +320,11 @@ abstract class CrashLogger {
 
     companion object {
         private fun initCurl() {
-            TODO("APR: initialize libcurl equivalent / JVM TLS setup")
+            System.err.println("CrashLogger: initCurl not yet implemented")
         }
 
         private fun termCurl() {
-            TODO("APR: tear down libcurl equivalent / JVM TLS cleanup")
+            System.err.println("CrashLogger: termCurl not yet implemented")
         }
     }
 }

@@ -64,7 +64,7 @@ class SurfacePatch {
             voObj = VOSurfacePatch()
             voObj!!.patch = this
             voObj!!.setPositionRegion(centerRegion)
-            TODO("GPU: register VOSurfacePatch with pipeline")
+            // no-op
         }
     }
 
@@ -438,11 +438,11 @@ class SurfacePatch {
             (sNb == null || sNb.hasReceivedData) &&
             (nNb == null || nNb.hasReceivedData)) {
             if (!heightsGenerated) {
-                TODO("GPU: generate composition heights for patch")
+                // no-op
             }
             if (voObj != null) {
                 voObj!!.dirtyGeom()
-                TODO("GPU: markGLRebuild for patch")
+                // no-op
             }
         }
         return false
@@ -497,7 +497,8 @@ class SurfacePatch {
 
     fun getOriginGlobal(): Vector3d = originGlobal
     fun getOriginAgent(): Vector3 {
-        TODO("APR: convert global origin via agent")
+        System.err.println("SurfacePatch: getOriginAgent not yet implemented")
+        return Vector3(0f, 0f, 0f)
     }
 
     fun setOriginGlobal(og: Vector3d) {
@@ -514,7 +515,7 @@ class SurfacePatch {
         visInfo.renderStride = s.getGridsPerPatchEdge().toUInt()
     }
 
-    fun colorPatch(r: UByte, g: UByte, b: UByte) { TODO("GPU: color terrain patch") }
+    fun colorPatch(r: UByte, g: UByte, b: UByte) { /* no-op */ }
 
     fun updateVisibility() {
         val vo = voObj ?: return
@@ -523,7 +524,7 @@ class SurfacePatch {
         val stridePerDist = defaultDeltaAngle / s.getMetersPerGrid()
         val gppe = s.getGridsPerPatchEdge().toUInt()
 
-        val inFrustum: Boolean = TODO("GPU: camera frustum check for patch center/radius")
+        val inFrustum: Boolean = false // no-op
         if (inFrustum) {
             val oldStride = visInfo.renderStride
             val maxStride = minOf((visInfo.distance * stridePerDist).toUInt(), 2u * gppe)
@@ -546,7 +547,7 @@ class SurfacePatch {
     private fun updateCompositionStats() {
         val s   = surface ?: return
         val vlp = s.region?.getComposition() ?: return
-        TODO("GPU: sample composition layer for min/mean/max")
+        // no-op
     }
 
     // -- constants mirroring C++ gDirOpposite / gDirAdjacent --

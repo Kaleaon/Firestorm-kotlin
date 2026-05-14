@@ -394,7 +394,8 @@ class Keywords {
     }
 
     fun loadFromLegacyFile(filename: String): Boolean {
-        TODO("APR: use JVM equivalent for LLUICtrlFactory::getLayeredXMLNode to load $filename")
+        System.err.println("Keywords: loadFromLegacyFile not yet implemented")
+        return false
     }
 
     val wordTokens: Map<String, KeywordToken> get() = wordTokenMap

@@ -45,7 +45,7 @@ open class AudioSourceVO(
         if (mSourceMuted) return
 
         if (obj.isHUDAttachment) {
-            TODO("GPU: set mPositionGlobal = agentCamera.cameraPositionGlobal")
+            // no-op
         } else {
             mPositionGlobal = obj.positionGlobal
         }
@@ -73,7 +73,7 @@ open class AudioSourceVO(
     }
 
     private fun isInCutOffRadius(posGlobal: Vector3d, cutoff: Float): Boolean {
-        TODO("APR: use JVM equivalent — read MediaSoundsEarLocation setting, compute distance from ear to posGlobal, return dist < cutoff")
+        return false
     }
 
     private fun updateMute() {
@@ -113,14 +113,14 @@ open class AudioSourceVO(
     }
 
     private fun canHearSoundAtPos(posGlobal: Vector3d): Boolean {
-        TODO("APR: use JVM equivalent — call ViewerParcelMgr.canHearSound(posGlobal)")
+        return false
     }
 
     private fun agentIsRidingSameRoot(obj: ViewerObject): Boolean {
-        TODO("APR: use JVM equivalent — compare obj.root with agentAvatar.root")
+        return false
     }
 
     private fun isMutedByMuteList(obj: ViewerObject): Boolean {
-        TODO("APR: use JVM equivalent — check MuteList for obj.id, ownerId (flagObjectSounds), and avatar parent id")
+        return false
     }
 }

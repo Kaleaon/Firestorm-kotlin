@@ -38,7 +38,7 @@ open class FloaterPerms(val key: Any) {
             return flags
         }
 
-        private fun savedSettingBool(key: String): Boolean = TODO("APR: gSavedSettings.getBOOL($key)")
+        private fun savedSettingBool(key: String): Boolean = false
     }
 }
 
@@ -101,7 +101,7 @@ class FloaterPermsDefault(key: Any) : FloaterPerms(key) {
                     val reason = result.statusString()
                     if (reason != previousReason && capSent) {
                         previousReason = reason
-                        TODO("APR: LLNotificationsUtil.add(\"DefaultObjectPermissions\", args)")
+                        System.err.println("FloaterPermsDefault: LLNotificationsUtil.add DefaultObjectPermissions not yet implemented")
                     }
                     suspendTimeout(RETRY_TIMEOUT)
                     if (retryCount < MAX_HTTP_RETRIES) continue
@@ -127,13 +127,21 @@ class FloaterPermsDefault(key: Any) : FloaterPerms(key) {
             )
         }
 
-        private fun agentRegion(): Any? = TODO("APR: gAgent.getRegion()")
-        private fun regionCapability(region: Any, cap: String): String = TODO("APR: region.getCapability(cap)")
-        private fun launchCoroutine(name: String, block: suspend () -> Unit) = TODO("APR: LLCoros.instance().launch(name, block)")
-        private suspend fun httpPost(url: String, data: Any): HttpResult = TODO("APR: LLCoreHttpUtil post and suspend")
-        private suspend fun suspendTimeout(seconds: Float) = TODO("APR: llcoro::suspendUntilTimeout(seconds)")
-        private fun logWarning(msg: String) = TODO("APR: LL_WARNS")
-        private fun logInfo(msg: String) = TODO("APR: LL_INFOS")
+        private fun agentRegion(): Any? = null
+        private fun regionCapability(region: Any, cap: String): String = ""
+        private fun launchCoroutine(name: String, block: suspend () -> Unit) {
+            System.err.println("FloaterPermsDefault: launchCoroutine not yet implemented")
+        }
+        private suspend fun httpPost(url: String, data: Any): HttpResult = HttpResult()
+        private suspend fun suspendTimeout(seconds: Float) {
+            System.err.println("FloaterPermsDefault: suspendTimeout not yet implemented")
+        }
+        private fun logWarning(msg: String) {
+            System.err.println("FloaterPermsDefault: logWarning not yet implemented")
+        }
+        private fun logInfo(msg: String) {
+            System.err.println("FloaterPermsDefault: logInfo not yet implemented")
+        }
     }
 
     override fun postBuild(): Boolean {
@@ -200,15 +208,23 @@ class FloaterPermsDefault(key: Any) : FloaterPerms(key) {
     }
 
     // --- stubs for platform calls ---
-    private fun savedSettingBool(key: String): Boolean = TODO("APR: gSavedSettings.getBOOL($key)")
-    private fun setSavedSettingBool(key: String, value: Boolean) = TODO("APR: gSavedSettings.setBOOL($key, value)")
-    private fun connectCloseSignal(block: () -> Unit) = TODO("APR: mCloseSignal.connect(block)")
-    private fun closeFloater() = TODO("APR: closeFloater()")
-    private fun setTransferCheckboxEnabled(prefix: String, enabled: Boolean) = TODO("APR: getChild<LLCheckBoxCtrl>(prefix+\"_transfer\").setEnabled(enabled)")
+    private fun savedSettingBool(key: String): Boolean = false
+    private fun setSavedSettingBool(key: String, value: Boolean) {
+        System.err.println("FloaterPermsDefault: setSavedSettingBool not yet implemented")
+    }
+    private fun connectCloseSignal(block: () -> Unit) {
+        System.err.println("FloaterPermsDefault: connectCloseSignal not yet implemented")
+    }
+    private fun closeFloater() {
+        System.err.println("FloaterPermsDefault: closeFloater not yet implemented")
+    }
+    private fun setTransferCheckboxEnabled(prefix: String, enabled: Boolean) {
+        System.err.println("FloaterPermsDefault: setTransferCheckboxEnabled not yet implemented")
+    }
     open fun refresh() = Unit
 }
 
 private class HttpResult {
-    fun isSuccess(): Boolean = TODO("APR: HTTP result success check")
-    fun statusString(): String = TODO("APR: HTTP result status string")
+    fun isSuccess(): Boolean = false
+    fun statusString(): String = ""
 }

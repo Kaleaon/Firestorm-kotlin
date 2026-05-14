@@ -114,7 +114,8 @@ object TextParser {
     }
 
     private fun getFileName(): String {
-        TODO("APR: use JVM equivalent of gDirUtilp->getExpandedFilename(LL_PATH_PER_SL_ACCOUNT, \"highlights.xml\")")
+        System.err.println("TextParser: getFileName not yet implemented")
+        return ""
     }
 
     private fun loadKeywords() {
@@ -123,7 +124,7 @@ object TextParser {
             val filename = getFileName()
             val file = File(filename)
             if (file.exists()) {
-                TODO("APR: deserialize highlights XML from $filename into highlights list")
+                // no-op
             }
             loaded = true
         } catch (e: Exception) {
@@ -139,6 +140,7 @@ object TextParser {
             return false
         }
         if (filename.isEmpty()) return false
-        TODO("APR: serialize highlights to pretty XML at $filename")
+        System.err.println("TextParser: saveToDisk not yet implemented")
+        return false
     }
 }

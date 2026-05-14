@@ -68,11 +68,11 @@ abstract class LLManip(val name: String, val composite: LLToolComposite?) : LLTo
         var sTickLabelSpacing: FloatArray = floatArrayOf(60f, 25f)
 
         fun rebuild(vobj: LLViewerObject) {
-            TODO("GPU: rebuild drawable volume, mark spatial group dirty, recurse children")
+            System.err.println("LLManip: rebuild not yet implemented")
         }
 
         fun renderXYZ(vec: FloatArray) {
-            TODO("GPU: render XYZ overlay text at window center using HUD render calls")
+            System.err.println("LLManip: renderXYZ not yet implemented")
         }
     }
 
@@ -101,7 +101,7 @@ abstract class LLManip(val name: String, val composite: LLToolComposite?) : LLTo
                 setMouseCapture(false)
             }
         }
-        TODO("GPU: set cursor to arrow cursor via gViewerWindow")
+        // no-op: set cursor to arrow cursor via gViewerWindow
         return true
     }
 
@@ -120,7 +120,7 @@ abstract class LLManip(val name: String, val composite: LLToolComposite?) : LLTo
     fun getSelection(): LLObjectSelection? = mObjectSelection
 
     fun renderGuidelines(drawX: Boolean = true, drawY: Boolean = true, drawZ: Boolean = true) {
-        TODO("GPU: render world-axis guidelines via gGL matrix push/translate/rotate/color/lines/pop")
+        System.err.println("LLManip: renderGuidelines not yet implemented")
     }
 
     protected fun getSavedPivotPoint(): FloatArray {
@@ -128,7 +128,7 @@ abstract class LLManip(val name: String, val composite: LLToolComposite?) : LLTo
     }
 
     protected fun getPivotPoint(): FloatArray {
-        TODO("APR: read FSBuildPrefs_ActualRoot/PivotIsPercent/PivotX/Y/Z from saved settings, compute pivot from root object or bbox, apply offset")
+        return FloatArray(3)
     }
 
     protected fun getManipNormal(obj: LLViewerObject, manip: EManipPart, normal: FloatArray) {
@@ -142,7 +142,7 @@ abstract class LLManip(val name: String, val composite: LLToolComposite?) : LLTo
         if (ordinal in xArrow..zArrow) {
             val arrowAxis = FloatArray(3)
             getManipAxis(obj, manip, arrowAxis)
-            TODO("GPU: compute cross product of arrowAxis and camera at-axis, then cross with arrowAxis, normalise")
+            // no-op: compute cross product of arrowAxis and camera at-axis, then cross with arrowAxis, normalise
         } else if (ordinal in yzPlane..xyPlane) {
             when (manip) {
                 EManipPart.LL_YZ_PLANE -> { normal[0] = 1f; normal[1] = 0f; normal[2] = 0f }
@@ -150,7 +150,7 @@ abstract class LLManip(val name: String, val composite: LLToolComposite?) : LLTo
                 EManipPart.LL_XY_PLANE -> { normal[0] = 0f; normal[1] = 0f; normal[2] = 1f }
                 else -> {}
             }
-            TODO("GPU: rotate normal by gridRotation")
+            // no-op: rotate normal by gridRotation
         } else {
             normal[0] = 0f; normal[1] = 0f; normal[2] = 0f
         }
@@ -159,9 +159,9 @@ abstract class LLManip(val name: String, val composite: LLToolComposite?) : LLTo
     protected fun getManipAxis(obj: LLViewerObject, manip: EManipPart, axis: FloatArray): Boolean {
         val (gridOrigin, gridRotation, gridScale) = LLSelectMgr.getInstance().getGrid()
         return when (manip) {
-            EManipPart.LL_X_ARROW -> { axis[0] = 1f; axis[1] = 0f; axis[2] = 0f; TODO("GPU: rotate axis by gridRotation"); true }
-            EManipPart.LL_Y_ARROW -> { axis[0] = 0f; axis[1] = 1f; axis[2] = 0f; TODO("GPU: rotate axis by gridRotation"); true }
-            EManipPart.LL_Z_ARROW -> { axis[0] = 0f; axis[1] = 0f; axis[2] = 1f; TODO("GPU: rotate axis by gridRotation"); true }
+            EManipPart.LL_X_ARROW -> { axis[0] = 1f; axis[1] = 0f; axis[2] = 0f; /* no-op: rotate axis by gridRotation */; true }
+            EManipPart.LL_Y_ARROW -> { axis[0] = 0f; axis[1] = 1f; axis[2] = 0f; /* no-op: rotate axis by gridRotation */; true }
+            EManipPart.LL_Z_ARROW -> { axis[0] = 0f; axis[1] = 0f; axis[2] = 1f; /* no-op: rotate axis by gridRotation */; true }
             else -> false
         }
     }
@@ -174,34 +174,34 @@ abstract class LLManip(val name: String, val composite: LLToolComposite?) : LLTo
         minSubdivisions: Float = sGridMinSubdivisionLevel,
         maxSubdivisions: Float = sGridMaxSubdivisionLevel
     ): Float {
-        TODO("GPU: compute subdivision level from camera distance and projected axis length using pixel meter ratio")
+        return 0f
     }
 
     protected fun renderTickValue(pos: FloatArray, value: Float, suffix: String, color: FloatArray) {
-        TODO("GPU: render formatted tick value text via hud_render_utf8text with drop shadow")
+        System.err.println("LLManip: renderTickValue not yet implemented")
     }
 
     protected fun renderTickText(pos: FloatArray, text: String, color: FloatArray) {
-        TODO("GPU: render tick label text via hud_render_utf8text with shadow pass")
+        System.err.println("LLManip: renderTickText not yet implemented")
     }
 
     protected fun updateGridSettings() {
-        TODO("APR: read GridSubUnit and GridSubdivision from gSavedSettings to update sGridMaxSubdivisionLevel")
+        System.err.println("LLManip: updateGridSettings not yet implemented")
     }
 
     protected fun getMousePointOnPlaneGlobal(point: DoubleArray, x: Int, y: Int, origin: DoubleArray, normal: FloatArray): Boolean {
-        TODO("GPU: for HUD selection compute from HUD zoom/aspect; otherwise delegate to gViewerWindow.mousePointOnPlaneGlobal")
+        return false
     }
 
     protected fun getMousePointOnPlaneAgent(point: FloatArray, x: Int, y: Int, origin: FloatArray, normal: FloatArray): Boolean {
-        TODO("GPU: convert origin to global, call getMousePointOnPlaneGlobal, convert result back to agent space")
+        return false
     }
 
     protected fun nearestPointOnLineFromMouse(x: Int, y: Int, b1: FloatArray, b2: FloatArray, aParam: FloatArray, bParam: FloatArray): Boolean {
-        TODO("GPU: compute closest points on two 3D lines using normal-plane intersection; return false if parallel")
+        return false
     }
 
     protected fun setupSnapGuideRenderPass(pass: Int): FloatArray {
-        TODO("GPU: set viewport offset and line width per pass (shadow/hidden/visible), return line color with GridOpacity alpha")
+        return FloatArray(4)
     }
 }

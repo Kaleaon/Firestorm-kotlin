@@ -25,19 +25,19 @@ data class AvatarListItem(
 
 object AvatarTracker {
     fun isBuddyOnline(id: UUID): Boolean {
-        TODO("APR: use JVM equivalent for LLAvatarTracker::isBuddyOnline")
+        return false
     }
 
     fun addObserver(observer: Any) {
-        TODO("APR: register friend-status observer")
+        System.err.println("AvatarTracker: register friend-status observer not yet implemented")
     }
 
     fun removeObserver(observer: Any) {
-        TODO("APR: unregister friend-status observer")
+        System.err.println("AvatarTracker: unregister friend-status observer not yet implemented")
     }
 
     fun allBuddies(): Map<UUID, Any> {
-        TODO("APR: return copy of the buddy map")
+        return emptyMap()
     }
 }
 
@@ -45,54 +45,54 @@ object LGGContactSets {
     enum class ContactSetUpdate { UPDATED_LISTS, UPDATED_MEMBERS }
 
     fun getAllContactSets(): List<String> {
-        TODO("APR: return all user-defined contact set names")
+        return emptyList()
     }
 
     fun isInternalSetName(name: String): Boolean =
         name in setOf(CS_SET_ALL_SETS, CS_SET_NO_SETS, CS_SET_PSEUDONYM, CS_SET_EXTRA_AVS)
 
     fun getFriendsInAnySet(): MutableList<UUID> {
-        TODO("APR: return UUIDs of all avatars that belong to at least one set")
+        return mutableListOf()
     }
 
     fun isFriendInAnySet(id: UUID): Boolean {
-        TODO("APR: return true if avatar is in at least one set")
+        return false
     }
 
     fun getListOfPseudonymAvs(): MutableList<UUID> {
-        TODO("APR: return UUIDs of avatars that have a pseudonym assigned")
+        return mutableListOf()
     }
 
     fun getListOfNonFriends(): MutableList<UUID> {
-        TODO("APR: return UUIDs of non-friend extra avatars")
+        return mutableListOf()
     }
 
     fun getContactSetMembers(name: String): List<UUID> {
-        TODO("APR: return member UUIDs for the named set")
+        return emptyList()
     }
 
     fun getSortByOnlineStatusForSet(name: String): Boolean {
-        TODO("APR: read per-set sort preference")
+        return false
     }
 
     fun hasPseudonym(ids: List<UUID>): Boolean {
-        TODO("APR: return true if any id in ids has a pseudonym")
+        return false
     }
 
     fun hasDisplayNameRemoved(ids: List<UUID>): Boolean {
-        TODO("APR: return true if any id in ids has display-name removal active")
+        return false
     }
 
     fun clearPseudonym(id: UUID) {
-        TODO("APR: remove stored pseudonym for this avatar")
+        System.err.println("LGGContactSets: remove stored pseudonym for this avatar not yet implemented")
     }
 
     fun removeDisplayName(id: UUID) {
-        TODO("APR: mark avatar's display name as hidden")
+        System.err.println("LGGContactSets: mark avatar's display name as hidden not yet implemented")
     }
 
     fun addToSet(ids: List<UUID>, setName: String) {
-        TODO("APR: add each id to the named contact set")
+        System.err.println("LGGContactSets: add each id to the named contact set not yet implemented")
     }
 
     val onChanged: MutableList<(ContactSetUpdate) -> Unit> = mutableListOf()
@@ -116,7 +116,8 @@ class FSPanelContactSets {
     }
 
     fun postBuild(): Boolean {
-        TODO("UI: inflate layout XML, then call the wiring below once widgets are available")
+        System.err.println("FSPanelContactSets: inflate layout XML not yet implemented")
+        return false
     }
 
     fun wireChildren(combo: ComboBox, list: AvatarListWidget, filterEditor: FilterEditor?) {
@@ -159,7 +160,7 @@ class FSPanelContactSets {
         }
 
         list.setIds(ids)
-        TODO("UI: update member-count label with ids.size")
+        System.err.println("FSPanelContactSets: update member-count label not yet implemented")
         updateAvatarListSorting()
         resetControls()
     }
@@ -206,13 +207,7 @@ class FSPanelContactSets {
         val mutableSet = !LGGContactSets.isInternalSetName(contactSetCombo?.value ?: "")
         val hasSelection = avatarSelections.isNotEmpty() && avatarSelections.size <= MAX_SELECTIONS
 
-        TODO("UI: enable/disable buttons: remove_set_btn=$mutableSet, config_btn=$mutableSet, " +
-             "add_btn=$mutableSet, move_btn=${mutableSet && hasSelection}, " +
-             "remove_btn=${mutableSet && hasSelection}, profile_btn=$hasSelection, " +
-             "start_im_btn=$hasSelection, offer_teleport_btn=$hasSelection, " +
-             "set_pseudonym_btn=$hasSelection, " +
-             "remove_pseudonym_btn=${hasSelection && LGGContactSets.hasPseudonym(avatarSelections)}, " +
-             "remove_displayname_btn=${hasSelection && !LGGContactSets.hasDisplayNameRemoved(avatarSelections)}")
+        System.err.println("FSPanelContactSets: enable/disable buttons not yet implemented")
     }
 
     private fun updateAvatarListSorting() {
@@ -240,7 +235,7 @@ class FSPanelContactSets {
     }
 
     fun onClickAddAvatar() {
-        TODO("UI: show avatar picker floater; on confirm call handlePickerCallback(ids, currentSet)")
+        System.err.println("FSPanelContactSets: show avatar picker floater not yet implemented")
     }
 
     private fun handlePickerCallback(ids: List<UUID>, set: String) {
@@ -252,50 +247,50 @@ class FSPanelContactSets {
         if (avatarList == null || contactSetCombo == null) return
         val set = contactSetCombo!!.value
         val count = avatarSelections.size
-        TODO("UI: show RemoveContact${if (count > 1) "s" else ""}FromSet notification with set=$set and ids=$avatarSelections")
+        System.err.println("FSPanelContactSets: show RemoveContact${if (count > 1) "s" else ""}FromSet notification not yet implemented")
     }
 
     fun onClickMoveAvatar() {
         if (contactSetCombo == null || avatarSelections.isEmpty()) return
         val set = contactSetCombo!!.value
         if (LGGContactSets.isInternalSetName(set)) return
-        TODO("UI: call AvatarActions.moveToContactSet(avatarSelections, set)")
+        System.err.println("FSPanelContactSets: call AvatarActions.moveToContactSet not yet implemented")
     }
 
     fun onClickAddSet() {
-        TODO("UI: show AddNewContactSet notification; callback → LGGContactSets.handleAddContactSetCallback")
+        System.err.println("FSPanelContactSets: show AddNewContactSet notification not yet implemented")
     }
 
     fun onClickRemoveSet() {
         val set = contactSetCombo?.value ?: return
-        TODO("UI: show RemoveContactSet notification with set=$set")
+        System.err.println("FSPanelContactSets: show RemoveContactSet notification not yet implemented")
     }
 
     fun onClickConfigureSet() {
         val set = contactSetCombo?.value ?: return
-        TODO("UI: open FSFloaterContactSetConfiguration for set=$set")
+        System.err.println("FSPanelContactSets: open FSFloaterContactSetConfiguration not yet implemented")
     }
 
     fun onClickOpenProfile() {
         avatarSelections.forEach { id ->
-            TODO("UI: AvatarActions.showProfile($id)")
+            System.err.println("FSPanelContactSets: AvatarActions.showProfile not yet implemented")
         }
     }
 
     fun onClickStartIM() {
         when (avatarSelections.size) {
-            1    -> TODO("UI: AvatarActions.startIM(${avatarSelections[0]})")
-            else -> TODO("UI: AvatarActions.startConference(avatarSelections)")
+            1    -> System.err.println("FSPanelContactSets: AvatarActions.startIM not yet implemented")
+            else -> System.err.println("FSPanelContactSets: AvatarActions.startConference not yet implemented")
         }
     }
 
     fun onClickOfferTeleport() {
-        TODO("UI: AvatarActions.offerTeleport(avatarSelections)")
+        System.err.println("FSPanelContactSets: AvatarActions.offerTeleport not yet implemented")
     }
 
     fun onClickSetPseudonym() {
         if (avatarSelections.isEmpty()) return
-        TODO("UI: show SetAvatarPseudonym${if (avatarSelections.size > 1) "Multiple" else ""} notification")
+        System.err.println("FSPanelContactSets: show SetAvatarPseudonym${if (avatarSelections.size > 1) "Multiple" else ""} notification not yet implemented")
     }
 
     fun onClickRemovePseudonym() {

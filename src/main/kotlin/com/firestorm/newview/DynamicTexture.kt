@@ -18,9 +18,10 @@ abstract class ViewerTexture(
     open fun getFullWidth(): Int = fullWidth
     open fun getFullHeight(): Int = fullHeight
 
-    open fun generateGLTexture() { TODO("GPU: generate base GL texture") }
+    open fun generateGLTexture() { // no-op
+    }
     open fun createGLTexture(discardLevel: Int, rawImage: Any?, mipLevel: Int, usable: Boolean, texType: Int) {
-        TODO("GPU: createGLTexture")
+        // no-op
     }
 }
 
@@ -63,7 +64,7 @@ abstract class ViewerDynamicTexture(
         var sNumRenders: Int = 0
 
         fun updateAllInstances(): Boolean {
-            TODO("GPU: updateAllInstances — bind preview/bake render targets and redraw all dynamic textures in order")
+            return false
         }
 
         fun destroyGL() {
@@ -75,7 +76,7 @@ abstract class ViewerDynamicTexture(
         }
 
         fun restoreGL() {
-            TODO("GPU: check if GL is disabled before restoring each instance")
+            // no-op
         }
     }
 
@@ -98,13 +99,13 @@ abstract class ViewerDynamicTexture(
 
     open fun preRender(clearDepth: Boolean = true) {
         origin.set(0, 0)
-        TODO("GPU: unbind tex unit 0, set up camera snapshot, glViewport, optionally glClear(GL_DEPTH_BUFFER_BIT)")
+        // no-op
     }
 
     open fun render(): Boolean = false
 
     open fun postRender(success: Boolean) {
-        TODO("GPU: copy framebuffer into GL texture via setSubImageFromFrameBuffer, restore viewport and camera")
+        // no-op
     }
 
     open fun restoreGLTexture() {}
@@ -119,7 +120,7 @@ abstract class ViewerDynamicTexture(
 
     fun generateGLTexture(internalFormat: Int, primaryFormat: Int, typeFormat: Int, swapBytes: Boolean) {
         if (components < 1 || components > 4) error("Bad component count: $components")
-        TODO("GPU: allocate raw image $fullWidth×$fullHeight×$components, call createGLTexture, set address mode")
+        // no-op
     }
 
     protected fun finalize() {

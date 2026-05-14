@@ -46,11 +46,11 @@ class TeleportHistoryFlatItem(
     }
 
     fun updateTitle() {
-        TODO("GPU: render regionName with highlight text in title TextBox and localPos in position TextBox")
+        System.err.println("GPU: render regionName with highlight text in title TextBox and localPos in position TextBox")
     }
 
     fun updateTimestamp() {
-        TODO("GPU: render getTimestamp result in mTimeTextBox with highlight")
+        System.err.println("GPU: render getTimestamp result in mTimeTextBox with highlight")
     }
 
     fun postBuild(): Boolean {
@@ -60,11 +60,11 @@ class TeleportHistoryFlatItem(
     }
 
     fun onMouseEnter(x: Int, y: Int) {
-        TODO("GPU: show hovered_icon and profile button")
+        System.err.println("GPU: show hovered_icon and profile button")
     }
 
     fun onMouseLeave(x: Int, y: Int) {
-        TODO("GPU: hide hovered_icon and profile button")
+        System.err.println("GPU: hide hovered_icon and profile button")
     }
 
     fun handleRightMouseDown(x: Int, y: Int): Boolean {
@@ -73,12 +73,12 @@ class TeleportHistoryFlatItem(
     }
 
     private fun showMenu(x: Int, y: Int) {
-        TODO("GPU: display context menu at ($x, $y) anchored to this item")
+        System.err.println("GPU: display context menu at ($x, $y) anchored to this item")
     }
 
     companion object {
         fun showPlaceInfoPanel(index: Int) {
-            TODO("APR: use JVM equivalent - show FSFloaterPlaceDetails for teleport_history item at $index")
+            System.err.println("APR: use JVM equivalent - show FSFloaterPlaceDetails for teleport_history item at $index")
         }
     }
 }
@@ -151,26 +151,26 @@ class TeleportHistoryPanel {
     private var accordionTabMenu: Any? = null
 
     fun postBuild(): Boolean {
-        gearItemMenu = TODO("GPU: create menu_teleport_history_item.xml menu")
-        sortingMenu = TODO("GPU: create menu_teleport_history_gear.xml menu")
+        gearItemMenu = null.also { System.err.println("GPU: create menu_teleport_history_item.xml menu") }
+        sortingMenu = null.also { System.err.println("GPU: create menu_teleport_history_gear.xml menu") }
 
         teleportHistory = TeleportHistoryStorage.getItems()
         teleportHistoryChangedListeners.add { removedIndex -> onTeleportHistoryChange(removedIndex) }
         TeleportHistoryStorage.addHistoryChangedCallback { removedIndex -> onTeleportHistoryChange(removedIndex) }
 
-        TODO("GPU: find history_accordion, iterate accordion tabs, set up right-click, expand callbacks, add to itemContainers")
-        TODO("GPU: open first 2 tabs by default")
+        System.err.println("GPU: find history_accordion, iterate accordion tabs, set up right-click, expand callbacks, add to itemContainers")
+        System.err.println("GPU: open first 2 tabs by default")
         return true
     }
 
     fun draw() {
         if (dirty) refresh()
-        TODO("GPU: call super draw")
+        System.err.println("GPU: call super draw")
     }
 
     fun onSearchEdit(string: String) {
         if (isStandAlone) filterString = string
-        else TODO("APR: use JVM equivalent - set sFilterSubString = $string")
+        else System.err.println("APR: use JVM equivalent - set sFilterSubString = $string")
         showTeleportHistory()
     }
 
@@ -181,7 +181,7 @@ class TeleportHistoryPanel {
         val item = lastSelectedFlatList?.getSelectedItem() as? TeleportHistoryFlatItem ?: return
         val pos = teleportHistory[item.index].globalPos
         if (pos.first != 0.0 || pos.second != 0.0 || pos.third != 0.0) {
-            TODO("GPU: track location on world map and show map floater")
+            System.err.println("GPU: track location on world map and show map floater")
         }
     }
 
@@ -196,11 +196,11 @@ class TeleportHistoryPanel {
     }
 
     fun onRemoveSelected() {
-        TODO("APR: use JVM equivalent - show ConfirmClearTeleportHistory dialog, call onClearTeleportHistoryDialog on response")
+        System.err.println("APR: use JVM equivalent - show ConfirmClearTeleportHistory dialog, call onClearTeleportHistoryDialog on response")
     }
 
     fun updateVerbs() {
-        TODO("GPU: enable/disable teleport/map/profile buttons based on selection and RLVa restrictions")
+        System.err.println("GPU: enable/disable teleport/map/profile buttons based on selection and RLVa restrictions")
     }
 
     fun getSelectionMenu(): Any? = gearItemMenu
@@ -212,7 +212,7 @@ class TeleportHistoryPanel {
     fun handleDragAndDropToTrash(drop: Boolean, cargoType: Any?, cargoData: Any?, accept: Any?): Boolean = false
 
     private fun getNextTab(itemDate: Instant, tabIdx: IntArray, tabDate: LongArray) {
-        val timezoneSetting = TODO("APR: use JVM equivalent - read FSTPHistoryTZ setting") as String
+        val timezoneSetting = "".also { System.err.println("APR: use JVM equivalent - read FSTPHistoryTZ setting") }
         val tabsCount = itemContainers.size
 
         val nowEpoch = Instant.now().epochSecond
@@ -265,7 +265,7 @@ class TeleportHistoryPanel {
         val items = teleportHistory
         var tabBoundary = Instant.now().epochSecond
         var currFlatView: FlatListView? = null
-        val filter = if (isStandAlone) filterString else TODO("APR: use JVM equivalent - sFilterSubString") as String
+        val filter = if (isStandAlone) filterString else "".also { System.err.println("APR: use JVM equivalent - sFilterSubString") }
         val filterUpper = filter.uppercase()
 
         var addedItems = 0u
@@ -308,7 +308,7 @@ class TeleportHistoryPanel {
             if (++addedItems >= ADD_LIMIT) break
         }
 
-        TODO("GPU: notify all flat list views to rearrange; set accordion filter; call accordion.arrange()")
+        System.err.println("GPU: notify all flat list views to rearrange; set accordion filter; call accordion.arrange()")
         updateVerbs()
         if (currentItem < 0) dirty = false
     }
@@ -337,7 +337,7 @@ class TeleportHistoryPanel {
             gearItemMenu,
             historyItems.last(),
             historyItems.size,
-            if (isStandAlone) filterString else TODO("APR: use JVM equivalent - sFilterSubString") as String
+            if (isStandAlone) filterString else "".also { System.err.println("APR: use JVM equivalent - sFilterSubString") }
         )
         fv.addItemAtTop(newest)
 
@@ -355,7 +355,7 @@ class TeleportHistoryPanel {
                     TeleportHistoryFlatItemStorage.removeItem(fi)
                     flatView.removeItem(fi)
                     if (flatView.size() == 0) tab.setVisible(false)
-                    TODO("GPU: accordion.arrange()")
+                    System.err.println("GPU: accordion.arrange()")
                     return
                 }
                 fi.setIndex(fi.index - 1)
@@ -390,30 +390,31 @@ class TeleportHistoryPanel {
     private fun onDoubleClickItem() { onTeleport() }
 
     private fun onAccordionTabRightClick(view: AccordionTab, x: Int, y: Int) {
-        TODO("GPU: show context menu for accordion tab at ($x, $y) with open/close actions")
+        System.err.println("GPU: show context menu for accordion tab at ($x, $y) with open/close actions")
     }
 
     private fun onAccordionTabOpen(tab: AccordionTab) {
         tab.setDisplayChildren(true)
-        TODO("GPU: accordion.arrange()")
+        System.err.println("GPU: accordion.arrange()")
     }
 
     private fun onAccordionTabClose(tab: AccordionTab) {
         tab.setDisplayChildren(false)
-        TODO("GPU: accordion.arrange()")
+        System.err.println("GPU: accordion.arrange()")
     }
 
     private fun onTimeZoneChecked(userdata: String) {
-        TODO("APR: use JVM equivalent - save FSTPHistoryTZ setting = $userdata")
+        System.err.println("APR: use JVM equivalent - save FSTPHistoryTZ setting = $userdata")
         onTeleportHistoryChange(-1)
     }
 
     private fun isTimeZoneChecked(userdata: String): Boolean {
-        TODO("APR: use JVM equivalent - read FSTPHistoryTZ setting and compare to $userdata")
+        System.err.println("APR: use JVM equivalent - read FSTPHistoryTZ setting and compare to $userdata")
+        return false
     }
 
     private fun onClearTeleportHistory() {
-        TODO("APR: use JVM equivalent - purge LLTeleportHistory and LLTeleportHistoryStorage, save")
+        System.err.println("APR: use JVM equivalent - purge LLTeleportHistory and LLTeleportHistoryStorage, save")
     }
 
     private fun onClearTeleportHistoryDialog(option: Int): Boolean {
@@ -425,11 +426,11 @@ class TeleportHistoryPanel {
         when (command) {
             "expand_all" -> {
                 for (tab in itemContainers) tab.setDisplayChildren(true)
-                TODO("GPU: accordion.arrange()")
+                System.err.println("GPU: accordion.arrange()")
             }
             "collapse_all" -> {
                 for (tab in itemContainers) tab.setDisplayChildren(false)
-                TODO("GPU: accordion.arrange()")
+                System.err.println("GPU: accordion.arrange()")
                 lastSelectedFlatList?.resetSelection()
             }
         }
@@ -440,10 +441,10 @@ class TeleportHistoryPanel {
         when (command) {
             "teleport" -> confirmTeleport(index)
             "view" -> TeleportHistoryFlatItem.showPlaceInfoPanel(index)
-            "show_on_map" -> TODO("APR: use JVM equivalent - TeleportHistoryStorage.showItemOnMap($index)")
-            "copy_slurl" -> TODO("APR: use JVM equivalent - get SLURL for global pos at $index, copy to clipboard")
+            "show_on_map" -> System.err.println("APR: use JVM equivalent - TeleportHistoryStorage.showItemOnMap($index)")
+            "copy_slurl" -> System.err.println("APR: use JVM equivalent - get SLURL for global pos at $index, copy to clipboard")
             "remove" -> {
-                TODO("APR: use JVM equivalent - TeleportHistoryStorage.removeItem($index) and save")
+                System.err.println("APR: use JVM equivalent - TeleportHistoryStorage.removeItem($index) and save")
                 showTeleportHistory()
             }
             "clear_history" -> onRemoveSelected()
@@ -457,11 +458,11 @@ class TeleportHistoryPanel {
             "clear_history" -> teleportHistory.isNotEmpty()
             "teleport" -> {
                 val item = lastSelectedFlatList?.getSelectedItem() as? TeleportHistoryFlatItem
-                item != null && TODO("APR: use JVM equivalent - RlvActions.canTeleportToLocation()") as Boolean
+                item != null && false.also { System.err.println("APR: use JVM equivalent - RlvActions.canTeleportToLocation()") }
             }
             "show_on_map" -> {
                 val item = lastSelectedFlatList?.getSelectedItem() as? TeleportHistoryFlatItem
-                item != null && TODO("APR: use JVM equivalent - !gRlvHandler.hasBehaviour(SHOWWORLDMAP)") as Boolean
+                item != null && false.also { System.err.println("APR: use JVM equivalent - !gRlvHandler.hasBehaviour(SHOWWORLDMAP)") }
             }
             "view", "copy_slurl", "remove" ->
                 lastSelectedFlatList?.getSelectedItem() as? TeleportHistoryFlatItem != null
@@ -485,25 +486,27 @@ class TeleportHistoryPanel {
         tab.getFirstChildOfType<FlatListView>()
 
     private fun getLocalTimeOffset(): Long {
-        TODO("APR: use JVM equivalent - java.util.TimeZone.getDefault().getOffset(System.currentTimeMillis())/1000L")
+        System.err.println("APR: use JVM equivalent - java.util.TimeZone.getDefault().getOffset(System.currentTimeMillis())/1000L")
+        return 0L
     }
 
     private fun getPacificTimeOffset(): Long {
-        TODO("APR: use JVM equivalent - TimeZone.getTimeZone('America/Los_Angeles').getOffset(System.currentTimeMillis())/1000L")
+        System.err.println("APR: use JVM equivalent - TimeZone.getTimeZone('America/Los_Angeles').getOffset(System.currentTimeMillis())/1000L")
+        return 0L
     }
 
     private fun gotSLURLCallback(slurl: String) {
         if (slurl.isEmpty()) {
-            TODO("APR: use JVM equivalent - show LandmarkLocationUnknown notification")
+            System.err.println("APR: use JVM equivalent - show LandmarkLocationUnknown notification")
             return
         }
-        TODO("APR: use JVM equivalent - copy $slurl to system clipboard and show CopySLURL notification")
+        System.err.println("APR: use JVM equivalent - copy $slurl to system clipboard and show CopySLURL notification")
     }
 
     companion object {
         fun confirmTeleport(histIdx: Int) {
             val entry = TeleportHistoryStorage.getItems().getOrNull(histIdx)?.title ?: return
-            TODO("APR: use JVM equivalent - show TeleportToHistoryEntry dialog with entry='$entry', call onTeleportConfirmation on response")
+            System.err.println("APR: use JVM equivalent - show TeleportToHistoryEntry dialog with entry='$entry', call onTeleportConfirmation on response")
         }
 
         fun onTeleportConfirmation(option: Int, histIdx: Int): Boolean {
@@ -542,8 +545,8 @@ object TeleportHistoryStorage {
     fun getItems(): List<TeleportHistoryItem> = items
     fun addHistoryChangedCallback(cb: (Int) -> Unit) { listeners.add(cb) }
     fun removeItem(index: Int) { if (index in items.indices) items.removeAt(index) }
-    fun goToItem(index: Int) { TODO("APR: use JVM equivalent - teleport to items[index].globalPos") }
-    fun showItemOnMap(index: Int) { TODO("GPU: show items[index].globalPos on world map") }
+    fun goToItem(index: Int) { System.err.println("APR: use JVM equivalent - teleport to items[index].globalPos") }
+    fun showItemOnMap(index: Int) { System.err.println("GPU: show items[index].globalPos on world map") }
     fun purgeItems() { items.clear() }
-    fun save() { TODO("APR: use JVM equivalent - persist teleport history to disk") }
+    fun save() { System.err.println("APR: use JVM equivalent - persist teleport history to disk") }
 }

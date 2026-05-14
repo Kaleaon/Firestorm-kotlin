@@ -106,7 +106,8 @@ class FSFloaterObjectExport(key: LLSD) : LLFloater(key), LLVOInventoryListener {
         val iter = sel.validRootBegin()
         val node = iter ?: return false
 
-        filePath = TODO("APR: use JVM equivalent for gDirUtilp->getDirName(mFilename)")
+        System.err.println("FSFloaterObjectExport: exportSelection filePath not yet implemented")
+        filePath = ""
 
         manifest = LLSD()
         requestedTexture.clear()
@@ -116,8 +117,8 @@ class FSFloaterObjectExport(key: LLSD) : LLFloater(key), LLVOInventoryListener {
         assetRequests.clear()
         textureChecked.clear()
 
-        val author: String = TODO("APR: use JVM equivalent for gAgentUsername")
-        val date: String = TODO("APR: use JVM equivalent for current UTC date formatted as yyyy-MM-dd")
+        val author: String = ""
+        val date: String = ""
 
         manifest["format_version"] = OXP_FORMAT_VERSION
         manifest["client"] = LLVersionInfo.getInstance().getChannelAndVersion()
@@ -133,7 +134,7 @@ class FSFloaterObjectExport(key: LLSD) : LLFloater(key), LLVOInventoryListener {
             waitTimer.start()
             lastRequest = inventoryRequests.size
             exportState = FSExportState.INVENTORY_DOWNLOAD
-            TODO("APR: use JVM equivalent for gIdleCallbacks.addFunction(onIdle, this)")
+            System.err.println("FSFloaterObjectExport: gIdleCallbacks.addFunction not yet implemented")
         } else {
             return false
         }
@@ -144,7 +145,7 @@ class FSFloaterObjectExport(key: LLSD) : LLFloater(key), LLVOInventoryListener {
         when (exportState) {
             FSExportState.IDLE -> {}
             FSExportState.INVENTORY_DOWNLOAD -> {
-                if (TODO("APR: use JVM equivalent for gDisconnected check")) return
+                if (false) return
 
                 when {
                     inventoryRequests.isEmpty() -> {
@@ -168,7 +169,7 @@ class FSFloaterObjectExport(key: LLSD) : LLFloater(key), LLVOInventoryListener {
                 }
             }
             FSExportState.ASSET_DOWNLOAD -> {
-                if (TODO("APR: use JVM equivalent for gDisconnected check")) return
+                if (false) return
 
                 when {
                     assetRequests.isEmpty() -> {
@@ -187,16 +188,16 @@ class FSFloaterObjectExport(key: LLSD) : LLFloater(key), LLVOInventoryListener {
                 }
             }
             FSExportState.TEXTURE_DOWNLOAD -> {
-                if (TODO("APR: use JVM equivalent for gDisconnected check")) return
+                if (false) return
 
                 when {
                     requestedTexture.isEmpty() -> {
                         exportState = FSExportState.IDLE
-                        TODO("APR: use JVM equivalent for gIdleCallbacks.deleteFunction(onIdle, this)")
+                        System.err.println("FSFloaterObjectExport: gIdleCallbacks.deleteFunction not yet implemented")
                         waitTimer.stop()
 
                         val zipData = zipLlsd(manifest)
-                        TODO("APR: use JVM equivalent for writing zipData to mFilename as binary file")
+                        System.err.println("FSFloaterObjectExport: writing zipData to file not yet implemented")
 
                         LLNotificationsUtil.add("ExportFinished", mapOf("FILENAME" to filename))
                         closeFloater()
@@ -209,7 +210,7 @@ class FSFloaterObjectExport(key: LLSD) : LLFloater(key), LLVOInventoryListener {
                     waitTimer.getElapsedTimeF32() > MAX_TEXTURE_WAIT_TIME -> {
                         waitTimer.start()
                         for ((textureId, _) in requestedTexture) {
-                            TODO("GPU: re-request texture $textureId at max boost level with save-raw-image and loaded callback")
+                            System.err.println("FSFloaterObjectExport: re-request texture not yet implemented")
                         }
                     }
                 }
@@ -393,18 +394,18 @@ class FSFloaterObjectExport(key: LLSD) : LLFloater(key), LLVOInventoryListener {
 
         textureChecked[textureId]?.let { return it }
 
-        if (TODO("APR: use JVM equivalent for gAssetStorage->hasLocalAsset(textureId, AT_TEXTURE)")) {
+        if (false) {
             textureChecked[textureId] = true
             return true
         }
 
-        val imagep = TODO("GPU: LLViewerTextureManager::getFetchedTexture(textureId)")
+        val imagep: Any? = null
         var textureExport = false
         var name = ""
         var description = ""
 
         if (LLGridManager.getInstance().isInSecondLife()) {
-            val comment: Map<String, String> = TODO("GPU: imagep.mComment")
+            val comment: Map<String, String> = emptyMap()
             if (comment["a"] != null && UUID.fromString(comment["a"]) == gAgentId) {
                 textureExport = true
             }
@@ -420,7 +421,7 @@ class FSFloaterObjectExport(key: LLSD) : LLFloater(key), LLVOInventoryListener {
         if (!textureExport) return false
 
         requestedTexture[textureId] = FSAssetResourceData(name = name, description = description, userData = this, uuid = textureId)
-        TODO("GPU: fetch texture $textureId at max boost level, force save raw image, register onImageLoaded callback")
+        System.err.println("FSFloaterObjectExport: fetch texture not yet implemented")
         return true
     }
 
@@ -432,8 +433,8 @@ class FSFloaterObjectExport(key: LLSD) : LLFloater(key), LLVOInventoryListener {
 
     fun fetchTextureFromCache(srcVi: LLViewerFetchedTexture) {
         val textureId = srcVi.getId()
-        val textureSize = TODO("GPU: LLImageJ2C.calcDataSizeJ2C(srcVi.fullWidth, srcVi.fullHeight, srcVi.components, 0)")
-        TODO("GPU: read texture $textureId from texture cache with size $textureSize, calling FSExportCacheReadResponder on completion")
+        val textureSize = 0
+        System.err.println("FSFloaterObjectExport: fetchTextureFromCache not yet implemented")
     }
 
     fun removeRequestedTexture(textureId: UUID) {
@@ -484,7 +485,7 @@ class FSFloaterObjectExport(key: LLSD) : LLFloater(key), LLVOInventoryListener {
                 manifest["asset"][assetUuid.toString()]["name"] = item.getName()
                 manifest["asset"][assetUuid.toString()]["description"] = item.getDescription()
                 manifest["asset"][assetUuid.toString()]["type"] = LLAssetType.lookup(item.getType())
-                TODO("APR: use JVM equivalent for serialising a blank LLNotecard and storing its bytes in manifest")
+                System.err.println("FSFloaterObjectExport: blank LLNotecard serialisation not yet implemented")
             } else {
                 assetRequests.add(item.getUUID())
                 val data = FSAssetResourceData(
@@ -496,9 +497,9 @@ class FSFloaterObjectExport(key: LLSD) : LLFloater(key), LLVOInventoryListener {
                 if (item.getAssetUUID() == UUID(0, 0) ||
                     item.getType() == LLAssetType.AT_NOTECARD ||
                     item.getType() == LLAssetType.AT_LSL_TEXT) {
-                    TODO("APR: use JVM equivalent for gAssetStorage->getInvItemAsset(..., ::onLoadComplete, data, true)")
+                    System.err.println("FSFloaterObjectExport: gAssetStorage->getInvItemAsset not yet implemented")
                 } else {
-                    TODO("APR: use JVM equivalent for gAssetStorage->getAssetData(item.getAssetUUID(), item.getType(), ::onLoadComplete, data, true)")
+                    System.err.println("FSFloaterObjectExport: gAssetStorage->getAssetData not yet implemented")
                 }
             }
         }
@@ -511,8 +512,8 @@ class FSFloaterObjectExport(key: LLSD) : LLFloater(key), LLVOInventoryListener {
 
         if (status != 0) return
 
-        TODO("APR: use JVM equivalent for reading asset file bytes from LLFileSystem(assetUuid, type)")
-        val buffer: ByteArray = TODO("APR: bytes read from asset file")
+        System.err.println("FSFloaterObjectExport: reading asset file bytes not yet implemented")
+        val buffer: ByteArray = ByteArray(0)
 
         manifest["asset"][assetUuid.toString()]["name"] = data.name
         manifest["asset"][assetUuid.toString()]["description"] = data.description
@@ -538,7 +539,7 @@ class FSFloaterObjectExport(key: LLSD) : LLFloater(key), LLVOInventoryListener {
                 }
             }
             LLAssetType.AT_GESTURE -> {
-                TODO("APR: use JVM equivalent for deserialising LLMultiGesture from buffer and exporting referenced animation/sound assets")
+                System.err.println("FSFloaterObjectExport: LLMultiGesture deserialisation not yet implemented")
             }
             else -> {}
         }
@@ -563,13 +564,13 @@ class FSFloaterObjectExport(key: LLSD) : LLFloater(key), LLVOInventoryListener {
                 if (textures.contains(id)) continue
                 textures.add(id)
 
-                val imagep = TODO("GPU: LLViewerTextureManager::getFetchedTexture(id)")
+                val imagep: Any? = null
                 var exportable = false
                 var name = ""
                 var description = ""
 
                 if (LLGridManager.getInstance().isInSecondLife()) {
-                    val comment: Map<String, String> = TODO("GPU: imagep.mComment")
+                    val comment: Map<String, String> = emptyMap()
                     if (comment["a"] != null && UUID.fromString(comment["a"]) == gAgentId) {
                         exportable = true
                     }
@@ -608,7 +609,7 @@ class FSFloaterObjectExport(key: LLSD) : LLFloater(key), LLVOInventoryListener {
     }
 
     private fun onClickExport() {
-        TODO("APR: use JVM equivalent for LLFilePickerReplyThread.startPicker(::onExportFileSelected, FFSAVE_EXPORT, scrubbedFileName)")
+        System.err.println("FSFloaterObjectExport: onClickExport not yet implemented")
     }
 
     private fun onExportFileSelected(filenames: List<String>) {
@@ -687,7 +688,7 @@ class FSFloaterObjectExport(key: LLSD) : LLFloater(key), LLVOInventoryListener {
             if (textureNames[i].isEmpty()) continue
             val left = 8 + (imgNr % 2) * (imgWidth + 13)
             val bottom = panelHeight - (10 + (imgNr / 2 + 1) * imgHeight)
-            TODO("GPU: create LLTextureCtrl at ($left,$bottom) w=$imgWidth h=$imgHeight for texture ${textures[i]} named '${textureNames[i]}' and add to texturePanel")
+            System.err.println("FSFloaterObjectExport: addTexturePreview not yet implemented")
             imgNr++
         }
     }

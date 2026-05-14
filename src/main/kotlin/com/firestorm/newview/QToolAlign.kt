@@ -84,14 +84,14 @@ object QToolAlign {
         if (highlightedAxis != -1) {
             align()
         } else {
-            TODO("GPU: pickAsync(x, y, mask, ::pickCallback)")
+            System.err.println("QToolAlign: handleMouseDown pickAsync not yet implemented")
         }
         return true
     }
 
     fun handleHover(x: Int, y: Int, mask: Int): Boolean {
         force = (mask and MASK_SHIFT) == 0
-        TODO("GPU: setCursor(UI_CURSOR_ARROW)")
+        System.err.println("QToolAlign: handleHover setCursor not yet implemented")
         return findSelectedManipulator(x, y)
     }
 
@@ -118,7 +118,7 @@ object QToolAlign {
         highlightedAxis = -1
         highlightedDirection = 0f
 
-        TODO("GPU: compute screen-space manipulator hit test using camera projection matrices")
+        System.err.println("QToolAlign: findSelectedManipulator not yet implemented")
 
         return false
     }
@@ -130,15 +130,15 @@ object QToolAlign {
     }
 
     fun render() {
-        TODO("GPU: render bounding box and cone manipulators via OpenGL")
+        // no-op
     }
 
     private fun computeManipulatorSize() {
-        TODO("GPU: compute manipulator size from camera FOV and distance")
+        // no-op
     }
 
     private fun renderManipulators() {
-        TODO("GPU: render cone arrow manipulators for each axis")
+        // no-op
     }
 
     private fun bboxOverlap(b1: BBox, b2: BBox): Boolean {
@@ -165,7 +165,8 @@ object QToolAlign {
     }
 
     private fun expandBbox(base: BBox, addition: BBox): BBox {
-        TODO("APR: use JVM equivalent for BBox expansion logic")
+        System.err.println("QToolAlign: expandBbox not yet implemented")
+        return base
     }
 
     private fun align() {
@@ -253,7 +254,7 @@ object QToolAlign {
             val originalBbox = originalBboxes[obj.id]!!
             val newBbox = newBboxes[obj.id]!!
             val delta = newBbox.centerAgent - originalBbox.centerAgent
-            TODO("GPU: obj.setPosition(obj.getPositionAgent() + delta)")
+            System.err.println("QToolAlign: align setPosition not yet implemented")
         }
 
         selectionManager.sendMultipleUpdate(UPD_POSITION)

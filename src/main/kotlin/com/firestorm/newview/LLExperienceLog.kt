@@ -47,7 +47,7 @@ object LLExperienceLog {
 
     fun initialize() {
         loadEvents()
-        TODO("APR: register ExperienceEvent dispatch handler via JVM equivalent of gGenericDispatcher")
+        System.err.println("LLExperienceLog: initialize dispatch handler registration not yet implemented")
     }
 
     fun handleExperienceMessage(message: MutableMap<String, Any?>) {
@@ -101,16 +101,17 @@ object LLExperienceLog {
     }
 
     fun getFilename(): String {
-        TODO("APR: use JVM equivalent of gDirUtilp->getExpandedFilename(LL_PATH_PER_SL_ACCOUNT, \"experience_events.xml\")")
+        System.err.println("LLExperienceLog: getFilename not yet implemented")
+        return ""
     }
 
     fun notify(message: MutableMap<String, Any?>) {
         message["EventType"] = getPermissionString(message, "ExperiencePermission")
         val isAttachment = (message["IsAttachment"] as? Boolean) == true
         if (isAttachment) {
-            TODO("APR: LLNotificationsUtil::add(\"ExperienceEventAttachment\", message)")
+            System.err.println("LLExperienceLog: notify ExperienceEventAttachment not yet implemented")
         } else {
-            TODO("APR: LLNotificationsUtil::add(\"ExperienceEvent\", message)")
+            System.err.println("LLExperienceLog: notify ExperienceEvent not yet implemented")
         }
         message.remove("EventType")
     }
@@ -118,19 +119,20 @@ object LLExperienceLog {
     fun getPermissionString(message: MutableMap<String, Any?>, base: String): String {
         val permission = message["Permission"] as? Int
         if (permission != null) {
-            val key = "$base$permission"
-            TODO("APR: look up translated string for key \"$key\" via LLTrans equivalent")
+            System.err.println("LLExperienceLog: getPermissionString translation not yet implemented")
+            return ""
         }
-        TODO("APR: look up translated string for \"${base}Unknown\" via LLTrans equivalent")
+        System.err.println("LLExperienceLog: getPermissionString unknown-permission translation not yet implemented")
+        return ""
     }
 
     protected fun loadEvents() {
-        TODO("APR: use JVM equivalent of llifstream + LLSDSerialize::fromXMLDocument to load experience_events.xml")
+        System.err.println("LLExperienceLog: loadEvents not yet implemented")
         // After loading, call eraseExpired() and assign eventsToSave = events
     }
 
     protected fun saveEvents() {
-        TODO("APR: use JVM equivalent of llofstream + LLSDSerialize::toPrettyXML to persist events, maxDays, notifyNewEvent, pageSize")
+        System.err.println("LLExperienceLog: saveEvents not yet implemented")
     }
 
     protected fun eraseExpired() {
@@ -157,7 +159,7 @@ class LLExperienceLogDispatchHandler {
 
         if (iter.hasNext()) {
             val llsdRaw = iter.next()
-            TODO("APR: deserialize LLSD from llsdRaw string into message map")
+            System.err.println("LLExperienceLogDispatchHandler: LLSD deserialization not yet implemented")
         }
 
         message["public_id"] = invoice

@@ -62,28 +62,28 @@ private object LLExperienceCache {
     const val PROPERTY_PRIVILEGED: Int = 0x08
 
     fun get(id: UUID, cb: (Map<String, Any?>) -> Unit) {
-        TODO("APR: use JVM equivalent for experience cache async get")
+        System.err.println("LLExperienceCache: get not yet implemented")
     }
     fun fetch(id: UUID, force: Boolean) {
-        TODO("APR: use JVM equivalent for experience cache fetch")
+        System.err.println("LLExperienceCache: fetch not yet implemented")
     }
     fun getExperienceAdmin(id: UUID, cb: (Map<String, Any?>) -> Unit) {
-        TODO("APR: use JVM equivalent for experience admin query")
+        System.err.println("LLExperienceCache: getExperienceAdmin not yet implemented")
     }
     fun getExperiencePermission(id: UUID, cb: (Map<String, Any?>) -> Unit) {
-        TODO("APR: use JVM equivalent for experience permission query")
+        System.err.println("LLExperienceCache: getExperiencePermission not yet implemented")
     }
     fun setExperiencePermission(id: UUID, perm: String, cb: (Map<String, Any?>) -> Unit) {
-        TODO("APR: use JVM equivalent for setting experience permission")
+        System.err.println("LLExperienceCache: setExperiencePermission not yet implemented")
     }
     fun forgetExperiencePermission(id: UUID, cb: (Map<String, Any?>) -> Unit) {
-        TODO("APR: use JVM equivalent for forgetting experience permission")
+        System.err.println("LLExperienceCache: forgetExperiencePermission not yet implemented")
     }
     fun updateExperience(pkg: Map<String, Any?>, cb: (Map<String, Any?>) -> Unit) {
-        TODO("APR: use JVM equivalent for updating experience via cap")
+        System.err.println("LLExperienceCache: updateExperience not yet implemented")
     }
     fun insert(experience: Map<String, Any?>) {
-        TODO("APR: use JVM equivalent for inserting into experience cache")
+        System.err.println("LLExperienceCache: insert not yet implemented")
     }
 }
 
@@ -93,47 +93,45 @@ private object EventPumps {
 
 private class EventPump(val name: String) {
     fun listen(listener: String, cb: (Map<String, Any?>) -> Boolean) {
-        TODO("APR: use JVM equivalent for event pump listener registration")
+        System.err.println("EventPump: listen not yet implemented")
     }
     fun stopListening(listener: String) {
-        TODO("APR: use JVM equivalent for removing event pump listener")
+        System.err.println("EventPump: stopListening not yet implemented")
     }
     fun post(data: Map<String, Any?>) {
-        TODO("APR: use JVM equivalent for event pump post")
+        System.err.println("EventPump: post not yet implemented")
     }
 }
 
 private object LLAgent {
-    fun getRegion(): LLRegionStub? = TODO("APR: use JVM equivalent for agent region")
-    fun getID(): UUID = TODO("APR: use JVM equivalent for agent UUID")
-    fun getPositionGlobal(): Any = TODO("APR: use JVM equivalent for agent global position")
+    fun getRegion(): LLRegionStub? = null
+    fun getID(): UUID = UUID.fromString("00000000-0000-0000-0000-000000000000")
+    fun getPositionGlobal(): Any = Any()
 }
 
 private class LLRegionStub {
-    fun getCapability(name: String): String = TODO("APR: use JVM equivalent for region capability URL")
-    fun getName(): String = TODO("APR: use JVM equivalent for region name")
-    fun getOriginGlobal(): Any = TODO("APR: use JVM equivalent for region origin")
+    fun getCapability(name: String): String = ""
+    fun getName(): String = ""
+    fun getOriginGlobal(): Any = Any()
 }
 
 private object LLTrans {
-    fun getString(key: String): String = TODO("APR: use JVM equivalent for localised string lookup")
+    fun getString(key: String): String = ""
 }
 
 private object LLNotificationsUtil {
     fun add(name: String, subs: Map<String, Any?> = emptyMap(), payload: Map<String, Any?> = emptyMap(),
             cb: ((Map<String, Any?>, Map<String, Any?>) -> Boolean)? = null) {
-        TODO("APR: use JVM equivalent for notification")
+        System.err.println("LLNotificationsUtil: add not yet implemented")
     }
-    fun getSelectedOption(notification: Map<String, Any?>, response: Map<String, Any?>): Int =
-        TODO("APR: use JVM equivalent for notification option index")
+    fun getSelectedOption(notification: Map<String, Any?>, response: Map<String, Any?>): Int = 0
 }
 
 private object LLFloaterReg {
     fun showInstance(name: String, key: Any, focus: Boolean = false) {
-        TODO("GPU: show floater instance $name")
+        System.err.println("LLFloaterReg: showInstance not yet implemented")
     }
-    fun showTypedInstance(name: String, key: Any): Any? =
-        TODO("GPU: show typed floater instance $name")
+    fun showTypedInstance(name: String, key: Any): Any? = null
 }
 
 // ---------------------------------------------------------------------------
@@ -174,31 +172,31 @@ class LLFloaterExperienceProfile(data: Map<String, Any?>) {
     }
 
     // Child widget helpers — resolved by the UI framework
-    private fun <T> getChild(name: String): T = TODO("GPU: getChild<$name>")
-    private fun <T> findChild(name: String): T? = TODO("GPU: findChild<$name>")
-    private fun childSetAction(name: String, cb: () -> Unit) = TODO("GPU: childSetAction($name)")
-    private fun childSetCommitCallback(name: String, cb: () -> Unit) = TODO("GPU: childSetCommitCallback($name)")
-    private fun closeFloater() = TODO("GPU: closeFloater()")
+    private fun <T> getChild(name: String): T = error("getChild not yet implemented")
+    private fun <T> findChild(name: String): T? = null
+    private fun childSetAction(name: String, cb: () -> Unit) {}
+    private fun childSetCommitCallback(name: String, cb: () -> Unit) {}
+    private fun closeFloater() {}
 
-    private fun getButtonVisible(name: String): Boolean = TODO("GPU: getChild<LLButton>($name).getVisible()")
-    private fun setButtonEnabled(name: String, enabled: Boolean) = TODO("GPU: getChild<LLButton>($name).setEnabled($enabled)")
-    private fun setButtonVisible(name: String, visible: Boolean) = TODO("GPU: getChild<LLButton>($name).setVisible($visible)")
+    private fun getButtonVisible(name: String): Boolean = false
+    private fun setButtonEnabled(name: String, enabled: Boolean) {}
+    private fun setButtonVisible(name: String, visible: Boolean) {}
     private fun setButtonEnabled(name: String, enabled: Boolean, @Suppress("UNUSED_PARAMETER") dummy: Unit = Unit) {}
-    private fun setPanelVisible(name: String, visible: Boolean) = TODO("GPU: getChild<LLLayoutPanel>($name).setVisible($visible)")
-    private fun setTextValue(name: String, text: String) = TODO("GPU: getChild<LLTextBox>($name).setText($text)")
-    private fun getTextValue(name: String): String = TODO("GPU: getChild<LLLineEditor>($name).getText()")
-    private fun getTextEditorValue(name: String): String = TODO("GPU: getChild<LLTextEditor>($name).getText()")
-    private fun getCheckValue(name: String): Boolean = TODO("GPU: getChild<LLCheckBoxCtrl>($name).get()")
-    private fun setCheckValue(name: String, value: Boolean) = TODO("GPU: getChild<LLCheckBoxCtrl>($name).set($value)")
-    private fun getComboSelectedIndex(name: String): Int = TODO("GPU: getChild<LLComboBox>($name).getSelectedValue().asInteger()")
-    private fun setComboSelectedIndex(name: String, index: Int) = TODO("GPU: getChild<LLComboBox>($name).setCurrentByIndex($index)")
-    private fun getTextureAssetId(name: String): UUID = TODO("GPU: getChild<LLTextureCtrl>($name).getImageAssetID()")
-    private fun setTextureAssetId(name: String, id: UUID) = TODO("GPU: getChild<LLTextureCtrl>($name).setImageAssetID($id)")
-    private fun getButtonSaveEnabled(): Boolean = TODO("GPU: getChild<LLButton>(BTN_SAVE).getEnabled()")
-    private fun setButtonSaveEnabled(enabled: Boolean) = TODO("GPU: getChild<LLButton>(BTN_SAVE).setEnabled($enabled)")
-    private fun getString(key: String): String = TODO("GPU: getString($key)")
-    private fun selectTab(name: String) = TODO("GPU: getChild<LLTabContainer>(\"tab_container\").selectTabByName($name)")
-    private fun abortQuit() = TODO("APR: use JVM equivalent for LLAppViewer::instance()->abortQuit()")
+    private fun setPanelVisible(name: String, visible: Boolean) {}
+    private fun setTextValue(name: String, text: String) {}
+    private fun getTextValue(name: String): String = ""
+    private fun getTextEditorValue(name: String): String = ""
+    private fun getCheckValue(name: String): Boolean = false
+    private fun setCheckValue(name: String, value: Boolean) {}
+    private fun getComboSelectedIndex(name: String): Int = 0
+    private fun setComboSelectedIndex(name: String, index: Int) {}
+    private fun getTextureAssetId(name: String): UUID = UUID.fromString("00000000-0000-0000-0000-000000000000")
+    private fun setTextureAssetId(name: String, id: UUID) {}
+    private fun getButtonSaveEnabled(): Boolean = false
+    private fun setButtonSaveEnabled(enabled: Boolean) {}
+    private fun getString(key: String): String = ""
+    private fun selectTab(name: String) {}
+    private fun abortQuit() {}
 
     fun matchesKey(key: Map<String, Any?>): Boolean {
         return when {
@@ -242,7 +240,7 @@ class LLFloaterExperienceProfile(data: Map<String, Any?>) {
         childSetAction(BTN_SET_GROUP)      { onPickGroup() }
         childSetAction(BTN_REPORT)         { onReportExperience() }
 
-        TODO("GPU: wire keystroke/commit callbacks on text fields: EDIT+TF_DESC, EDIT+TF_MATURITY, EDIT+TF_MRKT, EDIT+TF_NAME, EDIT+BTN_ENABLE, EDIT+BTN_PRIVATE, EDIT+IMG_LOGO")
+        System.err.println("LLFloaterExperienceProfile: postBuild keystroke/commit callback wiring not yet implemented")
 
         EventPumps.obtain("experience_permission").listen("$mExperienceId-profile") { perm ->
             experiencePermission(this, perm)
@@ -288,7 +286,7 @@ class LLFloaterExperienceProfile(data: Map<String, Any?>) {
         setTextValue(EDIT + TF_NAME, experience[LLExperienceCache.NAME]?.toString() ?: "")
 
         val desc = experience[LLExperienceCache.DESCRIPTION]?.toString() ?: ""
-        TODO("GPU: set LLExpandableTextBox(TF_DESC).setText($desc)")
+        System.err.println("LLFloaterExperienceProfile: refreshExperience LLExpandableTextBox setText not yet implemented")
         setPanelVisible(PNL_DESC, desc.isNotEmpty())
         setTextValue(EDIT + TF_DESC, desc)
 
@@ -313,7 +311,7 @@ class LLFloaterExperienceProfile(data: Map<String, Any?>) {
         setEditGroup(groupId)
 
         val isOwner = agentId == LLAgent.getID()
-        TODO("GPU: getChild<LLButton>(BTN_SET_GROUP).setEnabled($isOwner)")
+        System.err.println("LLFloaterExperienceProfile: refreshExperience BTN_SET_GROUP setEnabled not yet implemented")
 
         val properties = (mExperienceDetails[LLExperienceCache.PROPERTIES] as? Int) ?: 0
         setCheckValue(EDIT + BTN_ENABLE, (properties and LLExperienceCache.PROPERTY_DISABLED) == 0)
@@ -327,7 +325,7 @@ class LLFloaterExperienceProfile(data: Map<String, Any?>) {
         if (getButtonVisible(BTN_EDIT)) setPanelVisible(PNL_TOP, true)
 
         if (properties and LLExperienceCache.PROPERTY_PRIVILEGED != 0) {
-            TODO("GPU: show TF_PRIVILEGED text box")
+            System.err.println("LLFloaterExperienceProfile: refreshExperience TF_PRIVILEGED show not yet implemented")
         } else {
             val region = LLAgent.getRegion()
             if (region != null) {
@@ -344,7 +342,7 @@ class LLFloaterExperienceProfile(data: Map<String, Any?>) {
             return
         }
 
-        TODO("APR: use JVM equivalent for LLSD XML parse of metadata; extract TF_MRKT and IMG_LOGO")
+        System.err.println("LLFloaterExperienceProfile: refreshExperience LLSD XML metadata parse not yet implemented")
         mDirty = false; mForceClose = false
         setButtonSaveEnabled(mDirty)
     }
@@ -358,7 +356,7 @@ class LLFloaterExperienceProfile(data: Map<String, Any?>) {
             if (fieldStr == LLExperienceCache.EXPERIENCE_ID) return@forEach
             val dataMap = data as? Map<*, *> ?: return@forEach
             val errorTag = "${dataMap["error_tag"]}ExperienceProfileMessage"
-            TODO("APR: use JVM equivalent for LLNotificationsUtil::add with error_tag or GenericAlert")
+            System.err.println("LLFloaterExperienceProfile: onSaveComplete LLNotificationsUtil add not yet implemented")
         }
 
         val experienceKeys = content["experience_keys"] as? List<*>
@@ -414,7 +412,10 @@ class LLFloaterExperienceProfile(data: Map<String, Any?>) {
     protected fun onClickLocation() {
         val region = LLAgent.getRegion() ?: return
         // Builds a SLURL anchored to the region origin so it works in VarRegions (FIRE-30768)
-        mLocationSLURL = TODO("APR: use JVM equivalent for LLSLURL(region.name, region.originGlobal, agent.positionGlobal).getSLURLString()")
+        mLocationSLURL = run {
+            System.err.println("LLFloaterExperienceProfile: onClickLocation SLURL build not yet implemented")
+            ""
+        }
         setTextValue(EDIT + TF_SLURL, mLocationSLURL)
         onFieldChanged()
     }
@@ -426,7 +427,7 @@ class LLFloaterExperienceProfile(data: Map<String, Any?>) {
     }
 
     protected fun onPickGroup() {
-        TODO("GPU: show group picker floater, register setEditGroup callback")
+        System.err.println("LLFloaterExperienceProfile: onPickGroup not yet implemented")
     }
 
     protected fun onFieldChanged() {
@@ -442,7 +443,7 @@ class LLFloaterExperienceProfile(data: Map<String, Any?>) {
     }
 
     protected fun onReportExperience() {
-        TODO("GPU: LLFloaterReporter.showFromExperience(mExperienceId)")
+        System.err.println("LLFloaterExperienceProfile: onReportExperience not yet implemented")
     }
 
     protected fun setEditGroup(groupId: UUID) {
@@ -467,15 +468,15 @@ class LLFloaterExperienceProfile(data: Map<String, Any?>) {
     }
 
     protected fun experienceForgotten() {
-        TODO("GPU: allow_btn enable=true; forget_btn enable=false; block_btn enable=true")
+        System.err.println("LLFloaterExperienceProfile: experienceForgotten not yet implemented")
     }
 
     protected fun experienceBlocked() {
-        TODO("GPU: allow_btn enable=true; forget_btn enable=true; block_btn enable=false")
+        System.err.println("LLFloaterExperienceProfile: experienceBlocked not yet implemented")
     }
 
     protected fun experienceAllowed() {
-        TODO("GPU: allow_btn enable=false; forget_btn enable=true; block_btn enable=true")
+        System.err.println("LLFloaterExperienceProfile: experienceAllowed not yet implemented")
     }
 
     protected fun handleSaveChangesDialog(
@@ -510,7 +511,7 @@ class LLFloaterExperienceProfile(data: Map<String, Any?>) {
         mPackage[LLExperienceCache.SLURL]       = mLocationSLURL.ifEmpty { null }
         mPackage[LLExperienceCache.MATURITY]    = getComboSelectedIndex(EDIT + TF_MATURITY)
 
-        TODO("APR: use JVM equivalent for LLSD XML formatter to serialise metadata (TF_MRKT + IMG_LOGO) into mPackage[METADATA]")
+        System.err.println("LLFloaterExperienceProfile: updatePackage LLSD XML metadata serialise not yet implemented")
 
         val properties = (mPackage[LLExperienceCache.PROPERTIES] as? Int) ?: 0
         var props = properties
@@ -544,7 +545,7 @@ class LLFloaterExperienceProfile(data: Map<String, Any?>) {
     }
 
     private fun setMaturityString(maturity: Byte) {
-        TODO("GPU: set maturity icon + text on TF_MATURITY and EDIT+TF_MATURITY combo")
+        System.err.println("LLFloaterExperienceProfile: setMaturityString not yet implemented")
     }
 
     private fun idMatches(id: Any?): Boolean =
@@ -596,7 +597,7 @@ class LLFloaterExperienceProfile(data: Map<String, Any?>) {
             val region = LLAgent.getRegion() ?: return
             val url = region.getCapability("UpdateExperience")
             if (url.isNotEmpty() && result["status"] as? Boolean == true) {
-                TODO("GPU: show PNL_TOP and BTN_EDIT on profile floater")
+                System.err.println("LLFloaterExperienceProfile: experienceIsAdmin show PNL_TOP and BTN_EDIT not yet implemented")
             }
         }
 

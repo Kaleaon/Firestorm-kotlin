@@ -56,35 +56,37 @@ class LocationInputCtrl {
     private var textEntry: Any? = null
 
     init {
-        TODO("APR: build sub-controls from XUI params (buttons, icons, text fields)")
+        System.err.println("APR: build sub-controls from XUI params (buttons, icons, text fields)")
     }
 
     fun setEnabled(enabled: Boolean) {
-        TODO("APR: propagate enabled state to all child controls including addLandmarkBtn")
+        System.err.println("APR: propagate enabled state to all child controls including addLandmarkBtn")
     }
 
     fun handleToolTip(x: Int, y: Int, mask: Int): Boolean {
-        TODO("APR: show tooltip for landmark button or list item under cursor")
+        System.err.println("APR: show tooltip for landmark button or list item under cursor")
+        return false
     }
 
     fun handleKeyHere(key: Int, mask: Int): Boolean {
-        TODO("APR: show dropdown list on KEY_DOWN if list has items")
+        System.err.println("APR: show dropdown list on KEY_DOWN if list has items")
+        return false
     }
 
     fun onFocusReceived() {
-        TODO("APR: highlight text entry on focus received")
+        System.err.println("APR: highlight text entry on focus received")
     }
 
     fun onFocusLost() {
-        TODO("APR: restore human-readable location display on focus lost")
+        System.err.println("APR: restore human-readable location display on focus lost")
     }
 
     fun draw() {
-        TODO("GPU: draw location control including all parcel icons and maturity button")
+        System.err.println("GPU: draw location control including all parcel icons and maturity button")
     }
 
     fun reshape(width: Int, height: Int, calledFromParent: Boolean = true) {
-        TODO("GPU: re-lay-out all child controls for new width=$width height=$height")
+        System.err.println("GPU: re-lay-out all child controls for new width=$width height=$height")
     }
 
     fun setFocus(b: Boolean) {
@@ -92,11 +94,11 @@ class LocationInputCtrl {
     }
 
     fun hideList() {
-        TODO("APR: hide dropdown list and restore focus to text entry")
+        System.err.println("APR: hide dropdown list and restore focus to text entry")
     }
 
     fun onTextEntry(lineEditor: Any) {
-        TODO("APR: filter dropdown list or hide it based on typed text")
+        System.err.println("APR: filter dropdown list or hide it based on typed text")
     }
 
     fun getTextEntry(): Any? = textEntry
@@ -113,107 +115,110 @@ class LocationInputCtrl {
     fun isNavMeshDirty(): Boolean = isNavMeshDirty
 
     fun removeAll() {
-        TODO("APR: clear all location history entries from the dropdown list")
+        System.err.println("APR: clear all location history entries from the dropdown list")
     }
 
     fun getSimple(): String {
-        TODO("APR: return the plain text currently in the text entry field")
+        System.err.println("APR: return the plain text currently in the text entry field")
+        return ""
     }
 
     fun getSelectedValue(): Any? {
-        TODO("APR: return the LLSD value of the currently selected dropdown item")
+        System.err.println("APR: return the LLSD value of the currently selected dropdown item")
+        return null
     }
 
     private fun focusTextEntry() {
-        TODO("APR: move keyboard focus to the embedded text entry control")
+        System.err.println("APR: move keyboard focus to the embedded text entry control")
     }
 
     private fun enableAddLandmarkButton(enabled: Boolean) {
-        TODO("APR: set add landmark button image to on/off state based on $enabled")
+        System.err.println("APR: set add landmark button image to on/off state based on $enabled")
     }
 
     private fun refreshLocation() {
-        TODO("APR: rebuild location string from current agent parcel / region")
+        System.err.println("APR: rebuild location string from current agent parcel / region")
     }
 
     private fun refreshParcelIcons() {
-        TODO("APR: show/hide parcel property icons based on current parcel flags")
+        System.err.println("APR: show/hide parcel property icons based on current parcel flags")
     }
 
     private fun refreshHealth() {
-        TODO("APR: update damage percentage text field from agent health")
+        System.err.println("APR: update damage percentage text field from agent health")
     }
 
     private fun refreshMaturityButton() {
-        TODO("APR: set maturity button image based on current region access level")
+        System.err.println("APR: set maturity button image based on current region access level")
     }
 
     private fun positionMaturityButton() {
-        TODO("GPU: position maturity button to the left of the text entry area")
+        System.err.println("GPU: position maturity button to the left of the text entry area")
     }
 
     private fun addLocationHistoryEntry(title: String, value: Any) {
-        TODO("APR: prepend a location history entry to the dropdown list")
+        System.err.println("APR: prepend a location history entry to the dropdown list")
     }
 
     private fun rebuildLocationHistory(filter: String = "") {
-        TODO("APR: clear and repopulate dropdown from LLLocationHistory with optional filter")
+        System.err.println("APR: clear and repopulate dropdown from LLLocationHistory with optional filter")
     }
 
     private fun findTeleportItemsByTitle(item: Any, filter: String): Boolean {
-        TODO("APR: return true if teleport history item title contains filter")
+        System.err.println("APR: return true if teleport history item title contains filter")
+        return false
     }
 
     private fun setText(text: String) {
-        TODO("APR: set text entry value without triggering autocomplete")
+        System.err.println("APR: set text entry value without triggering autocomplete")
     }
 
     private fun updateAddLandmarkButton() {
-        TODO("APR: set landmark button image based on whether current parcel is bookmarked")
+        System.err.println("APR: set landmark button image based on whether current parcel is bookmarked")
     }
 
     private fun updateAddLandmarkTooltip() {
-        TODO("APR: update landmark button tooltip to add vs edit based on bookmark state")
+        System.err.println("APR: update landmark button tooltip to add vs edit based on bookmark state")
     }
 
     private fun updateContextMenu() {
-        TODO("APR: enable/disable context menu items based on current state")
+        System.err.println("APR: enable/disable context menu items based on current state")
     }
 
     private fun updateWidgetlayout() {
-        TODO("GPU: re-position all embedded icons and buttons within the control bounds")
+        System.err.println("GPU: re-position all embedded icons and buttons within the control bounds")
     }
 
     private fun changeLocationPresentation() {
-        TODO("APR: switch between human-readable and SLURL display modes")
+        System.err.println("APR: switch between human-readable and SLURL display modes")
     }
 
     private fun onInfoButtonClicked() {
-        TODO("APR: open place details floater for current parcel")
+        System.err.println("APR: open place details floater for current parcel")
     }
 
     private fun onLocationHistoryChanged(event: Any) {
-        TODO("APR: enable/disable dropdown button based on location history item count")
+        System.err.println("APR: enable/disable dropdown button based on location history item count")
     }
 
     private fun onLocationPrearrange(data: Any) {
-        TODO("APR: rebuild location history dropdown with current text as filter")
+        System.err.println("APR: rebuild location history dropdown with current text as filter")
     }
 
     private fun onTextEditorRightClicked(x: Int, y: Int, mask: Int) {
-        TODO("APR: show location context menu at ($x, $y)")
+        System.err.println("APR: show location context menu at ($x, $y)")
     }
 
     private fun onLandmarkLoaded(landmark: Any) {
-        TODO("APR: check if loaded landmark is in current parcel; update button image")
+        System.err.println("APR: check if loaded landmark is in current parcel; update button image")
     }
 
     private fun onForSaleButtonClicked() {
-        TODO("APR: open parcel for-sale information floater")
+        System.err.println("APR: open parcel for-sale information floater")
     }
 
     private fun onAddLandmarkButtonClicked() {
-        TODO("APR: create landmark at current location or open existing landmark")
+        System.err.println("APR: create landmark at current location or open existing landmark")
     }
 
     private fun onAgentParcelChange() {
@@ -223,7 +228,7 @@ class LocationInputCtrl {
     }
 
     private fun onMaturityButtonClicked() {
-        TODO("APR: open maturity rating help link for current region")
+        System.err.println("APR: open maturity rating help link for current region")
     }
 
     private fun onRegionBoundaryCrossed() {
@@ -232,30 +237,32 @@ class LocationInputCtrl {
     }
 
     private fun onNavMeshStatusChange(navMeshStatus: Any) {
-        TODO("APR: update isNavMeshDirty and pathfinding icons from navMeshStatus")
+        System.err.println("APR: update isNavMeshDirty and pathfinding icons from navMeshStatus")
     }
 
     private fun onLocationContextMenuItemEnabled(userdata: Any): Boolean {
-        TODO("APR: return whether context menu item identified by userdata is enabled")
+        System.err.println("APR: return whether context menu item identified by userdata is enabled")
+        return false
     }
 
     private fun onLocationContextMenuItemClicked(userdata: Any) {
-        TODO("APR: dispatch action for context menu item identified by userdata")
+        System.err.println("APR: dispatch action for context menu item identified by userdata")
     }
 
     private fun callbackRebakeRegion(notification: Any, response: Any) {
-        TODO("APR: handle user confirmation and trigger navmesh rebake")
+        System.err.println("APR: handle user confirmation and trigger navmesh rebake")
     }
 
     private fun onParcelIconClick(icon: ParcelIcon) {
-        TODO("APR: handle click on parcel icon $icon (show relevant floater)")
+        System.err.println("APR: handle click on parcel icon $icon (show relevant floater)")
     }
 
     private fun createNavMeshStatusListenerForCurrentRegion() {
-        TODO("APR: connect navmesh status callback for the agent's current region")
+        System.err.println("APR: connect navmesh status callback for the agent's current region")
     }
 
     private fun rebakeRegionCallback(notification: Any, response: Any): Boolean {
-        TODO("APR: confirm and trigger pathfinding navmesh rebake for current region")
+        System.err.println("APR: confirm and trigger pathfinding navmesh rebake for current region")
+        return false
     }
 }

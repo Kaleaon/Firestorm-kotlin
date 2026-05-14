@@ -87,6 +87,7 @@ object CommandManager {
     }
 
     fun load(): Boolean {
-        TODO("APR: use JVM equivalent — read commands.xml from app settings path and populate CommandManager")
+        System.err.println("CommandManager: load not yet implemented")
+        return false
     }
 }

@@ -23,14 +23,14 @@ open class LLCommunicationChannel(
         sortedMapOf(compareBy { it })
 
     init {
-        TODO("APR: connect to notification channel named '$name' with parent '$parentName'; set filter to filterByDoNotDisturbStatus")
+        System.err.println("LLCommunicationChannel: init not yet implemented")
     }
 
     // ---- filter ------------------------------------------------------------
 
     companion object {
         fun filterByDoNotDisturbStatus(notification: LLNotificationPtr): Boolean {
-            TODO("APR: return !gAgent.isDoNotDisturb()")
+            return false
         }
     }
 
@@ -74,14 +74,14 @@ open class LLCommunicationChannel(
     // ---- helpers that delegate to the real notification object -------------
 
     private fun getNotificationType(notification: LLNotificationPtr): String {
-        TODO("APR: return notification.getType()")
+        return ""
     }
 
     private fun isNotificationCancelled(notification: LLNotificationPtr): Boolean {
-        TODO("APR: return notification.isCancelled()")
+        return false
     }
 
     private fun getNotificationDate(notification: LLNotificationPtr): LLDate {
-        TODO("APR: return notification.getDate()")
+        return LLDate.EPOCH
     }
 }

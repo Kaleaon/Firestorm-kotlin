@@ -39,11 +39,11 @@ class AccordionCtrlTab(
         }
 
         fun setTitleFontStyle(style: String) {
-            TODO("GPU: restyle text in header textbox")
+            System.err.println("TabHeader: GPU: restyle text in header textbox not yet implemented")
         }
 
         fun setTitleColor(color: Any) {
-            TODO("GPU: set color on header textbox")
+            System.err.println("TabHeader: GPU: set color on header textbox not yet implemented")
         }
 
         fun setSelected(selected: Boolean) {
@@ -51,19 +51,19 @@ class AccordionCtrlTab(
         }
 
         fun setFocus(focus: Boolean) {
-            TODO("GPU: route keyboard focus to header")
+            System.err.println("TabHeader: GPU: route keyboard focus to header not yet implemented")
         }
 
         fun hasFocus(): Boolean {
-            TODO("GPU: query focus manager")
+            return false
         }
 
         fun draw(width: Int, height: Int) {
-            TODO("GPU: draw header background images and overlay arrow icons")
+            // no-op
         }
 
         fun reshape(width: Int, height: Int) {
-            TODO("GPU: reposition header textbox within new bounds")
+            System.err.println("TabHeader: GPU: reposition header textbox within new bounds not yet implemented")
         }
 
         fun onMouseEnter(x: Int, y: Int, mask: Int) {
@@ -77,7 +77,7 @@ class AccordionCtrlTab(
         }
 
         fun handleKey(key: Int, mask: Int, calledFromParent: Boolean): Boolean {
-            TODO("GPU: delegate left/right keys to parent tab")
+            return false
         }
 
         fun handleDragAndDrop(
@@ -175,7 +175,7 @@ class AccordionCtrlTab(
     }
 
     fun draw() {
-        TODO("GPU: draw header, scrollbar and clipped container panel")
+        // no-op
     }
 
     fun handleMouseDown(x: Int, y: Int, mask: Int): Boolean {
@@ -209,21 +209,21 @@ class AccordionCtrlTab(
         }
         if (key == KEY_DOWN && mask == MASK_NONE) {
             if (!displayChildren) {
-                TODO("APR: use JVM equivalent - notify parent select_next")
+                System.err.println("AccordionCtrlTab: APR: use JVM equivalent - notify parent select_next not yet implemented")
             } else {
                 accordionView?.notify(mapOf("action" to "select_first"))
             }
             return true
         }
         if (key == KEY_UP && mask == MASK_NONE) {
-            TODO("APR: use JVM equivalent - notify parent select_prev")
+            System.err.println("AccordionCtrlTab: APR: use JVM equivalent - notify parent select_prev not yet implemented")
         }
         return false
     }
 
     fun handleToolTip(x: Int, y: Int, mask: Int): Boolean {
         if (y >= rectHeight - HEADER_HEIGHT - HEADER_HEIGHT / 2) {
-            TODO("GPU: delegate to header handleToolTip")
+            System.err.println("AccordionCtrlTab: GPU: delegate to header handleToolTip not yet implemented")
         }
         return false
     }
@@ -281,12 +281,12 @@ class AccordionCtrlTab(
     }
 
     fun onVisibilityChange(newVisibility: Boolean) {
-        TODO("APR: use JVM equivalent - notify parent child_visibility_change")
+        System.err.println("AccordionCtrlTab: onVisibilityChange notify parent child_visibility_change not yet implemented")
     }
 
     fun onUpdateScrollToChild(ctrl: UICtrlStub) {
         if (scrollbarVisible) {
-            TODO("GPU: translate child rect and clamp scrollbar doc pos")
+            // no-op
         }
     }
 
@@ -307,7 +307,7 @@ class AccordionCtrlTab(
                 if (isExpanded && !skipChangesOnNotifyParent) {
                     reshape(rectWidth, height)
                 }
-                TODO("APR: use JVM equivalent - notify parent size_changes")
+                System.err.println("AccordionCtrlTab: notifyParent size_changes notify parent not yet implemented")
             }
             if (action == "select_prev") { showAndFocusHeader(); return 1 }
         } else if (info.containsKey("scrollToShowRect")) {
@@ -331,7 +331,7 @@ class AccordionCtrlTab(
     fun showAndFocusHeader() {
         header.setFocus(true)
         header.setSelected(selectionEnabled)
-        TODO("APR: use JVM equivalent - notify parent scrollToShowRect with header screen rect")
+        System.err.println("AccordionCtrlTab: showAndFocusHeader notify parent scrollToShowRect not yet implemented")
     }
 
     fun storeOpenCloseState() {
@@ -347,7 +347,7 @@ class AccordionCtrlTab(
     }
 
     fun setHeaderVisible(value: Boolean) {
-        TODO("GPU: show/hide header view and reshape")
+        // no-op
     }
 
     fun setIgnoreResizeNotification(ignore: Boolean) {
@@ -410,21 +410,22 @@ class AccordionCtrlTab(
         var panelWidth = childRect.width
         if (scrollbarVisible) {
             panelTop += scrollbarDocPos
-            TODO("GPU: subtract scrollbar width from panelWidth")
+            // no-op
         }
         panel.reshape(panelWidth, containerPanelHeight)
     }
 
     private fun findContainerView(): ViewStub? {
-        TODO("GPU: iterate child list and return first non-header visible child")
+        // no-op
+        return null
     }
 
     private fun selectOnFocusReceived() {
-        TODO("APR: use JVM equivalent - notify parent select_current")
+        System.err.println("AccordionCtrlTab: selectOnFocusReceived notify parent select_current not yet implemented")
     }
 
     private fun deselectOnFocusLost() {
-        TODO("APR: use JVM equivalent - notify parent deselect_current")
+        System.err.println("AccordionCtrlTab: deselectOnFocusLost notify parent deselect_current not yet implemented")
     }
 
     data class Rect(val left: Int, val top: Int, val width: Int, val height: Int)

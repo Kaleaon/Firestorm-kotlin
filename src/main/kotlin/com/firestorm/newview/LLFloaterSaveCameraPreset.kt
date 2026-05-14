@@ -9,16 +9,16 @@ import java.util.UUID
 open class LLModalDialog(key: Any) : LLFloater(key)
 
 class LLRadioGroup {
-    fun getSelectedIndex(): Int = TODO("UI: get selected radio index")
-    fun setSelectedIndex(index: Int) { TODO("UI: set selected radio index") }
-    fun setCommitCallback(cb: () -> Unit) { TODO("UI: setCommitCallback on radio group") }
+    fun getSelectedIndex(): Int = 0
+    fun setSelectedIndex(index: Int) { System.err.println("LLRadioGroup: set selected radio index not yet implemented") }
+    fun setCommitCallback(cb: () -> Unit) { System.err.println("LLRadioGroup: setCommitCallback on radio group not yet implemented") }
 }
 
 class LLComboBox {
-    fun getSimple(): String = TODO("UI: getSimple on combo box")
-    fun setEnabled(enabled: Boolean) { TODO("UI: setEnabled on combo box") }
-    fun setTextEntryCallback(cb: () -> Unit) { TODO("UI: setTextEntryCallback on combo box") }
-    fun setCommitCallback(cb: () -> Unit) { TODO("UI: setCommitCallback on combo box") }
+    fun getSimple(): String = ""
+    fun setEnabled(enabled: Boolean) { System.err.println("LLComboBox: setEnabled on combo box not yet implemented") }
+    fun setTextEntryCallback(cb: () -> Unit) { System.err.println("LLComboBox: setTextEntryCallback on combo box not yet implemented") }
+    fun setCommitCallback(cb: () -> Unit) { System.err.println("LLComboBox: setCommitCallback on combo box not yet implemented") }
 }
 
 enum class DefaultOptions { HIDE, BOTTOM }
@@ -28,19 +28,19 @@ const val PRESETS_DEFAULT = "default"
 const val PRESETS_DEFAULT_UPPER = "DEFAULT"
 
 object LLPresetsManager {
-    fun setPresetListChangeCallback(cb: () -> Unit) { TODO("PresetsManager: register preset list change callback") }
-    fun setPresetNamesInComboBox(subdir: String, combo: LLComboBox?, option: DefaultOptions) { TODO("PresetsManager: populate combo box from '$subdir'") }
-    fun loadPresetNamesFromDir(subdir: String, names: MutableList<String>, option: DefaultOptions) { TODO("PresetsManager: load preset names from '$subdir'") }
-    fun savePreset(subdir: String, name: String): Boolean { TODO("PresetsManager: save preset '$name' to '$subdir'") }
+    fun setPresetListChangeCallback(cb: () -> Unit) { System.err.println("LLPresetsManager: register preset list change callback not yet implemented") }
+    fun setPresetNamesInComboBox(subdir: String, combo: LLComboBox?, option: DefaultOptions) { System.err.println("LLPresetsManager: populate combo box from '$subdir' not yet implemented") }
+    fun loadPresetNamesFromDir(subdir: String, names: MutableList<String>, option: DefaultOptions) { System.err.println("LLPresetsManager: load preset names from '$subdir' not yet implemented") }
+    fun savePreset(subdir: String, name: String): Boolean { System.err.println("LLPresetsManager: save preset '$name' to '$subdir' not yet implemented"); return false }
     val instance: LLPresetsManager get() = this
 }
 
 object LLNotificationsUtil {
-    fun add(name: String, args: Map<String, Any> = emptyMap()) { TODO("Notifications: show '$name'") }
+    fun add(name: String, args: Map<String, Any> = emptyMap()) { System.err.println("LLNotificationsUtil: show '$name' not yet implemented") }
 }
 
-val gAgentAvatarp: Any? get() = TODO("Agent: global avatar pointer")
-fun isAgentAvatarValid(): Boolean { TODO("Agent: check avatar validity") }
+val gAgentAvatarp: Any? get() = null
+fun isAgentAvatarValid(): Boolean { System.err.println("isAgentAvatarValid: check avatar validity not yet implemented"); return false }
 
 // ============================================================================
 // LLFloaterSaveCameraPreset
@@ -157,26 +157,26 @@ class LLFloaterSaveCameraPreset(key: Any) : LLModalDialog(key) {
         }
     }
 
-    private fun super_onOpen(key: Any) { TODO("LLModalDialog: delegate to base onOpen") }
+    private fun super_onOpen(key: Any) { System.err.println("LLFloaterSaveCameraPreset: delegate to base onOpen not yet implemented") }
     @Suppress("UNCHECKED_CAST")
-    private fun <T> getChild(name: String): T? = TODO("UI: resolve child widget '$name'")
-    private fun getString(key: String): String = TODO("UI: getString '$key'")
-    private fun closeFloater() { TODO("UI: close this floater") }
+    private fun <T> getChild(name: String): T? = null
+    private fun getString(key: String): String = ""
+    private fun closeFloater() { System.err.println("LLFloaterSaveCameraPreset: close this floater not yet implemented") }
 
     // Extension helpers for gAgent / gAgentCamera / gSavedSettings typed calls.
     // The real globals are already typed in Agent.kt, AgentCamera.kt, ViewerControl.kt.
-    private fun Any.getFrameAgent(): Any = TODO("Agent: getFrameAgent")
-    private fun Any.getQuaternion(): Any = TODO("Agent: getQuaternion")
-    private fun Any.isJoystickCameraUsed(): Boolean = TODO("AgentCamera: isJoystickCameraUsed")
-    private fun Any.getCurrentCameraOffset(): Any = TODO("AgentCamera: getCurrentCameraOffset")
-    private fun Any.getCurrentFocusOffset(): Any = TODO("AgentCamera: getCurrentFocusOffset")
-    private fun Any.getCurrentCameraZoomFraction(): Float = TODO("AgentCamera: getCurrentCameraZoomFraction")
-    private fun Any.resetCameraZoomFraction() { TODO("AgentCamera: resetCameraZoomFraction") }
-    private fun Any.setFocusOnAvatar(b1: Boolean, b2: Boolean, b3: Boolean) { TODO("AgentCamera: setFocusOnAvatar") }
-    private fun Any.getVector3(key: String): Any = TODO("Settings: getVector3 '$key'")
-    private fun Any.setVector3(key: String, value: Any) { TODO("Settings: setVector3 '$key'") }
-    private fun Any.setVector3d(key: String, value: Any) { TODO("Settings: setVector3d '$key'") }
-    private fun Any.setQuaternion(key: String, value: Any) { TODO("Settings: setQuaternion '$key'") }
+    private fun Any.getFrameAgent(): Any { System.err.println("LLFloaterSaveCameraPreset: getFrameAgent not yet implemented"); return this }
+    private fun Any.getQuaternion(): Any { System.err.println("LLFloaterSaveCameraPreset: getQuaternion not yet implemented"); return this }
+    private fun Any.isJoystickCameraUsed(): Boolean { System.err.println("LLFloaterSaveCameraPreset: isJoystickCameraUsed not yet implemented"); return false }
+    private fun Any.getCurrentCameraOffset(): Any { System.err.println("LLFloaterSaveCameraPreset: getCurrentCameraOffset not yet implemented"); return this }
+    private fun Any.getCurrentFocusOffset(): Any { System.err.println("LLFloaterSaveCameraPreset: getCurrentFocusOffset not yet implemented"); return this }
+    private fun Any.getCurrentCameraZoomFraction(): Float { System.err.println("LLFloaterSaveCameraPreset: getCurrentCameraZoomFraction not yet implemented"); return 0f }
+    private fun Any.resetCameraZoomFraction() { System.err.println("LLFloaterSaveCameraPreset: resetCameraZoomFraction not yet implemented") }
+    private fun Any.setFocusOnAvatar(b1: Boolean, b2: Boolean, b3: Boolean) { System.err.println("LLFloaterSaveCameraPreset: setFocusOnAvatar not yet implemented") }
+    private fun Any.getVector3(key: String): Any { System.err.println("LLFloaterSaveCameraPreset: getVector3 '$key' not yet implemented"); return this }
+    private fun Any.setVector3(key: String, value: Any) { System.err.println("LLFloaterSaveCameraPreset: setVector3 '$key' not yet implemented") }
+    private fun Any.setVector3d(key: String, value: Any) { System.err.println("LLFloaterSaveCameraPreset: setVector3d '$key' not yet implemented") }
+    private fun Any.setQuaternion(key: String, value: Any) { System.err.println("LLFloaterSaveCameraPreset: setQuaternion '$key' not yet implemented") }
     @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
-    private operator fun Any.times(f: Float): Any = TODO("Math: vector scale")
+    private operator fun Any.times(f: Float): Any { System.err.println("LLFloaterSaveCameraPreset: vector scale not yet implemented"); return this }
 }

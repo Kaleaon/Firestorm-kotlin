@@ -23,21 +23,21 @@ abstract class VOAvatar(
     var lastImpostorUpdateReason: Int = 0
     val signaledAnimations: MutableMap<UUID, Int> = mutableMapOf()
 
-    open fun initInstance() { TODO("APR: use JVM equivalent — LLVOAvatar::initInstance") }
-    open fun markDead() { TODO("APR: use JVM equivalent — LLVOAvatar::markDead") }
-    open fun idleUpdate(agent: Any, time: Double) { TODO("APR: use JVM equivalent — LLVOAvatar::idleUpdate") }
-    open fun computeNeedsUpdate(): Boolean { TODO("APR: use JVM equivalent — LLVOAvatar::computeNeedsUpdate") }
-    open fun updateCharacter(agent: Any): Boolean { TODO("APR: use JVM equivalent — LLVOAvatar::updateCharacter") }
-    open fun updateDebugText() { TODO("APR: use JVM equivalent — LLVOAvatar::updateDebugText") }
-    open fun isImpostor(): Boolean { TODO("APR: use JVM equivalent — LLVOAvatar::isImpostor") }
-    open fun isTooComplex(): Boolean { TODO("APR: use JVM equivalent — LLVOAvatar::isTooComplex") }
+    open fun initInstance() { System.err.println("VOAvatar: initInstance not yet implemented") }
+    open fun markDead() { System.err.println("VOAvatar: markDead not yet implemented") }
+    open fun idleUpdate(agent: Any, time: Double) { System.err.println("VOAvatar: idleUpdate not yet implemented") }
+    open fun computeNeedsUpdate(): Boolean { return false }
+    open fun updateCharacter(agent: Any): Boolean { return false }
+    open fun updateDebugText() { System.err.println("VOAvatar: updateDebugText not yet implemented") }
+    open fun isImpostor(): Boolean { return false }
+    open fun isTooComplex(): Boolean { return false }
     open fun shouldRenderRigged(): Boolean = true
     open fun getFullname(): String = ""
     open fun getAttachedAvatar(): VOAvatar? = null
 
-    fun addDebugText(text: String) { TODO("APR: use JVM equivalent — overlay debug text on avatar") }
-    fun computeUpdatePeriod() { TODO("APR: use JVM equivalent — compute render update cadence") }
-    fun processAnimationStateChanges() { TODO("APR: use JVM equivalent — process signaled animation state changes") }
+    fun addDebugText(text: String) { System.err.println("VOAvatar: addDebugText not yet implemented") }
+    fun computeUpdatePeriod() { System.err.println("VOAvatar: computeUpdatePeriod not yet implemented") }
+    fun processAnimationStateChanges() { System.err.println("VOAvatar: processAnimationStateChanges not yet implemented") }
 }
 
 class ControlAvatar(
@@ -62,11 +62,11 @@ class ControlAvatar(
         private val regionChangedListeners: MutableList<() -> Unit> = mutableListOf()
 
         fun createControlAvatar(obj: Any): ControlAvatar? {
-            TODO("APR: use JVM equivalent — gObjectList.createObjectViewer with CO_FLAG_CONTROL_AVATAR, set rootVolp, matchVolumeTransform")
+            return null
         }
 
         fun onRegionChanged() {
-            TODO("APR: use JVM equivalent — iterate LLCharacter::sInstances, set mRegionChanged on each ControlAvatar")
+            System.err.println("ControlAvatar: onRegionChanged not yet implemented")
         }
 
         fun addRegionChangedListener(listener: () -> Unit) {
@@ -82,11 +82,11 @@ class ControlAvatar(
 
     override fun initInstance() {
         super.initInstance()
-        TODO("GPU: createDrawable, updateJointLODs, updateGeometry, hideSkirt, set initFlags bit 4")
+        System.err.println("ControlAvatar: initInstance not yet implemented")
     }
 
     override fun getAttachedAvatar(): VOAvatar? {
-        TODO("APR: use JVM equivalent — return rootVolp?.getAvatarAncestor() if rootVolp is an attachment")
+        return null
     }
 
     override fun markDead() {
@@ -98,7 +98,7 @@ class ControlAvatar(
     fun markForDeath() {
         markedForDeath = true
         rootVolp = null
-        TODO("APR: use JVM equivalent — clear mVolumep reference")
+        System.err.println("ControlAvatar: markForDeath not yet implemented")
     }
 
     override fun idleUpdate(agent: Any, time: Double) {
@@ -125,35 +125,35 @@ class ControlAvatar(
     override fun updateCharacter(agent: Any): Boolean = super.updateCharacter(agent)
 
     fun getNewConstraintFixups(newPosFixup: FloatArray, newScaleFixup: FloatArray) {
-        TODO("APR: use JVM equivalent — read AnimatedObjectsMaxLegalOffset/Size settings, compute bounding-box constraint fixups from lastAnimExtents")
+        System.err.println("ControlAvatar: getNewConstraintFixups not yet implemented")
     }
 
     fun matchVolumeTransform() {
         if (rootVolp == null) return
-        TODO("APR: use JVM equivalent — compute constraint fixups, sync position/rotation of control avatar to root volume drawable")
+        System.err.println("ControlAvatar: matchVolumeTransform not yet implemented")
     }
 
     fun setGlobalScale(scale: Float) {
         if (scale <= 0f) return
         if (scale != globalScale) {
             val adjustScale = scale / globalScale
-            TODO("APR: use JVM equivalent — recursiveScaleJoint(mPelvisp, adjustScale)")
+            System.err.println("ControlAvatar: setGlobalScale recursiveScaleJoint not yet implemented")
             globalScale = scale
         }
     }
 
     fun recursiveScaleJoint(joint: Any, factor: Float) {
-        TODO("APR: use JVM equivalent — joint.setScale(factor * joint.getScale()), recurse into joint.mChildren")
+        System.err.println("ControlAvatar: recursiveScaleJoint not yet implemented")
     }
 
     fun updateVolumeGeom() {
-        TODO("GPU: makeActive on drawable, gPipeline.markMoved/markTextured, markRebuild, matchVolumeTransform")
+        System.err.println("ControlAvatar: updateVolumeGeom not yet implemented")
     }
 
     fun getAnimatedVolumes(volumes: MutableList<Any>) {
         val root = rootVolp ?: return
         volumes.add(root)
-        TODO("APR: use JVM equivalent — add child volumes that are animated objects")
+        System.err.println("ControlAvatar: getAnimatedVolumes not yet implemented")
     }
 
     fun updateAnimations() {
@@ -163,13 +163,13 @@ class ControlAvatar(
 
         val anims: MutableMap<UUID, Int> = mutableMapOf()
         for (vol in volumes) {
-            TODO("APR: use JVM equivalent — merge signaledAnimations from ObjectSignaledAnimationMapMgr.map[vol.id]")
+            System.err.println("ControlAvatar: updateAnimations merge signaledAnimations from ObjectSignaledAnimationMapMgr not yet implemented")
         }
 
         if (!playing) {
             playing = true
             updateVolumeGeom()
-            TODO("APR: use JVM equivalent — rootVolp.recursiveMarkForUpdate()")
+            System.err.println("ControlAvatar: updateAnimations rootVolp.recursiveMarkForUpdate not yet implemented")
         }
 
         signaledAnimations.clear()
@@ -191,16 +191,18 @@ class ControlAvatar(
         tangent: FloatArray? = null
     ): Any? {
         if (rootVolp == null) return null
-        TODO("GPU: lineSegmentBoundingBox check, then lineSegmentIntersect against rootVolp and animated child volumes")
+        System.err.println("ControlAvatar: lineSegmentIntersectRiggedAttachments not yet implemented")
+        return null
     }
 
     override fun updateDebugText() {
-        TODO("APR: use JVM equivalent — collect triangle/vert/lod/stream stats from animated volumes if DebugAnimatedObjects is set")
+        System.err.println("ControlAvatar: updateDebugText collect triangle/vert/lod/stream stats not yet implemented")
     }
 
     override fun getFullname(): String {
         val root = rootVolp ?: return "AO_no_root_vol"
-        TODO("APR: use JVM equivalent — return \"AO_\" + rootVolp.getID().asString()")
+        System.err.println("ControlAvatar: getFullname rootVolp.getID().asString() not yet implemented")
+        return ""
     }
 
     override fun shouldRenderRigged(): Boolean {
@@ -215,6 +217,7 @@ class ControlAvatar(
     }
 
     override fun isTooComplex(): Boolean {
-        TODO("APR: use JVM equivalent — return false if rootVolp is not an attachment, else super.isTooComplex()")
+        System.err.println("ControlAvatar: isTooComplex not yet implemented")
+        return false
     }
 }

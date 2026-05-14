@@ -54,7 +54,7 @@ class VOCacheEntry(
         var sFrontPixelThreshold: Float = 1f
         var sRearPixelThreshold: Float  = 1f
 
-        fun updateDebugSettings() { TODO("Pull thresholds from debug settings") }
+        fun updateDebugSettings() { System.err.println("VOCacheEntry: updateDebugSettings not yet implemented") }
         fun getSquaredPixelThreshold(isFront: Boolean): Float =
             if (isFront) sFrontPixelThreshold * sFrontPixelThreshold
             else         sRearPixelThreshold  * sRearPixelThreshold
@@ -98,7 +98,7 @@ class VOCacheEntry(
 
     fun calcSceneContribution(cameraOrigin: Vector3, needsUpdate: Boolean,
                                lastUpdate: UInt, distThreshold: Float) {
-        TODO("Compute projected pixel area contribution for culling priority")
+        System.err.println("VOCacheEntry: calcSceneContribution not yet implemented")
     }
 
     fun setBoundingInfo(pos: Vector3, scale: Vector3) {
@@ -107,12 +107,13 @@ class VOCacheEntry(
     }
 
     fun updateParentBoundingInfo() {
-        TODO("Expand parent bounding sphere to enclose this child")
+        System.err.println("VOCacheEntry: updateParentBoundingInfo not yet implemented")
     }
 
     fun isAnyVisible(cameraOrigin: Vector3, localCameraOrigin: Vector3,
                      distThreshold: Float): Boolean {
-        TODO("Check if entry falls within any camera frustum or near-field threshold")
+        System.err.println("VOCacheEntry: isAnyVisible not yet implemented")
+        return false
     }
 
     override fun compareTo(other: VOCacheEntry): Int =
@@ -143,38 +144,40 @@ object VOCache {
         cacheSize = size
         initialized = true
         enabled = true
-        TODO("Open or create cache header file, validate version, purge if stale")
+        System.err.println("VOCache: initCache not yet implemented")
     }
 
     fun removeCache(started: Boolean = false) {
-        TODO("Delete cache files from disk")
+        System.err.println("VOCache: removeCache not yet implemented")
     }
 
     fun readFromCache(handle: ULong, id: LLUUID): MutableMap<UInt, VOCacheEntry> {
-        TODO("Deserialize VOCacheEntry map from region cache file for handle")
+        System.err.println("VOCache: readFromCache not yet implemented")
+        return mutableMapOf()
     }
 
     fun writeToCache(handle: ULong, id: LLUUID,
                      entryMap: Map<UInt, VOCacheEntry>,
                      dirtyCache: Boolean, removalEnabled: Boolean) {
-        TODO("Serialize entryMap to region cache file; evict old entries if over cacheSize")
+        System.err.println("VOCache: writeToCache not yet implemented")
     }
 
     fun readGLTFExtrasFromCache(handle: ULong, id: LLUUID,
                                 baseEntries: Map<UInt, VOCacheEntry>): MutableMap<UInt, GLTFOverrideCacheEntry> {
-        TODO("Deserialize GLTF material overrides from extras cache file for handle")
+        System.err.println("VOCache: readGLTFExtrasFromCache not yet implemented")
+        return mutableMapOf()
     }
 
     fun writeGLTFExtrasToCache(handle: ULong, id: LLUUID,
                                extrasMap: Map<UInt, GLTFOverrideCacheEntry>,
                                dirtyCache: Boolean, removalEnabled: Boolean) {
-        TODO("Serialize extrasMap to region extras cache file")
+        System.err.println("VOCache: writeGLTFExtrasToCache not yet implemented")
     }
 
     fun removeEntry(handle: ULong) {
         headerEntries.remove(handle)
         if (numEntries > 0u) numEntries--
-        TODO("Delete the region cache file for this handle from disk")
+        System.err.println("VOCache: removeEntry disk deletion not yet implemented")
     }
 
     private fun getObjectCacheFilename(handle: ULong): String =
@@ -184,15 +187,15 @@ object VOCache {
         "$cacheDirName/${handle.toString(16)}_extras.slc"
 
     private fun purgeEntries(targetSize: UInt) {
-        TODO("Evict oldest header entries until numEntries <= targetSize")
+        System.err.println("VOCache: purgeEntries not yet implemented")
     }
 
     private fun readCacheHeader() {
-        TODO("Read binary cache header: version, address size, entry index")
+        System.err.println("VOCache: readCacheHeader not yet implemented")
     }
 
     private fun writeCacheHeader() {
-        TODO("Write binary cache header to disk")
+        System.err.println("VOCache: writeCacheHeader not yet implemented")
     }
 
     private fun clearCacheInMemory() {

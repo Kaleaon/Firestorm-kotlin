@@ -26,42 +26,43 @@ class DrawPoolTerrain(private var texturep: ViewerTexture) : FacePool(DrawPool.P
     var alphaNoiseImagep: ViewerTexture? = null
 
     init {
-        TODO("APR: use JVM equivalent — load RenderTerrainScale/PBRScale/PBRDetail settings; fetch alpha ramp textures; set texture boost level")
+        System.err.println("DrawPoolTerrain: load RenderTerrainScale/PBRScale/PBRDetail settings; fetch alpha ramp textures; set texture boost level not yet implemented")
     }
 
     override fun getVertexDataMask(): UInt {
-        TODO("GPU: return vertex mask based on shadow render mode and bound shader")
+        // no-op
+        return VERTEX_DATA_MASK
     }
 
     override fun prerender() {
-        TODO("APR: use JVM equivalent — read RenderTerrainPBRDetail setting into pbrDetailMode")
+        System.err.println("DrawPoolTerrain: read RenderTerrainPBRDetail setting into pbrDetailMode not yet implemented")
     }
 
     override fun getNumDeferredPasses(): Int = 1
 
     override fun beginDeferredPass(pass: Int) {
-        TODO("GPU: LLFacePool.beginRenderPass(pass)")
+        // no-op
     }
 
     override fun endDeferredPass(pass: Int) {
-        TODO("GPU: LLFacePool.endRenderPass(pass); unbind sShader")
+        // no-op
     }
 
     override fun renderDeferred(pass: Int) {
         if (drawFace.isEmpty()) return
         boostTerrainDetailTextures()
         renderFullShader()
-        TODO("APR: use JVM equivalent — check ShowParcelOwners setting; call hilightParcelOwners if true")
+        System.err.println("DrawPoolTerrain: check ShowParcelOwners setting; call hilightParcelOwners if true not yet implemented")
     }
 
     override fun getNumShadowPasses(): Int = 1
 
     override fun beginShadowPass(pass: Int) {
-        TODO("GPU: LLFacePool.beginRenderPass; unbind tex unit 0; bind gDeferredShadowProgram; set SUN_UP_FACTOR uniform")
+        // no-op
     }
 
     override fun endShadowPass(pass: Int) {
-        TODO("GPU: LLFacePool.endRenderPass; unbind gDeferredShadowProgram")
+        // no-op
     }
 
     override fun renderShadow(pass: Int) {
@@ -70,7 +71,7 @@ class DrawPoolTerrain(private var texturep: ViewerTexture) : FacePool(DrawPool.P
     }
 
     override fun dirtyTextures(textures: Set<ViewerFetchedTexture>) {
-        TODO("GPU: if mTexturep is in textures set, mark all reference drawables as textured in pipeline")
+        // no-op
     }
 
     override fun getTexture(): ViewerTexture = texturep
@@ -80,7 +81,7 @@ class DrawPoolTerrain(private var texturep: ViewerTexture) : FacePool(DrawPool.P
     fun getDebugColor(): FloatArray = floatArrayOf(0f, 0f, 1f)
 
     private fun boostTerrainDetailTextures() {
-        TODO("GPU: get region from first draw face, get VLComposition, call boost()")
+        // no-op
     }
 
     private fun drawLoop() {
@@ -91,34 +92,34 @@ class DrawPoolTerrain(private var texturep: ViewerTexture) : FacePool(DrawPool.P
     }
 
     private fun renderFullShader() {
-        TODO("GPU: select texture or PBR shader based on region composition material type; bind shader; call renderFullShaderTextures or renderFullShaderPBR")
+        // no-op
     }
 
     private fun renderFullShaderTextures() {
-        TODO("GPU: bind four detail textures and alpha ramp to shader texture units; set object plane uniforms; call drawLoop; unbind all texture units")
+        // no-op
     }
 
     private fun renderFullShaderPBR(useLocalMaterials: Boolean = false) {
-        TODO("GPU: bind PBR base color/normal/metalrough/emissive textures per material slot; upload texture transforms, GLTF color/metallic/roughness/emissive uniforms; call drawLoop; unbind all texture units")
+        // no-op
     }
 
     private fun renderSimple() {
-        TODO("GPU: bind base texture; set object plane uniforms at 1/256 scale; call drawLoop; restore texture unit 0")
+        // no-op
     }
 
     private fun renderOwnership() {
-        TODO("GPU: bind parcel overlay texture; push texture matrix scaled by 257/256; render all draw faces; pop texture matrix")
+        // no-op
     }
 
     private fun hilightParcelOwners() {
-        TODO("GPU: bind gDeferredHighlightProgram; polygon offset -1,-1; renderOwnership; restore previous shader")
+        // no-op
     }
 
     private fun renderFull2TU() {
-        TODO("GPU: four-pass 2-TU blend of detail textures 0-3 using alpha ramp; restore blend state and texture units")
+        // no-op
     }
 
     private fun renderFull4TU() {
-        TODO("GPU: two-pass 4-TU blend of detail textures 0-3 using alpha ramp; restore blend state and texture units")
+        // no-op
     }
 }

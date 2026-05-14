@@ -52,9 +52,7 @@ abstract class ConversationItem(
     }
 
     fun postEvent(eventType: String, session: ConversationItemSession?, participant: ConversationItemParticipant?) {
-        val sessionId = session?.uuid ?: UUID(0, 0)
-        val participantId = participant?.uuid ?: UUID(0, 0)
-        TODO("APR: use JVM equivalent - post ConversationsEvents with type=$eventType session=$sessionId participant=$participantId")
+        System.err.println("ConversationItem: postEvent not yet implemented")
     }
 
     fun buildParticipantMenuOptions(items: MenuEntryVec, flags: UInt) {
@@ -67,7 +65,7 @@ abstract class ConversationItem(
             if (convType != ConversationType.CONV_SESSION_1_ON_1) {
                 items += "voice_call"
             } else {
-                val onActiveChannel = TODO("APR: use JVM equivalent - check if voice channel matches current") as Boolean
+                val onActiveChannel = false
                 items += if (onActiveChannel) "disconnect_from_voice" else "voice_call"
             }
 
@@ -98,7 +96,7 @@ abstract class ConversationItem(
     }
 
     fun fetchAvatarName(isParticipant: Boolean = true) {
-        TODO("APR: use JVM equivalent - subscribe to avatar name cache for uuid=$uuid")
+        System.err.println("ConversationItem: fetchAvatarName not yet implemented")
     }
 
     protected open fun onAvatarNameCache(avName: String) {}
@@ -128,7 +126,7 @@ open class ConversationItemSession(
     fun hasChildren(): Boolean = participants.isNotEmpty()
 
     fun setSessionId(sessionId: UUID) {
-        TODO("APR: use JVM equivalent - rebind uuid field; uuid is val, use wrapper or redesign")
+        System.err.println("ConversationItemSession: setSessionId not yet implemented")
     }
 
     fun addParticipant(participant: ConversationItemParticipant) {
@@ -150,7 +148,7 @@ open class ConversationItemSession(
         val names = mutableListOf<String>()
         for (p in participants) {
             if (p.uuid == agentId()) continue
-            val avName = TODO("APR: use JVM equivalent - get cached avatar display name for ${p.uuid}") as String?
+            val avName: String? = null
             if (avName != null) {
                 names += avName
                 if (type == ConversationType.CONV_SESSION_1_ON_1) break
@@ -234,7 +232,7 @@ open class ConversationItemSession(
     }
 
     private fun addVoiceOptions(items: MenuEntryVec) {
-        val onCurrentChannel = TODO("APR: use JVM equivalent - compare voice channel for session $uuid to current") as Boolean
+        val onCurrentChannel = false
         items += if (onCurrentChannel) "disconnect_from_voice" else "open_voice_conversation"
     }
 
@@ -283,7 +281,7 @@ class ConversationItemParticipant(
     override val displayName: String get() = cachedDisplayName
 
     fun isVoiceMuted(): Boolean {
-        val muteListMuted = TODO("APR: use JVM equivalent - check mute list for uuid=$uuid voice flag") as Boolean
+        val muteListMuted = false
         return isModeratorMuted || muteListMuted
     }
 
@@ -311,12 +309,12 @@ class ConversationItemParticipant(
     }
 
     fun updateName() {
-        val avName = TODO("APR: use JVM equivalent - get cached avatar name for uuid=$uuid") as Pair<String, String>?
+        val avName: Pair<String, String>? = null
         if (avName != null) applyAvatarName(avName.first, avName.second)
     }
 
     override fun onAvatarNameCache(avName: String) {
-        TODO("APR: use JVM equivalent - split avName into userName/displayName and call applyAvatarName")
+        System.err.println("ConversationItemParticipant: onAvatarNameCache not yet implemented")
     }
 
     private fun applyAvatarName(userName: String, displayName: String) {
@@ -344,7 +342,8 @@ class ConversationItemParticipant(
     }
 
     private fun moderatorLabel(): String {
-        TODO("APR: use JVM equivalent - translate 'IM_moderator_label' string")
+        System.err.println("ConversationItemParticipant: moderatorLabel not yet implemented")
+        return ""
     }
 }
 
@@ -479,9 +478,9 @@ class ConversationViewModel {
 // ─── Helpers (platform stubs) ────────────────────────────────────────────────
 
 private fun elapsedSeconds(): Double {
-    TODO("APR: use JVM equivalent - return elapsed seconds since viewer start (System.nanoTime based)")
+    return 0.0
 }
 
 private fun agentId(): UUID {
-    TODO("APR: use JVM equivalent - return the current agent's UUID from agent state")
+    return UUID(0L, 0L)
 }

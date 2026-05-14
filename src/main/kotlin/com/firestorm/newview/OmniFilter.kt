@@ -51,7 +51,7 @@ class OmniFilter(val key: Any) {
     // -----------------------------------------------------------------------
 
     fun postBuild(): Boolean {
-        TODO("GPU: bind child UI widgets by name and wire commit callbacks")
+        System.err.println("OmniFilter: postBuild not yet implemented")
 
         // Populate needle list from engine state.
         needleListCtrl?.deleteAllItems()
@@ -278,15 +278,18 @@ class OmniFilter(val key: Any) {
     // -----------------------------------------------------------------------
 
     private fun getString(key: String): String {
-        TODO("APR: use JVM equivalent for LLFloater::getString(\"$key\")")
+        System.err.println("OmniFilter: getString not yet implemented")
+        return ""
     }
 
     private fun formatSlt(epochSeconds: Long): String {
-        TODO("APR: use JVM equivalent for SLT time formatting of epoch $epochSeconds")
+        System.err.println("OmniFilter: formatSlt not yet implemented")
+        return ""
     }
 
     private fun formatSltLong(epochSeconds: Long): String {
-        TODO("APR: use JVM equivalent for long SLT date+time formatting of epoch $epochSeconds")
+        System.err.println("OmniFilter: formatSltLong not yet implemented")
+        return ""
     }
 
     // -----------------------------------------------------------------------

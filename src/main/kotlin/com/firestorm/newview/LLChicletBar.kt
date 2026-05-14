@@ -10,18 +10,18 @@ object LLChicletBar {
     private var mToolbarStack: Any? = null
 
     init {
-        TODO("APR: LLIMMgr.getInstance().addSessionObserver(this); buildFromFile(\"panel_chiclet_bar.xml\")")
+        System.err.println("LLChicletBar: init not yet implemented")
     }
 
     fun destroy() {
-        TODO("APR: if LLIMMgr.instanceExists() then LLIMMgr.getInstance().removeSessionObserver(this)")
+        System.err.println("LLChicletBar: destroy not yet implemented")
     }
 
     // ---- LLIMSessionObserver ------------------------------------------------
 
     fun sessionAdded(sessionId: UUID, name: String, otherParticipantId: UUID, hasOfflineMsg: Boolean) {
         val panel = mChicletPanel ?: return
-        TODO("APR: find im session; if no chiclet exists yet, createIMChiclet(sessionId); set name and other-participant id on it")
+        System.err.println("LLChicletBar: sessionAdded not yet implemented")
     }
 
     fun sessionActivated(sessionId: UUID, name: String, otherParticipantId: UUID) {}
@@ -30,7 +30,7 @@ object LLChicletBar {
 
     fun sessionRemoved(sessionId: UUID) {
         val panel = mChicletPanel ?: return
-        TODO("GPU: find and close FSFloaterIM for sessionId; panel.removeChiclet(sessionId)")
+        System.err.println("LLChicletBar: sessionRemoved not yet implemented")
     }
 
     fun sessionIDUpdated(oldSessionId: UUID, newSessionId: UUID) {
@@ -54,21 +54,21 @@ object LLChicletBar {
     }
 
     fun postBuild(): Boolean {
-        TODO("GPU: bind mToolbarStack and mChicletPanel from XML children; showWellButton for im_well and notification_well; connect FSDisableIMChiclets setting signal to updateVisibility()")
+        return false
     }
 
     fun getChicletPanel(): LLChicletPanel? = mChicletPanel
 
     fun reshape(width: Int, height: Int, calledFromParent: Boolean) {
-        TODO("GPU: track extra_shrink_width; call processWidthDecreased if narrowing; delegate to LLPanel.reshape() when appropriate")
+        System.err.println("LLChicletBar: reshape not yet implemented")
     }
 
     fun showWellButton(wellName: String, visible: Boolean) {
-        TODO("GPU: find child panel named '${wellName}_panel' and set visible=$visible")
+        System.err.println("LLChicletBar: showWellButton not yet implemented")
     }
 
     fun updateVisibility(data: Any?) {
-        TODO("GPU: set mChicletPanel visible = !(data.asBoolean())")
+        System.err.println("LLChicletBar: updateVisibility not yet implemented")
     }
 
     // ---- private helpers ---------------------------------------------------
@@ -77,14 +77,15 @@ object LLChicletBar {
         val shrinkHeadroom = getChicletPanelShrinkHeadroom()
         if (shrinkHeadroom > 0) {
             val shrinkBy = minOf(-deltaWidth, shrinkHeadroom)
-            TODO("GPU: reshape mChicletPanel parent by -shrinkBy; return remaining excess or 0")
+            System.err.println("LLChicletBar: processWidthDecreased not yet implemented")
+            return 0
         }
         return -deltaWidth
     }
 
     private fun getChicletPanelShrinkHeadroom(): Int {
         val panel = mChicletPanel ?: return 0
-        TODO("GPU: return (mChicletPanel parent current width) - mChicletPanel.mMinWidth; must be >= 0")
+        return 0
     }
 
     private fun fitWithTopInfoBar() {
@@ -92,6 +93,6 @@ object LLChicletBar {
     }
 
     private fun log(panel: Any?, descr: String) {
-        TODO("APR: emit debug log: descr, panel name/rect, parent name/rect")
+        System.err.println("LLChicletBar: log not yet implemented")
     }
 }

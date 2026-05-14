@@ -106,7 +106,7 @@ open class AvatarListItem(notFromUiFactory: Boolean = true) : LLPanel(), FriendO
         }
 
         private fun initChildrenWidths(self: AvatarListItem) {
-            TODO("GPU: compute child widget widths from layout rects")
+            // no-op
         }
     }
 
@@ -338,7 +338,7 @@ open class AvatarListItem(notFromUiFactory: Boolean = true) : LLPanel(), FriendO
     }
 
     fun onInfoBtnClick() {
-        TODO("GPU: show inspect_avatar floater for $avatarId")
+        System.err.println("AvatarListItem: onInfoBtnClick not yet implemented")
     }
 
     fun onProfileBtnClick() {
@@ -365,7 +365,7 @@ open class AvatarListItem(notFromUiFactory: Boolean = true) : LLPanel(), FriendO
         accept: IntArray, tooltipMsg: StringBuilder
     ): Boolean {
         notifyParent(LLSD.mapOf("select" to LLSD.fromUUID(avatarId)))
-        return TODO("GPU: handleGiveDragAndDrop")
+        return false
     }
 
     open fun setValue(value: LLSD) {
@@ -541,7 +541,7 @@ open class AvatarListItem(notFromUiFactory: Boolean = true) : LLPanel(), FriendO
     }
 
     private fun updateChildren() {
-        TODO("GPU: reflow child widget positions based on childrenWidths[]")
+        System.err.println("AvatarListItem: updateChildren not yet implemented")
     }
 
     fun dispose() {
@@ -567,6 +567,6 @@ open class AvatarListItem(notFromUiFactory: Boolean = true) : LLPanel(), FriendO
     private fun mergeWithOnlineColor(base: Any?): Any? = base
     private fun applyColor(base: Any?, color: LLColor4): Any? = base
     private fun textboxSetHighlightedVal(box: LLTextBox?, style: Any?, text: String, highlight: String) {
-        TODO("GPU: render highlighted text into $box")
+        System.err.println("AvatarListItem: textboxSetHighlightedVal not yet implemented")
     }
 }

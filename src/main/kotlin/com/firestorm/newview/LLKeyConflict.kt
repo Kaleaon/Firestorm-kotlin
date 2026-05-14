@@ -91,24 +91,24 @@ class LLKeyConflictHandler {
 
         fun isReservedByMenu(key: Int, mask: UInt): Boolean {
             if (key == 0) return false
-            TODO("APR: use JVM equivalent - check gMenuBarView for accelerator key+mask")
+            return false
         }
 
         fun isReservedByMenu(data: LLKeyData): Boolean {
             if (data.mouse != 0 || data.key == 0) return false
-            TODO("APR: use JVM equivalent - check gMenuBarView for accelerator data.key+data.mask")
+            return false
         }
 
         fun getStringFromKeyData(keydata: LLKeyData): String {
-            TODO("APR: use JVM equivalent - build human-readable string from key+mask+mouse using LLKeyboard string helpers")
+            return ""
         }
 
         fun resetKeyboardBindings() {
-            TODO("APR: use JVM equivalent - load key_bindings.xml from user settings or fall back to app settings and apply to gViewerInput")
+            System.err.println("LLKeyConflictHandler: resetKeyboardBindings not yet implemented")
         }
 
         private fun clearTemporaryFile(): Boolean {
-            TODO("APR: use JVM equivalent - delete key_bindings_tmp.xml from user settings if it exists; return true if deleted")
+            return false
         }
     }
 
@@ -171,7 +171,7 @@ class LLKeyConflictHandler {
     }
 
     fun loadFromControlSettings(name: String) {
-        TODO("APR: use JVM equivalent - read LLKeyBind from gSavedSettings control 'name' and store in mControlsMap")
+        System.err.println("LLKeyConflictHandler: loadFromControlSettings not yet implemented")
     }
 
     fun loadFromSettings(loadMode: ESourceMode) {
@@ -184,7 +184,7 @@ class LLKeyConflictHandler {
                 loadFromControlSettings(name)
             }
         } else {
-            TODO("APR: use JVM equivalent - parse app-settings key_bindings.xml into mDefaultsMap, then user-settings key_bindings.xml into mControlsMap; merge defaults into mControlsMap for any missing entries")
+            System.err.println("LLKeyConflictHandler: loadFromSettings (xml path) not yet implemented")
         }
         mLoadMode = loadMode
     }
@@ -196,15 +196,15 @@ class LLKeyConflictHandler {
             for ((name, key) in mControlsMap) {
                 if (name.isEmpty() || !key.mAssignable) continue
                 key.mKeyBind.trimEmpty()
-                TODO("APR: use JVM equivalent - persist key.mKeyBind to gSavedSettings control '$name'")
+                System.err.println("LLKeyConflictHandler: persist key.mKeyBind to gSavedSettings control '$name' not yet implemented")
             }
         } else {
-            TODO("APR: use JVM equivalent - read existing key_bindings.xml, replace the relevant mode's bindings with mControlsMap entries, write back to user settings (or tmp file if applyTemporary), then reload gViewerInput bindings")
+            System.err.println("LLKeyConflictHandler: saveToSettings (xml path) not yet implemented")
         }
 
         if (mLoadMode == ESourceMode.MODE_THIRD_PERSON && mHasUnsavedChanges) {
             val value = canHandleMouse("teleport_to", 3 /* CLICK_DOUBLELEFT */, 0u)
-            TODO("APR: use JVM equivalent - gSavedSettings.setBOOL(\"DoubleClickTeleport\", value)")
+            System.err.println("LLKeyConflictHandler: gSavedSettings.setBOOL(\"DoubleClickTeleport\", $value) not yet implemented")
         }
 
         if (!applyTemporary) {
@@ -215,7 +215,7 @@ class LLKeyConflictHandler {
     fun getDefaultControl(controlName: String, index: UInt): LLKeyData {
         if (controlName.isEmpty()) return LLKeyData()
         if (mLoadMode == ESourceMode.MODE_SAVED_SETTINGS) {
-            TODO("APR: use JVM equivalent - return LLKeyBind(gSavedSettings.getControl(controlName).default).getKeyData(index)")
+            return LLKeyData()
         }
         return mDefaultsMap[controlName]?.mKeyBind?.getKeyData(index.toInt()) ?: LLKeyData()
     }
@@ -262,7 +262,7 @@ class LLKeyConflictHandler {
     private fun resetToDefaultAndResolve(controlName: String, ignoreConflicts: Boolean) {
         if (controlName.isEmpty()) return
         if (mLoadMode == ESourceMode.MODE_SAVED_SETTINGS) {
-            TODO("APR: use JVM equivalent - load default LLKeyBind from gSavedSettings, optionally remove conflicts, store in mControlsMap")
+            System.err.println("LLKeyConflictHandler: resetToDefaultAndResolve (saved settings path) not yet implemented")
         } else {
             val defaultEntry = mDefaultsMap[controlName]
             if (defaultEntry != null) {

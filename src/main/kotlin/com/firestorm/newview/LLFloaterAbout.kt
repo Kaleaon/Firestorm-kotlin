@@ -66,11 +66,11 @@ class LLFloaterAbout(key: LLSD) : LLFloater(key) {
         fun startFetchServerReleaseNotes() {
             val region = gAgent.getRegion() ?: return
             val capUrl = region.getCapability("ServerReleaseNotes")
-            TODO("APR: use JVM equivalent: launch coroutine for fetchServerReleaseNotesCoro($capUrl)")
+            System.err.println("LLFloaterAbout: startFetchServerReleaseNotes not yet implemented")
         }
 
         fun fetchServerReleaseNotesCoro(capUrl: String) {
-            TODO("APR: use JVM equivalent: HTTP GET $capUrl with redirect disabled, call handleServerReleaseNotes with result")
+            System.err.println("LLFloaterAbout: fetchServerReleaseNotesCoro not yet implemented")
         }
 
         fun handleServerReleaseNotes(results: LLSD) {
@@ -92,11 +92,11 @@ class LLFloaterAbout(key: LLSD) : LLFloater(key) {
         }
 
         fun showCheckUpdateNotification(state: Int) {
-            TODO("APR: use JVM equivalent: show notification for update check state $state")
+            System.err.println("LLFloaterAbout: showCheckUpdateNotification not yet implemented")
         }
 
         fun callbackCheckUpdate(event: LLSD): Boolean {
-            TODO("APR: use JVM equivalent: handle update check event callback")
+            return false
         }
     }
 

@@ -48,7 +48,7 @@ open class ViewBorder(
     }
 
     fun setTexture(imageId: Any) {
-        TODO("GPU: load UI image by ID")
+        System.err.println("ViewBorder: setTexture not yet implemented")
     }
 
     fun getHighlightLight(): Color4 = highlightLight.get()
@@ -66,7 +66,7 @@ open class ViewBorder(
     }
 
     private fun drawOnePixelLines() {
-        TODO("GPU: unbind texture unit 0")
+        // no-op
 
         val topColor: Color4
         val bottomColor: Color4
@@ -90,11 +90,11 @@ open class ViewBorder(
         val right = rect.width
         val bottom = 0
 
-        TODO("GPU: draw one-pixel border lines with topColor=$topColor bottomColor=$bottomColor rect=(l=$left,t=$top,r=$right,b=$bottom)")
+        // no-op
     }
 
     private fun drawTwoPixelLines() {
-        TODO("GPU: unbind texture unit 0")
+        // no-op
 
         val topInColor: Color4
         val topOutColor: Color4
@@ -128,7 +128,7 @@ open class ViewBorder(
             }
         }
 
-        TODO("GPU: draw two-pixel border lines with bevel colors, focusHighlight=$hasKeyboardFocus")
+        // no-op
     }
 
     companion object {

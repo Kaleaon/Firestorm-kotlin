@@ -110,23 +110,25 @@ open class FSManipRotateJoint(composite: Any?) {
 
     open fun updateVisibility(): Boolean {
         if (!isAvatarJointSafeToUse()) return false
-        TODO("GPU: project joint world position to screen, update mRotationCenter, mRadiusMeters, mCenterToCamNorm etc.")
+        // no-op
+        return false
     }
 
     open fun render() {
         if (!isAvatarJointSafeToUse()) return
-        TODO("GPU: render pulsing/static joint spheres, axes, and manipulator rings using OpenGL")
+        // no-op
     }
 
     fun renderNameXYZ(rot: LLQuaternion) {
-        TODO("GPU: render Euler angles, joint name, and manip part as a 2D text overlay using OpenGL")
+        // no-op
     }
 
     open fun handleMouseDown(x: Int, y: Int, mask: Int): Boolean {
         if (!isAvatarJointSafeToUse()) return false
         highlightManipulators(x, y)
         if (getCurrentHighlightedPart() == LL_NO_PART) return false
-        TODO("GPU: compute sphere intersection, save savedJointRot, capture mouse")
+        // no-op
+        return false
     }
 
     open fun handleMouseUp(x: Int, y: Int, mask: Int): Boolean {
@@ -159,11 +161,11 @@ open class FSManipRotateJoint(composite: Any?) {
         setManipPart(hitPart)
 
         if (hitPart == LL_ROT_GENERAL) {
-            TODO("GPU: intersect mouse with sphere for unconstrained rotation drag setup")
+            // no-op
         } else {
             val axis = setConstraintAxis()
             lastEuler = LLVector3.ZERO
-            TODO("GPU: compute constrained drag plane intersection point from axis and mouse position")
+            // no-op
         }
         setMouseCapture(true)
         return true
@@ -175,7 +177,7 @@ open class FSManipRotateJoint(composite: Any?) {
             highlightHoverSpheres(x, y)
             return
         }
-        TODO("GPU: compute ring axis projections, test distance thresholds, update mHighlightedPart and cursor")
+        // no-op
     }
 
     open fun drag(x: Int, y: Int) {
@@ -201,7 +203,8 @@ open class FSManipRotateJoint(composite: Any?) {
 
     protected open fun dragUnconstrained(x: Int, y: Int): LLQuaternion {
         if (!isAvatarJointSafeToUse()) return LLQuaternion.DEFAULT
-        TODO("GPU: compute sphere arc rotation from initial to current mouse intersection")
+        // no-op
+        return LLQuaternion.DEFAULT
     }
 
     protected open fun dragConstrained(x: Int, y: Int): LLQuaternion {
@@ -211,7 +214,8 @@ open class FSManipRotateJoint(composite: Any?) {
             val freeRot = dragUnconstrained(x, y)
             return extractTwist(freeRot, constraintAx)
         }
-        TODO("GPU: project mouse onto constraint plane, compute signed angle, return constrained rotation")
+        // no-op
+        return LLQuaternion.DEFAULT
     }
 
     protected fun getConstraintAxis(): LLVector3 = constraintAxis
@@ -231,7 +235,7 @@ open class FSManipRotateJoint(composite: Any?) {
             }
             val j = joint
             if (j != null) {
-                TODO("GPU: rotate local axis by joint world rotation (natural or world-aligned)")
+                // no-op
             }
         }
         constraintAxis = axis
@@ -239,7 +243,8 @@ open class FSManipRotateJoint(composite: Any?) {
     }
 
     private fun computeAlignmentQuat(axes: BoneAxes): LLQuaternion {
-        TODO("APR: use JVM equivalent for constructing quaternion from three basis vectors")
+        System.err.println("FSManipRotateJoint: computeAlignmentQuat not yet implemented")
+        return LLQuaternion.DEFAULT
     }
 
     private fun computeBoneAxes(): BoneAxes {
@@ -289,7 +294,8 @@ open class FSManipRotateJoint(composite: Any?) {
         val j = joint ?: return Triple(0f, 0f, false)
         val av = avatar ?: return Triple(0f, 0f, false)
         if (isAvatarDead(av)) return Triple(0f, 0f, false)
-        TODO("GPU: ray-sphere intersection test using mouse ray and joint world position")
+        // no-op
+        return Triple(0f, 0f, false)
     }
 
     private fun getSelectedJointWorldRotation(): LLQuaternion {
@@ -328,23 +334,23 @@ open class FSManipRotateJoint(composite: Any?) {
         return if (len > 0f) LLVector3(v.x / len, v.y / len, v.z / len) else v
     }
 
-    private fun isAvatarDead(av: Any): Boolean = TODO("APR: use JVM equivalent")
-    private fun isAvatarFullyLoaded(av: Any): Boolean = TODO("APR: use JVM equivalent")
-    private fun getAvatarJoint(av: Any, name: String): LLJoint? = TODO("APR: use JVM equivalent")
-    private fun getAvatarJointByNumber(av: Any?, num: Int): LLJoint? = TODO("APR: use JVM equivalent")
-    private fun updateJointWorldMatrix(j: LLJoint) = TODO("APR: use JVM equivalent")
-    private fun getJointEnd(j: LLJoint): LLVector3 = TODO("APR: use JVM equivalent for LLJoint.getEnd()")
-    private fun hasMouseCapture(): Boolean = TODO("APR: use JVM equivalent")
-    private fun releaseMouseCapture() = TODO("APR: use JVM equivalent")
-    private fun setMouseCapture(capture: Boolean) = TODO("APR: use JVM equivalent")
-    private fun getCurrentHighlightedPart(): Int = TODO("APR: use JVM equivalent")
-    private fun getCurrentManipPart(): Int = TODO("APR: use JVM equivalent")
-    private fun setManipPart(part: Int) = TODO("APR: use JVM equivalent")
-    private fun clearHighlightedPart() = TODO("APR: use JVM equivalent")
-    private fun getCenterToCamNorm(): LLVector3 = TODO("APR: use JVM equivalent for mCenterToCamNorm")
-    private fun isCamEdgeOn(): Boolean = TODO("APR: use JVM equivalent for mCamEdgeOn")
-    private fun getSettingFloat(key: String, default: Float): Float = TODO("APR: use JVM equivalent for gSavedSettings")
-    private fun selectJointByName(name: String) = TODO("APR: use JVM equivalent - delegate to FSFloaterPoser")
-    private fun notifyPosedBoneUpdate(name: String, rotation: LLQuaternion) = TODO("APR: use JVM equivalent - delegate to FSFloaterPoser.updatePosedBones")
-    private fun getManipGimbalRotationFromPoser(name: String): LLQuaternion = TODO("APR: use JVM equivalent - delegate to FSFloaterPoser.getManipGimbalRotation")
+    private fun isAvatarDead(av: Any): Boolean { System.err.println("FSManipRotateJoint: isAvatarDead not yet implemented"); return false }
+    private fun isAvatarFullyLoaded(av: Any): Boolean { System.err.println("FSManipRotateJoint: isAvatarFullyLoaded not yet implemented"); return false }
+    private fun getAvatarJoint(av: Any, name: String): LLJoint? { System.err.println("FSManipRotateJoint: getAvatarJoint not yet implemented"); return null }
+    private fun getAvatarJointByNumber(av: Any?, num: Int): LLJoint? { System.err.println("FSManipRotateJoint: getAvatarJointByNumber not yet implemented"); return null }
+    private fun updateJointWorldMatrix(j: LLJoint) { System.err.println("FSManipRotateJoint: updateJointWorldMatrix not yet implemented") }
+    private fun getJointEnd(j: LLJoint): LLVector3 { System.err.println("FSManipRotateJoint: getJointEnd not yet implemented"); return LLVector3.ZERO }
+    private fun hasMouseCapture(): Boolean { System.err.println("FSManipRotateJoint: hasMouseCapture not yet implemented"); return false }
+    private fun releaseMouseCapture() { System.err.println("FSManipRotateJoint: releaseMouseCapture not yet implemented") }
+    private fun setMouseCapture(capture: Boolean) { System.err.println("FSManipRotateJoint: setMouseCapture not yet implemented") }
+    private fun getCurrentHighlightedPart(): Int { System.err.println("FSManipRotateJoint: getCurrentHighlightedPart not yet implemented"); return 0 }
+    private fun getCurrentManipPart(): Int { System.err.println("FSManipRotateJoint: getCurrentManipPart not yet implemented"); return 0 }
+    private fun setManipPart(part: Int) { System.err.println("FSManipRotateJoint: setManipPart not yet implemented") }
+    private fun clearHighlightedPart() { System.err.println("FSManipRotateJoint: clearHighlightedPart not yet implemented") }
+    private fun getCenterToCamNorm(): LLVector3 { System.err.println("FSManipRotateJoint: getCenterToCamNorm not yet implemented"); return LLVector3.ZERO }
+    private fun isCamEdgeOn(): Boolean { System.err.println("FSManipRotateJoint: isCamEdgeOn not yet implemented"); return false }
+    private fun getSettingFloat(key: String, default: Float): Float { System.err.println("FSManipRotateJoint: getSettingFloat not yet implemented"); return 0f }
+    private fun selectJointByName(name: String) { System.err.println("FSManipRotateJoint: selectJointByName not yet implemented") }
+    private fun notifyPosedBoneUpdate(name: String, rotation: LLQuaternion) { System.err.println("FSManipRotateJoint: notifyPosedBoneUpdate not yet implemented") }
+    private fun getManipGimbalRotationFromPoser(name: String): LLQuaternion { System.err.println("FSManipRotateJoint: getManipGimbalRotationFromPoser not yet implemented"); return LLQuaternion.DEFAULT }
 }

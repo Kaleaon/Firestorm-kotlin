@@ -27,7 +27,7 @@ class FetchAvatarData(
     private val inspector: InspectAvatar
 ) {
     init {
-        TODO("APR: register as observer on AvatarPropertiesProcessor for avatarId; send properties request (legacy if OpenSim without AgentProfile cap)")
+        System.err.println("FetchAvatarData: init not yet implemented")
     }
 
     fun processProperties(data: Any?, type: String) {
@@ -39,7 +39,7 @@ class FetchAvatarData(
     }
 
     fun destroy() {
-        TODO("APR: remove observer from AvatarPropertiesProcessor for avatarId")
+        System.err.println("FetchAvatarData: destroy not yet implemented")
     }
 }
 
@@ -80,25 +80,26 @@ class InspectAvatar(avatarIdData: Map<String, Any?>) : Inspect() {
         enableCallbacks["InspectAvatar.VisibleFreeze"] = ::onVisibleFreeze
         enableCallbacks["InspectAvatar.VisibleZoomIn"] = ::onVisibleZoomIn
         enableCallbacks["InspectAvatar.Gear.Enable"] = ::isNotFriend
-        enableCallbacks["InspectAvatar.Gear.EnableCall"] = { TODO("APR: LLAvatarActions.canCall()") }
+        enableCallbacks["InspectAvatar.Gear.EnableCall"] = { System.err.println("InspectAvatar: EnableCall not yet implemented"); false }
         enableCallbacks["InspectAvatar.Gear.EnableTeleportOffer"] = ::enableTeleportOffer
         enableCallbacks["InspectAvatar.Gear.EnableTeleportRequest"] = ::enableTeleportRequest
         enableCallbacks["InspectAvatar.Gear.EnablePay"] = ::enablePay
         enableCallbacks["InspectAvatar.EnableMute"] = ::enableMute
         enableCallbacks["InspectAvatar.EnableUnmute"] = ::enableUnmute
 
-        TODO("APR: register with LLTransientFloaterMgr::GLOBAL")
+        System.err.println("InspectAvatar: init registration not yet implemented")
     }
 
     fun postBuild(): Boolean {
-        TODO("APR: wire add_friend_btn, view_profile_btn, mute_btn, volume_slider UI controls to their callbacks")
+        System.err.println("InspectAvatar: postBuild not yet implemented")
+        return false
     }
 
     override fun onOpen(data: Map<String, Any?>) {
         super.onOpen(data)
         avatarId = data["avatar_id"] as? UUID ?: UUID(0, 0)
 
-        TODO("APR: show/hide gear_btn vs gear_self_btn based on whether avatarId == agentId")
+        System.err.println("InspectAvatar: onOpen gear_btn logic not yet implemented")
 
         repositionInspector(data)
         requestUpdate()
@@ -107,177 +108,188 @@ class InspectAvatar(avatarIdData: Map<String, Any?>) : Inspect() {
     }
 
     fun onClose(appQuitting: Boolean) {
-        TODO("APR: hide gear_btn and gear_self_btn menus")
+        System.err.println("InspectAvatar: onClose not yet implemented")
     }
 
     fun onMouseLeave(x: Int, y: Int, mask: Int) {
-        TODO("APR: only unpause fade timer if neither gear menu nor gear_self menu is visible and no child popup menu is visible")
+        System.err.println("InspectAvatar: onMouseLeave not yet implemented")
     }
 
     private fun requestUpdate() {
         if (avatarId == UUID(0, 0)) {
-            TODO("APR: if startup state >= STATE_STARTED, close floater for null avatar")
+            System.err.println("InspectAvatar: requestUpdate null-avatar close not yet implemented")
             return
         }
 
-        TODO("APR: clear user_name, user_name_small, user_slid, user_subtitle, user_details UI controls")
+        System.err.println("InspectAvatar: requestUpdate UI clear not yet implemented")
 
         propertiesRequest?.destroy()
         propertiesRequest = FetchAvatarData(avatarId, this)
 
-        TODO("APR: show/hide add_friend_btn and im_btn based on isFriend and isSelf; remove avatarId from icon cache; request avatar name from cache")
+        System.err.println("InspectAvatar: requestUpdate friend/self UI not yet implemented")
     }
 
     fun processAvatarData(data: AvatarData) {
-        TODO("APR: format and display born_on, age, SL/RW profiles, account type, payment info in user_subtitle and user_details controls; delete propertiesRequest")
+        System.err.println("InspectAvatar: processAvatarData not yet implemented")
     }
 
     private fun updateVolumeSlider() {
-        TODO("APR: hide mute_btn and volume_slider if not in voice with this avatar; otherwise set mute state and volume from VoiceClient")
+        System.err.println("InspectAvatar: updateVolumeSlider not yet implemented")
     }
 
     private fun updateModeratorPanel() {
-        TODO("APR: show/hide moderator panel based on current voice channel session and speaker manager moderator state")
+        System.err.println("InspectAvatar: updateModeratorPanel not yet implemented")
     }
 
     private fun toggleSelectedVoice(enabled: Boolean) {
-        TODO("APR: POST mute-update to ChatSessionRequest capability; close floater")
+        System.err.println("InspectAvatar: toggleSelectedVoice not yet implemented")
     }
 
     private fun onClickAddFriend() {
-        TODO("APR: LLAvatarActions.requestFriendshipDialog(avatarId, displayName); close floater")
+        System.err.println("InspectAvatar: onClickAddFriend not yet implemented")
     }
 
     private fun onClickViewProfile() {
-        TODO("APR: LLAvatarActions.showProfile(avatarId); close floater")
+        System.err.println("InspectAvatar: onClickViewProfile not yet implemented")
     }
 
     private fun isNotFriend(): Boolean {
-        TODO("APR: return !LLAvatarActions.isFriend(avatarId)")
+        System.err.println("InspectAvatar: isNotFriend not yet implemented")
+        return false
     }
 
     private fun onVisibleFindOnMap(): Boolean {
-        TODO("APR: return gAgent.isGodlike() || is_agent_mappable(avatarId)")
+        System.err.println("InspectAvatar: onVisibleFindOnMap not yet implemented")
+        return false
     }
 
     private fun onVisibleEject(): Boolean {
-        TODO("APR: return enable_freeze_eject(avatarId)")
+        System.err.println("InspectAvatar: onVisibleEject not yet implemented")
+        return false
     }
 
     private fun onVisibleFreeze(): Boolean {
-        TODO("APR: return gAgent.isGodlike() || enable_freeze_eject(avatarId)")
+        System.err.println("InspectAvatar: onVisibleFreeze not yet implemented")
+        return false
     }
 
     private fun onVisibleZoomIn(): Boolean {
-        TODO("APR: return gObjectList.findObject(avatarId) != null")
+        System.err.println("InspectAvatar: onVisibleZoomIn not yet implemented")
+        return false
     }
 
     private fun onClickIM() {
-        TODO("APR: LLAvatarActions.startIM(avatarId); close floater")
+        System.err.println("InspectAvatar: onClickIM not yet implemented")
     }
 
     private fun onClickCall() {
-        TODO("APR: LLAvatarActions.startCall(avatarId); close floater")
+        System.err.println("InspectAvatar: onClickCall not yet implemented")
     }
 
     private fun onClickTeleport() {
-        TODO("APR: LLAvatarActions.offerTeleport(avatarId); close floater")
+        System.err.println("InspectAvatar: onClickTeleport not yet implemented")
     }
 
     private fun onClickTeleportRequest() {
-        TODO("APR: LLAvatarActions.teleportRequest(avatarId); close floater")
+        System.err.println("InspectAvatar: onClickTeleportRequest not yet implemented")
     }
 
     private fun onClickInviteToGroup() {
-        TODO("APR: LLAvatarActions.inviteToGroup(avatarId); close floater")
+        System.err.println("InspectAvatar: onClickInviteToGroup not yet implemented")
     }
 
     private fun onClickFaceTowards() {
-        TODO("APR: find LLVOAvatar for avatarId and call FSAvatarAlignBase.getActive().faceAvatar(); close floater")
+        System.err.println("InspectAvatar: onClickFaceTowards not yet implemented")
     }
 
     private fun onClickPay() {
-        TODO("APR: LLAvatarActions.pay(avatarId); close floater")
+        System.err.println("InspectAvatar: onClickPay not yet implemented")
     }
 
     private fun onClickShare() {
-        TODO("APR: LLAvatarActions.share(avatarId); close floater")
+        System.err.println("InspectAvatar: onClickShare not yet implemented")
     }
 
     private fun onToggleMute() {
-        TODO("APR: toggle full mute via LLMuteList for avatarId; show blocked list panel; close floater")
+        System.err.println("InspectAvatar: onToggleMute not yet implemented")
     }
 
     fun onClickMuteVolume() {
-        TODO("APR: toggle voice-chat-only mute via LLMuteList for avatarId; call updateVolumeSlider()")
+        System.err.println("InspectAvatar: onClickMuteVolume not yet implemented")
     }
 
     fun onVolumeChange(volume: Float) {
-        TODO("APR: LLVoiceClient.setUserVolume(avatarId, volume)")
+        System.err.println("InspectAvatar: onVolumeChange not yet implemented")
     }
 
     private fun onClickReport() {
-        TODO("APR: LLFloaterReporter.showFromAvatar(avatarId, completeName); close floater")
+        System.err.println("InspectAvatar: onClickReport not yet implemented")
     }
 
     private fun onClickFreeze() {
-        TODO("APR: if godlike show FreezeAvatar confirmation with freeze/unfreeze options; else handle_avatar_freeze(avatarId); close floater")
+        System.err.println("InspectAvatar: onClickFreeze not yet implemented")
     }
 
     private fun onClickEject() {
-        TODO("APR: handle_avatar_eject(avatarId); close floater")
+        System.err.println("InspectAvatar: onClickEject not yet implemented")
     }
 
     private fun onClickKick() {
-        TODO("APR: LLAvatarActions.kick(avatarId); close floater")
+        System.err.println("InspectAvatar: onClickKick not yet implemented")
     }
 
     private fun onClickCSR() {
-        TODO("APR: fetch avatar name, then LLAvatarActions.csr(avatarId, userName); close floater")
+        System.err.println("InspectAvatar: onClickCSR not yet implemented")
     }
 
     private fun onClickZoomIn() {
-        TODO("APR: handle_zoom_to_object(avatarId); close floater")
+        System.err.println("InspectAvatar: onClickZoomIn not yet implemented")
     }
 
     private fun onClickFindOnMap() {
-        TODO("APR: gFloaterWorldMap.trackAvatar(avatarId, displayName); show world_map floater")
+        System.err.println("InspectAvatar: onClickFindOnMap not yet implemented")
     }
 
     private fun enableMute(): Boolean {
         val isLinden = avatarName.displayName.endsWith(" Linden")
-        TODO("APR: return !isLinden && avatarId != agentId && !LLMuteList.isMuted(avatarId, displayName)")
+        System.err.println("InspectAvatar: enableMute not yet implemented")
+        return false
     }
 
     private fun enableUnmute(): Boolean {
         val isLinden = avatarName.displayName.endsWith(" Linden")
-        TODO("APR: return !isLinden && avatarId != agentId && LLMuteList.isMuted(avatarId, displayName)")
+        System.err.println("InspectAvatar: enableUnmute not yet implemented")
+        return false
     }
 
     private fun enableTeleportOffer(): Boolean {
-        TODO("APR: return LLAvatarActions.canOfferTeleport(avatarId)")
+        System.err.println("InspectAvatar: enableTeleportOffer not yet implemented")
+        return false
     }
 
     private fun enableTeleportRequest(): Boolean {
-        TODO("APR: return LLAvatarActions.canRequestTeleport(avatarId)")
+        System.err.println("InspectAvatar: enableTeleportRequest not yet implemented")
+        return false
     }
 
     private fun enablePay(): Boolean {
-        TODO("APR: return RlvActions.canPayAvatar(avatarId)")
+        System.err.println("InspectAvatar: enablePay not yet implemented")
+        return false
     }
 
     private fun godModeEnabled(): Boolean {
-        TODO("APR: return gAgent.isGodlike()")
+        System.err.println("InspectAvatar: godModeEnabled not yet implemented")
+        return false
     }
 
     fun onAvatarNameCache(agentId: UUID, avName: AvatarName) {
         if (agentId != avatarId) return
-        TODO("APR: set user_name, user_name_small, user_slid controls; show small name if text too wide for control rect")
+        System.err.println("InspectAvatar: onAvatarNameCache not yet implemented")
     }
 
     companion object {
         fun registerFloater() {
-            TODO("APR: LLFloaterReg.add(\"inspect_avatar\", \"inspect_avatar.xml\", build<InspectAvatar>)")
+            System.err.println("InspectAvatar: registerFloater not yet implemented")
         }
     }
 }

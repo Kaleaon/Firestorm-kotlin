@@ -124,7 +124,7 @@ class LLFloaterLandHoldings(key: LLSD) : LLFloater(key) {
 
     override fun onOpen(key: LLSD) {
         getChild<LLScrollListCtrl>("parcel list")?.clearRows()
-        TODO("APR: use JVM equivalent for send_places_query with DFQ_AGENT_OWNED to request owned parcels")
+        System.err.println("LLFloaterLandHoldings: onOpen send_places_query not yet implemented")
     }
 
     override fun draw() {

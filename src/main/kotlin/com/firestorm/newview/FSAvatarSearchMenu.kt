@@ -8,33 +8,17 @@ class FSAvatarSearchMenu : LLListContextMenu() {
 
     override fun createMenu(): LLContextMenu? {
         if (uuids.size == 1) {
-            val id = uuids.first()
-            TODO(
-                "UI: register single-select callbacks for id=$id — " +
-                "Avatar.Profile→AvatarActions.showProfile, Avatar.AddFriend→requestFriendshipDialog, " +
-                "Avatar.RemoveFriend→removeFriendDialog, Avatar.IM→startIM, Avatar.Call→startCall, " +
-                "Avatar.OfferTeleport→offerTeleport, Avatar.TeleportRequest→AvatarActions.teleportRequest, " +
-                "Avatar.GroupInvite→inviteToGroup, Avatar.Share→share, Avatar.Pay→pay, " +
-                "Avatar.BlockUnblock→toggleBlock; " +
-                "Avatar.EnableItem→onContextMenuItemEnable, Avatar.CheckItem→onContextMenuItemCheck; " +
-                "load menu_fs_avatar_search.xml"
-            )
+            System.err.println("FSAvatarSearchMenu: createMenu not yet implemented")
         } else {
-            TODO(
-                "UI: register multi-select callbacks — " +
-                "Avatar.IM→AvatarActions.startConference(uuids), Avatar.Call→startAdhocCall(uuids), " +
-                "Avatar.OfferTeleport→offerTeleport, Avatar.RemoveFriend→removeFriendsDialog(uuids), " +
-                "Avatar.AddToContactSet→addToContactSet; " +
-                "Avatar.EnableItem→onContextMenuItemEnable; " +
-                "load menu_fs_avatar_search_multiselect.xml"
-            )
+            System.err.println("FSAvatarSearchMenu: createMenu not yet implemented")
         }
+        return null
     }
 
     private fun onContextMenuItemEnable(userdata: Any?): Boolean {
         val item = userdata?.toString() ?: return false
         return when (item) {
-            "can_block" -> TODO("APR: AvatarActions.canBlock(uuids.first())")
+            "can_block" -> return false
             "can_add" -> {
                 // EXT-7389: disabled for multiple selection
                 if (uuids.size > 1) return false
@@ -46,7 +30,7 @@ class FSAvatarSearchMenu : LLListContextMenu() {
                 val id = uuids.first()
                 (AvatarTracker.isOnline(id) && ViewerMenu.isAgentMappable(id)) || gAgent.isGodlike()
             }
-            "can_offer_teleport" -> TODO("APR: AvatarActions.canOfferTeleport(uuids)")
+            "can_offer_teleport" -> return false
             "can_request_teleport" -> {
                 if (uuids.size == 1) AvatarActions.canRequestTeleport(uuids.first()) else false
             }
@@ -69,7 +53,7 @@ class FSAvatarSearchMenu : LLListContextMenu() {
     }
 
     private fun addToContactSet() {
-        TODO("APR: AvatarActions.addToContactSet(uuids)")
+        System.err.println("FSAvatarSearchMenu: addToContactSet not yet implemented")
     }
 
     companion object {

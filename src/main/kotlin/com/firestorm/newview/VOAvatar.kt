@@ -289,7 +289,7 @@ open class VOAvatar(id: LLUUID, localId: UInt, regionHandle: ULong = 0uL)
     // ---------------------------------------------------------------------------
 
     open fun markDead() {
-        TODO("APR: markDead — clean up name text, voice visualizer, callbacks")
+        System.err.println("VOAvatar: markDead not yet implemented")
     }
 
     open fun initInstance() {
@@ -302,22 +302,22 @@ open class VOAvatar(id: LLUUID, localId: UInt, regionHandle: ULong = 0uL)
     }
 
     open fun updateGL() {
-        TODO("GPU: updateGL — upload pending texture data to GPU")
+        System.err.println("VOAvatar: updateGL not yet implemented")
     }
 
     // ---------------------------------------------------------------------------
     // Character interface
     // ---------------------------------------------------------------------------
 
-    open fun getCharacterPosition(): Vector3 = TODO("getCharacterPosition")
-    open fun getCharacterRotation(): FloatArray = TODO("getCharacterRotation: quaternion")
-    open fun getCharacterVelocity(): Vector3 = TODO("getCharacterVelocity")
-    open fun getCharacterAngularVelocity(): Vector3 = TODO("getCharacterAngularVelocity")
+    open fun getCharacterPosition(): Vector3 = Vector3.ZERO
+    open fun getCharacterRotation(): FloatArray = floatArrayOf(0f, 0f, 0f, 1f)
+    open fun getCharacterVelocity(): Vector3 = Vector3.ZERO
+    open fun getCharacterAngularVelocity(): Vector3 = Vector3.ZERO
 
-    open fun getTimeDilation(): Float = TODO("getTimeDilation: from region")
-    open fun getPixelArea(): Float = TODO("getPixelArea")
-    open fun getPosGlobalFromAgent(pos: Vector3): Vector3d = TODO("getPosGlobalFromAgent")
-    open fun getPosAgentFromGlobal(posGlobal: Vector3d): Vector3 = TODO("getPosAgentFromGlobal")
+    open fun getTimeDilation(): Float = 1.0f
+    open fun getPixelArea(): Float = 0f
+    open fun getPosGlobalFromAgent(pos: Vector3): Vector3d = Vector3d.ZERO
+    open fun getPosAgentFromGlobal(posGlobal: Vector3d): Vector3 = Vector3.ZERO
 
     // ---------------------------------------------------------------------------
     // Full name
@@ -340,55 +340,55 @@ open class VOAvatar(id: LLUUID, localId: UInt, regionHandle: ULong = 0uL)
     // LOD
     // ---------------------------------------------------------------------------
 
-    open fun updateLOD(): Boolean = TODO("GPU: updateLOD — pick mesh LOD based on pixel area")
-    fun updateJointLODs(): Boolean = TODO("GPU: updateJointLODs")
-    fun updateLODRiggedAttachments() { TODO("GPU: updateLODRiggedAttachments") }
-    fun setCorrectedPixelArea(area: Float) { TODO("setCorrectedPixelArea area=$area") }
+    open fun updateLOD(): Boolean = false
+    fun updateJointLODs(): Boolean = false
+    fun updateLODRiggedAttachments() { System.err.println("VOAvatar: updateLODRiggedAttachments not yet implemented") }
+    fun setCorrectedPixelArea(area: Float) { System.err.println("VOAvatar: setCorrectedPixelArea not yet implemented") }
 
     // ---------------------------------------------------------------------------
     // Per-frame update
     // ---------------------------------------------------------------------------
 
     open fun idleUpdate(dt: Float) {
-        TODO("APR: idleUpdate — orchestrate all per-frame avatar work")
+        System.err.println("VOAvatar: idleUpdate not yet implemented")
     }
 
     open fun updateCharacter(dt: Float) {
-        TODO("APR: updateCharacter — physics, orientation, root position")
+        System.err.println("VOAvatar: updateCharacter not yet implemented")
     }
 
-    fun computeUpdatePeriod() { TODO("computeUpdatePeriod") }
-    fun updateOrientation(speed: Float, deltaTime: Float) { TODO("updateOrientation") }
-    fun updateTimeStep() { TODO("updateTimeStep") }
+    fun computeUpdatePeriod() { System.err.println("VOAvatar: computeUpdatePeriod not yet implemented") }
+    fun updateOrientation(speed: Float, deltaTime: Float) { System.err.println("VOAvatar: updateOrientation not yet implemented") }
+    fun updateTimeStep() { System.err.println("VOAvatar: updateTimeStep not yet implemented") }
     fun updateRootPositionAndRotation(speed: Float, wasSitGroundConstrained: Boolean) {
-        TODO("updateRootPositionAndRotation")
+        System.err.println("VOAvatar: updateRootPositionAndRotation not yet implemented")
     }
-    fun idleUpdateMisc(detailedUpdate: Boolean) { TODO("idleUpdateMisc") }
-    open fun idleUpdateAppearanceAnimation() { TODO("idleUpdateAppearanceAnimation") }
-    fun idleUpdateLipSync(voiceEnabled: Boolean) { TODO("idleUpdateLipSync") }
-    fun idleUpdateLoadingEffect() { TODO("idleUpdateLoadingEffect") }
-    fun idleUpdateWindEffect() { TODO("idleUpdateWindEffect") }
-    fun idleUpdateNameTag(rootPosLast: Vector3) { TODO("idleUpdateNameTag") }
-    fun idleUpdateNameTagText(newName: Boolean) { TODO("idleUpdateNameTagText") }
-    fun idleUpdateNameTagAlpha(newName: Boolean, alpha: Float) { TODO("idleUpdateNameTagAlpha") }
-    fun getNameTagColor(): FloatArray = TODO("getNameTagColor")
-    fun clearNameTag() { TODO("clearNameTag") }
+    fun idleUpdateMisc(detailedUpdate: Boolean) { System.err.println("VOAvatar: idleUpdateMisc not yet implemented") }
+    open fun idleUpdateAppearanceAnimation() { System.err.println("VOAvatar: idleUpdateAppearanceAnimation not yet implemented") }
+    fun idleUpdateLipSync(voiceEnabled: Boolean) { System.err.println("VOAvatar: idleUpdateLipSync not yet implemented") }
+    fun idleUpdateLoadingEffect() { System.err.println("VOAvatar: idleUpdateLoadingEffect not yet implemented") }
+    fun idleUpdateWindEffect() { System.err.println("VOAvatar: idleUpdateWindEffect not yet implemented") }
+    fun idleUpdateNameTag(rootPosLast: Vector3) { System.err.println("VOAvatar: idleUpdateNameTag not yet implemented") }
+    fun idleUpdateNameTagText(newName: Boolean) { System.err.println("VOAvatar: idleUpdateNameTagText not yet implemented") }
+    fun idleUpdateNameTagAlpha(newName: Boolean, alpha: Float) { System.err.println("VOAvatar: idleUpdateNameTagAlpha not yet implemented") }
+    fun getNameTagColor(): FloatArray = floatArrayOf(1f, 1f, 1f, 1f)
+    fun clearNameTag() { System.err.println("VOAvatar: clearNameTag not yet implemented") }
     fun addNameTagLine(line: String, color: FloatArray, style: Int, font: Any?, useEllipses: Boolean = false, isName: Boolean = false) {
-        TODO("addNameTagLine")
+        System.err.println("VOAvatar: addNameTagLine not yet implemented")
     }
-    fun idleUpdateRenderComplexity() { TODO("idleUpdateRenderComplexity") }
-    fun idleUpdateDebugInfo() { TODO("idleUpdateDebugInfo") }
-    fun idleUpdateBelowWater() { TODO("idleUpdateBelowWater") }
-    fun idleUpdateVoiceVisualizer(voiceEnabled: Boolean, position: Vector3) { TODO("idleUpdateVoiceVisualizer") }
+    fun idleUpdateRenderComplexity() { System.err.println("VOAvatar: idleUpdateRenderComplexity not yet implemented") }
+    fun idleUpdateDebugInfo() { System.err.println("VOAvatar: idleUpdateDebugInfo not yet implemented") }
+    fun idleUpdateBelowWater() { System.err.println("VOAvatar: idleUpdateBelowWater not yet implemented") }
+    fun idleUpdateVoiceVisualizer(voiceEnabled: Boolean, position: Vector3) { System.err.println("VOAvatar: idleUpdateVoiceVisualizer not yet implemented") }
 
     // ---------------------------------------------------------------------------
     // Appearance
     // ---------------------------------------------------------------------------
 
     fun startAppearanceAnimation() { appearanceAnimating = true }
-    fun hideHair() { TODO("hideHair") }
-    fun hideSkirt() { TODO("hideSkirt") }
-    fun bodySizeChanged() { TODO("bodySizeChanged") }
+    fun hideHair() { System.err.println("VOAvatar: hideHair not yet implemented") }
+    fun hideSkirt() { System.err.println("VOAvatar: hideSkirt not yet implemented") }
+    fun bodySizeChanged() { System.err.println("VOAvatar: bodySizeChanged not yet implemented") }
     fun getIsAppearanceAnimating(): Boolean = appearanceAnimating
 
     fun isUsingLocalAppearance(): Boolean = useLocalAppearance
@@ -405,8 +405,8 @@ open class VOAvatar(id: LLUUID, localId: UInt, regionHandle: ULong = 0uL)
     fun setOverallAppearanceJellyDoll() { overallAppearance = AvatarOverallAppearance.JELLYDOLL; updateOverallAppearanceAnimations() }
     fun setOverallAppearanceInvisible() { overallAppearance = AvatarOverallAppearance.INVISIBLE }
 
-    fun updateOverallAppearance() { TODO("updateOverallAppearance") }
-    fun updateOverallAppearanceAnimations() { TODO("updateOverallAppearanceAnimations") }
+    fun updateOverallAppearance() { System.err.println("VOAvatar: updateOverallAppearance not yet implemented") }
+    fun updateOverallAppearanceAnimations() { System.err.println("VOAvatar: updateOverallAppearanceAnimations not yet implemented") }
 
     // ---------------------------------------------------------------------------
     // Visual mute
@@ -417,11 +417,12 @@ open class VOAvatar(id: LLUUID, localId: UInt, regionHandle: ULong = 0uL)
         visualComplexityStale = true
     }
 
-    fun isVisuallyMuted(): Boolean = TODO("isVisuallyMuted: checks mute list + complexity + setting")
+    fun isVisuallyMuted(): Boolean = false
     fun isInMuteList(): Boolean {
-        TODO("APR: isInMuteList — check LLMuteList with cache")
+        System.err.println("VOAvatar: isInMuteList not yet implemented")
+        return false
     }
-    fun isRlvSilhouette(): Boolean = TODO("isRlvSilhouette")
+    fun isRlvSilhouette(): Boolean = false
 
     // ---------------------------------------------------------------------------
     // Visual complexity
@@ -429,26 +430,26 @@ open class VOAvatar(id: LLUUID, localId: UInt, regionHandle: ULong = 0uL)
 
     fun getVisualComplexity(): UInt = visualComplexity
     fun updateVisualComplexity() { visualComplexityStale = true }
-    fun calculateUpdateRenderComplexity() { TODO("calculateUpdateRenderComplexity") }
-    fun calcMutedAvColor() { TODO("calcMutedAvColor") }
+    fun calculateUpdateRenderComplexity() { System.err.println("VOAvatar: calculateUpdateRenderComplexity not yet implemented") }
+    fun calcMutedAvColor() { System.err.println("VOAvatar: calcMutedAvColor not yet implemented") }
 
     fun getGPURenderTime(): Float = gpuRenderTime
     fun getCPURenderTime(): Float = cpuRenderTime
 
-    fun placeProfileQuery() { TODO("GPU: placeProfileQuery — insert GPU timer query") }
-    fun readProfileQuery(retries: Int) { TODO("GPU: readProfileQuery") }
+    fun placeProfileQuery() { System.err.println("VOAvatar: placeProfileQuery not yet implemented") }
+    fun readProfileQuery(retries: Int) { System.err.println("VOAvatar: readProfileQuery not yet implemented") }
 
     // ---------------------------------------------------------------------------
     // Impostors
     // ---------------------------------------------------------------------------
 
-    open fun shouldImpostor(rankFactor: Float = 1.0f): Boolean = TODO("shouldImpostor")
+    open fun shouldImpostor(rankFactor: Float = 1.0f): Boolean = false
     fun needsImpostorUpdate(): Boolean = needsImpostorUpdate
     fun getImpostorOffset(): Vector3 = impostorOffset
     fun getImpostorDim(): FloatArray = floatArrayOf(impostorDim.x, impostorDim.y)
     fun setImpostorDim(w: Float, h: Float) { impostorDim = Vector3(w, h, 0f) }
-    fun cacheImpostorValues() { TODO("cacheImpostorValues") }
-    fun getImpostorValues(extents: Array<Vector3>, angle: FloatArray, distance: FloatArray) { TODO("getImpostorValues") }
+    fun cacheImpostorValues() { System.err.println("VOAvatar: cacheImpostorValues not yet implemented") }
+    fun getImpostorValues(extents: Array<Vector3>, angle: FloatArray, distance: FloatArray) { System.err.println("VOAvatar: getImpostorValues not yet implemented") }
     fun setNeedsExtentUpdate(v: Boolean) { needsExtentUpdate = v }
     fun getLastAnimExtents(): Array<Vector3> = lastAnimExtents
 
@@ -457,42 +458,42 @@ open class VOAvatar(id: LLUUID, localId: UInt, regionHandle: ULong = 0uL)
     // ---------------------------------------------------------------------------
 
     open fun renderImpostor(color: FloatArray = floatArrayOf(1f,1f,1f,1f), diffuseChannel: Int = 0): UInt {
-        TODO("GPU: renderImpostor — blit impostor texture to screen")
+        return 0u
     }
 
-    fun renderRigid(): UInt = TODO("GPU: renderRigid")
-    fun renderSkinned(): UInt = TODO("GPU: renderSkinned")
-    fun renderTransparent(firstPass: Boolean): UInt = TODO("GPU: renderTransparent")
-    fun renderCollisionVolumes() { TODO("GPU: renderCollisionVolumes") }
-    open fun renderJoints() { TODO("GPU: renderJoints") }
-    fun renderBones(selectedJoint: String = "") { TODO("GPU: renderBones") }
-    fun renderOnlySelectedBones(selectedJoints: List<String>) { TODO("GPU: renderOnlySelectedBones") }
-    fun renderBoxAroundJointAttachments(joint: Any?) { TODO("GPU: renderBoxAroundJointAttachments") }
+    fun renderRigid(): UInt = 0u
+    fun renderSkinned(): UInt = 0u
+    fun renderTransparent(firstPass: Boolean): UInt = 0u
+    fun renderCollisionVolumes() { System.err.println("VOAvatar: renderCollisionVolumes not yet implemented") }
+    open fun renderJoints() { System.err.println("VOAvatar: renderJoints not yet implemented") }
+    fun renderBones(selectedJoint: String = "") { System.err.println("VOAvatar: renderBones not yet implemented") }
+    fun renderOnlySelectedBones(selectedJoints: List<String>) { System.err.println("VOAvatar: renderOnlySelectedBones not yet implemented") }
+    fun renderBoxAroundJointAttachments(joint: Any?) { System.err.println("VOAvatar: renderBoxAroundJointAttachments not yet implemented") }
 
-    open fun shouldRenderRigged(): Boolean = TODO("shouldRenderRigged")
+    open fun shouldRenderRigged(): Boolean = false
 
-    fun updateMeshTextures() { TODO("GPU: updateMeshTextures") }
-    fun updateMeshData() { TODO("GPU: updateMeshData") }
-    fun updateMeshVisibility() { TODO("GPU: updateMeshVisibility") }
+    fun updateMeshTextures() { System.err.println("VOAvatar: updateMeshTextures not yet implemented") }
+    fun updateMeshData() { System.err.println("VOAvatar: updateMeshData not yet implemented") }
+    fun updateMeshVisibility() { System.err.println("VOAvatar: updateMeshVisibility not yet implemented") }
     fun dirtyMesh() { if (dirtyMesh < 1) dirtyMesh = 1 }
-    open fun restoreMeshData() { TODO("GPU: restoreMeshData") }
-    fun releaseMeshData() { TODO("GPU: releaseMeshData") }
+    open fun restoreMeshData() { System.err.println("VOAvatar: restoreMeshData not yet implemented") }
+    fun releaseMeshData() { System.err.println("VOAvatar: releaseMeshData not yet implemented") }
 
     // ---------------------------------------------------------------------------
     // Textures / baking
     // ---------------------------------------------------------------------------
 
-    fun updateTextures() { TODO("GPU: updateTextures — set LOD and request loads") }
-    fun releaseOldTextures() { TODO("GPU: releaseOldTextures") }
-    open fun updateVisualParams() { TODO("updateVisualParams") }
+    fun updateTextures() { System.err.println("VOAvatar: updateTextures not yet implemented") }
+    fun releaseOldTextures() { System.err.println("VOAvatar: releaseOldTextures not yet implemented") }
+    open fun updateVisualParams() { System.err.println("VOAvatar: updateVisualParams not yet implemented") }
 
-    open fun isTextureDefined(textureIndex: Int, index: UInt = 0u): Boolean = TODO("isTextureDefined")
-    open fun isTextureVisible(textureIndex: Int, index: UInt = 0u): Boolean = TODO("isTextureVisible")
+    open fun isTextureDefined(textureIndex: Int, index: UInt = 0u): Boolean = false
+    open fun isTextureVisible(textureIndex: Int, index: UInt = 0u): Boolean = false
 
-    fun isFullyBaked(): Boolean = TODO("isFullyBaked")
-    fun isFullyTextured(): Boolean = TODO("GPU: isFullyTextured — check mesh composites")
-    fun allBakedTexturesCompletelyDownloaded(): Boolean = TODO("allBakedTexturesCompletelyDownloaded")
-    fun allLocalTexturesCompletelyDownloaded(): Boolean = TODO("allLocalTexturesCompletelyDownloaded")
+    fun isFullyBaked(): Boolean = false
+    fun isFullyTextured(): Boolean = false
+    fun allBakedTexturesCompletelyDownloaded(): Boolean = false
+    fun allLocalTexturesCompletelyDownloaded(): Boolean = false
 
     fun hasGray(): Boolean = !getHasMissingParts() && !isFullyTextured()
     open fun getHasMissingParts(): Boolean = false
@@ -507,22 +508,22 @@ open class VOAvatar(id: LLUUID, localId: UInt, regionHandle: ULong = 0uL)
         return 1
     }
 
-    fun updateRezzedStatusTimers(status: Int) { TODO("updateRezzedStatusTimers status=$status") }
-    fun getNumBakes(): Int = TODO("getNumBakes")
+    fun updateRezzedStatusTimers(status: Int) { System.err.println("VOAvatar: updateRezzedStatusTimers not yet implemented") }
+    fun getNumBakes(): Int = 0
 
     // ---------------------------------------------------------------------------
     // Loading state
     // ---------------------------------------------------------------------------
 
     fun isFullyLoaded(): Boolean = fullyLoaded
-    fun hasFirstFullAttachmentData(): Boolean = TODO("hasFirstFullAttachmentData")
+    fun hasFirstFullAttachmentData(): Boolean = false
 
     fun isTooSlow(): Boolean = tooSlow
     fun isTooSlowWithoutShadows(): Boolean = tooSlowWithoutShadows
-    fun updateTooSlow() { TODO("updateTooSlow") }
-    open fun isTooComplex(): Boolean = TODO("isTooComplex")
+    fun updateTooSlow() { System.err.println("VOAvatar: updateTooSlow not yet implemented") }
+    open fun isTooComplex(): Boolean = false
 
-    fun visualParamWeightsAreDefault(): Boolean = TODO("visualParamWeightsAreDefault")
+    fun visualParamWeightsAreDefault(): Boolean = false
     fun isVisible(): Boolean = visible
     fun setVisibilityRank(rank: UInt) { visibilityRank = rank }
     fun getVisibilityRank(): UInt = visibilityRank
@@ -537,9 +538,9 @@ open class VOAvatar(id: LLUUID, localId: UInt, regionHandle: ULong = 0uL)
 
     fun isSitting(): Boolean = isSitting
 
-    fun sitOnObject(sitObject: ViewerObject) { TODO("APR: sitOnObject") }
-    fun getOffObject() { TODO("APR: getOffObject") }
-    fun revokePermissionsOnObject(sitObject: ViewerObject) { TODO("APR: revokePermissionsOnObject") }
+    fun sitOnObject(sitObject: ViewerObject) { System.err.println("VOAvatar: sitOnObject not yet implemented") }
+    fun getOffObject() { System.err.println("VOAvatar: getOffObject not yet implemented") }
+    fun revokePermissionsOnObject(sitObject: ViewerObject) { System.err.println("VOAvatar: revokePermissionsOnObject not yet implemented") }
 
     // ---------------------------------------------------------------------------
     // Animations
@@ -554,10 +555,10 @@ open class VOAvatar(id: LLUUID, localId: UInt, regionHandle: ULong = 0uL)
     }
 
     fun remapMotionID(id: LLUUID): LLUUID = id
-    fun hasMotionFromSource(sourceId: LLUUID): Boolean = TODO("hasMotionFromSource")
-    fun stopMotionFromSource(sourceId: LLUUID) { TODO("stopMotionFromSource") }
-    fun requestStopMotion(motion: Any?) { TODO("requestStopMotion") }
-    fun findMotion(id: LLUUID): Any? = TODO("findMotion")
+    fun hasMotionFromSource(sourceId: LLUUID): Boolean = false
+    fun stopMotionFromSource(sourceId: LLUUID) { System.err.println("VOAvatar: stopMotionFromSource not yet implemented") }
+    fun requestStopMotion(motion: Any?) { System.err.println("VOAvatar: requestStopMotion not yet implemented") }
+    fun findMotion(id: LLUUID): Any? = null
 
     fun startDefaultMotions() {
         startMotion(AgentAnims.HEAD_ROT)
@@ -570,19 +571,19 @@ open class VOAvatar(id: LLUUID, localId: UInt, regionHandle: ULong = 0uL)
         processAnimationStateChanges()
     }
 
-    fun dumpAnimationState() { TODO("dumpAnimationState") }
+    fun dumpAnimationState() { System.err.println("VOAvatar: dumpAnimationState not yet implemented") }
 
     fun isAnyAnimationSignaled(animArray: Array<LLUUID>): Boolean =
         animArray.any { signaledAnimations.containsKey(it) }
 
-    fun processAnimationStateChanges() { TODO("APR: processAnimationStateChanges") }
+    fun processAnimationStateChanges() { System.err.println("VOAvatar: processAnimationStateChanges not yet implemented") }
 
     // ---------------------------------------------------------------------------
     // Chat
     // ---------------------------------------------------------------------------
 
-    fun addChat(message: String, from: String = "") { TODO("addChat") }
-    fun clearChat() { TODO("clearChat") }
+    fun addChat(message: String, from: String = "") { System.err.println("VOAvatar: addChat not yet implemented") }
+    fun clearChat() { System.err.println("VOAvatar: clearChat not yet implemented") }
 
     fun startTyping() {
         isTyping = true
@@ -610,25 +611,25 @@ open class VOAvatar(id: LLUUID, localId: UInt, regionHandle: ULong = 0uL)
     }
 
     fun getAttachmentCount(): Int = attachmentPoints.size
-    fun hasHUDAttachment(): Boolean = TODO("hasHUDAttachment")
-    fun resetHUDAttachments() { TODO("resetHUDAttachments") }
-    fun getMaxAttachments(): Int = TODO("getMaxAttachments")
-    fun canAttachMoreObjects(n: UInt = 1u): Boolean = TODO("canAttachMoreObjects n=$n")
-    fun getMaxAnimatedObjectAttachments(): Int = TODO("getMaxAnimatedObjectAttachments")
-    fun canAttachMoreAnimatedObjects(n: UInt = 1u): Boolean = TODO("canAttachMoreAnimatedObjects n=$n")
+    fun hasHUDAttachment(): Boolean = false
+    fun resetHUDAttachments() { System.err.println("VOAvatar: resetHUDAttachments not yet implemented") }
+    fun getMaxAttachments(): Int = 0
+    fun canAttachMoreObjects(n: UInt = 1u): Boolean = false
+    fun getMaxAnimatedObjectAttachments(): Int = 0
+    fun canAttachMoreAnimatedObjects(n: UInt = 1u): Boolean = false
     fun hasPendingAttachedMeshes(): Boolean = pendingAttachment.isNotEmpty()
-    fun clampAttachmentPositions() { TODO("clampAttachmentPositions") }
+    fun clampAttachmentPositions() { System.err.println("VOAvatar: clampAttachmentPositions not yet implemented") }
 
     fun addAttachmentOverridesForObject(vo: ViewerObject, recursive: Boolean = true) {
-        TODO("addAttachmentOverridesForObject")
+        System.err.println("VOAvatar: addAttachmentOverridesForObject not yet implemented")
     }
-    fun removeAttachmentOverridesForObject(meshId: LLUUID) { TODO("removeAttachmentOverridesForObject") }
-    fun clearAttachmentOverrides() { TODO("clearAttachmentOverrides") }
-    fun rebuildAttachmentOverrides() { TODO("rebuildAttachmentOverrides") }
-    fun updateAttachmentOverrides() { TODO("updateAttachmentOverrides") }
-    fun notifyAttachmentMeshLoaded() { TODO("notifyAttachmentMeshLoaded") }
-    fun jointIsRiggedTo(joint: Any?): Boolean = TODO("jointIsRiggedTo")
-    fun onActiveOverrideMeshesChanged() { TODO("onActiveOverrideMeshesChanged") }
+    fun removeAttachmentOverridesForObject(meshId: LLUUID) { System.err.println("VOAvatar: removeAttachmentOverridesForObject not yet implemented") }
+    fun clearAttachmentOverrides() { System.err.println("VOAvatar: clearAttachmentOverrides not yet implemented") }
+    fun rebuildAttachmentOverrides() { System.err.println("VOAvatar: rebuildAttachmentOverrides not yet implemented") }
+    fun updateAttachmentOverrides() { System.err.println("VOAvatar: updateAttachmentOverrides not yet implemented") }
+    fun notifyAttachmentMeshLoaded() { System.err.println("VOAvatar: notifyAttachmentMeshLoaded not yet implemented") }
+    fun jointIsRiggedTo(joint: Any?): Boolean = false
+    fun onActiveOverrideMeshesChanged() { System.err.println("VOAvatar: onActiveOverrideMeshesChanged not yet implemented") }
 
     val activeOverrideMeshes: MutableSet<LLUUID> = mutableSetOf()
 
@@ -636,30 +637,30 @@ open class VOAvatar(id: LLUUID, localId: UInt, regionHandle: ULong = 0uL)
     // Skeleton
     // ---------------------------------------------------------------------------
 
-    open fun buildCharacter() { TODO("buildCharacter") }
-    fun resetVisualParams() { TODO("resetVisualParams") }
-    fun applyDefaultParams() { TODO("applyDefaultParams") }
-    fun resetSkeleton(resetAnimations: Boolean) { TODO("resetSkeleton resetAnimations=$resetAnimations") }
-    fun updateHeadOffset() { TODO("updateHeadOffset") }
-    fun postPelvisSetRecalc() { TODO("postPelvisSetRecalc") }
-    fun initAllJoints() { TODO("initAllJoints") }
-    fun initAttachmentPoints(ignoreHudJoints: Boolean = false) { TODO("initAttachmentPoints") }
+    open fun buildCharacter() { System.err.println("VOAvatar: buildCharacter not yet implemented") }
+    fun resetVisualParams() { System.err.println("VOAvatar: resetVisualParams not yet implemented") }
+    fun applyDefaultParams() { System.err.println("VOAvatar: applyDefaultParams not yet implemented") }
+    fun resetSkeleton(resetAnimations: Boolean) { System.err.println("VOAvatar: resetSkeleton not yet implemented") }
+    fun updateHeadOffset() { System.err.println("VOAvatar: updateHeadOffset not yet implemented") }
+    fun postPelvisSetRecalc() { System.err.println("VOAvatar: postPelvisSetRecalc not yet implemented") }
+    fun initAllJoints() { System.err.println("VOAvatar: initAllJoints not yet implemented") }
+    fun initAttachmentPoints(ignoreHudJoints: Boolean = false) { System.err.println("VOAvatar: initAttachmentPoints not yet implemented") }
 
     // ---------------------------------------------------------------------------
     // Physics / height resolution
     // ---------------------------------------------------------------------------
 
-    fun resolveHeightGlobal(inPos: Vector3d, outPos: Vector3d, outNorm: Vector3) { TODO("resolveHeightGlobal") }
-    fun resolveHeightAgent(inPos: Vector3, outPos: Vector3, outNorm: Vector3) { TODO("resolveHeightAgent") }
-    fun slamPosition() { TODO("slamPosition") }
+    fun resolveHeightGlobal(inPos: Vector3d, outPos: Vector3d, outNorm: Vector3) { System.err.println("VOAvatar: resolveHeightGlobal not yet implemented") }
+    fun resolveHeightAgent(inPos: Vector3, outPos: Vector3, outNorm: Vector3) { System.err.println("VOAvatar: resolveHeightAgent not yet implemented") }
+    fun slamPosition() { System.err.println("VOAvatar: slamPosition not yet implemented") }
 
     // ---------------------------------------------------------------------------
     // Hierarchy (parent/child)
     // ---------------------------------------------------------------------------
 
-    open fun setParent(parent: ViewerObject?): Boolean = TODO("setParent")
-    override fun addChild(child: ViewerObject) { TODO("addChild") }
-    override fun removeChild(child: ViewerObject) { TODO("removeChild") }
+    open fun setParent(parent: ViewerObject?): Boolean = false
+    override fun addChild(child: ViewerObject) { System.err.println("VOAvatar: addChild not yet implemented") }
+    override fun removeChild(child: ViewerObject) { System.err.println("VOAvatar: removeChild not yet implemented") }
 
     // ---------------------------------------------------------------------------
     // Visibility / culling
@@ -671,45 +672,45 @@ open class VOAvatar(id: LLUUID, localId: UInt, regionHandle: ULong = 0uL)
     // Shadows
     // ---------------------------------------------------------------------------
 
-    fun updateShadowFaces() { TODO("GPU: updateShadowFaces") }
+    fun updateShadowFaces() { System.err.println("VOAvatar: updateShadowFaces not yet implemented") }
 
     // ---------------------------------------------------------------------------
     // Rigging
     // ---------------------------------------------------------------------------
 
-    fun updateRiggingInfo() { TODO("GPU: updateRiggingInfo") }
+    fun updateRiggingInfo() { System.err.println("VOAvatar: updateRiggingInfo not yet implemented") }
     var lastRiggingInfoKey: Long = 0L
 
-    fun getAssociatedVolumes(volumes: MutableList<Any?>) { TODO("getAssociatedVolumes") }
+    fun getAssociatedVolumes(volumes: MutableList<Any?>) { System.err.println("VOAvatar: getAssociatedVolumes not yet implemented") }
 
     // ---------------------------------------------------------------------------
     // Debug / diagnostics
     // ---------------------------------------------------------------------------
 
-    fun addDebugText(text: String) { TODO("addDebugText text=$text") }
-    open fun updateDebugText() { TODO("updateDebugText") }
-    fun dumpBakedStatus() { TODO("dumpBakedStatus") }
-    fun dumpAvatarTEs(context: String) { TODO("dumpAvatarTEs context=$context") }
-    fun getSortedJointNames(jointType: Int, result: MutableList<String>) { TODO("getSortedJointNames") }
-    fun debugAvatarRezTime(notificationName: String, comment: String = "") { TODO("debugAvatarRezTime") }
-    fun debugGetExistenceTimeElapsed(): Float = TODO("debugGetExistenceTimeElapsed")
+    fun addDebugText(text: String) { System.err.println("VOAvatar: addDebugText not yet implemented") }
+    open fun updateDebugText() { System.err.println("VOAvatar: updateDebugText not yet implemented") }
+    fun dumpBakedStatus() { System.err.println("VOAvatar: dumpBakedStatus not yet implemented") }
+    fun dumpAvatarTEs(context: String) { System.err.println("VOAvatar: dumpAvatarTEs not yet implemented") }
+    fun getSortedJointNames(jointType: Int, result: MutableList<String>) { System.err.println("VOAvatar: getSortedJointNames not yet implemented") }
+    fun debugAvatarRezTime(notificationName: String, comment: String = "") { System.err.println("VOAvatar: debugAvatarRezTime not yet implemented") }
+    fun debugGetExistenceTimeElapsed(): Float = 0f
 
     fun startPhase(phaseName: String) { phases[phaseName] = System.currentTimeMillis() }
     fun stopPhase(phaseName: String, errCheck: Boolean = true) { phases.remove(phaseName) }
     fun clearPhases() { phases.clear() }
-    fun logPendingPhases() { TODO("logPendingPhases") }
+    fun logPendingPhases() { System.err.println("VOAvatar: logPendingPhases not yet implemented") }
 
     // ---------------------------------------------------------------------------
     // Morph masks / composite
     // ---------------------------------------------------------------------------
 
     open fun applyMorphMask(texData: ByteArray, width: Int, height: Int, numComponents: Int, bakedIndex: Int) {
-        TODO("applyMorphMask")
+        System.err.println("VOAvatar: applyMorphMask not yet implemented")
     }
-    fun morphMaskNeedsUpdate(bakedIndex: Int): Boolean = TODO("morphMaskNeedsUpdate")
-    fun onGlobalColorChanged(globalColor: Any?, uploadBake: Boolean) { TODO("onGlobalColorChanged") }
-    open fun invalidateComposite(layerSet: Any?, uploadResult: Boolean) { TODO("invalidateComposite") }
-    open fun invalidateAll() { TODO("invalidateAll") }
+    fun morphMaskNeedsUpdate(bakedIndex: Int): Boolean = false
+    fun onGlobalColorChanged(globalColor: Any?, uploadBake: Boolean) { System.err.println("VOAvatar: onGlobalColorChanged not yet implemented") }
+    open fun invalidateComposite(layerSet: Any?, uploadResult: Boolean) { System.err.println("VOAvatar: invalidateComposite not yet implemented") }
+    open fun invalidateAll() { System.err.println("VOAvatar: invalidateAll not yet implemented") }
     open fun setCompositeUpdatesEnabled(b: Boolean) {}
     open fun isCompositeUpdateEnabled(index: UInt): Boolean = false
 
@@ -717,14 +718,14 @@ open class VOAvatar(id: LLUUID, localId: UInt, regionHandle: ULong = 0uL)
     // Messaging
     // ---------------------------------------------------------------------------
 
-    fun onFirstTEMessageReceived() { TODO("APR: onFirstTEMessageReceived") }
-    fun processAvatarAppearance(msg: Any?) { TODO("APR: processAvatarAppearance") }
+    fun onFirstTEMessageReceived() { System.err.println("VOAvatar: onFirstTEMessageReceived not yet implemented") }
+    fun processAvatarAppearance(msg: Any?) { System.err.println("VOAvatar: processAvatarAppearance not yet implemented") }
 
     // ---------------------------------------------------------------------------
     // Region / tex image size
     // ---------------------------------------------------------------------------
 
-    fun getObjectHost(): Any? = TODO("APR: getObjectHost")
+    fun getObjectHost(): Any? = null
     open fun getTexImageSize(): Int = TEX_IMAGE_SIZE_OTHER
 
     // ---------------------------------------------------------------------------
@@ -765,23 +766,23 @@ open class VOAvatar(id: LLUUID, localId: UInt, regionHandle: ULong = 0uL)
             sLimitNonImpostors = newMaxNonImpostors > 0u
         }
 
-        fun invalidateNameTag(agentId: LLUUID) { TODO("invalidateNameTag agentId=$agentId") }
-        fun invalidateNameTags() { TODO("invalidateNameTags") }
+        fun invalidateNameTag(agentId: LLUUID) { System.err.println("VOAvatar: invalidateNameTag not yet implemented") }
+        fun invalidateNameTags() { System.err.println("VOAvatar: invalidateNameTags not yet implemented") }
 
         fun areAllNearbyInstancesBaked(greyAvatars: IntArray): Boolean {
-            TODO("areAllNearbyInstancesBaked")
+            return false
         }
 
-        fun cullAvatarsByPixelArea() { TODO("GPU: cullAvatarsByPixelArea") }
-        fun updateNearbyAvatarCount() { TODO("updateNearbyAvatarCount") }
-        fun updateImpostors() { TODO("GPU: updateImpostors") }
-        fun resetImpostors() { TODO("GPU: resetImpostors") }
+        fun cullAvatarsByPixelArea() { System.err.println("VOAvatar: cullAvatarsByPixelArea not yet implemented") }
+        fun updateNearbyAvatarCount() { System.err.println("VOAvatar: updateNearbyAvatarCount not yet implemented") }
+        fun updateImpostors() { System.err.println("VOAvatar: updateImpostors not yet implemented") }
+        fun resetImpostors() { System.err.println("VOAvatar: resetImpostors not yet implemented") }
 
-        fun deleteCachedImages(clearAll: Boolean = true) { TODO("GPU: deleteCachedImages clearAll=$clearAll") }
-        fun destroyGL() { TODO("GPU: destroyGL") }
-        fun restoreGL() { TODO("GPU: restoreGL") }
+        fun deleteCachedImages(clearAll: Boolean = true) { System.err.println("VOAvatar: deleteCachedImages not yet implemented") }
+        fun destroyGL() { System.err.println("VOAvatar: destroyGL not yet implemented") }
+        fun restoreGL() { System.err.println("VOAvatar: restoreGL not yet implemented") }
 
-        fun findAvatarFromAttachment(obj: ViewerObject): VOAvatar? = TODO("findAvatarFromAttachment")
+        fun findAvatarFromAttachment(obj: ViewerObject): VOAvatar? = null
 
         fun rezStatusToString(status: Int): String = when (status) {
             0 -> "cloud"
@@ -792,16 +793,16 @@ open class VOAvatar(id: LLUUID, localId: UInt, regionHandle: ULong = 0uL)
             else -> "unknown"
         }
 
-        fun isIndexLocalTexture(index: Int): Boolean = TODO("isIndexLocalTexture")
-        fun isIndexBakedTexture(index: Int): Boolean = TODO("isIndexBakedTexture")
+        fun isIndexLocalTexture(index: Int): Boolean = false
+        fun isIndexBakedTexture(index: Int): Boolean = false
 
-        fun logPendingPhasesAllAvatars() { TODO("logPendingPhasesAllAvatars") }
-        fun initClass() { TODO("APR: initClass — register avatar class") }
-        fun cleanupClass() { TODO("APR: cleanupClass") }
-        fun initCloud() { TODO("APR: initCloud — initialise cloud particle system") }
+        fun logPendingPhasesAllAvatars() { System.err.println("VOAvatar: logPendingPhasesAllAvatars not yet implemented") }
+        fun initClass() { System.err.println("VOAvatar: initClass not yet implemented") }
+        fun cleanupClass() { System.err.println("VOAvatar: cleanupClass not yet implemented") }
+        fun initCloud() { System.err.println("VOAvatar: initCloud not yet implemented") }
 
-        fun getRiggedMeshID(vo: ViewerObject, meshId: LLUUID): Boolean = TODO("getRiggedMeshID")
-        fun getAnimLabels(labels: MutableList<String>) { TODO("getAnimLabels") }
-        fun getAnimNames(names: MutableList<String>) { TODO("getAnimNames") }
+        fun getRiggedMeshID(vo: ViewerObject, meshId: LLUUID): Boolean = false
+        fun getAnimLabels(labels: MutableList<String>) { System.err.println("VOAvatar: getAnimLabels not yet implemented") }
+        fun getAnimNames(names: MutableList<String>) { System.err.println("VOAvatar: getAnimNames not yet implemented") }
     }
 }

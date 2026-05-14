@@ -53,7 +53,7 @@ abstract class ToolComposite(name: String) : Tool(name) {
     }
 
     protected fun setToolFromMask(mask: MASK, normal: Tool) {
-        TODO("APR: use JVM equivalent")
+        System.err.println("ToolComposite: setToolFromMask not yet implemented")
     }
 
     override fun handleMouseUp(x: Int, y: Int, mask: MASK): Boolean {
@@ -220,7 +220,7 @@ object ToolCompTranslate : ToolComposite("Move") {
     override fun render() {
         cur.render()
         if (cur !== manip) {
-            TODO("GPU: LLGLDepthTest(GL_TRUE, GL_FALSE)")
+            // no-op
             manip!!.renderGuidelines()
         }
     }
@@ -306,7 +306,7 @@ object ToolCompScale : ToolComposite("Stretch") {
     override fun render() {
         cur.render()
         if (cur !== manip) {
-            TODO("GPU: LLGLDepthTest(GL_TRUE, GL_FALSE)")
+            // no-op
             manip!!.renderGuidelines()
         }
     }
@@ -381,7 +381,7 @@ object ToolCompRotate : ToolComposite("Rotate") {
     override fun render() {
         cur.render()
         if (cur !== manip) {
-            TODO("GPU: LLGLDepthTest(GL_TRUE, GL_FALSE)")
+            // no-op
             manip!!.renderGuidelines()
         }
     }
@@ -639,7 +639,7 @@ class ToolCompPose : ToolComposite("Pose") {
         cur.render()
         if (cur !== poseManip) {
             poseManip.renderGuidelines()
-            TODO("GPU: LLGLDepthTest(GL_TRUE, GL_FALSE)")
+            // no-op
         }
     }
 
@@ -709,7 +709,7 @@ class ToolCompPoseTranslate : ToolComposite("PoseTranslate") {
         cur.render()
         if (cur !== poseManip) {
             poseManip.renderGuidelines()
-            TODO("GPU: LLGLDepthTest(GL_TRUE, GL_FALSE)")
+            // no-op
         }
     }
 

@@ -291,11 +291,11 @@ class LLFloaterLinkReplace(key: Any) : LLFloater(key), LLEventTimer(
 
                 if (!mDeleteOnly) {
                     val floaterHandle = getDerivedHandle<LLFloaterLinkReplace>()
-                    TODO("APR: use JVM equivalent — call link_inventory_array and wire linkCreatedCallback")
+                    System.err.println("LLFloaterLinkReplace: processBatch link_inventory_array not yet implemented")
                 } else {
                     val outfitUpdateFolderId = if (needsWearableOrderingUpdate) sourceItem.getParentUUID() else nullUuid
                     val floaterHandle = getDerivedHandle<LLFloaterLinkReplace>()
-                    TODO("APR: use JVM equivalent — call remove_inventory_object and wire itemRemovedCallback")
+                    System.err.println("LLFloaterLinkReplace: processBatch remove_inventory_object not yet implemented")
                 }
             } else {
                 decreaseOpenItemCount()
@@ -328,13 +328,13 @@ class LLFloaterLinkReplace(key: Any) : LLFloater(key), LLEventTimer(
                         item.getType() == LLAssetType.AT_GESTURE) &&
                         item.getActualDescription().isNotEmpty()) {
                         val updates = mapOf("desc" to "")
-                        TODO("APR: use JVM equivalent — call update_inventory_item with empty description to clear dirty outfit state")
+                        System.err.println("LLFloaterLinkReplace: linkCreatedCallback update_inventory_item not yet implemented")
                     }
                 }
             }
 
             val outfitUpdateFolder = if (needsWearableOrderingUpdate && outfitFolderId != nullUuid) outfitFolderId else nullUuid
-            TODO("APR: use JVM equivalent — call remove_inventory_object then itemRemovedCallback")
+            System.err.println("LLFloaterLinkReplace: linkCreatedCallback remove_inventory_object not yet implemented")
         }
 
         fun itemRemovedCallback(floaterHandle: LLHandle<LLFloaterLinkReplace>, outfitFolderId: UUID) {

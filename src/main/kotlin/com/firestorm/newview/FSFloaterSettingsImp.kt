@@ -74,11 +74,11 @@ class ControlVariable(
         value = newValue
         isDefault = false
         commitListeners.forEach { it() }
-        TODO("Platform: persist new value to gSavedSettings / gSavedPerAccountSettings")
+        System.err.println("Platform: persist new value to gSavedSettings / gSavedPerAccountSettings")
     }
 
     fun resetToDefault() {
-        TODO("Platform: reset this control to its compiled-in default value")
+        System.err.println("Platform: reset this control to its compiled-in default value")
     }
 }
 
@@ -174,12 +174,12 @@ class FSFloaterSettingsImp(val seed: LLSD) {
 
         buildSettingsMap()
 
-        TODO("Platform: subscribe to DebugSettingsHideDefault control change → onUpdateFilter()")
+        System.err.println("Platform: subscribe to DebugSettingsHideDefault control change → onUpdateFilter()")
 
         onUpdateFilter()
         settingsList?.sortByColumn(columnIndex = 1, ascending = true)   // FS: sort by name
 
-        TODO("Platform: LLNotificationsUtil.add(\"DebugSettingsWarning\")")
+        System.err.println("Platform: LLNotificationsUtil.add(\"DebugSettingsWarning\")")
 
         return true
     }
@@ -193,7 +193,7 @@ class FSFloaterSettingsImp(val seed: LLSD) {
         if (ctrl.isHiddenFromSettingsEditor != oldVisibility) {
             updateControl()
         }
-        TODO("Platform: delegate to LLFloater.draw()")
+        System.err.println("Platform: delegate to LLFloater.draw()")
     }
 
     // ------------------------------------------------------------------
@@ -308,10 +308,12 @@ class FSFloaterSettingsImp(val seed: LLSD) {
             )
             is ControlValue.Color4   -> {
                 val alpha = spinner4?.getValue() ?: cv.a
-                TODO("Platform: read Color4 from colorSwatch, combine with alpha spinner")
+                System.err.println("Platform: read Color4 from colorSwatch, combine with alpha spinner")
+                ControlValue.Color4(0f, 0f, 0f, alpha)
             }
             is ControlValue.Color3   -> {
-                TODO("Platform: read Color3 from colorSwatch")
+                System.err.println("Platform: read Color3 from colorSwatch")
+                ControlValue.Color3(0f, 0f, 0f)
             }
             else -> return
         }
@@ -336,14 +338,14 @@ class FSFloaterSettingsImp(val seed: LLSD) {
      */
     fun onCopyToClipboard() {
         val name = currentControl?.name ?: return
-        TODO("Platform: write '$name' to system clipboard; show ControlNameCopiedToClipboard notification")
+        System.err.println("Platform: write '$name' to system clipboard; show ControlNameCopiedToClipboard notification")
     }
 
     /**
      * Run the sanity-check for the currently selected control.
      */
     fun onSanityCheck() {
-        TODO("Platform: SanityCheck.instance().onSanity(currentControl)")
+        System.err.println("Platform: SanityCheck.instance().onSanity(currentControl)")
     }
 
     /**
@@ -351,7 +353,7 @@ class FSFloaterSettingsImp(val seed: LLSD) {
      * dismissed.
      */
     fun onClickSanityWarning() {
-        TODO("Platform: SanityCheck.instance().onSanity(currentControl, forceShow = true)")
+        System.err.println("Platform: SanityCheck.instance().onSanity(currentControl, forceShow = true)")
     }
 
     // ------------------------------------------------------------------
@@ -364,8 +366,7 @@ class FSFloaterSettingsImp(val seed: LLSD) {
          * Mirrors [LLFloaterSettingsDebug::showControl].
          */
         fun showControl(control: String) {
-            TODO("Platform: LLFloaterReg.showTypedInstance(\"settings_debug\", \"all\"); " +
-                 "set search input to '$control'; call onUpdateFilter()")
+            System.err.println("Platform: LLFloaterReg.showTypedInstance(\"settings_debug\", \"all\"); set search input to '$control'; call onUpdateFilter()")
         }
     }
 
@@ -380,10 +381,10 @@ class FSFloaterSettingsImp(val seed: LLSD) {
     private fun buildSettingsMap() {
         val key = seed.asString()
         if (key == "all" || key == "base") {
-            TODO("Platform: gSavedSettings.applyToAll { name, ctrl -> settingsMap[name] = ctrl }")
+            System.err.println("Platform: gSavedSettings.applyToAll { name, ctrl -> settingsMap[name] = ctrl }")
         }
         if (key == "all" || key == "account") {
-            TODO("Platform: gSavedPerAccountSettings.applyToAll { name, ctrl -> settingsMap[name] = ctrl }")
+            System.err.println("Platform: gSavedPerAccountSettings.applyToAll { name, ctrl -> settingsMap[name] = ctrl }")
         }
     }
 
@@ -454,15 +455,15 @@ class FSFloaterSettingsImp(val seed: LLSD) {
             }
             is ControlValue.Color4 -> {
                 colorSwatch?.isVisible = true
-                TODO("Platform: set colorSwatch to Color4(r,g,b); show alpha in spinner4")
+                System.err.println("Platform: set colorSwatch to Color4(r,g,b); show alpha in spinner4")
                 showSpinner4("Alpha", v.a, min = 0f, max = 1f, precision = 3)
             }
             is ControlValue.Color3 -> {
                 colorSwatch?.isVisible = true
-                TODO("Platform: set colorSwatch to Color3(r,g,b)")
+                System.err.println("Platform: set colorSwatch to Color3(r,g,b)")
             }
             is ControlValue.RawLLSD -> {
-                TODO("Platform: pretty-print LLSD to commentText (RLVa extension)")
+                System.err.println("Platform: pretty-print LLSD to commentText (RLVa extension)")
             }
             else -> commentText?.setText("unknown")
         }
@@ -496,11 +497,13 @@ class FSFloaterSettingsImp(val seed: LLSD) {
     }
 
     private fun <T> getSetting(key: String): T? {
-        TODO("Platform: gSavedSettings.get<T>('$key')")
+        System.err.println("Platform: gSavedSettings.get<T>('$key')")
+        return null
     }
 
     private fun <T> getChild(name: String): T? {
-        TODO("Platform: resolve child widget '$name' from the floater's view hierarchy")
+        System.err.println("Platform: resolve child widget '$name' from the floater's view hierarchy")
+        return null
     }
 
     // ------------------------------------------------------------------
@@ -508,10 +511,10 @@ class FSFloaterSettingsImp(val seed: LLSD) {
     // ------------------------------------------------------------------
 
     class SearchEditor {
-        fun getValue(): String { TODO("Platform: return search-editor text") }
-        fun setText(v: String) { TODO("Platform: set search-editor text") }
-        fun setFocus(focus: Boolean) { TODO("Platform: set keyboard focus") }
-        fun setKeystrokeCallback(cb: () -> Unit) { TODO("Platform: fire cb on every keystroke") }
+        fun getValue(): String { System.err.println("Platform: return search-editor text"); return "" }
+        fun setText(v: String) { System.err.println("Platform: set search-editor text") }
+        fun setFocus(focus: Boolean) { System.err.println("Platform: set keyboard focus") }
+        fun setKeystrokeCallback(cb: () -> Unit) { System.err.println("Platform: fire cb on every keystroke") }
     }
 
     class ScrollListRow(
@@ -522,52 +525,52 @@ class FSFloaterSettingsImp(val seed: LLSD) {
 
     class ScrollListCtrl {
         var itemCount: Int = 0
-        fun deleteAllItems() { TODO("Platform: clear all rows") }
-        fun addRow(row: ScrollListRow) { TODO("Platform: append row to scroll list") }
-        fun sortByColumn(columnIndex: Int, ascending: Boolean) { TODO("Platform: sort by column") }
-        fun selectFirstItem() { TODO("Platform: select the topmost row") }
-        fun getFirstSelected(): ScrollListRow? { TODO("Platform: return currently selected row or null") }
+        fun deleteAllItems() { System.err.println("Platform: clear all rows") }
+        fun addRow(row: ScrollListRow) { System.err.println("Platform: append row to scroll list") }
+        fun sortByColumn(columnIndex: Int, ascending: Boolean) { System.err.println("Platform: sort by column") }
+        fun selectFirstItem() { System.err.println("Platform: select the topmost row") }
+        fun getFirstSelected(): ScrollListRow? { System.err.println("Platform: return currently selected row or null"); return null }
     }
 
     class TextEditor {
-        fun getText(): String { TODO("Platform: return text-editor content") }
-        fun setText(v: String) { TODO("Platform: set text-editor content") }
+        fun getText(): String { System.err.println("Platform: return text-editor content"); return "" }
+        fun setText(v: String) { System.err.println("Platform: set text-editor content") }
     }
 
     class SpinCtrl {
         var isVisible: Boolean = true
         var isEnabled: Boolean = true
-        fun getValue(): Float { TODO("Platform: return spinner value") }
-        fun setValue(v: Float) { TODO("Platform: set spinner value") }
-        fun setLabel(label: String) { TODO("Platform: set spinner label") }
-        fun setMin(v: Float) { TODO("Platform: set spinner minimum") }
-        fun setMax(v: Float) { TODO("Platform: set spinner maximum") }
-        fun setPrecision(p: Int) { TODO("Platform: set spinner decimal precision") }
-        fun setIncrement(inc: Float) { TODO("Platform: set spinner step increment") }
-        fun hasFocus(): Boolean { TODO("Platform: return true if spinner has keyboard focus") }
+        fun getValue(): Float { System.err.println("Platform: return spinner value"); return 0f }
+        fun setValue(v: Float) { System.err.println("Platform: set spinner value") }
+        fun setLabel(label: String) { System.err.println("Platform: set spinner label") }
+        fun setMin(v: Float) { System.err.println("Platform: set spinner minimum") }
+        fun setMax(v: Float) { System.err.println("Platform: set spinner maximum") }
+        fun setPrecision(p: Int) { System.err.println("Platform: set spinner decimal precision") }
+        fun setIncrement(inc: Float) { System.err.println("Platform: set spinner step increment") }
+        fun hasFocus(): Boolean { System.err.println("Platform: return true if spinner has keyboard focus"); return false }
     }
 
     class ColorSwatchCtrl {
         var isVisible: Boolean = true
         var isEnabled: Boolean = true
-        fun getValue(): LLSD { TODO("Platform: return current colour as LLSD") }
-        fun set(color: Any, update: Boolean, preview: Boolean) { TODO("Platform: set swatch color") }
-        fun setValue(v: LLSD) { TODO("Platform: set swatch color from LLSD") }
+        fun getValue(): LLSD { System.err.println("Platform: return current colour as LLSD"); return LLSD() }
+        fun set(color: Any, update: Boolean, preview: Boolean) { System.err.println("Platform: set swatch color") }
+        fun setValue(v: LLSD) { System.err.println("Platform: set swatch color from LLSD") }
     }
 
     class LineEditor {
         var isVisible: Boolean = true
         var isEnabled: Boolean = true
-        fun getValue(): String { TODO("Platform: return line-editor text") }
-        fun setValue(v: String) { TODO("Platform: set line-editor text") }
+        fun getValue(): String { System.err.println("Platform: return line-editor text"); return "" }
+        fun setValue(v: String) { System.err.println("Platform: set line-editor text") }
     }
 
     class RadioGroup {
         var isVisible: Boolean = true
         var isEnabled: Boolean = true
-        fun getValue(): String { TODO("Platform: return selected radio value string") }
-        fun setValue(v: String) { TODO("Platform: select radio button matching value") }
-        fun hasFocus(): Boolean { TODO("Platform: return true if radio group has focus") }
+        fun getValue(): String { System.err.println("Platform: return selected radio value string"); return "" }
+        fun setValue(v: String) { System.err.println("Platform: select radio button matching value") }
+        fun hasFocus(): Boolean { System.err.println("Platform: return true if radio group has focus"); return false }
     }
 
     class Button {

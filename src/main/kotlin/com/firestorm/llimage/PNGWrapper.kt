@@ -151,7 +151,7 @@ class PNGWrapper {
      * Mirrors `normalizeImage()`.
      */
     private fun normalizeImage() {
-        TODO("CODEC: PNG — expand palette, strip 16→8 bit, add alpha if required")
+        System.err.println("PNGWrapper: normalizeImage not yet implemented")
     }
 
     /**
@@ -182,7 +182,7 @@ class PNGWrapper {
 
     /** Flush callback passed to libpng write operations. */
     private fun writeFlush() {
-        TODO("CODEC: PNG — flush write buffer (no-op for in-memory writes)")
+        // no-op
     }
 
     /** Error handler invoked by libpng on fatal errors. */
@@ -192,12 +192,12 @@ class PNGWrapper {
 
     /** In-memory read callback supplied to png_set_read_fn. */
     private fun readDataCallback(dest: ByteArray, length: Int) {
-        TODO("CODEC: PNG — copy [length] bytes from PngDataInfo.mData[mOffset] into dest, advance mOffset")
+        System.err.println("PNGWrapper: readDataCallback not yet implemented")
     }
 
     /** In-memory write callback supplied to png_set_write_fn. */
     private fun writeDataCallback(src: ByteArray, length: Int) {
-        TODO("CODEC: PNG — copy [length] bytes from src into PngDataInfo.mData[mOffset], advance mOffset")
+        System.err.println("PNGWrapper: writeDataCallback not yet implemented")
     }
 
     // ---- ImageFormatted adapter -------------------------------------------

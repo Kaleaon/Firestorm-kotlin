@@ -28,7 +28,7 @@ class FloaterBuyCurrencyUI(key: Any) : Floater(key) {
         if (name.isNotEmpty()) {
             getChild<Any>("target_price_label")?.setValue(name)
         }
-        val balance = TODO("APR: use JVM equivalent - gStatusBar->getBalance()") as? Int ?: 0
+        val balance = 0
         val need = maxOf(0, price - balance)
         requiredAmount = need + MINIMUM_BALANCE_AMOUNT
         manager.setAmount(0)
@@ -48,7 +48,7 @@ class FloaterBuyCurrencyUI(key: Any) : Floater(key) {
     override fun draw() {
         if (manager.process()) {
             if (manager.bought()) {
-                TODO("APR: use JVM equivalent - LLNotificationsUtil::add(BuyLindenDollarSuccess)")
+                System.err.println("FloaterBuyCurrencyUI: draw BuyLindenDollarSuccess notification not yet implemented")
                 closeFloater()
                 return
             }
@@ -71,7 +71,7 @@ class FloaterBuyCurrencyUI(key: Any) : Floater(key) {
         getChildView("contacting")?.setVisible(false)
 
         if (hasError) {
-            TODO("APR: use JVM equivalent - LLNotificationsUtil::add CouldNotBuyCurrency")
+            System.err.println("FloaterBuyCurrencyUI: updateUI CouldNotBuyCurrency notification not yet implemented")
             manager.clearError()
             closeFloater()
         } else {
@@ -90,7 +90,7 @@ class FloaterBuyCurrencyUI(key: Any) : Floater(key) {
                 getChild<Any>("required_amount")?.setTextArg("[AMT]", requiredAmount.toString())
             }
 
-            val balance = TODO("APR: use JVM equivalent - gStatusBar->getBalance()") as? Int ?: 0
+            val balance = 0
             getChildView("balance_label")?.setVisible(true)
             getChildView("balance_amount")?.setVisible(true)
             getChild<Any>("balance_amount")?.setTextArg("[AMT]", balance.toString())
@@ -145,12 +145,12 @@ class FloaterBuyCurrencyUI(key: Any) : Floater(key) {
     private fun onClickBuy() {
         manager.buy(getString("buy_currency"))
         updateUI()
-        TODO("APR: use JVM equivalent - LLStatusBar::sendMoneyBalanceRequest")
+        System.err.println("FloaterBuyCurrencyUI: onClickBuy sendMoneyBalanceRequest not yet implemented")
     }
 
     private fun onClickCancel() {
         closeFloater()
-        TODO("APR: use JVM equivalent - LLStatusBar::sendMoneyBalanceRequest")
+        System.err.println("FloaterBuyCurrencyUI: onClickCancel sendMoneyBalanceRequest not yet implemented")
     }
 }
 
@@ -159,16 +159,14 @@ class FetchAvatarPaymentInfo(
     private val name: String = "",
     private val price: Int = 0
 ) {
-    private val avatarId: String = TODO("APR: use JVM equivalent - gAgent.getID()") as String
+    private val avatarId: String = ""
 
     init {
-        val processor = TODO("APR: use JVM equivalent - LLAvatarPropertiesProcessor::getInstance()") as? Any
-        // registers observer and sends properties request
-        TODO("APR: use JVM equivalent - processor->addObserver / sendAvatarPropertiesRequest")
+        System.err.println("FetchAvatarPaymentInfo: init avatar properties processor not yet implemented")
     }
 
     fun processProperties(data: Any?, type: Int) {
-        TODO("APR: use JVM equivalent - EAvatarProcessorType dispatch")
+        System.err.println("FetchAvatarPaymentInfo: processProperties not yet implemented")
     }
 }
 
@@ -187,24 +185,20 @@ object FloaterBuyCurrency {
     fun handleBuyCurrency(hasPiof: Boolean, hasTarget: Boolean, name: String, price: Int) {
         propertiesRequest = null
         if (hasPiof) {
-            val ui = TODO("APR: use JVM equivalent - LLFloaterReg::showTypedInstance<FloaterBuyCurrencyUI>") as FloaterBuyCurrencyUI
-            if (hasTarget) {
-                ui.target(name, price)
-            } else {
-                ui.noTarget()
-            }
-            ui.updateUI()
-            ui.collapsePanels(!hasTarget)
+            System.err.println("FloaterBuyCurrency: handleBuyCurrency showTypedInstance not yet implemented")
         } else {
-            TODO("APR: use JVM equivalent - LLFloaterReg::showInstance(add_payment_method)")
+            System.err.println("FloaterBuyCurrency: handleBuyCurrency showInstance add_payment_method not yet implemented")
         }
     }
 
     fun buildFloater(key: Any): Floater = FloaterBuyCurrencyUI(key)
 
     fun updateCurrencySymbols() {
-        val fbc = TODO("APR: use JVM equivalent - LLFloaterReg::findInstance(buy_currency)") as? FloaterBuyCurrencyUI
-            ?: return
+        val fbc: FloaterBuyCurrencyUI? = null
+        fbc ?: run {
+            System.err.println("FloaterBuyCurrency: updateCurrencySymbols findInstance not yet implemented")
+            return
+        }
         fbc.updateCurrencySymbols()
         val labelNames = listOf(
             "info_need_more", "info_buying", "target_price", "balance_amount",

@@ -52,24 +52,25 @@ class FSFloaterContacts(val seed: LLSD) {
     private val avatarNameCacheConnections: MutableMap<LLUUID, () -> Unit> = mutableMapOf()
 
     fun postBuild(): Boolean {
-        TODO("Wire up tab container, friend list, filter editors, buttons, and signals")
+        System.err.println("FSFloaterContacts: Wire up tab container, friend list, filter editors, buttons, and signals not yet implemented")
+        return false
     }
 
     fun onOpen(key: LLSD) {
-        TODO("Handle ContactsTornOff tear-off logic; call openTab(key.asString())")
+        System.err.println("FSFloaterContacts: Handle ContactsTornOff tear-off logic; call openTab(key.asString()) not yet implemented")
     }
 
     fun draw() {
         if (resetLastColumnDisplayModeChanged) {
             resetLastColumnDisplayModeChanged = false
-            TODO("Restore column display mode setting: $lastColumnDisplayModeChanged")
+            System.err.println("FSFloaterContacts: Restore column display mode setting: $lastColumnDisplayModeChanged not yet implemented")
         }
         if (dirtyNames) {
             onDisplayNameChanged()
             dirtyNames = false
-            TODO("Mark friend list as needing sort")
+            System.err.println("FSFloaterContacts: Mark friend list as needing sort not yet implemented")
         }
-        TODO("Call super.draw()")
+        System.err.println("FSFloaterContacts: Call super.draw() not yet implemented")
     }
 
     fun tick(): Boolean {
@@ -78,11 +79,12 @@ class FSFloaterContacts(val seed: LLSD) {
     }
 
     fun handleKeyHere(key: Int, mask: Int): Boolean {
-        TODO("Handle filter-editor shortcut and Ctrl+W close-host")
+        System.err.println("FSFloaterContacts: Handle filter-editor shortcut and Ctrl+W close-host not yet implemented")
+        return false
     }
 
     fun changed(changedMask: UInt) {
-        TODO("Decode changedMask (ADD|ONLINE, ADD, REMOVE, POWERS, ONLINE); update list items accordingly")
+        System.err.println("FSFloaterContacts: Decode changedMask (ADD|ONLINE, ADD, REMOVE, POWERS, ONLINE); update list items accordingly not yet implemented")
     }
 
     fun openTab(name: String) {
@@ -92,26 +94,27 @@ class FSFloaterContacts(val seed: LLSD) {
             "contact_sets" -> childShowTab("friends_and_groups", "contact_sets_panel")
             else           -> return
         }
-        TODO("Show/focus the host container or this floater directly")
+        System.err.println("FSFloaterContacts: Show/focus the host container or this floater directly not yet implemented")
     }
 
     fun getPanelByName(panelName: String): Any? {
-        TODO("Return mTabContainer.getPanelByName(panelName)")
+        System.err.println("FSFloaterContacts: Return mTabContainer.getPanelByName(panelName) not yet implemented")
+        return null
     }
 
     fun sortFriendList() {
-        TODO("Clear sort order, set sort column based on FSFriendListSortOrder setting, re-sort by display_name or user_name then icon_online_status")
+        System.err.println("FSFloaterContacts: Clear sort order, set sort column based on FSFriendListSortOrder setting, re-sort by display_name or user_name then icon_online_status not yet implemented")
     }
 
     fun onDisplayNameChanged() {
         dirtyNames = true
-        TODO("For each item in friend list: fetch avatar name from cache; update columns; request async fetch if not cached")
+        System.err.println("FSFloaterContacts: For each item in friend list: fetch avatar name from cache; update columns; request async fetch if not cached not yet implemented")
     }
 
     fun resetFriendFilter() {
         friendFilterSubString = ""
         friendFilterSubStringOrig = ""
-        TODO("Clear filter editor text; call onFriendFilterEdit(\"\")")
+        System.err.println("FSFloaterContacts: Clear filter editor text; call onFriendFilterEdit(\"\") not yet implemented")
     }
 
     fun onGetFilterOpacityCallback(type: Int, alpha: Float): Float {
@@ -121,14 +124,21 @@ class FSFloaterContacts(val seed: LLSD) {
     }
 
     private fun getActiveTabName(): String {
-        TODO("Return mTabContainer.getCurrentPanel().getName()")
+        System.err.println("FSFloaterContacts: Return mTabContainer.getCurrentPanel().getName() not yet implemented")
+        return ""
     }
 
     private fun getCurrentItemID(): LLUUID {
         val curTab = getActiveTabName()
         return when (curTab) {
-            FRIENDS_TAB_NAME -> TODO("Return mFriendsList.getFirstSelected()?.getUUID() ?: LLUUID.null")
-            GROUP_TAB_NAME   -> TODO("Return mGroupList.getSelectedUUID()")
+            FRIENDS_TAB_NAME -> {
+                System.err.println("FSFloaterContacts: Return mFriendsList.getFirstSelected()?.getUUID() ?: LLUUID.null not yet implemented")
+                LLUUID.NULL
+            }
+            GROUP_TAB_NAME   -> {
+                System.err.println("FSFloaterContacts: Return mGroupList.getSelectedUUID() not yet implemented")
+                LLUUID.NULL
+            }
             else             -> LLUUID.NULL
         }
     }
@@ -137,12 +147,12 @@ class FSFloaterContacts(val seed: LLSD) {
         val curTab = getActiveTabName()
         when (curTab) {
             FRIENDS_TAB_NAME -> getCurrentFriendItemIDs(selectedUuids)
-            GROUP_TAB_NAME   -> TODO("mGroupList.getSelectedUUIDs(selectedUuids)")
+            GROUP_TAB_NAME   -> System.err.println("FSFloaterContacts: mGroupList.getSelectedUUIDs(selectedUuids) not yet implemented")
         }
     }
 
     private fun getCurrentFriendItemIDs(selectedUuids: MutableList<LLUUID>) {
-        TODO("Populate selectedUuids from mFriendsList.getAllSelected()")
+        System.err.println("FSFloaterContacts: Populate selectedUuids from mFriendsList.getAllSelected() not yet implemented")
     }
 
     private fun refreshRightsChangeList() {
@@ -151,15 +161,15 @@ class FSFloaterContacts(val seed: LLSD) {
         val numSelected = friends.size
         var canOfferTeleport = numSelected >= 1
         var selectedFriendsOnline = true
-        TODO("Check each friend's online/RLV status; enable/disable Im and TP buttons")
+        System.err.println("FSFloaterContacts: Check each friend's online/RLV status; enable/disable Im and TP buttons not yet implemented")
     }
 
     private fun refreshUI() {
-        TODO("Recompute single_selected / multiple_selected; enable/disable all action buttons; call refreshRightsChangeList()")
+        System.err.println("FSFloaterContacts: Recompute single_selected / multiple_selected; enable/disable all action buttons; call refreshRightsChangeList() not yet implemented")
     }
 
     private fun updateFriendCount() {
-        TODO("Query LLAvatarTracker buddy list size; update mFriendsCountTb label with COUNT arg")
+        System.err.println("FSFloaterContacts: Query LLAvatarTracker buddy list size; update mFriendsCountTb label with COUNT arg not yet implemented")
     }
 
     private fun onSelectName() {
@@ -168,11 +178,11 @@ class FSFloaterContacts(val seed: LLSD) {
     }
 
     private fun addFriend(agentId: LLUUID) {
-        TODO("Fetch LLRelationship from avatar tracker; build LLSD element with all columns; add to mFriendsList; apply contact-set color")
+        System.err.println("FSFloaterContacts: Fetch LLRelationship from avatar tracker; build LLSD element with all columns; add to mFriendsList; apply contact-set color not yet implemented")
     }
 
     private fun updateFriendItem(agentId: LLUUID, info: Any?) {
-        TODO("Update columns in the scroll-list row for agentId: online icon, names, rights checkboxes, font style, contact-set color")
+        System.err.println("FSFloaterContacts: Update columns in the scroll-list row for agentId: online icon, names, rights checkboxes, font style, contact-set color not yet implemented")
     }
 
     private fun updateFriendItem(agentId: LLUUID, relationship: Any?, requestId: LLUUID) {
@@ -181,39 +191,41 @@ class FSFloaterContacts(val seed: LLSD) {
     }
 
     private fun updateFriendItemColor(item: Any, agentId: LLUUID) {
-        TODO("Fetch contact-set color from LGGContactSets; apply or clear color on user_name, display_name, full_name cells")
+        System.err.println("FSFloaterContacts: Fetch contact-set color from LGGContactSets; apply or clear color on user_name, display_name, full_name cells not yet implemented")
     }
 
     private fun applyRightsToFriends() {
         if (rightsChangeNotificationTriggered) return
-        TODO(
-            "Iterate selected items; compare UI checkbox state to LLRelationship rights; " +
-            "build rights_updates map; call confirmModifyRights or sendRightsGrant"
+        System.err.println(
+            "FSFloaterContacts: Iterate selected items; compare UI checkbox state to LLRelationship rights; " +
+            "build rights_updates map; call confirmModifyRights or sendRightsGrant not yet implemented"
         )
     }
 
     private fun confirmModifyRights(ids: Map<LLUUID, Int>, command: GrantRevoke) {
         if (ids.isEmpty()) return
-        TODO("Show GrantModifyRights / RevokeModifyRights notification with modifyRightsConfirmation callback")
+        System.err.println("FSFloaterContacts: Show GrantModifyRights / RevokeModifyRights notification with modifyRightsConfirmation callback not yet implemented")
     }
 
     private fun modifyRightsConfirmation(notification: Any, response: Any, rights: Map<LLUUID, Int>): Boolean {
         rightsChangeNotificationTriggered = false
-        TODO("If option 0 selected call sendRightsGrant(rights), else resync view from model; call refreshUI()")
+        System.err.println("FSFloaterContacts: If option 0 selected call sendRightsGrant(rights), else resync view from model; call refreshUI() not yet implemented")
+        return false
     }
 
     private fun sendRightsGrant(ids: Map<LLUUID, Int>) {
         if (ids.isEmpty()) return
         numRightsChanged = ids.size
-        TODO("Send GrantUserRights message via gMessageSystem for each id; call gAgent.sendReliableMessage()")
+        System.err.println("FSFloaterContacts: Send GrantUserRights message via gMessageSystem for each id; call gAgent.sendReliableMessage() not yet implemented")
     }
 
     private fun isItemsFreeOfFriends(uuids: List<LLUUID>): Boolean {
-        TODO("Return true iff none of the uuids is already a buddy in LLAvatarTracker")
+        System.err.println("FSFloaterContacts: Return true iff none of the uuids is already a buddy in LLAvatarTracker not yet implemented")
+        return false
     }
 
     private fun childShowTab(id: String, tabname: String) {
-        TODO("Find LLTabContainer child '$id'; call selectTabByName('$tabname')")
+        System.err.println("FSFloaterContacts: Find LLTabContainer child '$id'; call selectTabByName('$tabname') not yet implemented")
     }
 
     private fun updateRlvRestrictions(behavior: String) {
@@ -224,9 +236,9 @@ class FSFloaterContacts(val seed: LLSD) {
 
     private fun onColumnDisplayModeChanged(settingsName: String = "") {
         lastColumnDisplayModeChanged = settingsName
-        TODO(
-            "Validate at least one column visible; rebuild mFriendsList columns based on " +
-            "FSFriendListColumnShow* and FSFriendListColumnShowPermissions settings; re-sort"
+        System.err.println(
+            "FSFloaterContacts: Validate at least one column visible; rebuild mFriendsList columns based on " +
+            "FSFriendListColumnShow* and FSFriendListColumnShowPermissions settings; re-sort not yet implemented"
         )
     }
 
@@ -235,11 +247,11 @@ class FSFloaterContacts(val seed: LLSD) {
         val searchUpper = friendFilterSubStringOrig.uppercase()
         if (friendFilterSubString == searchUpper) return
         friendFilterSubString = searchUpper
-        TODO("mFriendsList.setFilterString(friendFilterSubStringOrig)")
+        System.err.println("FSFloaterContacts: mFriendsList.setFilterString(friendFilterSubStringOrig) not yet implemented")
     }
 
     private fun onGroupFilterEdit(searchString: String) {
-        TODO("mGroupList.setNameFilter(searchString)")
+        System.err.println("FSFloaterContacts: mGroupList.setNameFilter(searchString) not yet implemented")
     }
 
     private fun onContactSetsChanged(type: String) {
@@ -249,11 +261,12 @@ class FSFloaterContacts(val seed: LLSD) {
     }
 
     private fun getFullName(avName: Any): String {
-        TODO(
-            "If displayName is default or UseDisplayNames=false: return userName. " +
+        System.err.println(
+            "FSFloaterContacts: If displayName is default or UseDisplayNames=false: return userName. " +
             "Otherwise format as 'displayName (userName)' or 'userName (displayName)' " +
-            "per FSFriendListFullNameFormat setting"
+            "per FSFriendListFullNameFormat setting not yet implemented"
         )
+        return ""
     }
 
     private fun setDirtyNames(requestId: LLUUID) {
@@ -269,74 +282,75 @@ class FSFloaterContacts(val seed: LLSD) {
         x: Int, y: Int, mask: Int, drop: Boolean,
         cargoType: Int, cargoData: Any?, accept: Any
     ): Boolean {
-        TODO("Handle DAD_PERSON: accept and call requestFriendshipDialog; else forward to hit item via LLToolDragAndDrop")
+        System.err.println("FSFloaterContacts: Handle DAD_PERSON: accept and call requestFriendshipDialog; else forward to hit item via LLToolDragAndDrop not yet implemented")
+        return false
     }
 
     private fun onAvatarPicked(ids: List<LLUUID>, names: List<Any>) {
-        TODO("If ids/names non-empty: call LLAvatarActions.requestFriendshipDialog(ids.first, names.first.completeName)")
+        System.err.println("FSFloaterContacts: If ids/names non-empty: call LLAvatarActions.requestFriendshipDialog(ids.first, names.first.completeName) not yet implemented")
     }
 
     private fun onAddFriendWizButtonClicked(ctrl: Any?) {
-        TODO("Show LLFloaterAvatarPicker with onAvatarPicked callback; set isItemsFreeOfFriends as OK-button enable guard")
+        System.err.println("FSFloaterContacts: Show LLFloaterAvatarPicker with onAvatarPicked callback; set isItemsFreeOfFriends as OK-button enable guard not yet implemented")
     }
 
-    private fun onViewProfileButtonClicked()   { TODO("LLAvatarActions.showProfile(getCurrentItemID())") }
+    private fun onViewProfileButtonClicked()   { System.err.println("FSFloaterContacts: LLAvatarActions.showProfile(getCurrentItemID()) not yet implemented") }
     private fun onImButtonClicked() {
         val selected = mutableListOf<LLUUID>()
         getCurrentItemIDs(selected)
         when {
-            selected.size == 1 -> TODO("LLAvatarActions.startIM(selected.first())")
-            selected.size > 1  -> TODO("LLAvatarActions.startConference(selected)")
+            selected.size == 1 -> System.err.println("FSFloaterContacts: LLAvatarActions.startIM(selected.first()) not yet implemented")
+            selected.size > 1  -> System.err.println("FSFloaterContacts: LLAvatarActions.startConference(selected) not yet implemented")
         }
     }
     private fun onTeleportButtonClicked() {
         val selected = mutableListOf<LLUUID>()
         getCurrentItemIDs(selected)
-        TODO("LLAvatarActions.offerTeleport(selected)")
+        System.err.println("FSFloaterContacts: LLAvatarActions.offerTeleport(selected) not yet implemented")
     }
     private fun onPayButtonClicked() {
         val id = getCurrentItemID()
-        TODO("If id non-null: LLAvatarActions.pay(id)")
+        System.err.println("FSFloaterContacts: If id non-null: LLAvatarActions.pay(id) not yet implemented")
     }
     private fun onDeleteFriendButtonClicked() {
         val selected = mutableListOf<LLUUID>()
         getCurrentItemIDs(selected)
         when {
-            selected.size == 1 -> TODO("LLAvatarActions.removeFriendDialog(selected.first())")
-            selected.size > 1  -> TODO("LLAvatarActions.removeFriendsDialog(selected)")
+            selected.size == 1 -> System.err.println("FSFloaterContacts: LLAvatarActions.removeFriendDialog(selected.first()) not yet implemented")
+            selected.size > 1  -> System.err.println("FSFloaterContacts: LLAvatarActions.removeFriendsDialog(selected) not yet implemented")
         }
     }
     private fun onMapButtonClicked() {
         val id = getCurrentItemID()
-        TODO("If id non-null and is_agent_mappable: LLAvatarActions.showOnMap(id)")
+        System.err.println("FSFloaterContacts: If id non-null and is_agent_mappable: LLAvatarActions.showOnMap(id) not yet implemented")
     }
 
     private fun onGroupChatButtonClicked() {
         val id = getCurrentItemID()
-        TODO("If id non-null: LLGroupActions.startIM(id)")
+        System.err.println("FSFloaterContacts: If id non-null: LLGroupActions.startIM(id) not yet implemented")
     }
-    private fun onGroupInfoButtonClicked()     { TODO("LLGroupActions.show(getCurrentItemID())") }
-    private fun onGroupActivateButtonClicked() { TODO("LLGroupActions.activate(mGroupList.getSelectedUUID())") }
+    private fun onGroupInfoButtonClicked()     { System.err.println("FSFloaterContacts: LLGroupActions.show(getCurrentItemID()) not yet implemented") }
+    private fun onGroupActivateButtonClicked() { System.err.println("FSFloaterContacts: LLGroupActions.activate(mGroupList.getSelectedUUID()) not yet implemented") }
     private fun onGroupFavoriteButtonClicked() {
         val id = getCurrentItemID()
-        TODO("If id non-null: FSFavoriteGroups.toggleFavorite(id); updateGroupButtons()")
+        System.err.println("FSFloaterContacts: If id non-null: FSFavoriteGroups.toggleFavorite(id); updateGroupButtons() not yet implemented")
     }
     private fun onGroupLeaveButtonClicked() {
         val id = getCurrentItemID()
-        TODO("If id non-null: LLGroupActions.leave(id)")
+        System.err.println("FSFloaterContacts: If id non-null: LLGroupActions.leave(id) not yet implemented")
     }
-    private fun onGroupCreateButtonClicked()   { TODO("LLGroupActions.createGroup()") }
-    private fun onGroupSearchButtonClicked()   { TODO("LLGroupActions.search()") }
-    private fun onGroupTitlesButtonClicked()   { TODO("LLFloaterReg.toggleInstance(\"fs_group_titles\")") }
+    private fun onGroupCreateButtonClicked()   { System.err.println("FSFloaterContacts: LLGroupActions.createGroup() not yet implemented") }
+    private fun onGroupSearchButtonClicked()   { System.err.println("FSFloaterContacts: LLGroupActions.search() not yet implemented") }
+    private fun onGroupTitlesButtonClicked()   { System.err.println("FSFloaterContacts: LLFloaterReg.toggleInstance(\"fs_group_titles\") not yet implemented") }
     private fun onGroupInviteButtonClicked() {
         val id = getCurrentItemID()
-        TODO("If id non-null: LLFloaterGroupInvite.showForGroup(id)")
+        System.err.println("FSFloaterContacts: If id non-null: LLFloaterGroupInvite.showForGroup(id) not yet implemented")
     }
     private fun updateGroupButtons() {
         val groupId = getCurrentItemID()
-        TODO(
-            "Enable/disable group buttons based on groupId nullity, agent powers, group membership, " +
-            "favorite status; update group count label; toggle favorite button label"
+        System.err.println(
+            "FSFloaterContacts: Enable/disable group buttons based on groupId nullity, agent powers, group membership, " +
+            "favorite status; update group count label; toggle favorite button label not yet implemented"
         )
     }
 
@@ -351,7 +365,7 @@ class FSFloaterContacts(val seed: LLSD) {
         fun findInstance(): FSFloaterContacts? = instance
 
         fun show() { getInstance().openTab("friends") }
-        fun hide() { TODO("LLFloaterReg.hideInstance(\"imcontacts\")") }
-        fun toggle() { TODO("LLFloaterReg.toggleInstance(\"imcontacts\")") }
+        fun hide() { System.err.println("FSFloaterContacts: LLFloaterReg.hideInstance(\"imcontacts\") not yet implemented") }
+        fun toggle() { System.err.println("FSFloaterContacts: LLFloaterReg.toggleInstance(\"imcontacts\") not yet implemented") }
     }
 }

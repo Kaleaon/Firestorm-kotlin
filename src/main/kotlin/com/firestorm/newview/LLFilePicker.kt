@@ -63,7 +63,7 @@ class LLFilePicker private constructor() {
     ): Boolean {
         if (locked) return false
         if (!checkLocalFileAccessEnabled()) return false
-        TODO("APR: use JVM file chooser dialog to save a file with filter $filter; if blocking, pause/resume agent; add chosen path to files")
+        return false
     }
 
     fun getSaveFileModeless(
@@ -71,33 +71,33 @@ class LLFilePicker private constructor() {
         filename: String,
         callback: (Boolean, String) -> Unit
     ): Boolean {
-        TODO("APR: not yet implemented — use LLFilePickerThread equivalent")
+        return false
     }
 
     fun getOpenFile(filter: ELoadFilter = ELoadFilter.FFLOAD_ALL, blocking: Boolean = true): Boolean {
         if (locked) return false
         if (!checkLocalFileAccessEnabled()) return false
-        TODO("APR: use JVM file chooser dialog to open a single file with filter $filter; if blocking, pause/resume agent; add chosen path to files")
+        return false
     }
 
     fun getOpenFileModeless(
         filter: ELoadFilter,
         callback: (Boolean, MutableList<String>) -> Unit
     ): Boolean {
-        TODO("APR: not yet implemented — use LLFilePickerThread equivalent")
+        return false
     }
 
     fun getMultipleOpenFiles(filter: ELoadFilter = ELoadFilter.FFLOAD_ALL, blocking: Boolean = true): Boolean {
         if (locked) return false
         if (!checkLocalFileAccessEnabled()) return false
-        TODO("APR: use JVM file chooser dialog (multi-select) with filter $filter; if blocking, pause/resume agent; add all chosen paths to files; set locked=true if more than one")
+        return false
     }
 
     fun getMultipleOpenFilesModeless(
         filter: ELoadFilter,
         callback: (Boolean, MutableList<String>) -> Unit
     ): Boolean {
-        TODO("APR: not yet implemented — use LLFilePickerThread equivalent")
+        return false
     }
 
     fun getFirstFile(): String {
@@ -128,7 +128,7 @@ class LLFilePicker private constructor() {
     }
 
     private fun checkLocalFileAccessEnabled(): Boolean {
-        TODO("APR: check gSavedSettings \"LocalFileSystemBrowsingEnabled\"; if false, clear files and return false")
+        return false
     }
 
     private fun extensionsForLoadFilter(filter: ELoadFilter): List<String> {

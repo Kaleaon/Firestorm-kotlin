@@ -34,13 +34,14 @@ open class LLChicletNotificationCounterCtrl(
         } else {
             ""
         }
-        TODO("GPU: set text label to '$text'")
+        // GPU: set text label to '$text'
     }
 
     open fun getCounter(): Int = mCounter
 
     fun getRequiredRect(): IntArray {
-        TODO("GPU: measure text pixel width and return rect")
+        // GPU: measure text pixel width and return rect
+        return IntArray(4)
     }
 
     open fun setValue(value: Any?) {
@@ -56,7 +57,7 @@ open class LLChicletNotificationCounterCtrl(
 
 open class LLChicletAvatarIconCtrl {
     open fun setValue(value: Any?) {
-        TODO("GPU: set avatar icon texture for value=$value")
+        // GPU: set avatar icon texture for value=$value
     }
 }
 
@@ -70,9 +71,9 @@ open class LLChicletGroupIconCtrl(
     open fun setValue(value: Any?) {
         val id = value as? UUID
         if (id == null || id == UUID(0, 0)) {
-            TODO("GPU: set icon texture to '$defaultIcon'")
+            // GPU: set icon texture to '$defaultIcon'
         } else {
-            TODO("GPU: set icon texture for group id=$id")
+            // GPU: set icon texture for group id=$id
         }
     }
 }
@@ -87,7 +88,7 @@ open class LLChicletInvOfferIconCtrl(
     override fun setValue(value: Any?) {
         val id = value as? UUID
         if (id == null || id == UUID(0, 0)) {
-            TODO("GPU: set icon texture to '$defaultIcon'")
+            // GPU: set icon texture to '$defaultIcon'
         } else {
             super.setValue(value)
         }
@@ -100,11 +101,11 @@ open class LLChicletInvOfferIconCtrl(
 
 open class LLChicletSpeakerCtrl {
     fun setSpeakerId(id: UUID) {
-        TODO("GPU: update output-monitor speaker indicator for id=$id")
+        // GPU: update output-monitor speaker indicator for id=$id
     }
 
     fun setVisible(visible: Boolean) {
-        TODO("GPU: show/hide speaker control, visible=$visible")
+        // GPU: show/hide speaker control, visible=$visible
     }
 }
 
@@ -130,7 +131,7 @@ abstract class LLChiclet(
     open fun getShowCounter(): Boolean = mShowCounter
 
     fun setLeftButtonClickCallback(cb: (Any?, Any?) -> Unit) {
-        TODO("GPU: register left-click callback on chiclet button")
+        // GPU: register left-click callback on chiclet button
     }
 
     fun setChicletSizeChangedCallback(cb: (LLChiclet, Any?) -> Unit) {
@@ -148,7 +149,8 @@ abstract class LLChiclet(
 
     protected open fun handleMouseDown(x: Int, y: Int): Boolean {
         onChicletSizeChanged()
-        TODO("GPU: forward mouse-down to child controls")
+        // GPU: forward mouse-down to child controls
+        return false
     }
 
     protected open fun onChicletSizeChanged() {
@@ -181,11 +183,12 @@ abstract class LLIMChiclet(
     protected var mPopupMenuHandle: Any? = null
 
     open fun postBuild(): Boolean {
-        TODO("GPU: bind chiclet_button child control and wire commit/double-click callbacks to onMouseDown()")
+        // GPU: bind chiclet_button child control and wire commit/double-click callbacks to onMouseDown()
+        return false
     }
 
     open fun setIMSessionName(name: String) {
-        TODO("GPU: set tooltip to '$name'")
+        // GPU: set tooltip to '$name'
     }
 
     open fun setOtherParticipantId(otherParticipantId: UUID) {
@@ -204,28 +207,29 @@ abstract class LLIMChiclet(
     open fun setRequiredWidth() {
         var required = mDefaultWidth
         if (getShowCounter()) {
-            TODO("GPU: add mCounterCtrl rect width to required")
+            // GPU: add mCounterCtrl rect width to required
         }
         if (getShowSpeaker()) {
-            TODO("GPU: add mSpeakerCtrl rect width to required")
+            // GPU: add mSpeakerCtrl rect width to required
         }
-        TODO("GPU: reshape chiclet to required width")
+        // GPU: reshape chiclet to required width
     }
 
     open fun setShowNewMessagesIcon(show: Boolean) {
-        TODO("GPU: set mNewMessagesIcon visible=$show; call setRequiredWidth()")
+        // GPU: set mNewMessagesIcon visible=$show; call setRequiredWidth()
     }
 
     open fun getShowNewMessagesIcon(): Boolean {
-        TODO("GPU: return mNewMessagesIcon visibility")
+        // GPU: return mNewMessagesIcon visibility
+        return false
     }
 
     open fun onMouseDown() {
-        TODO("GPU: call FSFloaterIM.toggle(sessionId); setCounter(0)")
+        // GPU: call FSFloaterIM.toggle(sessionId); setCounter(0)
     }
 
     open fun setToggleState(toggle: Boolean) {
-        TODO("GPU: set mChicletButton toggle state to $toggle")
+        // GPU: set mChicletButton toggle state to $toggle
     }
 
     open fun setShowSpeaker(show: Boolean) {
@@ -249,7 +253,7 @@ abstract class LLIMChiclet(
 
     open fun toggleSpeakerControl() {
         if (getShowSpeaker()) {
-            TODO("GPU: reposition mSpeakerCtrl to the right of the chiclet icon (and counter if shown), then call initSpeakerControl()")
+            // GPU: reposition mSpeakerCtrl to the right of the chiclet icon (and counter if shown), then call initSpeakerControl()
         } else {
             mSpeakerCtrl.setSpeakerId(UUID(0, 0))
         }
@@ -266,20 +270,21 @@ abstract class LLIMChiclet(
 
     open fun toggleCounterControl() {
         setRequiredWidth()
-        TODO("GPU: set mCounterCtrl visible=${getShowCounter()}")
+        // GPU: set mCounterCtrl visible=${getShowCounter()}
     }
 
     open fun draw() {
-        TODO("GPU: LLUICtrl.draw()")
+        // GPU: LLUICtrl.draw()
     }
 
     open fun handleRightMouseDown(x: Int, y: Int): Boolean {
         if (mPopupMenuHandle == null) createPopupMenu()
-        TODO("GPU: call updateMenuItems(); menu.arrangeAndClear(); LLMenuGL.showPopup()")
+        // GPU: call updateMenuItems(); menu.arrangeAndClear(); LLMenuGL.showPopup()
+        return false
     }
 
     fun hidePopupMenu() {
-        TODO("GPU: set popup menu visible=false")
+        // GPU: set popup menu visible=false
     }
 
     protected fun canCreateMenu(): Boolean {
@@ -296,7 +301,8 @@ abstract class LLIMChiclet(
 
         fun getIMSessionType(sessionId: UUID): EType {
             if (sessionId == UUID(0, 0)) return EType.TYPE_UNKNOWN
-            TODO("APR: query LLIMModel for session type and map to EType")
+            System.err.println("LLIMChiclet: query LLIMModel for session type and map to EType not yet implemented")
+            return EType.TYPE_UNKNOWN
         }
     }
 }
@@ -311,11 +317,11 @@ class LLScriptChiclet : LLIMChiclet() {
     override fun setSessionId(value: UUID) {
         setShowNewMessagesIcon(sessionId != value)
         super.sessionId = value
-        TODO("GPU: set tooltip to LLScriptFloaterManager.getObjectName(sessionId)")
+        // GPU: set tooltip to LLScriptFloaterManager.getObjectName(sessionId)
     }
 
     override fun onMouseDown() {
-        TODO("GPU: call LLScriptFloaterManager.getInstance().toggleScriptFloater(sessionId)")
+        // GPU: call LLScriptFloaterManager.getInstance().toggleScriptFloater(sessionId)
     }
 
     override fun setCounter(counter: Int) {
@@ -326,13 +332,13 @@ class LLScriptChiclet : LLIMChiclet() {
 
     override fun createPopupMenu() {
         if (!canCreateMenu()) return
-        TODO("GPU: load menu_script_chiclet.xml and store handle in mPopupMenuHandle; register ScriptChiclet.Action → onMenuItemClicked")
+        // GPU: load menu_script_chiclet.xml and store handle in mPopupMenuHandle; register ScriptChiclet.Action → onMenuItemClicked
     }
 
     private fun onMenuItemClicked(userData: String) {
         when (userData) {
-            "end" -> TODO("GPU: LLScriptFloaterManager.instance.removeNotification(sessionId)")
-            "close all" -> TODO("GPU: LLIMWellWindow.getInstance().closeAll()")
+            "end" -> { /* GPU: LLScriptFloaterManager.instance.removeNotification(sessionId) */ }
+            "close all" -> { /* GPU: LLIMWellWindow.getInstance().closeAll() */ }
         }
     }
 }
@@ -350,13 +356,13 @@ class LLInvOfferChiclet : LLIMChiclet() {
 
     override fun setSessionId(value: UUID) {
         setShowNewMessagesIcon(sessionId != value)
-        TODO("GPU: set tooltip to LLScriptFloaterManager.getObjectName(value)")
+        // GPU: set tooltip to LLScriptFloaterManager.getObjectName(value)
         super.sessionId = value
-        TODO("GPU: find notification by sessionId; if it's UserGiveItem set icon to from_id else UUID null")
+        // GPU: find notification by sessionId; if it's UserGiveItem set icon to from_id else UUID null
     }
 
     override fun onMouseDown() {
-        TODO("GPU: call LLScriptFloaterManager.instance.toggleScriptFloater(sessionId)")
+        // GPU: call LLScriptFloaterManager.instance.toggleScriptFloater(sessionId)
     }
 
     override fun setCounter(counter: Int) {
@@ -367,12 +373,12 @@ class LLInvOfferChiclet : LLIMChiclet() {
 
     override fun createPopupMenu() {
         if (!canCreateMenu()) return
-        TODO("GPU: load menu_inv_offer_chiclet.xml; register InvOfferChiclet.Action → onMenuItemClicked")
+        // GPU: load menu_inv_offer_chiclet.xml; register InvOfferChiclet.Action → onMenuItemClicked
     }
 
     private fun onMenuItemClicked(userData: String) {
         when (userData) {
-            "end" -> TODO("GPU: LLScriptFloaterManager.instance.removeNotification(sessionId)")
+            "end" -> { /* GPU: LLScriptFloaterManager.instance.removeNotification(sessionId) */ }
         }
     }
 }
@@ -397,20 +403,20 @@ class LLIMP2PChiclet : LLIMChiclet() {
 
     override fun createPopupMenu() {
         if (!canCreateMenu()) return
-        TODO("GPU: load menu_fs_imchiclet_p2p.xml; register IMChicletMenu.Action → onMenuItemClicked")
+        // GPU: load menu_fs_imchiclet_p2p.xml; register IMChicletMenu.Action → onMenuItemClicked
     }
 
     override fun updateMenuItems() {
         if (mPopupMenuHandle == null || sessionId == UUID(0, 0)) return
-        TODO("GPU: enable/disable 'Send IM' based on open floater visibility; enable/disable 'Add Friend' based on LLAvatarActions.isFriend()")
+        // GPU: enable/disable 'Send IM' based on open floater visibility; enable/disable 'Add Friend' based on LLAvatarActions.isFriend()
     }
 
     private fun onMenuItemClicked(userData: String) {
         when (userData) {
-            "profile" -> TODO("GPU: LLAvatarActions.showProfile(otherParticipantId)")
-            "im"      -> TODO("GPU: LLAvatarActions.startIM(otherParticipantId)")
-            "add"     -> TODO("GPU: LLAvatarActions.requestFriendshipDialog(otherParticipantId)")
-            "end"     -> TODO("GPU: LLAvatarActions.endIM(otherParticipantId)")
+            "profile" -> { /* GPU: LLAvatarActions.showProfile(otherParticipantId) */ }
+            "im"      -> { /* GPU: LLAvatarActions.startIM(otherParticipantId) */ }
+            "add"     -> { /* GPU: LLAvatarActions.requestFriendshipDialog(otherParticipantId) */ }
+            "end"     -> { /* GPU: LLAvatarActions.endIM(otherParticipantId) */ }
         }
     }
 }
@@ -424,7 +430,7 @@ class LLAdHocChiclet : LLIMChiclet() {
 
     override fun setSessionId(value: UUID) {
         super.sessionId = value
-        TODO("GPU: find im session for value; set mChicletIconCtrl value to session.otherParticipantId")
+        // GPU: find im session for value; set mChicletIconCtrl value to session.otherParticipantId
     }
 
     override fun draw() {
@@ -439,17 +445,17 @@ class LLAdHocChiclet : LLIMChiclet() {
     override fun getCounter(): Int = mCounterCtrl.getCounter()
 
     private fun switchToCurrentSpeaker() {
-        TODO("GPU: get speaker list for session; find speaker with volume>0 or STATUS_SPEAKING; call mSpeakerCtrl.setSpeakerId()")
+        // GPU: get speaker list for session; find speaker with volume>0 or STATUS_SPEAKING; call mSpeakerCtrl.setSpeakerId()
     }
 
     override fun createPopupMenu() {
         if (!canCreateMenu()) return
-        TODO("GPU: load menu_fs_imchiclet_adhoc.xml; register IMChicletMenu.Action → onMenuItemClicked")
+        // GPU: load menu_fs_imchiclet_adhoc.xml; register IMChicletMenu.Action → onMenuItemClicked
     }
 
     private fun onMenuItemClicked(userData: String) {
         when (userData) {
-            "end" -> TODO("GPU: LLGroupActions.endIM(sessionId)")
+            "end" -> { /* GPU: LLGroupActions.endIM(sessionId) */ }
         }
     }
 }
@@ -463,13 +469,13 @@ class LLIMGroupChiclet : LLIMChiclet() {
 
     override fun setSessionId(value: UUID) {
         super.sessionId = value
-        TODO("GPU: fetch group data; if insignia id is not null set icon; otherwise register as group mgr observer and request properties")
+        // GPU: fetch group data; if insignia id is not null set icon; otherwise register as group mgr observer and request properties
     }
 
     fun changed(gc: Int) {
         // gc == GC_PROPERTIES
         if (gc == 0 /* GC_PROPERTIES */) {
-            TODO("GPU: re-fetch group data and update mChicletIconCtrl with insignia id")
+            // GPU: re-fetch group data and update mChicletIconCtrl with insignia id
         }
     }
 
@@ -485,26 +491,26 @@ class LLIMGroupChiclet : LLIMChiclet() {
     override fun getCounter(): Int = mCounterCtrl.getCounter()
 
     private fun switchToCurrentSpeaker() {
-        TODO("GPU: get speaker list for session; find active speaker; call mSpeakerCtrl.setSpeakerId()")
+        // GPU: get speaker list for session; find active speaker; call mSpeakerCtrl.setSpeakerId()
     }
 
     override fun createPopupMenu() {
         if (!canCreateMenu()) return
-        TODO("GPU: load menu_fs_imchiclet_group.xml; register IMChicletMenu.Action → onMenuItemClicked")
+        // GPU: load menu_fs_imchiclet_group.xml; register IMChicletMenu.Action → onMenuItemClicked
     }
 
     override fun updateMenuItems() {
         if (mPopupMenuHandle == null || sessionId == UUID(0, 0)) return
-        TODO("GPU: enable/disable 'Chat' based on whether open IM floater is visible")
+        // GPU: enable/disable 'Chat' based on whether open IM floater is visible
     }
 
     private fun onMenuItemClicked(userData: String) {
         when (userData) {
-            "group chat" -> TODO("GPU: LLGroupActions.startIM(sessionId)")
-            "info"       -> TODO("GPU: LLGroupActions.show(sessionId)")
-            "snooze"     -> TODO("GPU: LLGroupActions.snoozeIM(sessionId)")
-            "leave"      -> TODO("GPU: LLGroupActions.leaveIM(sessionId)")
-            "end"        -> TODO("GPU: LLGroupActions.endIM(sessionId)")
+            "group chat" -> { /* GPU: LLGroupActions.startIM(sessionId) */ }
+            "info"       -> { /* GPU: LLGroupActions.show(sessionId) */ }
+            "snooze"     -> { /* GPU: LLGroupActions.snoozeIM(sessionId) */ }
+            "leave"      -> { /* GPU: LLGroupActions.leaveIM(sessionId) */ }
+            "end"        -> { /* GPU: LLGroupActions.endIM(sessionId) */ }
         }
     }
 }
@@ -529,18 +535,18 @@ abstract class LLSysWellChiclet(
             val suffix = if (counter > mMaxDisplayedCount) "+" else ""
             "$capped$suffix"
         } else { "" }
-        TODO("GPU: set mButton label to '$label'")
+        // GPU: set mButton label to '$label'
         mCounter = counter
     }
 
     override fun getCounter(): Int = mCounter
 
     fun setClickCallback(cb: (Any?, Any?) -> Unit) {
-        TODO("GPU: wire cb to mButton click signal")
+        // GPU: wire cb to mButton click signal
     }
 
     fun setToggleState(toggled: Boolean) {
-        TODO("GPU: set mButton toggle state to $toggled")
+        // GPU: set mButton toggle state to $toggled
     }
 
     fun changeLitState(blink: Boolean) {
@@ -548,17 +554,18 @@ abstract class LLSysWellChiclet(
     }
 
     fun setNewMessagesState(newMessages: Boolean) {
-        TODO("GPU: set mButton forcePressedState=$newMessages")
+        // GPU: set mButton forcePressedState=$newMessages
         mIsNewMessagesState = newMessages
     }
 
     open fun updateWidget(isWindowEmpty: Boolean) {
-        TODO("GPU: set mButton enabled=${!isWindowEmpty}; call LLChicletBar.showWellButton(name, !isWindowEmpty)")
+        // GPU: set mButton enabled=${!isWindowEmpty}; call LLChicletBar.showWellButton(name, !isWindowEmpty)
     }
 
     open fun handleRightMouseDown(x: Int, y: Int): Boolean {
         if (mContextMenuHandle == null) createMenu()
-        TODO("GPU: show context menu at x=$x y=$y")
+        // GPU: show context menu at x=$x y=$y
+        return false
     }
 
     protected abstract fun createMenu()
@@ -572,7 +579,7 @@ class LLNotificationChiclet(maxDisplayedCount: Int = 99) : LLSysWellChiclet(maxD
     var mUreadSystemNotifications: Int = 0
 
     init {
-        TODO("GPU: create ChicletNotificationChannel; set sys-well chiclet on LLFloaterNotificationsTabbed or LLNotificationWellWindow depending on FSInternalLegacyNotificationWell setting")
+        System.err.println("LLNotificationChiclet: create ChicletNotificationChannel; set sys-well chiclet on LLFloaterNotificationsTabbed or LLNotificationWellWindow depending on FSInternalLegacyNotificationWell setting not yet implemented")
     }
 
     override fun setCounter(counter: Int) {
@@ -582,7 +589,7 @@ class LLNotificationChiclet(maxDisplayedCount: Int = 99) : LLSysWellChiclet(maxD
 
     private fun onMenuItemClicked(userData: String) {
         when (userData) {
-            "close all" -> TODO("GPU: call closeAll() on notification well window (tabbed or legacy)")
+            "close all" -> { /* GPU: call closeAll() on notification well window (tabbed or legacy) */ }
         }
     }
 
@@ -593,11 +600,12 @@ class LLNotificationChiclet(maxDisplayedCount: Int = 99) : LLSysWellChiclet(maxD
 
     override fun createMenu() {
         if (mContextMenuHandle != null) return
-        TODO("GPU: load menu_notification_well_button.xml; register NotificationWellChicletMenu.Action → onMenuItemClicked; store handle")
+        // GPU: load menu_notification_well_button.xml; register NotificationWellChicletMenu.Action → onMenuItemClicked; store handle
     }
 
     fun filterNotification(notificationName: String, notificationType: String, hasFormElements: Boolean, isCancelled: Boolean): Boolean {
-        TODO("APR: apply notification filter logic (ScriptDialog exclusion, well-window membership check, offer type RLVa routing)")
+        System.err.println("LLNotificationChiclet: apply notification filter logic (ScriptDialog exclusion, well-window membership check, offer type RLVa routing) not yet implemented")
+        return false
     }
 }
 
@@ -607,7 +615,7 @@ class LLNotificationChiclet(maxDisplayedCount: Int = 99) : LLSysWellChiclet(maxD
 
 class LLIMWellChiclet(maxDisplayedCount: Int = 99) : LLSysWellChiclet(maxDisplayedCount) {
     init {
-        TODO("APR: register messageCountChanged as new-message and no-unread-message callback on LLIMModel; add this as session observer; wire FSShowMessageCountInWindowTitle setting change to updateApplicationWindowTitle()")
+        System.err.println("LLIMWellChiclet: register messageCountChanged as new-message and no-unread-message callback on LLIMModel; add this as session observer; wire FSShowMessageCountInWindowTitle setting change to updateApplicationWindowTitle() not yet implemented")
     }
 
     fun sessionAdded(sessionId: UUID, name: String, otherParticipantId: UUID, hasOfflineMsg: Boolean) {}
@@ -624,28 +632,29 @@ class LLIMWellChiclet(maxDisplayedCount: Int = 99) : LLSysWellChiclet(maxDisplay
 
     private fun onMenuItemClicked(userData: String) {
         when (userData) {
-            "close all" -> TODO("GPU: LLIMWellWindow.getInstance().closeAll()")
+            "close all" -> { /* GPU: LLIMWellWindow.getInstance().closeAll() */ }
         }
     }
 
     private fun enableMenuItem(userData: String): Boolean {
         if (userData == "can close all") {
-            TODO("GPU: return !LLIMWellWindow.getInstance().isWindowEmpty()")
+            // GPU: return !LLIMWellWindow.getInstance().isWindowEmpty()
+            return false
         }
         return true
     }
 
     override fun createMenu() {
         if (mContextMenuHandle != null) return
-        TODO("GPU: load menu_fs_im_well_button.xml; register IMWellChicletMenu.Action → onMenuItemClicked; store handle")
+        // GPU: load menu_fs_im_well_button.xml; register IMWellChicletMenu.Action → onMenuItemClicked; store handle
     }
 
     private fun messageCountChanged(sessionData: Map<String, Any>) {
-        TODO("APR: guard on LLChicletBar existence; read counter from LLChicletBar.getTotalUnreadIMCount(); update flash state; call setCounter(); updateApplicationWindowTitle()")
+        System.err.println("LLIMWellChiclet: guard on LLChicletBar existence; read counter from LLChicletBar.getTotalUnreadIMCount(); update flash state; call setCounter(); updateApplicationWindowTitle() not yet implemented")
     }
 
     private fun updateApplicationWindowTitle() {
-        TODO("APR: prepend unread count to window title when FSShowMessageCountInWindowTitle is true and mCounter>0; truncate to 255 chars; call gViewerWindow.setTitle()")
+        System.err.println("LLIMWellChiclet: prepend unread count to window title when FSShowMessageCountInWindowTitle is true and mCounter>0; truncate to 255 chars; call gViewerWindow.setTitle() not yet implemented")
     }
 }
 
@@ -668,11 +677,13 @@ class LLChicletPanel(
     private var mVoiceChannelChangedConnection: (() -> Unit)? = null
 
     fun postBuild(): Boolean {
-        TODO("GPU: bind scroll buttons; wire IM model new-message callbacks; wire script floater callbacks; connect sFindChicletsListeners; connect voice channel changed callback")
+        // GPU: bind scroll buttons; wire IM model new-message callbacks; wire script floater callbacks; connect sFindChicletsListeners; connect voice channel changed callback
+        return false
     }
 
     inline fun <reified T : LLChiclet> createChiclet(sessionId: UUID, index: Int): T? {
-        TODO("GPU: instantiate T, call addChiclet(); scroll to it if no docked floater; set session id")
+        // GPU: instantiate T, call addChiclet(); scroll to it if no docked floater; set session id
+        return null
     }
 
     inline fun <reified T : LLChiclet> createChiclet(sessionId: UUID): T? =
@@ -719,32 +730,32 @@ class LLChicletPanel(
 
     private fun removeChicletAt(index: Int) {
         val chiclet = mChicletList.removeAt(index)
-        TODO("GPU: remove chiclet child from mScrollArea; arrange(); LLTransientFloaterMgr.removeControlView(chiclet); chiclet.die()")
+        // GPU: remove chiclet child from mScrollArea; arrange(); LLTransientFloaterMgr.removeControlView(chiclet); chiclet.die()
     }
 
     fun removeAll() {
         mChicletList.clear()
-        TODO("GPU: remove all child views from mScrollArea; showScrollButtonsIfNeeded()")
+        // GPU: remove all child views from mScrollArea; showScrollButtonsIfNeeded()
     }
 
     fun scrollToChiclet(chiclet: LLChiclet) {
-        TODO("GPU: if chiclet rect is outside scroll area, shift chiclets to bring it into view")
+        // GPU: if chiclet rect is outside scroll area, shift chiclets to bring it into view
     }
 
     fun setChicletClickedCallback(cb: (Any?, Any?) -> Unit) {
-        TODO("GPU: wire cb to panel commit signal")
+        // GPU: wire cb to panel commit signal
     }
 
     fun onCurrentVoiceChannelChanged(sessionId: UUID) {
-        TODO("GPU: show speaker on chiclets for new session; hide speaker on chiclets for previous session; open IM floater if OpenIMOnVoice setting is true")
+        // GPU: show speaker on chiclets for new session; hide speaker on chiclets for previous session; open IM floater if OpenIMOnVoice setting is true
     }
 
     fun reshape(width: Int, height: Int, calledFromParent: Boolean = true) {
-        TODO("GPU: reposition scroll buttons; resize mScrollArea accounting for scroll button width; update mShowControls; trimChiclets(); showScrollButtonsIfNeeded()")
+        // GPU: reposition scroll buttons; resize mScrollArea accounting for scroll button width; update mShowControls; trimChiclets(); showScrollButtonsIfNeeded()
     }
 
     fun draw() {
-        TODO("GPU: iterate child list; clip-draw mScrollArea; draw other children normally")
+        // GPU: iterate child list; clip-draw mScrollArea; draw other children normally
     }
 
     fun notifyParent(info: Map<String, Any>): Int {
@@ -752,7 +763,8 @@ class LLChicletPanel(
             arrange()
             return 1
         }
-        TODO("GPU: delegate to LLPanel.notifyParent(info)")
+        // GPU: delegate to LLPanel.notifyParent(info)
+        return 0
     }
 
     fun setChicletToggleState(sessionId: UUID, toggle: Boolean) {
@@ -766,55 +778,59 @@ class LLChicletPanel(
         mChicletList.filterIsInstance<LLIMChiclet>().sumOf { it.getCounter() }
 
     private fun addChiclet(chiclet: LLChiclet, index: Int): Boolean {
-        TODO("GPU: add chiclet to mScrollArea; compute left_shift for right-alignment; insert into mChicletList at index; wire click/size-changed callbacks; arrange(); register with LLTransientFloaterMgr")
+        // GPU: add chiclet to mScrollArea; compute left_shift for right-alignment; insert into mChicletList at index; wire click/size-changed callbacks; arrange(); register with LLTransientFloaterMgr
+        return false
     }
 
     private fun arrange() {
         if (mChicletList.isEmpty()) return
-        TODO("GPU: lay out chiclets left-to-right from first chiclet position; update mScrollArea rect; trimChiclets(); showScrollButtonsIfNeeded()")
+        // GPU: lay out chiclets left-to-right from first chiclet position; update mScrollArea rect; trimChiclets(); showScrollButtonsIfNeeded()
     }
 
     private fun canScrollRight(): Boolean {
         if (mChicletList.isEmpty()) return false
-        TODO("GPU: compare last chiclet right edge to scroll area width")
+        // GPU: compare last chiclet right edge to scroll area width
+        return false
     }
 
     private fun needShowScroll(): Boolean {
         if (mChicletList.isEmpty()) return false
-        TODO("GPU: compare total chiclet span to panel width")
+        // GPU: compare total chiclet span to panel width
+        return false
     }
 
     private fun canScrollLeft(): Boolean {
         if (mChicletList.isEmpty()) return false
-        TODO("GPU: check if first chiclet left < 0")
+        // GPU: check if first chiclet left < 0
+        return false
     }
 
     private fun showScrollButtonsIfNeeded() {
-        TODO("GPU: enable/show left/right scroll buttons based on canScrollLeft()/canScrollRight() and mShowControls")
+        // GPU: enable/show left/right scroll buttons based on canScrollLeft()/canScrollRight() and mShowControls
     }
 
     private fun shiftChiclets(offset: Int, startIndex: Int = 0) {
         if (startIndex < 0 || startIndex >= getChicletCount()) return
         mChicletList.drop(startIndex).forEach { chiclet ->
-            TODO("GPU: translate chiclet by offset on x-axis")
+            // GPU: translate chiclet by offset on x-axis
         }
     }
 
     private fun trimChiclets() {
-        TODO("GPU: if last chiclet right < scroll width or first chiclet left > 0, shift to close gap")
+        // GPU: if last chiclet right < scroll width or first chiclet left > 0, shift to close gap
     }
 
     private fun scroll(offset: Int) { shiftChiclets(offset) }
 
     private fun scrollLeft() {
         if (canScrollLeft()) {
-            TODO("GPU: compute offset (handle partial first chiclet); call scroll(); showScrollButtonsIfNeeded()")
+            // GPU: compute offset (handle partial first chiclet); call scroll(); showScrollButtonsIfNeeded()
         }
     }
 
     private fun scrollRight() {
         if (canScrollRight()) {
-            TODO("GPU: compute offset clamped to align last chiclet; call scroll(); showScrollButtonsIfNeeded()")
+            // GPU: compute offset clamped to align last chiclet; call scroll(); showScrollButtonsIfNeeded()
         }
     }
 
@@ -841,7 +857,7 @@ class LLChicletPanel(
     }
 
     private fun onChicletClick(ctrl: Any?, param: Any?) {
-        TODO("GPU: fire panel commit signal with ctrl and param")
+        // GPU: fire panel commit signal with ctrl and param
     }
 
     private fun onChicletSizeChanged(ctrl: LLChiclet, param: Any?) { arrange() }
@@ -849,16 +865,17 @@ class LLChicletPanel(
     private fun onMessageCountChanged(data: Map<String, Any>) {
         val sessionId = data["session_id"] as? UUID ?: return
         var unread = (data["participant_unread"] as? Int) ?: 0
-        TODO("GPU: if FSFloaterIM for sessionId is visible and focused, set unread=0; then update all chiclets for session via sFindChicletsSignal")
+        // GPU: if FSFloaterIM for sessionId is visible and focused, set unread=0; then update all chiclets for session via sFindChicletsSignal
     }
 
     private fun objectChicletCallback(data: Map<String, Any>) {
         val notificationId = data["notification_id"] as? UUID ?: return
         val newMessage = data["new_message"] as? Boolean ?: false
-        TODO("GPU: find chiclets for notificationId; set counter from data[unread] if present; setShowNewMessagesIcon(newMessage)")
+        // GPU: find chiclets for notificationId; set counter from data[unread] if present; setShowNewMessagesIcon(newMessage)
     }
 
     private fun isAnyIMFloaterDoked(): Boolean {
-        TODO("GPU: iterate chiclet list; find FSFloaterIM for each; return true if any is visible, not minimised, and docked")
+        // GPU: iterate chiclet list; find FSFloaterIM for each; return true if any is visible, not minimised, and docked
+        return false
     }
 }

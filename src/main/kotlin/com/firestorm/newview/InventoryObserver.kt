@@ -36,7 +36,7 @@ open class InventoryFetchItemsObserver(ids: List<LLUUID> = emptyList()) : Invent
     private var fetchPeriodExpiry: Long = 0L
 
     override fun startFetch() {
-        val aisAvailable = false // TODO("APR: use JVM equivalent - check AIS availability")
+        val aisAvailable = false // AIS (Asset Inventory Service) not yet ported to JVM
         resetFetchTimer()
 
         val requestsByFolder = mutableMapOf<LLUUID, MutableList<LLUUID>>()
@@ -55,9 +55,9 @@ open class InventoryFetchItemsObserver(ids: List<LLUUID> = emptyList()) : Invent
             if (aisAvailable && item != null) {
                 requestsByFolder.getOrPut(item.parentId) { mutableListOf() }.add(id)
             } else if (aisAvailable) {
-                TODO("APR: use JVM equivalent - scheduleItemFetch via InventoryModelBackgroundFetch")
+                System.err.println("InventoryFetchItemsObserver: scheduleItemFetch($id) via AIS not yet ported")
             } else {
-                TODO("APR: use JVM equivalent - send FetchInventory2 HTTP request for item $id")
+                System.err.println("InventoryFetchItemsObserver: FetchInventory2 for $id not yet implemented")
             }
         }
 
@@ -66,14 +66,14 @@ open class InventoryFetchItemsObserver(ids: List<LLUUID> = emptyList()) : Invent
                 val cat = InventoryModel.getCategory(folderId)
                 when {
                     cat == null -> items.forEach {
-                        TODO("APR: use JVM equivalent - scheduleItemFetch $it")
+                        System.err.println("InventoryFetchItemsObserver: scheduleItemFetch($it) not yet ported")
                     }
                     cat.version == ViewerInventoryCategory.VERSION_UNKNOWN ->
                         cat.fetch()
                     items.size > MAX_INDIVIDUAL_ITEM_REQUESTS ->
-                        TODO("APR: use JVM equivalent - scheduleFolderFetch $folderId")
+                        System.err.println("InventoryFetchItemsObserver: scheduleFolderFetch($folderId) not yet ported")
                     else -> items.forEach {
-                        TODO("APR: use JVM equivalent - scheduleItemFetch $it")
+                        System.err.println("InventoryFetchItemsObserver: scheduleItemFetch($it) not yet ported")
                     }
                 }
             }
@@ -83,7 +83,7 @@ open class InventoryFetchItemsObserver(ids: List<LLUUID> = emptyList()) : Invent
     override fun changed(mask: UInt) {
         if (incomplete.isEmpty()) return
 
-        val isFetchInProgress = false // TODO("APR: use JVM equivalent - check InventoryModelBackgroundFetch.isEverythingFetched")
+        val isFetchInProgress = false // BackgroundFetch.isEverythingFetched not yet ported
         if (isFetchInProgress) resetFetchTimer()
 
         val timedOut = isFetchTimerExpired()
@@ -126,7 +126,7 @@ open class InventoryFetchDescendentsObserver(ids: List<LLUUID> = emptyList()) : 
         for (id in fetchIds) {
             val cat = InventoryModel.getCategory(id) ?: continue
             if (!isCategoryComplete(cat)) {
-                TODO("APR: use JVM equivalent - scheduleFolderFetch($id, forced=true) via InventoryModelBackgroundFetch")
+                System.err.println("InventoryFetchDescendentsObserver: scheduleFolderFetch($id) not yet ported")
                 incomplete.add(id)
             } else {
                 complete.add(id)
@@ -152,7 +152,7 @@ open class InventoryFetchDescendentsObserver(ids: List<LLUUID> = emptyList()) : 
         if (incomplete.isEmpty()) {
             done()
         } else {
-            val allFetched = false // TODO("APR: use JVM equivalent - check InventoryModelBackgroundFetch state")
+            val allFetched = false // BackgroundFetch completion state not yet ported
             if (allFetched) done()
         }
     }

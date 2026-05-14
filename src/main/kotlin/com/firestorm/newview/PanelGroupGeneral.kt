@@ -478,11 +478,11 @@ class PanelGroupGeneral : PanelGroupTab() {
     }
 
     protected fun onCopyUri() {
-        TODO("APR: use JVM clipboard — copy SLUrl for group $groupId")
+        System.err.println("APR: use JVM clipboard — copy SLUrl for group $groupId")
     }
 
     protected fun onCopyName() {
-        TODO("APR: use JVM clipboard — copy groupName string")
+        System.err.println("APR: use JVM clipboard — copy groupName string")
     }
 
     private fun openProfile() {
@@ -510,7 +510,7 @@ class PanelGroupGeneral : PanelGroupTab() {
             if (avName != null) {
                 addMember(member)
             } else {
-                TODO("APR: async fetch avatar name for $memberId, then addMember(member)")
+                System.err.println("APR: async fetch avatar name for $memberId, then addMember(member)")
             }
         }
 
@@ -537,7 +537,7 @@ class PanelGroupGeneral : PanelGroupTab() {
     }
 
     fun refreshInsigniaTexture() {
-        TODO("GPU: destroy_texture for insignia texture ID to force reload")
+        System.err.println("GPU: destroy_texture for insignia texture ID to force reload")
     }
 
     private fun sortMembersList(colIdx: Int, i1: ScrollListItem, i2: ScrollListItem): Int {
@@ -564,21 +564,21 @@ abstract class PanelGroupTab {
     abstract fun update(gc: GroupChange)
 
     open fun setGroupId(id: UUID) { groupId = id }
-    fun notifyObservers() { TODO("APR: observer notification") }
-    fun getString(key: String): String { TODO("APR: localized string lookup"); return key }
-    fun <T> findChild(name: String): T? { TODO("GPU: UI child widget lookup"); return null }
+    fun notifyObservers() { System.err.println("APR: observer notification") }
+    fun getString(key: String): String { System.err.println("APR: localized string lookup"); return key }
+    fun <T> findChild(name: String): T? { System.err.println("GPU: UI child widget lookup"); return null }
 }
 
 enum class GroupChange { GC_ALL, GC_TITLES, GC_ROLE_MEMBER_DATA, GC_MEMBER_DATA, GC_PROPERTIES }
 
 object GroupMgr {
-    fun getGroupData(id: UUID): GroupMgrGroupData? = TODO("APR: group manager lookup")
-    fun sendGroupTitlesRequest(id: UUID) = TODO("APR: send message")
-    fun sendGroupPropertiesRequest(id: UUID) = TODO("APR: send message")
-    fun sendCapGroupMembersRequest(id: UUID) = TODO("APR: send message")
-    fun sendGroupTitleUpdate(groupId: UUID, roleId: UUID) = TODO("APR: send message")
-    fun sendUpdateGroupInfo(groupId: UUID) = TODO("APR: send message")
-    fun sendGroupRoleDataRequest(groupId: UUID) = TODO("APR: send message")
+    fun getGroupData(id: UUID): GroupMgrGroupData? { System.err.println("APR: group manager lookup"); return null }
+    fun sendGroupTitlesRequest(id: UUID) { System.err.println("APR: send message") }
+    fun sendGroupPropertiesRequest(id: UUID) { System.err.println("APR: send message") }
+    fun sendCapGroupMembersRequest(id: UUID) { System.err.println("APR: send message") }
+    fun sendGroupTitleUpdate(groupId: UUID, roleId: UUID) { System.err.println("APR: send message") }
+    fun sendUpdateGroupInfo(groupId: UUID) { System.err.println("APR: send message") }
+    fun sendGroupRoleDataRequest(groupId: UUID) { System.err.println("APR: send message") }
 }
 
 class GroupMgrGroupData {
@@ -596,10 +596,10 @@ class GroupMgrGroupData {
     val ownerRole: UUID = UUID(0, 0)
     val mRoleActionSets: List<Any> = emptyList()
 
-    fun isMemberDataComplete(): Boolean = TODO("APR: check completeness")
-    fun isRoleDataComplete(): Boolean = TODO("APR: check completeness")
-    fun isGroupPropertiesDataComplete(): Boolean = TODO("APR: check completeness")
-    fun getMemberVersion(): UUID = TODO("APR: member version UUID")
+    fun isMemberDataComplete(): Boolean { System.err.println("APR: check completeness"); return false }
+    fun isRoleDataComplete(): Boolean { System.err.println("APR: check completeness"); return false }
+    fun isGroupPropertiesDataComplete(): Boolean { System.err.println("APR: check completeness"); return false }
+    fun getMemberVersion(): UUID { System.err.println("APR: member version UUID"); return UUID(0, 0) }
 }
 
 data class GroupTitle(val title: String, val roleId: UUID, val selected: Boolean)
@@ -607,49 +607,49 @@ data class GroupData(val id: UUID, val acceptNotices: Boolean, val listInProfile
 
 class GroupMemberData {
     val id: UUID = UUID(0, 0)
-    fun getTitle(): String = TODO("APR: member title")
-    fun getOnlineStatus(): String = TODO("APR: online status")
-    fun isOwner(): Boolean = TODO("APR: ownership check")
-    fun isInRole(roleId: UUID): Boolean = TODO("APR: role membership check")
+    fun getTitle(): String { System.err.println("APR: member title"); return "" }
+    fun getOnlineStatus(): String { System.err.println("APR: online status"); return "" }
+    fun isOwner(): Boolean { System.err.println("APR: ownership check"); return false }
+    fun isInRole(roleId: UUID): Boolean { System.err.println("APR: role membership check"); return false }
 }
 
 object Agent {
-    val id: UUID get() = TODO("APR: current agent UUID")
-    val region: ViewerRegion? get() = TODO("APR: current region")
-    fun isTeen(): Boolean = TODO("APR: teen check")
-    fun isGodlike(): Boolean = TODO("APR: god check")
-    fun isInGroup(groupId: UUID): Boolean = TODO("APR: group membership check")
-    fun hasPowerInGroup(groupId: UUID, power: Long): Boolean = TODO("APR: power check")
-    fun getGroupData(groupId: UUID): GroupData? = TODO("APR: group data for agent")
-    fun setUserGroupFlags(groupId: UUID, receiveNotices: Boolean, listInProfile: Boolean) = TODO("APR: set flags")
+    val id: UUID get() { System.err.println("APR: current agent UUID"); return UUID(0, 0) }
+    val region: ViewerRegion? get() { System.err.println("APR: current region"); return null }
+    fun isTeen(): Boolean { System.err.println("APR: teen check"); return false }
+    fun isGodlike(): Boolean { System.err.println("APR: god check"); return false }
+    fun isInGroup(groupId: UUID): Boolean { System.err.println("APR: group membership check"); return false }
+    fun hasPowerInGroup(groupId: UUID, power: Long): Boolean { System.err.println("APR: power check"); return false }
+    fun getGroupData(groupId: UUID): GroupData? { System.err.println("APR: group data for agent"); return null }
+    fun setUserGroupFlags(groupId: UUID, receiveNotices: Boolean, listInProfile: Boolean) { System.err.println("APR: set flags") }
 }
 
 object AvatarActions {
-    fun showProfile(id: UUID) = TODO("APR: open avatar profile")
-    fun isFriend(id: UUID): Boolean = TODO("APR: friendship check")
+    fun showProfile(id: UUID) { System.err.println("APR: open avatar profile") }
+    fun isFriend(id: UUID): Boolean { System.err.println("APR: friendship check"); return false }
 }
 
 object ExoGroupMuteList {
-    fun isMuted(groupId: UUID): Boolean = TODO("APR: check group mute")
-    fun add(groupId: UUID) = TODO("APR: add group to mute list")
-    fun remove(groupId: UUID) = TODO("APR: remove group from mute list")
+    fun isMuted(groupId: UUID): Boolean { System.err.println("APR: check group mute"); return false }
+    fun add(groupId: UUID) { System.err.println("APR: add group to mute list") }
+    fun remove(groupId: UUID) { System.err.println("APR: remove group from mute list") }
 }
 
 object NotificationsUtil {
-    fun add(name: String, args: Map<String, String> = emptyMap(), callback: ((Any, Any) -> Boolean)? = null) = TODO("APR: notification")
-    fun getSelectedOption(notification: Any, response: Any): Int = TODO("APR: response option")
+    fun add(name: String, args: Map<String, String> = emptyMap(), callback: ((Any, Any) -> Boolean)? = null) { System.err.println("APR: notification") }
+    fun getSelectedOption(notification: Any, response: Any): Int { System.err.println("APR: response option"); return 0 }
 }
 
 object LLTrans {
-    fun getString(key: String): String = TODO("APR: localized string")
+    fun getString(key: String): String { System.err.println("APR: localized string"); return "" }
 }
 
 class SLUrl(type: String, id: UUID, action: String) {
-    fun getSLUrlString(): String = TODO("APR: build SLURL string")
+    fun getSLUrlString(): String { System.err.println("APR: build SLURL string"); return "" }
 }
 
 abstract class Panel {
-    fun <T> findChild(name: String): T? = TODO("GPU: find UI child")
+    fun <T> findChild(name: String): T? { System.err.println("GPU: find UI child"); return null }
 }
 abstract class TextBox : UiCtrl() { fun setText(s: String) {} }
 abstract class LineEditor : UiCtrl() { fun setPrevalidate(fn: (String) -> Boolean) {} fun setText(s: String) {} }

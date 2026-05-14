@@ -40,7 +40,8 @@ class FloaterDestinations private constructor(key: LLSD) : Floater(key) {
     }
 
     private fun resolveDestinationGuideUrl(): String {
-        TODO("APR: use JVM equivalent - check OpenSim grid vs. SL grid; return login-response URL or saved setting")
+        System.err.println("FloaterDestinations: resolveDestinationGuideUrl not yet implemented")
+        return ""
     }
 
     override fun onDestroy() {

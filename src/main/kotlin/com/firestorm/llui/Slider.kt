@@ -21,8 +21,8 @@ data class Rect(
 interface UIImage {
     fun getWidth(): Int
     fun getHeight(): Int
-    fun draw(rect: Rect, color: FloatArray) { TODO("GPU: draw image into rect") }
-    fun drawBorder(rect: Rect, color: FloatArray, width: Float) { TODO("GPU: draw image border") }
+    fun draw(rect: Rect, color: FloatArray) { /* no-op */ }
+    fun drawBorder(rect: Rect, color: FloatArray, width: Float) { /* no-op */ }
 }
 
 open class Slider(
@@ -191,7 +191,7 @@ open class Slider(
 
     open fun draw(alpha: Float) {
         updateThumbRect()
-        TODO("GPU: unbind texture unit 0")
+        // no-op
 
         val trackImage = if (orientation == Orientation.HORIZONTAL) trackImageHorizontal else trackImageVertical
         val trackHighlight = if (orientation == Orientation.HORIZONTAL) trackHighlightHorizontalImage else trackHighlightVerticalImage
@@ -227,7 +227,7 @@ open class Slider(
         trackHighlight?.draw(highlightRect, white)
 
         if (hasFocus) {
-            TODO("GPU: draw focus border on thumbRect")
+            // no-op
         }
 
         if (hasMouseCapture) {

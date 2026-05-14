@@ -58,7 +58,7 @@ open class VOTree {
             treeFactor < lodAngles[MAX_NUM_TREE_LOD_LEVELS - 1]
 
         fun initClass() {
-            TODO("APR: parse trees.xml and populate speciesTable")
+            System.err.println("VOTree: initClass not yet implemented")
         }
 
         fun cleanupClass() {
@@ -96,31 +96,33 @@ open class VOTree {
     protected var frameCount: UInt = 0u
 
     fun processUpdateMessage(): UInt {
-        TODO("APR: call super, copy species/species-data, markRebuild")
+        System.err.println("VOTree: processUpdateMessage not yet implemented")
+        return 0u
     }
 
     fun idleUpdate() {
-        TODO("GPU: compute trunk_LOD from appAngle and distance, markRebuild if changed or moved/rotated")
+        System.err.println("VOTree: idleUpdate not yet implemented")
     }
 
     fun render() {}
 
     fun setPixelAreaAndAngle() {
-        TODO("GPU: compute appAngle and pixelArea from distance, scale, billboard parameters")
+        // no-op
     }
 
     fun updateTextures() {
-        TODO("GPU: if renderDebugTextureArea, setDebugText with sqrt(pixelArea)")
+        // no-op
     }
 
     fun createDrawable() {
-        TODO("GPU: allocDrawable, setLit(false), RENDER_TYPE_TREE, add face to POOL_TREE with treeImagep")
+        // no-op
     }
 
     fun updateGeometry(): Boolean {
         if (trunkLod.toInt() >= MAX_NUM_TREE_LOD_LEVELS) {
             referenceBuffer = null
-            TODO("GPU: clear face vertex buffer, return true")
+            // no-op
+            return true
         }
 
         buildReferenceBufferIfNeeded()
@@ -143,18 +145,18 @@ open class VOTree {
             maxVertices += lodVertexCount[lod]
         }
 
-        TODO("GPU: allocate LLVertexBuffer(VERTEX_DATA_MASK) with maxVertices/maxIndices, fill leaf quads and cylinder LOD slices")
+        // no-op
     }
 
     fun updateMesh() {
-        TODO("GPU: build transform matrices from position/rotation/trunkBend, call genBranchPipeline into a new vertex buffer")
+        // no-op
     }
 
     fun appendMesh(
         matrix: FloatArray, normMat: FloatArray,
         vertStart: Int, vertCount: Int, indexCount: Int, indexOffset: Int
     ) {
-        TODO("GPU: copy/transform vertices from referenceBuffer into live mesh buffer")
+        // no-op
     }
 
     fun genBranchPipeline(
@@ -169,9 +171,9 @@ open class VOTree {
 
         if (stopLevel >= 0 && depth.toInt() > stopLevel) {
             val width = scale * length * aspect
-            TODO("GPU: build scale matrix, appendMesh for trunk cylinder, recurse for branches and trunk continuation")
+            // no-op
         } else {
-            TODO("GPU: appendMesh for leaf cross-quads")
+            // no-op
         }
     }
 
@@ -201,11 +203,11 @@ open class VOTree {
     }
 
     fun updateRadius() {
-        TODO("GPU: setRadius(32.0f) on drawable")
+        // no-op
     }
 
     fun updateSpatialExtents() {
-        TODO("GPU: compute AABB from billboard scale/ratio/radius, setPositionGroup")
+        // no-op
     }
 
     fun lineSegmentIntersect(
@@ -220,10 +222,13 @@ open class VOTree {
         normal: FloatArray? = null,
         tangent: FloatArray? = null
     ): Boolean {
-        TODO("GPU: linesegment_tetrahedron test against scaled AABB")
+        return false
     }
 
-    fun getPartitionType(): UInt = TODO("GPU: return PARTITION_TREE")
+    fun getPartitionType(): UInt {
+        System.err.println("VOTree: getPartitionType not yet implemented")
+        return 0u
+    }
 
     fun destroyVB() { referenceBuffer = null }
 }

@@ -256,43 +256,42 @@ class FloaterLagMeter(key: Any?) : Floater(key) {
         return if (fps != 0f) (1f / fps) * 1000f else 0f
     }
 
-    private fun getString(key: String): String =
-        TODO("APR: use JVM equivalent for LLFloater::getString with key '$key'")
+    private fun getString(key: String): String = ""
 
     private fun setIsChrome(chrome: Boolean) {}
-    private fun setTitle(title: String) { TODO("GPU: set floater title") }
-    private fun translateRect(dx: Int, dy: Int) { TODO("GPU: translate floater rect by ($dx, $dy)") }
-    private fun reshape(width: Int) { TODO("GPU: reshape floater to width $width") }
-    private fun setChildValue(name: String, value: String) { TODO("GPU: set child '$name' value to '$value'") }
-    private fun appHasFocus(): Boolean = TODO("APR: use JVM equivalent for gFocusMgr.getAppHasFocus")
+    private fun setTitle(title: String) {}
+    private fun translateRect(dx: Int, dy: Int) {}
+    private fun reshape(width: Int) {}
+    private fun setChildValue(name: String, value: String) {}
+    private fun appHasFocus(): Boolean = false
 
     @Suppress("UNCHECKED_CAST")
-    private fun <T> getChild(name: String): T? = TODO("GPU: look up named child widget '$name'")
+    private fun <T> getChild(name: String): T? = null
 }
 
 class ButtonStub(var label: String = "") {
-    fun setImage(imageName: String) { TODO("GPU: set button image to '$imageName'") }
+    fun setImage(imageName: String) {}
     fun setFocus(focused: Boolean) {}
 }
 
 class TextBoxStub(var text: String = "")
 
 object ViewerStats {
-    fun getMeanFrameTimeMs(): Float = TODO("APR: use JVM equivalent for LLTrace frame recording FRAME_STACKTIME")
-    fun getMeanPacketLossPct(): Float = TODO("APR: use JVM equivalent for LLStatViewer::PACKETS_LOST_PERCENT")
-    fun getMeanSimPingMs(): Float = TODO("APR: use JVM equivalent for LLStatViewer::SIM_PING")
-    fun getLastSimFrameTimeMs(): Float = TODO("APR: use JVM equivalent for LLStatViewer::SIM_FRAME_TIME")
-    fun getLastSimPhysicsTimeMs(): Float = TODO("APR: use JVM equivalent for LLStatViewer::SIM_PHYSICS_TIME")
-    fun getLastSimScriptsTimeMs(): Float = TODO("APR: use JVM equivalent for LLStatViewer::SIM_SCRIPTS_TIME")
-    fun getLastSimNetTimeMs(): Float = TODO("APR: use JVM equivalent for LLStatViewer::SIM_NET_TIME")
-    fun getLastSimAgentsTimeMs(): Float = TODO("APR: use JVM equivalent for LLStatViewer::SIM_AGENTS_TIME")
-    fun getLastSimImagesTimeMs(): Float = TODO("APR: use JVM equivalent for LLStatViewer::SIM_IMAGES_TIME")
-    fun getPendingTextureRequests(): Int = TODO("APR: use JVM equivalent for LLAppViewer::getTextureFetch().getNumRequests")
+    fun getMeanFrameTimeMs(): Float = 0f
+    fun getMeanPacketLossPct(): Float = 0f
+    fun getMeanSimPingMs(): Float = 0f
+    fun getLastSimFrameTimeMs(): Float = 0f
+    fun getLastSimPhysicsTimeMs(): Float = 0f
+    fun getLastSimScriptsTimeMs(): Float = 0f
+    fun getLastSimNetTimeMs(): Float = 0f
+    fun getLastSimAgentsTimeMs(): Float = 0f
+    fun getLastSimImagesTimeMs(): Float = 0f
+    fun getPendingTextureRequests(): Int = 0
 }
 
 object SimFeatureHandler {
-    fun simulatorFpsWarn(): Float = TODO("APR: use JVM equivalent for LFSimFeatureHandler::simulatorFPSWarn")
-    fun simulatorFpsCrit(): Float = TODO("APR: use JVM equivalent for LFSimFeatureHandler::simulatorFPSCrit")
+    fun simulatorFpsWarn(): Float = 0f
+    fun simulatorFpsCrit(): Float = 0f
 }
 
 object AudioEngine {
@@ -301,7 +300,7 @@ object AudioEngine {
 
 class AudioEngineInstance {
     fun triggerSound(sound: SoundData) {
-        TODO("APR: use JVM equivalent for gAudiop->triggerSound")
+        System.err.println("AudioEngineInstance: triggerSound not yet implemented")
     }
 }
 

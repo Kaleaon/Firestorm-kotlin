@@ -18,35 +18,36 @@ class PanelCameraZoom {
     private var rollRight: Any? = null
 
     fun postBuild(): Boolean {
-        TODO("APR: bind UI children plus_btn, minus_btn, zoom_slider, roll_left, roll_right")
+        System.err.println("PanelCameraZoom: postBuild not yet implemented")
+        return false
     }
 
     fun draw() {
-        TODO("GPU: mSlider.setValue(gAgentCamera.getCameraZoomFraction()); LLPanel.draw()")
+        // GPU: mSlider.setValue(gAgentCamera.getCameraZoomFraction()); LLPanel.draw()
     }
 
     fun onZoomPlusHeldDown() {
-        TODO("APR: val - inc; gAgentCamera.unlockView(); setOrbitInKey(getOrbitRate(time))")
+        // APR: val - inc; gAgentCamera.unlockView(); setOrbitInKey(getOrbitRate(time))
     }
 
     fun onZoomMinusHeldDown() {
-        TODO("APR: val + inc; gAgentCamera.unlockView(); setOrbitOutKey(getOrbitRate(time))")
+        // APR: val + inc; gAgentCamera.unlockView(); setOrbitOutKey(getOrbitRate(time))
     }
 
     fun onRollLeftHeldDown() {
-        TODO("APR: gAgentCamera.unlockView(); setRollLeftKey(getOrbitRate(time))")
+        // APR: gAgentCamera.unlockView(); setRollLeftKey(getOrbitRate(time))
     }
 
     fun onRollRightHeldDown() {
-        TODO("APR: gAgentCamera.unlockView(); setRollRightKey(getOrbitRate(time))")
+        // APR: gAgentCamera.unlockView(); setRollRightKey(getOrbitRate(time))
     }
 
     fun onCameraTrack() {
-        TODO("APR: LLFirstUse.viewPopup(false)")
+        // APR: LLFirstUse.viewPopup(false)
     }
 
     fun onCameraRotate() {
-        TODO("APR: LLFirstUse.viewPopup(false)")
+        // APR: LLFirstUse.viewPopup(false)
     }
 
     private fun getOrbitRate(time: Float): Float {
@@ -58,7 +59,7 @@ class PanelCameraZoom {
     }
 
     fun onSliderValueChanged() {
-        TODO("APR: val zoomLevel = slider.getValueF32(); gAgentCamera.setCameraZoomFraction(zoomLevel)")
+        // APR: val zoomLevel = slider.getValueF32(); gAgentCamera.setCameraZoomFraction(zoomLevel)
     }
 
     fun onOpen(key: Any) = Unit
@@ -72,16 +73,17 @@ class PanelCameraItem {
     var text: Any? = null
 
     fun postBuild(): Boolean {
-        TODO("APR: bind mouse enter/leave/down callbacks for hover icon and commit signal")
+        System.err.println("PanelCameraItem: postBuild not yet implemented")
+        return false
     }
 
     fun onAnyMouseClick() {
-        TODO("APR: fire mCommitSignal(this, LLSD())")
+        // APR: fire mCommitSignal(this, LLSD())
     }
 
     fun setValue(value: Map<String, Any>) {
         val selected = value["selected"] as? Boolean ?: return
-        TODO("APR: set visibility of selected_icon, picture, selected_picture based on 'selected'")
+        // APR: set visibility of selected_icon, picture, selected_picture based on 'selected'
     }
 }
 
@@ -91,7 +93,7 @@ class CameraInfoPanel(
     private val getFocus: () -> FloatArray
 ) {
     fun draw() {
-        TODO("GPU: render camera info (origin, axes, focus, sight) using LLFontGL")
+        // GPU: render camera info (origin, axes, focus, sight) using LLFontGL
     }
 }
 
@@ -125,7 +127,9 @@ class FloaterCamera private constructor(val key: Any) {
         fun onClickCameraItem(param: Any) {
             val name = param.toString()
             when (name) {
-                "mouselook_view" -> TODO("APR: gAgentCamera.changeCameraToMouselook()")
+                "mouselook_view" -> {
+                    // APR: gAgentCamera.changeCameraToMouselook()
+                }
                 "object_view" -> {
                     for (cam in listOfNotNull(findInstance(), findPhototoolsInstance(), findSmallInstance())) {
                         if (cam.currMode == CameraControlMode.FREE_CAMERA) {
@@ -140,7 +144,7 @@ class FloaterCamera private constructor(val key: Any) {
                     for (cam in listOfNotNull(findInstance(), findPhototoolsInstance(), findSmallInstance())) {
                         cam.switchMode(CameraControlMode.PAN)
                     }
-                    TODO("APR: gAgentCamera.changeCameraToDefault(); switchToPreset(\"rear_view\")")
+                    // APR: gAgentCamera.changeCameraToDefault(); switchToPreset("rear_view")
                 }
                 else -> {
                     for (cam in listOfNotNull(findInstance(), findPhototoolsInstance(), findSmallInstance())) {
@@ -179,7 +183,7 @@ class FloaterCamera private constructor(val key: Any) {
                 instance.showDebugInfo(isDebugCameraEnabled())
             }
             if (isDebugCameraEnabled()) {
-                TODO("APR: LLFloaterReg.showInstanceOrBringToFront(\"camera\")")
+                // APR: LLFloaterReg.showInstanceOrBringToFront("camera")
             }
         }
 
@@ -187,32 +191,57 @@ class FloaterCamera private constructor(val key: Any) {
             if (isCameraPresetLocked()) return
             freeCamera = false
             clearCameraTool()
-            TODO("APR: map preset name to CAMERA_PRESET_* and call gAgentCamera.switchCameraPreset; load preset via LLPresetsManager")
+            // APR: map preset name to CAMERA_PRESET_* and call gAgentCamera.switchCameraPreset; load preset via LLPresetsManager
             for (cam in listOfNotNull(findInstance(), findPhototoolsInstance(), findSmallInstance())) {
                 cam.updateItemsSelection()
                 cam.switchMode(CameraControlMode.PRESETS)
             }
         }
 
-        private fun findInstance(): FloaterCamera? = TODO("APR: LLFloaterReg.findTypedInstance(\"camera\")")
-        private fun findPhototoolsInstance(): FloaterCamera? = TODO("APR: LLFloaterReg.findTypedInstance(\"phototools_camera\")")
-        private fun findSmallInstance(): FloaterCamera? = TODO("APR: LLFloaterReg.findTypedInstance(\"fs_camera_small\")")
+        private fun findInstance(): FloaterCamera? {
+            // APR: LLFloaterReg.findTypedInstance("camera")
+            return null
+        }
+        private fun findPhototoolsInstance(): FloaterCamera? {
+            // APR: LLFloaterReg.findTypedInstance("phototools_camera")
+            return null
+        }
+        private fun findSmallInstance(): FloaterCamera? {
+            // APR: LLFloaterReg.findTypedInstance("fs_camera_small")
+            return null
+        }
 
-        private fun activateCameraTool() = TODO("APR: LLToolMgr.getInstance().setTransientTool(LLToolCamera.getInstance())")
-        private fun clearCameraTool() = TODO("APR: LLToolMgr clear transient camera tool if active")
-        private fun agentCameraMode(): Int = TODO("APR: gAgentCamera.getCameraMode()")
-        private fun isDebugCameraEnabled(): Boolean = TODO("APR: LLView.sDebugCamera")
-        private fun isCameraPresetLocked(): Boolean = TODO("APR: RlvActions.isCameraPresetLocked()")
-        private val CAMERA_MODE_MOUSELOOK: Int get() = TODO("APR: CAMERA_MODE_MOUSELOOK constant")
+        private fun activateCameraTool() {
+            // APR: LLToolMgr.getInstance().setTransientTool(LLToolCamera.getInstance())
+        }
+        private fun clearCameraTool() {
+            // APR: LLToolMgr clear transient camera tool if active
+        }
+        private fun agentCameraMode(): Int {
+            // APR: gAgentCamera.getCameraMode()
+            return 0
+        }
+        private fun isDebugCameraEnabled(): Boolean {
+            // APR: LLView.sDebugCamera
+            return false
+        }
+        private fun isCameraPresetLocked(): Boolean {
+            // APR: RlvActions.isCameraPresetLocked()
+            return false
+        }
+        private val CAMERA_MODE_MOUSELOOK: Int get() {
+            // APR: CAMERA_MODE_MOUSELOOK constant
+            return 0
+        }
     }
 
     fun postBuild(): Boolean {
-        TODO("APR: bind controls (rotate, zoom, track, presetCombo, mode buttons); call update(); handleAvatarEditingAppearance(appearanceEditing)")
+        // APR: bind controls (rotate, zoom, track, presetCombo, mode buttons); call update(); handleAvatarEditingAppearance(appearanceEditing)
         return true
     }
 
     fun onOpen(key: Any) {
-        TODO("APR: LLFirstUse.viewPopup(); zoom.onOpen(key)")
+        // APR: LLFirstUse.viewPopup(); zoom.onOpen(key)
         if (!closed) updateState() else toPrevMode()
         closed = false
         if (presetCombo != null) populatePresetCombo()
@@ -225,7 +254,7 @@ class FloaterCamera private constructor(val key: Any) {
         if (currMode == CameraControlMode.PAN) prevMode = CameraControlMode.PAN
         switchMode(CameraControlMode.PAN)
         closed = true
-        TODO("APR: gAgent.setMovementLocked(false)")
+        // APR: gAgent.setMovementLocked(false)
     }
 
     fun update() {
@@ -234,7 +263,7 @@ class FloaterCamera private constructor(val key: Any) {
     }
 
     fun onSavePreset() {
-        TODO("APR: LLFloaterReg.hideInstance(\"delete_pref_preset\", PRESETS_CAMERA); show save_camera_preset floater")
+        // APR: LLFloaterReg.hideInstance("delete_pref_preset", PRESETS_CAMERA); show save_camera_preset floater
     }
 
     fun onCustomPresetSelected() {
@@ -245,11 +274,12 @@ class FloaterCamera private constructor(val key: Any) {
     }
 
     fun populatePresetCombo() {
-        TODO("APR: LLPresetsManager.setPresetNamesInComboBox; handle active preset label")
+        // APR: LLPresetsManager.setPresetNamesInComboBox; handle active preset label
     }
 
     private fun getCurrentTransparency(): Float {
-        TODO("APR: min(CameraOpacity, ActiveFloaterTransparency) from gSavedSettings")
+        // APR: min(CameraOpacity, ActiveFloaterTransparency) from gSavedSettings
+        return 0f
     }
 
     private fun determineMode(): CameraControlMode {
@@ -297,39 +327,65 @@ class FloaterCamera private constructor(val key: Any) {
     }
 
     fun updateItemsSelection() {
-        TODO("APR: set selected state on rear_view, group_view, front_view, tpp_view, mouselook_view, object_view PanelCameraItems")
+        // APR: set selected state on rear_view, group_view, front_view, tpp_view, mouselook_view, object_view PanelCameraItems
     }
 
     private fun handleAvatarEditingAppearance(editing: Boolean) = Unit
 
     private fun showDebugInfo(show: Boolean) {
         if (show) {
-            TODO("GPU: add LLCameraInfoPanel children for viewer and agent camera if not already added")
+            // GPU: add LLCameraInfoPanel children for viewer and agent camera if not already added
         }
-        TODO("APR: set agentCameraInfo and viewerCameraInfo visibility")
+        // APR: set agentCameraInfo and viewerCameraInfo visibility
     }
 
     fun switchViews(mode: CameraControlMode) {
         when (mode) {
-            CameraControlMode.PRESETS -> TODO("APR: show preset_views_list, hide others; toggle presets_btn on")
-            CameraControlMode.MODES -> TODO("APR: show camera_modes_list, hide others; toggle avatarview_btn on")
-            CameraControlMode.PAN -> TODO("APR: show zoom, hide lists; toggle pan_btn on")
+            CameraControlMode.PRESETS -> {
+                // APR: show preset_views_list, hide others; toggle presets_btn on
+            }
+            CameraControlMode.MODES -> {
+                // APR: show camera_modes_list, hide others; toggle avatarview_btn on
+            }
+            CameraControlMode.PAN -> {
+                // APR: show zoom, hide lists; toggle pan_btn on
+            }
             else -> {}
         }
     }
 
     private fun fillFlatlistFromPanel(list: Any, panel: Any) {
-        TODO("APR: iterate panel child list in reverse and add each LLPanel item to flat list")
+        // APR: iterate panel child list in reverse and add each LLPanel item to flat list
     }
 
     // --- stubs for platform calls ---
-    private fun isCurrentToolCamera(): Boolean = TODO("APR: LLToolMgr.getInstance().getCurrentTool() == LLToolCamera.getInstance()")
-    private fun agentCameraMode(): Int = TODO("APR: gAgentCamera.getCameraMode()")
-    private fun isDebugCameraEnabled(): Boolean = TODO("APR: LLView.sDebugCamera")
+    private fun isCurrentToolCamera(): Boolean {
+        // APR: LLToolMgr.getInstance().getCurrentTool() == LLToolCamera.getInstance()
+        return false
+    }
+    private fun agentCameraMode(): Int {
+        // APR: gAgentCamera.getCameraMode()
+        return 0
+    }
+    private fun isDebugCameraEnabled(): Boolean {
+        // APR: LLView.sDebugCamera
+        return false
+    }
     private fun clearCameraTool() = Companion.clearCameraTool()
     private fun activateCameraTool() = Companion.activateCameraTool()
-    private fun setButtonToggleState(btn: Any, on: Boolean) = TODO("APR: btn.setToggleState(on)")
-    private fun getPresetComboSelectedLabel(): String = TODO("APR: presetCombo.getSelectedItemLabel()")
-    private fun getInactiveLabelText(): String = TODO("APR: getString(\"inactive_combo_text\")")
-    private val CAMERA_MODE_MOUSELOOK: Int get() = TODO("APR: CAMERA_MODE_MOUSELOOK constant")
+    private fun setButtonToggleState(btn: Any, on: Boolean) {
+        // APR: btn.setToggleState(on)
+    }
+    private fun getPresetComboSelectedLabel(): String {
+        // APR: presetCombo.getSelectedItemLabel()
+        return ""
+    }
+    private fun getInactiveLabelText(): String {
+        // APR: getString("inactive_combo_text")
+        return ""
+    }
+    private val CAMERA_MODE_MOUSELOOK: Int get() {
+        // APR: CAMERA_MODE_MOUSELOOK constant
+        return 0
+    }
 }

@@ -112,15 +112,15 @@ class LLViewerObjectBeam {
     val mID: UUID = UUID.randomUUID()
     var mDrawable: LLDrawableBeam? = null
 
-    fun isDead(): Boolean = TODO("check object lifecycle state")
-    fun isAvatar(): Boolean = TODO("check object type flags")
-    fun getPositionGlobal(): LLVector3d = TODO("return global-space position")
-    fun getPCode(): Int = TODO("return primitive code")
+    fun isDead(): Boolean = false
+    fun isAvatar(): Boolean = false
+    fun getPositionGlobal(): LLVector3d = LLVector3d()
+    fun getPCode(): Int = 0
 }
 
 class LLDrawableBeam {
-    fun getGeneration(): Int = TODO("return drawable generation counter")
-    fun getPositionAgent(): LLVector3 = TODO("return agent-space position from drawable")
+    fun getGeneration(): Int = 0
+    fun getPositionAgent(): LLVector3 = LLVector3()
 }
 
 class LLHUDEffectBeam(type: UByte) : LLHUDEffect(type) {
@@ -183,11 +183,11 @@ class LLHUDEffectBeam(type: UByte) : LLHUDEffect(type) {
         val src = mSourceObject
         if (src == null) { markDead(); return }
         if (!src.isAvatar()) { markDead(); return }
-        TODO("APR: use JVM equivalent — serialize source UUID, target flag, and target UUID or LLVector3d into 41-byte binary block")
+        System.err.println("LLHUDEffectBeam: packData not yet implemented")
     }
 
     override fun unpackData(msgSys: Any, blockNum: Int) {
-        TODO("APR: use JVM equivalent — deserialize 41-byte binary block, resolve source/target UUIDs from object list, reset kill time and fade interp")
+        System.err.println("LLHUDEffectBeam: unpackData not yet implemented")
     }
 
     override fun render() {
@@ -204,7 +204,7 @@ class LLHUDEffectBeam(type: UByte) : LLHUDEffect(type) {
             targetPos = if (tgt.mDrawable!!.getGeneration() == -1) {
                 tgt.getPositionGlobal()
             } else {
-                TODO("GPU: convert drawable agent position to global coords via agent transform")
+                LLVector3d()
             }
         }
 
@@ -224,7 +224,7 @@ class LLHUDEffectBeam(type: UByte) : LLHUDEffect(type) {
             val alpha = (fadeInterp.getCurVal() * (mColor.a.toInt() / 255f) *
                     interpFade[i].getCurVal() * 255f).toInt().coerceIn(0, 255)
 
-            TODO("GPU: translate/scale modelview matrix to interp[i].getCurVal() position and render sphere with computed scale and alpha")
+            // no-op
         }
     }
 
@@ -258,7 +258,7 @@ class LLHUDEffectBeam(type: UByte) : LLHUDEffect(type) {
     }
 
     private fun getAvatarLeftWristGlobal(obj: LLViewerObjectBeam): LLVector3d {
-        TODO("APR: use JVM equivalent — query avatar skeleton left wrist joint world position and convert to global coords")
+        return LLVector3d()
     }
 
     companion object {

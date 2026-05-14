@@ -36,12 +36,14 @@ object LLGiveInventory {
 
     fun isInventoryGiveAcceptable(item: LLInventoryItem?): Boolean {
         if (item == null) return false
-        TODO("APR: use JVM equivalent — check agent avatar valid, PERM_TRANSFER allowed, item not worn")
+        System.err.println("LLGiveInventory: isInventoryGiveAcceptable not yet implemented")
+        return false
     }
 
     fun isInventoryGroupGiveAcceptable(item: LLInventoryItem?): Boolean {
         if (item == null) return false
-        TODO("APR: use JVM equivalent — check agent avatar valid, PERM_TRANSFER and PERM_COPY allowed, not worn as attachment")
+        System.err.println("LLGiveInventory: isInventoryGroupGiveAcceptable not yet implemented")
+        return false
     }
 
     fun doGiveInventoryItem(
@@ -50,7 +52,8 @@ object LLGiveInventory {
         imSessionId: UUID = UUID(0L, 0L)
     ): Boolean {
         if (!isInventoryGiveAcceptable(item)) return false
-        TODO("APR: use JVM equivalent — if copyable call commitGiveInventoryItem; else show CannotCopyWarning notification")
+        System.err.println("LLGiveInventory: doGiveInventoryItem not yet implemented")
+        return false
     }
 
     fun doGiveInventoryCategory(
@@ -60,11 +63,13 @@ object LLGiveInventory {
         notification: String = ""
     ): Boolean {
         if (cat == null) return false
-        TODO("APR: use JVM equivalent — collect giveable descendants, check count limits, show notifications, call commitGiveInventoryCategory")
+        System.err.println("LLGiveInventory: doGiveInventoryCategory not yet implemented")
+        return false
     }
 
     fun handleCopyProtectedItem(notification: LLSD, response: LLSD): Boolean {
-        TODO("APR: use JVM equivalent — read selected option; on Yes call commitGiveInventoryItem per item UUID, delete non-copyable items")
+        System.err.println("LLGiveInventory: handleCopyProtectedItem not yet implemented")
+        return false
     }
 
     // ---- private methods ----
@@ -75,7 +80,7 @@ object LLGiveInventory {
         itemName: String = "",
         isFolder: Boolean = false
     ) {
-        TODO("APR: use JVM equivalent — compute IM session ID, log offer message to appropriate IM panel or history file")
+        System.err.println("LLGiveInventory: logInventoryOffer not yet implemented")
     }
 
     // RLVa guard added: returns false if RLV is enabled and sharing is blocked for toAgent.
@@ -85,11 +90,13 @@ object LLGiveInventory {
         imSessionId: UUID = UUID(0L, 0L)
     ): Boolean {
         if (item == null) return false
-        TODO("APR: use JVM equivalent — pack IM_INVENTORY_OFFERED message with item type+UUID bucket, send via reliable UDP, spawn HUD beam effect, log offer, add to recent people")
+        System.err.println("LLGiveInventory: commitGiveInventoryItem not yet implemented")
+        return false
     }
 
     private fun handleCopyProtectedCategory(notification: LLSD, response: LLSD): Boolean {
-        TODO("APR: use JVM equivalent — read selected option; on Yes call commitGiveInventoryCategory, delete uncopyable items")
+        System.err.println("LLGiveInventory: handleCopyProtectedCategory not yet implemented")
+        return false
     }
 
     private fun commitGiveInventoryCategory(
@@ -98,6 +105,7 @@ object LLGiveInventory {
         imSessionId: UUID = UUID(0L, 0L)
     ): Boolean {
         if (cat == null) return false
-        TODO("APR: use JVM equivalent — collect giveable descendants, build type+UUID bucket for each, pack IM_INVENTORY_OFFERED, send reliable UDP, spawn HUD beam, log offer, add to recent people")
+        System.err.println("LLGiveInventory: commitGiveInventoryCategory not yet implemented")
+        return false
     }
 }

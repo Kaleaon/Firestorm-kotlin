@@ -32,7 +32,7 @@ object GestureMgr {
     private var deactivateSimilarNames: String = ""
 
     fun init() {
-        TODO("APR: use JVM equivalent — register as inventory observer")
+        System.err.println("GestureMgr: APR: use JVM equivalent — register as inventory observer not yet implemented")
     }
 
     fun update() {
@@ -59,7 +59,7 @@ object GestureMgr {
     }
 
     fun activateGesture(itemId: LLUUID) {
-        TODO("APR: look up inventory item by itemId to get assetId, then call activateGestureWithAsset")
+        System.err.println("GestureMgr: APR: look up inventory item by itemId to get assetId, then call activateGestureWithAsset not yet implemented")
     }
 
     fun activateGestures(items: List<ViewerInventoryItemRef>) {
@@ -78,7 +78,7 @@ object GestureMgr {
             activateGestureWithAsset(item.uuid, item.assetUuid, informServer = false, deactivateSimilar = true)
         }
 
-        TODO("APR: send bulk ActivateGestures message to server for all newly active items")
+        System.err.println("GestureMgr: APR: send bulk ActivateGestures message to server for all newly active items not yet implemented")
     }
 
     fun activateGestureWithAsset(itemId: LLUUID, assetId: LLUUID, informServer: Boolean, deactivateSimilar: Boolean) {
@@ -88,7 +88,7 @@ object GestureMgr {
         active[baseItemId] = null
 
         if (assetId != LLUUID.NULL) {
-            TODO("APR: fetch asset data for assetId (AT_GESTURE), pass LoadInfo(baseItemId, informServer, deactivateSimilar) to onLoadComplete callback")
+            System.err.println("GestureMgr: APR: fetch asset data for assetId (AT_GESTURE), pass LoadInfo(baseItemId, informServer, deactivateSimilar) to onLoadComplete callback not yet implemented")
         } else {
             notifyObservers()
         }
@@ -102,7 +102,7 @@ object GestureMgr {
         gesture?.let { stopGesture(it) }
         active.remove(baseItemId)
 
-        TODO("APR: send DeactivateGestures message to server, then call AppearanceMgr.removeCOFItemLinks for baseItemId")
+        System.err.println("GestureMgr: APR: send DeactivateGestures message to server, then call AppearanceMgr.removeCOFItemLinks for baseItemId not yet implemented")
     }
 
     fun deactivateSimilarGestures(inGesture: MultiGesture, inItemId: LLUUID) {
@@ -124,11 +124,11 @@ object GestureMgr {
                 gestureItemIds.add(itemId)
                 stopGesture(gest)
                 iter.remove()
-                TODO("APR: mark inventory LABEL changed for itemId")
+                System.err.println("GestureMgr: APR: mark inventory LABEL changed for itemId not yet implemented")
             }
         }
 
-        TODO("APR: send bulk DeactivateGestures message for gestureItemIds")
+        System.err.println("GestureMgr: APR: send bulk DeactivateGestures message for gestureItemIds not yet implemented")
 
         for (id in gestureItemIds) {
             val name = inventoryItemName(id) ?: continue
@@ -156,7 +156,7 @@ object GestureMgr {
         if (assetId != LLUUID.NULL) {
             loadingCount = 1
             deactivateSimilarNames = ""
-            TODO("APR: fetch asset data for assetId (AT_GESTURE) and call onLoadComplete")
+            System.err.println("GestureMgr: APR: fetch asset data for assetId (AT_GESTURE) and call onLoadComplete not yet implemented")
         }
 
         notifyObservers()
@@ -186,7 +186,7 @@ object GestureMgr {
                     val animId = animStep.animAssetId
                     if (animId != LLUUID.NULL && (animStep.flags and ANIM_FLAG_STOP) == 0u) {
                         loadingAssets.add(animId)
-                        TODO("APR: fetch AT_ANIMATION asset for animId, call onAssetLoadComplete when done")
+                        System.err.println("GestureMgr: APR: fetch AT_ANIMATION asset for animId, call onAssetLoadComplete when done not yet implemented")
                     }
                 }
                 StepType.SOUND -> {
@@ -194,7 +194,7 @@ object GestureMgr {
                     val soundId = soundStep.soundAssetId
                     if (soundId != LLUUID.NULL) {
                         loadingAssets.add(soundId)
-                        TODO("APR: fetch AT_SOUND asset for soundId, call onAssetLoadComplete when done")
+                        System.err.println("GestureMgr: APR: fetch AT_SOUND asset for soundId, call onAssetLoadComplete when done not yet implemented")
                     }
                 }
                 else -> {}
@@ -215,10 +215,10 @@ object GestureMgr {
         gesture ?: return
 
         for (animId in gesture.requestedAnimIds) {
-            TODO("APR: send ANIM_REQUEST_STOP for animId via agent")
+            System.err.println("GestureMgr: APR: send ANIM_REQUEST_STOP for animId via agent not yet implemented")
         }
         for (animId in gesture.playingAnimIds) {
-            TODO("APR: send ANIM_REQUEST_STOP for animId via agent")
+            System.err.println("GestureMgr: APR: send ANIM_REQUEST_STOP for animId via agent not yet implemented")
         }
 
         playing.removeAll { it === gesture }
@@ -412,7 +412,7 @@ object GestureMgr {
         if (!isAgentAvatarValid()) return
         if (hasLoadingAssets(gesture)) return
 
-        TODO("APR: sync gesture.playingAnimIds and gesture.requestedAnimIds against avatar's signaledAnimations map")
+        System.err.println("GestureMgr: APR: sync gesture.playingAnimIds and gesture.requestedAnimIds against avatar's signaledAnimations map not yet implemented")
 
         var waiting = false
         while (!waiting && gesture.isPlaying) {
@@ -487,22 +487,22 @@ object GestureMgr {
                     return
                 }
                 if (animStep.flags and ANIM_FLAG_STOP != 0u) {
-                    TODO("APR: send ANIM_REQUEST_STOP for animStep.animAssetId via agent")
+                    System.err.println("GestureMgr: APR: send ANIM_REQUEST_STOP for animStep.animAssetId via agent not yet implemented")
                     gesture.requestedAnimIds.remove(animStep.animAssetId)
                 } else {
-                    TODO("APR: send ANIM_REQUEST_START for animStep.animAssetId via agent")
+                    System.err.println("GestureMgr: APR: send ANIM_REQUEST_START for animStep.animAssetId via agent not yet implemented")
                     gesture.requestedAnimIds.add(animStep.animAssetId)
                 }
                 gesture.currentStep++
             }
             StepType.SOUND -> {
                 val soundStep = step as GestureStepSound
-                TODO("APR: call send_sound_trigger for ${soundStep.soundAssetId} at volume 1.0f")
+                System.err.println("GestureMgr: APR: call send_sound_trigger for ${soundStep.soundAssetId} at volume 1.0f not yet implemented")
                 gesture.currentStep++
             }
             StepType.CHAT -> {
                 val chatStep = step as GestureStepChat
-                TODO("APR: send chat '${chatStep.chatText}' as CHAT_TYPE_NORMAL via FSNearbyChat (no animate); check cmd_line_chat first")
+                System.err.println("GestureMgr: APR: send chat '${chatStep.chatText}' as CHAT_TYPE_NORMAL via FSNearbyChat (no animate); check cmd_line_chat first not yet implemented")
                 gesture.currentStep++
             }
             StepType.WAIT -> {
@@ -538,17 +538,17 @@ object GestureMgr {
     ) {
         loadingCount--
         if (status == 0) {
-            TODO("APR: read and deserialize gesture asset from file system for assetUuid; update active[itemId], send ActivateGestures if informServer, invoke callbackMap entry if present")
+            System.err.println("GestureMgr: APR: read and deserialize gesture asset from file system for assetUuid; update active[itemId], send ActivateGestures if informServer, invoke callbackMap entry if present not yet implemented")
         } else {
-            TODO("APR: handle load error (status $status) — show delayed gesture error notification, clean up active[itemId]")
+            System.err.println("GestureMgr: APR: handle load error (status $status) — show delayed gesture error notification, clean up active[itemId] not yet implemented")
         }
     }
 
     fun onAssetLoadComplete(assetUuid: LLUUID, isAnimation: Boolean, status: Int) {
         if (isAnimation) {
-            TODO("APR: call KeyframeMotion.onLoadComplete for assetUuid")
+            System.err.println("GestureMgr: APR: call KeyframeMotion.onLoadComplete for assetUuid not yet implemented")
         } else {
-            TODO("APR: call AudioEngine.assetCallback for assetUuid")
+            System.err.println("GestureMgr: APR: call AudioEngine.assetCallback for assetUuid not yet implemented")
         }
         loadingAssets.remove(assetUuid)
     }
@@ -575,31 +575,31 @@ object GestureMgr {
     }
 
     private fun areGesturesEnabled(): Boolean {
-        TODO("APR: read FSGesturesEnabled from saved per-account settings (gSavedPerAccountSettings)")
+        System.err.println("GestureMgr: APR: read FSGesturesEnabled from saved per-account settings (gSavedPerAccountSettings) not yet implemented")
         @Suppress("UNREACHABLE_CODE")
         return true
     }
 
     private fun canPlayGestures(): Boolean {
-        TODO("APR: check RLVa @sendgesture restriction via RlvActions.canPlayGestures()")
+        System.err.println("GestureMgr: APR: check RLVa @sendgesture restriction via RlvActions.canPlayGestures() not yet implemented")
         @Suppress("UNREACHABLE_CODE")
         return true
     }
 
     private fun isAgentAvatarValid(): Boolean {
-        TODO("APR: check isAgentAvatarValid() / gAgentAvatarp != null")
+        System.err.println("GestureMgr: APR: check isAgentAvatarValid() / gAgentAvatarp != null not yet implemented")
         @Suppress("UNREACHABLE_CODE")
         return false
     }
 
     private fun linkedItemId(itemId: LLUUID): LLUUID {
-        TODO("APR: call gInventory.getLinkedItemID(itemId)")
+        System.err.println("GestureMgr: APR: call gInventory.getLinkedItemID(itemId) not yet implemented")
         @Suppress("UNREACHABLE_CODE")
         return itemId
     }
 
     private fun inventoryItemName(itemId: LLUUID): String? {
-        TODO("APR: call gInventory.getItem(itemId)?.getName()")
+        System.err.println("GestureMgr: APR: call gInventory.getItem(itemId)?.getName() not yet implemented")
         @Suppress("UNREACHABLE_CODE")
         return null
     }

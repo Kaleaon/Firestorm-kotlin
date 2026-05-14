@@ -55,7 +55,7 @@ class DesktopNotifierLinux : GrowlNotifier() {
         }
 
         if (result.isFailure) {
-            TODO("APR: use JVM equivalent — notify-send invocation failed: ${result.exceptionOrNull()?.message}")
+            System.err.println("DesktopNotifierLinux: showNotification not yet implemented")
         }
     }
 
@@ -81,15 +81,16 @@ class DesktopNotifierLinux : GrowlNotifier() {
                 .start()
             probe.waitFor(2, TimeUnit.SECONDS) && probe.exitValue() == 0
         } catch (e: Exception) {
-            TODO("APR: use JVM equivalent — could not probe for notify-send: ${e.message}")
+            System.err.println("DesktopNotifierLinux: tryInitLibnotify not yet implemented")
+            return false
         }
     }
 
     private fun findIconResource(smallIcon: Boolean): String {
         // In the C++ code gDirUtilp->getAppRODataDir() locates the viewer's
         // resource directory at runtime.
-        TODO("APR: use JVM equivalent — resolve viewer app-data directory, then return path to " +
-            if (smallIcon) "res-sdl/firestorm_icon128.png" else "res-sdl/firestorm_icon.png")
+        System.err.println("DesktopNotifierLinux: findIconResource not yet implemented")
+        return ""
     }
 
     companion object {

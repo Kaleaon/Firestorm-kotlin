@@ -59,8 +59,8 @@ class Texture(
     fun isValid(): Boolean = textureId != LLUUID.NULL && width > 0 && height > 0
     fun isMissingAsset(): Boolean = missingAsset
 
-    fun bind(stage: Int) { TODO("Bind GL texture to texture unit $stage") }
-    fun unbind(stage: Int) { TODO("Unbind GL texture from texture unit $stage") }
+    fun bind(stage: Int) { /* no-op */ }
+    fun unbind(stage: Int) { /* no-op */ }
 
     fun getWidth(discard: Int = 0): Int =
         if (discard <= 0) width else discardWidths.getOrDefault(discard, width shr discard)

@@ -38,7 +38,8 @@ class FloaterIMContainer(private val seed: Map<String, Any>) {
     private val conversationEventQueue: MutableMap<UUID, ArrayDeque<Map<String, Any>>> = mutableMapOf()
 
     fun postBuild(): Boolean {
-        TODO("APR: use JVM equivalent")
+        System.err.println("FloaterIMContainer: postBuild not yet implemented")
+        return false
     }
 
     fun onOpen(key: Any?) {
@@ -47,19 +48,19 @@ class FloaterIMContainer(private val seed: Map<String, Any>) {
     }
 
     fun draw() {
-        TODO("APR: use JVM equivalent")
+        System.err.println("FloaterIMContainer: draw not yet implemented")
     }
 
     fun setMinimized(minimize: Boolean) {
-        TODO("APR: use JVM equivalent")
+        System.err.println("FloaterIMContainer: setMinimized not yet implemented")
     }
 
     open fun setVisible(visible: Boolean) {
-        TODO("APR: use JVM equivalent")
+        System.err.println("FloaterIMContainer: setVisible not yet implemented")
     }
 
     fun setVisibleAndFrontmost(takeFocus: Boolean = true, key: Any? = null) {
-        TODO("APR: use JVM equivalent")
+        System.err.println("FloaterIMContainer: setVisibleAndFrontmost not yet implemented")
     }
 
     fun updateResizeLimits() {
@@ -67,7 +68,7 @@ class FloaterIMContainer(private val seed: Map<String, Any>) {
     }
 
     fun handleReshape(rect: Any, byUser: Boolean) {
-        TODO("APR: use JVM equivalent")
+        System.err.println("FloaterIMContainer: handleReshape not yet implemented")
     }
 
     fun onCloseFloater(id: UUID) {
@@ -75,11 +76,11 @@ class FloaterIMContainer(private val seed: Map<String, Any>) {
     }
 
     fun addFloater(floater: Any, selectAddedFloater: Boolean) {
-        TODO("APR: use JVM equivalent")
+        System.err.println("FloaterIMContainer: addFloater not yet implemented")
     }
 
     fun returnFloaterToHost() {
-        TODO("APR: use JVM equivalent")
+        System.err.println("FloaterIMContainer: returnFloaterToHost not yet implemented")
     }
 
     fun showConversation(sessionId: UUID) {
@@ -95,11 +96,12 @@ class FloaterIMContainer(private val seed: Map<String, Any>) {
     }
 
     fun selectConversationPair(sessionId: UUID, selectWidget: Boolean, focusFloater: Boolean = true): Boolean {
-        TODO("APR: use JVM equivalent")
+        System.err.println("FloaterIMContainer: selectConversationPair not yet implemented")
+        return false
     }
 
     fun clearAllFlashStates() {
-        TODO("APR: use JVM equivalent")
+        System.err.println("FloaterIMContainer: clearAllFlashStates not yet implemented")
     }
 
     fun selectAdjacentConversation(focusSelected: Boolean): Boolean {
@@ -107,31 +109,39 @@ class FloaterIMContainer(private val seed: Map<String, Any>) {
     }
 
     fun selectNextorPreviousConversation(selectNext: Boolean, focusSelected: Boolean = true): Boolean {
-        TODO("APR: use JVM equivalent")
+        System.err.println("FloaterIMContainer: selectNextorPreviousConversation not yet implemented")
+        return false
     }
 
     fun expandConversation() {
-        TODO("APR: use JVM equivalent")
+        System.err.println("FloaterIMContainer: expandConversation not yet implemented")
     }
 
     fun tabClose() {
-        TODO("APR: use JVM equivalent")
+        System.err.println("FloaterIMContainer: tabClose not yet implemented")
     }
 
     fun showStub(visible: Boolean) {
-        TODO("APR: use JVM equivalent")
+        System.err.println("FloaterIMContainer: showStub not yet implemented")
     }
 
     fun collapseMessagesPane(collapse: Boolean) {
-        TODO("APR: use JVM equivalent")
+        System.err.println("FloaterIMContainer: collapseMessagesPane not yet implemented")
     }
 
-    fun isMessagesPaneCollapsed(): Boolean = TODO("APR: use JVM equivalent")
-    fun isConversationsPaneCollapsed(): Boolean = TODO("APR: use JVM equivalent")
+    fun isMessagesPaneCollapsed(): Boolean {
+        System.err.println("FloaterIMContainer: isMessagesPaneCollapsed not yet implemented")
+        return false
+    }
+
+    fun isConversationsPaneCollapsed(): Boolean {
+        System.err.println("FloaterIMContainer: isConversationsPaneCollapsed not yet implemented")
+        return false
+    }
 
     fun sessionAdded(sessionId: UUID, name: String, otherParticipantId: UUID, hasOfflineMsg: Boolean) {
         addConversationListItem(sessionId)
-        TODO("APR: use JVM equivalent")
+        System.err.println("FloaterIMContainer: sessionAdded not yet implemented")
     }
 
     fun sessionActivated(sessionId: UUID, name: String, otherParticipantId: UUID) {
@@ -142,7 +152,7 @@ class FloaterIMContainer(private val seed: Map<String, Any>) {
 
     fun sessionVoiceOrIMStarted(sessionId: UUID) {
         addConversationListItem(sessionId)
-        TODO("APR: use JVM equivalent")
+        System.err.println("FloaterIMContainer: sessionVoiceOrIMStarted not yet implemented")
     }
 
     fun sessionRemoved(sessionId: UUID) {
@@ -153,40 +163,45 @@ class FloaterIMContainer(private val seed: Map<String, Any>) {
         sessions.remove(oldSessionId)
         val changeFocus = removeConversationListItem(oldSessionId)
         addConversationListItem(newSessionId, changeFocus)
-        TODO("APR: use JVM equivalent")
+        System.err.println("FloaterIMContainer: sessionIDUpdated not yet implemented")
     }
 
     fun getSessionModel(sessionId: UUID): Any? = conversationsItems[sessionId]
 
     fun checkContextMenuItem(item: String, selectedIds: MutableList<UUID>): Boolean {
-        TODO("APR: use JVM equivalent")
+        System.err.println("FloaterIMContainer: checkContextMenuItem not yet implemented")
+        return false
     }
 
     fun enableContextMenuItem(item: String, selectedIds: MutableList<UUID>): Boolean {
-        TODO("APR: use JVM equivalent")
+        System.err.println("FloaterIMContainer: enableContextMenuItem not yet implemented")
+        return false
     }
 
     fun doToParticipants(item: String, selectedIds: MutableList<UUID>) {
-        TODO("APR: use JVM equivalent")
+        System.err.println("FloaterIMContainer: doToParticipants not yet implemented")
     }
 
     fun assignResizeLimits() {
-        TODO("APR: use JVM equivalent")
+        System.err.println("FloaterIMContainer: assignResizeLimits not yet implemented")
     }
 
     fun closeFloater(appQuitting: Boolean = false) {
-        TODO("APR: use JVM equivalent")
+        System.err.println("FloaterIMContainer: closeFloater not yet implemented")
     }
 
     fun closeAllConversations(appQuitting: Boolean) {
-        TODO("APR: use JVM equivalent")
+        System.err.println("FloaterIMContainer: closeAllConversations not yet implemented")
     }
 
     fun closeSelectedConversations(ids: List<UUID>) {
-        TODO("APR: use JVM equivalent")
+        System.err.println("FloaterIMContainer: closeSelectedConversations not yet implemented")
     }
 
-    fun isFrontmost(): Boolean = TODO("APR: use JVM equivalent")
+    fun isFrontmost(): Boolean {
+        System.err.println("FloaterIMContainer: isFrontmost not yet implemented")
+        return false
+    }
 
     fun removeConversationListItem(id: UUID, changeFocus: Boolean = true): Boolean {
         conversationsItems.remove(id)
@@ -195,114 +210,183 @@ class FloaterIMContainer(private val seed: Map<String, Any>) {
     }
 
     fun addConversationListItem(id: UUID, isWidgetSelected: Boolean = false): Any? {
-        TODO("APR: use JVM equivalent")
+        System.err.println("FloaterIMContainer: addConversationListItem not yet implemented")
+        return null
     }
 
     fun setTimeNow(sessionId: UUID, participantId: UUID) {
-        TODO("APR: use JVM equivalent")
+        System.err.println("FloaterIMContainer: setTimeNow not yet implemented")
     }
 
     fun setNearbyDistances() {
-        TODO("APR: use JVM equivalent")
+        System.err.println("FloaterIMContainer: setNearbyDistances not yet implemented")
     }
 
     fun reSelectConversation() {
-        TODO("APR: use JVM equivalent")
+        System.err.println("FloaterIMContainer: reSelectConversation not yet implemented")
     }
 
     fun updateSpeakBtnState() {
-        TODO("APR: use JVM equivalent")
+        System.err.println("FloaterIMContainer: updateSpeakBtnState not yet implemented")
     }
 
     fun flashConversationItemWidget(sessionId: UUID, isFlashing: Boolean, alternateColor: Boolean = false) {
-        TODO("APR: use JVM equivalent")
+        System.err.println("FloaterIMContainer: flashConversationItemWidget not yet implemented")
     }
 
     fun highlightConversationItemWidget(sessionId: UUID, isHighlighted: Boolean) {
-        TODO("APR: use JVM equivalent")
+        System.err.println("FloaterIMContainer: highlightConversationItemWidget not yet implemented")
     }
 
     fun getConversationListItemSize(): Int = conversationsWidgets.size
 
     fun getDetachedConversationFloaters(floaters: MutableList<Any>) {
-        TODO("APR: use JVM equivalent")
+        System.err.println("FloaterIMContainer: getDetachedConversationFloaters not yet implemented")
     }
 
     private fun onNewMessageReceived(data: Map<String, Any>) {
         val sessionId = data["session_id"] as? UUID ?: return
-        TODO("APR: use JVM equivalent")
+        System.err.println("FloaterIMContainer: onNewMessageReceived not yet implemented")
     }
 
     private fun onExpandCollapseButtonClicked() {
-        TODO("APR: use JVM equivalent")
+        System.err.println("FloaterIMContainer: onExpandCollapseButtonClicked not yet implemented")
     }
 
     private fun onStubCollapseButtonClicked() {
-        TODO("APR: use JVM equivalent")
+        System.err.println("FloaterIMContainer: onStubCollapseButtonClicked not yet implemented")
     }
 
     private fun processParticipantsStyleUpdate() {
-        TODO("APR: use JVM equivalent")
+        System.err.println("FloaterIMContainer: processParticipantsStyleUpdate not yet implemented")
     }
 
     private fun onSpeakButtonPressed() {
-        TODO("APR: use JVM equivalent")
+        System.err.println("FloaterIMContainer: onSpeakButtonPressed not yet implemented")
     }
 
     private fun onSpeakButtonReleased() {
-        TODO("APR: use JVM equivalent")
+        System.err.println("FloaterIMContainer: onSpeakButtonReleased not yet implemented")
     }
 
     private fun onClickCloseBtn(appQuitting: Boolean = false) {
-        TODO("APR: use JVM equivalent")
+        System.err.println("FloaterIMContainer: onClickCloseBtn not yet implemented")
     }
 
     private fun collapseConversationsPane(collapse: Boolean, saveIsAllowed: Boolean = true) {
-        TODO("APR: use JVM equivalent")
+        System.err.println("FloaterIMContainer: collapseConversationsPane not yet implemented")
     }
 
     private fun reshapeFloaterAndSetResizeLimits(collapse: Boolean, deltaWidth: Int) {
-        TODO("APR: use JVM equivalent")
+        System.err.println("FloaterIMContainer: reshapeFloaterAndSetResizeLimits not yet implemented")
     }
 
     private fun onAddButtonClicked() {
-        TODO("APR: use JVM equivalent")
+        System.err.println("FloaterIMContainer: onAddButtonClicked not yet implemented")
     }
 
     private fun onAvatarPicked(ids: List<UUID>) {
-        TODO("APR: use JVM equivalent")
+        System.err.println("FloaterIMContainer: onAvatarPicked not yet implemented")
     }
 
-    private fun isActionChecked(userdata: Any?): Boolean = TODO("APR: use JVM equivalent")
-    private fun onCustomAction(userdata: Any?) { TODO("APR: use JVM equivalent") }
+    private fun isActionChecked(userdata: Any?): Boolean {
+        System.err.println("FloaterIMContainer: isActionChecked not yet implemented")
+        return false
+    }
 
-    private fun setSortOrderSessions(order: Int) { TODO("APR: use JVM equivalent") }
-    private fun setSortOrderParticipants(order: Int) { TODO("APR: use JVM equivalent") }
-    private fun setSortOrder(order: Any) { TODO("APR: use JVM equivalent") }
+    private fun onCustomAction(userdata: Any?) {
+        System.err.println("FloaterIMContainer: onCustomAction not yet implemented")
+    }
+
+    private fun setSortOrderSessions(order: Int) {
+        System.err.println("FloaterIMContainer: setSortOrderSessions not yet implemented")
+    }
+
+    private fun setSortOrderParticipants(order: Int) {
+        System.err.println("FloaterIMContainer: setSortOrderParticipants not yet implemented")
+    }
+
+    private fun setSortOrder(order: Any) {
+        System.err.println("FloaterIMContainer: setSortOrder not yet implemented")
+    }
 
     private fun getSelectedUUIDs(selectedUuids: MutableList<UUID>, participantUuids: Boolean = true) {
-        TODO("APR: use JVM equivalent")
+        System.err.println("FloaterIMContainer: getSelectedUUIDs not yet implemented")
     }
 
-    private fun doToSelected(userdata: Any?) { TODO("APR: use JVM equivalent") }
-    private fun doToSelectedGroup(userdata: Any?) { TODO("APR: use JVM equivalent") }
-    private fun doToSelectedConversation(command: String, selectedIds: MutableList<UUID>) { TODO("APR: use JVM equivalent") }
+    private fun doToSelected(userdata: Any?) {
+        System.err.println("FloaterIMContainer: doToSelected not yet implemented")
+    }
 
-    private fun enableModerateContextMenuItem(userdata: String, isSelf: Boolean = false): Boolean = TODO("APR: use JVM equivalent")
-    private fun isGroupModerator(): Boolean = TODO("APR: use JVM equivalent")
-    private fun haveAbilityToBan(): Boolean = TODO("APR: use JVM equivalent")
-    private fun canBanSelectedMember(participantUuid: UUID): Boolean = TODO("APR: use JVM equivalent")
-    private fun isMuted(avatarId: UUID): Boolean = TODO("APR: use JVM equivalent")
-    private fun moderateVoice(command: String, userId: UUID) { TODO("APR: use JVM equivalent") }
-    private fun moderateVoiceAllParticipants(unmute: Boolean) { TODO("APR: use JVM equivalent") }
-    private fun moderateVoiceParticipant(avatarId: UUID, unmute: Boolean) { TODO("APR: use JVM equivalent") }
-    private fun toggleAllowTextChat(participantUuid: UUID) { TODO("APR: use JVM equivalent") }
-    private fun banSelectedMember(participantUuid: UUID) { TODO("APR: use JVM equivalent") }
-    private fun openNearbyChat() { TODO("APR: use JVM equivalent") }
-    private fun isParticipantListExpanded(): Boolean = TODO("APR: use JVM equivalent")
+    private fun doToSelectedGroup(userdata: Any?) {
+        System.err.println("FloaterIMContainer: doToSelectedGroup not yet implemented")
+    }
 
-    private fun idleUpdate() { TODO("APR: use JVM equivalent") }
-    private fun idleProcessEvents() { TODO("APR: use JVM equivalent") }
+    private fun doToSelectedConversation(command: String, selectedIds: MutableList<UUID>) {
+        System.err.println("FloaterIMContainer: doToSelectedConversation not yet implemented")
+    }
+
+    private fun enableModerateContextMenuItem(userdata: String, isSelf: Boolean = false): Boolean {
+        System.err.println("FloaterIMContainer: enableModerateContextMenuItem not yet implemented")
+        return false
+    }
+
+    private fun isGroupModerator(): Boolean {
+        System.err.println("FloaterIMContainer: isGroupModerator not yet implemented")
+        return false
+    }
+
+    private fun haveAbilityToBan(): Boolean {
+        System.err.println("FloaterIMContainer: haveAbilityToBan not yet implemented")
+        return false
+    }
+
+    private fun canBanSelectedMember(participantUuid: UUID): Boolean {
+        System.err.println("FloaterIMContainer: canBanSelectedMember not yet implemented")
+        return false
+    }
+
+    private fun isMuted(avatarId: UUID): Boolean {
+        System.err.println("FloaterIMContainer: isMuted not yet implemented")
+        return false
+    }
+
+    private fun moderateVoice(command: String, userId: UUID) {
+        System.err.println("FloaterIMContainer: moderateVoice not yet implemented")
+    }
+
+    private fun moderateVoiceAllParticipants(unmute: Boolean) {
+        System.err.println("FloaterIMContainer: moderateVoiceAllParticipants not yet implemented")
+    }
+
+    private fun moderateVoiceParticipant(avatarId: UUID, unmute: Boolean) {
+        System.err.println("FloaterIMContainer: moderateVoiceParticipant not yet implemented")
+    }
+
+    private fun toggleAllowTextChat(participantUuid: UUID) {
+        System.err.println("FloaterIMContainer: toggleAllowTextChat not yet implemented")
+    }
+
+    private fun banSelectedMember(participantUuid: UUID) {
+        System.err.println("FloaterIMContainer: banSelectedMember not yet implemented")
+    }
+
+    private fun openNearbyChat() {
+        System.err.println("FloaterIMContainer: openNearbyChat not yet implemented")
+    }
+
+    private fun isParticipantListExpanded(): Boolean {
+        System.err.println("FloaterIMContainer: isParticipantListExpanded not yet implemented")
+        return false
+    }
+
+    private fun idleUpdate() {
+        System.err.println("FloaterIMContainer: idleUpdate not yet implemented")
+    }
+
+    private fun idleProcessEvents() {
+        System.err.println("FloaterIMContainer: idleProcessEvents not yet implemented")
+    }
 
     private fun onConversationModelEvent(event: Map<String, Any>): Boolean {
         handleConversationModelEvent(event)
@@ -310,12 +394,19 @@ class FloaterIMContainer(private val seed: Map<String, Any>) {
     }
 
     private fun handleConversationModelEvent(event: Map<String, Any>) {
-        TODO("APR: use JVM equivalent")
+        System.err.println("FloaterIMContainer: handleConversationModelEvent not yet implemented")
     }
 
     companion object {
-        fun findInstance(): FloaterIMContainer? = TODO("APR: use JVM equivalent")
-        fun getInstance(): FloaterIMContainer = TODO("APR: use JVM equivalent")
+        fun findInstance(): FloaterIMContainer? {
+            System.err.println("FloaterIMContainer: findInstance not yet implemented")
+            return null
+        }
+
+        fun getInstance(): FloaterIMContainer {
+            System.err.println("FloaterIMContainer: getInstance not yet implemented")
+            throw UnsupportedOperationException("FloaterIMContainer: getInstance not yet implemented")
+        }
 
         fun onCurrentChannelChanged(sessionId: UUID) {
             if (sessionId != null) {
@@ -323,14 +414,17 @@ class FloaterIMContainer(private val seed: Map<String, Any>) {
             }
         }
 
-        fun isConversationLoggingAllowed(): Boolean = TODO("APR: use JVM equivalent")
+        fun isConversationLoggingAllowed(): Boolean {
+            System.err.println("FloaterIMContainer: isConversationLoggingAllowed not yet implemented")
+            return false
+        }
 
         fun idle(userData: Any?) {
             (userData as? FloaterIMContainer)?.idleUpdate()
         }
 
         private fun confirmMuteAllCallback(notification: Any?, response: Any?) {
-            TODO("APR: use JVM equivalent")
+            System.err.println("FloaterIMContainer: confirmMuteAllCallback not yet implemented")
         }
     }
 }

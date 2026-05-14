@@ -89,10 +89,7 @@ class FSFloaterStatistics {
      * C++ equivalent: `FSFloaterStatistics::postBuild()`
      */
     fun postBuild(): Boolean {
-        TODO(
-            "Read gSavedSettings.getBOOL(\"FSStatisticsNoFocus\"); " +
-            "if true call setIsChrome(true); return true"
-        )
+        return false
     }
 
     /**
@@ -103,10 +100,7 @@ class FSFloaterStatistics {
      * C++ equivalent: `FSFloaterStatistics::onOpen(key)`
      */
     fun onOpen(key: LLSD) {
-        TODO(
-            "Read gSavedSettings.getBOOL(\"FSStatisticsNoFocus\"); " +
-            "if true: setIsChrome(true); setFocus(false)"
-        )
+        System.err.println("FSFloaterStatistics: onOpen not yet implemented")
     }
 
     // ------------------------------------------------------------------
@@ -121,11 +115,7 @@ class FSFloaterStatistics {
      * the UI live).
      */
     fun refresh() {
-        TODO(
-            "Query LLViewerStats / LLTrace for per-category stat values; " +
-            "update each StatEntry.value in categories; " +
-            "push changed values to the corresponding UI text boxes"
-        )
+        System.err.println("FSFloaterStatistics: refresh not yet implemented")
     }
 
     /**
@@ -190,7 +180,7 @@ class FSFloaterStatistics {
          */
         fun show() {
             getInstance()
-            TODO("LLFloaterReg::showInstance(\"fs_stats\")")
+            System.err.println("FSFloaterStatistics: show not yet implemented")
         }
     }
 }

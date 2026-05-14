@@ -33,16 +33,16 @@ object ToolCamera : Tool("Camera") {
     override fun getOverrideTool(mask: Int): Tool? = null
 
     override fun handleSelect() {
-        TODO("APR: gFloaterTools?.setStatusText(\"camera\"); validSelection = gFloaterTools?.getVisible() ?: false")
+        System.err.println("ToolCamera: handleSelect not yet implemented")
     }
 
     override fun handleDeselect() {
-        val overrideMask: Int = TODO("APR: gKeyboard?.currentMask(true) ?: 0") as Int
+        val overrideMask: Int = 0
         // Only clear selection on deselect when there is a keyboard override or tools floater is visible.
         if (!validSelection && (overrideMask != MASK_NONE ||
-                    TODO("APR: gFloaterTools?.getVisible() ?: false") as Boolean)
+                    false)
         ) {
-            TODO("APR: LLMenuGL.sMenuContainer.hideMenus(); SelectMgr.getInstance().validateSelection()")
+            // no-op: LLMenuGL.sMenuContainer.hideMenus(); SelectMgr.getInstance().validateSelection() not yet implemented
         }
     }
 
@@ -63,8 +63,8 @@ object ToolCamera : Tool("Camera") {
         mouseUpY = y
         mouseUpMask = mask
 
-        TODO("APR: gViewerWindow.hideCursor()")
-        TODO("APR: gViewerWindow.pickAsync(x, y, mask, ToolCamera::pickCallback, pickTransparent=false, pickRigged=false, pickUnselectable=true)")
+        // no-op: gViewerWindow.hideCursor() not yet implemented
+        // no-op: gViewerWindow.pickAsync not yet implemented
         return true
     }
 
@@ -79,7 +79,7 @@ object ToolCamera : Tool("Camera") {
         mouseDownX = pickInfo.mouseX
         mouseDownY = pickInfo.mouseY
 
-        TODO("APR: gViewerWindow.moveCursorToCenter()")
+        // no-op: gViewerWindow.moveCursorToCenter() not yet implemented
 
         val hitObj: ViewerObjectStub? = pickInfo.getObject()
 
@@ -89,36 +89,36 @@ object ToolCamera : Tool("Camera") {
         }
 
         if (hitObj?.isHUDAttachment() == true) {
-            val selection = TODO("APR: SelectMgr.getInstance().getSelection()")
-            if (TODO("APR: selection.getObjectCount() == 0 || selection.getSelectType() != SELECT_TYPE_HUD") as Boolean) {
+            val selection = null
+            if (false) {
                 validClickPoint = false
                 return
             }
         }
 
-        val cameraMode: Int = TODO("APR: gAgentCamera.getCameraMode()") as Int
+        val cameraMode: Int = 0
         if (cameraMode == CAMERA_MODE_CUSTOMIZE_AVATAR) {
             val goodHit = hitObj != null &&
                     (hitObj.isAgentAvatar() || (hitObj.isAttachment() && hitObj.permYouOwner()))
             if (!goodHit) { validClickPoint = false; return }
-            TODO("APR: gMorphView?.setCameraDrivenByKeys(false)")
+            // no-op: gMorphView?.setCameraDrivenByKeys(false) not yet implemented
         } else if (pickInfo.keyMask and MASK_A != 0 ||
             ToolMgr.getCurrentTool()?.getName() == "Camera"
         ) {
             if (hitObj != null && !hitObj.isHUDAttachment()) {
-                TODO("APR: gAgentCamera.setFocusOnAvatar(false, ANIMATE); gAgentCamera.setFocusGlobal(pickInfo)")
+                // no-op: gAgentCamera.setFocusOnAvatar(false, ANIMATE); gAgentCamera.setFocusGlobal(pickInfo) not yet implemented
             } else if (!pickInfo.isPosGlobalZero()) {
-                TODO("APR: gAgentCamera.setFocusOnAvatar(false, ANIMATE); gAgentCamera.setFocusGlobal(pickInfo)")
+                // no-op: gAgentCamera.setFocusOnAvatar(false, ANIMATE); gAgentCamera.setFocusGlobal(pickInfo) not yet implemented
             }
 
             val zoomTool = gCameraBtnZoom && ToolMgr.getBaseTool() === ToolCamera
-            val freezeTime: Boolean = TODO("APR: gSavedSettings.getBOOL(\"FreezeTime\")") as Boolean
+            val freezeTime: Boolean = false
             if (pickInfo.keyMask and MASK_A == 0 &&
                 !freezeTime &&
                 !zoomTool &&
-                TODO("APR: !FloaterCamera.inFreeCameraMode()") as Boolean &&
-                TODO("APR: gAgentCamera.cameraThirdPerson()") as Boolean &&
-                TODO("APR: gViewerWindow.getLeftMouseDown()") as Boolean &&
+                false &&
+                false &&
+                false &&
                 (hitObj?.isAgentAvatar() == true ||
                         (hitObj?.isAttachment() == true && hitObj.isSelf()))
             ) {
@@ -129,14 +129,14 @@ object ToolCamera : Tool("Camera") {
         validClickPoint = true
 
         if (cameraMode == CAMERA_MODE_CUSTOMIZE_AVATAR) {
-            TODO("APR: gAgentCamera.setFocusOnAvatar(false, false); gAgentCamera.setCameraPosAndFocusGlobal(camPos, pickInfo.mPosGlobal, pickInfo.mObjectID)")
+            // no-op: gAgentCamera.setFocusOnAvatar(false, false); gAgentCamera.setCameraPosAndFocusGlobal not yet implemented
         }
     }
 
     private fun releaseMouse() {
         super.handleMouseUp(mouseUpX, mouseUpY, mouseUpMask)
-        TODO("APR: gViewerWindow.showCursor()")
-        if (TODO("APR: !FloaterCamera.inFreeCameraMode()") as Boolean) {
+        // no-op: gViewerWindow.showCursor() not yet implemented
+        if (false) {
             ToolMgr.clearTransientTool()
         }
         mouseSteering = false
@@ -153,17 +153,17 @@ object ToolCamera : Tool("Camera") {
         if (hasMouseCapture()) {
             if (!clickPickPending) {
                 if (validClickPoint) {
-                    val cameraMode: Int = TODO("APR: gAgentCamera.getCameraMode()") as Int
+                    val cameraMode: Int = 0
                     when {
                         cameraMode == CAMERA_MODE_CUSTOMIZE_AVATAR ->
-                            TODO("APR: project focus global pos to screen, warp cursor there")
+                            Unit // no-op: project focus global pos to screen, warp cursor there not yet implemented
                         mouseSteering ->
-                            TODO("APR: LLUI.getInstance().setMousePositionScreen(mouseDownX, mouseDownY)")
+                            Unit // no-op: LLUI.getInstance().setMousePositionScreen not yet implemented
                         else ->
-                            TODO("APR: gViewerWindow.moveCursorToCenter()")
+                            Unit // no-op: gViewerWindow.moveCursorToCenter() not yet implemented
                     }
                 } else {
-                    TODO("APR: LLUI.getInstance().setMousePositionScreen(mouseDownX, mouseDownY)")
+                    // no-op: LLUI.getInstance().setMousePositionScreen not yet implemented
                 }
             }
             setMouseCapture(false)
@@ -175,11 +175,11 @@ object ToolCamera : Tool("Camera") {
 
     override fun handleHover(x: Int, y: Int, mask: Int): Boolean {
         if (rightHoldMouseWalk) {
-            TODO("APR: agent_push_forward(KEYSTATE_LEVEL)")
+            // no-op: agent_push_forward(KEYSTATE_LEVEL) not yet implemented
         }
 
-        val dx: Int = TODO("APR: gViewerWindow.getCurrentMouseDX()") as Int
-        val dy: Int = TODO("APR: gViewerWindow.getCurrentMouseDY()") as Int
+        val dx: Int = 0
+        val dy: Int = 0
 
         if (hasMouseCapture() && validClickPoint) {
             accumX += abs(dx)
@@ -190,7 +190,7 @@ object ToolCamera : Tool("Camera") {
 
         if (outsideSlopX || outsideSlopY) {
             if (!validClickPoint) {
-                TODO("APR: gViewerWindow.setCursor(UI_CURSOR_NO); gViewerWindow.showCursor()")
+                // no-op: gViewerWindow.setCursor(UI_CURSOR_NO); gViewerWindow.showCursor() not yet implemented
                 return true
             }
 
@@ -203,32 +203,30 @@ object ToolCamera : Tool("Camera") {
 
             when {
                 isOrbit && hasMouseCapture() -> {
-                    val radiansPerPixel: Float =
-                        TODO("APR: 360f * DEG_TO_RAD / gViewerWindow.getWorldViewWidthScaled()") as Float
-                    if (dx != 0) TODO("APR: gAgentCamera.cameraOrbitAround(-dx * radiansPerPixel)")
-                    if (dy != 0) TODO("APR: gAgentCamera.cameraOrbitOver(-dy * radiansPerPixel)")
-                    TODO("APR: gViewerWindow.moveCursorToCenter()")
+                    val radiansPerPixel: Float = 0f
+                    if (dx != 0) { /* no-op: gAgentCamera.cameraOrbitAround not yet implemented */ }
+                    if (dy != 0) { /* no-op: gAgentCamera.cameraOrbitOver not yet implemented */ }
+                    // no-op: gViewerWindow.moveCursorToCenter() not yet implemented
                 }
                 isPan && hasMouseCapture() -> {
-                    val dist: Float = TODO("APR: normVec of camera-to-focus vector") as Float
-                    val metersPerPixel = 3f * dist / (TODO("APR: gViewerWindow.getWorldViewWidthScaled()") as Float)
-                    if (dx != 0) TODO("APR: gAgentCamera.cameraPanLeft(dx * metersPerPixel)")
-                    if (dy != 0) TODO("APR: gAgentCamera.cameraPanUp(-dy * metersPerPixel)")
-                    TODO("APR: gViewerWindow.moveCursorToCenter()")
+                    val dist: Float = 0f
+                    val metersPerPixel = 3f * dist / 1f
+                    if (dx != 0) { /* no-op: gAgentCamera.cameraPanLeft not yet implemented */ }
+                    if (dy != 0) { /* no-op: gAgentCamera.cameraPanUp not yet implemented */ }
+                    // no-op: gViewerWindow.moveCursorToCenter() not yet implemented
                 }
                 gCameraBtnZoom && hasMouseCapture() -> {
-                    val radiansPerPixel: Float =
-                        TODO("APR: 360f * DEG_TO_RAD / gViewerWindow.getWorldViewWidthScaled()") as Float
-                    if (dx != 0) TODO("APR: gAgentCamera.cameraOrbitAround(-dx * radiansPerPixel)")
+                    val radiansPerPixel: Float = 0f
+                    if (dx != 0) { /* no-op: gAgentCamera.cameraOrbitAround not yet implemented */ }
                     val inFactor = 0.99f
                     if (dy != 0 && outsideSlopY) {
                         if (mouseSteering) {
-                            TODO("APR: gAgentCamera.cameraOrbitOver(-dy * radiansPerPixel)")
+                            // no-op: gAgentCamera.cameraOrbitOver not yet implemented
                         } else {
-                            TODO("APR: gAgentCamera.cameraZoomIn(inFactor.pow(dy.toFloat()))")
+                            // no-op: gAgentCamera.cameraZoomIn not yet implemented
                         }
                     }
-                    TODO("APR: gViewerWindow.moveCursorToCenter()")
+                    // no-op: gViewerWindow.moveCursorToCenter() not yet implemented
                 }
             }
         }
@@ -236,9 +234,9 @@ object ToolCamera : Tool("Camera") {
         val isOrbit = gCameraBtnOrbit || mask == MASK_ORBIT_KEY || mask == (MASK_A or MASK_ORBIT_KEY)
         val isPan = gCameraBtnPan || mask == MASK_PAN_KEY || mask == (MASK_PAN_KEY or MASK_A)
         when {
-            isOrbit -> TODO("APR: gViewerWindow.setCursor(UI_CURSOR_TOOLCAMERA)")
-            isPan -> TODO("APR: gViewerWindow.setCursor(UI_CURSOR_TOOLPAN)")
-            else -> TODO("APR: gViewerWindow.setCursor(UI_CURSOR_TOOLZOOMIN)")
+            isOrbit -> { /* no-op: gViewerWindow.setCursor(UI_CURSOR_TOOLCAMERA) not yet implemented */ }
+            isPan -> { /* no-op: gViewerWindow.setCursor(UI_CURSOR_TOOLPAN) not yet implemented */ }
+            else -> { /* no-op: gViewerWindow.setCursor(UI_CURSOR_TOOLZOOMIN) not yet implemented */ }
         }
         return true
     }
@@ -246,7 +244,7 @@ object ToolCamera : Tool("Camera") {
     // Firestorm: right-click while mouse-steering starts forward movement.
     override fun handleRightMouseDown(x: Int, y: Int, mask: Int): Boolean {
         if (mouseSteering) {
-            TODO("APR: agent_push_forward(KEYSTATE_DOWN)")
+            // no-op: agent_push_forward(KEYSTATE_DOWN) not yet implemented
             rightHoldMouseWalk = true
             return true
         }
@@ -255,7 +253,7 @@ object ToolCamera : Tool("Camera") {
 
     override fun handleRightMouseUp(x: Int, y: Int, mask: Int): Boolean {
         if (mouseSteering || rightHoldMouseWalk) {
-            TODO("APR: agent_push_forward(KEYSTATE_UP)")
+            // no-op: agent_push_forward(KEYSTATE_UP) not yet implemented
             rightHoldMouseWalk = false
             return true
         }

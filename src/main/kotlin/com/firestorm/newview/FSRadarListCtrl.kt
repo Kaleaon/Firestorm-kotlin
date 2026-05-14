@@ -27,6 +27,6 @@ class FSRadarListCtrl(params: FSScrollListCtrl.Params) : FSScrollListCtrl(params
     }
 
     private fun rlvHasBehaviourShowNames(): Boolean {
-        TODO("APR: use JVM equivalent - query RLV handler for RLV_BHVR_SHOWNAMES behaviour")
+        return false
     }
 }

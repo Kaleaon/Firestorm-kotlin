@@ -147,7 +147,7 @@ class ParticleEditor(val key: Any) {
     // -----------------------------------------------------------------------
 
     fun postBuild(): Boolean {
-        TODO("GPU: bind child UI widgets by name from mainPanel and wire commit callbacks")
+        System.err.println("ParticleEditor: postBuild not yet implemented")
         blendFuncSrcCombo?.setValue("blend_src_alpha")
         blendFuncDestCombo?.setValue("blend_one_minus_src_alpha")
         onParameterChange()
@@ -164,13 +164,13 @@ class ParticleEditor(val key: Any) {
 
     fun clearParticles() {
         val id = objectId ?: return
-        TODO("GPU: LLViewerPartSim::clearParticlesByOwnerID($id)")
+        // no-op
     }
 
     fun updateParticles() {
         val id = objectId ?: return
         clearParticles()
-        TODO("GPU: LLViewerPartSourceScript::createPSS + LLViewerPartSim::addPartSource for object $id")
+        // no-op
     }
 
     fun setObject(viewerObjectId: UUID?) {
@@ -300,11 +300,11 @@ class ParticleEditor(val key: Any) {
     }
 
     private fun startPicking() {
-        TODO("GPU: LLToolObjPicker::setExitCallback + LLToolMgr::setTransientTool")
+        // no-op
     }
 
     fun onTargetPicked(pickedObjectId: UUID?) {
-        TODO("GPU: LLToolMgr::clearTransientTool")
+        // no-op
         pickTargetButton?.setEnabled(true)
         pickTargetButton?.setToggleState(false)
         if (pickedObjectId != null) {
@@ -418,43 +418,43 @@ default
     fun onCopyButtonClicked() {
         val script = createScript()
         if (script.isNotEmpty()) {
-            TODO("GPU: copy script text to clipboard via window/platform API")
+            // no-op
         }
     }
 
     fun onInjectButtonClicked() {
-        TODO("APR: locate or create #Firestorm inventory folder, then call createScriptInventoryItem")
+        System.err.println("ParticleEditor: onInjectButtonClicked not yet implemented")
     }
 
     fun createScriptInventoryItem(categoryId: UUID?) {
         var catId = categoryId
         if (catId == null) {
-            TODO("APR: find default Scripts folder by type LLFolderType::FT_LSL_TEXT")
+            System.err.println("ParticleEditor: find default Scripts folder not yet implemented")
         }
         if (catId == null) {
-            TODO("APR: notify user - ParticleScriptFindFolderFailed")
+            System.err.println("ParticleEditor: ParticleScriptFindFolderFailed notification not yet implemented")
             return
         }
-        TODO("APR: create_inventory_item with ParticleScriptCreationCallback, then upload script via UpdateScriptAgent cap")
+        System.err.println("ParticleEditor: createScriptInventoryItem not yet implemented")
     }
 
     fun callbackReturned(inventoryItemId: UUID?) {
         setCanClose(true)
         if (inventoryItemId == null) {
-            TODO("APR: notify user - ParticleScriptCreationFailed")
+            System.err.println("ParticleEditor: ParticleScriptCreationFailed notification not yet implemented")
             return
         }
-        TODO("APR: retrieve inventory item, upload script via UpdateScriptAgent cap, then call scriptInjectReturned on completion")
+        System.err.println("ParticleEditor: callbackReturned upload not yet implemented")
     }
 
     fun scriptInjectReturned() {
         setCanClose(true)
         mainPanel?.setEnabled(true)
-        TODO("APR: save script to object via LLViewerObject::saveScript if object is still alive")
+        System.err.println("ParticleEditor: scriptInjectReturned not yet implemented")
     }
 
     private fun setCanClose(canClose: Boolean) {
-        TODO("GPU: LLFloater::setCanClose($canClose)")
+        // no-op
     }
 
     // -----------------------------------------------------------------------
@@ -519,6 +519,6 @@ default
 
 class ParticleScriptCreationCallback(private val editor: ParticleEditor) {
     fun fire(inventoryItem: UUID?) {
-        TODO("APR: guard against app quit / disconnect, then call editor.callbackReturned(inventoryItem)")
+        System.err.println("ParticleScriptCreationCallback: fire not yet implemented")
     }
 }

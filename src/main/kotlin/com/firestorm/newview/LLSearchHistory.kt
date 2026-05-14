@@ -80,7 +80,8 @@ object LLSearchHistory {
     }
 
     private fun getHistoryFilePath(): String {
-        TODO("APR: use JVM equivalent of gDirUtilp->getExpandedFilename(LL_PATH_PER_SL_ACCOUNT, ...)")
+        System.err.println("LLSearchHistory: getHistoryFilePath not yet implemented")
+        return ""
     }
 
     class LLSearchHistoryItem(val searchQuery: String) : Comparable<LLSearchHistoryItem> {

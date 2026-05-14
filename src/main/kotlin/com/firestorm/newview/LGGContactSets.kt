@@ -67,11 +67,11 @@ object LGGContactSets {
     }
 
     fun loadFromDisk() {
-        TODO("APR: use JVM equivalent for reading settings_friends_groups.xml from user directory")
+        System.err.println("LGGContactSets: loadFromDisk not yet implemented")
     }
 
     private fun saveToDisk() {
-        TODO("APR: use JVM equivalent for writing settings_friends_groups.xml")
+        System.err.println("LGGContactSets: saveToDisk not yet implemented")
     }
 
     private fun toneDownColor(color: Color4): Color4 = color.copy(a = COLOR_DAMPENING)
@@ -109,7 +109,8 @@ object LGGContactSets {
     }
 
     fun colorize(uuid: UUID, color: Color4, type: ContactSetType): Color4 {
-        TODO("GPU: colorize requires access to LLUIColorTable, agent tracker, mute list, radar, FSData, and RLV state")
+        System.err.println("LGGContactSets: colorize not yet implemented")
+        return defaultColor
     }
 
     fun getPseudonym(friendId: UUID): String {
@@ -123,7 +124,7 @@ object LGGContactSets {
 
     fun clearPseudonym(friendId: UUID, saveChanges: Boolean = true) {
         if (pseudonyms.remove(friendId) != null) {
-            TODO("APR: invalidate avatar name cache for $friendId")
+            System.err.println("LGGContactSets: clearPseudonym avatar name cache invalidation not yet implemented")
             if (saveChanges) saveToDisk()
             notifyChanged(ContactSetUpdate.UPDATED_MEMBERS)
         }
@@ -148,7 +149,7 @@ object LGGContactSets {
 
     fun addToSet(avatarIds: List<UUID>, setName: String) {
         for (avatarId in avatarIds) {
-            TODO("APR: check isBuddy via AvatarTracker for $avatarId")
+            System.err.println("LGGContactSets: addToSet isBuddy check not yet implemented")
             extraAvatars.add(avatarId)
             contactSets[setName]?.friends?.add(avatarId)
         }
@@ -183,11 +184,13 @@ object LGGContactSets {
     }
 
     fun hasFriendColorThatShouldShow(friendId: UUID, type: ContactSetType): Boolean {
-        TODO("APR: check RLV canShowName and prefs (FSContactSetsColorize*) before returning color visibility")
+        System.err.println("LGGContactSets: hasFriendColorThatShouldShow not yet implemented")
+        return false
     }
 
     fun hasFriendColorThatShouldShow(friendId: UUID, type: ContactSetType, colorOut: (Color4) -> Unit): Boolean {
-        TODO("APR: check RLV canShowName and prefs (FSContactSetsColorize*) before returning color visibility")
+        System.err.println("LGGContactSets: hasFriendColorThatShouldShow not yet implemented")
+        return false
     }
 
     fun addSet(setName: String) {
@@ -215,8 +218,7 @@ object LGGContactSets {
     fun removeSet(setName: String) {
         val set = contactSets[setName] ?: return
         val toRemove = set.friends.filter { friendId ->
-            TODO("APR: check tracker.isBuddy and getPseudonym for non-friend cleanup")
-            @Suppress("UNREACHABLE_CODE")
+            System.err.println("LGGContactSets: removeSet isBuddy check not yet implemented")
             getFriendSets(friendId).size == 1 && !hasPseudonym(friendId)
         }
         for (id in toRemove) removeNonFriendFromList(id, false)
@@ -227,13 +229,14 @@ object LGGContactSets {
 
     fun removeNonFriendFromList(nonFriendId: UUID, saveChanges: Boolean = true) {
         if (extraAvatars.remove(nonFriendId)) {
-            TODO("APR: check tracker.isBuddy before clearing pseudonym and sets for $nonFriendId")
+            System.err.println("LGGContactSets: removeNonFriendFromList isBuddy check not yet implemented")
             if (saveChanges) { saveToDisk(); notifyChanged(ContactSetUpdate.UPDATED_MEMBERS) }
         }
     }
 
     fun isNonFriend(nonFriendId: UUID): Boolean {
-        TODO("APR: return false if tracker.isBuddy(nonFriendId); check extraAvatars otherwise")
+        System.err.println("LGGContactSets: isNonFriend not yet implemented")
+        return false
     }
 
     fun isFriendInAnySet(friendId: UUID): Boolean =
@@ -243,7 +246,8 @@ object LGGContactSets {
         contactSets.values.flatMap { it.friends }.toSet().toList()
 
     fun getListOfNonFriends(): List<UUID> {
-        TODO("APR: filter extraAvatars by !tracker.isBuddy()")
+        System.err.println("LGGContactSets: getListOfNonFriends not yet implemented")
+        return emptyList()
     }
 
     fun getListOfPseudonymAvs(): List<UUID> = pseudonyms.keys.toList()
@@ -332,7 +336,7 @@ object LGGContactSets {
 
     private fun setPseudonym(friendId: UUID, pseudonym: String) {
         pseudonyms[friendId] = pseudonym
-        TODO("APR: invalidate avatar name cache for $friendId and trigger name refresh")
+        System.err.println("LGGContactSets: setPseudonym avatar name cache invalidation not yet implemented")
         saveToDisk()
         notifyChanged(ContactSetUpdate.UPDATED_MEMBERS)
     }
@@ -368,7 +372,7 @@ object LGGContactSets {
         if (option == 0) {
             for (id in ids) {
                 removeFriendFromSet(id, setName, false)
-                TODO("APR: check tracker.isBuddy, getFriendSets, hasPseudonym before removeNonFriendFromList")
+                System.err.println("LGGContactSets: handleRemoveAvatarFromSetCallback isBuddy check not yet implemented")
             }
             saveToDisk()
             notifyChanged(ContactSetUpdate.UPDATED_MEMBERS)

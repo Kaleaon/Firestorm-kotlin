@@ -11,7 +11,7 @@ object HUDManager {
     private val hudEffects: MutableList<HUDEffect> = mutableListOf()
 
     init {
-        TODO("APR: parentColor = LLUIColorTable.getColor('FocusColor')")
+        System.err.println("HUDManager: init not yet implemented")
     }
 
     fun createViewerEffect(type: UByte, sendToSim: Boolean = true, originatedHere: Boolean = true): HUDEffect? {
@@ -41,9 +41,7 @@ object HUDManager {
                 continue
             }
             if (effect.getNeedsSendToSim() && effect.getOriginatedHere()) {
-                TODO("APR: build ViewerEffect message, pack AgentData (agentId, sessionId), " +
-                     "pack Effect block via effect.packData(msg), " +
-                     "call effect.setNeedsSendToSim(false), send message if effect still alive")
+                System.err.println("HUDManager: sendEffects not yet implemented")
             }
         }
     }
@@ -57,8 +55,8 @@ object HUDManager {
     }
 
     fun processViewerEffect(mesgsys: Any) {
-        val numberOfBlocks: Int = TODO("APR: mesgsys.getNumberOfBlocks('Effect')")
-        @Suppress("UNREACHABLE_CODE")
+        System.err.println("HUDManager: processViewerEffect not yet implemented")
+        val numberOfBlocks: Int = 0
         for (k in 0 until numberOfBlocks) {
             val (effectId, effectType) = HUDEffect.getIDType(mesgsys, k)
 

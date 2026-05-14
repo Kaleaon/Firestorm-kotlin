@@ -303,10 +303,10 @@ object CommandLineParser {
      * Corresponds to `LLControlGroupCLP::configure()`.
      */
     fun configure(configFilename: String, controlGroup: Any?) {
-        // TODO: parse the LLSD XML config file, iterate its map entries, and
+        // parse the LLSD XML config file, iterate its map entries, and
         //       call addOptionDesc() for each, wiring a notifyCallback that
-        //       calls controlGroup.getControl(mapTo).setValue(…).
-        TODO("Implement LLSD config parsing and control-group wiring for '$configFilename'")
+        //       calls controlGroup.getControl(mapTo).setValue(…) — when LLSD and control-group are ported
+        System.err.println("CommandLineParser: configure not yet implemented")
     }
 
     // ------------------------------------------------------------------

@@ -5,57 +5,68 @@ package com.firestorm.newview
 // ---------------------------------------------------------------------------
 
 open class LLPanelBase : LLView {
-    override fun getName(): String = TODO("GPU: panel name")
-    override fun getRect(): Rect = TODO("GPU: panel rect")
-    open fun onOpen(key: Map<String, Any?>): Unit = TODO("GPU: panel open")
+    override fun getName(): String = ""
+    override fun getRect(): Rect = Rect()
+    open fun onOpen(key: Map<String, Any?>): Unit {
+        System.err.println("LLPanelBase: onOpen not yet implemented")
+    }
 }
 
 class LLSideTrayPanelContainer : LLView {
-    override fun getName(): String = TODO("GPU: side tray panel container name")
-    override fun getRect(): Rect = TODO("GPU: side tray panel container rect")
-    fun openPanel(panelName: String, params: Map<String, Any?>): Unit =
-        TODO("GPU: side tray open panel")
-    fun getCurrentPanel(): LLPanelBase? = TODO("GPU: side tray current panel")
+    override fun getName(): String = ""
+    override fun getRect(): Rect = Rect()
+    fun openPanel(panelName: String, params: Map<String, Any?>): Unit {
+        System.err.println("LLSideTrayPanelContainer: openPanel not yet implemented")
+    }
+    fun getCurrentPanel(): LLPanelBase? = null
 }
 
 class LLFloaterViewStub {
-    fun getParentFloater(view: LLView): FloaterSidePanelContainer? = TODO("GPU: parent floater query")
-    fun getZOrder(floater: FloaterSidePanelContainer): Int = TODO("GPU: floater z-order")
+    fun getParentFloater(view: LLView): FloaterSidePanelContainer? = null
+    fun getZOrder(floater: FloaterSidePanelContainer): Int = 0
 }
 
 val gFloaterView = LLFloaterViewStub()
 
 object LLFloaterRegStub {
-    fun getTypedSidePanelInstance(name: String): FloaterSidePanelContainer? = TODO("APR: use JVM equivalent")
-    fun findTypedSidePanelInstance(name: String): FloaterSidePanelContainer? = TODO("APR: use JVM equivalent")
-    fun getFloaterList(name: String): List<FloaterSidePanelContainer> = TODO("APR: use JVM equivalent")
-    fun canShowInstance(floaterName: String, key: Map<String, Any?>): Boolean = TODO("APR: use JVM equivalent")
+    fun getTypedSidePanelInstance(name: String): FloaterSidePanelContainer? = null
+    fun findTypedSidePanelInstance(name: String): FloaterSidePanelContainer? = null
+    fun getFloaterList(name: String): List<FloaterSidePanelContainer> = emptyList()
+    fun canShowInstance(floaterName: String, key: Map<String, Any?>): Boolean = false
 }
 
 object TransientFloaterMgr {
-    fun addControlView(scope: String, view: Any): Unit = TODO("APR: use JVM equivalent")
-    fun removeControlView(scope: String, view: Any): Unit = TODO("APR: use JVM equivalent")
+    fun addControlView(scope: String, view: Any): Unit {
+        System.err.println("TransientFloaterMgr: addControlView not yet implemented")
+    }
+    fun removeControlView(scope: String, view: Any): Unit {
+        System.err.println("TransientFloaterMgr: removeControlView not yet implemented")
+    }
 }
 
 object LLNotificationsUtilFS {
     fun add(name: String, substitutions: Map<String, Any?> = emptyMap(),
             payload: Map<String, Any?> = emptyMap(),
-            cb: ((Map<String, Any?>, Map<String, Any?>) -> Unit)? = null): Unit =
-        TODO("APR: use JVM equivalent")
-    fun getSelectedOption(notification: Map<String, Any?>, response: Map<String, Any?>): Int =
-        TODO("APR: use JVM equivalent")
+            cb: ((Map<String, Any?>, Map<String, Any?>) -> Unit)? = null): Unit {
+        System.err.println("LLNotificationsUtilFS: add not yet implemented")
+    }
+    fun getSelectedOption(notification: Map<String, Any?>, response: Map<String, Any?>): Int = 0
 }
 
 // Appearance-panel stubs
 class LLPanelOutfitEdit : LLPanelBase()
 class LLPanelEditWearable {
-    fun onClose(): Unit = TODO("GPU: wearable editor close")
-    fun getVisible(): Boolean = TODO("GPU: visibility query")
-    fun isDirty(): Boolean = TODO("GPU: wearable dirty flag")
+    fun onClose(): Unit {
+        System.err.println("LLPanelEditWearable: onClose not yet implemented")
+    }
+    fun getVisible(): Boolean = false
+    fun isDirty(): Boolean = false
 }
 class LLSidepanelAppearance : LLPanelBase() {
-    fun getWearable(): LLPanelEditWearable? = TODO("GPU: wearable panel query")
-    fun showOutfitsInventoryPanel(): Unit = TODO("GPU: panel navigation")
+    fun getWearable(): LLPanelEditWearable? = null
+    fun showOutfitsInventoryPanel(): Unit {
+        System.err.println("LLSidepanelAppearance: showOutfitsInventoryPanel not yet implemented")
+    }
 }
 
 // ---------------------------------------------------------------------------
@@ -163,7 +174,10 @@ open class FloaterSidePanelContainer(key: Any, val instanceName: String = "") : 
         x: Int, y: Int, mask: Int, drop: Boolean,
         cargoType: DragAndDropType, cargoData: Any?,
         accept: Acceptance?, tooltipMsg: StringBuilder
-    ): Boolean = TODO("GPU: side panel container drag-and-drop")
+    ): Boolean {
+        // no-op
+        return false
+    }
 
     protected fun onCloseMsgCallback(notification: Map<String, Any?>, response: Map<String, Any?>) {
         if (LLNotificationsUtilFS.getSelectedOption(notification, response) == 0) {
@@ -172,14 +186,20 @@ open class FloaterSidePanelContainer(key: Any, val instanceName: String = "") : 
     }
 
     // Stubs for UI-framework operations
-    private fun findChildPanel(name: String): LLPanelBase? = TODO("GPU: child panel lookup '$name'")
-    private fun findChildView(name: String): LLView? = TODO("GPU: child view lookup '$name'")
-    private fun findSideTrayParent(view: LLView): LLSideTrayPanelContainer? = TODO("GPU: parent container query")
-    private fun isVisible(): Boolean = TODO("GPU: visibility query")
-    private fun openFloater(): Unit = TODO("GPU: floater open")
-    private fun hasFocus(): Boolean = TODO("GPU: focus query")
-    private fun setFocus(v: Boolean): Unit = TODO("GPU: focus mutation")
-    private fun doCloseFloater(appQuitting: Boolean): Unit = TODO("GPU: floater close")
+    private fun findChildPanel(name: String): LLPanelBase? = null
+    private fun findChildView(name: String): LLView? = null
+    private fun findSideTrayParent(view: LLView): LLSideTrayPanelContainer? = null
+    private fun isVisible(): Boolean = false
+    private fun openFloater(): Unit {
+        System.err.println("FloaterSidePanelContainer: openFloater not yet implemented")
+    }
+    private fun hasFocus(): Boolean = false
+    private fun setFocus(v: Boolean): Unit {
+        System.err.println("FloaterSidePanelContainer: setFocus not yet implemented")
+    }
+    private fun doCloseFloater(appQuitting: Boolean): Unit {
+        System.err.println("FloaterSidePanelContainer: doCloseFloater not yet implemented")
+    }
 
     @Suppress("UNCHECKED_CAST")
     private inline fun <reified T> findChildTyped(name: String): T? =
@@ -253,8 +273,7 @@ open class FloaterSidePanelContainer(key: Any, val instanceName: String = "") : 
         }
 
         // Extension helpers that need access to isVisible() on a specific instance
-        private fun FloaterSidePanelContainer.isVisible(): Boolean = TODO("GPU: visibility query")
-        private fun FloaterSidePanelContainer.findChildView(name: String): LLView? =
-            TODO("GPU: child view lookup '$name'")
+        private fun FloaterSidePanelContainer.isVisible(): Boolean = false
+        private fun FloaterSidePanelContainer.findChildView(name: String): LLView? = null
     }
 }

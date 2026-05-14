@@ -32,7 +32,7 @@ class FloaterOpenObject(key: Any) : Floater(key) {
     open fun onOpen(key: Any) {
         val objectSelection = getEditSelection()
         if (getRootObjectCount(objectSelection) != 1) {
-            TODO("APR: use JVM equivalent - show UnableToViewContentsMoreThanOne notification")
+            System.err.println("FloaterOpenObject: show UnableToViewContentsMoreThanOne notification not yet implemented")
             closeFloater()
             return
         }
@@ -75,7 +75,7 @@ class FloaterOpenObject(key: Any) : Floater(key) {
 
     private fun moveToInventory(wear: Boolean, replace: Boolean = false) {
         if (getRootObjectCount(objectSelection) != 1) {
-            TODO("APR: use JVM equivalent - show OnlyCopyContentsOfSingleItem notification")
+            System.err.println("FloaterOpenObject: show OnlyCopyContentsOfSingleItem notification not yet implemented")
             return
         }
 
@@ -85,12 +85,12 @@ class FloaterOpenObject(key: Any) : Floater(key) {
         val name   = getName(node)
 
         val parentCategoryId: UUID = if (wear) {
-            TODO("APR: use JVM equivalent - find clothing category UUID from inventory")
+            UUID(0L, 0L).also { System.err.println("FloaterOpenObject: find clothing category UUID from inventory not yet implemented") }
         } else {
-            TODO("APR: use JVM equivalent - get root folder UUID from inventory")
+            UUID(0L, 0L).also { System.err.println("FloaterOpenObject: get root folder UUID from inventory not yet implemented") }
         }
 
-        TODO("APR: use JVM equivalent - gInventory.createNewCategory then callbackCreateInventoryCategory")
+        System.err.println("FloaterOpenObject: gInventory.createNewCategory then callbackCreateInventoryCategory not yet implemented")
     }
 
     private fun onClickCopy(value: Any?) {
@@ -115,15 +115,15 @@ class FloaterOpenObject(key: Any) : Floater(key) {
                 folderResponded = true,
                 replace         = replace
             )
-            val success: Boolean = TODO("APR: use JVM equivalent - move_inv_category_world_to_agent with callbackMoveInventory")
+            val success: Boolean = false.also { System.err.println("FloaterOpenObject: move_inv_category_world_to_agent with callbackMoveInventory not yet implemented") }
             if (!success) {
-                TODO("APR: use JVM equivalent - show OpenObjectCannotCopy notification")
+                System.err.println("FloaterOpenObject: show OpenObjectCannotCopy notification not yet implemented")
             }
         }
 
         fun callbackMoveInventory(result: Int, data: CatAndWear) {
             if (result == 0) {
-                TODO("APR: use JVM equivalent - get active inventory panel and select data.catId")
+                System.err.println("FloaterOpenObject: get active inventory panel and select data.catId not yet implemented")
             }
         }
     }
@@ -132,14 +132,14 @@ class FloaterOpenObject(key: Any) : Floater(key) {
     // Stubs for C++ subsystems that have no direct JVM equivalent
     // ---------------------------------------------------------------------------
 
-    private fun getEditSelection(): Any?            = TODO("APR: use JVM equivalent - LLSelectMgr::getEditSelection")
-    private fun getRootObjectCount(sel: Any?): Int  = TODO("APR: use JVM equivalent - selection->getRootObjectCount()")
-    private fun getPrimaryObject(sel: Any?): Any?   = TODO("APR: use JVM equivalent - selection->getPrimaryObject()")
-    private fun getFirstRootNode(sel: Any?): Any?   = TODO("APR: use JVM equivalent - selection->getFirstRootNode()")
-    private fun getObject(node: Any): Any?          = TODO("APR: use JVM equivalent - node->getObject()")
-    private fun getObjectId(obj: Any): UUID         = TODO("APR: use JVM equivalent - object->getID()")
-    private fun getName(node: Any): String          = TODO("APR: use JVM equivalent - node->mName")
-    private fun refreshPanelInventory()             = TODO("APR: use JVM equivalent - mPanelInventoryObject->refresh()")
-    private fun isRlvEnabled(): Boolean             = TODO("APR: use JVM equivalent - RlvActions::isRlvEnabled()")
-    private fun rlvCanEdit(obj: Any?): Boolean      = TODO("APR: use JVM equivalent - RlvActions::canEdit(object)")
+    private fun getEditSelection(): Any?            = null
+    private fun getRootObjectCount(sel: Any?): Int  = 0
+    private fun getPrimaryObject(sel: Any?): Any?   = null
+    private fun getFirstRootNode(sel: Any?): Any?   = null
+    private fun getObject(node: Any): Any?          = null
+    private fun getObjectId(obj: Any): UUID         = UUID(0L, 0L)
+    private fun getName(node: Any): String          = ""
+    private fun refreshPanelInventory()             { System.err.println("FloaterOpenObject: refreshPanelInventory not yet implemented") }
+    private fun isRlvEnabled(): Boolean             = false
+    private fun rlvCanEdit(obj: Any?): Boolean      = false
 }

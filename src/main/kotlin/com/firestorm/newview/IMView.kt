@@ -67,7 +67,7 @@ object IMModel {
             IMMgr.notifyObserverSessionIDUpdated(oldSessionId, newSessionId)
         }
         if (session.startCallOnInitialize) {
-            TODO("APR: use JVM equivalent - IMMgr.startCall(newSessionId)")
+            System.err.println("IMModel: startCall on initialize not yet implemented")
         }
     }
 
@@ -123,7 +123,7 @@ object IMModel {
         session.addMessage(from, fromId, utf8Text, time, CHAT_STYLE_NORMAL, isRegionMsg, timeStamp)
 
         if (log2file && shouldTranslate(utf8Text, sessionId)) {
-            TODO("APR: use JVM equivalent - optionally translate then call logToFile")
+            System.err.println("IMModel: translate then logToFile not yet implemented")
         } else if (log2file) {
             logToFile(getHistoryFileName(sessionId), from, fromId, utf8Text)
         }
@@ -203,14 +203,15 @@ object IMModel {
         findIMSession(sessionId)?.historyFileName ?: ""
 
     fun logToFile(fileName: String, from: String, fromId: UUID, utf8Text: String): Boolean {
-        TODO("APR: use JVM equivalent - append log entry to chat history file at fileName")
+        System.err.println("IMModel: logToFile not yet implemented")
+        return false
     }
 
     fun addNewMsgCallback(callback: (Map<String, Any>) -> Unit) { newMsgListeners += callback }
     fun addNoUnreadMsgsCallback(callback: (Map<String, Any>) -> Unit) { noUnreadMsgListeners += callback }
 
     fun sendLeaveSession(sessionId: UUID, otherParticipantId: UUID) {
-        TODO("APR: use JVM equivalent - send ImprovedInstantMessage leave-session packet for $sessionId")
+        System.err.println("IMModel: sendLeaveSession not yet implemented")
     }
 
     fun sendStartSession(
@@ -220,30 +221,34 @@ object IMModel {
         dialog: InstantMessageType,
         p2pAsAdhocCall: Boolean,
     ): Boolean {
-        TODO("APR: use JVM equivalent - HTTP POST to capability to start IM/conference session; return true if async wait needed")
+        System.err.println("IMModel: sendStartSession not yet implemented")
+        return false
     }
 
     fun sendTypingState(sessionId: UUID, otherParticipantId: UUID, typing: Boolean) {
-        TODO("APR: use JVM equivalent - send TypingStart or TypingStop instant-message packet for $sessionId")
+        System.err.println("IMModel: sendTypingState not yet implemented")
     }
 
     fun sendMessage(utf8Text: String, imSessionId: UUID, otherParticipantId: UUID, dialog: InstantMessageType) {
-        TODO("APR: use JVM equivalent - send ImprovedInstantMessage with text=$utf8Text to session=$imSessionId")
+        System.err.println("IMModel: sendMessage not yet implemented")
     }
 
     fun addSpeakersToRecent(imSessionId: UUID) {
-        TODO("APR: use JVM equivalent - add all speakers in session $imSessionId to recent people list")
+        System.err.println("IMModel: addSpeakersToRecent not yet implemented")
     }
 
     private fun shouldTranslate(text: String, sessionId: UUID): Boolean {
-        TODO("APR: use JVM equivalent - check if auto-translation is enabled and applicable for this session")
+        System.err.println("IMModel: shouldTranslate not yet implemented")
+        return false
     }
 
     private fun formatTimestamp(timestamp: UInt): String {
         if (timestamp == 0u) {
-            TODO("APR: use JVM equivalent - return current local time as HH:MM string")
+            System.err.println("IMModel: formatTimestamp (current time) not yet implemented")
+            return ""
         }
-        TODO("APR: use JVM equivalent - convert Unix timestamp to local datetime string")
+        System.err.println("IMModel: formatTimestamp not yet implemented")
+        return ""
     }
 
     private fun addToHistory(
@@ -324,19 +329,19 @@ object IMModel {
             loadHistory()
 
             if (isAdHocSessionType() && type == InstantMessageType.IM_SESSION_INVITE) {
-                TODO("APR: use JVM equivalent - subscribe to avatar name cache for $otherParticipantID to localize ad-hoc title")
+                System.err.println("IMSession: subscribe to avatar name cache for ad-hoc title not yet implemented")
             }
         }
 
         fun initVoiceChannel(voiceChannelInfo: Map<String, Any>) {
-            TODO("APR: use JVM equivalent - create LLVoiceChannelP2P or LLVoiceChannelGroup based on session type; wire state-change callback; create IMSpeakerMgr")
+            System.err.println("IMSession: initVoiceChannel not yet implemented")
         }
 
         fun sessionInitReplyReceived(newSessionId: UUID) {
             sessionInitialized = true
             if (newSessionId != sessionID) {
                 sessionID = newSessionId
-                TODO("APR: use JVM equivalent - update voice channel session id to $newSessionId")
+                System.err.println("IMSession: update voice channel session id not yet implemented")
             }
         }
 
@@ -360,7 +365,7 @@ object IMModel {
                 "is_region_msg" to isRegionMsg,
             )
             msgs.addFirst(message)
-            TODO("APR: use JVM equivalent - speakerChatted(fromId); setSpeakerTyping(fromId, false)")
+            System.err.println("IMSession: speakerChatted/setSpeakerTyping not yet implemented")
         }
 
         fun addMessagesFromHistoryCache(history: List<Map<String, Any>>) {
@@ -410,7 +415,8 @@ object IMModel {
                 val sender = serverMsg["from"] as? String ?: ""
                 val senderId = serverMsg["from_id"] as? UUID ?: UUID(0, 0)
                 val msgText = serverMsg["message"] as? String ?: ""
-                val chatTimeStr = TODO("APR: use JVM equivalent - Conversation.createTimestamp(histTs)") as String
+                System.err.println("IMSession: Conversation.createTimestamp not yet implemented")
+                val chatTimeStr = ""
                 addMessage(sender, senderId, msgText, chatTimeStr, CHAT_STYLE_SERVER_HISTORY, false, histTs)
             }
 
@@ -428,9 +434,11 @@ object IMModel {
             msgs.clear()
             lastHistoryCacheMsgs.clear()
             lastHistoryCacheDateTime = ""
-            val logShowHistory = TODO("APR: use JVM equivalent - gSavedPerAccountSettings.getBOOL(\"LogShowHistory\")") as Boolean
+            System.err.println("IMSession: gSavedPerAccountSettings.getBOOL(LogShowHistory) not yet implemented")
+            val logShowHistory = false
             if (!logShowHistory) return
-            val chatHistory = TODO("APR: use JVM equivalent - LLLogChat.loadChatHistory($historyFileName, isGroupChat=${ isGroupChat() })") as List<Map<String, Any>>
+            System.err.println("IMSession: LLLogChat.loadChatHistory not yet implemented")
+            val chatHistory = emptyList<Map<String, Any>>()
             addMessagesFromHistoryCache(chatHistory)
         }
 
@@ -441,13 +449,15 @@ object IMModel {
                         val sortedUuids = TreeSet(initialTargetIDs)
                         "$name hash${generateHash(sortedUuids)}"
                     } else {
-                        val ts = TODO("APR: use JVM equivalent - LLLogChat.timestamp2LogString(0, true)") as String
+                        System.err.println("IMSession: LLLogChat.timestamp2LogString not yet implemented")
+                    val ts = ""
                         val shortId = sessionID.toString().take(4)
                         "$name $ts $shortId"
                     }
                 }
                 isP2P() -> {
-                    val avName = TODO("APR: use JVM equivalent - LLAvatarNameCache.get($otherParticipantID)") as Pair<String, String>?
+                    System.err.println("IMSession: LLAvatarNameCache.get not yet implemented")
+                    val avName = null as Pair<String, String>?
                     val userName = avName?.first ?: name
                     buildUsername(userName)
                 }
@@ -482,7 +492,8 @@ object IMModel {
             val youStartedCall = translate("you_started_call")
             when (sessionType) {
                 SType.P2P_SESSION -> {
-                    val otherName = TODO("APR: use JVM equivalent - get cached avatar username for $otherParticipantID") as String
+                    System.err.println("IMSession: get cached avatar username not yet implemented")
+                    val otherName = ""
                     if (direction == VoiceChannelDirection.INCOMING_CALL) {
                         when (newState) {
                             VoiceChannelState.STATE_CALL_STARTED ->
@@ -511,7 +522,7 @@ object IMModel {
                 else -> {}
             }
             if (newState == VoiceChannelState.STATE_CONNECTED) {
-                TODO("APR: use JVM equivalent - speakers.update(true)")
+                System.err.println("IMSession: speakers.update not yet implemented")
             }
         }
 
@@ -529,28 +540,33 @@ object IMModel {
         private fun resolveFromId(msg: Map<String, Any>): UUID {
             val id = msg["from_id"]
             if (id is UUID) return id
-            val from = msg["from"] as? String ?: ""
-            return TODO("APR: use JVM equivalent - LLAvatarNameCache.findIdByName(buildLegacyName($from))") as UUID
+            System.err.println("IMSession: LLAvatarNameCache.findIdByName not yet implemented")
+            return UUID(0, 0)
         }
 
         private fun buildUsername(name: String): String {
-            TODO("APR: use JVM equivalent - LLCacheName.buildUsername($name) - normalise to firstname.lastname form")
+            System.err.println("IMSession: buildUsername not yet implemented")
+            return ""
         }
 
         private fun translate(key: String, vararg args: Pair<String, String>): String {
-            TODO("APR: use JVM equivalent - LLTrans.getString($key, args)")
+            System.err.println("IMSession: translate not yet implemented")
+            return ""
         }
 
         private fun agentIsInGroup(groupId: UUID): Boolean {
-            TODO("APR: use JVM equivalent - gAgent.isInGroup($groupId)")
+            System.err.println("IMSession: agentIsInGroup not yet implemented")
+            return false
         }
 
         private fun voiceSessionCallbackPossible(sessionId: UUID): Boolean {
-            TODO("APR: use JVM equivalent - VoiceClient.isSessionCallBackPossible($sessionId)")
+            System.err.println("IMSession: voiceSessionCallbackPossible not yet implemented")
+            return false
         }
 
         private fun voiceSessionTextIMPossible(sessionId: UUID): Boolean {
-            TODO("APR: use JVM equivalent - VoiceClient.isSessionTextIMPossible($sessionId)")
+            System.err.println("IMSession: voiceSessionTextIMPossible not yet implemented")
+            return false
         }
 
         companion object {
@@ -645,7 +661,7 @@ object IMMgr {
     }
 
     fun addSystemMessage(sessionId: UUID, messageName: String, args: Map<String, Any>) {
-        TODO("APR: use JVM equivalent - translate message key with args and add to session as system message")
+        System.err.println("IMMgr: addSystemMessage not yet implemented")
     }
 
     fun addSession(
@@ -700,7 +716,7 @@ object IMMgr {
         invType: InvitationType,
         voiceChannelInfo: Map<String, Any> = emptyMap(),
     ) {
-        TODO("APR: use JVM equivalent - look up caller name if needed then show incoming-call or IM invitation dialog")
+        System.err.println("IMMgr: inviteToSession not yet implemented")
     }
 
     fun processIMTypingStart(fromId: UUID, imType: InstantMessageType) = processIMTypingCore(fromId, imType, true)
@@ -737,12 +753,14 @@ object IMMgr {
 
     fun restoreSnoozedSession(sessionId: UUID): Boolean {
         snoozedSessions.remove(sessionId) ?: return false
-        TODO("APR: use JVM equivalent - restore group session UI and notification after snooze")
+        System.err.println("IMMgr: restoreSnoozedSession not yet implemented")
         return true
     }
 
-    fun computeSessionID(dialog: InstantMessageType, otherParticipantId: UUID): UUID =
-        TODO("APR: use JVM equivalent - hash dialog+UUID the same way the server does (MD5 or XOR method)")
+    fun computeSessionID(dialog: InstantMessageType, otherParticipantId: UUID): UUID {
+        System.err.println("IMMgr: computeSessionID not yet implemented")
+        return UUID(0, 0)
+    }
 
     fun clearPendingInvitation(sessionId: UUID) { pendingInvitations.remove(sessionId) }
 
@@ -750,7 +768,7 @@ object IMMgr {
         val session = IMModel.findIMSession(sessionId)
         val pending = pendingAgentListUpdates[sessionId]
         if (session != null) {
-            TODO("APR: use JVM equivalent - apply agent list additions/removals and moderator flags to session speakers")
+            System.err.println("IMMgr: processAgentListUpdates not yet implemented")
         } else {
             addPendingAgentListUpdates(sessionId, body)
         }
@@ -771,25 +789,27 @@ object IMMgr {
     fun removeSessionObserver(observer: IMSessionObserver) { sessionObservers -= observer }
 
     fun showSessionStartError(errorString: String, sessionId: UUID) {
-        TODO("APR: use JVM equivalent - show localized error notification for session start failure: $errorString session=$sessionId")
+        System.err.println("IMMgr: showSessionStartError not yet implemented")
     }
 
     fun showSessionEventError(eventString: String, errorString: String, sessionId: UUID) {
-        TODO("APR: use JVM equivalent - show localized error notification for session event: $eventString/$errorString session=$sessionId")
+        System.err.println("IMMgr: showSessionEventError not yet implemented")
     }
 
     fun showSessionForceClose(reason: String, sessionId: UUID) {
-        TODO("APR: use JVM equivalent - show force-close notification and remove session $sessionId")
+        System.err.println("IMMgr: showSessionForceClose not yet implemented")
     }
 
     fun startCall(sessionId: UUID, direction: VoiceChannelDirection = VoiceChannelDirection.OUTGOING_CALL, voiceChannelInfo: Map<String, Any> = emptyMap()): Boolean {
         val channel = IMModel.getVoiceChannel(sessionId) ?: return false
-        TODO("APR: use JVM equivalent - activate voice channel with direction=$direction for session $sessionId")
+        System.err.println("IMMgr: startCall not yet implemented")
+        return false
     }
 
     fun endCall(sessionId: UUID): Boolean {
         val channel = IMModel.getVoiceChannel(sessionId) ?: return false
-        TODO("APR: use JVM equivalent - deactivate voice channel for session $sessionId")
+        System.err.println("IMMgr: endCall not yet implemented")
+        return false
     }
 
     fun isVoiceCall(sessionId: UUID): Boolean {
@@ -800,7 +820,7 @@ object IMMgr {
     fun updateDNDMessageStatus() {
         for (session in IMModel.id2SessionMap.values) {
             if (!session.isDNDSend) {
-                TODO("APR: use JVM equivalent - send DND auto-response to session ${session.sessionID} if agent is in DND mode")
+                System.err.println("IMMgr: updateDNDMessageStatus not yet implemented")
             }
         }
     }
@@ -822,11 +842,11 @@ object IMMgr {
     }
 
     private fun noteOfflineUsers(sessionId: UUID, ids: List<UUID>) {
-        TODO("APR: use JVM equivalent - for each id in ids, if offline, add system message to session $sessionId")
+        System.err.println("IMMgr: noteOfflineUsers not yet implemented")
     }
 
     private fun noteMutedUsers(sessionId: UUID, ids: List<UUID>) {
-        TODO("APR: use JVM equivalent - for each muted id in ids, add system message to session $sessionId")
+        System.err.println("IMMgr: noteMutedUsers not yet implemented")
     }
 
     internal fun notifyObserverSessionAdded(sessionId: UUID, name: String, otherParticipantId: UUID, hasOfflineMsg: Boolean) {
@@ -863,7 +883,7 @@ object CallDialogManager {
         previousSessionName = currentSessionName
         currentSessionName = session?.name ?: ""
         currentSession = session
-        TODO("APR: use JVM equivalent - update call dialog UI for voice channel change to $sessionId")
+        System.err.println("CallDialogManager: onVoiceChannelChanged not yet implemented")
     }
 
     fun onVoiceChannelStateChanged(
@@ -872,7 +892,7 @@ object CallDialogManager {
         direction: VoiceChannelDirection,
         endedByAgent: Boolean,
     ) {
-        TODO("APR: use JVM equivalent - show/hide incoming-call or outgoing-call dialog based on state transition")
+        System.err.println("CallDialogManager: onVoiceChannelStateChanged not yet implemented")
     }
 }
 
@@ -890,22 +910,22 @@ abstract class CallDialog(protected val payload: Map<String, Any>) {
 
     open fun draw() {
         if (lifetimeHasExpired()) onLifetimeExpired()
-        TODO("GPU: draw call dialog UI elements")
+        // GPU: draw call dialog UI elements
     }
 
     fun dockToToolbarButton(toolbarButtonName: String) {
-        TODO("APR: use JVM equivalent - dock this floater to toolbar button named $toolbarButtonName")
+        System.err.println("CallDialog: dockToToolbarButton not yet implemented")
     }
 
     protected open fun lifetimeHasExpired(): Boolean =
         (System.currentTimeMillis() - lifetimeTimer) / 1000 >= lifetimeSecs
 
     protected open fun onLifetimeExpired() {
-        TODO("APR: use JVM equivalent - close this floater after lifetime expired")
+        System.err.println("CallDialog: onLifetimeExpired not yet implemented")
     }
 
     protected fun setIcon(sessionId: Any, participantId: Any) {
-        TODO("APR: use JVM equivalent - show group icon if sessionId is a group, else avatar icon for participantId")
+        System.err.println("CallDialog: setIcon not yet implemented")
     }
 
     companion object {
@@ -918,13 +938,13 @@ abstract class CallDialog(protected val payload: Map<String, Any>) {
 class IncomingCallDialog(payload: Map<String, Any>) : CallDialog(payload) {
 
     override fun postBuild(): Boolean {
-        TODO("APR: use JVM equivalent - wire accept/reject/start-IM buttons; set caller name and icon")
+        System.err.println("IncomingCallDialog: postBuild not yet implemented")
         return true
     }
 
     override fun onOpen(key: Any) {
         super.onOpen(key)
-        TODO("APR: use JVM equivalent - fetch avatar name then update dialog UI with caller info and call type")
+        System.err.println("IncomingCallDialog: onOpen not yet implemented")
     }
 
     override fun onLifetimeExpired() {
@@ -943,13 +963,13 @@ class IncomingCallDialog(payload: Map<String, Any>) : CallDialog(payload) {
                 ?: IMMgr.InvitationType.INSTANT_MESSAGE
             when (response) {
                 ACCEPT -> {
-                    TODO("APR: use JVM equivalent - accept chatter-box invitation for $sessionId via HTTP coroutine")
+                    System.err.println("IncomingCallDialog: accept chatter-box invitation not yet implemented")
                 }
                 DECLINE -> {
-                    TODO("APR: use JVM equivalent - send rejection to server and clear pending invitation for $sessionId")
+                    System.err.println("IncomingCallDialog: decline invitation not yet implemented")
                 }
                 START_IM -> {
-                    TODO("APR: use JVM equivalent - open IM session with $callerId without starting call")
+                    System.err.println("IncomingCallDialog: start IM without call not yet implemented")
                 }
             }
         }
@@ -964,32 +984,35 @@ class OutgoingCallDialog(payload: Map<String, Any>) : CallDialog(payload) {
         val OCD_KEY: UUID = UUID.fromString("7CF78E11-0CFE-498D-ADB9-1417BF03DDB4")
 
         fun onCancel(userData: Any) {
-            TODO("APR: use JVM equivalent - end the voice call in progress when user cancels")
+            System.err.println("OutgoingCallDialog: onCancel not yet implemented")
         }
     }
 
     override fun postBuild(): Boolean {
-        TODO("APR: use JVM equivalent - wire cancel button; hide all text boxes initially")
+        System.err.println("OutgoingCallDialog: postBuild not yet implemented")
         return true
     }
 
     fun show(key: Any) {
-        TODO("APR: use JVM equivalent - update outgoing call dialog with session/caller info and show")
+        System.err.println("OutgoingCallDialog: show not yet implemented")
     }
 }
 
 // ─── Platform stubs ──────────────────────────────────────────────────────────
 
 private fun elapsedSeconds(): Double {
-    TODO("APR: use JVM equivalent - return elapsed seconds since viewer startup (monotonic clock)")
+    System.err.println("IMView: elapsedSeconds not yet implemented")
+    return 0.0
 }
 
 private fun agentIsInGroup(groupId: UUID): Boolean {
-    TODO("APR: use JVM equivalent - gAgent.isInGroup($groupId)")
+    System.err.println("IMView: agentIsInGroup not yet implemented")
+    return false
 }
 
 private fun sendStartSession(
     sessionId: UUID, otherParticipantId: UUID, ids: List<UUID>, dialog: InstantMessageType, p2pAsAdhocCall: Boolean,
 ): Boolean {
-    TODO("APR: use JVM equivalent - IMModel.sendStartSession call, returns true if async reply needed")
+    System.err.println("IMView: sendStartSession not yet implemented")
+    return false
 }

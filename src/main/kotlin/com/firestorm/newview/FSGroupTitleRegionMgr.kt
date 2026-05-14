@@ -33,7 +33,7 @@ object FSGroupTitleRegionMgr {
     private val assignmentsChangedListeners: MutableList<() -> Unit> = mutableListOf()
 
     init {
-        TODO("APR: use JVM equivalent — subscribe to agent region change events and call onRegionChanged()")
+        System.err.println("FSGroupTitleRegionMgr: init not yet implemented")
     }
 
     fun destroy() {
@@ -54,11 +54,11 @@ object FSGroupTitleRegionMgr {
         noneOnUnassigned = false
         lastAppliedRegion = ""
 
-        TODO("APR: use JVM equivalent — resolve per-account file path for REGION_GROUP_TITLES_FILE; parse LLSD XML; populate noneOnUnassigned and assignments map; set dataLoaded=true; call onRegionChanged(); schedule LOGIN_RETRY_DELAY one-shot timer that clears lastAppliedRegion and calls onRegionChanged()")
+        System.err.println("FSGroupTitleRegionMgr: loadFromDisk not yet implemented")
     }
 
     fun saveToDisk() {
-        TODO("APR: use JVM equivalent — resolve per-account file path; serialize assignments map and noneOnUnassigned to LLSD XML and write with JVM file I/O")
+        System.err.println("FSGroupTitleRegionMgr: saveToDisk not yet implemented")
     }
 
     fun setAssignment(groupId: UUID, roleId: UUID, regionName: String) {
@@ -75,7 +75,7 @@ object FSGroupTitleRegionMgr {
     }
 
     fun setAssignmentForCurrentRegion(groupId: UUID, roleId: UUID) {
-        TODO("APR: use JVM equivalent — get current region name from gAgent.getRegion(); call setAssignment(groupId, roleId, regionName)")
+        System.err.println("FSGroupTitleRegionMgr: setAssignmentForCurrentRegion not yet implemented")
     }
 
     fun clearAssignment(groupId: UUID, roleId: UUID) {
@@ -118,7 +118,7 @@ object FSGroupTitleRegionMgr {
     fun getNoneOnUnassigned(): Boolean = noneOnUnassigned
 
     fun showRegionInputDialog(groupId: UUID, roleId: UUID) {
-        TODO("APR: use JVM equivalent — show input dialog for FSSetTitleRegion notification with group_id/role_id payload; on confirm call validateAndSetAssignment()")
+        System.err.println("FSGroupTitleRegionMgr: showRegionInputDialog not yet implemented")
     }
 
     fun sanitizeRegionName(input: String): String {
@@ -152,7 +152,7 @@ object FSGroupTitleRegionMgr {
         pendingRegionName = sanitized
         hasPendingValidation = true
 
-        TODO("APR: use JVM equivalent — send named region request via LLWorldMapMessage; on result call onValidationResult(regionHandle); schedule REGION_VALIDATION_TIMEOUT one-shot timer calling onValidationTimeout()")
+        System.err.println("FSGroupTitleRegionMgr: validateAndSetAssignment not yet implemented")
     }
 
     private fun cancelPendingValidation() {
@@ -162,18 +162,18 @@ object FSGroupTitleRegionMgr {
 
     private fun onValidationResult(regionHandle: Long) {
         if (!hasPendingValidation) return
-        TODO("APR: use JVM equivalent — look up sim info from LLWorldMap by regionHandle; if not found or canonical name doesn't match pendingRegionName show FSSetTitleRegionNotFound notification; otherwise call cancelPendingValidation() then setAssignment(pendingGroupId, pendingRoleId, canonicalName)")
+        System.err.println("FSGroupTitleRegionMgr: onValidationResult not yet implemented")
     }
 
     private fun onValidationTimeout() {
         if (!hasPendingValidation) return
         hasPendingValidation = false
-        TODO("APR: use JVM equivalent — show FSSetTitleRegionNotFound notification with REGION=pendingRegionName")
+        System.err.println("FSGroupTitleRegionMgr: onValidationTimeout not yet implemented")
     }
 
     private fun onRegionChanged() {
         if (!dataLoaded) return
 
-        TODO("APR: use JVM equivalent — get current region from gAgent; skip if null or empty name; check RLVa @setgroup lock; normalize region name; skip if same as lastAppliedRegion; look up assignment; if found verify group membership, check if title already active via LLGroupMgr, call sendGroupTitleUpdate and LLGroupActions.activate(); if no assignment and noneOnUnassigned deactivate group")
+        System.err.println("FSGroupTitleRegionMgr: onRegionChanged not yet implemented")
     }
 }

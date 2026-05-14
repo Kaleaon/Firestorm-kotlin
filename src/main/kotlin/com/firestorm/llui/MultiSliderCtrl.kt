@@ -193,7 +193,7 @@ class MultiSliderCtrl(
     }
 
     private fun reportInvalidData() {
-        TODO("APR: use JVM equivalent for UISndBadKeystroke UI sound")
+        System.err.println("MultiSliderCtrl: reportInvalidData not yet implemented")
     }
 
     fun getDisplayedText(): String = displayedText

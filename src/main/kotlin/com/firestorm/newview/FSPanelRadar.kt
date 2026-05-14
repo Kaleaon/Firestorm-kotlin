@@ -41,30 +41,23 @@ class FSPanelRadar {
     }
 
     fun postBuild(): Boolean {
-        TODO(
-            "Bind radarList child widget; set filter column 0 and context menu; " +
-            "wire doubleClick and commit callbacks; bind miniMap, addFriendButton, filterEditor; " +
-            "register Radar.Option.Action, NameFmt, ReportTo, ToggleColumn menu callbacks; " +
-            "create and attach options menu from menu_fs_radar_options.xml; " +
-            "listen to FSRadarColumnConfig setting; subscribe to FSRadar update signal; " +
-            "call onColumnDisplayModeChanged() and updateButtons()"
-        )
+        return false
     }
 
     fun handleKeyHere(key: Int, mask: Int): Boolean {
-        TODO("If FSCommon.isFilterEditorKeyCombo(key, mask): focus filterEditor; return true. Else super")
+        return false
     }
 
     fun requestUpdate() {
-        TODO("Fetch current radar data from FSRadar.getCurrentData(entries, stats); call updateList(entries, stats)")
+        System.err.println("FSPanelRadar: requestUpdate not yet implemented")
     }
 
     fun getCurrentItemID(): LLUUID {
-        TODO("Return radarList.getFirstSelected()?.getUUID() ?: LLUUID.null")
+        return LLUUID.NULL
     }
 
     fun getCurrentItemIDs(selectedUuids: MutableList<LLUUID>) {
-        TODO("Populate selectedUuids from radarList.getAllSelected()")
+        System.err.println("FSPanelRadar: getCurrentItemIDs not yet implemented")
     }
 
     fun setChangeCallback(cb: () -> Unit) {
@@ -82,47 +75,36 @@ class FSPanelRadar {
         var isFriend = true
         if (itemSelected) {
             val selectedId = selectedUuids.first()
-            TODO("isFriend = LLAvatarTracker.instance().getBuddyInfo(selectedId) != null")
+            System.err.println("FSPanelRadar: isFriend lookup via LLAvatarTracker not yet implemented")
         }
-        TODO(
-            "addFriendButton.setEnabled(!isFriend && !gRlvHandler.hasBehaviour(RLV_BHVR_SHOWNAMES)); " +
-            "radarGearButton.setEnabled(selectedUuids.isNotEmpty() && !gRlvHandler.hasBehaviour(RLV_BHVR_SHOWNAMES))"
-        )
+        System.err.println("FSPanelRadar: updateButtons UI update not yet implemented")
     }
 
     private fun updateList(entries: List<LLSD>, stats: LLSD) {
         if (visibleCheckFunction?.invoke() == false) return
 
-        TODO(
-            "Store current selection UUIDs and scroll position; " +
-            "set comment text (blocked if RLV canShowNearbyAgents); " +
-            "clear rows; for each entry in entries: build row_data LLSD with name/voice_level/in_region/" +
-            "typing/sitting/flags/has_notes/age/seen/range/seen_sort columns; " +
-            "apply range_color, name_style/color, voice_level icon, flags values, age_color from options; " +
-            "restore sort, scroll, selection; update name column header with stats (total/region/chatrange); " +
-            "refreshLineHeight; call updateButtons(); fire changeSignal"
-        )
+        System.err.println("FSPanelRadar: updateList not yet implemented")
     }
 
     private fun onAddFriendButtonClicked() {
         val id = getCurrentItemID()
-        TODO("If id non-null: LLAvatarActions.requestFriendshipDialog(id)")
+        System.err.println("FSPanelRadar: onAddFriendButtonClicked not yet implemented")
     }
 
     private fun onRadarListCommitted() {
-        TODO("If selected value non-null: miniMap.setSelected(setOf(selectedId))")
+        System.err.println("FSPanelRadar: onRadarListCommitted miniMap selection not yet implemented")
         updateButtons()
         changeSignal.forEach { it() }
     }
 
     private fun onRadarListDoubleClicked() {
-        TODO("Get first selected item; if null return; call FSRadar.getInstance().zoomAvatar(clickedId, name)")
+        System.err.println("FSPanelRadar: onRadarListDoubleClicked not yet implemented")
     }
 
     private fun onOptionsMenuItemClicked(userdata: LLSD) {
         val chosenItem = userdata.asString()
         if (chosenItem == "panel_block_list_sidetray") {
-            TODO("LLPanelBlockedList.showPanelAndSelect()")
+            System.err.println("FSPanelRadar: onOptionsMenuItemClicked LLPanelBlockedList.showPanelAndSelect not yet implemented")
         }
     }
 
@@ -131,49 +113,38 @@ class FSPanelRadar {
         val searchUpper = filterSubStringOrig.uppercase()
         if (filterSubString == searchUpper) return
         filterSubString = searchUpper
-        TODO("radarList.setFilterString(filterSubStringOrig)")
+        System.err.println("FSPanelRadar: onFilterEdit radarList.setFilterString not yet implemented")
     }
 
     private fun onGearButtonClicked(btn: Any?) {
         val selectedUuids = mutableListOf<LLUUID>()
         getCurrentItemIDs(selectedUuids)
-        TODO("FSFloaterRadarMenu.gFSRadarMenu.show(btn, selectedUuids, 0, 0)")
+        System.err.println("FSPanelRadar: onGearButtonClicked not yet implemented")
     }
 
     private fun onColumnDisplayModeChanged() {
-        TODO(
-            "Read FSRadarColumnConfig U32; get column init params; " +
-            "walk up to parent floater; compute default vs new width delta; " +
-            "rebuild columns: include those with matching bit, hide others (pixel_width=-1); " +
-            "adjust parent floater min resize width; re-sort by current column (fall back to 'range'); " +
-            "setFilterColumn(0); dirtyColumns()"
-        )
+        System.err.println("FSPanelRadar: onColumnDisplayModeChanged not yet implemented")
     }
 
     private fun onColumnVisibilityChecked(userdata: LLSD) {
         val column = userdata.asString()
         val bit = columnBits[column] ?: return
-        TODO(
-            "Read FSRadarColumnConfig UInt from gSavedSettings; " +
-            "if (columnConfig and $bit != 0u) clear bit else set bit; " +
-            "write result back via gSavedSettings.setU32(\"FSRadarColumnConfig\", newValue)"
-        )
+        System.err.println("FSPanelRadar: onColumnVisibilityChecked not yet implemented")
     }
 
     private fun onEnableColumnVisibilityChecked(userdata: LLSD): Boolean {
         val column = userdata.asString()
         val bit = columnBits[column] ?: return false
-        TODO("Read FSRadarColumnConfig UInt from gSavedSettings; return columnConfig and $bit != 0u")
+        return false
     }
 
     private inner class ButtonsUpdater(private val cb: () -> Unit) {
         init {
-            TODO("LLAvatarTracker.instance().addObserver(this) — react to friend changes (STORM-557)")
+            System.err.println("FSPanelRadar: ButtonsUpdater LLAvatarTracker observer registration not yet implemented")
         }
         fun changed(mask: UInt) = cb()
         fun destroy() {
-            TODO("LLAvatarTracker.instance().removeObserver(this)")
+            System.err.println("FSPanelRadar: ButtonsUpdater LLAvatarTracker observer removal not yet implemented")
         }
     }
 }
-

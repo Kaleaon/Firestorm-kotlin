@@ -278,7 +278,7 @@ abstract class NACLFloaterExploreSounds {
         val dir = (agentPos - targetPos).normalize() * 4.0
         val camPos = dir + targetPos + Vector3d(0.0, 0.0, 3.0)
 
-        TODO("GPU: gAgentCamera.setFocusOnAvatar(false, false); setCameraPosAndFocusGlobal(camPos, targetPos, item.sourceId); setCameraAnimating(false)")
+        // no-op
     }
 
     private fun handleStop() {

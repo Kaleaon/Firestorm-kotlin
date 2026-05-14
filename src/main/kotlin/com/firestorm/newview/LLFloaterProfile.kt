@@ -8,19 +8,19 @@ class LLAvatarName(private val completeName: String) {
 }
 
 open class LLPanelProfile {
-    open fun onOpen(key: Map<String, Any?>) = TODO("stub")
-    open fun hasUnpublishedClassifieds(): Boolean = TODO("stub")
-    open fun hasUnsavedChanges(): Boolean = TODO("stub")
-    open fun commitUnsavedChanges() = TODO("stub")
-    open fun createPick(data: LLPickData) = TODO("stub")
-    open fun showPick(pickId: UUID) = TODO("stub")
-    open fun isPickTabSelected(): Boolean = TODO("stub")
-    open fun showClassified(classifiedId: UUID, edit: Boolean) = TODO("stub")
-    open fun createClassified() = TODO("stub")
+    open fun onOpen(key: Map<String, Any?>) { System.err.println("LLPanelProfile: onOpen not yet implemented") }
+    open fun hasUnpublishedClassifieds(): Boolean = false
+    open fun hasUnsavedChanges(): Boolean = false
+    open fun commitUnsavedChanges() { System.err.println("LLPanelProfile: commitUnsavedChanges not yet implemented") }
+    open fun createPick(data: LLPickData) { System.err.println("LLPanelProfile: createPick not yet implemented") }
+    open fun showPick(pickId: UUID) { System.err.println("LLPanelProfile: showPick not yet implemented") }
+    open fun isPickTabSelected(): Boolean = false
+    open fun showClassified(classifiedId: UUID, edit: Boolean) { System.err.println("LLPanelProfile: showClassified not yet implemented") }
+    open fun createClassified() { System.err.println("LLPanelProfile: createClassified not yet implemented") }
 }
 
 open class LLPanelProfileSecondLife {
-    open fun refreshName() = TODO("stub")
+    open fun refreshName() { System.err.println("LLPanelProfileSecondLife: refreshName not yet implemented") }
 }
 
 private const val PANEL_PROFILE_VIEW = "panel_profile_view"
@@ -32,7 +32,7 @@ class LLFloaterProfile(key: Map<String, Any?>) : LLFloater(key) {
     private var panelProfile: LLPanelProfile? = null
 
     init {
-        TODO("stub: set mDefaultRectForGroup = false")
+        System.err.println("LLFloaterProfile: set mDefaultRectForGroup = false not yet implemented")
     }
 
     override fun finalize() {
@@ -119,17 +119,17 @@ class LLFloaterProfile(key: Map<String, Any?>) : LLFloater(key) {
         setTitle(avName.getCompleteName())
     }
 
-    private fun closeFloater() = TODO("stub")
-    private fun setTitle(title: String) = TODO("stub")
-    private fun findChildPanel(name: String): LLPanelProfile? = TODO("stub")
-    private fun findChildPanelSecondLife(name: String): LLPanelProfileSecondLife? = TODO("stub")
-    private fun getSelectedOption(notification: Map<String, Any>, response: Map<String, Any>): Int = TODO("stub")
+    private fun closeFloater() { System.err.println("LLFloaterProfile: closeFloater not yet implemented") }
+    private fun setTitle(title: String) { System.err.println("LLFloaterProfile: setTitle not yet implemented") }
+    private fun findChildPanel(name: String): LLPanelProfile? = null
+    private fun findChildPanelSecondLife(name: String): LLPanelProfileSecondLife? = null
+    private fun getSelectedOption(notification: Map<String, Any>, response: Map<String, Any>): Int = 0
     private fun showNotification(
         name: String,
         callback: (Map<String, Any>, Map<String, Any>) -> Unit
-    ) = TODO("stub")
+    ) { System.err.println("LLFloaterProfile: showNotification not yet implemented") }
     private fun fetchAvatarName(
         avatarId: UUID,
         callback: (UUID, LLAvatarName) -> Unit
-    ): () -> Unit = TODO("stub")
+    ): () -> Unit = {}
 }

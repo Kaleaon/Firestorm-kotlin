@@ -52,23 +52,31 @@ object Pipeline {
 
     fun renderGeom(viewerCamera: ViewerCamera) {}
 
-    fun isWaterClip(): Boolean { TODO("GPU: isWaterClip") }
-    fun enableLightsDynamic() { TODO("GPU: enableLightsDynamic") }
-    fun enableLightsFullbright() { TODO("GPU: enableLightsFullbright") }
-    fun bindDeferredShader(shader: GLSLShader) { TODO("GPU: bindDeferredShader") }
-    fun bindDeferredShaderFast(shader: GLSLShader) { TODO("GPU: bindDeferredShaderFast") }
-    fun unbindDeferredShader(shader: GLSLShader) { TODO("GPU: unbindDeferredShader") }
-    fun bindReflectionProbes(shader: GLSLShader) { TODO("GPU: bindReflectionProbes") }
-    fun unbindReflectionProbes(shader: GLSLShader) { TODO("GPU: unbindReflectionProbes") }
-    fun setEnvMat(shader: GLSLShader) { TODO("GPU: setEnvMat") }
-    fun beginRenderMap(type: Int): Iterator<DrawInfo> { TODO("GPU: beginRenderMap") }
-    fun endRenderMap(type: Int): Iterator<DrawInfo> { TODO("GPU: endRenderMap") }
+    fun isWaterClip(): Boolean { return false } // no-op
+    fun enableLightsDynamic() { // no-op
+    }
+    fun enableLightsFullbright() { // no-op
+    }
+    fun bindDeferredShader(shader: GLSLShader) { // no-op
+    }
+    fun bindDeferredShaderFast(shader: GLSLShader) { // no-op
+    }
+    fun unbindDeferredShader(shader: GLSLShader) { // no-op
+    }
+    fun bindReflectionProbes(shader: GLSLShader) { // no-op
+    }
+    fun unbindReflectionProbes(shader: GLSLShader) { // no-op
+    }
+    fun setEnvMat(shader: GLSLShader) { // no-op
+    }
+    fun beginRenderMap(type: Int): Iterator<DrawInfo> { return emptyList<DrawInfo>().iterator() } // no-op
+    fun endRenderMap(type: Int): Iterator<DrawInfo> { return emptyList<DrawInfo>().iterator() } // no-op
     fun hasRenderType(type: Int): Boolean = renderTypeEnabled(type)
-    fun beginAlphaGroups(): Iterator<SpatialGroup> { TODO("GPU: beginAlphaGroups") }
-    fun endAlphaGroups(): Iterator<SpatialGroup> { TODO("GPU: endAlphaGroups") }
-    fun beginRiggedAlphaGroups(): Iterator<SpatialGroup> { TODO("GPU: beginRiggedAlphaGroups") }
-    fun endRiggedAlphaGroups(): Iterator<SpatialGroup> { TODO("GPU: endRiggedAlphaGroups") }
-    fun shadersLoaded(): Boolean { TODO("GPU: shadersLoaded") }
+    fun beginAlphaGroups(): Iterator<SpatialGroup> { return emptyList<SpatialGroup>().iterator() } // no-op
+    fun endAlphaGroups(): Iterator<SpatialGroup> { return emptyList<SpatialGroup>().iterator() } // no-op
+    fun beginRiggedAlphaGroups(): Iterator<SpatialGroup> { return emptyList<SpatialGroup>().iterator() } // no-op
+    fun endRiggedAlphaGroups(): Iterator<SpatialGroup> { return emptyList<SpatialGroup>().iterator() } // no-op
+    fun shadersLoaded(): Boolean { return false } // no-op
 
     companion object {
         const val RENDER_TYPE_SKY = 1

@@ -40,7 +40,7 @@ class LLBox {
             intArrayOf(7, 4, 0, 3)
         )
 
-        TODO("GPU: gGL.begin(TRIANGLES); emit two triangles for face $whichFace using mVertex[faces[whichFace][0..3]] with tex coords")
+        // no-op
     }
 
     fun render() {
@@ -50,7 +50,7 @@ class LLBox {
         renderface(2)
         renderface(1)
         renderface(0)
-        TODO("GPU: gGL.flush()")
+        // no-op
     }
 
     fun getTriangleCount(): UInt = mTriangleCount

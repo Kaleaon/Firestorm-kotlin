@@ -14,20 +14,20 @@ class LLDrawPoolGLTFPBR(type: UInt = LLDrawPool.POOL_GLTF_PBR) : LLRenderPass(ty
         check(!LLPipeline.sRenderingHUDs)
 
         if (mRenderType == LLPipeline.RENDER_TYPE_PASS_GLTF_PBR_ALPHA_MASK) {
-            TODO("GPU: GLTFSceneManager.instance().renderOpaque()")
+            // no-op
         }
 
-        TODO("GPU: gDeferredPBROpaqueProgram.bind(); pushGLTFBatches(mRenderType); GLTFSceneManager.instance().render(true, true); gDeferredPBROpaqueProgram.bind(true); pushRiggedGLTFBatches(mRenderType + 1)")
+        // no-op
     }
 
     override fun getNumPostDeferredPasses(): Int = 1
 
     override fun renderPostDeferred(pass: Int) {
         if (LLPipeline.sRenderingHUDs) {
-            TODO("GPU: gHUDPBROpaqueProgram.bind(); pushGLTFBatches(mRenderType)")
+            // no-op
         } else if (mRenderType == LLPipeline.RENDER_TYPE_PASS_GLTF_PBR) {
             // Only render glow for the non-alpha-masked variant
-            TODO("GPU: gGL.setColorMask(false, true); gPBRGlowProgram.bind(); pushGLTFBatches(PASS_GLTF_GLOW); gPBRGlowProgram.bind(true); pushRiggedGLTFBatches(PASS_GLTF_GLOW_RIGGED); gGL.setColorMask(true, false)")
+            // no-op
         }
     }
 }

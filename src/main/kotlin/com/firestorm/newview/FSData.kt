@@ -85,9 +85,12 @@ object FSData {
     // -----------------------------------------------------------------------
 
     fun init() {
-        headers["User-Agent"] = TODO("APR: use JVM equivalent - LLViewerMedia::getCurrentUserAgent()") as String
-        headers["viewer-version"] = TODO("APR: use JVM equivalent - LLVersionInfo::getChannelAndVersionFS()") as String
-        val qaTest = TODO("GPU: gSavedSettings.getBOOL(\"FSdataQAtest\")") as Boolean
+        // APR: use JVM equivalent - LLViewerMedia::getCurrentUserAgent()
+        headers["User-Agent"] = ""
+        // APR: use JVM equivalent - LLVersionInfo::getChannelAndVersionFS()
+        headers["viewer-version"] = ""
+        // GPU: gSavedSettings.getBOOL("FSdataQAtest")
+        val qaTest = false
         baseUrl = if (qaTest) "http://phoenixviewer.com/app/fsdatatest" else "http://phoenixviewer.com/app/fsdata"
         fsDataUrl = "$baseUrl/data.xml"
     }
@@ -97,12 +100,15 @@ object FSData {
     // -----------------------------------------------------------------------
 
     fun startDownload() {
-        fsDataFilename = TODO("APR: use JVM equivalent - gDirUtilp->getExpandedFilename(LL_PATH_USER_SETTINGS, \"fsdata.xml\")") as String
-        fsDataDefaultsFilename = TODO("APR: use JVM equivalent - gDirUtilp path for fsdata_defaults.<version>.xml") as String
-        clientTagsFilename = TODO("APR: use JVM equivalent - gDirUtilp path for client_list_v2.xml") as String
+        // APR: use JVM equivalent - gDirUtilp->getExpandedFilename(LL_PATH_USER_SETTINGS, "fsdata.xml")
+        fsDataFilename = ""
+        // APR: use JVM equivalent - gDirUtilp path for fsdata_defaults.<version>.xml
+        fsDataDefaultsFilename = ""
+        // APR: use JVM equivalent - gDirUtilp path for client_list_v2.xml
+        clientTagsFilename = ""
 
-        TODO("APR: use JVM equivalent - HTTP GET fsDataUrl with If-Modified-Since; on success call processResponder(content, fsDataUrl, true/false, lastModified)")
-        TODO("APR: use JVM equivalent - HTTP GET fsDataDefaultsUrl with If-Modified-Since")
+        // APR: use JVM equivalent - HTTP GET fsDataUrl with If-Modified-Since; on success call processResponder(content, fsDataUrl, true/false, lastModified)
+        // APR: use JVM equivalent - HTTP GET fsDataDefaultsUrl with If-Modified-Since
     }
 
     fun downloadAgents() {
@@ -110,12 +116,14 @@ object FSData {
         assetsUrl = "$baseUrl/assets.xml"
 
         if (agentsUrl.isNotEmpty()) {
-            agentsFilename = TODO("APR: use JVM equivalent - gDirUtilp path for <prefix>_agents.xml") as String
-            TODO("APR: use JVM equivalent - HTTP GET agentsUrl with If-Modified-Since; on success call processResponder")
+            // APR: use JVM equivalent - gDirUtilp path for <prefix>_agents.xml
+            agentsFilename = ""
+            // APR: use JVM equivalent - HTTP GET agentsUrl with If-Modified-Since; on success call processResponder
         }
         if (assetsUrl.isNotEmpty()) {
-            assetsFilename = TODO("APR: use JVM equivalent - gDirUtilp path for <prefix>_assets.xml") as String
-            TODO("APR: use JVM equivalent - HTTP GET assetsUrl with If-Modified-Since; on success call processResponder")
+            // APR: use JVM equivalent - gDirUtilp path for <prefix>_assets.xml
+            assetsFilename = ""
+            // APR: use JVM equivalent - HTTP GET assetsUrl with If-Modified-Since; on success call processResponder
         }
     }
 
@@ -199,21 +207,24 @@ object FSData {
     // -----------------------------------------------------------------------
 
     fun allowedLogin(): Map<String, Any>? {
-        val versionKey = TODO("APR: use JVM equivalent - LLVersionInfo::getChannelAndVersionFS()") as String
+        // APR: use JVM equivalent - LLVersionInfo::getChannelAndVersionFS()
+        val versionKey = ""
         val block = blockedVersions[versionKey] ?: return null
 
         var blocked = true
         if (block.containsKey("gridtype")) {
             blocked = false
             val gridType = block["gridtype"] as? String ?: ""
-            val isSecondLife = TODO("APR: use JVM equivalent - LLGridManager::isInSecondLife()") as Boolean
+            // APR: use JVM equivalent - LLGridManager::isInSecondLife()
+            val isSecondLife = false
             if (gridType == "secondlife" && isSecondLife) return block
         }
         if (block.containsKey("grids")) {
             blocked = false
             @Suppress("UNCHECKED_CAST")
             val grids = block["grids"] as? List<String> ?: emptyList()
-            val currentGrid = TODO("APR: use JVM equivalent - LLGridManager::getGrid()") as String
+            // APR: use JVM equivalent - LLGridManager::getGrid()
+            val currentGrid = ""
             if (currentGrid in grids) return block
         }
         return if (blocked) block else null
@@ -226,13 +237,14 @@ object FSData {
     fun getOpenSimMOTD(): String = openSimMotd
 
     fun selectNextMOTD() {
-        val isInSLMain = TODO("APR: use JVM equivalent - LLGridManager::instance().isInSLMain()") as Boolean
+        // APR: use JVM equivalent - LLGridManager::instance().isInSLMain()
+        val isInSLMain = false
         if (!isInSLMain) return
         if (secondLifeMotd.isNotEmpty()) {
-            TODO("GPU: gAgent.mMOTD = secondLifeMotd")
+            // GPU: gAgent.mMOTD = secondLifeMotd
         } else if (randomMotds.isNotEmpty()) {
             val motd = randomMotds.random()
-            TODO("GPU: gAgent.mMOTD = motd")
+            // GPU: gAgent.mMOTD = motd
         }
     }
 
@@ -247,10 +259,12 @@ object FSData {
             "tex_color" to newSystemColor
         )
 
-        val clientTagVisibility = TODO("GPU: gSavedSettings.getU32(\"FSClientTagsVisibility\")") as Int
+        // GPU: gSavedSettings.getU32("FSClientTagsVisibility")
+        val clientTagVisibility = 0
         if (clientTagVisibility == 0) return tag
 
-        val useLegacyClientTags = TODO("GPU: gSavedSettings.getU32(\"FSUseLegacyClienttags\")") as Int
+        // GPU: gSavedSettings.getU32("FSUseLegacyClienttags")
+        val useLegacyClientTags = 0
         if (useLegacyClientTags != 0) {
             val idStr = id.toString()
             if (legacyClientList.containsKey(idStr)) {
@@ -275,13 +289,14 @@ object FSData {
 
         if (newSystem) {
             if (clientTagVisibility >= 3) {
-                TODO("GPU: extract null-terminated string from id UUID bytes and store in tag[\"name\"]")
+                // GPU: extract null-terminated string from id UUID bytes and store in tag["name"]
             }
-            val colorClientTags = TODO("GPU: gSavedSettings.getU32(\"FSColorClienttags\")") as Int
+            // GPU: gSavedSettings.getU32("FSColorClienttags")
+            val colorClientTags = 0
             val isTpvd = tag["tpvd"] as? Boolean ?: false
             if (colorClientTags >= 3 || isTpvd) {
                 if (isTpvd && colorClientTags < 3) {
-                    TODO("GPU: conditionally copy newSystemColor into tag[\"color\"] for allowed TPVD colour values")
+                    // GPU: conditionally copy newSystemColor into tag["color"] for allowed TPVD colour values
                 } else {
                     tag["color"] = newSystemColor
                 }
@@ -312,35 +327,42 @@ object FSData {
         if (!isSupport(requester) && !isDeveloper(requester) && !isQA(requester)) return message
 
         val reason = if (message.length > detectString.length) message.substring(detectString.length) else ""
-        val outMessage = if (reason.isEmpty())
-            TODO("GPU: LLTrans.getString(\"Reqsysinfo_Chat_NoReason\")") as String
-        else
-            TODO("GPU: LLTrans.getString(\"Reqsysinfo_Chat_Reason\", reason)") as String
+        val outMessage = if (reason.isEmpty()) {
+            // GPU: LLTrans.getString("Reqsysinfo_Chat_NoReason")
+            ""
+        } else {
+            // GPU: LLTrans.getString("Reqsysinfo_Chat_Reason", reason)
+            ""
+        }
 
-        TODO("GPU: LLNotifications.instance().add(\"FireStormReqInfo\", args, payload, callbackReqInfo)")
-        @Suppress("UNREACHABLE_CODE")
+        // GPU: LLNotifications.instance().add("FireStormReqInfo", args, payload, callbackReqInfo)
         return outMessage
     }
 
     fun callbackReqInfo(notification: Map<String, Any>, response: Map<String, Any>) {
-        val option = TODO("GPU: LLNotification.getSelectedOption(notification, response)") as Int
-        val fromId = TODO("GPU: notification[\"payload\"][\"from_id\"].asUUID()") as UUID
-        val sessionId = TODO("GPU: notification[\"payload\"][\"session_id\"].asUUID()") as UUID
-        val myName = TODO("GPU: LLAgentUI.buildFullname()") as String
+        // GPU: LLNotification.getSelectedOption(notification, response)
+        val option = 0
+        // GPU: notification["payload"]["from_id"].asUUID()
+        val fromId = UUID(0L, 0L)
+        // GPU: notification["payload"]["session_id"].asUUID()
+        val sessionId = UUID(0L, 0L)
+        // GPU: LLAgentUI.buildFullname()
+        val myName = ""
         if (option == 0) {
             sendInfo(fromId, sessionId, myName)
         } else {
-            TODO("APR: use JVM equivalent - pack and send 'Request Denied.' IM to fromId")
+            // APR: use JVM equivalent - pack and send 'Request Denied.' IM to fromId
         }
     }
 
     fun getSystemInfo(): Map<String, String> {
-        val info = TODO("APR: use JVM equivalent - LLAppViewer::instance()->getViewerInfo()") as Map<String, Any>
+        // APR: use JVM equivalent - LLAppViewer::instance()->getViewerInfo()
+        val info: Map<String, Any> = emptyMap()
         val part1 = buildString {
-            TODO("GPU: format viewer version, build date, CPU, memory, OS, graphics info lines")
+            // GPU: format viewer version, build date, CPU, memory, OS, graphics info lines
         }
         val part2 = buildString {
-            TODO("GPU: format OpenGL, libcurl, J2C, audio, libvlc, Vivox, packets, RLVa, mode/skin, font, UI scale, draw distance, LOD lines")
+            // GPU: format OpenGL, libcurl, J2C, audio, libvlc, Vivox, packets, RLVa, mode/skin, font, UI scale, draw distance, LOD lines
         }
         return mapOf("Part1" to part1, "Part2" to part2)
     }
@@ -350,17 +372,20 @@ object FSData {
     // -----------------------------------------------------------------------
 
     fun addAgents() {
-        val cacheNameReady = TODO("GPU: gCacheName != null") as Boolean
+        // GPU: gCacheName != null
+        val cacheNameReady = false
         if (!cacheNameReady) return
 
         for ((id, flags) in teamAgents) {
             if ((flags and FSAgentFlags.NO_SPAM) != 0) {
-                val avName = TODO("APR: use JVM equivalent - LLAvatarNameCache::get(id)") as AvatarName?
+                // APR: use JVM equivalent - LLAvatarNameCache::get(id)
+                val avName: AvatarName? = null
                 if (avName != null) {
                     onNameCache(id, avName)
                 } else {
                     avatarNameCacheConnections[id]?.invoke()
-                    avatarNameCacheConnections[id] = TODO("APR: use JVM equivalent - LLAvatarNameCache::get(id, callback -> onNameCache)") as () -> Unit
+                    // APR: use JVM equivalent - LLAvatarNameCache::get(id, callback -> onNameCache)
+                    avatarNameCacheConnections[id] = null
                 }
             }
         }
@@ -374,13 +399,13 @@ object FSData {
         val motd = fsData["MOTD"] as? String
         if (!motd.isNullOrEmpty()) {
             secondLifeMotd = motd
-            TODO("GPU: gAgent.mMOTD = motd")
+            // GPU: gAgent.mMOTD = motd
         } else {
             @Suppress("UNCHECKED_CAST")
             val randomList = fsData["RandomMOTD"] as? List<String> ?: emptyList()
             if (randomList.isNotEmpty()) {
                 randomMotds = randomList
-                TODO("GPU: gAgent.mMOTD = randomMotds.random()")
+                // GPU: gAgent.mMOTD = randomMotds.random()
             }
         }
 
@@ -388,11 +413,13 @@ object FSData {
         val eventsMOTD = fsData["EventsMOTD"] as? Map<String, Map<String, Any>>
         if (eventsMOTD != null) {
             for ((_, content) in eventsMOTD) {
-                val startDate = TODO("APR: use JVM equivalent - parse content[\"startDate\"] to Instant") as Long
-                val endDate   = TODO("APR: use JVM equivalent - parse content[\"endDate\"] to Instant") as Long
+                // APR: use JVM equivalent - parse content["startDate"] to Instant
+                val startDate = 0L
+                // APR: use JVM equivalent - parse content["endDate"] to Instant
+                val endDate   = 0L
                 val now       = System.currentTimeMillis()
                 if (startDate < now && endDate > now) {
-                    TODO("GPU: gAgent.mMOTD = content[\"EventMOTD\"]")
+                    // GPU: gAgent.mMOTD = content["EventMOTD"]
                     break
                 }
             }
@@ -407,13 +434,14 @@ object FSData {
         processAgents(fsData)
         processAssets(fsData)
 
-        val useLegacyTags = TODO("GPU: gSavedSettings.getU32(\"FSUseLegacyClienttags\")") as Int
+        // GPU: gSavedSettings.getU32("FSUseLegacyClienttags")
+        val useLegacyTags = 0
         when {
-            useLegacyTags > 1 -> TODO("APR: use JVM equivalent - HTTP GET LEGACY_CLIENT_LIST_URL")
+            useLegacyTags > 1 -> { /* APR: use JVM equivalent - HTTP GET LEGACY_CLIENT_LIST_URL */ }
             useLegacyTags > 0 -> updateClientTagsLocal()
         }
 
-        TODO("GPU: if RlvActions.isRlvEnabled() and fsData has rlva_compat_list, call RlvSettings.initCompatibilityMode")
+        // GPU: if RlvActions.isRlvEnabled() and fsData has rlva_compat_list, call RlvSettings.initCompatibilityMode
     }
 
     private fun processAgents(data: Map<String, Any>) {
@@ -474,11 +502,12 @@ object FSData {
     }
 
     private fun saveLLSD(data: Map<String, Any>, filename: String, lastModified: Long) {
-        TODO("APR: use JVM equivalent - serialize data to pretty XML, write to filename, then set file mtime to lastModified")
+        // APR: use JVM equivalent - serialize data to pretty XML, write to filename, then set file mtime to lastModified
     }
 
     private fun loadFromFile(filename: String): Map<String, Any>? {
-        TODO("APR: use JVM equivalent - parse LLSD XML from filename; return null on missing file or parse error")
+        // APR: use JVM equivalent - parse LLSD XML from filename; return null on missing file or parse error
+        return null
     }
 
     private fun updateClientTagsLocal() {
@@ -488,16 +517,17 @@ object FSData {
 
     private fun onNameCache(avId: UUID, avName: AvatarName) {
         avatarNameCacheConnections.remove(avId)
-        TODO("APR: use JVM equivalent - LLMuteList.add LLMute(avId, avName.getUserName(), EXTERNAL)")
+        // APR: use JVM equivalent - LLMuteList.add LLMute(avId, avName.getUserName(), EXTERNAL)
     }
 
     private fun sendInfo(destination: UUID, sessionId: UUID, myName: String) {
         val info = getSystemInfo()
-        TODO("APR: use JVM equivalent - pack and send two IM packets (Part1, Part2) to destination; echo to local IM window")
+        // APR: use JVM equivalent - pack and send two IM packets (Part1, Part2) to destination; echo to local IM window
     }
 
     // XOR-decrypt a UUID key from the on-disk file (mirrors LLXORCipher with MAGIC_ID)
     private fun xorDecryptUUID(id: UUID): UUID {
-        TODO("APR: use JVM equivalent - XOR id bytes with MAGIC_ID bytes")
+        // APR: use JVM equivalent - XOR id bytes with MAGIC_ID bytes
+        return UUID(0L, 0L)
     }
 }

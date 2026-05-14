@@ -101,7 +101,7 @@ object PermissionsTracker {
 
         if (followcamList.isEmpty()) return
 
-        TODO("APR: LLNotificationsUtil::add(\"WarnScriptedCamera\", args[SOURCES=$followcamList])")
+        System.err.println("PermissionsTracker: warnFollowcam LLNotificationsUtil::add not yet implemented")
     }
 
     fun objectPropertiesCallback(numBlocks: Int, getBlockData: (Int) -> Pair<UUID, Pair<String, UUID>>) {
@@ -149,65 +149,79 @@ object PermissionsTracker {
     // -----------------------------------------------------------------------
 
     private fun loadingDataString(): String {
-        TODO("APR: use JVM equivalent for LLTrans::getString(\"LoadingData\")")
+        System.err.println("PermissionsTracker: loadingDataString not yet implemented")
+        return ""
     }
 
     private fun objectOutOfRangeString(): String {
-        TODO("APR: use JVM equivalent for LLTrans::getString(\"ObjectOutOfRange\")")
+        System.err.println("PermissionsTracker: objectOutOfRangeString not yet implemented")
+        return ""
     }
 
     private fun totalSeconds(): Double {
-        TODO("APR: use JVM equivalent for LLTimer::getTotalSeconds()")
+        System.err.println("PermissionsTracker: totalSeconds not yet implemented")
+        return 0.0
     }
 
     private fun findViewerObject(id: UUID): Any? {
-        TODO("APR: use JVM equivalent for gObjectList.findObject($id)")
+        System.err.println("PermissionsTracker: findViewerObject not yet implemented")
+        return null
     }
 
     private fun isAgentAvatarValid(): Boolean {
-        TODO("APR: use JVM equivalent for isAgentAvatarValid()")
+        System.err.println("PermissionsTracker: isAgentAvatarValid not yet implemented")
+        return false
     }
 
     private fun agentHasRegion(): Boolean {
-        TODO("APR: use JVM equivalent for gAgentAvatarp->getRegion() != null")
+        System.err.println("PermissionsTracker: agentHasRegion not yet implemented")
+        return false
     }
 
     private fun getAttachmentItemId(viewerObject: Any): UUID? {
-        TODO("APR: use JVM equivalent for LLViewerObject::getAttachmentItemID()")
+        System.err.println("PermissionsTracker: getAttachmentItemId not yet implemented")
+        return null
     }
 
     private fun sendObjectSelectDeselect(viewerObject: Any) {
-        TODO("APR: use JVM equivalent for LLMessageSystem ObjectSelect/ObjectDeselect to get ObjectProperties")
+        System.err.println("PermissionsTracker: sendObjectSelectDeselect not yet implemented")
     }
 
     private fun getAttachedPointName(attachmentId: UUID): String? {
-        TODO("APR: use JVM equivalent for gAgentAvatarp->getAttachedPointName($attachmentId)")
+        System.err.println("PermissionsTracker: getAttachedPointName not yet implemented")
+        return null
     }
 
     private fun uriEscape(text: String): String =
         java.net.URLEncoder.encode(text, "UTF-8").replace("+", "%20")
 
     private fun inventorySlurl(attachmentId: UUID, verb: String): String {
-        TODO("APR: use JVM equivalent for LLSLURL(\"inventory\", $attachmentId, \"$verb\").getSLURLString()")
+        System.err.println("PermissionsTracker: inventorySlurl not yet implemented")
+        return ""
     }
 
     private fun objectImSlurl(sourceId: UUID, objectName: String, ownerId: UUID?): String {
-        TODO("APR: use JVM equivalent for LLSLURL(\"objectim\", $sourceId, \"\").getSLURLString() + query params")
+        System.err.println("PermissionsTracker: objectImSlurl not yet implemented")
+        return ""
     }
 
     private fun currentRegionSlurl(): String {
-        TODO("APR: use JVM equivalent for LLSLURL(region->getName(), agentPosition).getLocationString()")
+        System.err.println("PermissionsTracker: currentRegionSlurl not yet implemented")
+        return ""
     }
 
     private fun transWornOnAttachmentPoint(point: String): String {
-        TODO("APR: use JVM equivalent for LLTrans::getString(\"WornOnAttachmentPoint\", args[ATTACHMENT_POINT=$point])")
+        System.err.println("PermissionsTracker: transWornOnAttachmentPoint not yet implemented")
+        return ""
     }
 
     private fun getCachedAvatarName(avatarId: UUID): String? {
-        TODO("APR: use JVM equivalent for LLAvatarNameCache::get($avatarId) synchronous variant")
+        System.err.println("PermissionsTracker: getCachedAvatarName not yet implemented")
+        return null
     }
 
     private fun requestAvatarName(avatarId: UUID, callback: (UUID, String) -> Unit): (() -> Unit)? {
-        TODO("APR: use JVM equivalent for LLAvatarNameCache::get($avatarId, callback); return disconnect lambda")
+        System.err.println("PermissionsTracker: requestAvatarName not yet implemented")
+        return null
     }
 }

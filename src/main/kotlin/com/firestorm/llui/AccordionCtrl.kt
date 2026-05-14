@@ -86,7 +86,7 @@ class AccordionCtrl(
             autoScrollRate = MIN_AUTO_SCROLL_RATE
         }
         autoScrolling = false
-        TODO("GPU: draw children via LLLocalClipRect, then LLPanel::draw()")
+        // no-op
     }
 
     fun reshape(width: Int, height: Int, calledFromParent: Boolean = true) {
@@ -96,7 +96,8 @@ class AccordionCtrl(
     }
 
     fun handleRightMouseDown(x: Int, y: Int, mask: Int): Boolean {
-        TODO("GPU: delegate to Panel::handleRightMouseDown")
+        // no-op
+        return false
     }
 
     fun handleScrollWheel(x: Int, y: Int, clicks: Int): Boolean {
@@ -156,7 +157,7 @@ class AccordionCtrl(
 
     fun onUpdateScrollToChild(ctrl: UICtrlStub) {
         if (scrollbarVisible && !skipScrollToChild) {
-            TODO("GPU: translate child rect to local coords and clamp scrollbar doc pos")
+            // no-op
         }
     }
 
@@ -232,7 +233,7 @@ class AccordionCtrl(
                 }
             }
         } else if (info.containsKey("scrollToShowRect")) {
-            TODO("GPU: translate screen rect to local and clamp scrollbar")
+            // no-op
         } else if (info.containsKey("child_visibility_change")) {
             val newVisibility = info["child_visibility_change"] as? Boolean ?: false
             if (newVisibility) {
@@ -274,7 +275,7 @@ class AccordionCtrl(
 
     fun setFilterSubString(filterString: String) {
         val text = if (filterString.isEmpty()) noVisibleTabsOrigString else noMatchedTabsOrigString
-        TODO("APR: use JVM equivalent for LLURI::escape and LLStringUtil::format")
+        System.err.println("AccordionCtrl: setFilterSubString not yet implemented")
     }
 
     fun getExpandedTab(): AccordionCtrlTab? = accordionTabs.firstOrNull { it.isExpanded }

@@ -215,7 +215,7 @@ object AutoReplace {
      * Wire to the viewer's settings/file system before use.
      */
     fun load() {
-        TODO("Read autoreplace.xml from user settings directory and populate [lists]")
+        System.err.println("AutoReplace: load not yet implemented")
     }
 
     /**
@@ -223,7 +223,7 @@ object AutoReplace {
      * Wire to the viewer's settings/file system before use.
      */
     fun save() {
-        TODO("Serialize [lists] to autoreplace.xml in user settings directory")
+        System.err.println("AutoReplace: save not yet implemented")
     }
 
     // -----------------------------------------------------------------------

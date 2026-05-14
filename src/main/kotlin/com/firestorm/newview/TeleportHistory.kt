@@ -140,7 +140,7 @@ object TeleportHistory {
         }
         requestedIndex = idx
         val target = history[idx]
-        TODO("Dispatch teleport to global position ${target.globalPos} (SLURL: ${target.slurl})")
+        System.err.println("TeleportHistory: goToItem not yet implemented")
     }
 
     /**
@@ -206,7 +206,7 @@ object TeleportHistory {
                 // Guard: skip update if we have nothing yet.
                 return
             }
-            TODO("Build TeleportEntry from agent region/position and call addEntry()")
+            System.err.println("TeleportHistory: updateCurrentLocation not yet implemented")
         }
         if (!gotInitialUpdate) gotInitialUpdate = true
         onHistoryChanged()
@@ -230,7 +230,7 @@ object TeleportHistory {
      */
     fun handleLoginComplete() {
         if (gotInitialUpdate) return
-        TODO("Call updateCurrentLocation(agent.getPositionGlobal())")
+        System.err.println("TeleportHistory: handleLoginComplete not yet implemented")
     }
 
     /**

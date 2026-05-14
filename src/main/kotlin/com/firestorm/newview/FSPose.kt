@@ -81,8 +81,8 @@ object FSPoseManager {
         activePose?.let { stopCurrentPose() }
 
         activePose = pose
-        // TODO: sendAnimationRequest(pose.animationId, ANIM_REQUEST_START)
-        TODO("Send animation-start request to LLAgent for pose '${pose.name}'")
+        // sendAnimationRequest(pose.animationId, ANIM_REQUEST_START) — when agent layer is ported
+        System.err.println("FSPoseManager: animation-start for '${pose.name}' not yet sent (agent layer not ported)")
     }
 
     /**
@@ -93,8 +93,8 @@ object FSPoseManager {
     fun stopCurrentPose() {
         val current = activePose ?: return
         activePose = null
-        // TODO: sendAnimationRequest(current.animationId, ANIM_REQUEST_STOP)
-        TODO("Send animation-stop request to LLAgent for pose '${current.name}'")
+        // sendAnimationRequest(current.animationId, ANIM_REQUEST_STOP) — when agent layer is ported
+        System.err.println("FSPoseManager: animation-stop for '${current.name}' not yet sent (agent layer not ported)")
     }
 
     // -----------------------------------------------------------------------
@@ -108,7 +108,7 @@ object FSPoseManager {
      * serialisation format is TBD for the Kotlin port.
      */
     fun savePose(name: String) {
-        TODO("Serialise active joint states and write to per-account pose directory as '$name'")
+        System.err.println("FSPoseManager: savePose('$name') not yet implemented — per-account pose directory not configured")
     }
 
     /**
@@ -118,6 +118,6 @@ object FSPoseManager {
      * use `java.nio.file.Path` once the directory layout is established.
      */
     fun loadPosesFromDisk() {
-        TODO("Enumerate pose files from the per-account directory and deserialise into 'poses'")
+        System.err.println("FSPoseManager: loadPosesFromDisk() not yet implemented — per-account pose directory not configured")
     }
 }

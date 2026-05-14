@@ -639,7 +639,7 @@ class UrlEntryParcel : UrlEntryBase() {
     }
 
     fun sendParcelInfoRequest(parcelId: String) {
-        TODO("APR: use JVM equivalent — send ParcelInfoRequest message via network layer")
+        System.err.println("UrlEntryParcel: sendParcelInfoRequest not yet implemented")
     }
 
     fun onParcelInfoReceived(id: String, label: String) {

@@ -142,7 +142,7 @@ class FloaterPermsDefault(seed: Any?) : Floater(seed) {
             val region = gAgent.getRegion() ?: return
             val url = region.getCapability("AgentPreferences")
             if (url.isNotEmpty()) {
-                TODO("APR: use JVM equivalent — launch coroutine: POST $url with default_object_perm_masks for Objects category")
+                System.err.println("FloaterPermsDefault: updateCap not yet implemented")
             }
         }
 
@@ -150,7 +150,7 @@ class FloaterPermsDefault(seed: Any?) : Floater(seed) {
 
         @Suppress("UnusedParameter")
         private suspend fun updateCapCoro(url: String) {
-            TODO("APR: use JVM equivalent — HTTP POST $url with default_object_perm_masks; retry up to MAX_HTTP_RETRIES on failure; call setCapSent(true) on success")
+            System.err.println("FloaterPermsDefault: updateCapCoro not yet implemented")
         }
     }
 }

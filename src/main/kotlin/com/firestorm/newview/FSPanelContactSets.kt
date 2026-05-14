@@ -129,19 +129,21 @@ object FSContactSets {
     // ------------------------------------------------------------------
 
     fun hasPseudonym(ids: List<LLUUID>): Boolean {
-        TODO("CONTACTSETS: check per-account data for any pseudonym assigned to these avatars")
+        System.err.println("FSContactSets: hasPseudonym not yet implemented")
+        return false
     }
 
     fun hasDisplayNameRemoved(ids: List<LLUUID>): Boolean {
-        TODO("CONTACTSETS: check per-account data for display-name-removed flag on these avatars")
+        System.err.println("FSContactSets: hasDisplayNameRemoved not yet implemented")
+        return false
     }
 
     fun clearPseudonym(id: LLUUID) {
-        TODO("CONTACTSETS: remove any stored pseudonym for avatar $id")
+        System.err.println("FSContactSets: clearPseudonym not yet implemented")
     }
 
     fun removeDisplayName(id: LLUUID) {
-        TODO("CONTACTSETS: mark avatar $id as having their display name hidden")
+        System.err.println("FSContactSets: removeDisplayName not yet implemented")
     }
 
     // ------------------------------------------------------------------
@@ -149,7 +151,8 @@ object FSContactSets {
     // ------------------------------------------------------------------
 
     fun getSortByOnlineStatusForSet(setName: String): Boolean {
-        TODO("CONTACTSETS: read per-set sort-by-online-status preference")
+        System.err.println("FSContactSets: getSortByOnlineStatusForSet not yet implemented")
+        return false
     }
 
     // ------------------------------------------------------------------
@@ -158,19 +161,23 @@ object FSContactSets {
 
     companion object {
         fun handleAddContactSetCallback(notification: Map<String, Any>): Boolean {
-            TODO("CONTACTSETS: parse notification payload, call addSet with user-supplied name and default colour")
+            System.err.println("FSContactSets: handleAddContactSetCallback not yet implemented")
+            return false
         }
 
         fun handleRemoveContactSetCallback(notification: Map<String, Any>): Boolean {
-            TODO("CONTACTSETS: parse 'contact_set' from payload, call removeSet")
+            System.err.println("FSContactSets: handleRemoveContactSetCallback not yet implemented")
+            return false
         }
 
         fun handleRemoveAvatarFromSetCallback(notification: Map<String, Any>): Boolean {
-            TODO("CONTACTSETS: parse 'contact_set' and 'ids' from payload, call removeMember for each")
+            System.err.println("FSContactSets: handleRemoveAvatarFromSetCallback not yet implemented")
+            return false
         }
 
         fun handleSetAvatarPseudonymCallback(notification: Map<String, Any>): Boolean {
-            TODO("CONTACTSETS: parse id(s) and pseudonym text from payload, persist pseudonym")
+            System.err.println("FSContactSets: handleSetAvatarPseudonymCallback not yet implemented")
+            return false
         }
     }
 }
@@ -210,7 +217,8 @@ class FSPanelContactSets {
      * Mirrors FSPanelContactSets::postBuild().
      */
     fun postBuild(): Boolean {
-        TODO("PANEL: inflate UI, wire button actions and combo/list callbacks, call refreshContactSets()")
+        System.err.println("FSPanelContactSets: postBuild not yet implemented")
+        return false
     }
 
     // ------------------------------------------------------------------
@@ -230,7 +238,7 @@ class FSPanelContactSets {
      * Mirrors FSPanelContactSets::refreshContactSets().
      */
     fun refreshContactSets() {
-        TODO("PANEL: clear combo, add all set names, add separator, add special entries (all/no/pseudonym/extra)")
+        System.err.println("FSPanelContactSets: refreshContactSets not yet implemented")
     }
 
     /**
@@ -238,7 +246,7 @@ class FSPanelContactSets {
      * Mirrors FSPanelContactSets::refreshSetList().
      */
     fun refreshSetList() {
-        TODO("PANEL: call refreshNames on avatar list, then generateAvatarList with current combo value")
+        System.err.println("FSPanelContactSets: refreshSetList not yet implemented")
     }
 
     /**
@@ -250,15 +258,15 @@ class FSPanelContactSets {
     fun generateAvatarList(contactSet: String) {
         val avatarIds: List<LLUUID> = when (contactSet) {
             ContactSetNames.ALL_SETS  -> FSContactSets.getFriendsInAnySet()
-            ContactSetNames.NO_SETS   -> TODO("PANEL: collect all buddies not in any set")
-            ContactSetNames.PSEUDONYM -> TODO("PANEL: return getListOfPseudonymAvs()")
-            ContactSetNames.EXTRA_AVS -> TODO("PANEL: return getListOfNonFriends()")
+            ContactSetNames.NO_SETS   -> { System.err.println("FSPanelContactSets: generateAvatarList NO_SETS not yet implemented"); emptyList() }
+            ContactSetNames.PSEUDONYM -> { System.err.println("FSPanelContactSets: generateAvatarList PSEUDONYM not yet implemented"); emptyList() }
+            ContactSetNames.EXTRA_AVS -> { System.err.println("FSPanelContactSets: generateAvatarList EXTRA_AVS not yet implemented"); emptyList() }
             else -> {
                 val set = FSContactSets.sets.firstOrNull { it.name == contactSet }
                 set?.members?.toList() ?: emptyList()
             }
         }
-        TODO("PANEL: update avatar list widget with $avatarIds, update member count label, sort list")
+        System.err.println("FSPanelContactSets: generateAvatarList (update widget) not yet implemented")
     }
 
     // ------------------------------------------------------------------
@@ -270,7 +278,7 @@ class FSPanelContactSets {
      * Re-sorts the list when the current set uses online-status ordering.
      */
     fun onFriendStatusChanged(changedMask: UInt) {
-        TODO("PANEL: if ONLINE bit set and sort-by-online-status active, re-sort avatar list")
+        System.err.println("FSPanelContactSets: onFriendStatusChanged not yet implemented")
     }
 
     /**
@@ -296,7 +304,7 @@ class FSPanelContactSets {
      * Mirrors FSPanelContactSets::resetControls().
      */
     private fun resetControls() {
-        TODO("PANEL: compute mutableSet / hasSelection flags, enable/disable each button accordingly")
+        System.err.println("FSPanelContactSets: resetControls not yet implemented")
     }
 
     // ------------------------------------------------------------------
@@ -305,14 +313,14 @@ class FSPanelContactSets {
 
     private fun onSelectAvatar() {
         avatarSelections.clear()
-        TODO("PANEL: populate avatarSelections from avatar list selection, call resetControls()")
+        System.err.println("FSPanelContactSets: onSelectAvatar not yet implemented")
     }
 
     private fun onFilterEdit(searchString: String) {
         val upper = searchString.trimStart().uppercase()
         if (filterSubString == upper) return
         filterSubString = upper
-        TODO("PANEL: apply name filter to avatar list widget")
+        System.err.println("FSPanelContactSets: onFilterEdit not yet implemented")
     }
 
     /**
@@ -324,7 +332,8 @@ class FSPanelContactSets {
      * @return `true` if the drop is accepted.
      */
     fun handleAvatarDrop(avatarId: LLUUID, drop: Boolean): Boolean {
-        TODO("PANEL: reject if no combo or internal set name; if drop, add avatarId to current set")
+        System.err.println("FSPanelContactSets: handleAvatarDrop not yet implemented")
+        return false
     }
 
     // ------------------------------------------------------------------
@@ -332,60 +341,60 @@ class FSPanelContactSets {
     // ------------------------------------------------------------------
 
     private fun onClickAddSet() {
-        TODO("PANEL: show AddNewContactSet notification, callback → FSContactSets.handleAddContactSetCallback")
+        System.err.println("FSPanelContactSets: onClickAddSet not yet implemented")
     }
 
     private fun onClickRemoveSet() {
-        TODO("PANEL: show RemoveContactSet notification with set name payload")
+        System.err.println("FSPanelContactSets: onClickRemoveSet not yet implemented")
     }
 
     private fun onClickConfigureSet() {
-        TODO("PANEL: open FSFloaterContactSetConfiguration for the current set name")
+        System.err.println("FSPanelContactSets: onClickConfigureSet not yet implemented")
     }
 
     private fun onClickAddAvatar() {
-        TODO("PANEL: show avatar picker, callback → handlePickerCallback with current set name")
+        System.err.println("FSPanelContactSets: onClickAddAvatar not yet implemented")
     }
 
     private fun handlePickerCallback(ids: List<LLUUID>, set: String) {
         if (ids.isEmpty()) return
-        TODO("PANEL: call FSContactSets / LGGContactSets addToSet(ids, set)")
+        System.err.println("FSPanelContactSets: handlePickerCallback not yet implemented")
     }
 
     private fun onClickRemoveAvatar() {
-        TODO("PANEL: show RemoveContactFromSet or RemoveContactsFromSet notification with selection payload")
+        System.err.println("FSPanelContactSets: onClickRemoveAvatar not yet implemented")
     }
 
     private fun onClickMoveAvatar() {
-        TODO("PANEL: call LLAvatarActions::moveToContactSet(avatarSelections, currentSet)")
+        System.err.println("FSPanelContactSets: onClickMoveAvatar not yet implemented")
     }
 
     private fun onClickOpenProfile() {
-        TODO("PANEL: call LLAvatarActions::showProfile for each id in avatarSelections")
+        System.err.println("FSPanelContactSets: onClickOpenProfile not yet implemented")
     }
 
     private fun onClickStartIM() {
         when (avatarSelections.size) {
-            1    -> TODO("PANEL: LLAvatarActions::startIM(avatarSelections[0])")
-            else -> TODO("PANEL: LLAvatarActions::startConference(avatarSelections)")
+            1    -> System.err.println("FSPanelContactSets: onClickStartIM (single) not yet implemented")
+            else -> System.err.println("FSPanelContactSets: onClickStartIM (conference) not yet implemented")
         }
     }
 
     private fun onClickOfferTeleport() {
-        TODO("PANEL: LLAvatarActions::offerTeleport(avatarSelections)")
+        System.err.println("FSPanelContactSets: onClickOfferTeleport not yet implemented")
     }
 
     private fun onClickSetPseudonym() {
         if (avatarSelections.isEmpty()) return
-        TODO("PANEL: show SetAvatarPseudonym(Multiple) notification with selection payload")
+        System.err.println("FSPanelContactSets: onClickSetPseudonym not yet implemented")
     }
 
     private fun onClickRemovePseudonym() {
-        TODO("PANEL: for each id in avatarSelections, if hasPseudonym, call FSContactSets.clearPseudonym")
+        System.err.println("FSPanelContactSets: onClickRemovePseudonym not yet implemented")
     }
 
     private fun onClickRemoveDisplayName() {
-        TODO("PANEL: for each id in avatarSelections, if !hasDisplayNameRemoved, call FSContactSets.removeDisplayName")
+        System.err.println("FSPanelContactSets: onClickRemoveDisplayName not yet implemented")
     }
 
     // ------------------------------------------------------------------
@@ -393,10 +402,11 @@ class FSPanelContactSets {
     // ------------------------------------------------------------------
 
     private fun updateAvatarListSorting() {
-        TODO("PANEL: if shouldSortByOnlineStatus use FSAvatarItemOnlineStatusComparator, else sortByName")
+        System.err.println("FSPanelContactSets: updateAvatarListSorting not yet implemented")
     }
 
     private fun shouldSortByOnlineStatus(): Boolean {
-        TODO("PANEL: return false for internal set names, else FSContactSets.getSortByOnlineStatusForSet(currentSet)")
+        System.err.println("FSPanelContactSets: shouldSortByOnlineStatus not yet implemented")
+        return false
     }
 }

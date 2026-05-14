@@ -20,6 +20,6 @@ open class FilterEditor(
     }
 
     open fun setTransparencyOverrideCallback(cb: TransparencyOverrideCallback) {
-        TODO("APR: use JVM equivalent for routing transparency override to inner search editor widget")
+        System.err.println("FilterEditor: setTransparencyOverrideCallback not yet implemented")
     }
 }

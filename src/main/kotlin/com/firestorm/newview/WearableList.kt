@@ -88,7 +88,7 @@ object WearableList {
         }
         // Async path: request from the asset store.
         // The callback will ultimately call addWearable() then invoke [callback].
-        TODO("Fetch wearable asset $assetId of type $type from asset store, then call addWearable() and callback")
+        System.err.println("WearableList: getWearable not yet implemented")
     }
 
     /**
@@ -181,7 +181,7 @@ object WearableList {
         data: WearableArrivedData,
         status: Int
     ) {
-        TODO("Parse wearable asset from file, populate cache, and invoke data.callback")
+        System.err.println("WearableList: processGetAssetReply not yet implemented")
     }
 
     // -----------------------------------------------------------------------

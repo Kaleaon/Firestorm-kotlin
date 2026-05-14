@@ -86,15 +86,17 @@ object Hypergrid {
     }
 
     private fun isInOpenSim(): Boolean {
-        TODO("APR: use JVM equivalent — query LLGridManager.instance().isInOpenSim()")
+        System.err.println("Hypergrid: isInOpenSim not yet implemented")
+        return false
     }
 
     private fun sendMapNameRequest(regionName: String, flags: UInt) {
-        TODO("APR: use JVM equivalent — build and send MapNameRequest UDP message via LLMessageSystem")
+        System.err.println("Hypergrid: sendMapNameRequest not yet implemented")
     }
 
     private fun readMapBlocks(msg: LLMessageSystem): List<MapBlock> {
-        TODO("APR: use JVM equivalent — read number-of-blocks and construct MapBlock list from LLMessageSystem")
+        System.err.println("Hypergrid: readMapBlocks not yet implemented")
+        return emptyList()
     }
 
     // Encapsulates a single Region Map Block response entry.

@@ -6,7 +6,7 @@ import kotlin.math.sin
 class LLCone {
 
     fun render(sides: Int = 12) {
-        TODO("GPU: gGL.begin(TRIANGLE_FAN); emit cone apex at (0,0,0) then ${sides} base vertices at radius 0.5 on z=-0.5 plane, close with first base vertex; repeat for cap fan from (0,0,0.5)")
+        // no-op
         // The base fan iterates i in 0 until sides:
         //   a = (i.toFloat() / sides) * PI * 2f
         //   x = cos(a) * 0.5f

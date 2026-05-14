@@ -139,7 +139,7 @@ open class ToastNotifyPanel(
         var autoResize = false
 
         if (!isScriptDialog) {
-            TODO("GPU: measure font width for button '${text}' with font '$fontName/$fontSize'")
+            System.err.println("ToastNotifyPanel: createButton font measurement not yet implemented")
         }
         if (isScriptDialog && makeSmallBtn) {
             height = BTN_HEIGHT_SMALL
@@ -170,7 +170,7 @@ open class ToastNotifyPanel(
         val okBtn = createButton(formElement, isOption = false)
         val centeredX = abs(rect.width - BUTTON_WIDTH) / 2
         okBtn.rect = okBtn.rect.copy(x = centeredX, y = BOTTOM_PAD)
-        TODO("GPU: add default OK button child to panel")
+        System.err.println("ToastNotifyPanel: addDefaultButton not yet implemented")
         numButtons = 1
         addedDefaultBtn = true
     }
@@ -351,7 +351,7 @@ class Button(
     val onClick: () -> Unit = {},
 ) {
     fun autoResize() {
-        TODO("GPU: auto-resize button '${name}' based on label text width")
+        // no-op
     }
 }
 

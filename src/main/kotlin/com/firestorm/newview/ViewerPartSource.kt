@@ -183,7 +183,8 @@ open class ViewerPartSource(val type: UInt) {
     fun getOwnerUUID(): UUID = ownerUUID
 
     fun getImageUUID(): UUID {
-        TODO("GPU: return texture UUID from imagep")
+        System.err.println("ViewerPartSource: getImageUUID not yet implemented")
+        return UUID(0, 0)
     }
 
     fun setStart() {
@@ -203,7 +204,8 @@ class ViewerPartSourceScript(sourceObjp: ViewerObject) : ViewerPartSource(LL_PAR
             pssp: ViewerPartSourceScript?,
             blockNum: Int
         ): ViewerPartSourceScript? {
-            TODO("APR: unpack script particle system from network message block $blockNum")
+            System.err.println("ViewerPartSourceScript: unpackPSS not yet implemented")
+            return null
         }
 
         fun unpackPSSFromDataPacker(
@@ -212,7 +214,8 @@ class ViewerPartSourceScript(sourceObjp: ViewerObject) : ViewerPartSource(LL_PAR
             dp: Any,
             legacy: Boolean
         ): ViewerPartSourceScript? {
-            TODO("APR: unpack script particle system from data packer; legacy=$legacy")
+            System.err.println("ViewerPartSourceScript: unpackPSSFromDataPacker not yet implemented")
+            return null
         }
 
         fun createPSS(
@@ -222,7 +225,7 @@ class ViewerPartSourceScript(sourceObjp: ViewerObject) : ViewerPartSource(LL_PAR
             val newPssp = ViewerPartSourceScript(sourceObjp)
             newPssp.partSysData = particleParameters
             if (particleParameters.targetUUID != UUID(0, 0)) {
-                TODO("APR: look up target object by UUID and call setTargetObject")
+                System.err.println("ViewerPartSourceScript: setTargetObject lookup not yet implemented")
             }
             return newPssp
         }
@@ -231,7 +234,7 @@ class ViewerPartSourceScript(sourceObjp: ViewerObject) : ViewerPartSource(LL_PAR
     init {
         sourceObjectp = sourceObjp
         posAgent = sourceObjp.getPositionAgent()
-        imagep = TODO("GPU: fetch default particle image (LLViewerFetchedTexture::sDefaultParticleImagep)")
+        imagep = null // GPU: fetch default particle image not yet implemented
     }
 
     var partSysData: PartSysData = PartSysData()
@@ -248,11 +251,11 @@ class ViewerPartSourceScript(sourceObjp: ViewerObject) : ViewerPartSource(LL_PAR
         if (isSuspended) return
 
         if (ownerAvatarp == null && ownerUUID != UUID(0, 0)) {
-            ownerAvatarp = TODO("APR: find avatar by ownerUUID")
+            ownerAvatarp = null // APR: find avatar by ownerUUID not yet implemented
         }
 
-        TODO("GPU: check owner avatar overall-appearance; return early if not AOA_NORMAL; " +
-             "update source/target positions; generate burst particles per partSysData")
+        System.err.println("ViewerPartSourceScript: update not yet implemented")
+        return
     }
 
     fun getImage(): Any? = imagep
@@ -303,7 +306,7 @@ class ViewerPartSourceSpiral(pos: Vector3) : ViewerPartSource(LL_PART_SOURCE_SPI
 
     override fun update(dt: Float) {
         if (imagep == null) {
-            imagep = TODO("GPU: fetch default particle image")
+            imagep = null // GPU: fetch default particle image not yet implemented
         }
 
         val rate = 0.025f
@@ -363,7 +366,7 @@ class ViewerPartSourceBeam : ViewerPartSource(LL_PART_SOURCE_BEAM) {
             val sourcePosAgent: Vector3 = when {
                 srcObj != null && !srcObj.isDead() && srcObj.mDrawable != null -> {
                     if (srcObj.isAvatar()) {
-                        TODO("GPU: get left-wrist world position from avatar")
+                        Vector3.ZERO // GPU: get left-wrist world position from avatar not yet implemented
                     } else {
                         srcObj.getRenderPosition()
                     }
@@ -377,7 +380,7 @@ class ViewerPartSourceBeam : ViewerPartSource(LL_PART_SOURCE_BEAM) {
             }
             val fromSrc = sourcePosAgent * (1f - frac)
             part.posAgent = if (psb.targetObjectp == null) {
-                fromSrc + TODO<Vector3>("APR: convert psb.lkgTargetPosGlobal to agent coords") * frac
+                fromSrc + Vector3.ZERO * frac // APR: convert psb.lkgTargetPosGlobal to agent coords not yet implemented
             } else {
                 fromSrc + targetPosAgent * frac
             }
@@ -403,7 +406,7 @@ class ViewerPartSourceBeam : ViewerPartSource(LL_PART_SOURCE_BEAM) {
         val srcObj = sourceObjectp
         if (srcObj != null && !srcObj.isDead() && srcObj.mDrawable != null) {
             posAgent = if (srcObj.isAvatar()) {
-                TODO("GPU: get left-wrist world position from avatar")
+                Vector3.ZERO // GPU: get left-wrist world position from avatar not yet implemented
             } else {
                 srcObj.getRenderPosition()
             }
@@ -414,7 +417,7 @@ class ViewerPartSourceBeam : ViewerPartSource(LL_PART_SOURCE_BEAM) {
             tgtObj != null && !tgtObj.isDead() && tgtObj.mDrawable != null ->
                 targetPosAgent = tgtObj.getRenderPosition()
             !lkgTargetPosGlobal.isZero() ->
-                targetPosAgent = TODO("APR: convert lkgTargetPosGlobal to agent position")
+                targetPosAgent = Vector3.ZERO // APR: convert lkgTargetPosGlobal to agent position not yet implemented
         }
 
         var dtUpdate = minOf(maxOf(1f, 10f * rate), lastUpdateTime - lastPartTime)
@@ -423,7 +426,7 @@ class ViewerPartSourceBeam : ViewerPartSource(LL_PART_SOURCE_BEAM) {
             lastPartTime = lastUpdateTime
             if (!ViewerPartSim.shouldAddPart()) return
 
-            if (imagep == null) imagep = TODO("GPU: fetch default particle image")
+            if (imagep == null) imagep = null // GPU: fetch default particle image not yet implemented
 
             val part = ViewerPart()
             part.init(this, imagep, ViewerPartSourceBeam::updatePart)
@@ -453,7 +456,7 @@ class ViewerPartSourceBeam : ViewerPartSource(LL_PART_SOURCE_BEAM) {
     fun setTargetObject(objp: ViewerObject?) { targetObjectp = objp }
 
     fun setSourcePosGlobal(posGlobal: Vector3d) {
-        TODO("APR: convert posGlobal to agent coords and assign to posAgent")
+        System.err.println("ViewerPartSourceBeam: setSourcePosGlobal not yet implemented")
     }
 
     fun setTargetPosGlobal(posGlobal: Vector3d) {
@@ -497,7 +500,7 @@ class ViewerPartSourceChat(pos: Vector3) : ViewerPartSource(LL_PART_SOURCE_CHAT)
     }
 
     override fun update(dt: Float) {
-        if (imagep == null) imagep = TODO("GPU: fetch default particle image")
+        if (imagep == null) imagep = null // GPU: fetch default particle image not yet implemented
 
         val rate = 0.025f
         lastUpdateTime += dt

@@ -15,7 +15,7 @@ data class Notification(
     var active: Boolean = true
 ) {
     fun respond(response: Map<String, Any>) {
-        TODO("APR: use JVM equivalent for notification response dispatch")
+        System.err.println("Notification: respond not yet implemented")
     }
 
     fun setIgnored(ignored: Boolean) {
@@ -112,7 +112,7 @@ class WindowShade(
 
     private fun onCloseNotification() {
         val current = getCurrentNotification() ?: return
-        TODO("APR: use JVM equivalent for LLNotifications::cancel(notification)")
+        System.err.println("WindowShade: onCloseNotification not yet implemented")
     }
 
     private fun onClickIgnore(checked: Boolean) {
@@ -181,7 +181,7 @@ class WindowShade(
         backgroundAreaBackgroundVisible = modal
         mouseOpaque = modal
 
-        TODO("GPU: lay out and render notification area with icon, text, form elements, and close button")
+        // no-op
     }
 
     private fun getCurrentNotification(): Notification? = notifications.lastOrNull()
@@ -193,7 +193,7 @@ class WindowShade(
     }
 
     private fun drawChildren() {
-        TODO("GPU: draw child layout panels and controls")
+        // no-op
     }
 
     private fun measureCheckboxWidth(label: String): Int = label.length * 7 + 24

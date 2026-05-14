@@ -205,7 +205,7 @@ class LLFloaterSpellCheckerImport(key: LLSD) : LLFloater(key) {
     }
 
     protected fun onBtnBrowse() {
-        TODO("APR: use JVM equivalent — show file picker for FFLOAD_DICTIONARY, single file, then call importSelectedDictionary")
+        System.err.println("LLFloaterSpellCheckerImport: onBtnBrowse not yet implemented")
     }
 
     protected fun importSelectedDictionary(filenames: List<String>) {
@@ -283,14 +283,16 @@ class LLFloaterSpellCheckerImport(key: LLSD) : LLFloater(key) {
     }
 
     private fun loadCustomDictMap(filename: String): LLSD {
-        TODO("APR: use JVM equivalent — read XML from file '$filename' and parse via LLSDSerialize.fromXMLDocument")
+        System.err.println("LLFloaterSpellCheckerImport: loadCustomDictMap not yet implemented")
+        return LLSD()
     }
 
     private fun saveCustomDictMap(filename: String, dictMap: LLSD) {
-        TODO("APR: use JVM equivalent — write XML to file '$filename' via LLSDSerialize.toPrettyXML")
+        System.err.println("LLFloaterSpellCheckerImport: saveCustomDictMap not yet implemented")
     }
 
     protected fun parseXcuFile(filePath: String): String {
-        TODO("APR: use JVM equivalent — parse XCU/XML via DOM, locate DICT_SPELL node, return .dic location path")
+        System.err.println("LLFloaterSpellCheckerImport: parseXcuFile not yet implemented")
+        return ""
     }
 }

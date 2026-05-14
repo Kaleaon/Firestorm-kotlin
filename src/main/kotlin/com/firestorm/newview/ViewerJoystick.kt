@@ -147,7 +147,8 @@ object ViewerJoystick {
      */
     fun init(autoEnable: Boolean = true): Boolean {
         driverState = DriverState.INITIALIZING
-        TODO("Call NDOF/platform joystick API; set driverState = INITIALIZED on success")
+        System.err.println("ViewerJoystick: init not yet implemented")
+        return false
     }
 
     /**
@@ -155,7 +156,8 @@ object ViewerJoystick {
      * Mirrors LLViewerJoystick::initDevice(LLSD&).
      */
     fun initDevice(guid: Any?): Boolean {
-        TODO("Look up device by guid and initialise it")
+        System.err.println("ViewerJoystick: initDevice not yet implemented")
+        return false
     }
 
     /**
@@ -164,7 +166,7 @@ object ViewerJoystick {
      */
     fun terminate() {
         driverState = DriverState.UNINITIALIZED
-        TODO("Release NDOF device handle; clear axes and buttons")
+        System.err.println("ViewerJoystick: terminate not yet implemented")
     }
 
     // -----------------------------------------------------------------------
@@ -177,7 +179,7 @@ object ViewerJoystick {
      */
     fun updateStatus() {
         if (!isJoystickInitialized) return
-        TODO("Read axes[] and buttons[] from NDOF device")
+        System.err.println("ViewerJoystick: updateStatus not yet implemented")
     }
 
     /**
@@ -185,7 +187,7 @@ object ViewerJoystick {
      * Mirrors LLViewerJoystick::scanJoystick().
      */
     fun scanJoystick() {
-        TODO("Enumerate connected NDOF/DirectInput devices")
+        System.err.println("ViewerJoystick: scanJoystick not yet implemented")
     }
 
     /**
@@ -197,7 +199,7 @@ object ViewerJoystick {
      */
     fun moveAvatar(dt: Float) {
         if (!isJoystickInitialized) return
-        TODO("Apply delta[AXIS_X/Y/Z/RX/RY/RZ] to agent slide/push/fly/pitch/yaw")
+        System.err.println("ViewerJoystick: moveAvatar not yet implemented")
     }
 
     /**
@@ -209,7 +211,7 @@ object ViewerJoystick {
      */
     fun moveFlycam(dt: Float) {
         if (!isJoystickInitialized) return
-        TODO("Apply delta to viewer camera position and orientation")
+        System.err.println("ViewerJoystick: moveFlycam not yet implemented")
     }
 
     /**
@@ -218,7 +220,7 @@ object ViewerJoystick {
      */
     fun moveObjects(reset: Boolean = false) {
         if (!isJoystickInitialized) return
-        TODO("Apply delta to selected-object positions via LLSelectMgr")
+        System.err.println("ViewerJoystick: moveObjects not yet implemented")
     }
 
     // -----------------------------------------------------------------------
@@ -250,12 +252,16 @@ object ViewerJoystick {
     }
 
     /** Number of physical axes the current device exposes. */
-    fun getNumOfJoystickAxes(): UInt =
-        TODO("Query NDOF device for actual axis count")
+    fun getNumOfJoystickAxes(): UInt {
+        System.err.println("ViewerJoystick: getNumOfJoystickAxes not yet implemented")
+        return 0u
+    }
 
     /** Number of physical buttons the current device exposes. */
-    fun getNumOfJoystickButtons(): UInt =
-        TODO("Query NDOF device for actual button count")
+    fun getNumOfJoystickButtons(): UInt {
+        System.err.println("ViewerJoystick: getNumOfJoystickButtons not yet implemented")
+        return 0u
+    }
 
     // -----------------------------------------------------------------------
     // SpaceNavigator helpers
@@ -266,7 +272,8 @@ object ViewerJoystick {
      * Mirrors LLViewerJoystick::isLikeSpaceNavigator().
      */
     fun isLikeSpaceNavigator(): Boolean {
-        TODO("Check device name / VID+PID against known SpaceNavigator identifiers")
+        System.err.println("ViewerJoystick: isLikeSpaceNavigator not yet implemented")
+        return false
     }
 
     /**
@@ -274,7 +281,7 @@ object ViewerJoystick {
      * Mirrors LLViewerJoystick::setSNDefaults().
      */
     fun setSNDefaults() {
-        TODO("Write SpaceNavigator defaults to gSavedSettings equivalents")
+        System.err.println("ViewerJoystick: setSNDefaults not yet implemented")
     }
 
     // -----------------------------------------------------------------------
@@ -287,7 +294,7 @@ object ViewerJoystick {
     fun getOverrideCamera(): Boolean = overrideCamera
     fun setOverrideCamera(value: Boolean) {
         overrideCamera = value
-        TODO("Toggle flycam mode in LLAgentCamera")
+        System.err.println("ViewerJoystick: setOverrideCamera not yet implemented")
     }
 
     /**
@@ -309,13 +316,17 @@ object ViewerJoystick {
 
     fun getDeviceUUID(): Any? = lastDeviceUUID
 
-    fun getDeviceUUIDString(): String =
-        TODO("Convert lastDeviceUUID to a human-readable string for settings storage")
+    fun getDeviceUUIDString(): String {
+        System.err.println("ViewerJoystick: getDeviceUUIDString not yet implemented")
+        return ""
+    }
 
-    fun getDescription(): String =
-        TODO("Return device name/description from the NDOF library")
+    fun getDescription(): String {
+        System.err.println("ViewerJoystick: getDescription not yet implemented")
+        return ""
+    }
 
     fun saveDeviceIdToSettings() {
-        TODO("Persist lastDeviceUUID to gSavedSettings")
+        System.err.println("ViewerJoystick: saveDeviceIdToSettings not yet implemented")
     }
 }

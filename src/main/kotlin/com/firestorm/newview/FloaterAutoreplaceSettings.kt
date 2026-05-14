@@ -186,11 +186,11 @@ class FloaterAutoreplaceSettings(key: Any) : Floater(key) {
     }
 
     private fun onImportList() {
-        TODO("APR: use JVM equivalent")
+        System.err.println("FloaterAutoreplaceSettings: onImportList not yet implemented")
     }
 
     private fun loadListFromFile(filenames: MutableList<String>) {
-        TODO("APR: use JVM equivalent")
+        System.err.println("FloaterAutoreplaceSettings: loadListFromFile not yet implemented")
     }
 
     private fun onNewList() {
@@ -294,11 +294,11 @@ class FloaterAutoreplaceSettings(key: Any) : Floater(key) {
 
     private fun onExportList() {
         val listName = listNames!!.getFirstSelected()?.getColumn(0)?.getValue() as? String ?: return
-        TODO("APR: use JVM equivalent")
+        System.err.println("FloaterAutoreplaceSettings: onExportList not yet implemented")
     }
 
     private fun saveListToFile(filenames: MutableList<String>, listName: String) {
-        TODO("APR: use JVM equivalent")
+        System.err.println("FloaterAutoreplaceSettings: saveListToFile not yet implemented")
     }
 
     private fun onAddEntry() {

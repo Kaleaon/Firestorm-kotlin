@@ -140,7 +140,7 @@ object InventoryModelBackgroundFetch {
         cat?.setFetching(ViewerInventoryCategory.FetchType.RECURSIVE)
         incrFetchFolderCount(1)
         expectedFolderIds.add(catId)
-        TODO("APR: use JVM equivalent - call AISAPI.FetchCategoryLinks then onAISFolderCallback")
+        System.err.println("InventoryModelBackgroundFetch: fetchFolderAndLinks not yet implemented")
         backgroundFetchActive = true
         folderFetchActive = true
         scheduleBackgroundIdle()
@@ -152,7 +152,7 @@ object InventoryModelBackgroundFetch {
         cat?.setFetching(ViewerInventoryCategory.FetchType.RECURSIVE)
         incrFetchFolderCount(1)
         expectedFolderIds.add(catId)
-        TODO("APR: use JVM equivalent - call AISAPI.FetchCOF then onAISFolderCallback")
+        System.err.println("InventoryModelBackgroundFetch: fetchCOF not yet implemented")
         backgroundFetchActive = true
         folderFetchActive = true
         scheduleBackgroundIdle()
@@ -325,13 +325,13 @@ object InventoryModelBackgroundFetch {
     // ── AIS bulk fetch ────────────────────────────────────────────────────────
 
     private fun bulkFetchViaAis() {
-        TODO("APR: use JVM equivalent - dispatch AIS fetch requests for queued folders and items")
+        System.err.println("InventoryModelBackgroundFetch: bulkFetchViaAis not yet implemented")
     }
 
     // ── Legacy HTTP bulk fetch ────────────────────────────────────────────────
 
     private fun bulkFetch() {
-        TODO("APR: use JVM equivalent - POST FetchInventoryDescendents2/FetchInventory2 batches via HTTP")
+        System.err.println("InventoryModelBackgroundFetch: bulkFetch not yet implemented")
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────────
@@ -344,11 +344,10 @@ object InventoryModelBackgroundFetch {
     }
 
     private fun scheduleBackgroundIdle() {
-        TODO("APR: use JVM equivalent - register backgroundFetch() with idle/coroutine loop")
+        System.err.println("InventoryModelBackgroundFetch: scheduleBackgroundIdle not yet implemented")
     }
 
     private fun isAISAvailable(): Boolean {
-        TODO("APR: use JVM equivalent - check AISAPI.isAvailable()")
         return false
     }
 }

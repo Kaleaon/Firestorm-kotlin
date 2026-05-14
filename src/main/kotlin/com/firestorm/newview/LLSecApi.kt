@@ -170,7 +170,7 @@ private val gHandlerMap: MutableMap<String, LLSecAPIHandler> = mutableMapOf()
 var gSecAPIHandler: LLSecAPIHandler? = null
 
 fun initializeSecHandler() {
-    TODO("APR: use JVM equivalent for OpenSSL init; register LLSecAPIBasicHandler")
+    System.err.println("LLSecApi: initializeSecHandler not yet implemented")
 }
 
 fun clearSecHandler() {

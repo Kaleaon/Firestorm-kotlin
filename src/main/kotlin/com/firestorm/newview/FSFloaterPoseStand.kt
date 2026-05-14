@@ -7,52 +7,52 @@ class FSFloaterPoseStand(key: Map<String, Any?>) {
     private var aoPaused: Boolean = false
 
     fun postBuild(): Boolean {
-        TODO("APR: use JVM equivalent: find child combo box 'pose_combo' and assign to comboPose")
+        System.err.println("FSFloaterPoseStand: use JVM equivalent: find child combo box 'pose_combo' and assign to comboPose not yet implemented")
         // Wire combo commit callback to onCommitCombo.
         loadPoses()
         return true
     }
 
     fun onOpen(key: Map<String, Any?>) {
-        TODO("APR: use JVM equivalent: check isAgentAvatarValid(); return if not")
-        TODO("APR: use JVM equivalent: check UseAO saved-per-account setting; if true, set to false and set aoPaused = true")
-        TODO("APR: use JVM equivalent: check FSPoseStandLock setting, avatar not sitting, and no RLV sit restriction; if all true call setLock(true)")
-        TODO("APR: use JVM equivalent: gAgent.stopCurrentAnimations(true)")
-        TODO("APR: use JVM equivalent: gAgent.setCustomAnim(true)")
-        TODO("APR: use JVM equivalent: release keyboard and mouse focus")
-        TODO("APR: use JVM equivalent: read FSPoseStandLastSelectedPose setting; if non-empty select that value in comboPose")
+        System.err.println("FSFloaterPoseStand: use JVM equivalent: check isAgentAvatarValid(); return if not not yet implemented")
+        System.err.println("FSFloaterPoseStand: use JVM equivalent: check UseAO saved-per-account setting; if true, set to false and set aoPaused = true not yet implemented")
+        System.err.println("FSFloaterPoseStand: use JVM equivalent: check FSPoseStandLock setting, avatar not sitting, and no RLV sit restriction; if all true call setLock(true) not yet implemented")
+        System.err.println("FSFloaterPoseStand: use JVM equivalent: gAgent.stopCurrentAnimations(true) not yet implemented")
+        System.err.println("FSFloaterPoseStand: use JVM equivalent: gAgent.setCustomAnim(true) not yet implemented")
+        System.err.println("FSFloaterPoseStand: use JVM equivalent: release keyboard and mouse focus not yet implemented")
+        System.err.println("FSFloaterPoseStand: use JVM equivalent: read FSPoseStandLastSelectedPose setting; if non-empty select that value in comboPose not yet implemented")
         onCommitCombo()
     }
 
     fun onClose(appQuitting: Boolean) {
-        TODO("APR: use JVM equivalent: check isAgentAvatarValid(); return if not")
+        System.err.println("FSFloaterPoseStand: use JVM equivalent: check isAgentAvatarValid(); return if not not yet implemented")
         if (poseStandLock) {
-            TODO("APR: use JVM equivalent: check gAgentAvatarp.isSitting(); if true, setLock(false) and gAgent.standUp()")
+            System.err.println("FSFloaterPoseStand: use JVM equivalent: check gAgentAvatarp.isSitting(); if true, setLock(false) and gAgent.standUp() not yet implemented")
         }
-        TODO("APR: use JVM equivalent: gAgent.setCustomAnim(false)")
-        TODO("APR: use JVM equivalent: FSPose.getInstance().stopPose()")
-        TODO("APR: use JVM equivalent: gAgent.stopCurrentAnimations(true)")
+        System.err.println("FSFloaterPoseStand: use JVM equivalent: gAgent.setCustomAnim(false) not yet implemented")
+        System.err.println("FSFloaterPoseStand: use JVM equivalent: FSPose.getInstance().stopPose() not yet implemented")
+        System.err.println("FSFloaterPoseStand: use JVM equivalent: gAgent.stopCurrentAnimations(true) not yet implemented")
         if (aoPaused) {
-            TODO("APR: use JVM equivalent: if UseAO setting is false, set it to true and set aoPaused = false")
+            System.err.println("FSFloaterPoseStand: use JVM equivalent: if UseAO setting is false, set it to true and set aoPaused = false not yet implemented")
         }
     }
 
     fun setLock(enabled: Boolean) {
         if (enabled) {
-            TODO("APR: use JVM equivalent: gAgent.sitDown()")
+            System.err.println("FSFloaterPoseStand: use JVM equivalent: gAgent.sitDown() not yet implemented")
         } else {
-            TODO("APR: use JVM equivalent: gAgent.standUp()")
+            System.err.println("FSFloaterPoseStand: use JVM equivalent: gAgent.standUp() not yet implemented")
         }
         poseStandLock = enabled
     }
 
     fun onCommitCombo() {
-        TODO("APR: use JVM equivalent: read selected value from comboPose")
-        TODO("APR: use JVM equivalent: save selected pose to FSPoseStandLastSelectedPose setting")
-        TODO("APR: use JVM equivalent: FSPose.getInstance().setPose(selectedPose)")
+        System.err.println("FSFloaterPoseStand: use JVM equivalent: read selected value from comboPose not yet implemented")
+        System.err.println("FSFloaterPoseStand: use JVM equivalent: save selected pose to FSPoseStandLastSelectedPose setting not yet implemented")
+        System.err.println("FSFloaterPoseStand: use JVM equivalent: FSPose.getInstance().setPose(selectedPose) not yet implemented")
     }
 
     private fun loadPoses() {
-        TODO("APR: use JVM equivalent: locate posestand.xml in app settings, parse LLSD, populate comboPose with animation UUID entries, then sortByName()")
+        System.err.println("FSFloaterPoseStand: use JVM equivalent: locate posestand.xml in app settings, parse LLSD, populate comboPose with animation UUID entries, then sortByName() not yet implemented")
     }
 }

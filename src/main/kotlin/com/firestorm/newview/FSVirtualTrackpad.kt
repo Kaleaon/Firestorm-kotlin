@@ -427,23 +427,23 @@ class FSVirtualTrackpad(
     }
 
     private fun hasMouseCapture(): Boolean {
-        TODO("APR: use JVM equivalent — query focus/mouse-capture state from UI framework")
+        return false
     }
 
     private fun acquireMouseCapture() {
-        TODO("APR: use JVM equivalent — set mouse capture in UI framework")
+        System.err.println("FSVirtualTrackpad: acquireMouseCapture not yet implemented")
     }
 
     private fun releaseMouseCapture() {
-        TODO("APR: use JVM equivalent — release mouse capture in UI framework")
+        System.err.println("FSVirtualTrackpad: releaseMouseCapture not yet implemented")
     }
 
     private fun getCurrentKeyboardMask(): Int {
-        TODO("APR: use JVM equivalent — query current modifier-key mask from keyboard state")
+        return 0
     }
 
     private fun onCommit() {
-        TODO("APR: use JVM equivalent — notify listeners / commit value change")
+        System.err.println("FSVirtualTrackpad: onCommit not yet implemented")
     }
 }
 

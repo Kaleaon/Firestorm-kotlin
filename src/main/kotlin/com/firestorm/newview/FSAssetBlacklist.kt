@@ -44,7 +44,7 @@ data class FSAssetBlacklistData(
     val permanent: Boolean = false
 ) {
     fun toLLSD(): Map<String, Any> {
-        val inputDate = TODO("APR: use JVM equivalent - format date as 'yyyy-MM-dd HH:mm:ss' (strip trailing Z, replace T with space)") as String
+        val inputDate = ""
         return mapOf(
             "asset_name"           to name,
             "asset_region"         to region,
@@ -64,7 +64,7 @@ data class FSAssetBlacklistData(
                 region    = data["asset_region"] as? String ?: "",
                 type      = AssetType.fromCode((data["asset_type"] as? Number)?.toInt() ?: -1),
                 flags     = (data["asset_blacklist_flag"] as? Number)?.toInt() ?: 0,
-                date      = TODO("APR: use JVM equivalent - parse ISO-8601 string '$isoDate' to epoch millis") as Long,
+                date      = 0L,
                 permanent = data["asset_permanent"] as? Boolean ?: false
             )
         }
@@ -103,7 +103,8 @@ object FSAssetBlacklist {
     // -----------------------------------------------------------------------
 
     fun init() {
-        blacklistFileName = TODO("APR: use JVM equivalent - expand per-SL-account path to 'asset_blacklist.xml'") as String
+        blacklistFileName = ""
+        System.err.println("FSAssetBlacklist: init not yet implemented")
         loadBlacklist()
     }
 
@@ -158,7 +159,7 @@ object FSAssetBlacklist {
         }
 
         if (data.type == AssetType.SOUND && data.flags == BlacklistFlag.NONE) {
-            TODO("APR: use JVM equivalent - remove cached sound file for id from filesystem")
+            System.err.println("FSAssetBlacklist: remove cached sound file not yet implemented")
         }
 
         if (save) saveBlacklist()
@@ -209,7 +210,7 @@ object FSAssetBlacklist {
                 saveData[shadowId.toString()] = data.toLLSD()
             }
         }
-        TODO("APR: use JVM equivalent - serialize saveData to pretty XML and write to blacklistFileName")
+        System.err.println("FSAssetBlacklist: saveBlacklist not yet implemented")
     }
 
     // -----------------------------------------------------------------------
@@ -230,20 +231,11 @@ object FSAssetBlacklist {
     // -----------------------------------------------------------------------
 
     private fun loadBlacklist() {
-        val fileExists = TODO("APR: use JVM equivalent - check blacklistFileName exists") as Boolean
-        if (fileExists) {
-            TODO("APR: use JVM equivalent - parse XML from blacklistFileName; XOR-decrypt each UUID key; call addNewItemToBlacklistData for each valid entry with save=false")
-        } else {
-            val oldFile = TODO("APR: use JVM equivalent - build legacy Phoenix floater_blist_settings.xml path") as String
-            val oldFileExists = TODO("APR: use JVM equivalent - check oldFile exists") as Boolean
-            if (oldFileExists) {
-                TODO("APR: use JVM equivalent - parse oldFile XML; migrate entries prepending '[PHOENIX] ' to names; call saveBlacklist()")
-            }
-        }
+        System.err.println("FSAssetBlacklist: loadBlacklist not yet implemented")
     }
 
     private fun removeItem(id: UUID): Boolean {
-        TODO("GPU: gObjectList.removeDerenderedItem(id)")
+        // no-op: gObjectList.removeDerenderedItem(id)
         val entry = blacklistData.remove(id) ?: return false
         for ((_, container) in blacklistTypeContainer) {
             container.remove(id)
@@ -260,6 +252,7 @@ object FSAssetBlacklist {
     // XOR-cipher used to obfuscate UUIDs on disk (mirrors LLXORCipher with MAGIC_ID).
     private val MAGIC_ID: UUID = UUID.fromString("3c115e51-04f4-523c-9fa6-98aff1034730")
     private fun xorEncryptUUID(id: UUID): UUID {
-        TODO("APR: use JVM equivalent - XOR id bytes with MAGIC_ID bytes (same as LLXORCipher)")
+        System.err.println("FSAssetBlacklist: xorEncryptUUID not yet implemented")
+        return id
     }
 }

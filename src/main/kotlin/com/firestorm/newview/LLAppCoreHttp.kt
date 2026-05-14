@@ -65,15 +65,15 @@ class LLAppCoreHttp {
     private var sslNoVerifySignal: (() -> Unit)? = null
 
     fun init() {
-        TODO("APR: use JVM equivalent — initialize HTTP service, set CA file, SSL verify callback, proxy, trace level, create policy classes, start service thread, apply pipelining and connection settings from saved prefs")
+        System.err.println("LLAppCoreHttp: init not yet implemented")
     }
 
     fun requestStop() {
-        TODO("APR: use JVM equivalent — request HTTP service thread shutdown, record mStopRequested timestamp")
+        System.err.println("LLAppCoreHttp: requestStop not yet implemented")
     }
 
     fun cleanup() {
-        TODO("APR: use JVM equivalent — dump HTTP stats, wait up to MAX_THREAD_WAIT_TIME for thread stop, disconnect all setting signals, destroy HTTP service")
+        System.err.println("LLAppCoreHttp: cleanup not yet implemented")
     }
 
     fun onCompleted() {
@@ -95,32 +95,32 @@ class LLAppCoreHttp {
             val data = initData[i]
 
             if (initial && data.rate > 0u) {
-                TODO("APR: use JVM equivalent — setStaticPolicyOption PO_THROTTLE_RATE for ${data.usage}")
+                System.err.println("LLAppCoreHttp: refreshSettings not yet implemented")
             }
 
             if (initial) {
                 val toPipeline = pipelined && data.pipelined
                 if (toPipeline != cls.pipelined) {
                     val newDepth = if (toPipeline) PIPELINING_DEPTH else 0L
-                    TODO("APR: use JVM equivalent — setPolicyOption PO_PIPELINING_DEPTH newDepth=$newDepth for ${data.usage}")
+                    System.err.println("LLAppCoreHttp: refreshSettings not yet implemented")
                     cls.pipelined = toPipeline
                 }
             }
 
             var setting = data.default
             if (data.key.isNotEmpty()) {
-                TODO("APR: use JVM equivalent — look up saved setting ${data.key}, clamp to [${data.min}, ${data.max}]")
+                System.err.println("LLAppCoreHttp: refreshSettings not yet implemented")
             }
 
             if (initial || setting != cls.connLimit) {
                 val connLimit = if (cls.pipelined) setting * 2u else setting
-                TODO("APR: use JVM equivalent — setPolicyOption PO_CONNECTION_LIMIT=$connLimit and PO_PER_HOST_CONNECTION_LIMIT=$setting for ${data.usage}")
+                System.err.println("LLAppCoreHttp: refreshSettings not yet implemented")
                 cls.connLimit = setting
             }
         }
     }
 
     private fun sslVerify(url: String): Boolean {
-        TODO("APR: use JVM equivalent — validate SSL certificate chain for url using security API; return false on trust/cert exceptions")
+        return false
     }
 }

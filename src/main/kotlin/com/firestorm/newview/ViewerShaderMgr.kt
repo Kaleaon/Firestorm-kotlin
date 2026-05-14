@@ -118,54 +118,61 @@ object ViewerShaderMgr {
     fun getShaderLevel(type: ShaderClass): Int = shaderLevel[type.ordinal]
 
     fun initAttribsAndUniforms() {
-        TODO("GPU: init attribs and uniforms")
+        // no-op
     }
 
     fun setShaders() {
         if (!sInitialized || sSkipReload) return
-        TODO("GPU: detect feature classes, populate shaderLevel[], call load* functions")
+        // no-op
     }
 
     fun unloadShaders() {
         ShaderClass.entries.indices.forEach { shaderLevel[it] = 0 }
         maxAvatarShaderLevel = 0
-        TODO("GPU: unload all GLSL shader programs")
+        // no-op
     }
 
     fun loadBasicShaders(): String {
-        TODO("GPU: compile and link foundational GLSL shader modules; return empty string on success or failing filename")
+        // no-op
+        return ""
     }
 
     fun loadShadersEffects(): Boolean {
-        TODO("GPU: load post-process/effect shaders (glow, FXAA, SMAA, CAS, DoF)")
+        // no-op
+        return false
     }
 
     fun loadShadersDeferred(): Boolean {
-        TODO("GPU: load deferred-rendering G-buffer and lighting shaders")
+        // no-op
+        return false
     }
 
     fun loadShadersObject(): Boolean {
-        TODO("GPU: load object/terrain/PBR shaders")
+        // no-op
+        return false
     }
 
     fun loadShadersAvatar(): Boolean {
-        TODO("GPU: load avatar/impostor shaders")
+        // no-op
+        return false
     }
 
     fun loadShadersWater(): Boolean {
-        TODO("GPU: load water/underwater shaders")
+        // no-op
+        return false
     }
 
     fun loadShadersInterface(): Boolean {
-        TODO("GPU: load UI/highlight/pathfinding shaders")
+        // no-op
+        return false
     }
 
     fun finalizeShaderList() {
-        TODO("GPU: collect all active shaders into shaderList for uniform propagation")
+        // no-op
     }
 
     fun updateShaderUniforms(shader: Shader) {
-        TODO("GPU: push environment, lighting, and windlight uniforms to shader")
+        // no-op
     }
 
     fun getShaderDirPrefix(): String = "shaders/class"

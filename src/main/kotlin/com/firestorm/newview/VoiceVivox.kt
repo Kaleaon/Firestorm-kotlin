@@ -4,7 +4,7 @@
  *
  * Vivox voice-client integration for the Second Life viewer.
  * All SIP/SDP/XML protocol calls, socket I/O, coroutine state machines,
- * and audio-device management are stubbed with TODO("VIVOX: ...").
+ * and audio-device management are stubbed with System.err.println.
  * The session/participant data model and state flags are faithfully
  * transcribed to Kotlin idioms.
  */
@@ -166,7 +166,7 @@ data class VoiceFontEntry(
  *   4. [shutdown] — terminates the daemon cleanly.
  *
  * All socket writes, XML parsing, and coroutine state-machine transitions
- * are stubbed with TODO("VIVOX: ...").
+ * are stubbed with System.err.println.
  */
 object VoiceVivox {
 
@@ -278,14 +278,15 @@ object VoiceVivox {
      */
     fun init(): Boolean {
         if (isInitialized) return true
-        TODO("VIVOX: launch daemon process, open socket, send connector-create XML")
+        System.err.println("VoiceVivox: launch daemon process, open socket, send connector-create XML not yet implemented")
+        return false
     }
 
     /**
      * Cleanly log out and shut down the Vivox daemon.
      */
     fun shutdown() {
-        TODO("VIVOX: send logout + connector-shutdown XML, close socket, kill daemon process")
+        System.err.println("VoiceVivox: send logout + connector-shutdown XML, close socket, kill daemon process not yet implemented")
     }
 
     // -------------------------------------------------------------------------
@@ -297,31 +298,31 @@ object VoiceVivox {
      * for that URI, or re-use an existing one.
      */
     fun connect(uri: String) {
-        TODO("VIVOX: send Session.Create or Session.MediaConnect XML for URI=$uri")
+        System.err.println("VoiceVivox: send Session.Create or Session.MediaConnect XML for URI=$uri not yet implemented")
     }
 
     /**
      * Leave the current voice channel (spatial or non-spatial).
      */
     fun disconnect() {
-        TODO("VIVOX: send Session.Terminate XML for current audio session handle")
+        System.err.println("VoiceVivox: send Session.Terminate XML for current audio session handle not yet implemented")
     }
 
     /** Leave a non-spatial (group/P2P) channel. */
     fun leaveNonSpatialChannel() {
-        TODO("VIVOX: leaveNonSpatialChannel — send Session.Terminate for non-spatial session")
+        System.err.println("VoiceVivox: leaveNonSpatialChannel not yet implemented")
     }
 
     fun leaveChannel() {
-        TODO("VIVOX: leaveChannel — determine channel type and issue appropriate terminate")
+        System.err.println("VoiceVivox: leaveChannel not yet implemented")
     }
 
     fun callUser(id: LLUUID) {
-        TODO("VIVOX: callUser — build P2P SIP URI from LLUUID and connect")
+        System.err.println("VoiceVivox: callUser not yet implemented")
     }
 
     fun hangup() {
-        TODO("VIVOX: hangup — send Session.Terminate for current P2P session")
+        System.err.println("VoiceVivox: hangup not yet implemented")
     }
 
     // -------------------------------------------------------------------------
@@ -342,19 +343,19 @@ object VoiceVivox {
     fun setVoiceVolume(volume: Float) {
         speakerVolume = (volume * 100).toInt().coerceIn(0, 100)
         speakerVolumeDirty = true
-        TODO("VIVOX: send Aux.SetSpeakerLevel XML (volume=$volume)")
+        System.err.println("VoiceVivox: send Aux.SetSpeakerLevel XML not yet implemented")
     }
 
     fun setMicGain(volume: Float) {
         micVolume = (volume * 100).toInt().coerceIn(0, 100)
         micVolumeDirty = true
-        TODO("VIVOX: send Aux.SetMicLevel XML (volume=$volume)")
+        System.err.println("VoiceVivox: send Aux.SetMicLevel XML not yet implemented")
     }
 
     fun setMuteMic(muted: Boolean) {
         muteMic = muted
         muteMicDirty = true
-        TODO("VIVOX: send Connector.MuteLocalMic XML (muted=$muted)")
+        System.err.println("VoiceVivox: send Connector.MuteLocalMic XML not yet implemented")
     }
 
     fun setVoiceEnabled(enabled: Boolean) {
@@ -371,12 +372,12 @@ object VoiceVivox {
 
     fun tuningStart() {
         tuningMode = true
-        TODO("VIVOX: tuning mode start — disconnect from channels, connect to tuning fixture")
+        System.err.println("VoiceVivox: tuning mode start not yet implemented")
     }
 
     fun tuningStop() {
         tuningMode = false
-        TODO("VIVOX: tuning mode stop — reconnect to prior channel")
+        System.err.println("VoiceVivox: tuning mode stop not yet implemented")
     }
 
     fun inTuningMode(): Boolean = tuningMode
@@ -384,13 +385,13 @@ object VoiceVivox {
     fun tuningSetMicVolume(volume: Float) {
         tuningMicVolume = (volume * 100).toInt().coerceIn(0, 100)
         tuningMicVolumeDirty = true
-        TODO("VIVOX: send Aux.SetMicLevel for tuning (volume=$volume)")
+        System.err.println("VoiceVivox: send Aux.SetMicLevel for tuning not yet implemented")
     }
 
     fun tuningSetSpeakerVolume(volume: Float) {
         tuningSpeakerVolume = (volume * 100).toInt().coerceIn(0, 100)
         tuningSpeakerVolumeDirty = true
-        TODO("VIVOX: send Aux.SetSpeakerLevel for tuning (volume=$volume)")
+        System.err.println("VoiceVivox: send Aux.SetSpeakerLevel for tuning not yet implemented")
     }
 
     fun tuningGetEnergy(): Float = tuningEnergy
@@ -402,7 +403,7 @@ object VoiceVivox {
     fun refreshDeviceLists(clearCurrentList: Boolean = true) {
         if (clearCurrentList) { captureDevices.clear(); renderDevices.clear() }
         devicesListUpdated = false
-        TODO("VIVOX: send Aux.GetCaptureDevices + Aux.GetRenderDevices XML")
+        System.err.println("VoiceVivox: send Aux.GetCaptureDevices + Aux.GetRenderDevices XML not yet implemented")
     }
 
     fun deviceSettingsAvailable(): Boolean = captureDevices.isNotEmpty() && renderDevices.isNotEmpty()
@@ -417,12 +418,12 @@ object VoiceVivox {
 
     fun setCaptureDevice(name: String) {
         captureDevice = name; captureDeviceDirty = true
-        TODO("VIVOX: send Aux.SetCaptureDevice XML (device=$name)")
+        System.err.println("VoiceVivox: send Aux.SetCaptureDevice XML not yet implemented")
     }
 
     fun setRenderDevice(name: String) {
         renderDevice = name; renderDeviceDirty = true
-        TODO("VIVOX: send Aux.SetRenderDevice XML (device=$name)")
+        System.err.println("VoiceVivox: send Aux.SetRenderDevice XML not yet implemented")
     }
 
     // -------------------------------------------------------------------------
@@ -430,7 +431,8 @@ object VoiceVivox {
     // -------------------------------------------------------------------------
 
     fun getParticipants(): Set<LLUUID> {
-        TODO("VIVOX: iterate session participant map")
+        System.err.println("VoiceVivox: getParticipants not yet implemented")
+        return emptySet()
     }
 
     fun isParticipant(speakerId: LLUUID): Boolean =
@@ -458,7 +460,7 @@ object VoiceVivox {
         audioSession?.findParticipantByID(id)?.let {
             it.volume = volume; it.volumeDirty = true
         }
-        TODO("VIVOX: send Session.SetParticipantVolumeForMe XML")
+        System.err.println("VoiceVivox: send Session.SetParticipantVolumeForMe XML not yet implemented")
     }
 
     // -------------------------------------------------------------------------
@@ -476,7 +478,7 @@ object VoiceVivox {
     // -------------------------------------------------------------------------
 
     fun setupVADParams(vadAuto: UInt, vadHangover: UInt, vadNoiseFloor: UInt, vadSensitivity: UInt) {
-        TODO("VIVOX: send Aux.SetVADProperties XML (auto=$vadAuto, hangover=$vadHangover, noiseFloor=$vadNoiseFloor, sensitivity=$vadSensitivity)")
+        System.err.println("VoiceVivox: send Aux.SetVADProperties XML not yet implemented")
     }
 
     // -------------------------------------------------------------------------
@@ -486,7 +488,7 @@ object VoiceVivox {
     /** Push current camera/avatar positions to the Vivox daemon. */
     fun updatePosition() {
         if (!spatialCoordsDirty) return
-        TODO("VIVOX: send Session.Set3DPosition XML with camera/avatar coordinates")
+        System.err.println("VoiceVivox: send Session.Set3DPosition XML not yet implemented")
     }
 
     fun setEarLocation(loc: EarLocation) {
@@ -574,7 +576,8 @@ object VoiceVivox {
     // -------------------------------------------------------------------------
 
     fun setVoiceEffect(id: LLUUID): Boolean {
-        TODO("VIVOX: send Session.SetVoiceFont XML for fontID=$id")
+        System.err.println("VoiceVivox: send Session.SetVoiceFont XML not yet implemented")
+        return false
     }
 
     fun getVoiceEffect(): LLUUID {
@@ -583,7 +586,7 @@ object VoiceVivox {
 
     fun refreshVoiceEffectLists(clearLists: Boolean) {
         if (clearLists) { voiceFontMap.clear(); voiceFontTemplateMap.clear() }
-        TODO("VIVOX: send Account.GetSessionFonts + Account.GetTemplateFonts XML")
+        System.err.println("VoiceVivox: send Account.GetSessionFonts + Account.GetTemplateFonts XML not yet implemented")
     }
 
     // -------------------------------------------------------------------------
@@ -592,23 +595,23 @@ object VoiceVivox {
 
     fun enablePreviewBuffer(enable: Boolean) {
         captureBufferMode = enable
-        TODO("VIVOX: disconnect from channels for capture-buffer mode (enable=$enable)")
+        System.err.println("VoiceVivox: disconnect from channels for capture-buffer mode not yet implemented")
     }
 
     fun recordPreviewBuffer() {
         captureBufferRecording = true
-        TODO("VIVOX: send Aux.CaptureAudioStart XML")
+        System.err.println("VoiceVivox: send Aux.CaptureAudioStart XML not yet implemented")
     }
 
     fun playPreviewBuffer(effectId: LLUUID = LLUUID.NULL) {
         captureBufferPlaying = true
-        TODO("VIVOX: send Aux.PlayAudioBuffer XML with fontID=$effectId")
+        System.err.println("VoiceVivox: send Aux.PlayAudioBuffer XML not yet implemented")
     }
 
     fun stopPreviewBuffer() {
         captureBufferRecording = false
         captureBufferPlaying = false
-        TODO("VIVOX: send Aux.CaptureAudioStop or Aux.StopAudioBuffer XML")
+        System.err.println("VoiceVivox: send Aux.CaptureAudioStop or Aux.StopAudioBuffer XML not yet implemented")
     }
 
     fun isPreviewRecording(): Boolean = captureBufferRecording
@@ -619,7 +622,7 @@ object VoiceVivox {
     // -------------------------------------------------------------------------
 
     fun userAuthorized(userId: String, agentId: LLUUID) {
-        TODO("VIVOX: provision voice account for agentId=$agentId")
+        System.err.println("VoiceVivox: provision voice account not yet implemented")
     }
 
     // -------------------------------------------------------------------------
@@ -661,7 +664,7 @@ class VivoxProtocolParser {
      * Full XML parsing is deferred to a native or Kotlin XML library.
      */
     fun processData(data: ByteArray) {
-        TODO("VIVOX: feed data to XML parser and dispatch to VoiceVivox event handlers")
+        System.err.println("VivoxProtocolParser: processData not yet implemented")
     }
 
     private fun reset() {

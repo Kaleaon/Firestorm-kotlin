@@ -8,12 +8,12 @@ var grabTransientTool: Tool? = null
 
 fun sendObjectGrabMessage(obj: ViewerObject, pick: PickInfo, grabOffset: Vector3) {
     if (obj.getRegion() == null) return
-    TODO("APR: use JVM equivalent — send ObjectGrab UDP message to region host")
+    System.err.println("ToolGrab: sendObjectGrabMessage not yet implemented")
 }
 
 fun sendObjectDeGrabMessage(obj: ViewerObject, pick: PickInfo) {
     if (obj.getRegion() == null) return
-    TODO("APR: use JVM equivalent — send ObjectDeGrab UDP message to region host")
+    System.err.println("ToolGrab: sendObjectDeGrabMessage not yet implemented")
 }
 
 private const val SLOP_DIST_SQ: Int = 4
@@ -300,7 +300,7 @@ open class ToolGrabBase(composite: ToolComposite? = null) : Tool("Grab", composi
     fun hasGrabOffset(): Boolean = true
 
     fun getGrabOffset(x: Int, y: Int): Vector3 {
-        TODO("GPU: compute grab offset from screen coords")
+        return Vector3.ZERO
     }
 
     fun setClickedInMouselook(value: Boolean) {
@@ -373,7 +373,7 @@ open class ToolGrabBase(composite: ToolComposite? = null) : Tool("Grab", composi
         spinGrabbing = true
         val root = obj.getRoot() as ViewerObject
         spinRotation = root.getRotation()
-        TODO("APR: use JVM equivalent — send ObjectSpinStart UDP message")
+        System.err.println("ToolGrab: startSpin not yet implemented")
     }
 
     private fun stopSpin() {
@@ -383,7 +383,7 @@ open class ToolGrabBase(composite: ToolComposite? = null) : Tool("Grab", composi
         when (mode) {
             GrabMode.ACTIVE_CENTER,
             GrabMode.NONPHYSICAL,
-            GrabMode.LOCKED -> TODO("APR: use JVM equivalent — send ObjectSpinStop UDP message")
+            GrabMode.LOCKED -> System.err.println("ToolGrab: stopSpin not yet implemented")
             else -> {}
         }
     }
@@ -428,7 +428,7 @@ open class ToolGrabBase(composite: ToolComposite? = null) : Tool("Grab", composi
                 val agentLeft = ViewerCamera.instance.getLeftAxis()
                 val rotAroundLeft = Quaternion.fromAxisAngle(agentLeft, dy * radiansPerPixelY)
                 spinRotation = spinRotation * rotAroundVertical * rotAroundLeft
-                TODO("APR: use JVM equivalent — send ObjectSpinUpdate UDP message with spinRotation")
+                System.err.println("ToolGrab: handleHoverActive spinUpdate not yet implemented")
             } else {
                 var xPart = Vector3d(ViewerCamera.instance.getLeftAxis())
                 xPart.z = 0.0
@@ -483,7 +483,7 @@ open class ToolGrabBase(composite: ToolComposite? = null) : Tool("Grab", composi
                     grabCenterGl.y > 24
                 ) {
                     val grabPosRegion = obj.getRegion()!!.getPosRegionFromGlobal(grabPointGlobal)
-                    TODO("APR: use JVM equivalent — send ObjectGrabUpdate UDP message")
+                    System.err.println("ToolGrab: handleHoverActive grabUpdate not yet implemented")
                 }
             }
 
@@ -566,7 +566,7 @@ open class ToolGrabBase(composite: ToolComposite? = null) : Tool("Grab", composi
                 grabPosRegion != lastGrabPos
 
         if (changed) {
-            TODO("APR: use JVM equivalent — send ObjectGrabUpdate UDP message")
+            System.err.println("ToolGrab: handleHoverNonPhysical grabUpdate not yet implemented")
             lastUVCoords = pick.uvCoords
             lastSTCoords = pick.stCoords
             lastFace = pick.objectFace

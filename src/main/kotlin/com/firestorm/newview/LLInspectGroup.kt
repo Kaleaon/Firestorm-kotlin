@@ -4,7 +4,7 @@ import java.util.UUID
 
 object LLInspectGroupUtil {
     fun registerFloater() {
-        TODO("APR: use JVM equivalent of LLFloaterReg::add(\"inspect_group\", \"inspect_group.xml\", builder)")
+        System.err.println("LLInspectGroupUtil: registerFloater not yet implemented")
     }
 }
 
@@ -27,21 +27,21 @@ class LLInspectGroup(key: Any?) : LLInspect(key), LLGroupMgrObserver {
     }
 
     fun onClose(appQuitting: Boolean) {
-        TODO("APR: use JVM equivalent of LLGroupMgr::removeObserver(this)")
+        System.err.println("LLInspectGroup: onClose not yet implemented")
     }
 
     fun setGroupID(groupId: UUID) {
-        TODO("APR: remove old observer, set mGroupID = groupId, add new observer via LLGroupMgr")
+        System.err.println("LLInspectGroup: setGroupID not yet implemented")
     }
 
     fun requestUpdate() {
         if (mGroupID == UUID(0L, 0L)) {
-            TODO("APR: check startup state; close floater if fully started with null group ID")
+            System.err.println("LLInspectGroup: requestUpdate startup check not yet implemented")
         }
 
         clearGroupFields()
 
-        TODO("APR: use JVM equivalent of LLGroupMgr::getGroupData / sendGroupPropertiesRequest, then gCacheName->getGroup for fast name lookup")
+        System.err.println("LLInspectGroup: requestUpdate group data fetch not yet implemented")
     }
 
     private fun clearGroupFields() {
@@ -67,38 +67,39 @@ class LLInspectGroup(key: Any?) : LLInspect(key), LLGroupMgrObserver {
     }
 
     fun processGroupData() {
-        TODO("APR: use JVM equivalent of LLGroupMgr::getGroupData to fill subtitle, details, icon, cost, join/leave buttons")
+        System.err.println("LLInspectGroup: processGroupData not yet implemented")
     }
 
     fun onClickViewProfile() {
         closeFloater(false)
-        TODO("APR: use JVM equivalent of LLGroupActions::show(mGroupID)")
+        System.err.println("LLInspectGroup: onClickViewProfile not yet implemented")
     }
 
     fun onClickJoin() {
         closeFloater(false)
-        TODO("APR: use JVM equivalent of LLGroupActions::join(mGroupID)")
+        System.err.println("LLInspectGroup: onClickJoin not yet implemented")
     }
 
     fun onClickLeave() {
         closeFloater(false)
-        TODO("APR: use JVM equivalent of LLGroupActions::leave(mGroupID)")
+        System.err.println("LLInspectGroup: onClickLeave not yet implemented")
     }
 
     private fun extractGroupId(data: Any?): UUID {
-        TODO("APR: use JVM equivalent of LLSD data[\"group_id\"].asUUID()")
+        System.err.println("LLInspectGroup: extractGroupId not yet implemented")
+        return UUID(0L, 0L)
     }
 
     private fun setChildValue(childName: String, value: Any) {
-        TODO("APR: use JVM equivalent of getChild<LLUICtrl>(childName)->setValue(value)")
+        System.err.println("LLInspectGroup: setChildValue not yet implemented")
     }
 
     private fun setChildVisible(childName: String, visible: Boolean) {
-        TODO("APR: use JVM equivalent of getChild<LLUICtrl>(childName)->setVisible(visible)")
+        System.err.println("LLInspectGroup: setChildVisible not yet implemented")
     }
 
     private fun registerCommitCallback(name: String, callback: () -> Unit) {
-        TODO("APR: use JVM equivalent of mCommitCallbackRegistrar.add(name, callback)")
+        System.err.println("LLInspectGroup: registerCommitCallback not yet implemented")
     }
 }
 

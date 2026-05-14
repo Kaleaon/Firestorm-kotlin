@@ -116,21 +116,21 @@ abstract class PersistentNotificationChannel : NotificationChannel("Persistent",
     abstract fun size(): Int
 }
 
-fun ScreenChannel.hideToast(id: UUID) { TODO("GPU: hide specific toast in screen channel") }
+fun ScreenChannel.hideToast(id: UUID) { // no-op }
 
 // Stub objects referenced from PersistentNotificationStorage.
 object GridManager {
-    fun grid(): String = TODO("APR: get current grid identifier string")
+    fun grid(): String = ""
 }
 
 object dirUtils {
-    fun expandedFilename(path: PathType, name: String): String = TODO("APR: expand platform path for given path type and filename")
+    fun expandedFilename(path: PathType, name: String): String = ""
 }
 
 enum class PathType { PER_SL_ACCOUNT }
 
 object savedSettings {
-    fun getInt(key: String): Int = TODO("APR: read integer setting by key")
+    fun getInt(key: String): Int = 0
 }
 
-fun scrubbedFileName(name: String): String = TODO("APR: strip illegal filesystem characters from filename")
+fun scrubbedFileName(name: String): String = ""

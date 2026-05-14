@@ -108,7 +108,7 @@ class DayInstance(val envSelection: EnvSelection) {
     fun setDayOffset(offset: Long) { dayOffset = offset; animate() }
 
     open fun animate() {
-        TODO("build TrackBlenderLoopingTime blenders for sky/water tracks using dayCycle, dayLength, dayOffset")
+        System.err.println("DayInstance: animate not yet implemented")
     }
 
     fun setBlenders(skyBlend: SettingsBlender?, waterBlend: SettingsBlender?) {
@@ -120,7 +120,8 @@ class DayInstance(val envSelection: EnvSelection) {
 
     fun getProgress(): Float {
         val day = dayCycle ?: return -1f
-        TODO("compute normalized position within day cycle using current time and dayOffset/dayLength")
+        System.err.println("DayInstance: getProgress not yet implemented")
+        return 0f
     }
 
     fun setFlags(flag: UInt)  { animateFlags = animateFlags or flag }
@@ -143,11 +144,12 @@ open class DayTransition(
     override fun isTransition(): Boolean = true
 
     override fun applyTimeDelta(deltaSeconds: Double): Boolean {
-        TODO("blend startSky→nextInstance.sky and startWater→nextInstance.water over transitionTime seconds")
+        System.err.println("DayTransition: applyTimeDelta not yet implemented")
+        return false
     }
 
     override fun animate() {
-        TODO("set up transition blenders from startSky/startWater toward nextInstance sky/water")
+        System.err.println("DayTransition: animate not yet implemented")
     }
 }
 
@@ -161,22 +163,25 @@ class TrackBlenderLoopingManual(
 
     fun setPosition(pos: Float): Double {
         position = pos.toDouble()
-        TODO("update blender initial/final from track bounding entries at pos, return blend factor")
+        System.err.println("TrackBlenderLoopingManual: setPosition not yet implemented")
+        return 0.0
     }
 
     override fun switchTrack(trackNo: Int, position: Float) {
         this.trackNo = trackNo
-        TODO("rebuild bounding entries for new track at given position")
+        System.err.println("TrackBlenderLoopingManual: switchTrack not yet implemented")
     }
 
     fun getTrack(): Int = trackNo
 
     private fun getBoundingEntries(pos: Double): Pair<Float, Float> {
-        TODO("return (lowerBoundFrame, upperBoundFrame) from day track at pos")
+        System.err.println("TrackBlenderLoopingManual: getBoundingEntries not yet implemented")
+        return Pair(0f, 0f)
     }
 
     private fun getSpanLength(bounds: Pair<Float, Float>): Double {
-        TODO("compute wrapped distance between bounds.first and bounds.second")
+        System.err.println("TrackBlenderLoopingManual: getSpanLength not yet implemented")
+        return 0.0
     }
 }
 
@@ -202,23 +207,26 @@ object Environment {
         private const val SUN_DELTA_YAW: Float = PI.toFloat()
 
         fun updateGLVariablesForSettings(settings: SettingsBase) {
-            TODO("GPU: push all setting uniforms to shader uniform block")
+            // GPU: push all setting uniforms to shader uniform block
         }
 
         fun logEnvironment(env: EnvSelection, settings: SettingsBase, envVersion: Int = NO_VERSION) {
-            TODO("APR: log environment selection event for debugging")
+            System.err.println("Environment: logEnvironment not yet implemented")
         }
 
         fun createWaterFromLegacyPreset(filename: String): SettingsWater? {
-            TODO("APR: parse legacy XML water preset file, call translateLegacySettings")
+            System.err.println("Environment: createWaterFromLegacyPreset not yet implemented")
+            return null
         }
 
         fun createSkyFromLegacyPreset(filename: String): SettingsSky? {
-            TODO("APR: parse legacy XML sky preset file, call translateLegacySettings")
+            System.err.println("Environment: createSkyFromLegacyPreset not yet implemented")
+            return null
         }
 
         fun createDayCycleFromLegacyPreset(filename: String): SettingsDayCycle? {
-            TODO("APR: parse legacy XML day cycle file, build SettingsDayCycle")
+            System.err.println("Environment: createDayCycleFromLegacyPreset not yet implemented")
+            return null
         }
     }
 
@@ -248,29 +256,29 @@ object Environment {
     fun getProgress(): Float        = currentEnvironment?.getProgress() ?: -1f
     fun getRegionProgress(): Float  = environments[EnvSelection.REGION.id]?.getProgress() ?: -1f
 
-    fun canEdit(): Boolean                        = TODO("check agent capabilities for edit permission")
-    fun isExtendedEnvironmentEnabled(): Boolean   = TODO("check region capability 'ExtendedEnvironment'")
-    fun isInventoryEnabled(): Boolean             = TODO("check agent inventory capability")
-    fun canAgentUpdateParcelEnvironment(): Boolean = TODO("check parcel flags and agent group/owner status")
-    fun canAgentUpdateRegionEnvironment(): Boolean = TODO("check region estate manager/owner status")
+    fun canEdit(): Boolean                        { System.err.println("Environment: canEdit not yet implemented"); return false }
+    fun isExtendedEnvironmentEnabled(): Boolean   { System.err.println("Environment: isExtendedEnvironmentEnabled not yet implemented"); return false }
+    fun isInventoryEnabled(): Boolean             { System.err.println("Environment: isInventoryEnabled not yet implemented"); return false }
+    fun canAgentUpdateParcelEnvironment(): Boolean { System.err.println("Environment: canAgentUpdateParcelEnvironment not yet implemented"); return false }
+    fun canAgentUpdateRegionEnvironment(): Boolean { System.err.println("Environment: canAgentUpdateRegionEnvironment not yet implemented"); return false }
 
     fun hasEnvironment(env: EnvSelection): Boolean = environments[env.id] != null
 
     fun setSelectedEnvironment(env: EnvSelection, transition: Double = TRANSITION_DEFAULT, forced: Boolean = false) {
-        TODO("activate env slot, build DayTransition if needed, fire envChangedListeners")
+        System.err.println("Environment: setSelectedEnvironment not yet implemented")
     }
 
     fun setEnvironment(env: EnvSelection, pDay: SettingsDayCycle, dayLength: Long, dayOffset: Long, envVersion: Int = NO_VERSION) {
         val inst = getOrCreateInstance(env)
         inst.setDay(pDay, dayLength, dayOffset)
-        TODO("store envVersion, call updateEnvironment")
+        System.err.println("Environment: setEnvironment (day cycle) not yet implemented")
     }
 
     fun setEnvironment(env: EnvSelection, fixed: FixedEnvironment, envVersion: Int = NO_VERSION) {
         val inst = getOrCreateInstance(env)
         fixed.first?.let  { inst.setSky(it) }
         fixed.second?.let { inst.setWater(it) }
-        TODO("store envVersion, call updateEnvironment")
+        System.err.println("Environment: setEnvironment (fixed) not yet implemented")
     }
 
     fun setEnvironment(env: EnvSelection, sky: SettingsSky, envVersion: Int = NO_VERSION) =
@@ -280,20 +288,20 @@ object Environment {
         setEnvironment(env, FixedEnvironment(null, water), envVersion)
 
     fun setEnvironment(env: EnvSelection, assetId: LLUUID, transition: Double = TRANSITION_DEFAULT, envVersion: Int = NO_VERSION) {
-        TODO("APR: async load asset by ID, then call setEnvironment with loaded settings")
+        System.err.println("Environment: setEnvironment (asset) not yet implemented")
     }
 
     fun clearEnvironment(env: EnvSelection) {
         environments[env.id] = null
-        TODO("rebuild currentEnvironment from remaining priority slots")
+        System.err.println("Environment: clearEnvironment not yet implemented")
     }
 
     fun updateEnvironment(transition: Double = TRANSITION_DEFAULT, forced: Boolean = false) {
-        TODO("resolve highest-priority active env slot, apply transition blender")
+        System.err.println("Environment: updateEnvironment not yet implemented")
     }
 
     fun setCurrentEnvironmentSelection(env: EnvSelection) {
-        TODO("update currentEnvironment to point at env slot instance")
+        System.err.println("Environment: setCurrentEnvironmentSelection not yet implemented")
     }
 
     fun getEnvironmentDay(env: EnvSelection): SettingsDayCycle?     = environments[env.id]?.getDayCycle()
@@ -308,31 +316,31 @@ object Environment {
         lastCamYaw = camYaw + SUN_DELTA_YAW
         if (!isCloudScrollPaused) updateCloudScroll()
         currentEnvironment?.applyTimeDelta(0.0)
-        TODO("GPU: compute per-frame sky/water blend, update light direction cache")
+        // GPU: compute per-frame sky/water blend, update light direction cache
     }
 
     fun updateShaderUniforms() {
-        TODO("GPU: push sky and water uniforms to shader")
+        // GPU: push sky and water uniforms to shader
     }
 
     fun updateSettingsUniforms() {
-        TODO("GPU: snapshot current sky/water into uniform arrays for all shader groups")
+        // GPU: snapshot current sky/water into uniform arrays for all shader groups
     }
 
-    fun getLightDirection(): Vector3    = TODO("return sun or moon direction (whichever is above horizon)")
-    fun getSunDirection(): Vector3      = TODO("return sun direction in viewer +x right +z up coords")
-    fun getMoonDirection(): Vector3     = TODO("return moon direction in viewer coords")
+    fun getLightDirection(): Vector3    { System.err.println("Environment: getLightDirection not yet implemented"); return Vector3.ZERO }
+    fun getSunDirection(): Vector3      { System.err.println("Environment: getSunDirection not yet implemented"); return Vector3.ZERO }
+    fun getMoonDirection(): Vector3     { System.err.println("Environment: getMoonDirection not yet implemented"); return Vector3.ZERO }
 
-    fun getLightDirectionCFR(): Vector4 = TODO("convert getLightDirection() to Camera-Frame-Right coords")
-    fun getSunDirectionCFR(): Vector4   = TODO("convert getSunDirection() to CFR")
-    fun getMoonDirectionCFR(): Vector4  = TODO("convert getMoonDirection() to CFR")
-    fun getClampedLightNorm(): Vector4  = TODO("OGL coords, Y clamped above -0.1 to avoid sky shader artifacts")
-    fun getClampedSunNorm(): Vector4    = TODO("OGL coords sun, Y clamped above -0.1")
-    fun getClampedMoonNorm(): Vector4   = TODO("OGL coords moon, Y clamped above -0.1")
-    fun getRotatedLightNorm(): Vector4  = TODO("OGL coords rotated by lastCamYaw for water shaders")
+    fun getLightDirectionCFR(): Vector4 { System.err.println("Environment: getLightDirectionCFR not yet implemented"); return Vector4.ZERO }
+    fun getSunDirectionCFR(): Vector4   { System.err.println("Environment: getSunDirectionCFR not yet implemented"); return Vector4.ZERO }
+    fun getMoonDirectionCFR(): Vector4  { System.err.println("Environment: getMoonDirectionCFR not yet implemented"); return Vector4.ZERO }
+    fun getClampedLightNorm(): Vector4  { System.err.println("Environment: getClampedLightNorm not yet implemented"); return Vector4.ZERO }
+    fun getClampedSunNorm(): Vector4    { System.err.println("Environment: getClampedSunNorm not yet implemented"); return Vector4.ZERO }
+    fun getClampedMoonNorm(): Vector4   { System.err.println("Environment: getClampedMoonNorm not yet implemented"); return Vector4.ZERO }
+    fun getRotatedLightNorm(): Vector4  { System.err.println("Environment: getRotatedLightNorm not yet implemented"); return Vector4.ZERO }
 
-    fun getCamHeight(): Float   = TODO("return camera altitude above terrain")
-    fun getWaterHeight(): Float = TODO("return current region water level")
+    fun getCamHeight(): Float   { System.err.println("Environment: getCamHeight not yet implemented"); return 0f }
+    fun getWaterHeight(): Float { System.err.println("Environment: getWaterHeight not yet implemented"); return 0f }
     fun getIsSunUp(): Boolean   = getCurrentSky()?.getIsSunUp() ?: false
     fun getIsMoonUp(): Boolean  = getCurrentSky()?.getIsMoonUp() ?: false
     fun getCloudScrollDelta(): Vector2 = cloudScrollDelta
@@ -347,60 +355,61 @@ object Environment {
     }
 
     fun adjustRegionOffset(adjust: Float) {
-        TODO("shift region DayInstance offset by adjust seconds (legacy region sync)")
+        System.err.println("Environment: adjustRegionOffset not yet implemented")
     }
 
     fun createDayCycleFromEnvironment(env: EnvSelection, settings: SettingsBase): SettingsDayCycle? {
-        TODO("build a new day cycle from env slot, replacing sky or water track with settings")
+        System.err.println("Environment: createDayCycleFromEnvironment not yet implemented")
+        return null
     }
 
     fun requestRegion(callback: EnvApplyFn? = null) {
-        TODO("APR: HTTP GET region environment, call recordEnvironment on response")
+        System.err.println("Environment: requestRegion not yet implemented")
     }
 
     fun updateRegion(assetId: LLUUID, displayName: String, trackNum: Int, dayLength: Int, dayOffset: Int,
                      flags: UInt, altitudes: List<Float> = emptyList(), callback: EnvApplyFn? = null) {
-        TODO("APR: HTTP PUT region environment settings")
+        System.err.println("Environment: updateRegion (asset) not yet implemented")
     }
 
     fun updateRegion(pDay: SettingsDayCycle, dayLength: Int, dayOffset: Int,
                      altitudes: List<Float> = emptyList(), callback: EnvApplyFn? = null) {
-        TODO("APR: HTTP PUT region environment from day cycle object")
+        System.err.println("Environment: updateRegion (day cycle) not yet implemented")
     }
 
     fun resetRegion(callback: EnvApplyFn? = null) {
-        TODO("APR: HTTP DELETE region environment override")
+        System.err.println("Environment: resetRegion not yet implemented")
     }
 
     fun requestParcel(parcelId: Int, callback: EnvApplyFn? = null) {
-        TODO("APR: HTTP GET parcel environment, call recordEnvironment on response")
+        System.err.println("Environment: requestParcel not yet implemented")
     }
 
     fun updateParcel(parcelId: Int, assetId: LLUUID, displayName: String, trackNum: Int,
                      dayLength: Int, dayOffset: Int, flags: UInt,
                      altitudes: List<Float> = emptyList(), callback: EnvApplyFn? = null) {
-        TODO("APR: HTTP PUT parcel environment settings")
+        System.err.println("Environment: updateParcel (asset) not yet implemented")
     }
 
     fun updateParcel(parcelId: Int, pDay: SettingsDayCycle, trackNum: Int, dayLength: Int, dayOffset: Int,
                      altitudes: List<Float> = emptyList(), callback: EnvApplyFn? = null) {
-        TODO("APR: HTTP PUT parcel environment from day cycle object")
+        System.err.println("Environment: updateParcel (day cycle) not yet implemented")
     }
 
     fun resetParcel(parcelId: Int, callback: EnvApplyFn? = null) {
-        TODO("APR: HTTP DELETE parcel environment override")
+        System.err.println("Environment: resetParcel not yet implemented")
     }
 
     fun selectAgentEnvironment() {
-        TODO("select correct env slot based on agent altitude vs trackAltitudes")
+        System.err.println("Environment: selectAgentEnvironment not yet implemented")
     }
 
     fun handleEnvironmentPush(message: LLSD) {
-        TODO("APR: dispatch PushExpEnvironment action to clear/full/partial handlers")
+        System.err.println("Environment: handleEnvironmentPush not yet implemented")
     }
 
-    fun saveToSettings()    { TODO("APR: serialise local environment overrides to disk") }
-    fun loadFromSettings(): Boolean = TODO("APR: deserialise local environment overrides from disk")
+    fun saveToSettings()    { System.err.println("Environment: saveToSettings not yet implemented") }
+    fun loadFromSettings(): Boolean { System.err.println("Environment: loadFromSettings not yet implemented"); return false }
 
     fun getSelectedEnvironmentInstance(): DayInstance? = currentEnvironment
     fun getSharedEnvironmentInstance(): DayInstance? = environments[EnvSelection.REGION.id]
@@ -408,7 +417,7 @@ object Environment {
     fun addEnvironmentChangedListener(cb: EnvChangedCallback) { envChangedListeners += cb }
 
     private fun updateCloudScroll() {
-        TODO("accumulate cloud scroll delta from sky scroll rate settings each frame")
+        System.err.println("Environment: updateCloudScroll not yet implemented")
     }
 
     private fun getOrCreateInstance(env: EnvSelection): DayInstance {
@@ -416,14 +425,16 @@ object Environment {
     }
 
     private fun recordEnvironment(parcelId: Int, info: EnvironmentInfo, transition: Double) {
-        TODO("store EnvironmentInfo, call setEnvironment with info.dayCycle and transition")
+        System.err.println("Environment: recordEnvironment not yet implemented")
     }
 
     private fun toCFR(vec: Vector3): Vector4 {
-        TODO("GPU: convert viewer-space vec to Camera-Frame-Right (CFR) coord system Vector4")
+        // GPU: convert viewer-space vec to Camera-Frame-Right (CFR) coord system Vector4
+        return Vector4.ZERO
     }
 
     private fun toLightNorm(vec: Vector3): Vector4 {
-        TODO("GPU: convert light direction to OGL coords, clamp Y above -0.1")
+        // GPU: convert light direction to OGL coords, clamp Y above -0.1
+        return Vector4.ZERO
     }
 }

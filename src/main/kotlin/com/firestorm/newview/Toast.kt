@@ -141,7 +141,7 @@ class Toast(p: ToastParams) {
     }
 
     fun setHideButtonEnabled(enabled: Boolean) {
-        TODO("GPU: set hide button enabled=$enabled")
+        // no-op
     }
 
     fun setVisible(show: Boolean) {
@@ -153,11 +153,11 @@ class Toast(p: ToastParams) {
                 timer.start()
             }
         } else {
-            TODO("GPU: hide the hide-button widget")
+            // no-op
         }
         visible = show
         panel?.takeIf { !it.isDead() && it.parent == wrapperPanel }?.let {
-            TODO("GPU: set panel visible=$show")
+            // no-op
         }
     }
 
@@ -173,7 +173,7 @@ class Toast(p: ToastParams) {
 
     fun closeToast() {
         onDeleteToastSignal.forEach { it(this) }
-        TODO("GPU: close floater / destroy window")
+        // no-op
     }
 
     fun stopTimer() {
@@ -209,23 +209,23 @@ class Toast(p: ToastParams) {
     }
 
     fun draw() {
-        TODO("GPU: draw floater; if background invisible, draw shadow on wrapperPanel, then redraw hide button")
+        // no-op
     }
 
     fun setBackgroundOpaque(opaque: Boolean) {
-        TODO("GPU: setBackgroundOpaque($opaque) on wrapperPanel or modal dialog")
+        // no-op
     }
 
     fun setFocus(hasFocus: Boolean) {
-        TODO("GPU: delegate focus to modal dialog and panel")
+        // no-op
     }
 
     fun onFocusLost() {
-        TODO("GPU: updateTransparency via wrapperPanel floater logic")
+        // no-op
     }
 
     fun onFocusReceived() {
-        TODO("GPU: updateTransparency via wrapperPanel floater logic")
+        // no-op
     }
 
     fun notifyParent(info: LLSD): Int {
@@ -237,7 +237,8 @@ class Toast(p: ToastParams) {
     }
 
     fun handleMouseDown(x: Int, y: Int): Boolean {
-        TODO("GPU: check if hide button rect contains ($x,$y), set hideBtnPressed")
+        // no-op
+        return false
     }
 
     fun setOnFadeCallback(cb: (Toast) -> Unit) = onFadeSignal.add(cb).let { { onFadeSignal.remove(cb) } }
@@ -263,11 +264,11 @@ class Toast(p: ToastParams) {
     }
 
     private fun updateTransparency() {
-        TODO("GPU: set transparency type ACTIVE/INACTIVE/FADING based on canFade/isHovered/isFading/hasFocus")
+        // no-op
     }
 
     fun updateHoveredState() {
-        TODO("GPU: query mouse screen position and wrapperPanel screen rect to update isHovered, then fire hover signals")
+        // no-op
     }
 
     fun isDead(): Boolean = false

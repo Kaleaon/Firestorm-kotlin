@@ -11,7 +11,7 @@ object LLMarketplaceInventoryNotifications {
     fun update() {
         if (!noCopyNotifyActive && noCopyPayloads.isNotEmpty()) {
             noCopyNotifyActive = true
-            TODO("APR: use JVM equivalent for LLNotificationsUtil::add(\"ConfirmNoCopyToOutbox\") with notifyNoCopyCallback")
+            System.err.println("LLMarketplaceNotifications: noCopyNotify not yet implemented")
         }
     }
 

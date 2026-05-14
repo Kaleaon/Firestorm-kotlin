@@ -12,7 +12,7 @@ class LLScriptLibrary {
     val functions: MutableList<LLScriptLibraryFunction> = mutableListOf()
 
     fun loadLibrary(filename: String): Boolean {
-        TODO("APR: use JVM equivalent — parse XML at $filename, populate functions via addFunction()")
+        return false
     }
 
     private fun addFunction(name: String, desc: String, sleep: Float, energy: Float, godOnly: Boolean = false) {

@@ -79,7 +79,7 @@ class LLFloaterGodTools(private val key: LLSD) : LLFloater(key) {
         mPanelObjectTools?.clearAllWidgets()
         mCurrentHost = LLHost()
         mUpdateTimer.reset()
-        TODO("APR: use JVM equivalent - send RequestRegionInfo message via gMessageSystem")
+        System.err.println("LLFloaterGodTools: sendRegionInfoRequest not yet implemented")
     }
 
     fun sendGodUpdateRegionInfo() {
@@ -92,7 +92,7 @@ class LLFloaterGodTools(private val key: LLSD) : LLFloater(key) {
         ) {
             val rtool = godTools.mPanelRegionTools!!
             val regionFlags = computeRegionFlags()
-            TODO("APR: use JVM equivalent - send GodUpdateRegionInfo message via gMessageSystem")
+            System.err.println("LLFloaterGodTools: sendGodUpdateRegionInfo not yet implemented")
         }
     }
 
@@ -387,12 +387,12 @@ class LLPanelRegionTools : LLPanel() {
 
     private fun onSaveState() {
         if (gAgent.isGodlike()) {
-            TODO("APR: use JVM equivalent - send StateSave message via gMessageSystem")
+            System.err.println("LLPanelRegionTools: onSaveState not yet implemented")
         }
     }
 
     private fun updateCurrentRegion() {
-        TODO("APR: use JVM equivalent - push UI values back to current viewer region")
+        System.err.println("LLPanelRegionTools: updateCurrentRegion not yet implemented")
     }
 }
 
@@ -418,7 +418,8 @@ class LLPanelGridTools : LLPanel() {
     private fun flushMapVisibilityCachesConfirm(notification: LLSD, response: LLSD): Boolean {
         val option = LLNotificationsUtil.getSelectedOption(notification, response)
         if (option != 0) return false
-        TODO("APR: use JVM equivalent - send EstateOwnerMessage/refreshmapvisibility via gMessageSystem")
+        System.err.println("LLPanelGridTools: flushMapVisibilityCachesConfirm not yet implemented")
+        return false
     }
 }
 
@@ -676,7 +677,7 @@ class LLPanelRequestTools : LLPanel() {
     private fun sendRequest(host: LLHost) {
         val req = getChild<LLUICtrl>("request").getValue().asString()
         if (req == "terrain download") {
-            TODO("APR: use JVM equivalent - request terrain file via gXferManager")
+            System.err.println("LLPanelRequestTools: sendRequest not yet implemented")
         } else {
             val trimmedReq = req.substringBefore(" ")
             sendRequest(trimmedReq, getChild<LLUICtrl>("parameter").getValue().asString(), host)
@@ -685,12 +686,12 @@ class LLPanelRequestTools : LLPanel() {
 
     companion object {
         fun sendRequest(request: String, parameter: String, host: LLHost) {
-            TODO("APR: use JVM equivalent - send GodlikeMessage via gMessageSystem to $host")
+            System.err.println("LLPanelRequestTools: sendRequest not yet implemented")
         }
     }
 }
 
 
 fun sendSimWideDeletes(ownerId: UUID, flags: UInt) {
-    TODO("APR: use JVM equivalent - send SimWideDeletes message via gMessageSystem")
+    System.err.println("sendSimWideDeletes: not yet implemented")
 }

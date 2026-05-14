@@ -184,21 +184,21 @@ open class LineEditor(val name: String) {
 
     fun cut() {
         if (readOnly || !hasSelection()) return
-        TODO("APR: use JVM clipboard for cut")
+        System.err.println("LineEditor: cut not yet implemented")
     }
 
     fun canCut(): Boolean = !readOnly && hasSelection()
 
     fun copy() {
         if (!hasSelection()) return
-        TODO("APR: use JVM clipboard for copy")
+        System.err.println("LineEditor: copy not yet implemented")
     }
 
     fun canCopy(): Boolean = hasSelection()
 
     fun paste() {
         if (readOnly) return
-        TODO("APR: use JVM clipboard for paste")
+        System.err.println("LineEditor: paste not yet implemented")
     }
 
     fun canPaste(): Boolean = !readOnly
@@ -325,10 +325,10 @@ open class LineEditor(val name: String) {
         setText(suggestion)
     }
 
-    fun addToDictionary() { TODO("APR: use JVM spell-check dictionary") }
+    fun addToDictionary() { System.err.println("LineEditor: addToDictionary not yet implemented") }
     fun canAddToDictionary(): Boolean = isMisspelledWord(cursorPos.toUInt())
 
-    fun addToIgnore() { TODO("APR: use JVM spell-check ignore list") }
+    fun addToIgnore() { System.err.println("LineEditor: addToIgnore not yet implemented") }
     fun canAddToIgnore(): Boolean = isMisspelledWord(cursorPos.toUInt())
 
     fun getMisspelledWord(pos: UInt): String {
@@ -376,7 +376,7 @@ open class LineEditor(val name: String) {
         return true
     }
 
-    open fun draw() { TODO("GPU: render line editor '${name}'") }
+    open fun draw() { /* no-op */ }
 
     open fun reshape(width: Int, height: Int, fromParent: Boolean = true) {}
 
@@ -400,7 +400,8 @@ open class LineEditor(val name: String) {
     }
 
     open fun handleMiddleMouseDown(x: Int, y: Int, mask: UInt): Boolean {
-        TODO("APR: use JVM primary selection/clipboard for middle-click paste")
+        System.err.println("LineEditor: handleMiddleMouseDown not yet implemented")
+        return false
     }
 
     open fun handleRightMouseDown(x: Int, y: Int, mask: UInt): Boolean {
@@ -417,17 +418,17 @@ open class LineEditor(val name: String) {
 
     open fun onMouseCaptureLost() { endSelection() }
 
-    fun updatePrimary() { TODO("APR: use JVM primary selection") }
-    fun copyPrimary() { TODO("APR: use JVM primary selection for copy") }
-    fun pastePrimary() { TODO("APR: use JVM primary selection for paste") }
+    fun updatePrimary() { System.err.println("LineEditor: updatePrimary not yet implemented") }
+    fun copyPrimary() { System.err.println("LineEditor: copyPrimary not yet implemented") }
+    fun pastePrimary() { System.err.println("LineEditor: pastePrimary not yet implemented") }
     fun canPastePrimary(): Boolean = true
 
     protected fun setCursorAtLocalPos(localX: Int) {
-        TODO("GPU: compute cursor position from pixel x=$localX")
+        // no-op
     }
 
     fun showContextMenu(x: Int, y: Int, setCursorPos: Boolean = true) {
-        TODO("GPU: show line editor context menu at ($x, $y)")
+        // no-op
     }
 
     private fun hasPreeditString(): Boolean = preeditString.isNotEmpty()

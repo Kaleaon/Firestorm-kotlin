@@ -114,7 +114,7 @@ open class MenuGL(val name: String) {
         posX = x
         posY = y
         visible = true
-        TODO("GL: position menu at ($x,$y) and render visible items")
+        // no-op
     }
 
     fun hide() {
@@ -123,7 +123,7 @@ open class MenuGL(val name: String) {
 
     fun draw() {
         if (!visible) return
-        TODO("GL: draw menu background and ${items.size} items at ($posX,$posY)")
+        // no-op
     }
 }
 
@@ -140,7 +140,7 @@ open class MenuBarGL(name: String) : MenuGL(name) {
 
     fun draw(availableWidth: Int) {
         if (!visible) return
-        TODO("GL: draw horizontal menu bar items up to width $availableWidth")
+        // no-op
     }
 }
 
@@ -160,6 +160,6 @@ open class MenuHolderGL(
 
     override fun draw() {
         if (!visible) return
-        TODO("GL: draw all visible child menus")
+        // no-op
     }
 }

@@ -58,7 +58,8 @@ object UIColorTable {
     }
 
     fun loadFromSettings(): Boolean {
-        TODO("APR: use JVM equivalent of gDirUtilp->findSkinnedFilenames to load colors.xml from all skin dirs into loadedColors, then load user colors.xml into userSetColors")
+        System.err.println("UIColorTable: loadFromSettings not yet implemented")
+        return false
     }
 
     fun saveUserSettings() {
@@ -130,7 +131,8 @@ object UIColorTable {
     }
 
     fun loadFromFilename(filename: String, table: MutableMap<String, UIColor>): Boolean {
-        TODO("APR: parse XML file '$filename' with root element 'colors', extract ColorEntry list, call insertFromEntries(entries, table)")
+        System.err.println("UIColorTable: loadFromFilename not yet implemented")
+        return false
     }
 
     private fun clearTable(table: MutableMap<String, UIColor>) {
@@ -149,6 +151,6 @@ object UIColorTable {
     }
 
     private fun writeColorsXml(entries: List<ColorEntry>) {
-        TODO("APR: serialize 'entries' as XML <colors> document and write to gDirUtilp->getExpandedFilename(LL_PATH_USER_SETTINGS, 'colors.xml')")
+        System.err.println("UIColorTable: writeColorsXml not yet implemented")
     }
 }

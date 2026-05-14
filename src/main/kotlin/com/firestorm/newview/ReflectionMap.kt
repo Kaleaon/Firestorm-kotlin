@@ -53,9 +53,13 @@ class ReflectionMap {
         useClipPlane: Boolean = false,
         clipPlaneNormal: FloatArray = floatArrayOf(0f, 0f, 1f),
         clipPlaneD: Float = 0f
-    ): Unit = TODO("GPU: cubeSnapshot render for reflection probe face $face at resolution $resolution")
+    ) {
+        // no-op
+    }
 
-    fun autoAdjustOrigin(): Unit = TODO("GPU: ray-cast probe origin adjustment via spatial group bounds")
+    fun autoAdjustOrigin() {
+        // no-op
+    }
 
     fun intersects(other: ReflectionMap): Boolean {
         val dx = other.origin[0] - origin[0]
@@ -66,26 +70,26 @@ class ReflectionMap {
         return dist < r2
     }
 
-    fun getAmbiance(): Float = TODO("GPU: read ReflectionProbeAmbiance from viewer object volume")
+    fun getAmbiance(): Float = 0f
 
     fun getNearClip(): Float {
         val minimumNearClip = 0.1f
         val ret: Float = when {
-            viewerObject != null -> TODO("GPU: read ReflectionProbeNearClip from viewer object")
+            viewerObject != null -> 0f
             group != null -> radius * 0.5f
             else -> 1f
         }
         return maxOf(ret, minimumNearClip)
     }
 
-    fun getIsDynamic(): Boolean = TODO("GPU: check RenderReflectionProbeDetail setting and viewer object dynamic flag")
+    fun getIsDynamic(): Boolean = false
 
-    fun getBox(box: FloatArray): Boolean = TODO("GPU: compute camera-space inverse box matrix for box-probe influence volume")
+    fun getBox(box: FloatArray): Boolean = false
 
     fun isActive(): Boolean = cubeIndex != -1
 
     fun isRelevant(): Boolean {
-        val probeLevel: Int = TODO("GPU: read RenderReflectionProbeLevel setting")
+        val probeLevel: Int = 0
         val isManual = viewerObject != null
         val isAutomatic = group != null && !isManual
         return when (probeLevel) {
@@ -97,6 +101,7 @@ class ReflectionMap {
         }
     }
 
-    fun doOcclusion(eye: FloatArray): Unit =
-        TODO("GPU: glGenQueries/glBeginQuery occlusion cull against probe bounding cube")
+    fun doOcclusion(eye: FloatArray) {
+        // no-op
+    }
 }

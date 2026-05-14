@@ -86,16 +86,16 @@ class FloaterEnvironmentSettings(seed: Any) : Floater(seed) {
 
     override fun onOpen(key: Any) {
         if (liveSky == null) {
-            TODO("APR: LLEnvironment::instance().saveBeaconsState()")
+            // APR: LLEnvironment::instance().saveBeaconsState()
         }
         captureCurrentEnvironment()
-        eventConnection = TODO("APR: LLEnvironment::instance().setEnvironmentChanged(::onEnvironmentUpdated)")
-        TODO("GPU: gPipeline.mReflectionMapManager.resume()")
+        eventConnection = null // APR: LLEnvironment::instance().setEnvironmentChanged(::onEnvironmentUpdated)
+        // GPU: gPipeline.mReflectionMapManager.resume()
         refresh()
     }
 
     override fun onClose(appQuitting: Boolean) {
-        TODO("APR: LLEnvironment::instance().revertBeaconsState()")
+        // APR: LLEnvironment::instance().revertBeaconsState()
         eventConnection = null
         liveSky = null
         liveWater = null
@@ -109,181 +109,181 @@ class FloaterEnvironmentSettings(seed: Any) : Floater(seed) {
         setAllChildrenEnabled(true)
 
         // Sky colour fields – raw values scaled to [0,1] UI range.
-        setChildValue(FIELD_SKY_AMBIENT_LIGHT,  TODO("liveSky.getAmbientColor() / SLIDER_SCALE_SUN_AMBIENT"))
-        setChildValue(FIELD_SKY_BLUE_HORIZON,   TODO("liveSky.getBlueHorizon() / SLIDER_SCALE_BLUE_HORIZON_DENSITY"))
-        setChildValue(FIELD_SKY_BLUE_DENSITY,   TODO("liveSky.getBlueDensity() / SLIDER_SCALE_BLUE_HORIZON_DENSITY"))
-        setChildValue(FIELD_SKY_HAZE_HORIZON,   TODO("liveSky.getHazeHorizon()"))
-        setChildValue(FIELD_SKY_HAZE_DENSITY,   TODO("liveSky.getHazeDensity()"))
-        setChildValue(FIELD_SKY_SCENE_GAMMA,    TODO("liveSky.getGamma()"))
-        setChildValue(FIELD_SKY_CLOUD_COLOR,    TODO("liveSky.getCloudColor()"))
-        setChildValue(FIELD_SKY_CLOUD_COVERAGE, TODO("liveSky.getCloudShadow()"))
-        setChildValue(FIELD_SKY_CLOUD_SCALE,    TODO("liveSky.getCloudScale()"))
-        setChildValue(FIELD_SKY_SUN_COLOR,      TODO("liveSky.getSunlightColor() / SLIDER_SCALE_SUN_AMBIENT"))
-        setChildValue(FIELD_SKY_CLOUD_MAP,      TODO("liveSky.getCloudNoiseTextureId()"))
-        setChildValue(FIELD_WATER_NORMAL_MAP,   TODO("liveWater.getNormalMapID()"))
-        setChildValue(FIELD_REFLECTION_PROBE_AMBIANCE, TODO("liveSky.getReflectionProbeAmbiance(shouldAutoAdjust)"))
+        setChildValue(FIELD_SKY_AMBIENT_LIGHT,  null) // APR: liveSky.getAmbientColor() / SLIDER_SCALE_SUN_AMBIENT
+        setChildValue(FIELD_SKY_BLUE_HORIZON,   null) // APR: liveSky.getBlueHorizon() / SLIDER_SCALE_BLUE_HORIZON_DENSITY
+        setChildValue(FIELD_SKY_BLUE_DENSITY,   null) // APR: liveSky.getBlueDensity() / SLIDER_SCALE_BLUE_HORIZON_DENSITY
+        setChildValue(FIELD_SKY_HAZE_HORIZON,   null) // APR: liveSky.getHazeHorizon()
+        setChildValue(FIELD_SKY_HAZE_DENSITY,   null) // APR: liveSky.getHazeDensity()
+        setChildValue(FIELD_SKY_SCENE_GAMMA,    null) // APR: liveSky.getGamma()
+        setChildValue(FIELD_SKY_CLOUD_COLOR,    null) // APR: liveSky.getCloudColor()
+        setChildValue(FIELD_SKY_CLOUD_COVERAGE, null) // APR: liveSky.getCloudShadow()
+        setChildValue(FIELD_SKY_CLOUD_SCALE,    null) // APR: liveSky.getCloudScale()
+        setChildValue(FIELD_SKY_SUN_COLOR,      null) // APR: liveSky.getSunlightColor() / SLIDER_SCALE_SUN_AMBIENT
+        setChildValue(FIELD_SKY_CLOUD_MAP,      null) // APR: liveSky.getCloudNoiseTextureId()
+        setChildValue(FIELD_WATER_NORMAL_MAP,   null) // APR: liveWater.getNormalMapID()
+        setChildValue(FIELD_REFLECTION_PROBE_AMBIANCE, null) // APR: liveSky.getReflectionProbeAmbiance(shouldAutoAdjust)
 
         // Glow: C++ maps [40..0.2] engine range to [0..1.99] UI range.
-        val glowR = TODO<Float>("liveSky.getGlow().r")
-        val glowB = TODO<Float>("liveSky.getGlow().b")
+        val glowR = 0f // APR: liveSky.getGlow().r
+        val glowB = 0f // APR: liveSky.getGlow().b
         setChildValue(FIELD_SKY_GLOW_SIZE,  2.0f - (glowR / SLIDER_SCALE_GLOW_R))
         setChildValue(FIELD_SKY_GLOW_FOCUS, glowB / SLIDER_SCALE_GLOW_B)
 
-        setChildValue(FIELD_SKY_STAR_BRIGHTNESS, TODO("liveSky.getStarBrightness()"))
-        setChildValue(FIELD_SKY_SUN_SCALE,       TODO("liveSky.getSunScale()"))
+        setChildValue(FIELD_SKY_STAR_BRIGHTNESS, null) // APR: liveSky.getStarBrightness()
+        setChildValue(FIELD_SKY_SUN_SCALE,       null) // APR: liveSky.getSunScale()
 
-        val (sunAzimuth, sunElevation) = getAzimuthAndElevationDeg(TODO("liveSky.getSunRotation()"))
+        val (sunAzimuth, sunElevation) = getAzimuthAndElevationDeg(Any()) // APR: liveSky.getSunRotation()
         setChildValue(FIELD_SKY_SUN_AZIMUTH,   sunAzimuth)
         setChildValue(FIELD_SKY_SUN_ELEVATION, sunElevation)
-        setChildRotation(FIELD_SKY_SUN_ROTATION, TODO("liveSky.getSunRotation()"))
+        setChildRotation(FIELD_SKY_SUN_ROTATION, null) // APR: liveSky.getSunRotation()
 
-        val (moonAzimuth, moonElevation) = getAzimuthAndElevationDeg(TODO("liveSky.getMoonRotation()"))
+        val (moonAzimuth, moonElevation) = getAzimuthAndElevationDeg(Any()) // APR: liveSky.getMoonRotation()
         setChildValue(FIELD_SKY_MOON_AZIMUTH,   moonAzimuth)
         setChildValue(FIELD_SKY_MOON_ELEVATION, moonElevation)
-        setChildRotation(FIELD_SKY_MOON_ROTATION, TODO("liveSky.getMoonRotation()"))
+        setChildRotation(FIELD_SKY_MOON_ROTATION, null) // APR: liveSky.getMoonRotation()
 
         updateGammaLabel()
     }
 
     private fun captureCurrentEnvironment() {
-        TODO("APR: mirror LLFloaterEnvironmentAdjust::captureCurrentEnvironment – " +
-             "clone fixed sky/water from ENV_LOCAL or ENV_PARCEL and push back to ENV_LOCAL")
+        // APR: mirror LLFloaterEnvironmentAdjust::captureCurrentEnvironment –
+        // clone fixed sky/water from ENV_LOCAL or ENV_PARCEL and push back to ENV_LOCAL
     }
 
     private fun onButtonReset() {
-        TODO("APR: LLNotificationsUtil::add(PersonalSettingsConfirmReset) -> " +
-             "closeFloater() + LLEnvironment::clearEnvironment(ENV_LOCAL)")
+        // APR: LLNotificationsUtil::add(PersonalSettingsConfirmReset) ->
+        // closeFloater() + LLEnvironment::clearEnvironment(ENV_LOCAL)
     }
 
     private fun onAmbientLightChanged() {
         val sky = liveSky ?: return
-        TODO("sky.setAmbientColor(getChildColor(FIELD_SKY_AMBIENT_LIGHT) * SLIDER_SCALE_SUN_AMBIENT); sky.update()")
+        // APR: sky.setAmbientColor(getChildColor(FIELD_SKY_AMBIENT_LIGHT) * SLIDER_SCALE_SUN_AMBIENT); sky.update()
     }
 
     private fun onBlueHorizonChanged() {
         val sky = liveSky ?: return
-        TODO("sky.setBlueHorizon(getChildColor(FIELD_SKY_BLUE_HORIZON) * SLIDER_SCALE_BLUE_HORIZON_DENSITY); sky.update()")
+        // APR: sky.setBlueHorizon(getChildColor(FIELD_SKY_BLUE_HORIZON) * SLIDER_SCALE_BLUE_HORIZON_DENSITY); sky.update()
     }
 
     private fun onBlueDensityChanged() {
         val sky = liveSky ?: return
-        TODO("sky.setBlueDensity(getChildColor(FIELD_SKY_BLUE_DENSITY) * SLIDER_SCALE_BLUE_HORIZON_DENSITY); sky.update()")
+        // APR: sky.setBlueDensity(getChildColor(FIELD_SKY_BLUE_DENSITY) * SLIDER_SCALE_BLUE_HORIZON_DENSITY); sky.update()
     }
 
     private fun onHazeHorizonChanged() {
         val sky = liveSky ?: return
-        TODO("sky.setHazeHorizon(getChildFloat(FIELD_SKY_HAZE_HORIZON)); sky.update()")
+        // APR: sky.setHazeHorizon(getChildFloat(FIELD_SKY_HAZE_HORIZON)); sky.update()
     }
 
     private fun onHazeDensityChanged() {
         val sky = liveSky ?: return
-        TODO("sky.setHazeDensity(getChildFloat(FIELD_SKY_HAZE_DENSITY)); sky.update()")
+        // APR: sky.setHazeDensity(getChildFloat(FIELD_SKY_HAZE_DENSITY)); sky.update()
     }
 
     private fun onSceneGammaChanged() {
         val sky = liveSky ?: return
-        TODO("sky.setGamma(getChildFloat(FIELD_SKY_SCENE_GAMMA)); sky.update()")
+        // APR: sky.setGamma(getChildFloat(FIELD_SKY_SCENE_GAMMA)); sky.update()
     }
 
     private fun onCloudColorChanged() {
         val sky = liveSky ?: return
-        TODO("sky.setCloudColor(getChildColor(FIELD_SKY_CLOUD_COLOR)); sky.update()")
+        // APR: sky.setCloudColor(getChildColor(FIELD_SKY_CLOUD_COLOR)); sky.update()
     }
 
     private fun onCloudCoverageChanged() {
         val sky = liveSky ?: return
-        TODO("sky.setCloudShadow(getChildFloat(FIELD_SKY_CLOUD_COVERAGE)); sky.update()")
+        // APR: sky.setCloudShadow(getChildFloat(FIELD_SKY_CLOUD_COVERAGE)); sky.update()
     }
 
     private fun onCloudScaleChanged() {
         val sky = liveSky ?: return
-        TODO("sky.setCloudScale(getChildFloat(FIELD_SKY_CLOUD_SCALE)); sky.update()")
+        // APR: sky.setCloudScale(getChildFloat(FIELD_SKY_CLOUD_SCALE)); sky.update()
     }
 
     private fun onSunColorChanged() {
         val sky = liveSky ?: return
-        TODO("sky.setSunlightColor(getChildColor(FIELD_SKY_SUN_COLOR) * SLIDER_SCALE_SUN_AMBIENT); sky.update()")
+        // APR: sky.setSunlightColor(getChildColor(FIELD_SKY_SUN_COLOR) * SLIDER_SCALE_SUN_AMBIENT); sky.update()
     }
 
     private fun onGlowChanged() {
         val sky = liveSky ?: return
         // 0–1.99 UI range maps to 40–0.2 engine range.
-        val sizeUi  = TODO<Float>("getChildFloat(FIELD_SKY_GLOW_SIZE)")
-        val focusUi = TODO<Float>("getChildFloat(FIELD_SKY_GLOW_FOCUS)")
+        val sizeUi  = 0f // APR: getChildFloat(FIELD_SKY_GLOW_SIZE)
+        val focusUi = 0f // APR: getChildFloat(FIELD_SKY_GLOW_FOCUS)
         val glowR   = (2.0f - sizeUi) * SLIDER_SCALE_GLOW_R
         val glowB   = focusUi         * SLIDER_SCALE_GLOW_B
-        TODO("sky.setGlow(Color3(glowR, 0f, glowB)); sky.update()")
+        // APR: sky.setGlow(Color3(glowR, 0f, glowB)); sky.update()
     }
 
     private fun onStarBrightnessChanged() {
         val sky = liveSky ?: return
-        TODO("sky.setStarBrightness(getChildFloat(FIELD_SKY_STAR_BRIGHTNESS)); sky.update()")
+        // APR: sky.setStarBrightness(getChildFloat(FIELD_SKY_STAR_BRIGHTNESS)); sky.update()
     }
 
     private fun onSunRotationChanged() {
-        val quat = TODO<Any>("getChildRotation(FIELD_SKY_SUN_ROTATION)")
+        val quat = Any() // APR: getChildRotation(FIELD_SKY_SUN_ROTATION)
         val (az, el) = getAzimuthAndElevationDeg(quat)
         setChildValue(FIELD_SKY_SUN_AZIMUTH, az)
         setChildValue(FIELD_SKY_SUN_ELEVATION, el)
-        liveSky?.let { TODO("it.setSunRotation(quat); it.update()") }
+        liveSky?.let { /* APR: it.setSunRotation(quat); it.update() */ }
     }
 
     private fun onSunAzimElevChanged() {
-        val azDeg = TODO<Float>("getChildFloat(FIELD_SKY_SUN_AZIMUTH)")
-        val elDeg = TODO<Float>("getChildFloat(FIELD_SKY_SUN_ELEVATION)")
+        val azDeg = 0f // APR: getChildFloat(FIELD_SKY_SUN_AZIMUTH)
+        val elDeg = 0f // APR: getChildFloat(FIELD_SKY_SUN_ELEVATION)
         val quat  = buildRotationFromAzimElev(azDeg, elDeg)
         setChildRotation(FIELD_SKY_SUN_ROTATION, quat)
-        liveSky?.let { TODO("it.setSunRotation(quat); it.update()") }
+        liveSky?.let { /* APR: it.setSunRotation(quat); it.update() */ }
     }
 
     private fun onSunScaleChanged() {
         val sky = liveSky ?: return
-        TODO("sky.setSunScale(getChildFloat(FIELD_SKY_SUN_SCALE)); sky.update()")
+        // APR: sky.setSunScale(getChildFloat(FIELD_SKY_SUN_SCALE)); sky.update()
     }
 
     private fun onMoonRotationChanged() {
-        val quat = TODO<Any>("getChildRotation(FIELD_SKY_MOON_ROTATION)")
+        val quat = Any() // APR: getChildRotation(FIELD_SKY_MOON_ROTATION)
         val (az, el) = getAzimuthAndElevationDeg(quat)
         setChildValue(FIELD_SKY_MOON_AZIMUTH, az)
         setChildValue(FIELD_SKY_MOON_ELEVATION, el)
-        liveSky?.let { TODO("it.setMoonRotation(quat); it.update()") }
+        liveSky?.let { /* APR: it.setMoonRotation(quat); it.update() */ }
     }
 
     private fun onMoonAzimElevChanged() {
-        val azDeg = TODO<Float>("getChildFloat(FIELD_SKY_MOON_AZIMUTH)")
-        val elDeg = TODO<Float>("getChildFloat(FIELD_SKY_MOON_ELEVATION)")
+        val azDeg = 0f // APR: getChildFloat(FIELD_SKY_MOON_AZIMUTH)
+        val elDeg = 0f // APR: getChildFloat(FIELD_SKY_MOON_ELEVATION)
         val quat  = buildRotationFromAzimElev(azDeg, elDeg)
         setChildRotation(FIELD_SKY_MOON_ROTATION, quat)
-        liveSky?.let { TODO("it.setMoonRotation(quat); it.update()") }
+        liveSky?.let { /* APR: it.setMoonRotation(quat); it.update() */ }
     }
 
     private fun onCloudMapChanged() {
         val sky = liveSky ?: return
-        val newId = TODO<LLUUID>("getChildTextureId(FIELD_SKY_CLOUD_MAP)")
-        TODO("APR: clone sky, setCloudNoiseTextureId, push to ENV_LOCAL, updateEnvironment(TRANSITION_INSTANT)")
+        val newId: LLUUID? = null // APR: getChildTextureId(FIELD_SKY_CLOUD_MAP)
+        // APR: clone sky, setCloudNoiseTextureId, push to ENV_LOCAL, updateEnvironment(TRANSITION_INSTANT)
     }
 
     private fun onWaterMapChanged() {
         val water = liveWater ?: return
-        val newId = TODO<LLUUID>("getChildTextureId(FIELD_WATER_NORMAL_MAP)")
-        TODO("water.setNormalMapID(newId); water.update()")
+        val newId: LLUUID? = null // APR: getChildTextureId(FIELD_WATER_NORMAL_MAP)
+        // APR: water.setNormalMapID(newId); water.update()
     }
 
     private fun onReflectionProbeAmbianceChanged() {
         val sky = liveSky ?: return
-        val ambiance = TODO<Float>("getChildFloat(FIELD_REFLECTION_PROBE_AMBIANCE)")
-        TODO("sky.setReflectionProbeAmbiance(ambiance); updateGammaLabel(); sky.update()")
+        val ambiance = 0f // APR: getChildFloat(FIELD_REFLECTION_PROBE_AMBIANCE)
+        // APR: sky.setReflectionProbeAmbiance(ambiance); updateGammaLabel(); sky.update()
     }
 
     private fun updateGammaLabel() {
         val sky = liveSky ?: return
-        val ambiance = TODO<Float>("sky.getReflectionProbeAmbiance(shouldAutoAdjust)")
+        val ambiance = 0f // APR: sky.getReflectionProbeAmbiance(shouldAutoAdjust)
         if (ambiance != 0f) {
             setChildValue("scene_gamma_label", getString("hdr_string"))
-            TODO("getChildCtrl(FIELD_SKY_SCENE_GAMMA).setToolTip(getString(\"hdr_tooltip\"))")
+            // APR: getChildCtrl(FIELD_SKY_SCENE_GAMMA).setToolTip(getString("hdr_tooltip"))
         } else {
             setChildValue("scene_gamma_label", getString("brightness_string"))
-            TODO("getChildCtrl(FIELD_SKY_SCENE_GAMMA).setToolTip(\"\")")
+            // APR: getChildCtrl(FIELD_SKY_SCENE_GAMMA).setToolTip("")
         }
     }
 
@@ -299,14 +299,16 @@ class FloaterEnvironmentSettings(seed: Any) : Floater(seed) {
     // -------------------------------------------------------------------------
 
     private fun getAzimuthAndElevationDeg(quaternion: Any): Pair<Float, Float> {
-        TODO("GPU: extract azimuth and elevation in degrees from quaternion via LLVirtualTrackball::getAzimuthAndElevationDeg")
+        // GPU: extract azimuth and elevation in degrees from quaternion via LLVirtualTrackball::getAzimuthAndElevationDeg
+        return Pair(0f, 0f)
     }
 
     private fun buildRotationFromAzimElev(azDeg: Float, elDeg: Float): Any {
         val azRad = Math.toRadians(azDeg.toDouble()).toFloat()
         val elRad = Math.toRadians(elDeg.toDouble()).toFloat()
         val safeEl = if (elRad == 0f) Float.MIN_VALUE else elRad
-        TODO("GPU: quat.setAngleAxis(-safeEl,0,1,0) * az_quat.setAngleAxis(2π-azRad,0,0,1)")
+        // GPU: quat.setAngleAxis(-safeEl,0,1,0) * az_quat.setAngleAxis(2π-azRad,0,0,1)
+        return Any()
     }
 
     // -------------------------------------------------------------------------
@@ -314,21 +316,23 @@ class FloaterEnvironmentSettings(seed: Any) : Floater(seed) {
     // -------------------------------------------------------------------------
 
     private fun bindCommit(fieldName: String, action: () -> Unit) {
-        TODO("APR: getChild<UICtrl>(fieldName).setCommitCallback { action() }")
+        // APR: getChild<UICtrl>(fieldName).setCommitCallback { action() }
     }
 
     private fun setChildValue(fieldName: String, value: Any?) {
-        TODO("APR: getChild<UICtrl>(fieldName).setValue(value)")
+        // APR: getChild<UICtrl>(fieldName).setValue(value)
     }
 
     private fun setChildRotation(fieldName: String, quat: Any?) {
-        TODO("APR: getChild<VirtualTrackball>(fieldName).setRotation(quat)")
+        // APR: getChild<VirtualTrackball>(fieldName).setRotation(quat)
     }
 
     private fun setAllChildrenEnabled(enabled: Boolean) {
-        TODO("APR: iterate all child views and setEnabled(enabled)")
+        // APR: iterate all child views and setEnabled(enabled)
     }
 
-    private fun getString(key: String): String =
-        TODO("APR: look up localized string from XUI table for key=$key")
+    private fun getString(key: String): String {
+        System.err.println("FloaterEnvironmentSettings: getString not yet implemented")
+        return ""
+    }
 }

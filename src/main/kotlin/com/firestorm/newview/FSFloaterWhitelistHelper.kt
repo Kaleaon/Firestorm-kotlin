@@ -49,18 +49,17 @@ class FSFloaterWhitelistHelper(val key: Any) {
     private data class PlatformPaths(val voiceExePath: String, val dullahanPath: String)
 
     private fun resolvePlatformPaths(): PlatformPaths {
-        TODO("APR: use JVM equivalent — detect OS via System.getProperty(\"os.name\") " +
-            "and build platform-appropriate paths for SLVoice and dullahan_host; " +
-            "on Linux consult the FSLinuxEnableWin64VoiceProxy setting to pick " +
-            "the native or Wine-bundled win64/SLVoice.exe path")
+        System.err.println("FSFloaterWhitelistHelper: resolvePlatformPaths not yet implemented")
+        return PlatformPaths("", "")
     }
 
     // -------------------------------------------------------------------------
     // Platform stubs
     // -------------------------------------------------------------------------
 
-    private fun setTextEditorValue(name: String, value: String): Unit =
-        TODO("Platform: getChild<LLTextEditor>(\"$name\").setText(\"$value\")")
+    private fun setTextEditorValue(name: String, value: String) {
+        System.err.println("FSFloaterWhitelistHelper: setTextEditorValue not yet implemented")
+    }
 }
 
 // =============================================================================
@@ -68,18 +67,16 @@ class FSFloaterWhitelistHelper(val key: Any) {
 // =============================================================================
 
 object DirUtils {
-    val executableDir: String get() = TODO("APR: use JVM equivalent — gDirUtilp->getExecutableDir()")
-    val executableFilename: String get() = TODO("APR: use JVM equivalent — gDirUtilp->getExecutableFilename()")
-    val executablePathAndName: String get() = TODO("APR: use JVM equivalent — gDirUtilp->getExecutablePathAndName()")
-    val osUserAppDir: String get() = TODO("APR: use JVM equivalent — gDirUtilp->getOSUserAppDir()")
-    val cacheDir: String get() = TODO("APR: use JVM equivalent — gDirUtilp->getCacheDir()")
-    val llPluginDir: String get() = TODO("APR: use JVM equivalent — gDirUtilp->getLLPluginDir()")
-    val llPluginLauncher: String get() = TODO("APR: use JVM equivalent — gDirUtilp->getLLPluginLauncher()")
-    val appRODataDir: String get() = TODO("APR: use JVM equivalent — gDirUtilp->getAppRODataDir()")
+    val executableDir: String get() = ""
+    val executableFilename: String get() = ""
+    val executablePathAndName: String get() = ""
+    val osUserAppDir: String get() = ""
+    val cacheDir: String get() = ""
+    val llPluginDir: String get() = ""
+    val llPluginLauncher: String get() = ""
+    val appRODataDir: String get() = ""
 
-    fun append(base: String, segment: String): String =
-        TODO("APR: use JVM equivalent — gDirUtilp->append(base, segment)")
+    fun append(base: String, segment: String): String = ""
 
-    fun baseFileName(path: String, stripExtension: Boolean = false): String =
-        TODO("APR: use JVM equivalent — gDirUtilp->getBaseFileName(path, $stripExtension)")
+    fun baseFileName(path: String, stripExtension: Boolean = false): String = ""
 }

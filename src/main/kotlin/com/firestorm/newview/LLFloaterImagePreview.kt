@@ -45,15 +45,16 @@ class LLImagePreviewSculpted(width: Int, height: Int) : LLViewerDynamicTexture(w
             LLVertexBuffer.MAP_VERTEX or LLVertexBuffer.MAP_NORMAL or LLVertexBuffer.MAP_TEXCOORD0
         )
         if (!mVertexBuffer!!.allocateBuffer(numVertices, numIndices)) {
-            TODO("APR: use JVM equivalent - failed to allocate vertex buffer for sculpted preview")
+            System.err.println("LLImagePreviewSculpted: setPreviewTarget not yet implemented")
         }
 
-        TODO("GPU: fill vertex/normal/texcoord/index buffers from volume face and call unmapBuffer")
+        // no-op
     }
 
     override fun render(): Boolean {
         mNeedsUpdate = false
-        TODO("GPU: render sculpted preview using camera matrices, vertex buffer, and pipeline lighting")
+        // no-op
+        return false
     }
 
     fun refresh() { mNeedsUpdate = true }
@@ -127,7 +128,8 @@ class LLImagePreviewAvatar(width: Int, height: Int) : LLViewerDynamicTexture(wid
 
     override fun render(): Boolean {
         mNeedsUpdate = false
-        TODO("GPU: render avatar preview using camera matrices, joint transform, and avatar draw pool")
+        // no-op
+        return false
     }
 
     fun refresh() { mNeedsUpdate = true }
@@ -344,7 +346,7 @@ class LLFloaterImagePreview(val args: Map<String, Any>) : LLFloaterNameDesc(args
             }
 
             if (formatted.encode(raw, 0.0f)) {
-                TODO("APR: use JVM equivalent - write encoded J2C to LLFileSystem and upload via LLResourceUploadInfo")
+                System.err.println("LLFloaterImagePreview: onBtnOK not yet implemented")
             } else {
                 val args = mutableMapOf<String, Any>()
                 args["REASON"] = LLImage.getLastThreadError()
@@ -371,10 +373,10 @@ class LLFloaterImagePreview(val args: Map<String, Any>) : LLFloaterNameDesc(args
         }
 
         if (selected <= 0) {
-            TODO("GPU: draw checkerboard background and blit raw image rect using mPreviewImageRect/mPreviewRect coords")
+            // no-op
         } else {
             if (mAvatarPreview != null && mSculptedPreview != null) {
-                TODO("GPU: bind avatar or sculpted preview texture and draw to mPreviewRect")
+                // no-op
             }
         }
     }

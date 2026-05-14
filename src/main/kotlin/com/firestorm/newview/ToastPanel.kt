@@ -98,7 +98,7 @@ open class CheckBoxToastPanel(notification: Notification) : ToastPanel(notificat
         if (parentView != null) {
             parentView.addChild(cb)
         } else {
-            TODO("GPU: add checkbox child to panel")
+            System.err.println("ToastPanel: addCheckbox — no parent view")
         }
         return true
     }

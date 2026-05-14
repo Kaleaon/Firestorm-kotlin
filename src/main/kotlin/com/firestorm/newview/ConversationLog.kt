@@ -275,13 +275,17 @@ object ConversationLog {
      * Persist the current session list to disk.
      * Maps to `LLConversationLog::cache()` / `saveToFile()`.
      */
-    fun cache(): Unit = TODO("saveToFile(getFileName())")
+    fun cache(): Unit {
+        System.err.println("ConversationLog: cache not yet implemented")
+    }
 
     /**
      * Load sessions from the on-disk conversation log.
      * Maps to `LLConversationLog::loadFromFile()`.
      */
-    fun load(): Unit = TODO("loadFromFile(getFileName())")
+    fun load(): Unit {
+        System.err.println("ConversationLog: load not yet implemented")
+    }
 
     /**
      * Enable or disable conversation logging.

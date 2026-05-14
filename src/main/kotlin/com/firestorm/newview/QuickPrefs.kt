@@ -361,7 +361,8 @@ class FloaterQuickPrefs(
 
         if (floaterBase.isPhototools()) return true
 
-        optionsStack = TODO("get options_stack LayoutStack child from floater")
+        System.err.println("FloaterQuickPrefs: get options_stack LayoutStack child from floater not yet implemented")
+        optionsStack = null
 
         loadSavedSettingsFromFile(getSettingsPath(false))
 
@@ -382,11 +383,11 @@ class FloaterQuickPrefs(
         controlIncrementSpinner?.setCommitCallback { onValuesChanged() }
 
         (floaterBase.getChild("move_up_button") as? UiControl)
-            ?.let { TODO("set commit callback for move_up_button") }
+            ?.let { System.err.println("FloaterQuickPrefs: set commit callback for move_up_button not yet implemented") }
         (floaterBase.getChild("move_down_button") as? UiControl)
-            ?.let { TODO("set commit callback for move_down_button") }
+            ?.let { System.err.println("FloaterQuickPrefs: set commit callback for move_down_button not yet implemented") }
         (floaterBase.getChild("add_new_button") as? UiControl)
-            ?.let { TODO("set commit callback for add_new_button") }
+            ?.let { System.err.println("FloaterQuickPrefs: set commit callback for add_new_button not yet implemented") }
 
         val visitor = { name: String, control: ControlVariable ->
             if (!control.isHiddenFromSettingsEditor() && !name.startsWith("floater_")) {
@@ -439,25 +440,25 @@ class FloaterQuickPrefs(
         dayCyclePresetsCombo?.setCommitCallback { onChangeDayCyclePreset() }
 
         (floaterBase.getChild("WLPrevPreset") as? UiControl)?.let {
-            TODO("wire WLPrevPreset commit callback to onClickSkyPrev")
+            System.err.println("FloaterQuickPrefs: wire WLPrevPreset commit callback to onClickSkyPrev not yet implemented")
         }
         (floaterBase.getChild("WLNextPreset") as? UiControl)?.let {
-            TODO("wire WLNextPreset commit callback to onClickSkyNext")
+            System.err.println("FloaterQuickPrefs: wire WLNextPreset commit callback to onClickSkyNext not yet implemented")
         }
         (floaterBase.getChild("WWPrevPreset") as? UiControl)?.let {
-            TODO("wire WWPrevPreset commit callback to onClickWaterPrev")
+            System.err.println("FloaterQuickPrefs: wire WWPrevPreset commit callback to onClickWaterPrev not yet implemented")
         }
         (floaterBase.getChild("WWNextPreset") as? UiControl)?.let {
-            TODO("wire WWNextPreset commit callback to onClickWaterNext")
+            System.err.println("FloaterQuickPrefs: wire WWNextPreset commit callback to onClickWaterNext not yet implemented")
         }
         (floaterBase.getChild("DCPrevPreset") as? UiControl)?.let {
-            TODO("wire DCPrevPreset commit callback to onClickDayCyclePrev")
+            System.err.println("FloaterQuickPrefs: wire DCPrevPreset commit callback to onClickDayCyclePrev not yet implemented")
         }
         (floaterBase.getChild("DCNextPreset") as? UiControl)?.let {
-            TODO("wire DCNextPreset commit callback to onClickDayCycleNext")
+            System.err.println("FloaterQuickPrefs: wire DCNextPreset commit callback to onClickDayCycleNext not yet implemented")
         }
         (floaterBase.getChild("ResetToRegionDefault") as? UiControl)?.let {
-            TODO("wire ResetToRegionDefault commit callback to onClickResetToRegionDefault")
+            System.err.println("FloaterQuickPrefs: wire ResetToRegionDefault commit callback to onClickResetToRegionDefault not yet implemented")
         }
 
         if (floaterBase.isPhototools()) {
@@ -488,7 +489,7 @@ class FloaterQuickPrefs(
             spinnerSSAOEffectX?.setCommitCallback { onChangeRenderSSAOEffectSpinner() }
         } else {
             (floaterBase.getChild("Restore_Btn") as? UiControl)?.let {
-                TODO("wire Restore_Btn commit callback to onClickRestoreDefaults")
+                System.err.println("FloaterQuickPrefs: wire Restore_Btn commit callback to onClickRestoreDefaults not yet implemented")
             }
             savedSettings.getControl("QuickPrefsEditMode")?.connectSignal { onEditModeChanged() }
 
@@ -846,7 +847,8 @@ class FloaterQuickPrefs(
     }
 
     private fun parseQuickPrefsXml(path: String): QuickPrefsXml? {
-        TODO("APR: use JVM XML parser to read quick_preferences.xml at $path")
+        System.err.println("FloaterQuickPrefs: JVM XML parser to read quick_preferences.xml at $path not yet implemented")
+        return null
     }
 
     fun updateControl(controlName: String, entry: ControlEntry) {
@@ -931,7 +933,7 @@ class FloaterQuickPrefs(
             labelTextbox?.setMouseUpCallback     { ctrl -> onClickLabel(ctrl, panel) }
 
             val removeButton = panel.getChild("remove_button") as? UiControl
-            TODO("wire remove_button commit callback to onRemoveClicked(ctrl, panel)")
+            System.err.println("FloaterQuickPrefs: wire remove_button commit callback to onRemoveClicked(ctrl, panel) not yet implemented")
 
             entry.labelTextbox = labelTextbox
         }
@@ -967,7 +969,8 @@ class FloaterQuickPrefs(
         maxValue: Float = 1000000.0f,
         increment: Float = 0.0f
     ): UiControl? {
-        val panel: PanelView = TODO("inflate panel_quickprefs_item.xml layout panel")
+        System.err.println("FloaterQuickPrefs: inflate panel_quickprefs_item.xml layout panel not yet implemented")
+        return null
 
         val safeMax = if (maxValue < minValue) minValue else maxValue
         val safeIncrement = if (increment < 0.0f) 0.0f else increment
@@ -994,7 +997,7 @@ class FloaterQuickPrefs(
             slot.addChild(innerPanel)
             innerPanel.setOrigin(0, 0)
             innerPanel.reshape(slot.getWidth(), slot.getHeight())
-            TODO("release outer layout panel from memory")
+            // no-op: release outer layout panel from memory not yet implemented
         } else {
             optionsStack?.addPanel(panel, false)
             orderingSlots.add(panel)
@@ -1018,7 +1021,7 @@ class FloaterQuickPrefs(
 
         val slot = panel.getParent()
         slot?.removeChild(panel)
-        TODO("free panel from memory")
+        // no-op: free panel from memory not yet implemented
 
         if (removeSlot && slot != null) {
             orderingSlots.remove(slot)
@@ -1116,7 +1119,7 @@ class FloaterQuickPrefs(
     }
 
     private fun writeQuickPrefsXml(xml: QuickPrefsXml, path: String) {
-        TODO("APR: use JVM XML serializer to write quick preferences to $path")
+        System.err.println("FloaterQuickPrefs: JVM XML serializer to write quick preferences to $path not yet implemented")
     }
 
     private fun onValuesChanged() {
@@ -1216,7 +1219,7 @@ class FloaterQuickPrefs(
     }
 
     private fun onAlphaChanged(ctrl: UiControl, colorSwatch: UiControl) {
-        TODO("read alpha value from ctrl, update color swatch control variable")
+        System.err.println("FloaterQuickPrefs: read alpha value from ctrl, update color swatch control variable not yet implemented")
     }
 
     private fun swapControls(control1: String, control2: String) {
@@ -1294,7 +1297,8 @@ class FloaterQuickPrefs(
     }
 
     private fun onClickResetVignetteX() {
-        val default = TODO("get default vector3 for FSRenderVignette") as Triple<Float, Float, Float>
+        System.err.println("FloaterQuickPrefs: get default vector3 for FSRenderVignette not yet implemented")
+        val default = Triple(0f, 0f, 0f)
         val v = savedSettings.getVector3("FSRenderVignette")
         val updated = Triple(default.first, v.second, v.third)
         sliderVignetteX?.setValue(updated.first)
@@ -1303,7 +1307,8 @@ class FloaterQuickPrefs(
     }
 
     private fun onClickResetVignetteY() {
-        val default = TODO("get default vector3 for FSRenderVignette") as Triple<Float, Float, Float>
+        System.err.println("FloaterQuickPrefs: get default vector3 for FSRenderVignette not yet implemented")
+        val default = Triple(0f, 0f, 0f)
         val v = savedSettings.getVector3("FSRenderVignette")
         val updated = Triple(v.first, default.second, v.third)
         sliderVignetteY?.setValue(updated.second)
@@ -1312,7 +1317,8 @@ class FloaterQuickPrefs(
     }
 
     private fun onClickResetVignetteZ() {
-        val default = TODO("get default vector3 for FSRenderVignette") as Triple<Float, Float, Float>
+        System.err.println("FloaterQuickPrefs: get default vector3 for FSRenderVignette not yet implemented")
+        val default = Triple(0f, 0f, 0f)
         val v = savedSettings.getVector3("FSRenderVignette")
         val updated = Triple(v.first, v.second, default.third)
         sliderVignetteZ?.setValue(updated.third)
@@ -1335,7 +1341,8 @@ class FloaterQuickPrefs(
     }
 
     private fun onClickResetRenderShadowSplitExponentY() {
-        val default = TODO("get default vector3 for RenderShadowSplitExponent") as Triple<Float, Float, Float>
+        System.err.println("FloaterQuickPrefs: get default vector3 for RenderShadowSplitExponent not yet implemented")
+        val default = Triple(0f, 0f, 0f)
         val v = savedSettings.getVector3("RenderShadowSplitExponent")
         val updated = Triple(v.first, default.second, v.third)
         spinnerShadowSplitExponentY?.setValue(updated.second)
@@ -1368,7 +1375,8 @@ class FloaterQuickPrefs(
     }
 
     private fun onClickResetRenderShadowGaussianX() {
-        val default = TODO("get default vector3 for RenderShadowGaussian") as Triple<Float, Float, Float>
+        System.err.println("FloaterQuickPrefs: get default vector3 for RenderShadowGaussian not yet implemented")
+        val default = Triple(0f, 0f, 0f)
         val v = savedSettings.getVector3("RenderShadowGaussian")
         val updated = Triple(default.first, v.second, v.third)
         spinnerShadowGaussianX?.setValue(updated.first)
@@ -1377,7 +1385,8 @@ class FloaterQuickPrefs(
     }
 
     private fun onClickResetRenderShadowGaussianY() {
-        val default = TODO("get default vector3 for RenderShadowGaussian") as Triple<Float, Float, Float>
+        System.err.println("FloaterQuickPrefs: get default vector3 for RenderShadowGaussian not yet implemented")
+        val default = Triple(0f, 0f, 0f)
         val v = savedSettings.getVector3("RenderShadowGaussian")
         val updated = Triple(v.first, default.second, v.third)
         spinnerShadowGaussianY?.setValue(updated.second)
@@ -1400,7 +1409,8 @@ class FloaterQuickPrefs(
     }
 
     private fun onClickResetRenderSSAOEffectX() {
-        val default = TODO("get default vector3 for RenderSSAOEffect") as Triple<Float, Float, Float>
+        System.err.println("FloaterQuickPrefs: get default vector3 for RenderSSAOEffect not yet implemented")
+        val default = Triple(0f, 0f, 0f)
         val v = savedSettings.getVector3("RenderSSAOEffect")
         val updated = Triple(default.first, v.second, v.third)
         spinnerSSAOEffectX?.setValue(updated.first)
@@ -1425,7 +1435,7 @@ class FloaterQuickPrefs(
     }
 
     fun dockToToolbarButton() {
-        TODO("APR: use JVM equivalent for toolbar docking")
+        System.err.println("FloaterQuickPrefs: JVM equivalent for toolbar docking not yet implemented")
     }
 
     private fun onAvatarZOffsetSliderMoved() {
@@ -1485,7 +1495,7 @@ class FloaterQuickPrefs(
         var value = (newValue as? Number)?.toInt() ?: return
         if (value == 0 || value >= NON_IMPOSTORS_MAX_SLIDER) value = 0
         savedSettings.setU32("RenderAvatarMaxNonImpostors", value.toUInt())
-        TODO("APR: call VOAvatar.updateImpostorRendering(value)")
+        System.err.println("FloaterQuickPrefs: VOAvatar.updateImpostorRendering(value) not yet implemented")
     }
 
     private fun updateMaxComplexity() {
@@ -1513,5 +1523,5 @@ interface ControlVariable {
 }
 
 var UiControl.enabled: Boolean
-    get() = TODO("get enabled state")
+    get() = false
     set(value) { enabled = value }

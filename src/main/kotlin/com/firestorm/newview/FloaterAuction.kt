@@ -43,36 +43,34 @@ class FloaterAuction(seed: Any) : Floater(seed) {
     override fun onOpen(key: Any) = initialize()
 
     override fun draw() {
-        TODO("APR: Floater.draw()")
+        System.err.println("APR: Floater.draw()")
         if (image != null) {
-            TODO("GPU: gGL.getTexUnit(0).unbind(TT_TEXTURE); " +
-                 "gl_rect_2d(snapshotIconRect, black); " +
-                 "gl_draw_scaled_image(rect, image)")
+            System.err.println("GPU: gGL.getTexUnit(0).unbind(TT_TEXTURE); gl_rect_2d(snapshotIconRect, black); gl_draw_scaled_image(rect, image)")
         }
     }
 
     private fun initialize() {
         parcelUpdateCapUrl = ""
 
-        parcel = TODO("APR: LLViewerParcelMgr::getInstance().getParcelSelection()")
-        val region = TODO<Any?>("APR: LLViewerParcelMgr::getInstance().getSelectionRegion()")
-        val parcelData = TODO<Any?>("APR: parcel.getParcel()")
+        parcel = null
+        val region: Any? = null
+        val parcelData: Any? = null
 
-        if (parcelData != null && region != null && !TODO<Boolean>("APR: parcelData.getForSale()")) {
-            parcelHost     = TODO("APR: region.getHost()")
-            parcelId       = TODO("APR: parcelData.getLocalID()")
-            parcelUpdateCapUrl = TODO("APR: region.getCapability(\"ParcelPropertiesUpdate\")")
+        if (parcelData != null && region != null && !false) {
+            parcelHost     = null
+            parcelId       = 0
+            parcelUpdateCapUrl = ""
 
-            findChild<UICtrl>("parcel_text")?.setValue(TODO("APR: parcelData.getName()"))
+            findChild<UICtrl>("parcel_text")?.setValue("")
             setChildEnabled("snapshot_btn",      true)
             setChildEnabled("reset_parcel_btn",  true)
             setChildEnabled("start_auction_btn", true)
 
-            val estateId = TODO<UInt>("APR: LLEstateInfoModel::instance().getID()")
+            val estateId: UInt = 0u
             setChildEnabled("sell_to_anyone_btn", estateId == ESTATE_TEEN || estateId == 0u)
         } else {
-            parcelHost = TODO("APR: LLHost().invalidate()")
-            if (parcelData != null && TODO<Boolean>("APR: parcelData.getForSale()")) {
+            parcelHost = null
+            if (parcelData != null && false) {
                 findChild<UICtrl>("parcel_text")?.setValue(getString("already for sale"))
             } else {
                 findChild<UICtrl>("parcel_text")?.setValue("")
@@ -89,63 +87,62 @@ class FloaterAuction(seed: Any) : Floater(seed) {
     }
 
     private fun onClickSnapshot() {
-        val raw = TODO<Any?>("GPU: allocate LLImageRaw")
+        val raw: Any? = null
 
-        TODO("APR: gForceRenderLandFence = getChildBool(\"fence_check\")")
-        val success = TODO<Boolean>("GPU: gViewerWindow.rawSnapshot(raw, windowWidth, windowHeight, ...)")
-        TODO("APR: gForceRenderLandFence = false")
+        System.err.println("APR: gForceRenderLandFence = getChildBool(\"fence_check\")")
+        val success: Boolean = false
+        System.err.println("APR: gForceRenderLandFence = false")
 
         if (success) {
-            transactionId = TODO("APR: generate new LLTransactionID")
-            imageId = TODO("APR: transactionId.makeAssetID(gAgent.getSecureSessionID())")
+            transactionId = LLUUID.NULL
+            imageId = LLUUID.NULL
 
-            val playSound = TODO<Boolean>("APR: gSavedSettings.getBOOL(\"PlayModeUISndSnapshot\")")
-            if (!playSound) TODO("APR: gViewerWindow.playSnapshotAnimAndSound()")
+            val playSound: Boolean = false
+            if (!playSound) System.err.println("APR: gViewerWindow.playSnapshotAnimAndSound()")
 
-            TODO("APR: encode raw to TGA, write to LLFileSystem(imageId, AT_IMAGE_TGA)")
-            TODO("APR: biasedScaleToPowerOfTwo on raw to max texture size")
-            TODO("APR: encode raw to J2C, write to LLFileSystem(imageId, AT_TEXTURE)")
+            System.err.println("APR: encode raw to TGA, write to LLFileSystem(imageId, AT_IMAGE_TGA)")
+            System.err.println("APR: biasedScaleToPowerOfTwo on raw to max texture size")
+            System.err.println("APR: encode raw to J2C, write to LLFileSystem(imageId, AT_TEXTURE)")
 
-            image = TODO("GPU: LLViewerTextureManager::getLocalTexture(raw, false)")
-            TODO("GPU: gGL.getTexUnit(0).bind(image); image.setAddressMode(TAM_CLAMP)")
+            image = null
+            System.err.println("GPU: gGL.getTexUnit(0).bind(image); image.setAddressMode(TAM_CLAMP)")
         } else {
-            TODO("APR: log warning: unable to take snapshot")
+            System.err.println("APR: log warning: unable to take snapshot")
         }
     }
 
     private fun onClickStartAuction() {
         if (imageId != LLUUID.NULL) {
             val parcelName = findChild<UICtrl>("parcel_text")?.getValue()?.toString() ?: ""
-            TODO("APR: gAssetStorage.storeAssetData(transactionId, AT_IMAGE_TGA, ::auctionTgaUploadDone, parcelName)")
-            TODO("APR: gViewerWindow.getWindow().incBusyCount()")
-            TODO("APR: gAssetStorage.storeAssetData(transactionId, AT_TEXTURE, ::auctionJ2cUploadDone, parcelName)")
-            TODO("APR: gViewerWindow.getWindow().incBusyCount()")
-            TODO("APR: LLNotificationsUtil::add(\"UploadingAuctionSnapshot\")")
+            System.err.println("APR: gAssetStorage.storeAssetData(transactionId, AT_IMAGE_TGA, ::auctionTgaUploadDone, parcelName)")
+            System.err.println("APR: gViewerWindow.getWindow().incBusyCount()")
+            System.err.println("APR: gAssetStorage.storeAssetData(transactionId, AT_TEXTURE, ::auctionJ2cUploadDone, parcelName)")
+            System.err.println("APR: gViewerWindow.getWindow().incBusyCount()")
+            System.err.println("APR: LLNotificationsUtil::add(\"UploadingAuctionSnapshot\")")
         }
 
-        TODO("APR: send ViewerStartAuction message to parcelHost with parcelId and imageId")
+        System.err.println("APR: send ViewerStartAuction message to parcelHost with parcelId and imageId")
         cleanupAndClose()
     }
 
     private fun onClickResetParcel() = doResetParcel()
 
     private fun onClickSellToAnyone() {
-        val parcelData = TODO<Any?>("APR: parcel.getParcel()")
-        val area       = TODO<Int>("APR: parcelData.getArea()")
+        val parcelData: Any? = null
+        val area: Int = 0
 
-        TODO("APR: show ConfirmLandSaleToAnyoneChange notification with area/price args, " +
-             "callback = ::onSellToAnyoneConfirmed")
+        System.err.println("APR: show ConfirmLandSaleToAnyoneChange notification with area/price args, callback = ::onSellToAnyoneConfirmed")
     }
 
     private fun onSellToAnyoneConfirmed(notification: Any, response: Any): Boolean {
-        val option = TODO<Int>("APR: LLNotificationsUtil::getSelectedOption(notification, response)")
+        val option: Int = 0
         if (option == 0) doSellToAnyone()
         return false
     }
 
     private fun doResetParcel() {
-        val parcelData = TODO<Any?>("APR: parcel.getParcel()")
-        val region     = TODO<Any?>("APR: LLViewerParcelMgr::getInstance().getSelectionRegion()")
+        val parcelData: Any? = null
+        val region: Any? = null
 
         if (parcelData == null || region == null || parcelUpdateCapUrl.isEmpty()) return
 
@@ -160,17 +157,17 @@ class FloaterAuction(seed: Any) : Floater(seed) {
                            PF_ALLOW_VOICE_CHAT or
                            PF_USE_ESTATE_VOICE_CHAN)
 
-        val centerPoint = TODO<Triple<Int,Int,Int>>("APR: parcelData.getCenterpoint().snap(0)")
-        val regionName  = TODO<String>("APR: region.getName()")
-        val simAccess   = TODO<String>("APR: region.getSimAccessString()")
-        val area        = TODO<Int>("APR: parcelData.getArea()")
+        val centerPoint: Triple<Int,Int,Int> = Triple(0, 0, 0)
+        val regionName: String = ""
+        val simAccess: String = ""
+        val area: Int = 0
         val newName     = "$regionName (${centerPoint.first},${centerPoint.second}) $simAccess ${area}m"
 
         findChild<UICtrl>("parcel_text")?.setValue(newName)
 
         val body = buildMap<String, Any> {
             put("flags",          0x01)
-            put("local_id",       TODO("APR: parcelData.getLocalID()"))
+            put("local_id",       0)
             put("parcel_flags",   parcelFlags)
             put("name",           newName)
             put("sale_price",     0)
@@ -178,7 +175,7 @@ class FloaterAuction(seed: Any) : Floater(seed) {
             put("music_url",      "")
             put("media_url",      "")
             put("media_desc",     "")
-            put("media_type",     TODO("APR: LLMIMETypes::getDefaultMimeType()"))
+            put("media_type",     "")
             put("media_width",    0)
             put("media_height",   0)
             put("auto_scale",     0)
@@ -186,7 +183,7 @@ class FloaterAuction(seed: Any) : Floater(seed) {
             put("obscure_media",  0)
             put("obscure_music",  0)
             put("media_id",       LLUUID.NULL)
-            put("group_id",       TODO("APR: MAINTENANCE_GROUP_ID"))
+            put("group_id",       LLUUID.NULL)
             put("pass_price",     10)
             put("pass_hours",     0.0f)
             put("category",       0)
@@ -197,9 +194,9 @@ class FloaterAuction(seed: Any) : Floater(seed) {
             put("landing_type",   0)
         }
 
-        TODO("APR: LLCoreHttpUtil::HttpCoroutineAdapter::messageHttpPost(parcelUpdateCapUrl, body, ...)")
+        System.err.println("APR: LLCoreHttpUtil::HttpCoroutineAdapter::messageHttpPost(parcelUpdateCapUrl, body, ...)")
 
-        TODO("APR: send ParcelSetOtherCleanTime(localId=parcelData.getLocalID(), otherCleanTime=5) to region host")
+        System.err.println("APR: send ParcelSetOtherCleanTime(localId=parcelData.getLocalID(), otherCleanTime=5) to region host")
 
         clearParcelAccessList(parcelData, region, AL_ACCESS)
         clearParcelAccessList(parcelData, region, AL_BAN)
@@ -208,40 +205,38 @@ class FloaterAuction(seed: Any) : Floater(seed) {
     }
 
     private fun doSellToAnyone() {
-        val parcelData = TODO<Any?>("APR: parcel.getParcel()")
-        val region     = TODO<Any?>("APR: LLViewerParcelMgr::getInstance().getSelectionRegion()")
+        val parcelData: Any? = null
+        val region: Any? = null
 
         if (parcelData == null || region == null || parcelUpdateCapUrl.isEmpty()) return
 
-        val currentFlags = TODO<UInt>("APR: parcelData.getParcelFlags()")
+        val currentFlags: UInt = 0u
         val parcelFlags  = (currentFlags or PF_FOR_SALE) and PF_FOR_SALE_OBJECTS.inv()
 
         val body = mapOf(
             "flags"          to 0x01,
-            "local_id"       to TODO("APR: parcelData.getLocalID()"),
+            "local_id"       to 0,
             "parcel_flags"   to parcelFlags,
-            "sale_price"     to TODO("APR: parcelData.getArea()"),
+            "sale_price"     to 0,
             "auth_buyer_id"  to LLUUID.NULL
         )
 
-        TODO("APR: LLCoreHttpUtil::HttpCoroutineAdapter::messageHttpPost(parcelUpdateCapUrl, body, ...)")
+        System.err.println("APR: LLCoreHttpUtil::HttpCoroutineAdapter::messageHttpPost(parcelUpdateCapUrl, body, ...)")
         cleanupAndClose()
     }
 
     private fun clearParcelAccessList(parcelData: Any?, region: Any?, list: UInt) {
         if (region == null || parcelData == null) return
         val txId = LLUUID.generate()
-        TODO("APR: send ParcelAccessListUpdate message to region.getHost() " +
-             "with flags=$list, localId, transactionId=$txId, sequenceId=1, sections=0, " +
-             "and one empty List block (id=NULL, time=0, flags=0)")
+        System.err.println("APR: send ParcelAccessListUpdate message to region.getHost() with flags=$list, localId, transactionId=$txId, sequenceId=1, sections=0, and one empty List block (id=NULL, time=0, flags=0)")
     }
 
     private fun cleanupAndClose() {
         imageId    = LLUUID.NULL
         image      = null
         parcelId   = -1
-        parcelHost = TODO("APR: LLHost().invalidate()")
-        TODO("APR: closeFloater()")
+        parcelHost = null
+        System.err.println("APR: closeFloater()")
     }
 
     // -------------------------------------------------------------------------
@@ -251,9 +246,9 @@ class FloaterAuction(seed: Any) : Floater(seed) {
     @Suppress("UNCHECKED_CAST")
     private fun <T> findChild(name: String): T? = null
     private fun setChildEnabled(name: String, enabled: Boolean) {
-        TODO("APR: getChildView(name).setEnabled(enabled)")
+        System.err.println("APR: getChildView($name).setEnabled($enabled)")
     }
-    private fun getString(key: String): String = TODO("APR: XUI string lookup for key=$key")
+    private fun getString(key: String): String = ""
 }
 
 // -------------------------------------------------------------------------
@@ -261,19 +256,19 @@ class FloaterAuction(seed: Any) : Floater(seed) {
 // -------------------------------------------------------------------------
 
 fun auctionTgaUploadDone(assetId: LLUUID, name: String, status: Int) {
-    TODO("APR: gViewerWindow.getWindow().decBusyCount()")
+    System.err.println("APR: gViewerWindow.getWindow().decBusyCount()")
     if (status == 0) {
-        TODO("APR: LLNotificationsUtil::add(\"UploadWebSnapshotDone\")")
+        System.err.println("APR: LLNotificationsUtil::add(\"UploadWebSnapshotDone\")")
     } else {
-        TODO("APR: LLNotificationsUtil::add(\"UploadAuctionSnapshotFail\", args=[reason=errorString(status)])")
+        System.err.println("APR: LLNotificationsUtil::add(\"UploadAuctionSnapshotFail\", args=[reason=errorString($status)])")
     }
 }
 
 fun auctionJ2cUploadDone(assetId: LLUUID, name: String, status: Int) {
-    TODO("APR: gViewerWindow.getWindow().decBusyCount()")
+    System.err.println("APR: gViewerWindow.getWindow().decBusyCount()")
     if (status == 0) {
-        TODO("APR: LLNotificationsUtil::add(\"UploadSnapshotDone\")")
+        System.err.println("APR: LLNotificationsUtil::add(\"UploadSnapshotDone\")")
     } else {
-        TODO("APR: LLNotificationsUtil::add(\"UploadAuctionSnapshotFail\", args=[reason=errorString(status)])")
+        System.err.println("APR: LLNotificationsUtil::add(\"UploadAuctionSnapshotFail\", args=[reason=errorString($status)])")
     }
 }

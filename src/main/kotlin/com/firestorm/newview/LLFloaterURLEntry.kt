@@ -57,7 +57,7 @@ class LLFloaterURLEntry private constructor(parent: LLHandle<LLPanel>) : LLFloat
     }
 
     override fun onClose(appQuitting: Boolean) {
-        TODO("APR: use JVM equivalent")
+        System.err.println("LLFloaterURLEntry: onClose not yet implemented")
     }
 
     companion object {
@@ -80,7 +80,7 @@ class LLFloaterURLEntry private constructor(parent: LLHandle<LLPanel>) : LLFloat
                 LLURLHistory.addURL("parcel", mediaUrl)
             }
 
-            TODO("APR: use JVM equivalent")
+            System.err.println("LLFloaterURLEntry: onBtnOK not yet implemented")
         }
 
         private fun onBtnCancel(self: LLFloaterURLEntry) {
@@ -94,7 +94,7 @@ class LLFloaterURLEntry private constructor(parent: LLHandle<LLPanel>) : LLFloat
         }
 
         private fun getMediaTypeCoro(url: String, parentHandle: LLHandle<LLFloater>) {
-            TODO("APR: use JVM equivalent")
+            System.err.println("LLFloaterURLEntry: getMediaTypeCoro not yet implemented")
         }
     }
 

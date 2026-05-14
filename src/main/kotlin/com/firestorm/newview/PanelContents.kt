@@ -71,11 +71,11 @@ class PanelContents : Panel() {
 
         @JvmStatic fun onClickPermissions(userdata: Any?) {
             val self = userdata as? PanelContents ?: return
-            TODO("APR: use JVM equivalent - open bulk permissions floater as dependent of parent")
+            System.err.println("PanelContents: onClickPermissions not yet implemented")
         }
 
         @JvmStatic fun onClickResetScripts(userdata: Any?) {
-            TODO("APR: use JVM equivalent - send reset scripts action to selected objects")
+            System.err.println("PanelContents: onClickResetScripts not yet implemented")
         }
 
         @JvmStatic fun onClickRefresh(userdata: Any?) {

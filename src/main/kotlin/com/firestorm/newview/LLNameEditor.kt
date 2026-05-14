@@ -37,12 +37,13 @@ class LLNameEditor(
         mNameId = nameId
 
         val name: String = if (!isGroup) {
-            TODO("APR: use JVM equivalent of LLAvatarNameCache::get to resolve nameId to display name")
+            System.err.println("LLNameEditor: setNameID (avatar) not yet implemented")
+            ""
         } else {
-            TODO("APR: use JVM equivalent of gCacheName->getGroupName to resolve nameId to group name")
+            System.err.println("LLNameEditor: setNameID (group) not yet implemented")
+            ""
         }
 
-        @Suppress("UNREACHABLE_CODE")
         setText(name)
     }
 

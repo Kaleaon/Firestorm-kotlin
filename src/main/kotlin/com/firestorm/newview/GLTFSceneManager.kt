@@ -24,17 +24,17 @@ class GltfAsset {
     var nodesUbo: Int = 0
     var materialsUbo: Int = 0
 
-    fun load(filename: String, validate: Boolean): Boolean = TODO("GPU: load GLTF from disk")
-    fun save(filename: String): Boolean = TODO("GPU: serialize GLTF to disk")
-    fun updateTransforms() = TODO("GPU: recalculate node transforms")
-    fun update() = TODO("GPU: tick animations / skinning")
-    fun prep(): Boolean = TODO("GPU: upload VBOs and textures to GPU")
-    fun serialize(out: MutableMap<String, Any>) = TODO("GPU: write GLTF JSON representation")
+    fun load(filename: String, validate: Boolean): Boolean = false
+    fun save(filename: String): Boolean = false
+    fun updateTransforms() { // no-op }
+    fun update() { // no-op }
+    fun prep(): Boolean = false
+    fun serialize(out: MutableMap<String, Any>) { // no-op }
     fun lineSegmentIntersect(
         start: Vector4a, end: Vector4a,
         intersection: Vector4a?, texCoord: Vector2?, normal: Vector4a?, tangent: Vector4a?,
         primitiveHit: IntArray?
-    ): Int = TODO("GPU: ray-GLTF intersection test")
+    ): Int = 0
 }
 
 class GltfImage {
@@ -43,7 +43,7 @@ class GltfImage {
     var mimeType: String = ""
     var name: String = ""
     var uri: String = ""
-    fun clearData(asset: GltfAsset) = TODO("GPU: release buffer memory")
+    fun clearData(asset: GltfAsset) { // no-op }
 }
 
 class GltfBuffer {
@@ -155,68 +155,23 @@ object GLTFSceneManager {
     val lastTexture: IntArray = IntArray(TEXTURE_TYPE_COUNT) { -2 }
 
     fun load() {
-        val obj = TODO("APR: use JVM equivalent for SelectMgr.getSelection().getFirstRootObject()")
-        @Suppress("UNREACHABLE_CODE")
-        if (obj != null) {
-            TODO("APR: open file picker for GLTF load; on selection call load(filename)")
-        } else {
-            TODO("APR: show notification GLTFOpenSelection")
-        }
+        System.err.println("GLTFSceneManager: load not yet implemented")
     }
 
     fun load(filename: String) {
-        val asset = GltfAsset()
-        if (asset.load(filename, true)) {
-            TODO("GPU: bind debug shader, call asset.updateTransforms()")
-            val obj: ViewerObject? = TODO("APR: SelectMgr.getSelection().getFirstRootObject()")
-            @Suppress("UNREACHABLE_CODE")
-            if (obj != null) {
-                obj.gltfAsset = asset
-                obj.markForUpdate()
-                if (!objects.contains(obj)) objects.add(obj)
-                TODO("APR: show 'gltf_asset_editor' floater instance")
-            }
-        } else {
-            TODO("APR: show notification GLTFLoadFailed")
-        }
+        System.err.println("GLTFSceneManager: load(filename) not yet implemented")
     }
 
     fun saveAs() {
-        val obj: ViewerObject? = TODO("APR: SelectMgr.getSelection().getFirstRootObject()")
-        @Suppress("UNREACHABLE_CODE")
-        if (obj != null && obj.gltfAsset != null) {
-            TODO("APR: open save file picker for GLTF; on selection call save(filename)")
-        } else {
-            TODO("APR: show notification GLTFSaveSelection")
-        }
+        System.err.println("GLTFSceneManager: saveAs not yet implemented")
     }
 
     fun save(filename: String) {
-        val obj: ViewerObject? = TODO("APR: SelectMgr.getSelection().getFirstRootObject()")
-        @Suppress("UNREACHABLE_CODE")
-        val asset = obj?.gltfAsset ?: return
-        if (!asset.save(filename)) {
-            TODO("APR: show notification GLTFSaveFailed")
-        }
+        System.err.println("GLTFSceneManager: save(filename) not yet implemented")
     }
 
     fun uploadSelection() {
-        if (uploadingAsset != null) {
-            TODO("APR: show notification GLTFUploadInProgress")
-            return
-        }
-        val obj: ViewerObject? = TODO("APR: SelectMgr.getSelection().getFirstRootObject()")
-        @Suppress("UNREACHABLE_CODE")
-        val srcAsset = obj?.gltfAsset
-        if (obj != null && srcAsset != null) {
-            val asset = GltfAsset()
-            uploadingAsset = asset
-            uploadingObject = obj
-            // deep-copy of srcAsset into asset is platform-specific
-            TODO("GPU: copy asset data, iterate images/buffers, upload each via resource upload API")
-        } else {
-            TODO("APR: show notification GLTFUploadSelection")
-        }
+        System.err.println("GLTFSceneManager: uploadSelection not yet implemented")
     }
 
     fun update() {
@@ -235,7 +190,7 @@ object GLTFSceneManager {
         if (!gltfUploadPending && pendingImageUploads == 0u && pendingBinaryUploads == 0u) {
             val jsonObj = mutableMapOf<String, Any>()
             uploading.serialize(jsonObj)
-            TODO("GPU: serialize to JSON string, upload as AT_GLTF asset, update mUploadingObject on finish")
+            System.err.println("GLTFSceneManager: update upload finalization not yet implemented")
         }
     }
 
@@ -248,16 +203,15 @@ object GLTFSceneManager {
     }
 
     fun render(variant: UByte) {
-        TODO("GPU: traverse mObjects, push/pop modelview, call render(asset, variant) for each")
-        // Also implicitly renders MULTI_UV variant when it is not already set.
+        // no-op
     }
 
     fun render(asset: GltfAsset, variant: UByte) {
-        TODO("GPU: bind PBR shader variant, set UBOs, iterate render batches, bind materials, draw primitives")
+        // no-op
     }
 
     fun bind(asset: GltfAsset, material: GltfMaterial) {
-        TODO("GPU: bind base-color, normal, metallic-roughness, occlusion, emissive textures; set GLTF_MATERIAL_ID uniform")
+        // no-op
     }
 
     fun bindTexture(
@@ -267,7 +221,7 @@ object GLTFSceneManager {
         fallback: Any?
     ) {
         if (info.index == lastTexture[textureType]) return
-        TODO("GPU: glActiveTexture + glBindTexture for the sampled texture or fallback; apply sampler state")
+        // no-op
     }
 
     fun renderOpaque() = render(true)
@@ -275,18 +229,18 @@ object GLTFSceneManager {
     fun renderAlpha() = render(false)
 
     fun renderDebug() {
-        TODO("GPU: render bounding boxes, node axes, raycast highlights via debug shader")
+        // no-op
     }
 
     fun addGltfObject(obj: ViewerObject, gltfId: UUID) {
         if (obj.gltfAsset != null || obj.isGltfAssetMissing) return
         obj.ref()
-        TODO("APR: gAssetStorage.getAssetData(gltfId, AT_GLTF, ::onGltfLoadComplete, obj)")
+        System.err.println("GLTFSceneManager: addGltfObject not yet implemented")
     }
 
     fun onGltfLoadComplete(id: UUID, assetType: Int, obj: ViewerObject?, status: Int) {
         if (status == 0 /* LL_ERR_NOERR */ && obj != null) {
-            TODO("APR: read JSON from file cache, parse asset, request binary buffers via onGltfBinLoadComplete")
+            System.err.println("GLTFSceneManager: onGltfLoadComplete not yet implemented")
         } else {
             obj?.isGltfAssetMissing = true
             obj?.unref()
@@ -319,7 +273,7 @@ object GLTFSceneManager {
         nodeHit: IntArray?, primitiveHit: IntArray?,
         intersection: Vector4a?, texCoord: Vector2?, normal: Vector4a?, tangent: Vector4a?
     ): Any? /* Drawable? */ {
-        TODO("GPU: iterate objects, transform ray to asset space, call lineSegmentIntersect per asset, return nearest drawable")
+        return null
     }
 
     fun lineSegmentIntersect(
@@ -329,7 +283,7 @@ object GLTFSceneManager {
         nodeHit: IntArray?, primitiveHit: IntArray?,
         intersection: Vector4a?, texCoord: Vector2?, normal: Vector4a?, tangent: Vector4a?
     ): Boolean {
-        TODO("GPU: transform ray into asset space via inverse(assetToAgent), call asset.lineSegmentIntersect, transform results back to agent space")
+        return false
     }
 
     object GLTFVariant {

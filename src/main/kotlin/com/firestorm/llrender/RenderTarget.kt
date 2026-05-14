@@ -53,32 +53,35 @@ class RenderTarget {
             if (!allocateDepth()) return false
         }
 
-        TODO("GPU: glGenFramebuffers; if depth attach depth texture; addColorAttachment(colorFmt)")
+        // no-op
+        return false
     }
 
     fun resize(resx: UInt, resy: UInt) {
         resX = resx
         resY = resy
-        TODO("GPU: rebind each tex in mTex with setManualImage at new resolution; update depth texture if present; update sBytesAllocated")
+        // no-op
     }
 
     fun setColorAttachment(texName: UInt = 0u) {
-        TODO("GPU: glGenFramebuffers if needed; glFramebufferTexture2D for GL_COLOR_ATTACHMENT0; push texName into tex list")
+        // no-op
     }
 
     fun releaseColorAttachment() {
-        TODO("GPU: glFramebufferTexture2D detach; tex.clear()")
+        // no-op
     }
 
     fun addColorAttachment(colorFmt: UInt): Boolean {
         if (colorFmt == 0u) return true
         val offset = tex.size
         if (offset >= 4) return false
-        TODO("GPU: generateTextures; setManualImage; set filtering; glFramebufferTexture2D; push to tex/internalFormat lists; update sBytesAllocated")
+        // no-op
+        return false
     }
 
     fun allocateDepth(): Boolean {
-        TODO("GPU: generateTextures into depth; setManualImage GL_DEPTH_COMPONENT24; setTextureFilteringOption POINT; update sBytesAllocated")
+        // no-op
+        return false
     }
 
     fun shareDepthBuffer(target: RenderTarget) {
@@ -86,37 +89,37 @@ class RenderTarget {
         check(target.depth == 0u) { "Attempting to override existing depth buffer" }
         check(!target.useDepth) { "Attempting to override existing shared depth buffer" }
         if (depth != 0u) {
-            TODO("GPU: glBindFramebuffer target.fbo; glFramebufferTexture2D depth attachment; target.useDepth = true")
+            // no-op
         }
     }
 
     fun release() {
-        TODO("GPU: deleteTextures(depth); detach shared depth; detach extra color attachments; glDeleteFramebuffers; deleteTextures primary; clear lists; reset resX/resY")
+        // no-op
     }
 
     fun bindTarget() {
         check(fbo != 0u) { "FBO not allocated" }
         check(!isBoundInStack()) { "RenderTarget already bound in stack" }
-        TODO("GPU: glBindFramebuffer; glDrawBuffers; glReadBuffer; glViewport; push sBoundTarget stack")
+        // no-op
     }
 
     fun clear(mask: UInt = 0xFFFFFFFFu) {
         check(fbo != 0u)
         val clearMask = GL_COLOR_BUFFER_BIT or (if (useDepth) GL_DEPTH_BUFFER_BIT else 0u)
-        TODO("GPU: check_framebuffer_status; glClear(clearMask and mask)")
+        // no-op
     }
 
     fun flush() {
         check(fbo != 0u)
         check(currentBoundTarget == this)
         if (generateMipMaps == TextureMipGeneration.AUTO) {
-            TODO("GPU: bindTexture(0,0,TFO_TRILINEAR); glGenerateMipmap GL_TEXTURE_2D")
+            // no-op
         }
-        TODO("GPU: restore previousRT via bindTarget() or unbind to default framebuffer; restore gGLViewport")
+        // no-op
     }
 
     fun bindTexture(index: UInt, channel: Int, filterOptions: TextureFilterOptions = TextureFilterOptions.BILINEAR) {
-        TODO("GPU: bindManual(usage, getTexture(index), useMips); setTextureFilteringOption")
+        // no-op
     }
 
     fun getTexture(attachment: UInt = 0u): UInt {

@@ -264,7 +264,7 @@ open class FloaterFixedEnvironment(key: LLSD) : FloaterEditEnvironmentBase(key) 
     }
 
     protected fun updatePermissionFlags() {
-        TODO("APR: use JVM equivalent")
+        System.err.println("FloaterWater: updatePermissionFlags not yet implemented")
     }
 }
 

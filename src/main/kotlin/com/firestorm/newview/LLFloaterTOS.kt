@@ -134,7 +134,6 @@ class LLFloaterTOS(data: LLSD) : LLModalDialog(data["message"].asString()), LLVi
                 loadingScreenLoaded = true
                 val url = getString("real_url")
                 val handle = getHandle()
-                // TODO("APR: use JVM equivalent") — launch coroutine to probe liveness of TOS URL
                 testSiteIsAlive(handle, url)
             } else if (realNavigateBegun) {
                 updateAgreeEnabled(true)
@@ -144,6 +143,19 @@ class LLFloaterTOS(data: LLSD) : LLModalDialog(data["message"].asString()), LLVi
     }
 
     private fun testSiteIsAlive(handle: LLHandle<LLFloater>, url: String) {
-        TODO("APR: use JVM equivalent — issue HEAD request to $url; on response call setSiteIsAlive(status.isSuccess())")
+        Thread {
+            val alive = try {
+                val conn = java.net.URL(url).openConnection() as java.net.HttpURLConnection
+                conn.requestMethod = "HEAD"
+                conn.connectTimeout = 10_000
+                conn.readTimeout = 10_000
+                val code = conn.responseCode
+                conn.disconnect()
+                code in 200..399
+            } catch (e: Exception) {
+                false
+            }
+            setSiteIsAlive(alive)
+        }.also { it.isDaemon = true; it.start() }
     }
 }

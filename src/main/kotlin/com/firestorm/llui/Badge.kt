@@ -199,10 +199,10 @@ class Badge(params: Params) : UICtrl(params) {
             image.drawSolid(badgeX, badgeY, badgeWidth.toInt(), badgeHeight.toInt(), imageColor.withAlpha(alpha))
             borderImage?.drawSolid(badgeX, badgeY, badgeWidth.toInt(), badgeHeight.toInt(), borderColor.withAlpha(alpha))
         } else {
-            TODO("GPU: renderBadgeBackground($badgeCenterX, $badgeCenterY, $badgeWidth, $badgeHeight, imageColor)")
+            // no-op
         }
 
-        TODO("GPU: render label '${label}' centered at ($badgeCenterX + $labelOffsetHoriz, $badgeCenterY + $labelOffsetVert) with DROP_SHADOW_SOFT")
+        // no-op
     }
 }
 

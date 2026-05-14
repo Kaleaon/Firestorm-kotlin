@@ -143,7 +143,7 @@ class AudioDecodeMgr private constructor() : Singleton<AudioDecodeMgr>() {
             // Process audio (WAV-load) queue — hand off to the audio engine
             while (audioQueue.isNotEmpty()) {
                 val uuid = audioQueue.removeFirst()
-                TODO("AUDIO: DecodeMgr — notify AudioEngine to call updateBufferForData($uuid)")
+                System.err.println("AudioDecodeMgr: processQueue audio notification not yet implemented")
             }
         }
 
@@ -187,6 +187,7 @@ class VorbisDecodeState(val uuid: LLUUID) {
      */
     fun decodeSection(): Boolean {
         if (finished) return true
-        TODO("AUDIO: Vorbis — read next Vorbis packet for asset $uuid, decode to PCM, write to .wav cache file; set isValid=true on completion")
+        System.err.println("VorbisDecodeState: decodeSection not yet implemented")
+        return false
     }
 }

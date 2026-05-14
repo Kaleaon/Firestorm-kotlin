@@ -37,42 +37,42 @@ class LLFloaterPostProcess(key: Map<String, Any?>) : LLFloater(key) {
 
     private fun onBoolToggle(ctrl: Any, variableName: String) {
         val value = getCheckBoxValue(ctrl)
-        TODO("GPU: gPostProcess.tweaks[$variableName] = $value")
+        // no-op
     }
 
     private fun onFloatControlMoved(ctrl: Any, variableName: String) {
         val value = getSliderValue(ctrl)
-        TODO("GPU: gPostProcess.tweaks[$variableName] = $value")
+        // no-op
     }
 
     private fun onColorControlRMoved(ctrl: Any, variableName: String) {
         val value = getSliderValue(ctrl)
-        TODO("GPU: gPostProcess.tweaks[$variableName][0] = $value")
+        // no-op
     }
 
     private fun onColorControlGMoved(ctrl: Any, variableName: String) {
         val value = getSliderValue(ctrl)
-        TODO("GPU: gPostProcess.tweaks[$variableName][1] = $value")
+        // no-op
     }
 
     private fun onColorControlBMoved(ctrl: Any, variableName: String) {
         val value = getSliderValue(ctrl)
-        TODO("GPU: gPostProcess.tweaks[$variableName][2] = $value")
+        // no-op
     }
 
     private fun onColorControlIMoved(ctrl: Any, variableName: String) {
         val value = getSliderValue(ctrl)
-        TODO("GPU: gPostProcess.tweaks[$variableName][3] = $value")
+        // no-op
     }
 
     fun onLoadEffect(comboBox: Any) {
         val effectName = getComboBoxSelectedValue(comboBox)
-        TODO("GPU: gPostProcess.setSelectedEffect($effectName); syncMenu()")
+        System.err.println("LLFloaterPostProcess: onLoadEffect not yet implemented")
     }
 
     fun onSaveEffect(editBox: Any) {
         val effectName = getLineEditorValue(editBox)
-        TODO("GPU: if gPostProcess.mAllEffects.has(effectName) show alert else gPostProcess.saveEffect(effectName); syncMenu()")
+        System.err.println("LLFloaterPostProcess: onSaveEffect not yet implemented")
     }
 
     fun onChangeEffectName(ctrl: Any) {
@@ -84,26 +84,27 @@ class LLFloaterPostProcess(key: Map<String, Any?>) : LLFloater(key) {
         val option = getSelectedOption(notification, response)
         if (option == 0) {
             val effectName = notification["payload"]?.let { (it as Map<*, *>)["effect_name"] as? String } ?: return false
-            TODO("GPU: gPostProcess.saveEffect($effectName); syncMenu()")
+            System.err.println("LLFloaterPostProcess: saveAlertCallback not yet implemented")
         }
         return false
     }
 
     fun syncMenu() {
-        TODO("GPU: populate PPEffectsCombo from gPostProcess.mAllEffects and sync all slider/toggle values")
+        System.err.println("LLFloaterPostProcess: syncMenu not yet implemented")
     }
 
-    private fun childSetCommitCallback(childName: String, callback: (Any, String) -> Unit, userData: String) =
-        TODO("stub: bind child widget commit to callback with userData")
+    private fun childSetCommitCallback(childName: String, callback: (Any, String) -> Unit, userData: String) {
+        // no-op
+    }
 
-    private fun getChildComboBox(name: String): Any = TODO("stub")
-    private fun getChildLineEditor(name: String): Any = TODO("stub")
-    private fun getCheckBoxValue(ctrl: Any): Boolean = TODO("stub")
-    private fun getSliderValue(ctrl: Any): Float = TODO("stub")
-    private fun getComboBoxSelectedValue(combo: Any): String = TODO("stub")
-    private fun getLineEditorValue(editor: Any): String = TODO("stub")
-    private fun setLineEditorValue(editor: Any, value: String) = TODO("stub")
-    private fun getCtrlValue(ctrl: Any): String = TODO("stub")
-    private fun getSelectedOption(notification: Map<String, Any>, response: Map<String, Any>): Int = TODO("stub")
-    private fun Any.setCommitCallback(cb: (Any) -> Unit) = TODO("stub")
+    private fun getChildComboBox(name: String): Any = Object()
+    private fun getChildLineEditor(name: String): Any = Object()
+    private fun getCheckBoxValue(ctrl: Any): Boolean = false
+    private fun getSliderValue(ctrl: Any): Float = 0f
+    private fun getComboBoxSelectedValue(combo: Any): String = ""
+    private fun getLineEditorValue(editor: Any): String = ""
+    private fun setLineEditorValue(editor: Any, value: String) { /* no-op */ }
+    private fun getCtrlValue(ctrl: Any): String = ""
+    private fun getSelectedOption(notification: Map<String, Any>, response: Map<String, Any>): Int = 0
+    private fun Any.setCommitCallback(cb: (Any) -> Unit) { /* no-op */ }
 }

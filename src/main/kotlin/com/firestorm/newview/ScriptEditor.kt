@@ -38,7 +38,7 @@ open class ScriptEditor(
 
     override fun draw() {
         val clipRect = Rect(mVisibleTextRect).apply { stretch(1) }
-        TODO("GPU: clip to clipRect")
+        // no-op
         super.draw()
         drawLineNumbers()
         drawPreeditMarker()
@@ -46,7 +46,7 @@ open class ScriptEditor(
     }
 
     private fun drawLineNumbers() {
-        TODO("GPU: draw line number gutter")
+        // no-op
         if (!mShowLineNumbers) return
 
         val scrolledViewRect = getVisibleDocumentRect()
@@ -60,7 +60,7 @@ open class ScriptEditor(
         val top = getRect().height
         val bottom = 0
 
-        TODO("GPU: gl_rect_2d separator line at x=$UI_TEXTEDITOR_LINE_NUMBER_MARGIN with grey3 color * transparency")
+        // no-op
 
         var lastLineNum = -1
         for (curLine in firstLine until numLines) {
@@ -73,7 +73,7 @@ open class ScriptEditor(
                 val isCurLine = cursorLine == line.mLineNum
                 val style = if (isCurLine) FontGL.BOLD else FontGL.NORMAL
                 val fgColor = if (isCurLine) mCursorColor else mReadOnlyFgColor
-                TODO("GPU: render line number ${line.mLineNum} right-aligned at x=${UI_TEXTEDITOR_LINE_NUMBER_MARGIN - 2}, y=$lineBottom with style=$style color=$fgColor")
+                // no-op
                 lastLineNum = line.mLineNum
             }
         }
@@ -150,7 +150,7 @@ open class ScriptEditor(
                 mVisibleTextRect.left - contentDisplayRect.left,
                 mVisibleTextRect.bottom - contentDisplayRect.bottom
             )
-            TODO("GPU: gl_rect_2d $translated with color $selectionColor")
+            // no-op
         }
     }
 

@@ -118,7 +118,7 @@ object LLMaterialMgr {
         if (mGetQueue.isNotEmpty()) processGetQueue()
         if (mGetAllQueue.isNotEmpty()) processGetAllQueue()
         if (mPutQueue.isNotEmpty()) processPutQueue()
-        TODO("APR: use JVM equivalent — mHttpRequest.update(0)")
+        System.err.println("LLMaterialMgr: onIdle not yet implemented")
     }
 
     private fun isGetPending(regionId: UUID, materialId: LLMaterialID): Boolean {
@@ -155,34 +155,34 @@ object LLMaterialMgr {
     }
 
     private fun processGetQueue() {
-        TODO("APR: use JVM equivalent — HTTP POST to RenderMaterials cap for each pending region")
+        System.err.println("LLMaterialMgr: processGetQueue not yet implemented")
     }
 
     private fun processGetAllQueue() {
         for (regionId in mGetAllQueue.toList()) {
             mGetAllPending[regionId] = currentTimeSeconds()
             mGetAllQueue.remove(regionId)
-            TODO("APR: use JVM equivalent — HTTP GET all materials for region $regionId via coroutine")
+            System.err.println("LLMaterialMgr: processGetAllQueue not yet implemented")
         }
     }
 
     private fun processPutQueue() {
-        TODO("APR: use JVM equivalent — HTTP PUT material faces to RenderMaterials cap per region")
+        System.err.println("LLMaterialMgr: processPutQueue not yet implemented")
     }
 
     fun onGetResponse(success: Boolean, content: Map<String, Any>, regionId: UUID) {
         if (!success) return
-        TODO("APR: use JVM equivalent — unzip LLSD binary, iterate materials, call setMaterial")
+        System.err.println("LLMaterialMgr: onGetResponse not yet implemented")
     }
 
     fun onGetAllResponse(success: Boolean, content: Map<String, Any>, regionId: UUID) {
         if (!success) return
-        TODO("APR: use JVM equivalent — unzip LLSD binary, set all materials, fire getAll callbacks")
+        System.err.println("LLMaterialMgr: onGetAllResponse not yet implemented")
     }
 
     fun onPutResponse(success: Boolean, content: Map<String, Any>) {
         if (!success) return
-        TODO("APR: use JVM equivalent — unzip LLSD binary, validate face material response")
+        System.err.println("LLMaterialMgr: onPutResponse not yet implemented")
     }
 
     fun onRegionRemoved(regionId: UUID) {

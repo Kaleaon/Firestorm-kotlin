@@ -127,19 +127,22 @@ class SelectNode(val obj: ViewerObject, doGlow: Boolean) {
 
     fun getObject(): ViewerObject = obj
 
-    fun saveColors() { TODO("snapshot current TE colors") }
-    fun saveShinyColors() { TODO("snapshot current TE shiny colors") }
+    fun saveColors() { System.err.println("SelectNode: snapshot current TE colors not yet implemented") }
+    fun saveShinyColors() { System.err.println("SelectNode: snapshot current TE shiny colors not yet implemented") }
     fun saveTextures(textures: List<LLUUID>) { savedTextures.clear(); savedTextures.addAll(textures) }
     fun saveGLTFMaterials(materials: List<LLUUID>, overrides: List<Any>) {
         savedGLTFMaterialIds.clear(); savedGLTFMaterialIds.addAll(materials)
     }
-    fun saveTextureScaleRatios(texIndex: Int) { TODO("compute and store texture scale ratios") }
+    fun saveTextureScaleRatios(texIndex: Int) { System.err.println("SelectNode: compute and store texture scale ratios not yet implemented") }
 
     fun allowOperationOnNode(op: UInt, groupProxyPower: ULong): Boolean {
-        TODO("check permissions against op and group proxy power")
+        System.err.println("SelectNode: check permissions against op and group proxy power not yet implemented")
+        return false
     }
 
-    fun renderOneSilhouette(color: FloatArray) { TODO("GPU: render silhouette for this node") }
+    fun renderOneSilhouette(color: FloatArray) {
+        // GPU: render silhouette for this node
+    }
 }
 
 class ObjectSelection {
@@ -236,12 +239,27 @@ class ObjectSelection {
     fun getSelectedPhysicsCost(): Float = allNodes.map { it.obj.physicsCost }.filter { it >= 0f }.sum()
     fun getSelectedLinksetPhysicsCost(): Float = rootNodes.map { it.obj.linksetPhysicsCost }.filter { it >= 0f }.sum()
 
-    fun getSelectedObjectRenderCost(): Int { TODO("sum GPU render cost across nodes") }
-    fun getSelectedObjectStreamingCost(): Float { TODO("sum streaming costs across nodes") }
-    fun getSelectedObjectTriangleCount(): UInt { TODO("sum triangle counts across nodes") }
+    fun getSelectedObjectRenderCost(): Int {
+        // GPU: sum render cost across nodes
+        return 0
+    }
+    fun getSelectedObjectStreamingCost(): Float {
+        // GPU: sum streaming costs across nodes
+        return 0f
+    }
+    fun getSelectedObjectTriangleCount(): UInt {
+        // GPU: sum triangle counts across nodes
+        return 0u
+    }
 
-    fun checkAnimatedObjectEstTris(): Boolean { TODO("check triangle limit for animated object selection") }
-    fun checkAnimatedObjectLinkable(): Boolean { TODO("check linkability constraints for animated objects") }
+    fun checkAnimatedObjectEstTris(): Boolean {
+        System.err.println("ObjectSelection: check triangle limit for animated object selection not yet implemented")
+        return false
+    }
+    fun checkAnimatedObjectLinkable(): Boolean {
+        System.err.println("ObjectSelection: check linkability constraints for animated objects not yet implemented")
+        return false
+    }
 
     fun isMultipleTESelected(): Boolean {
         var count = 0
@@ -256,7 +274,7 @@ class ObjectSelection {
         return false
     }
 
-    fun updateEffects() { TODO("update HUD effects for this selection") }
+    fun updateEffects() { System.err.println("ObjectSelection: update HUD effects for this selection not yet implemented") }
 
     internal fun addNode(node: SelectNode) {
         list.addFirst(node)
@@ -530,7 +548,7 @@ object SelectMgr {
         selectedObjects.removeNode(node)
         obj.setSelected(false)
         notifyChange()
-        if (sendToSim) TODO("APR: use JVM equivalent - send deselect to simulator")
+        if (sendToSim) System.err.println("SelectMgr: send deselect to simulator not yet implemented")
     }
 
     fun deselectObjectAndFamily(obj: ViewerObject, sendToSim: Boolean = true,
@@ -546,7 +564,7 @@ object SelectMgr {
         }
         obj.setSelected(false)
         notifyChange()
-        if (sendToSim) TODO("APR: use JVM equivalent - send deselect to simulator")
+        if (sendToSim) System.err.println("SelectMgr: send deselect to simulator not yet implemented")
     }
 
     fun deselectAll() {
@@ -555,7 +573,7 @@ object SelectMgr {
         selectedObjects.allNodes.forEach { it.obj.setSelected(false) }
         selectedObjects.deleteAllNodes()
         notifyChange()
-        TODO("APR: use JVM equivalent - send deselect-all to simulator")
+        System.err.println("SelectMgr: send deselect-all to simulator not yet implemented")
     }
 
     fun deselectAllForStandingUp() {
@@ -568,7 +586,7 @@ object SelectMgr {
         if (selectedObjects.getNumNodes() <= 1) deselectAll()
     }
 
-    fun deselectAllIfTooFar() { TODO("check distance and deselect if over threshold") }
+    fun deselectAllIfTooFar() { System.err.println("SelectMgr: check distance and deselect if over threshold not yet implemented") }
 
     fun deselectHighlightedObjects() {
         for (node in highlightedObjects.allNodes.toList()) {
@@ -602,8 +620,14 @@ object SelectMgr {
         return true
     }
 
-    fun linkObjects(): Boolean { TODO("APR: use JVM equivalent - send link request") }
-    fun unlinkObjects(): Boolean { TODO("APR: use JVM equivalent - send unlink request") }
+    fun linkObjects(): Boolean {
+        System.err.println("SelectMgr: send link request not yet implemented")
+        return false
+    }
+    fun unlinkObjects(): Boolean {
+        System.err.println("SelectMgr: send unlink request not yet implemented")
+        return false
+    }
     fun enableLinkObjects(): Boolean = selectedObjects.getRootObjectCount() > 1
     fun enableUnlinkObjects(): Boolean = selectedObjects.getObjectCount() > 1
 
@@ -614,13 +638,13 @@ object SelectMgr {
         updateEffects()
     }
 
-    fun updateEffects() { TODO("update HUD beam and selection effects") }
+    fun updateEffects() { System.err.println("SelectMgr: update HUD beam and selection effects not yet implemented") }
 
-    fun resetObjectOverrides() { TODO("clear local position/rotation/scale overrides") }
-    fun resetObjectOverrides(selectionHandle: ObjectSelection) { TODO("clear overrides for handle") }
-    fun overrideObjectUpdates() { TODO("install local-override update interceptors") }
+    fun resetObjectOverrides() { System.err.println("SelectMgr: clear local position/rotation/scale overrides not yet implemented") }
+    fun resetObjectOverrides(selectionHandle: ObjectSelection) { System.err.println("SelectMgr: clear overrides for handle not yet implemented") }
+    fun overrideObjectUpdates() { System.err.println("SelectMgr: install local-override update interceptors not yet implemented") }
     fun resetAvatarOverrides() { avatarOverridesMap.clear() }
-    fun overrideAvatarUpdates() { TODO("install avatar override interceptors") }
+    fun overrideAvatarUpdates() { System.err.println("SelectMgr: install avatar override interceptors not yet implemented") }
 
     fun setTEMode(b: Boolean) { teMode = b }
     fun getTEMode(): Boolean = teMode
@@ -643,7 +667,7 @@ object SelectMgr {
     fun clearGridObjects() { gridObjects.deleteAllNodes() }
 
     fun getGrid(origin: Vector3, rotation: Quaternion, scale: Vector3, forSnapGuides: Boolean = false) {
-        TODO("compute grid basis from gridMode and objects")
+        System.err.println("SelectMgr: compute grid basis from gridMode and objects not yet implemented")
     }
 
     fun getSelectionCenterGlobal(): Vector3d = selectionCenterGlobal
@@ -663,27 +687,42 @@ object SelectMgr {
         selectionCenterGlobal = Vector3d(sumX / count, sumY / count, sumZ / count)
     }
 
-    fun updatePointAt() { TODO("APR: use JVM equivalent - send PointAt effect") }
+    fun updatePointAt() { System.err.println("SelectMgr: send PointAt effect not yet implemented") }
 
-    fun getBBoxOfSelection(): Any { TODO("compute bounding box of all selected objects") }
+    fun getBBoxOfSelection(): Any {
+        System.err.println("SelectMgr: compute bounding box of all selected objects not yet implemented")
+        return Unit
+    }
 
-    fun getSavedBBoxOfSelection(): Any { TODO("return saved bounding box") }
+    fun getSavedBBoxOfSelection(): Any {
+        System.err.println("SelectMgr: return saved bounding box not yet implemented")
+        return Unit
+    }
 
-    fun saveSelectedObjectTransform(actionType: ActionType) { TODO("snapshot positions/rotations/scales") }
+    fun saveSelectedObjectTransform(actionType: ActionType) { System.err.println("SelectMgr: snapshot positions/rotations/scales not yet implemented") }
     fun saveSelectedObjectColors() { selectedObjects.allNodes.forEach { it.saveColors() } }
     fun saveSelectedShinyColors() { selectedObjects.allNodes.forEach { it.saveShinyColors() } }
-    fun saveSelectedObjectTextures() { TODO("snapshot current texture ids for each TE") }
+    fun saveSelectedObjectTextures() { System.err.println("SelectMgr: snapshot current texture ids for each TE not yet implemented") }
 
-    fun selectionUpdatePhysics(usePhysics: Boolean) { TODO("APR: use JVM equivalent - update physics flags") }
-    fun selectionUpdateTemporary(isTemporary: Boolean) { TODO("APR: use JVM equivalent") }
-    fun selectionUpdatePhantom(isGhost: Boolean) { TODO("APR: use JVM equivalent") }
+    fun selectionUpdatePhysics(usePhysics: Boolean) { System.err.println("SelectMgr: update physics flags not yet implemented") }
+    fun selectionUpdateTemporary(isTemporary: Boolean) { System.err.println("SelectMgr: selectionUpdateTemporary not yet implemented") }
+    fun selectionUpdatePhantom(isGhost: Boolean) { System.err.println("SelectMgr: selectionUpdatePhantom not yet implemented") }
     fun selectionDump() { selectedObjects.allNodes.forEach { it.obj.dump() } }
 
     fun selectionAllPCode(code: UByte): Boolean = selectedObjects.allNodes.all { it.obj.primCode == code }
 
-    fun selectionGetClickAction(outAction: () -> Unit): Boolean { TODO("aggregate click actions across selection") }
-    fun selectionGetIncludeInSearch(out: () -> Unit): Boolean { TODO("check if all selected have same include-in-search value") }
-    fun selectionGetGlow(glow: () -> Unit): Boolean { TODO("aggregate glow values") }
+    fun selectionGetClickAction(outAction: () -> Unit): Boolean {
+        System.err.println("SelectMgr: aggregate click actions across selection not yet implemented")
+        return false
+    }
+    fun selectionGetIncludeInSearch(out: () -> Unit): Boolean {
+        System.err.println("SelectMgr: check if all selected have same include-in-search value not yet implemented")
+        return false
+    }
+    fun selectionGetGlow(glow: () -> Unit): Boolean {
+        System.err.println("SelectMgr: aggregate glow values not yet implemented")
+        return false
+    }
 
     fun selectionSetPhysicsType(type: UByte) { selectedObjects.allNodes.forEach { it.obj.setPhysicsShapeType(type) } }
     fun selectionSetGravity(gravity: Float) { selectedObjects.allNodes.forEach { it.obj.setPhysicsGravity(gravity) } }
@@ -691,69 +730,79 @@ object SelectMgr {
     fun selectionSetDensity(density: Float) { selectedObjects.allNodes.forEach { it.obj.setPhysicsDensity(density) } }
     fun selectionSetRestitution(restitution: Float) { selectedObjects.allNodes.forEach { it.obj.setPhysicsRestitution(restitution) } }
     fun selectionSetMaterial(material: UByte) { selectedObjects.allNodes.forEach { it.obj.material = material } }
-    fun selectionSetImage(imageId: LLUUID, isPBR: Boolean = true): Boolean { TODO("APR: use JVM equivalent - send TE texture update") }
-    fun selectionSetGLTFMaterial(matId: LLUUID): Boolean { TODO("APR: use JVM equivalent - set GLTF material by id") }
-    fun selectionSetColor(color: FloatArray) { TODO("APR: use JVM equivalent - send TE color update") }
-    fun selectionSetColorOnly(color: FloatArray) { TODO("APR: use JVM equivalent - send RGB-only color update") }
-    fun selectionSetAlphaOnly(alpha: Float) { TODO("APR: use JVM equivalent - send alpha-only update") }
-    fun selectionRevertColors() { TODO("restore colors from node.savedColors") }
-    fun selectionRevertShinyColors() { TODO("restore shiny colors") }
-    fun selectionRevertTextures(): Boolean { TODO("restore textures from node.savedTextures") }
-    fun selectionRevertGLTFMaterials() { TODO("restore GLTF materials from node.savedGLTFMaterialIds") }
-    fun selectionSetBumpmap(bumpmap: UByte, imageId: LLUUID) { TODO("APR: use JVM equivalent - send bump map update") }
-    fun selectionSetTexGen(texGen: UByte) { TODO("APR: use JVM equivalent - send texgen update") }
-    fun selectionSetShiny(shiny: UByte, imageId: LLUUID) { TODO("APR: use JVM equivalent - send shiny update") }
-    fun selectionSetFullbright(fullbright: UByte) { TODO("APR: use JVM equivalent - send fullbright update") }
-    fun selectionSetMedia(mediaType: UByte, mediaData: Map<String, Any>) { TODO("APR: use JVM equivalent - send media update") }
+    fun selectionSetImage(imageId: LLUUID, isPBR: Boolean = true): Boolean {
+        System.err.println("SelectMgr: send TE texture update not yet implemented")
+        return false
+    }
+    fun selectionSetGLTFMaterial(matId: LLUUID): Boolean {
+        System.err.println("SelectMgr: set GLTF material by id not yet implemented")
+        return false
+    }
+    fun selectionSetColor(color: FloatArray) { System.err.println("SelectMgr: send TE color update not yet implemented") }
+    fun selectionSetColorOnly(color: FloatArray) { System.err.println("SelectMgr: send RGB-only color update not yet implemented") }
+    fun selectionSetAlphaOnly(alpha: Float) { System.err.println("SelectMgr: send alpha-only update not yet implemented") }
+    fun selectionRevertColors() { System.err.println("SelectMgr: restore colors from node.savedColors not yet implemented") }
+    fun selectionRevertShinyColors() { System.err.println("SelectMgr: restore shiny colors not yet implemented") }
+    fun selectionRevertTextures(): Boolean {
+        System.err.println("SelectMgr: restore textures from node.savedTextures not yet implemented")
+        return false
+    }
+    fun selectionRevertGLTFMaterials() { System.err.println("SelectMgr: restore GLTF materials from node.savedGLTFMaterialIds not yet implemented") }
+    fun selectionSetBumpmap(bumpmap: UByte, imageId: LLUUID) { System.err.println("SelectMgr: send bump map update not yet implemented") }
+    fun selectionSetTexGen(texGen: UByte) { System.err.println("SelectMgr: send texgen update not yet implemented") }
+    fun selectionSetShiny(shiny: UByte, imageId: LLUUID) { System.err.println("SelectMgr: send shiny update not yet implemented") }
+    fun selectionSetFullbright(fullbright: UByte) { System.err.println("SelectMgr: send fullbright update not yet implemented") }
+    fun selectionSetMedia(mediaType: UByte, mediaData: Map<String, Any>) { System.err.println("SelectMgr: send media update not yet implemented") }
     fun selectionSetClickAction(action: UByte) { selectedObjects.allNodes.forEach { it.obj.setClickAction(action) } }
     fun selectionSetIncludeInSearch(include: Boolean) { selectedObjects.allNodes.forEach { it.obj.setIncludeInSearch(include) } }
-    fun selectionSetGlow(glow: Float) { TODO("APR: use JVM equivalent - send glow update") }
-    fun selectionSetMaterialParams(func: Any, specificTE: Int = -1) { TODO("apply material params functor") }
-    fun selectionRemoveMaterial() { TODO("APR: use JVM equivalent - remove material from TEs") }
+    fun selectionSetGlow(glow: Float) { System.err.println("SelectMgr: send glow update not yet implemented") }
+    fun selectionSetMaterialParams(func: Any, specificTE: Int = -1) { System.err.println("SelectMgr: apply material params functor not yet implemented") }
+    fun selectionRemoveMaterial() { System.err.println("SelectMgr: remove material from TEs not yet implemented") }
 
     fun selectionSetObjectPermissions(permField: UByte, set: Boolean, permMask: UInt, override: Boolean = false) {
-        TODO("APR: use JVM equivalent - send ObjectPermissions message")
+        System.err.println("SelectMgr: send ObjectPermissions message not yet implemented")
     }
-    fun selectionSetObjectName(name: String) { TODO("APR: use JVM equivalent - send ObjectName message") }
-    fun selectionSetObjectDescription(desc: String) { TODO("APR: use JVM equivalent - send ObjectDescription message") }
-    fun selectionSetObjectSaleInfo(saleInfo: Any) { TODO("APR: use JVM equivalent - send ObjectSaleInfo message") }
+    fun selectionSetObjectName(name: String) { System.err.println("SelectMgr: send ObjectName message not yet implemented") }
+    fun selectionSetObjectDescription(desc: String) { System.err.println("SelectMgr: send ObjectDescription message not yet implemented") }
+    fun selectionSetObjectSaleInfo(saleInfo: Any) { System.err.println("SelectMgr: send ObjectSaleInfo message not yet implemented") }
 
-    fun selectionTexScaleAutofit(repeatsPerMeter: Float) { TODO("APR: use JVM equivalent - auto-fit texture scaling") }
-    fun adjustTexturesByScale(sendToSim: Boolean, stretch: Boolean) { TODO("adjust textures proportional to scale change") }
+    fun selectionTexScaleAutofit(repeatsPerMeter: Float) { System.err.println("SelectMgr: auto-fit texture scaling not yet implemented") }
+    fun adjustTexturesByScale(sendToSim: Boolean, stretch: Boolean) { System.err.println("SelectMgr: adjust textures proportional to scale change not yet implemented") }
 
     fun selectionMove(displacement: Vector3, rx: Float, ry: Float, rz: Float, updateType: UInt): Boolean {
-        TODO("APR: use JVM equivalent - apply transform to selection")
+        System.err.println("SelectMgr: apply transform to selection not yet implemented")
+        return false
     }
-    fun sendSelectionMove() { TODO("APR: use JVM equivalent - send MultipleObjectUpdate position") }
+    fun sendSelectionMove() { System.err.println("SelectMgr: send MultipleObjectUpdate position not yet implemented") }
 
-    fun sendMultipleUpdate(type: UInt) { TODO("APR: use JVM equivalent - send MultipleObjectUpdate") }
-    fun sendOwner(ownerId: LLUUID, groupId: LLUUID, override: Boolean = false) { TODO("APR: use JVM equivalent") }
-    fun sendGroup(groupId: LLUUID) { TODO("APR: use JVM equivalent") }
-    fun sendBuy(buyerId: LLUUID, categoryId: LLUUID, saleInfo: Any) { TODO("APR: use JVM equivalent") }
-    fun sendAttach(attachmentPoint: UByte, replace: Boolean) { TODO("APR: use JVM equivalent") }
-    fun sendAttach(selectionHandle: ObjectSelection, attachmentPoint: UByte, replace: Boolean) { TODO("APR: use JVM equivalent") }
-    fun sendDetach() { TODO("APR: use JVM equivalent") }
-    fun sendDropAttachment() { TODO("APR: use JVM equivalent") }
-    fun sendLink() { TODO("APR: use JVM equivalent") }
-    fun sendDelink() { TODO("APR: use JVM equivalent") }
-    fun sendSelect() { TODO("APR: use JVM equivalent - send ObjectSelect message") }
-    fun sendGodlikeRequest(request: String, parameter: String) { TODO("APR: use JVM equivalent") }
+    fun sendMultipleUpdate(type: UInt) { System.err.println("SelectMgr: send MultipleObjectUpdate not yet implemented") }
+    fun sendOwner(ownerId: LLUUID, groupId: LLUUID, override: Boolean = false) { System.err.println("SelectMgr: sendOwner not yet implemented") }
+    fun sendGroup(groupId: LLUUID) { System.err.println("SelectMgr: sendGroup not yet implemented") }
+    fun sendBuy(buyerId: LLUUID, categoryId: LLUUID, saleInfo: Any) { System.err.println("SelectMgr: sendBuy not yet implemented") }
+    fun sendAttach(attachmentPoint: UByte, replace: Boolean) { System.err.println("SelectMgr: sendAttach not yet implemented") }
+    fun sendAttach(selectionHandle: ObjectSelection, attachmentPoint: UByte, replace: Boolean) { System.err.println("SelectMgr: sendAttach(handle) not yet implemented") }
+    fun sendDetach() { System.err.println("SelectMgr: sendDetach not yet implemented") }
+    fun sendDropAttachment() { System.err.println("SelectMgr: sendDropAttachment not yet implemented") }
+    fun sendLink() { System.err.println("SelectMgr: sendLink not yet implemented") }
+    fun sendDelink() { System.err.println("SelectMgr: sendDelink not yet implemented") }
+    fun sendSelect() { System.err.println("SelectMgr: send ObjectSelect message not yet implemented") }
+    fun sendGodlikeRequest(request: String, parameter: String) { System.err.println("SelectMgr: sendGodlikeRequest not yet implemented") }
 
-    fun selectDelete() { TODO("APR: use JVM equivalent - send DeRezObject to trash") }
-    fun selectForceDelete() { TODO("APR: use JVM equivalent - force delete without trash") }
-    fun selectDuplicate(offset: Vector3, selectCopy: Boolean) { TODO("APR: use JVM equivalent - send ObjectDuplicate") }
-    fun repeatDuplicate() { TODO("APR: use JVM equivalent") }
+    fun selectDelete() { System.err.println("SelectMgr: send DeRezObject to trash not yet implemented") }
+    fun selectForceDelete() { System.err.println("SelectMgr: force delete without trash not yet implemented") }
+    fun selectDuplicate(offset: Vector3, selectCopy: Boolean) { System.err.println("SelectMgr: send ObjectDuplicate not yet implemented") }
+    fun repeatDuplicate() { System.err.println("SelectMgr: repeatDuplicate not yet implemented") }
     fun selectDuplicateOnRay(rayStart: Vector3, rayEnd: Vector3, bypassRaycast: Boolean,
                               rayEndIsIntersection: Boolean, rayTargetId: LLUUID,
                               copyCenters: Boolean, copyRotates: Boolean, selectCopy: Boolean) {
-        TODO("APR: use JVM equivalent - send ObjectDuplicateOnRay")
+        System.err.println("SelectMgr: send ObjectDuplicateOnRay not yet implemented")
     }
 
-    fun requestObjectPropertiesFamily(obj: ViewerObject) { TODO("APR: use JVM equivalent - send RequestObjectPropertiesFamily") }
+    fun requestObjectPropertiesFamily(obj: ViewerObject) { System.err.println("SelectMgr: send RequestObjectPropertiesFamily not yet implemented") }
 
-    fun requestGodInfo() { TODO("APR: use JVM equivalent") }
+    fun requestGodInfo() { System.err.println("SelectMgr: requestGodInfo not yet implemented") }
 
-    fun validateSelection() { TODO("recheck all objects against current canSelectObject criteria") }
+    fun validateSelection() { System.err.println("SelectMgr: recheck all objects against current canSelectObject criteria not yet implemented") }
 
     fun selectGetAllRootsValid(): Boolean = selectedObjects.rootValidNodes.size == selectedObjects.getRootObjectCount()
     fun selectGetAllValid(): Boolean = selectedObjects.validNodes.size == selectedObjects.getObjectCount()
@@ -778,37 +827,84 @@ object SelectMgr {
     fun selectGetNonPermanent(): Boolean = selectedObjects.allNodes.all { !it.obj.flagObjectPermanent() }
     fun selectGetRootsNonCharacter(): Boolean = selectedObjects.rootNodes.all { !it.obj.flagCharacter() }
     fun selectGetNonCharacter(): Boolean = selectedObjects.allNodes.all { !it.obj.flagCharacter() }
-    fun selectGetEditableLinksets(): Boolean { TODO("check linkset editability") }
-    fun selectGetViewableCharacters(): Boolean { TODO("check character viewability") }
+    fun selectGetEditableLinksets(): Boolean {
+        System.err.println("SelectMgr: check linkset editability not yet implemented")
+        return false
+    }
+    fun selectGetViewableCharacters(): Boolean {
+        System.err.println("SelectMgr: check character viewability not yet implemented")
+        return false
+    }
     fun selectGetRootsTransfer(): Boolean = selectedObjects.rootNodes.all { it.obj.permTransfer() }
     fun selectGetRootsCopy(): Boolean = selectedObjects.rootNodes.all { it.obj.permCopy() }
 
-    fun selectGetCreator(id: () -> Unit, name: () -> Unit): Boolean { TODO("aggregate creator ids") }
-    fun selectGetOwner(id: () -> Unit, name: () -> Unit): Boolean { TODO("aggregate owner ids") }
-    fun selectGetLastOwner(id: () -> Unit, name: () -> Unit): Boolean { TODO("aggregate last-owner ids") }
-    fun selectGetGroup(id: () -> Unit): Boolean { TODO("aggregate group ids") }
-    fun selectGetPerm(whichPerm: UByte, maskOn: () -> Unit, maskOff: () -> Unit): Boolean { TODO("aggregate perm masks") }
-    fun selectIsGroupOwned(): Boolean { TODO("check all roots are group owned") }
-    fun selectGetPermissions(perm: Any): Boolean { TODO("aggregate permissions across selection") }
-    fun selectGetEditMoveLinksetPermissions(move: () -> Unit, modify: () -> Unit): Boolean { TODO("compute move+modify perms") }
+    fun selectGetCreator(id: () -> Unit, name: () -> Unit): Boolean {
+        System.err.println("SelectMgr: aggregate creator ids not yet implemented")
+        return false
+    }
+    fun selectGetOwner(id: () -> Unit, name: () -> Unit): Boolean {
+        System.err.println("SelectMgr: aggregate owner ids not yet implemented")
+        return false
+    }
+    fun selectGetLastOwner(id: () -> Unit, name: () -> Unit): Boolean {
+        System.err.println("SelectMgr: aggregate last-owner ids not yet implemented")
+        return false
+    }
+    fun selectGetGroup(id: () -> Unit): Boolean {
+        System.err.println("SelectMgr: aggregate group ids not yet implemented")
+        return false
+    }
+    fun selectGetPerm(whichPerm: UByte, maskOn: () -> Unit, maskOff: () -> Unit): Boolean {
+        System.err.println("SelectMgr: aggregate perm masks not yet implemented")
+        return false
+    }
+    fun selectIsGroupOwned(): Boolean {
+        System.err.println("SelectMgr: check all roots are group owned not yet implemented")
+        return false
+    }
+    fun selectGetPermissions(perm: Any): Boolean {
+        System.err.println("SelectMgr: aggregate permissions across selection not yet implemented")
+        return false
+    }
+    fun selectGetEditMoveLinksetPermissions(move: () -> Unit, modify: () -> Unit): Boolean {
+        System.err.println("SelectMgr: compute move+modify perms not yet implemented")
+        return false
+    }
     fun selectGetAggregateSaleInfo(numForSale: () -> Unit, isForSaleMixed: () -> Unit,
                                    isSalePriceMixed: () -> Unit, totalSalePrice: () -> Unit,
-                                   individualSalePrice: () -> Unit) { TODO("aggregate sale info") }
-    fun selectGetCategory(category: Any): Boolean { TODO("aggregate category") }
-    fun selectGetSaleInfo(saleInfo: Any): Boolean { TODO("aggregate sale info") }
-    fun selectGetAggregatePermissions(agPerm: Any): Boolean { TODO("aggregate permissions") }
-    fun selectGetAggregateTexturePermissions(agPerm: Any): Boolean { TODO("aggregate texture permissions") }
-    fun findObjectPermissions(obj: ViewerObject): Any? { TODO("find permissions for a specific object node") }
+                                   individualSalePrice: () -> Unit) {
+        System.err.println("SelectMgr: aggregate sale info not yet implemented")
+    }
+    fun selectGetCategory(category: Any): Boolean {
+        System.err.println("SelectMgr: aggregate category not yet implemented")
+        return false
+    }
+    fun selectGetSaleInfo(saleInfo: Any): Boolean {
+        System.err.println("SelectMgr: aggregate sale info not yet implemented")
+        return false
+    }
+    fun selectGetAggregatePermissions(agPerm: Any): Boolean {
+        System.err.println("SelectMgr: aggregate permissions not yet implemented")
+        return false
+    }
+    fun selectGetAggregateTexturePermissions(agPerm: Any): Boolean {
+        System.err.println("SelectMgr: aggregate texture permissions not yet implemented")
+        return false
+    }
+    fun findObjectPermissions(obj: ViewerObject): Any? {
+        System.err.println("SelectMgr: find permissions for a specific object node not yet implemented")
+        return null
+    }
 
     fun isMovableAvatarSelected(): Boolean = selectedObjects.allNodes.any { it.obj.isAvatar() }
 
-    fun pauseAssociatedAvatars() { TODO("pause animations on avatars associated with selection") }
+    fun pauseAssociatedAvatars() { System.err.println("SelectMgr: pause animations on avatars associated with selection not yet implemented") }
 
-    fun resetAgentHUDZoom() { TODO("reset HUD zoom to default") }
-    fun setAgentHUDZoom(targetZoom: Float, currentZoom: Float) { TODO("set HUD zoom") }
-    fun getAgentHUDZoom(targetZoom: () -> Unit, currentZoom: () -> Unit) { TODO("get HUD zoom") }
+    fun resetAgentHUDZoom() { System.err.println("SelectMgr: reset HUD zoom to default not yet implemented") }
+    fun setAgentHUDZoom(targetZoom: Float, currentZoom: Float) { System.err.println("SelectMgr: set HUD zoom not yet implemented") }
+    fun getAgentHUDZoom(targetZoom: () -> Unit, currentZoom: () -> Unit) { System.err.println("SelectMgr: get HUD zoom not yet implemented") }
 
-    fun clearWaterExclusion() { TODO("APR: use JVM equivalent - clear water exclusion volumes") }
+    fun clearWaterExclusion() { System.err.println("SelectMgr: clear water exclusion volumes not yet implemented") }
 
     fun remove(objects: List<ViewerObject>) { objects.forEach { deselectObjectOnly(it) } }
     fun remove(obj: ViewerObject, te: Int = SELECT_ALL_TES, undoable: Boolean = true) {
@@ -855,12 +951,16 @@ object SelectMgr {
 
     fun selectGetNoIndividual(): Boolean = selectedObjects.allNodes.none { it.individualSelection }
 
-    fun showGLTFMaterial() { TODO("switch face panel to GLTF/PBR mode") }
-    fun hideGLTFMaterial() { TODO("switch face panel to blinn-phong mode") }
+    fun showGLTFMaterial() { System.err.println("SelectMgr: switch face panel to GLTF/PBR mode not yet implemented") }
+    fun hideGLTFMaterial() { System.err.println("SelectMgr: switch face panel to blinn-phong mode not yet implemented") }
 
-    fun updateSilhouettes() { TODO("GPU: regenerate silhouettes for changed objects") }
+    fun updateSilhouettes() {
+        // GPU: regenerate silhouettes for changed objects
+    }
 
-    fun renderSilhouettes(forHud: Boolean) { TODO("GPU: draw silhouette pass") }
+    fun renderSilhouettes(forHud: Boolean) {
+        // GPU: draw silhouette pass
+    }
 
     private fun convertTransient() {
         selectedObjects.allNodes.filter { it.transient }.forEach { it.transient = false }
@@ -879,4 +979,4 @@ object SelectMgr {
     }
 }
 
-fun dialogRefreshAll() { TODO("notify UI that selection has changed") }
+fun dialogRefreshAll() { System.err.println("dialogRefreshAll: notify UI that selection has changed not yet implemented") }

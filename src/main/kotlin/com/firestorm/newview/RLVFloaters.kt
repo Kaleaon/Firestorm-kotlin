@@ -17,15 +17,18 @@ enum class ERlvBehaviourFilter {
 //
 
 private fun rlvGetItemName(item: ViewerInventoryItem?): String {
-    TODO("APR: use JVM equivalent — resolve item type/wearable type label")
+    System.err.println("rlvGetItemName: not yet implemented")
+    return ""
 }
 
 private fun rlvGetItemType(item: ViewerInventoryItem?): String {
-    TODO("APR: use JVM equivalent — resolve asset type string")
+    System.err.println("rlvGetItemType: not yet implemented")
+    return ""
 }
 
 private fun rlvGetItemNameFromObjID(idObj: UUID, includeAttachPt: Boolean = true): String {
-    TODO("APR: use JVM equivalent — look up avatar name / attachment info from object list")
+    System.err.println("rlvGetItemNameFromObjID: not yet implemented")
+    return ""
 }
 
 private fun rlvGetShowException(behaviour: ERlvBehaviour): Boolean {
@@ -64,7 +67,8 @@ private fun rlvFolderLockScopeToString(scope: RlvFolderLocks.ELockScope): String
 }
 
 private fun rlvFolderLockSourceToTarget(lockSource: RlvFolderLocks.FolderLockSource): String {
-    TODO("APR: use JVM equivalent — resolve variant lock source to human-readable string")
+    System.err.println("rlvFolderLockSourceToTarget: not yet implemented")
+    return ""
 }
 
 // ============================================================================
@@ -86,7 +90,8 @@ class RlvFloaterBehaviours {
     }
 
     open fun postBuild(): Boolean {
-        TODO("APR: use JVM equivalent — wire copy-to-clipboard button commit callback")
+        System.err.println("RlvFloaterBehaviours: postBuild not yet implemented")
+        return false
     }
 
     private fun onAvatarNameLookup(idAgent: UUID, avName: Any) {
@@ -95,11 +100,12 @@ class RlvFloaterBehaviours {
     }
 
     private fun isVisible(): Boolean {
-        TODO("APR: use JVM equivalent — query floater visibility state")
+        System.err.println("RlvFloaterBehaviours: isVisible not yet implemented")
+        return false
     }
 
     private fun onBtnCopyToClipboard() {
-        TODO("APR: use JVM equivalent — copy formatted behaviour string to clipboard")
+        System.err.println("RlvFloaterBehaviours: onBtnCopyToClipboard not yet implemented")
     }
 
     private fun onCommand(rlvCmd: RlvCommand, ret: ERlvCmdRet) {
@@ -109,7 +115,7 @@ class RlvFloaterBehaviours {
     }
 
     private fun refreshAll() {
-        TODO("APR: use JVM equivalent — populate behaviour/exception/modifier list UI controls")
+        System.err.println("RlvFloaterBehaviours: refreshAll not yet implemented")
     }
 
     companion object {
@@ -137,7 +143,8 @@ class RlvFloaterBehaviours {
         }
 
         private fun resolveOptionString(rlvCmd: RlvCommand): String {
-            TODO("APR: use JVM equivalent — resolve UUID option to avatar/object/group name")
+            System.err.println("RlvFloaterBehaviours: resolveOptionString not yet implemented")
+            return ""
         }
     }
 }
@@ -160,7 +167,8 @@ class RlvFloaterLocks {
     }
 
     open fun postBuild(): Boolean {
-        TODO("APR: use JVM equivalent — wire refresh button commit callback")
+        System.err.println("RlvFloaterLocks: postBuild not yet implemented")
+        return false
     }
 
     private fun onRlvCommand(rlvCmd: RlvCommand, ret: ERlvCmdRet) {
@@ -179,7 +187,7 @@ class RlvFloaterLocks {
     }
 
     private fun refreshAll() {
-        TODO("APR: use JVM equivalent — populate lock list UI control from attachment/wearable/folder lock state")
+        System.err.println("RlvFloaterLocks: refreshAll not yet implemented")
     }
 }
 
@@ -197,13 +205,14 @@ class RlvFloaterStrings {
     private var pendingStrings: MutableMap<String, String> = mutableMapOf()
 
     open fun postBuild(): Boolean {
-        TODO("APR: use JVM equivalent — read strings XML, populate combo box, wire callbacks")
+        System.err.println("RlvFloaterStrings: postBuild not yet implemented")
+        return false
     }
 
     fun onClose(quitting: Boolean) {
         checkDirty(false)
         if (dirty) {
-            TODO("APR: use JVM equivalent — save pending string overrides to user-settings XML file and notify user of relog requirement")
+            System.err.println("RlvFloaterStrings: onClose dirty-save not yet implemented")
         }
     }
 
@@ -216,11 +225,11 @@ class RlvFloaterStrings {
     }
 
     private fun checkDirty(doRefresh: Boolean) {
-        TODO("APR: use JVM equivalent — read current text editor value and record pending change if modified")
+        System.err.println("RlvFloaterStrings: checkDirty not yet implemented")
     }
 
     private fun refresh() {
-        TODO("APR: use JVM equivalent — update description and value text editors for the selected string")
+        System.err.println("RlvFloaterStrings: refresh not yet implemented")
     }
 }
 
@@ -236,22 +245,23 @@ class RlvFloaterConsole {
     private var inputEditPad: Int = 0
 
     open fun postBuild(): Boolean {
-        TODO("APR: use JVM equivalent — wire input commit/expand callbacks, focus input, initialise output with prompt")
+        System.err.println("RlvFloaterConsole: postBuild not yet implemented")
+        return false
     }
 
     fun onClose(quitting: Boolean) {
-        TODO("APR: use JVM equivalent — clear RLV modifiers for agent and process 'clear' command")
+        System.err.println("RlvFloaterConsole: onClose not yet implemented")
     }
 
     private fun addCommandReply(command: String, reply: String) {
-        TODO("APR: use JVM equivalent — append '$command: $reply' to output text editor")
+        System.err.println("RlvFloaterConsole: addCommandReply not yet implemented")
     }
 
     private fun onInput(ctrl: Any, param: Any) {
-        TODO("APR: use JVM equivalent — read input, execute RLV commands, append results and new prompt to output")
+        System.err.println("RlvFloaterConsole: onInput not yet implemented")
     }
 
     private fun reshapeLayoutPanel() {
-        TODO("APR: use JVM equivalent — resize input panel to fit expanded chat entry widget")
+        System.err.println("RlvFloaterConsole: reshapeLayoutPanel not yet implemented")
     }
 }

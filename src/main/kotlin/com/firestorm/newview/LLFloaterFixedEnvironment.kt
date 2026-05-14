@@ -167,7 +167,7 @@ open class LLFloaterFixedEnvironment(key: LLSDMap) : LLFloaterEditEnvironmentBas
     }
 
     protected fun updatePermissionFlags() {
-        TODO("Update permission flags from inventory item")
+        System.err.println("LLFloaterFixedEnvironment: updatePermissionFlags not yet implemented")
     }
 
     protected fun doSelectFromInventory() {
@@ -299,7 +299,7 @@ class LLFloaterFixedEnvironmentWater(key: LLSDMap) : LLFloaterFixedEnvironment(k
     }
 
     override fun doImportFromDisk() {
-        TODO("APR: use JVM equivalent - LLFilePickerReplyThread for XML file selection")
+        System.err.println("LLFloaterFixedEnvironmentWater: doImportFromDisk not yet implemented")
     }
 
     fun loadWaterSettingFromFile(filenames: MutableList<String>) {
@@ -364,7 +364,7 @@ class LLFloaterFixedEnvironmentSky(key: LLSDMap) : LLFloaterFixedEnvironment(key
     }
 
     override fun doImportFromDisk() {
-        TODO("APR: use JVM equivalent - LLFilePickerReplyThread for XML file selection")
+        System.err.println("LLFloaterFixedEnvironmentSky: doImportFromDisk not yet implemented")
     }
 
     fun loadSkySettingFromFile(filenames: MutableList<String>) {

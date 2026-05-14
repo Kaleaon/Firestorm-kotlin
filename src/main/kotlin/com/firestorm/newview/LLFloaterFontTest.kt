@@ -8,6 +8,6 @@ package com.firestorm.newview
 class LLFloaterFontTest(key: LLSD) : LLFloater("floater_font_test") {
 
     init {
-        TODO("APR: use JVM equivalent – build UI from floater_font_test XML layout")
+        System.err.println("LLFloaterFontTest: init not yet implemented")
     }
 }

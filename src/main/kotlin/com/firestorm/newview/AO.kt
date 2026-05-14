@@ -149,12 +149,12 @@ class FloaterAO private constructor(private val key: Any) {
     }
 
     fun onOpen(key: Any) {
-        TODO("APR: use JVM equivalent – UtilityBar.setAOInterfaceButtonExpanded(true)")
+        System.err.println("FloaterAO: onOpen not yet implemented")
     }
 
     fun onClose(appQuitting: Boolean) {
         if (!appQuitting) {
-            TODO("APR: use JVM equivalent – UtilityBar.setAOInterfaceButtonExpanded(false)")
+            System.err.println("FloaterAO: onClose not yet implemented")
         }
     }
 
@@ -476,7 +476,7 @@ class FloaterAO private constructor(private val key: Any) {
         smallInterfacePanel.visible = false
         mainInterfacePanel.visible = true
         setSavedBool("UseFullAOInterface", true)
-        TODO("APR: use JVM equivalent – reshape floater to full size")
+        System.err.println("FloaterAO: onClickMore not yet implemented")
     }
 
     fun onClickLess() {
@@ -484,7 +484,7 @@ class FloaterAO private constructor(private val key: Any) {
         smallInterfacePanel.visible = true
         mainInterfacePanel.visible = false
         setSavedBool("UseFullAOInterface", false)
-        TODO("APR: use JVM equivalent – reshape floater to compact size")
+        System.err.println("FloaterAO: onClickLess not yet implemented")
     }
 
     // ── Animation-changed signal handler ──────────────────────────────────────
@@ -571,18 +571,21 @@ class FloaterAO private constructor(private val key: Any) {
     // ── Dialog stubs ──────────────────────────────────────────────────────────
 
     private fun showNewSetDialog(onConfirm: (String) -> Unit) {
-        TODO("APR: use JVM equivalent – show input dialog and call onConfirm with entered name")
+        System.err.println("FloaterAO: showNewSetDialog not yet implemented")
     }
 
     private fun showRemoveSetDialog(setName: String, onConfirm: () -> Unit) {
-        TODO("APR: use JVM equivalent – show confirmation dialog for removing \"$setName\" and call onConfirm")
+        System.err.println("FloaterAO: showRemoveSetDialog not yet implemented")
     }
 
-    private fun getSavedBool(key: String): Boolean =
-        TODO("APR: use JVM equivalent – read per-account setting $key")
+    private fun getSavedBool(key: String): Boolean {
+        System.err.println("FloaterAO: getSavedBool not yet implemented")
+        return false
+    }
 
-    private fun setSavedBool(key: String, value: Boolean): Unit =
-        TODO("APR: use JVM equivalent – write per-account setting $key = $value")
+    private fun setSavedBool(key: String, value: Boolean) {
+        System.err.println("FloaterAO: setSavedBool not yet implemented")
+    }
 
     // ── Drag-and-drop support types ───────────────────────────────────────────
 

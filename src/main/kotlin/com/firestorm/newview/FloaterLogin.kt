@@ -27,7 +27,7 @@ class FloaterLogin(
 
         val useLegacy = savedSettings("FSUseLegacyLoginPanel") as? Boolean ?: false
         val layoutFile = if (useLegacy) "panel_fs_login.xml" else "panel_fs_nui_login.xml"
-        TODO("GPU: build panel from $layoutFile, add to login_panel_holder, reshape to ${rect.width}x${rect.height}")
+        System.err.println("FloaterLogin: build panel from $layoutFile not yet implemented")
 
         val startSlurl = Startup.getStartSLURL()
         if (startSlurl.isEmpty()) {
@@ -44,15 +44,15 @@ class FloaterLogin(
     }
 
     fun setFocus(b: Boolean) {
-        if (b) giveFocusInternal() else TODO("GPU: unfocus panel")
+        if (b) giveFocusInternal() else System.err.println("FloaterLogin: unfocus panel not yet implemented")
     }
 
     fun showLoginWidgets() {
-        TODO("GPU: set login_widgets visible=true and navigate login_html to grid login page")
+        System.err.println("FloaterLogin: showLoginWidgets not yet implemented")
     }
 
     fun reshape(width: Int, height: Int) {
-        TODO("GPU: resize panel to ${width}x${height}")
+        System.err.println("FloaterLogin: reshape not yet implemented")
     }
 
     fun gridListChanged(success: Boolean) {
@@ -61,7 +61,7 @@ class FloaterLogin(
 
     private fun updateLoginButtons() {
         val enabled = usernameLength > 0 && passwordLength > 0
-        TODO("GPU: set connect_btn enabled = $enabled")
+        System.err.println("FloaterLogin: updateLoginButtons not yet implemented")
     }
 
     private fun addFavoritesToStartLocation() {
@@ -73,23 +73,23 @@ class FloaterLogin(
         usernameLength = currentUser.length
         updateLoginButtons()
 
-        TODO("APR: use JVM equivalent - read stored_favorites.xml, add separator + entries matching $currentUser to start_location_combo")
+        System.err.println("FloaterLogin: addFavoritesToStartLocation not yet implemented")
     }
 
     private fun addUsersToCombo(showServer: Boolean) {
-        TODO("APR: use JVM equivalent - populate username_combo from credential store for current grid")
+        System.err.println("FloaterLogin: addUsersToCombo not yet implemented")
     }
 
     private fun onSelectUser() {
-        TODO("APR: use JVM equivalent - load credential for selected username and call setFields")
+        System.err.println("FloaterLogin: onSelectUser not yet implemented")
     }
 
     private fun onSelectServer() {
-        TODO("APR: use JVM equivalent - update GridManager grid choice and reload login page")
+        System.err.println("FloaterLogin: onSelectServer not yet implemented")
     }
 
     private fun onLocationSLURL() {
-        TODO("APR: use JVM equivalent - read start_location_combo and set StartSLURL")
+        System.err.println("FloaterLogin: onLocationSLURL not yet implemented")
     }
 
     private fun onUsernameTextChanged() {
@@ -99,18 +99,27 @@ class FloaterLogin(
     }
 
     private fun syncShowHidePasswordButton() {
-        TODO("GPU: toggle password_show_btn / password_hide_btn based on showPassword=$showPassword")
+        System.err.println("FloaterLogin: syncShowHidePasswordButton not yet implemented")
     }
 
     private fun giveFocusInternal() {
         val username = getUsername()
         val pass     = getPasswordField()
-        TODO("GPU: focus ${if (username.isNotEmpty() && pass.isEmpty()) "password_edit" else "username_combo"}")
+        System.err.println("FloaterLogin: giveFocusInternal not yet implemented")
     }
 
-    private fun getUsername(): String = TODO("GPU: return username_combo value")
-    private fun getPasswordField(): String = TODO("GPU: return password_edit value")
-    private fun getCurrentGrid(): String = TODO("GPU: return server_combo simple value")
+    private fun getUsername(): String {
+        System.err.println("FloaterLogin: getUsername not yet implemented")
+        return ""
+    }
+    private fun getPasswordField(): String {
+        System.err.println("FloaterLogin: getPasswordField not yet implemented")
+        return ""
+    }
+    private fun getCurrentGrid(): String {
+        System.err.println("FloaterLogin: getCurrentGrid not yet implemented")
+        return ""
+    }
 
     companion object {
         var sInstance: FloaterLogin? = null
@@ -129,7 +138,7 @@ class FloaterLogin(
             if (sInstance == null) {
                 FloaterLogin(rect, callback, callbackData)
             }
-            TODO("GPU: ensure keyboard focus on the login panel")
+            System.err.println("FloaterLogin: show not yet implemented")
         }
 
         fun reshapePanel() {
@@ -139,44 +148,45 @@ class FloaterLogin(
         fun setFields(credential: LoginCredential?, fromStartup: Boolean = false) {
             val inst = sInstance ?: return
             sCredentialSet = true
-            TODO("GPU: populate username_combo and password_edit from credential; set sPassword")
+            System.err.println("FloaterLogin: setFields not yet implemented")
         }
 
         fun getFields(credential: LoginCredential?, remember: Boolean) {
             val inst = sInstance ?: return
-            TODO("APR: use JVM equivalent - build LoginCredential from UI fields; MD5-hash password to sPassword")
+            System.err.println("FloaterLogin: getFields not yet implemented")
         }
 
         fun isCredentialSet(): Boolean = sCredentialSet
 
         fun areCredentialFieldsDirty(): Boolean {
             val inst = sInstance ?: return false
-            TODO("GPU: check if username_combo or password_edit is dirty vs saved values")
+            System.err.println("FloaterLogin: areCredentialFieldsDirty not yet implemented")
+            return false
         }
 
         fun setLocation(slurl: String) {
-            TODO("APR: use JVM equivalent - parse slurl and update start_location_combo")
+            System.err.println("FloaterLogin: setLocation not yet implemented")
         }
 
         fun autologinToLocation(slurl: String) {
-            TODO("APR: use JVM equivalent - setStartSLURL($slurl) then trigger connect")
+            System.err.println("FloaterLogin: autologinToLocation not yet implemented")
         }
 
         fun updateLocationSelectorsVisibility() {
             val showServer = savedSettings("ForceShowGrid") as? Boolean ?: false
-            TODO("GPU: set server_combo visibility = $showServer; show/hide related controls")
+            System.err.println("FloaterLogin: updateLocationSelectorsVisibility not yet implemented")
         }
 
         fun closePanel() {
             sInstance?.let {
-                TODO("GPU: remove panel from parent view")
+                System.err.println("FloaterLogin: closePanel not yet implemented")
             }
             sInstance = null
         }
 
         fun loadLoginPage() {
             val inst = sInstance ?: return
-            TODO("APR: use JVM equivalent - build login page URI (lang, version, channel, grid, os, sourceid) and navigate login_html")
+            System.err.println("FloaterLogin: loadLoginPage not yet implemented")
         }
 
         fun giveFocus() {
@@ -184,21 +194,22 @@ class FloaterLogin(
         }
 
         fun setAlwaysRefresh(refresh: Boolean) {
-            TODO("GPU: set always-refresh on login_html browser control")
+            System.err.println("FloaterLogin: setAlwaysRefresh not yet implemented")
         }
 
         fun updateServer() {
             val inst = sInstance ?: return
-            TODO("APR: use JVM equivalent - reload credential, update server combo, reload login page")
+            System.err.println("FloaterLogin: updateServer not yet implemented")
         }
 
         fun onUpdateStartSLURL(newStartSlurl: String) {
             val inst = sInstance ?: return
-            TODO("APR: use JVM equivalent - parse slurl type and update start_location_combo and server_combo")
+            System.err.println("FloaterLogin: onUpdateStartSLURL not yet implemented")
         }
 
         fun getShowFavorites(): Boolean {
-            TODO("APR: use JVM equivalent - return gSavedPerAccountSettings ShowFavoritesOnLogin")
+            System.err.println("FloaterLogin: getShowFavorites not yet implemented")
+            return false
         }
 
         fun clearPassword() {
@@ -206,39 +217,40 @@ class FloaterLogin(
         }
 
         fun credentialName(): String {
-            TODO("APR: use JVM equivalent - return username_combo@server_combo string")
+            System.err.println("FloaterLogin: credentialName not yet implemented")
+            return ""
         }
 
         private fun onClickConnect() {
             val inst = sInstance ?: return
-            TODO("APR: use JVM equivalent - validate grid/username/password, then invoke callback(0, callbackData)")
+            System.err.println("FloaterLogin: onClickConnect not yet implemented")
         }
 
         private fun onClickNewAccount() {
-            TODO("APR: use JVM equivalent - open create_account_url in external browser")
+            System.err.println("FloaterLogin: onClickNewAccount not yet implemented")
         }
 
         private fun onClickForgotPassword() {
-            TODO("APR: use JVM equivalent - open forgot_password_url in external browser")
+            System.err.println("FloaterLogin: onClickForgotPassword not yet implemented")
         }
 
         private fun onClickRemove() {
-            TODO("APR: use JVM equivalent - show remove-user confirmation dialog")
+            System.err.println("FloaterLogin: onClickRemove not yet implemented")
         }
 
         private fun onClickGridMgrHelp() {
-            TODO("APR: use JVM equivalent - open grid manager help URL in external browser")
+            System.err.println("FloaterLogin: onClickGridMgrHelp not yet implemented")
         }
 
         private fun onClickGridBuilder() {
-            TODO("APR: use JVM equivalent - open FloaterGridBuilder")
+            System.err.println("FloaterLogin: onClickGridBuilder not yet implemented")
         }
 
         private fun onShowHidePasswordClick() {
             val inst = sInstance ?: return
             inst.showPassword = !inst.showPassword
             inst.syncShowHidePasswordButton()
-            TODO("GPU: toggle password_edit echo mode based on showPassword")
+            System.err.println("FloaterLogin: onShowHidePasswordClick not yet implemented")
         }
 
         private fun onPassKey(passwordText: String) {
@@ -249,7 +261,7 @@ class FloaterLogin(
         }
 
         private fun updateServerCombo() {
-            TODO("APR: use JVM equivalent - rebuild server_combo from GridManager grid list")
+            System.err.println("FloaterLogin: updateServerCombo not yet implemented")
         }
 
         fun canonicalizeUsername(name: String): String {
@@ -265,7 +277,10 @@ class FloaterLogin(
             return bytes.joinToString("") { "%02x".format(it) }
         }
 
-        private fun savedSettings(key: String): Any? = TODO("APR: use JVM equivalent - gSavedSettings[$key]")
+        private fun savedSettings(key: String): Any? {
+            System.err.println("FloaterLogin: savedSettings not yet implemented")
+            return null
+        }
     }
 }
 

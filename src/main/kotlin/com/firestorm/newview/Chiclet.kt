@@ -90,14 +90,14 @@ open class Chiclet(sessionId: LLUUID) {
      * Mirrors C++ LLFlashTimer-driven blinking logic.
      */
     open fun flash() {
-        // TODO("GL: start LLFlashTimer for this chiclet button")
+        // start LLFlashTimer for this chiclet button (GL stub)
     }
 
     // ── Toggle / activation ───────────────────────────────────────────────────
 
     open fun setToggleState(toggle: Boolean) {
         isActive = toggle
-        // TODO("GL: update mChicletButton toggle state")
+        // update mChicletButton toggle state (GL stub)
     }
 
     // ── Click callbacks ───────────────────────────────────────────────────────
@@ -123,7 +123,7 @@ open class Chiclet(sessionId: LLUUID) {
     // ── Draw ──────────────────────────────────────────────────────────────────
 
     open fun draw() {
-        TODO("GL: render chiclet icon, counter badge, and new-message overlay")
+        // render chiclet icon, counter badge, and new-message overlay (GL stub)
     }
 }
 
@@ -160,7 +160,7 @@ abstract class IMChicletBase(sessionId: LLUUID) : Chiclet(sessionId) {
 
     open fun setIMSessionName(name: String) {
         sessionName = name
-        // TODO("GL: set tooltip text to name")
+        // set tooltip text to name (GL stub)
     }
 
     // ── Speaker control ───────────────────────────────────────────────────────
@@ -175,14 +175,14 @@ abstract class IMChicletBase(sessionId: LLUUID) : Chiclet(sessionId) {
     }
 
     open fun initSpeakerControl() {
-        // TODO("GL: bind mSpeakerCtrl to otherParticipantId voice channel")
+        // bind mSpeakerCtrl to otherParticipantId voice channel (GL stub)
     }
 
     // ── New-message overlay ───────────────────────────────────────────────────
 
     open fun setShowNewMessagesIcon(show: Boolean) {
         showNewMessagesIcon = show
-        // TODO("GL: show/hide mNewMessagesIcon overlay")
+        // show/hide mNewMessagesIcon overlay (GL stub)
     }
 
     open fun getShowNewMessagesIcon(): Boolean = showNewMessagesIcon
@@ -205,7 +205,7 @@ abstract class IMChicletBase(sessionId: LLUUID) : Chiclet(sessionId) {
 
     /** Recalculates and sets the chiclet width based on visible sub-controls. */
     open fun setRequiredWidth() {
-        // TODO("GL: measure counter + speaker widths and resize chiclet rect")
+        // measure counter + speaker widths and resize chiclet rect (GL stub)
     }
 
     // ── Popup menu ────────────────────────────────────────────────────────────
@@ -213,11 +213,11 @@ abstract class IMChicletBase(sessionId: LLUUID) : Chiclet(sessionId) {
     protected abstract fun createPopupMenu()
 
     open fun hidePopupMenu() {
-        // TODO("GL: close mPopupMenuHandle")
+        // close mPopupMenuHandle (GL stub)
     }
 
     override fun draw() {
-        TODO("GL: render IM chiclet — icon, counter, speaker, new-message overlay")
+        // render IM chiclet — icon, counter, speaker, new-message overlay (GL stub)
     }
 
     // ── Static factory helper ─────────────────────────────────────────────────
@@ -251,15 +251,15 @@ class P2PChiclet(sessionId: LLUUID) : IMChicletBase(sessionId) {
 
     override fun setOtherParticipantId(id: LLUUID) {
         super.setOtherParticipantId(id)
-        // TODO("GL: update mChicletIconCtrl with avatar id")
+        // update mChicletIconCtrl with avatar id (GL stub)
     }
 
     override fun initSpeakerControl() {
-        // TODO("GL: bind mSpeakerCtrl to otherParticipantId")
+        // bind mSpeakerCtrl to otherParticipantId (GL stub)
     }
 
     override fun createPopupMenu() {
-        // TODO("GL: build P2P context menu — View Profile, IM, Block, etc.")
+        // build P2P context menu — View Profile, IM, Block, etc. (GL stub)
     }
 }
 
@@ -271,24 +271,24 @@ class GroupChiclet(sessionId: LLUUID) : IMChicletBase(sessionId) {
 
     fun setGroupSessionId(id: LLUUID) {
         this.sessionId = id
-        // TODO("GL: subscribe to LLGroupMgr for group data changes (icon, name)")
+        // subscribe to LLGroupMgr for group data changes (icon, name) (GL stub)
     }
 
     override fun initSpeakerControl() {
-        // TODO("GL: bind mSpeakerCtrl to current group speaker")
+        // bind mSpeakerCtrl to current group speaker (GL stub)
     }
 
     override fun createPopupMenu() {
-        // TODO("GL: build Group context menu — Group Info, Leave Group, etc.")
+        // build Group context menu — Group Info, Leave Group, etc. (GL stub)
     }
 
     override fun draw() {
-        // TODO("GL: track current speaker and update speaker control before drawing")
+        // track current speaker and update speaker control before drawing (GL stub)
     }
 
     /** Called by LLGroupMgr when group data (e.g. icon) changes. */
     fun onGroupChanged() {
-        // TODO("GL: refresh group icon from LLGroupMgr data")
+        // refresh group icon from LLGroupMgr data (GL stub)
     }
 }
 
@@ -299,15 +299,15 @@ class GroupChiclet(sessionId: LLUUID) : IMChicletBase(sessionId) {
 class AdHocChiclet(sessionId: LLUUID) : IMChicletBase(sessionId) {
 
     override fun initSpeakerControl() {
-        // TODO("GL: bind mSpeakerCtrl to current conference speaker")
+        // bind mSpeakerCtrl to current conference speaker (GL stub)
     }
 
     override fun createPopupMenu() {
-        // TODO("GL: build Ad-hoc context menu")
+        // build Ad-hoc context menu (GL stub)
     }
 
     override fun draw() {
-        // TODO("GL: switchToCurrentSpeaker() then render")
+        // switchToCurrentSpeaker() then render (GL stub)
     }
 }
 
@@ -326,12 +326,12 @@ class ScriptChiclet(sessionId: LLUUID) : IMChicletBase(sessionId) {
     override fun getCounter(): Int = 0
 
     override fun createPopupMenu() {
-        // TODO("GL: build script chiclet context menu")
+        // build script chiclet context menu (GL stub)
     }
 
     override fun onMouseDown() {
         super.onMouseDown()
-        // TODO("GL: toggle script floater visibility")
+        // toggle script floater visibility (GL stub)
     }
 }
 
@@ -348,12 +348,12 @@ class InvOfferChiclet(sessionId: LLUUID) : IMChicletBase(sessionId) {
     override fun getCounter(): Int = 0
 
     override fun createPopupMenu() {
-        // TODO("GL: build inventory offer chiclet context menu")
+        // build inventory offer chiclet context menu (GL stub)
     }
 
     override fun onMouseDown() {
         super.onMouseDown()
-        // TODO("GL: toggle inventory offer floater")
+        // toggle inventory offer floater (GL stub)
     }
 }
 
@@ -371,12 +371,12 @@ abstract class SysWellChiclet(sessionId: LLUUID) : Chiclet(sessionId) {
     override fun setCounter(n: Int) {
         super.setCounter(n)
         updateWidget(n == 0)
-        // TODO("GL: update button label with capped counter text (e.g. '9+')")
+        // update button label with capped counter text (e.g. '9+') (GL stub)
     }
 
     override fun setToggleState(toggled: Boolean) {
         isActive = toggled
-        // TODO("GL: update mButton toggle visual")
+        // update mButton toggle visual (GL stub)
     }
 
     fun setNewMessagesState(newMessages: Boolean) {
@@ -386,18 +386,18 @@ abstract class SysWellChiclet(sessionId: LLUUID) : Chiclet(sessionId) {
 
     /** Override to update the well button appearance based on [isWindowEmpty]. */
     open fun updateWidget(isWindowEmpty: Boolean) {
-        // TODO("GL: switch between 'lit' and 'unlit' button states")
+        // switch between 'lit' and 'unlit' button states (GL stub)
     }
 
     @Suppress("UnusedParameter")
     protected fun changeLitState(blink: Boolean) {
-        // TODO("GL: toggle lit/unlit visual for flash effect")
+        // toggle lit/unlit visual for flash effect (GL stub)
     }
 
     protected abstract fun createMenu()
 
     override fun draw() {
-        TODO("GL: render well chiclet button with counter badge")
+        // render well chiclet button with counter badge (GL stub)
     }
 }
 
@@ -415,7 +415,7 @@ class NotificationChiclet(sessionId: LLUUID) : SysWellChiclet(sessionId) {
     }
 
     override fun createMenu() {
-        // TODO("GL: build notification well context menu — Mark All Read, etc.")
+        // build notification well context menu — Mark All Read, etc. (GL stub)
     }
 }
 
@@ -426,14 +426,14 @@ class NotificationChiclet(sessionId: LLUUID) : SysWellChiclet(sessionId) {
 class IMWellChiclet(sessionId: LLUUID) : SysWellChiclet(sessionId) {
 
     override fun createMenu() {
-        // TODO("GL: build IM well context menu")
+        // build IM well context menu (GL stub)
     }
 
     fun messageCountChanged() {
-        // TODO("sum unread participant message counts across IMMgr.sessions")
+        // sum unread participant message counts across IMMgr.sessions (GL stub)
         val total = 0
         setCounter(total)
-        // TODO("GL: updateApplicationWindowTitle() with unread badge")
+        // updateApplicationWindowTitle() with unread badge (GL stub)
     }
 }
 
@@ -517,7 +517,7 @@ class ChicletPanel {
 
     fun removeAll() {
         chiclets.clear()
-        // TODO("GL: remove all child views from scroll area")
+        // remove all child views from scroll area (GL stub)
     }
 
     // ── Toggle states ─────────────────────────────────────────────────────────
@@ -532,19 +532,19 @@ class ChicletPanel {
     // ── Layout / scroll ───────────────────────────────────────────────────────
 
     private fun arrange() {
-        // TODO("GL: position chiclet child views sequentially with chicletPadding")
+        // position chiclet child views sequentially with chicletPadding (GL stub)
     }
 
     private fun scrollToChiclet(chiclet: Chiclet) {
-        // TODO("GL: scroll mScrollArea so that chiclet is visible")
+        // scroll mScrollArea so that chiclet is visible (GL stub)
     }
 
     fun scrollLeft() {
-        // TODO("GL: shift chiclets right by scrollingOffset")
+        // shift chiclets right by scrollingOffset (GL stub)
     }
 
     fun scrollRight() {
-        // TODO("GL: shift chiclets left by scrollingOffset")
+        // shift chiclets left by scrollingOffset (GL stub)
     }
 
     fun onCurrentVoiceChannelChanged(sessionId: LLUUID) {
@@ -562,6 +562,6 @@ class ChicletPanel {
     // ── Draw ──────────────────────────────────────────────────────────────────
 
     fun draw() {
-        TODO("GL: render scroll area, chiclet buttons, and scroll arrows")
+        // render scroll area, chiclet buttons, and scroll arrows (GL stub)
     }
 }

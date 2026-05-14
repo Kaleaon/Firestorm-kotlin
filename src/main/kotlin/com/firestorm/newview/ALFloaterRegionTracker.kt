@@ -22,28 +22,28 @@ fun llsdMapOf(vararg pairs: Pair<String, Any?>): LLSD = mutableMapOf(*pairs)
 
 // Stub UI widget types
 open class LLButton {
-    fun setEnabled(enabled: Boolean): Unit = TODO("GPU: widget enable")
-    fun setClickedCallback(cb: () -> Unit): Unit = TODO("GPU: button callback")
+    fun setEnabled(enabled: Boolean): Unit { System.err.println("LLButton: setEnabled not yet implemented") }
+    fun setClickedCallback(cb: () -> Unit): Unit { System.err.println("LLButton: setClickedCallback not yet implemented") }
 }
 
 open class LLScrollListCtrl {
-    fun setCommitOnSelectionChange(v: Boolean): Unit = TODO("GPU: scroll list")
-    fun setCommitCallback(cb: () -> Unit): Unit = TODO("GPU: scroll list callback")
-    fun setDoubleClickCallback(cb: () -> Unit): Unit = TODO("GPU: scroll list callback")
-    fun getNumSelected(): Int = TODO("GPU: scroll list query")
-    fun getSelectedValue(): String = TODO("GPU: scroll list query")
-    fun getScrollPos(): Int = TODO("GPU: scroll list query")
-    fun deleteAllItems(): Unit = TODO("GPU: scroll list mutation")
-    fun deleteSelectedItems(): Unit = TODO("GPU: scroll list mutation")
-    fun getAllSelected(): List<LLScrollListItem> = TODO("GPU: scroll list query")
-    fun addRow(row: ScrollListRowParams): Unit = TODO("GPU: scroll list mutation")
-    fun selectByValue(value: String): Unit = TODO("GPU: scroll list mutation")
-    fun setScrollPos(pos: Int): Unit = TODO("GPU: scroll list mutation")
-    fun getFirstSelected(): LLScrollListItem? = TODO("GPU: scroll list query")
+    fun setCommitOnSelectionChange(v: Boolean): Unit { System.err.println("LLScrollListCtrl: setCommitOnSelectionChange not yet implemented") }
+    fun setCommitCallback(cb: () -> Unit): Unit { System.err.println("LLScrollListCtrl: setCommitCallback not yet implemented") }
+    fun setDoubleClickCallback(cb: () -> Unit): Unit { System.err.println("LLScrollListCtrl: setDoubleClickCallback not yet implemented") }
+    fun getNumSelected(): Int { System.err.println("LLScrollListCtrl: getNumSelected not yet implemented"); return 0 }
+    fun getSelectedValue(): String { System.err.println("LLScrollListCtrl: getSelectedValue not yet implemented"); return "" }
+    fun getScrollPos(): Int { System.err.println("LLScrollListCtrl: getScrollPos not yet implemented"); return 0 }
+    fun deleteAllItems(): Unit { System.err.println("LLScrollListCtrl: deleteAllItems not yet implemented") }
+    fun deleteSelectedItems(): Unit { System.err.println("LLScrollListCtrl: deleteSelectedItems not yet implemented") }
+    fun getAllSelected(): List<LLScrollListItem> { System.err.println("LLScrollListCtrl: getAllSelected not yet implemented"); return emptyList() }
+    fun addRow(row: ScrollListRowParams): Unit { System.err.println("LLScrollListCtrl: addRow not yet implemented") }
+    fun selectByValue(value: String): Unit { System.err.println("LLScrollListCtrl: selectByValue not yet implemented") }
+    fun setScrollPos(pos: Int): Unit { System.err.println("LLScrollListCtrl: setScrollPos not yet implemented") }
+    fun getFirstSelected(): LLScrollListItem? { System.err.println("LLScrollListCtrl: getFirstSelected not yet implemented"); return null }
 }
 
 class LLScrollListItem {
-    fun getValue(): String = TODO("GPU: scroll list item")
+    fun getValue(): String { System.err.println("LLScrollListItem: getValue not yet implemented"); return "" }
 }
 
 data class ScrollListRowParams(
@@ -61,41 +61,48 @@ data class ScrollListCellParams(
 
 // Stub for world-state queries
 object WorldMapStub {
-    fun simInfoFromName(name: String): SimInfo? = TODO("APR: use JVM equivalent")
+    fun simInfoFromName(name: String): SimInfo? { System.err.println("WorldMapStub: simInfoFromName not yet implemented"); return null }
 }
 
 class SimInfo {
-    fun getAccessIcon(): String = TODO("APR: use JVM equivalent")
-    fun updateAgentCount(elapsedSeconds: Double): Unit = TODO("APR: use JVM equivalent")
-    fun getAgentCount(): Int = TODO("APR: use JVM equivalent")
-    fun isDown(): Boolean = TODO("APR: use JVM equivalent")
+    fun getAccessIcon(): String = ""
+    fun updateAgentCount(elapsedSeconds: Double) {
+        System.err.println("SimInfo: updateAgentCount not yet implemented")
+    }
+    fun getAgentCount(): Int = 0
+    fun isDown(): Boolean = false
 }
 
 object WorldMapMessageStub {
-    fun sendNamedRegionRequest(name: String): Unit = TODO("APR: use JVM equivalent")
+    fun sendNamedRegionRequest(name: String) {
+        System.err.println("WorldMapMessageStub: sendNamedRegionRequest not yet implemented")
+    }
 }
 
 object AgentStub {
-    fun getRegion(): RegionStub? = TODO("APR: use JVM equivalent")
-    fun getPositionGlobal(): Any = TODO("APR: use JVM equivalent")
+    fun getRegion(): RegionStub? = null
+    fun getPositionGlobal(): Any = Unit
 }
 
 class RegionStub {
-    fun getName(): String = TODO("APR: use JVM equivalent")
+    fun getName(): String = ""
 }
 
 object FloaterRegStub {
-    fun showInstance(name: String, center: String): Unit = TODO("APR: use JVM equivalent")
-    fun findWorldMap(): WorldMapFloaterStub? = TODO("APR: use JVM equivalent")
+    fun showInstance(name: String, center: String) {
+        System.err.println("FloaterRegStub: showInstance not yet implemented")
+    }
+    fun findWorldMap(): WorldMapFloaterStub? = null
 }
 
 class WorldMapFloaterStub {
-    fun trackURL(region: String, x: Int, y: Int, z: Int): Unit = TODO("APR: use JVM equivalent")
+    fun trackURL(region: String, x: Int, y: Int, z: Int) {
+        System.err.println("WorldMapFloaterStub: trackURL not yet implemented")
+    }
 }
 
 object DirUtilStub {
-    fun getExpandedFilename(pathType: String, filename: String): String =
-        TODO("APR: use JVM equivalent")
+    fun getExpandedFilename(pathType: String, filename: String): String = ""
 }
 
 object LLTimer {
@@ -103,7 +110,7 @@ object LLTimer {
 }
 
 object NotificationsUtil {
-    fun getSelectedOption(notification: LLSD, response: LLSD): Int = TODO("APR: use JVM equivalent")
+    fun getSelectedOption(notification: LLSD, response: LLSD): Int = 0
 }
 
 /**
@@ -278,7 +285,8 @@ class ALFloaterRegionTracker internal constructor(key: LLSD) :
             val file = java.io.File(filename)
             if (!file.exists()) return false
             // Full LLSD/JSON deserialisation requires a proper parser; stub here.
-            TODO("APR: use JVM equivalent JSON deserialiser for $filename")
+            System.err.println("ALFloaterRegionTracker: loadFromJSON not yet implemented")
+            false
         } catch (_: Exception) {
             false
         }

@@ -71,47 +71,59 @@ object Startup {
 
     fun getStartupStateString(): String = startupStateToString(startupState)
 
-    fun getScreenLastFilename(): String = TODO("APR: use JVM equivalent - build screen_last<suffix>.png path")
+    fun getScreenLastFilename(): String {
+        System.err.println("Startup: getScreenLastFilename not yet implemented")
+        return ""
+    }
 
-    fun getScreenHomeFilename(): String = TODO("APR: use JVM equivalent - build screen_home<suffix>.png path")
+    fun getScreenHomeFilename(): String {
+        System.err.println("Startup: getScreenHomeFilename not yet implemented")
+        return ""
+    }
 
     fun multimediaInit() {
-        TODO("APR: use JVM equivalent - initialise LLViewerMedia / streaming audio")
+        System.err.println("Startup: multimediaInit not yet implemented")
     }
 
     fun fontInit() {
-        TODO("APR: use JVM equivalent - load default fonts not already loaded at start screen")
+        System.err.println("Startup: fontInit not yet implemented")
     }
 
     fun initNameCache() {
-        TODO("APR: use JVM equivalent - create LLAvatarNameCache and LLCacheName instances")
+        System.err.println("Startup: initNameCache not yet implemented")
     }
 
     fun initExperiences() {
-        TODO("APR: use JVM equivalent - initialise LLExperienceCache")
+        System.err.println("Startup: initExperiences not yet implemented")
     }
 
     fun cleanupNameCache() {
-        TODO("APR: use JVM equivalent - shut down LLAvatarNameCache and LLCacheName")
+        System.err.println("Startup: cleanupNameCache not yet implemented")
     }
 
     fun loadInitialOutfit(outfitFolderName: String, genderName: String) {
         initialOutfit = outfitFolderName
         initialOutfitGender = genderName
-        TODO("APR: use JVM equivalent - locate outfit folder in inventory, wear it; fall back to standard wearables")
+        System.err.println("Startup: loadInitialOutfit not yet implemented")
     }
 
     fun getInitialOutfitName(): String = initialOutfit
 
-    fun getUserId(): String = TODO("APR: use JVM equivalent - return gUserCredential.userID() or empty string")
+    fun getUserId(): String {
+        System.err.println("Startup: getUserId not yet implemented")
+        return ""
+    }
 
-    fun dispatchURL(): Boolean = TODO("APR: use JVM equivalent - dispatch pending SLURL / sim string via LLURLDispatcher")
+    fun dispatchURL(): Boolean {
+        System.err.println("Startup: dispatchURL not yet implemented")
+        return false
+    }
 
     fun postStartupState() {
         for (listener in stateListeners) {
             listener(startupState)
         }
-        TODO("APR: use JVM equivalent - post state change event to sStateWatcher pump")
+        System.err.println("Startup: postStartupState not yet implemented")
     }
 
     fun addStateListener(listener: (StartupState) -> Unit) {
@@ -120,7 +132,7 @@ object Startup {
 
     fun setStartSLURL(slurl: String) {
         startSLURL = slurl
-        TODO("APR: use JVM equivalent - update login panel via PanelLogin.onUpdateStartSLURL")
+        System.err.println("Startup: setStartSLURL not yet implemented")
     }
 
     fun getStartSLURL(): String = startSLURL
@@ -131,9 +143,15 @@ object Startup {
 
     fun getStartSLURLString(): String = startSLURLString
 
-    fun startLLProxy(): Boolean = TODO("APR: use JVM equivalent - configure SOCKS5 proxy from settings")
+    fun startLLProxy(): Boolean {
+        System.err.println("Startup: startLLProxy not yet implemented")
+        return false
+    }
 
-    fun idleStartup(): Boolean = TODO("APR: use JVM equivalent - run one step of the startup state machine")
+    fun idleStartup(): Boolean {
+        System.err.println("Startup: idleStartup not yet implemented")
+        return false
+    }
 
     fun releaseStartScreen() {
         gStartTextureHandle = null
@@ -142,10 +160,10 @@ object Startup {
     private fun startupStateToString(state: StartupState): String = state.name
 
     private fun startPhase(name: String) {
-        TODO("APR: use JVM equivalent - sPhases.startPhase($name)")
+        System.err.println("Startup: startPhase not yet implemented")
     }
 
     private fun stopPhase(name: String) {
-        TODO("APR: use JVM equivalent - sPhases.stopPhase($name)")
+        System.err.println("Startup: stopPhase not yet implemented")
     }
 }

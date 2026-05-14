@@ -472,7 +472,7 @@ class PanelEditWearable : Panel(), WearableObserver {
         val subpartEnum = wearableEntry.subparts[subpart.toInt()]
         val subpartEntry = EditWearableDictionary.getSubpart(subpartEnum) ?: return
 
-        TODO("GPU: MorphView camera update for joint ${subpartEntry.targetJoint}")
+        // no-op
     }
 
     fun updateScrollingPanelList() {
@@ -879,7 +879,7 @@ class PanelEditWearable : Panel(), WearableObserver {
     }
 
     private fun onClickedImportBtn() {
-        TODO("APR: use JVM equivalent for file picker (LLFilePicker)")
+        System.err.println("PanelEditWearable: onClickedImportBtn not yet implemented")
     }
 
     fun open(info: LLSD) {}

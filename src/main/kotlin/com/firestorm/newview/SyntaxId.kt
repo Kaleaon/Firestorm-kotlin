@@ -26,7 +26,7 @@ object SyntaxIdLSL {
 
     init {
         loadDefaultKeywordsIntoLLSD()
-        TODO("APR: use JVM equivalent - register region-changed callback and call handleRegionChanged()")
+        System.err.println("SyntaxIdLSL: region-changed callback registration not yet implemented")
     }
 
     fun initialize() {
@@ -73,7 +73,8 @@ object SyntaxIdLSL {
     }
 
     private fun syntaxIdChanged(): Boolean {
-        TODO("APR: use JVM equivalent - query gAgent.getRegion() for simulator features and LSLSyntaxId UUID")
+        System.err.println("SyntaxIdLSL: syntaxIdChanged not yet implemented")
+        return false
     }
 
     private fun handleRegionChanged() {
@@ -85,11 +86,11 @@ object SyntaxIdLSL {
     }
 
     private fun handleCapsReceived(regionUuid: LLUUID) {
-        TODO("APR: use JVM equivalent - check if regionUuid matches current region, then call syntaxIdChanged()")
+        System.err.println("SyntaxIdLSL: handleCapsReceived not yet implemented")
     }
 
     private fun fetchKeywordsFile(filespec: String) {
-        TODO("APR: use JVM equivalent - launch coroutine fetchKeywordsFileCoro(capabilityURL, filespec)")
+        System.err.println("SyntaxIdLSL: fetchKeywordsFile not yet implemented")
     }
 
     private fun fetchKeywordsFileCoro(url: String, fileSpec: String) {
@@ -97,7 +98,7 @@ object SyntaxIdLSL {
             return
         }
         try {
-            TODO("APR: use JVM equivalent - HTTP GET url, deserialize LLSD XML response")
+            System.err.println("SyntaxIdLSL: fetchKeywordsFileCoro not yet implemented")
         } finally {
             inflightFetches.remove(fileSpec)
         }
@@ -106,7 +107,7 @@ object SyntaxIdLSL {
     }
 
     private fun cacheFile(fileSpec: String, content: LLSD) {
-        TODO("APR: use JVM equivalent - serialize content to XML and write to fileSpec")
+        System.err.println("SyntaxIdLSL: cacheFile not yet implemented")
     }
 
     private fun isSupportedVersion(content: LLSD): Boolean {
@@ -123,7 +124,7 @@ object SyntaxIdLSL {
     private fun loadKeywordsIntoLLSD() {
         val file = File(fullFileSpec)
         if (file.exists()) {
-            TODO("APR: use JVM equivalent - deserialize LLSD XML from file into keywordsXml")
+            System.err.println("SyntaxIdLSL: loadKeywordsIntoLLSD not yet implemented")
         }
         fireSyntaxIDChanged()
     }
@@ -136,6 +137,12 @@ object SyntaxIdLSL {
         syntaxIDChangedListeners.toList().forEach { it() }
     }
 
-    private fun appSettingsDir(): String = TODO("APR: use JVM equivalent - return app settings directory path")
-    private fun cacheDir(): String = TODO("APR: use JVM equivalent - return viewer cache directory path")
+    private fun appSettingsDir(): String {
+        System.err.println("SyntaxIdLSL: appSettingsDir not yet implemented")
+        return ""
+    }
+    private fun cacheDir(): String {
+        System.err.println("SyntaxIdLSL: cacheDir not yet implemented")
+        return ""
+    }
 }

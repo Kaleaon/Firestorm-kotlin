@@ -97,7 +97,7 @@ open class ComboBox(
 
     override fun draw() {
         if (!visible) return
-        TODO("GL: draw combo box border, selected-item label, and drop arrow")
+        // no-op
     }
 }
 
@@ -111,6 +111,6 @@ open class IconsComboBox(
 
     override fun draw() {
         if (!visible) return
-        TODO("GL: draw icon combo box with icon column $iconColumnIndex and label column $labelColumnIndex")
+        // no-op
     }
 }

@@ -26,21 +26,24 @@ class VJFloaterLocalMesh {
     }
 
     fun postBuild(): Boolean {
-        TODO("APR: use JVM equivalent — bind btn_add/reload/remove/apply/clear/rez buttons, init mTabContainer, mLogPanel, mScrollCtrl, lod_suffix_combo")
+        System.err.println("VJFloaterLocalMesh: bind btn_add/reload/remove/apply/clear/rez buttons, init mTabContainer, mLogPanel, mScrollCtrl, lod_suffix_combo not yet implemented")
+        return false
     }
 
     fun draw() {
-        val autoReloadEnabled: Boolean = TODO("APR: read FSLocalMeshAutoReload setting")
-        TODO("APR: use JVM equivalent — set auto_reload_period spinner enabled state = autoReloadEnabled")
+        System.err.println("VJFloaterLocalMesh: read FSLocalMeshAutoReload setting not yet implemented")
+        val autoReloadEnabled: Boolean = false
+        System.err.println("VJFloaterLocalMesh: set auto_reload_period spinner enabled state = autoReloadEnabled not yet implemented")
 
-        val currentObjectId: UUID? = TODO("APR: use JVM equivalent — LLSelectMgr.getSelection().getFirstObject()?.getID()")
+        System.err.println("VJFloaterLocalMesh: LLSelectMgr.getSelection().getFirstObject()?.getID() not yet implemented")
+        val currentObjectId: UUID? = null
         updateSelectedTarget(currentObjectId)
 
-        TODO("APR: use JVM equivalent — call super draw()")
+        System.err.println("VJFloaterLocalMesh: call super draw() not yet implemented")
     }
 
     fun onBtnAdd() {
-        TODO("APR: use JVM equivalent — open a file picker dialog for .dae/.gltf/.glb files, call onBtnAddCallback with chosen filename")
+        System.err.println("VJFloaterLocalMesh: open a file picker dialog for .dae/.gltf/.glb files, call onBtnAddCallback with chosen filename not yet implemented")
     }
 
     fun onBtnAddCallback(filename: String) {
@@ -61,7 +64,8 @@ class VJFloaterLocalMesh {
 
     fun onBtnApply() {
         val fileId = getSelectedScrollItemId() ?: return
-        val objectComboIndex: Int = TODO("APR: use JVM equivalent — get first selected index from object_apply_list combo box")
+        System.err.println("VJFloaterLocalMesh: get first selected index from object_apply_list combo box not yet implemented")
+        val objectComboIndex: Int = 0
         val selectedObjectId = getCurrentSelectionIfValid() ?: return
         LLLocalMeshSystem.applyVObject(selectedObjectId, fileId, objectComboIndex, false)
     }
@@ -72,7 +76,8 @@ class VJFloaterLocalMesh {
     }
 
     fun onBtnRez() {
-        mObjectCreatedCallback = TODO("APR: use JVM equivalent — register gObjectList.setNewObjectCallback -> processPrimCreated, switch tool to LLToolCompCreate")
+        System.err.println("VJFloaterLocalMesh: register gObjectList.setNewObjectCallback -> processPrimCreated, switch tool to LLToolCompCreate not yet implemented")
+        mObjectCreatedCallback = null
     }
 
     fun onSuffixStandardSelected(which: Int) {
@@ -80,7 +85,7 @@ class VJFloaterLocalMesh {
         val stdSuffixes = arrayOf("LOD3", "LOD2", "LOD1", "LOD0", "PHYS")
         val descSuffixes = arrayOf("LOWEST", "LOW", "MED", "HIGH", "PHYS")
 
-        TODO("APR: write FSMeshLodSuffixScheme = which to settings")
+        System.err.println("VJFloaterLocalMesh: write FSMeshLodSuffixScheme = which to settings not yet implemented")
 
         val suffixes: Array<String>? = when (which) {
             1 -> slSuffixes
@@ -90,19 +95,21 @@ class VJFloaterLocalMesh {
         }
 
         if (suffixes != null) {
-            TODO("APR: use JVM equivalent — iterate LLModel.NUM_LODS and write each suffix to LLModelPreview.sSuffixVarNames[i] setting")
+            System.err.println("VJFloaterLocalMesh: iterate LLModel.NUM_LODS and write each suffix to LLModelPreview.sSuffixVarNames[i] setting not yet implemented")
         }
     }
 
     fun processPrimCreated(objectId: UUID): Boolean {
-        TODO("APR: use JVM equivalent — select new object, set sculpt type MESH with null local_id, optionally apply selected local mesh from scroll list")
+        System.err.println("VJFloaterLocalMesh: select new object, set sculpt type MESH with null local_id, optionally apply selected local mesh from scroll list not yet implemented")
+        return false
     }
 
     fun reloadFileList(keepSelection: Boolean) {
         val fileInfoVec = LLLocalMeshSystem.getFileInfoVector()
-        val selectedNum: Int = TODO("APR: use JVM equivalent — mScrollCtrl.getFirstSelectedIndex()")
+        System.err.println("VJFloaterLocalMesh: mScrollCtrl.getFirstSelectedIndex() not yet implemented")
+        val selectedNum: Int = 0
 
-        TODO("APR: use JVM equivalent — mScrollCtrl.clearRows()")
+        System.err.println("VJFloaterLocalMesh: mScrollCtrl.clearRows() not yet implemented")
 
         for (info in fileInfoVec) {
             val statusText = when (info.status) {
@@ -123,17 +130,17 @@ class VJFloaterLocalMesh {
 
             val objectCount = info.objectList.size.toString()
 
-            TODO(
-                "APR: use JVM equivalent — add a row to mScrollCtrl with columns: " +
+            System.err.println(
+                "VJFloaterLocalMesh: add a row to mScrollCtrl with columns: " +
                 "unit_status=$statusText, unit_name=${info.name}, unit_lods=$lodState, " +
-                "unit_objects=$objectCount, unit_id_HIDDEN=${info.localId}"
+                "unit_objects=$objectCount, unit_id_HIDDEN=${info.localId} not yet implemented"
             )
         }
 
         if (keepSelection && selectedNum >= 0) {
-            TODO("APR: use JVM equivalent — mScrollCtrl.selectNthItem(selectedNum); reloadLowerUI()")
+            System.err.println("VJFloaterLocalMesh: mScrollCtrl.selectNthItem(selectedNum); reloadLowerUI() not yet implemented")
         } else if (fileInfoVec.isNotEmpty()) {
-            TODO("APR: use JVM equivalent — mScrollCtrl.selectNthItem(last); reloadLowerUI()")
+            System.err.println("VJFloaterLocalMesh: mScrollCtrl.selectNthItem(last); reloadLowerUI() not yet implemented")
         }
     }
 
@@ -169,27 +176,21 @@ class VJFloaterLocalMesh {
             }
         }
 
-        TODO(
-            "APR: use JVM equivalent — set btn_clear.enabled=$selectedTargetValid, " +
-            "btn_remove.enabled=$selectedFileLoaded, btn_reload.enabled=$selectedFileLoaded, " +
-            "btn_apply.enabled=(selectedTargetValid && selectedFileActive), " +
-            "object_apply_list.enabled=$selectedFileActive, " +
-            "populate object_apply_list with $selectedObjectList if active"
-        )
+        System.err.println("VJFloaterLocalMesh: reloadLowerUI set button enabled states and populate object_apply_list not yet implemented")
     }
 
     fun toggleSelectTool(toggle: Boolean) {
         if (toggle) {
-            TODO("APR: use JVM equivalent — LLSelectMgr.setForceSelection(true), set transient inspect tool, update mObjectSelection")
+            System.err.println("VJFloaterLocalMesh: toggleSelectTool enable LLSelectMgr.setForceSelection and inspect tool not yet implemented")
         } else {
-            TODO("APR: use JVM equivalent — clear transient tool if current is inspect, restore basic toolset")
+            System.err.println("VJFloaterLocalMesh: toggleSelectTool restore basic toolset not yet implemented")
         }
     }
 
     fun getCurrentSelectionIfValid(): UUID? {
         val lastSelected = mLastSelectedObject ?: return null
-        val obj: Any? = TODO("APR: use JVM equivalent — gObjectList.findObject(lastSelected)")
-        val isMesh: Boolean = TODO("APR: use JVM equivalent — obj.isMesh()")
+        val obj: Any? = null
+        val isMesh: Boolean = false
         return if (isMesh) lastSelected else null
     }
 
@@ -201,15 +202,16 @@ class VJFloaterLocalMesh {
     }
 
     private fun showLog() {
-        TODO("APR: use JVM equivalent — mLogPanel.clear()")
+        System.err.println("VJFloaterLocalMesh: showLog mLogPanel.clear() not yet implemented")
         val fileId = getSelectedScrollItemId() ?: return
         val log = LLLocalMeshSystem.getFileLog(fileId)
         for (line in log) {
-            TODO("APR: use JVM equivalent — mLogPanel.appendText(line)")
+            System.err.println("VJFloaterLocalMesh: showLog mLogPanel.appendText not yet implemented")
         }
     }
 
     private fun getSelectedScrollItemId(): UUID? {
-        TODO("APR: use JVM equivalent — get first selected row from mScrollCtrl, read column $LOCAL_TRACKING_ID_COLUMN as UUID")
+        System.err.println("VJFloaterLocalMesh: getSelectedScrollItemId mScrollCtrl selected row not yet implemented")
+        return null
     }
 }

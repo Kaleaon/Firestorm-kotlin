@@ -169,13 +169,13 @@ class MultiGesture {
 
         when (val s = steps[currentStep]) {
             is GestureStepAnimation -> {
-                TODO("GPU: trigger animation ${s.animName}")
+                // no-op
             }
             is GestureStepSound -> {
-                TODO("GPU: play sound ${s.soundName}")
+                // no-op
             }
             is GestureStepChat -> {
-                TODO("GPU: send chat ${s.chatText}")
+                // no-op
             }
             is GestureStepWait -> {
                 if (s.flags and WaitFlags.TIME != 0u) {

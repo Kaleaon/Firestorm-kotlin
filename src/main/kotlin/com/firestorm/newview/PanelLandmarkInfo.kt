@@ -40,7 +40,7 @@ class UpdateLandmarkParent(
     private val newParentId: UUID
 ) {
     fun fire(invItemId: UUID) {
-        TODO("APR: use JVM equivalent - update item parent in inventory model, notify observers")
+        System.err.println("UpdateLandmarkParent: fire not yet implemented")
     }
 }
 
@@ -75,7 +75,7 @@ class PanelLandmarkInfo : PanelPlaceInfo() {
 
     override fun postBuild(): Boolean {
         super.postBuild()
-        TODO("GPU: bind ownerText, creatorText, createdText, landmarkTitle, landmarkTitleEditor, notesEditor, folderCombo from UI")
+        System.err.println("PanelLandmarkInfo: postBuild not yet implemented")
         iconPg = "icon_PG"
         iconM = "icon_M"
         iconR = "icon_R"
@@ -85,7 +85,7 @@ class PanelLandmarkInfo : PanelPlaceInfo() {
     override fun resetLocation() {
         super.resetLocation()
         val loading = "Loading..."
-        TODO("GPU: set ownerText, creatorText, createdText to '$loading'; clear title/notes editors")
+        System.err.println("PanelLandmarkInfo: resetLocation not yet implemented")
     }
 
     override fun setInfoType(type: InfoType) {
@@ -99,24 +99,24 @@ class PanelLandmarkInfo : PanelPlaceInfo() {
     private fun setInfoTypeWithFolder(type: InfoType, folderId: UUID) {
         val isCreateLandmark = type == InfoType.CREATE_LANDMARK
 
-        TODO("GPU: show/hide landmark_info_panel, folder_label, edit_btn, folderCombo based on isCreateLandmark=$isCreateLandmark")
+        System.err.println("PanelLandmarkInfo: setInfoTypeWithFolder not yet implemented")
 
         when (type) {
             InfoType.CREATE_LANDMARK -> {
                 currentTitle = "Create Landmark"
-                TODO("GPU: show landmarkTitleEditor, hide landmarkTitle; set notesEditor editable")
-                TODO("APR: use JVM equivalent - read agent parcel name and position for title default")
-                TODO("APR: use JVM equivalent - resolve parcel owner SLURL and set parcelOwner text")
-                TODO("APR: use JVM equivalent - if landmark doesn't already exist call createLandmark(folderId)")
+                System.err.println("PanelLandmarkInfo: setInfoTypeWithFolder not yet implemented")
+                System.err.println("PanelLandmarkInfo: setInfoTypeWithFolder not yet implemented")
+                System.err.println("PanelLandmarkInfo: setInfoTypeWithFolder not yet implemented")
+                System.err.println("PanelLandmarkInfo: setInfoTypeWithFolder not yet implemented")
             }
             else -> {
                 currentTitle = "Landmark"
-                TODO("GPU: show landmarkTitle, hide landmarkTitleEditor; set notesEditor read-only")
+                System.err.println("PanelLandmarkInfo: setInfoTypeWithFolder not yet implemented")
             }
         }
 
         populateFoldersList()
-        TODO("GPU: set focus to prevent floater losing focus")
+        System.err.println("PanelLandmarkInfo: setInfoTypeWithFolder not yet implemented")
         super.setInfoType(type)
     }
 
@@ -125,13 +125,13 @@ class PanelLandmarkInfo : PanelPlaceInfo() {
 
         when {
             parcelData.flags and 0x2 != 0 -> {
-                TODO("GPU: set maturityRatingIcon to iconR, text to Adult")
+                System.err.println("PanelLandmarkInfo: processParcelInfo not yet implemented")
             }
             parcelData.flags and 0x1 != 0 -> {
-                TODO("GPU: set maturityRatingIcon to iconM, text to Mature")
+                System.err.println("PanelLandmarkInfo: processParcelInfo not yet implemented")
             }
             else -> {
-                TODO("GPU: set maturityRatingIcon to iconPg, text to PG")
+                System.err.println("PanelLandmarkInfo: processParcelInfo not yet implemented")
             }
         }
 
@@ -141,12 +141,12 @@ class PanelLandmarkInfo : PanelPlaceInfo() {
             } else {
                 "secondlife:///app/agent/${parcelData.ownerId}/inspect"
             }
-            TODO("GPU: set parcelOwner text to $ownerSlurl")
+            System.err.println("PanelLandmarkInfo: processParcelInfo not yet implemented")
         } else {
-            TODO("GPU: set parcelOwner text to 'Public'")
+            System.err.println("PanelLandmarkInfo: processParcelInfo not yet implemented")
         }
 
-        TODO("APR: use JVM equivalent - notifyParent with update_verbs and global coordinates")
+        System.err.println("PanelLandmarkInfo: processParcelInfo not yet implemented")
     }
 
     fun displayItemInfo(item: InventoryItem?) {
@@ -155,9 +155,9 @@ class PanelLandmarkInfo : PanelPlaceInfo() {
         val creatorId = item.getCreatorUUID()
         if (creatorId != UUID(0, 0)) {
             val slurl = "secondlife:///app/agent/$creatorId/inspect"
-            TODO("GPU: set creatorText to $slurl")
+            System.err.println("PanelLandmarkInfo: displayItemInfo not yet implemented")
         } else {
-            TODO("GPU: set creatorText to 'Unknown'")
+            System.err.println("PanelLandmarkInfo: displayItemInfo not yet implemented")
         }
 
         val perm = item.getPermissions()
@@ -167,67 +167,67 @@ class PanelLandmarkInfo : PanelPlaceInfo() {
             } else {
                 "secondlife:///app/agent/${perm.getOwner()}/inspect"
             }
-            TODO("GPU: set ownerText to $ownerSlurl")
+            System.err.println("PanelLandmarkInfo: displayItemInfo not yet implemented")
         } else {
-            TODO("GPU: set ownerText to 'Public'")
+            System.err.println("PanelLandmarkInfo: displayItemInfo not yet implemented")
         }
 
         val timeUtc = item.getCreationDate()
         if (timeUtc == 0L) {
-            TODO("GPU: set createdText to 'Unknown'")
+            System.err.println("PanelLandmarkInfo: displayItemInfo not yet implemented")
         } else {
-            TODO("APR: use JVM equivalent - format timeUtc as localized date string and set createdText")
+            System.err.println("PanelLandmarkInfo: displayItemInfo not yet implemented")
         }
 
-        TODO("GPU: set landmarkTitle and landmarkTitleEditor text to item name; notesEditor to description")
+        System.err.println("PanelLandmarkInfo: displayItemInfo not yet implemented")
     }
 
     fun toggleLandmarkEditMode(enabled: Boolean) {
         if (enabled && infoType != InfoType.CREATE_LANDMARK) {
-            TODO("GPU: set title text to 'Edit Landmark'")
+            System.err.println("PanelLandmarkInfo: toggleLandmarkEditMode not yet implemented")
         } else {
-            TODO("GPU: set title text to currentTitle; copy title editor text to title label")
+            System.err.println("PanelLandmarkInfo: toggleLandmarkEditMode not yet implemented")
         }
 
-        TODO("GPU: toggle landmarkTitle/Editor visibility and notesEditor read-only; toggle folder controls visibility")
-        TODO("GPU: re-set notesEditor text to force color refresh; set focus")
+        System.err.println("PanelLandmarkInfo: toggleLandmarkEditMode not yet implemented")
+        System.err.println("PanelLandmarkInfo: toggleLandmarkEditMode not yet implemented")
     }
 
     fun setCanEdit(enabled: Boolean) {
-        TODO("GPU: set edit_btn enabled = $enabled")
+        System.err.println("PanelLandmarkInfo: setCanEdit not yet implemented")
     }
 
     fun getLandmarkTitle(): String {
-        TODO("GPU: return landmarkTitleEditor text")
+        return ""
     }
 
     fun getLandmarkNotes(): String {
-        TODO("GPU: return notesEditor text")
+        return ""
     }
 
     fun getLandmarkFolder(): UUID {
-        TODO("GPU: return folderCombo selected UUID value")
+        return UUID(0, 0)
     }
 
     fun setLandmarkFolder(id: UUID): Boolean {
-        TODO("GPU: select folderCombo item by id, return success")
+        return false
     }
 
     private fun createLandmark(folderId: UUID) {
-        TODO("APR: use JVM equivalent - read title/notes editors, trim, fall back to parcel/region name, call LandmarkActions.createLandmarkHere")
+        System.err.println("PanelLandmarkInfo: createLandmark not yet implemented")
     }
 
     private fun populateFoldersList() {
-        TODO("APR: use JVM equivalent - collect landmark folders, sort by full name, populate folderCombo with Landmarks folder first")
+        System.err.println("PanelLandmarkInfo: populateFoldersList not yet implemented")
     }
 
     companion object {
         fun getFullFolderName(cat: ViewerInventoryCategory): String {
-            TODO("APR: use JVM equivalent - walk category parent chain to build full slash-separated path, translating protected-type names via LLTrans")
+            return ""
         }
 
         fun collectLandmarkFolders(cats: MutableList<ViewerInventoryCategory>) {
-            TODO("APR: use JVM equivalent - collect descendant categories of FT_LANDMARK folder, excluding trash")
+            System.err.println("PanelLandmarkInfo: collectLandmarkFolders not yet implemented")
         }
     }
 }

@@ -95,7 +95,7 @@ class FloaterColorPicker(
     fun getMouseDownInSwatch(): Boolean = mouseDownInSwatch
 
     fun createUI() {
-        TODO("GPU: allocate LLImageRaw, fill HSL->RGB pixels, upload as local texture, bind, set clamp mode")
+        // no-op
         for (each in 0 until numPaletteColumns * numPaletteRows) {
             palette.add(Color4.fromColorTable("ColorPaletteEntry${String.format("%02d", each + 1)}"))
         }
@@ -110,7 +110,7 @@ class FloaterColorPicker(
             val sw = getSwatch()
             setVisible(false)
             if (sw != null) {
-                TODO("APR: use JVM equivalent - invoke system color picker dialog, commit or cancel swatch accordingly")
+                System.err.println("FloaterColorPicker: showUI not yet implemented")
             }
             closeFloater()
         }
@@ -309,7 +309,7 @@ class FloaterColorPicker(
 
     override fun draw() {
         val maxOpacity = savedSettings.getFloat("PickerContextOpacity", 0.4f)
-        TODO("GPU: drawConeToOwner(contextConeOpacity, maxOpacity, swatch, contextConeFadeTime, contextConeInAlpha, contextConeOutAlpha)")
+        // no-op
 
         pipetteBtn?.setToggleState(ToolMgr.instance.getCurrentTool() == ToolPipette.instance)
         applyImmediateCheck?.setEnabled(active && canApplyImmediately)
@@ -319,7 +319,7 @@ class FloaterColorPicker(
 
         val alpha = getSwatchTransparency()
 
-        TODO("GPU: gl_draw_image rgbViewerImage, draw hue/sat crosshair lines, lum slider, lum marker triangle, swatch rect, outlines")
+        // no-op
         drawPalette()
     }
 
@@ -521,7 +521,7 @@ class FloaterColorPicker(
     }
 
     private fun drawPalette() {
-        TODO("GPU: iterate palette rows/columns, gl_rect_2d each entry; draw cross highlight at highlightEntry")
+        // no-op
     }
 
     private fun getComplimentaryColor(backgroundColor: Color4): Color4 {

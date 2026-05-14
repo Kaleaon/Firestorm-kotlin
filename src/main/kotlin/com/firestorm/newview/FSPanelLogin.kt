@@ -33,21 +33,21 @@ class FSPanelLogin(
     }
 
     private fun buildPanel(rect: LLRect) {
-        TODO("GPU: build login panel from skin XML (panel_fs_nui_login.xml or panel_fs_login.xml), " +
-            "wire all callbacks for mode_combo, password_edit, server_combo, username_combo, " +
-            "location_combo, and action buttons")
+        // GPU: build login panel from skin XML (panel_fs_nui_login.xml or panel_fs_login.xml),
+        // wire all callbacks for mode_combo, password_edit, server_combo, username_combo,
+        // location_combo, and action buttons
     }
 
     open fun setFocus(b: Boolean) {
         if (b) {
             giveFocus()
         } else {
-            TODO("GPU: delegate setFocus(false) to parent LLPanel")
+            // GPU: delegate setFocus(false) to parent LLPanel
         }
     }
 
     fun showLoginWidgets() {
-        TODO("GPU: make login_widgets visible and navigate login_html to splash screen URL")
+        // GPU: make login_widgets visible and navigate login_html to splash screen URL
     }
 
     fun handleMediaEvent(self: Any?, event: Int) {
@@ -55,23 +55,26 @@ class FSPanelLogin(
     }
 
     fun gridListChanged(success: Boolean) {
-        TODO("APR: use JVM equivalent for grid list change callback after addGrid completes")
+        // APR: use JVM equivalent for grid list change callback after addGrid completes
+        System.err.println("STUB: APR: gridListChanged not implemented")
     }
 
     private fun addFavoritesToStartLocation() {
-        TODO("APR: use JVM equivalent for reading stored_favorites.xml and populating start_location_combo")
+        // APR: use JVM equivalent for reading stored_favorites.xml and populating start_location_combo
+        System.err.println("STUB: APR: addFavoritesToStartLocation not implemented")
     }
 
     private fun addUsersToCombo(showServer: Boolean) {
-        TODO("APR: use JVM equivalent for reading saved credentials and populating username_combo")
+        // APR: use JVM equivalent for reading saved credentials and populating username_combo
+        System.err.println("STUB: APR: addUsersToCombo not implemented")
     }
 
     private fun onSelectUser() {
-        TODO("GPU: load saved credentials for selected user and populate fields")
+        // GPU: load saved credentials for selected user and populate fields
     }
 
     private fun onModeChange(originalValue: Any?, newValue: Any?) {
-        TODO("GPU: confirm mode change via notification before applying new session settings file")
+        // GPU: confirm mode change via notification before applying new session settings file
     }
 
     private fun onModeChangeConfirm(
@@ -80,15 +83,16 @@ class FSPanelLogin(
         notification: Map<String, Any>,
         response: Map<String, Any>
     ) {
-        TODO("GPU: apply confirmed mode change; restart or reload session settings file")
+        // GPU: apply confirmed mode change; restart or reload session settings file
     }
 
     private fun onSelectServer() {
-        TODO("GPU: apply grid selection from server_combo; handle unknown grid URI via addGrid flow")
+        // GPU: apply grid selection from server_combo; handle unknown grid URI via addGrid flow
     }
 
     private fun onLocationSLURL() {
-        TODO("APR: use JVM equivalent for LLStartUp::setStartSLURL from location_combo value")
+        // APR: use JVM equivalent for LLStartUp::setStartSLURL from location_combo value
+        System.err.println("STUB: APR: onLocationSLURL not implemented")
     }
 
     private fun onUsernameTextChanged() {
@@ -97,16 +101,16 @@ class FSPanelLogin(
     }
 
     private fun syncShowHidePasswordButton() {
-        TODO("GPU: show/hide password_show_btn and password_hide_btn based on mShowPassword; " +
-            "update password_edit drawAsterisks flag")
+        // GPU: show/hide password_show_btn and password_hide_btn based on mShowPassword;
+        // update password_edit drawAsterisks flag
     }
 
     private fun updateLoginButtons() {
-        TODO("GPU: enable connect_btn only when usernameLength != 0 && passwordLength != 0")
+        // GPU: enable connect_btn only when usernameLength != 0 && passwordLength != 0
     }
 
     private fun getUsernameComboText(): String {
-        TODO("GPU: return current text from username_combo UI control")
+        return "" // GPU: return current text from username_combo UI control
     }
 
     companion object {
@@ -126,38 +130,40 @@ class FSPanelLogin(
             if (sInstance == null) {
                 FSPanelLogin(rect, callback, callbackData)
             }
-            TODO("GPU: ensure keyboard focus goes to the login panel")
+            // GPU: ensure keyboard focus goes to the login panel
         }
 
         fun reshapePanel() {
             sInstance?.let {
-                TODO("GPU: reshape the panel to its current rect dimensions")
+                // GPU: reshape the panel to its current rect dimensions
             }
         }
 
         fun setFields(credential: Any?, fromStartup: Boolean = false) {
             val instance = sInstance ?: return
             if (instance.initialized) sCredentialSet = true
-            TODO("GPU: populate username_combo and password_edit from credential object; " +
-                "handle remember-password checkbox; call addFavoritesToStartLocation")
+            // GPU: populate username_combo and password_edit from credential object;
+            // handle remember-password checkbox; call addFavoritesToStartLocation
         }
 
         fun getFields(credential: Any?, remember: Boolean) {
             val instance = sInstance ?: return
-            TODO("APR: use JVM equivalent for credential construction: " +
-                "parse username_combo for first/last or account form; " +
-                "MD5-hash password if modified; set remember from checkbox")
+            // APR: use JVM equivalent for credential construction:
+            // parse username_combo for first/last or account form;
+            // MD5-hash password if modified; set remember from checkbox
+            System.err.println("STUB: APR: getFields credential construction not implemented")
         }
 
         fun isCredentialSet(): Boolean = sCredentialSet
 
         fun areCredentialFieldsDirty(): Boolean {
             val instance = sInstance ?: return false
-            TODO("GPU: return true if username_combo or password_edit are dirty")
+            return false // GPU: return true if username_combo or password_edit are dirty
         }
 
         fun setLocation(slurl: Any?) {
-            TODO("APR: use JVM equivalent for LLStartUp::setStartSLURL(slurl)")
+            // APR: use JVM equivalent for LLStartUp::setStartSLURL(slurl)
+            System.err.println("STUB: APR: setLocation not implemented")
         }
 
         fun autologinToLocation(slurl: Any?) {
@@ -167,48 +173,50 @@ class FSPanelLogin(
 
         fun updateLocationSelectorsVisibility() {
             sInstance?.let {
-                TODO("GPU: show/hide start_location_panel and grid_panel based on settings; " +
-                    "call addUsersToCombo")
+                // GPU: show/hide start_location_panel and grid_panel based on settings;
+                // call addUsersToCombo
             }
         }
 
         fun closePanel() {
             sInstance?.let { instance ->
-                TODO("GPU: remove panel from parent view hierarchy and delete sInstance")
+                // GPU: remove panel from parent view hierarchy and delete sInstance
             }
             sInstance = null
         }
 
         fun loadLoginPage() {
             val instance = sInstance ?: return
-            TODO("APR: use JVM equivalent for building the login page LLURI with query params " +
-                "(lang, version, channel, grid, os, sourceid, login_content_version, skin, " +
-                "splash screen flags) and navigating login_html to the resulting URL")
+            // APR: use JVM equivalent for building the login page LLURI with query params
+            // (lang, version, channel, grid, os, sourceid, login_content_version, skin,
+            // splash screen flags) and navigating login_html to the resulting URL
+            System.err.println("STUB: APR: loadLoginPage not implemented")
         }
 
         fun giveFocus() {
             sInstance?.let {
-                TODO("GPU: move keyboard focus to password_edit if username filled, else username_combo")
+                // GPU: move keyboard focus to password_edit if username filled, else username_combo
             }
         }
 
         fun setAlwaysRefresh(refresh: Boolean) {
             sInstance?.let {
-                TODO("GPU: call setAlwaysRefresh($refresh) on login_html media control")
+                // GPU: call setAlwaysRefresh($refresh) on login_html media control
             }
         }
 
         fun updateServer() {
             sInstance?.let {
-                TODO("APR: use JVM equivalent for loading credentials for new grid, " +
-                    "updating server_combo label, navigating splash screen, " +
-                    "updating password max-length for grid type")
+                // APR: use JVM equivalent for loading credentials for new grid,
+                // updating server_combo label, navigating splash screen,
+                // updating password max-length for grid type
+                System.err.println("STUB: APR: updateServer not implemented")
             }
         }
 
         fun onUpdateStartSLURL(newStartSlurl: Any?) {
             val instance = sInstance ?: return
-            TODO("GPU: update start_location_combo and possibly server_combo from the new SLURL type")
+            // GPU: update start_location_combo and possibly server_combo from the new SLURL type
         }
 
         fun getShowFavorites(): Boolean {
@@ -225,27 +233,30 @@ class FSPanelLogin(
 
         private fun onClickConnect(unused: Any?) {
             val instance = sInstance ?: return
-            TODO("APR: use JVM equivalent for: validate non-empty username/password, " +
-                "set grid choice from server_combo, build credential via getFields, " +
-                "check allowed credential types, call mCallback(0, mCallbackData)")
+            // APR: use JVM equivalent for: validate non-empty username/password,
+            // set grid choice from server_combo, build credential via getFields,
+            // check allowed credential types, call mCallback(0, mCallbackData)
+            System.err.println("STUB: APR: onClickConnect not implemented")
         }
 
         private fun onClickNewAccount(unused: Any?) {
-            TODO("APR: use JVM equivalent for LLWeb::loadURLInternal(create_account_url) " +
-                "or grid-specific registration URL on OpenSim")
+            // APR: use JVM equivalent for LLWeb::loadURLInternal(create_account_url)
+            // or grid-specific registration URL on OpenSim
+            System.err.println("STUB: APR: onClickNewAccount not implemented")
         }
 
         private fun onClickVersion(unused: Any?) {
-            TODO("GPU: show the 'sl_about' floater")
+            // GPU: show the 'sl_about' floater
         }
 
         private fun onClickForgotPassword(unused: Any?) {
-            TODO("APR: use JVM equivalent for opening the forgot-password URL " +
-                "via LLWeb::loadURLExternal or grid-specific URL on OpenSim")
+            // APR: use JVM equivalent for opening the forgot-password URL
+            // via LLWeb::loadURLExternal or grid-specific URL on OpenSim
+            System.err.println("STUB: APR: onClickForgotPassword not implemented")
         }
 
         private fun onClickHelp(unused: Any?) {
-            TODO("GPU: show the pre-login help topic via LLViewerHelp")
+            // GPU: show the pre-login help topic via LLViewerHelp
         }
 
         private fun onPassKey(caller: Any?, userData: Any?) {
@@ -253,31 +264,36 @@ class FSPanelLogin(
             self.passwordModified = true
             self.passwordLength = getPasswordEditLength(self)
             self.updateLoginButtons()
-            TODO("APR: check caps-lock state for notification (sCapslockDidNotification guard)")
+            // APR: check caps-lock state for notification (sCapslockDidNotification guard)
+            System.err.println("STUB: APR: onPassKey caps-lock check not implemented")
         }
 
         private fun getPasswordEditLength(instance: FSPanelLogin): Int {
-            TODO("GPU: return current text length of password_edit control")
+            return 0 // GPU: return current text length of password_edit control
         }
 
         private fun updateServerCombo() {
-            TODO("GPU: update server_combo label and selection to reflect the current grid manager state")
+            // GPU: update server_combo label and selection to reflect the current grid manager state
         }
 
         private fun onClickRemove(unused: Any?) {
-            TODO("APR: show confirmation notification; on confirm remove selected user credential")
+            // APR: show confirmation notification; on confirm remove selected user credential
+            System.err.println("STUB: APR: onClickRemove not implemented")
         }
 
         private fun onRemoveCallback(notification: Map<String, Any>, response: Map<String, Any>) {
-            TODO("APR: use JVM equivalent for deleting credential and refreshing username_combo")
+            // APR: use JVM equivalent for deleting credential and refreshing username_combo
+            System.err.println("STUB: APR: onRemoveCallback not implemented")
         }
 
         private fun onClickGridMgrHelp(unused: Any?) {
-            TODO("APR: use JVM equivalent for opening the grid manager help URL")
+            // APR: use JVM equivalent for opening the grid manager help URL
+            System.err.println("STUB: APR: onClickGridMgrHelp not implemented")
         }
 
         private fun onClickGridBuilder(unused: Any?) {
-            TODO("APR: use JVM equivalent for opening the grid builder URL (OpenSim only)")
+            // APR: use JVM equivalent for opening the grid builder URL (OpenSim only)
+            System.err.println("STUB: APR: onClickGridBuilder not implemented")
         }
 
         private fun onShowHidePasswordClick(unused: Any?) {
@@ -287,8 +303,8 @@ class FSPanelLogin(
         }
 
         private fun credentialName(): String {
-            TODO("APR: use JVM equivalent for LLGridManager::getInstance()->getCredentialIdentifier() " +
-                "to produce the per-grid credential store key")
+            return "" // APR: use JVM equivalent for LLGridManager::getInstance()->getCredentialIdentifier()
+                      // to produce the per-grid credential store key
         }
 
         private fun canonicalizeUsername(name: String): String {

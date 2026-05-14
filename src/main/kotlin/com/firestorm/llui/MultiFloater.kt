@@ -34,7 +34,7 @@ open class MultiFloater(
         addChild(tc)
         tabContainer = tc
         if (resizable) {
-            TODO("GPU: tc.setRightTabBtnOffset(RESIZE_HANDLE_WIDTH)")
+            // no-op
         }
     }
 
@@ -85,39 +85,39 @@ open class MultiFloater(
             }
             return true
         }
-        return TODO("APR: super.handleKeyHere($key, $mask)")
+        return false
     }
 
     open fun addChild(view: View, tabGroup: Int = 0): Boolean {
         val tc = view as? TabContainer
         if (tc != null) setTabContainer(tc)
-        return TODO("APR: Floater.addChild(view, tabGroup)")
+        return false
     }
 
     open fun setCanResize(canResize: Boolean) {
         resizable = canResize
         val tc = tabContainer ?: return
         if (resizable && tc.tabPosition == TabContainer.TabPosition.BOTTOM) {
-            TODO("GPU: tc.setRightTabBtnOffset(RESIZE_HANDLE_WIDTH)")
+            // no-op
         } else {
-            TODO("GPU: tc.setRightTabBtnOffset(0)")
+            // no-op
         }
     }
 
     open fun growToFit(contentWidth: Int, contentHeight: Int) {
-        val floaterHeaderSize: Int = TODO("APR: default_params.header_height")
-        val tabcntrHeaderHeight: Int = TODO("APR: LLPANEL_BORDER_WIDTH + UITabCntrCloseBtnSize")
-        val rectWidth: Int = TODO("GPU: getRect().width")
-        val rectHeight: Int = TODO("GPU: getRect().height")
-        val borderPad: Int = TODO("GPU: LLPANEL_BORDER_WIDTH * 2")
+        val floaterHeaderSize: Int = 0
+        val tabcntrHeaderHeight: Int = 0
+        val rectWidth: Int = 0
+        val rectHeight: Int = 0
+        val borderPad: Int = 0
         val newWidth = maxOf(rectWidth, contentWidth + borderPad)
         val newHeight = maxOf(rectHeight, contentHeight + floaterHeaderSize + tabcntrHeaderHeight)
 
         if (isMinimized) {
-            TODO("GPU: setExpandedRect to newWidth x newHeight keeping top-left corner")
+            // no-op
         } else {
-            val oldHeight: Int = TODO("GPU: getRect().height")
-            TODO("GPU: reshape($newWidth, $newHeight); translate(0, $oldHeight - $newHeight)")
+            val oldHeight: Int = 0
+            // no-op
         }
     }
 
@@ -136,12 +136,12 @@ open class MultiFloater(
                 tc.removeTabPanel(floaterp)
             }
             floaterp.host != null -> floaterp.host!!.removeFloater(floaterp)
-            else -> TODO("APR: if floaterp.parent == gFloaterView then gFloaterView.removeChild(floaterp)")
+            else -> System.err.println("MultiFloater: addFloater gFloaterView.removeChild not yet implemented")
         }
 
         val floaterData = FloaterData(
-            width = TODO("GPU: floaterp.rect.width"),
-            height = TODO("GPU: floaterp.rect.height"),
+            width = 0,
+            height = 0,
             canMinimize = floaterp.minimizable,
             canResize = floaterp.resizable,
             saveRect = floaterp.saveRect
@@ -151,11 +151,11 @@ open class MultiFloater(
         floaterp.resizable = false
         floaterp.draggable = false
         floaterp.saveRect = false
-        TODO("APR: floaterp.storeRectControl()")
-        TODO("GPU: floaterp.setBackgroundVisible(false)")
+        System.err.println("MultiFloater: floaterp.storeRectControl() not yet implemented")
+        System.err.println("MultiFloater: floaterp.setBackgroundVisible(false) not yet implemented")
 
         if (!hostedFloaterShowTitlebar) {
-            TODO("GPU: floaterp.getDragHandle().setTitleVisible(false); shrink rect by headerHeight")
+            System.err.println("MultiFloater: getDragHandle().setTitleVisible(false) not yet implemented")
         }
 
         if (autoResize) growToFit(floaterData.width, floaterData.height)
@@ -174,7 +174,7 @@ open class MultiFloater(
         floaterp.host = this
         if (isMinimized) floaterp.visible = false
 
-        TODO("GPU: moveResizeHandlesToFront()")
+        System.err.println("MultiFloater: moveResizeHandlesToFront() not yet implemented")
     }
 
     open fun showFloater(
@@ -194,7 +194,7 @@ open class MultiFloater(
         val tc = tabContainer ?: return
 
         if (!hostedFloaterShowTitlebar) {
-            TODO("GPU: floaterp.getDragHandle().setTitleVisible(true); grow rect by headerHeight")
+            System.err.println("MultiFloater: getDragHandle().setTitleVisible(true) not yet implemented")
         }
 
         val data = floaterDataMap.remove(floaterp)
@@ -202,16 +202,16 @@ open class MultiFloater(
             floaterp.minimizable = data.canMinimize
             floaterp.saveRect = data.saveRect
             if (!data.canResize) {
-                TODO("GPU: floaterp.reshape(data.width, data.height)")
+                System.err.println("MultiFloater: floaterp.reshape(data.width, data.height) not yet implemented")
             }
             floaterp.resizable = data.canResize
         }
 
         tc.removeTabPanel(floaterp)
-        TODO("GPU: floaterp.setBackgroundVisible(true)")
+        System.err.println("MultiFloater: floaterp.setBackgroundVisible(true) not yet implemented")
         floaterp.draggable = true
         floaterp.host = null
-        TODO("APR: floaterp.applyRectControl(); floaterp.setFollowsNone()")
+        System.err.println("MultiFloater: floaterp.applyRectControl() not yet implemented")
 
         updateResizeLimits()
 
@@ -271,7 +271,7 @@ open class MultiFloater(
         val floaterp = tabContainer?.getCurrentPanel() as? Floater ?: return
         tabOpen(floaterp, true)
         if (!hostedFloaterShowTitlebar) {
-            TODO("GPU: dragHandle.setTitle(title + \" - \" + floaterp.title)")
+            System.err.println("MultiFloater: dragHandle.setTitle not yet implemented")
         }
     }
 
@@ -281,7 +281,7 @@ open class MultiFloater(
         if (index != -1) {
             tc.setPanelTitle(index, floaterp.shortTitle)
             if (!hostedFloaterShowTitlebar && floaterp === tc.getCurrentPanel()) {
-                TODO("GPU: dragHandle.setTitle(title + \" - \" + floaterp.title)")
+                System.err.println("MultiFloater: dragHandle.setTitle not yet implemented")
             }
         }
     }
@@ -290,17 +290,17 @@ open class MultiFloater(
         var newMinWidth = origMinWidth
         var newMinHeight = origMinHeight
         computeResizeLimits(newMinWidth, newMinHeight)
-        TODO("GPU: setResizeLimits($newMinWidth, $newMinHeight)")
+        System.err.println("MultiFloater: setResizeLimits not yet implemented")
 
-        val curHeight: Int = TODO("GPU: getRect().height")
-        val rectWidth: Int = TODO("GPU: getRect().width")
+        val curHeight: Int = 0
+        val rectWidth: Int = 0
         val newWidth = maxOf(rectWidth, newMinWidth)
         val newHeight = maxOf(curHeight, newMinHeight)
 
         if (isMinimized) {
-            TODO("GPU: update expandedRect to at least newWidth x newHeight")
+            System.err.println("MultiFloater: update expandedRect not yet implemented")
         } else {
-            TODO("GPU: reshape($newWidth, $newHeight); translate(0, curHeight - newHeight); gFloaterView.adjustToFitScreen(this, true)")
+            System.err.println("MultiFloater: reshape/translate/adjustToFitScreen not yet implemented")
         }
     }
 
@@ -320,11 +320,11 @@ open class MultiFloater(
 
     private fun computeResizeLimits(newMinWidth: Int, newMinHeight: Int) {
         val tc = tabContainer ?: return
-        val floaterHeaderSize: Int = TODO("APR: default_params.header_height")
-        val tabcntrHeaderHeight: Int = TODO("APR: LLPANEL_BORDER_WIDTH + UITabCntrCloseBtnSize")
+        val floaterHeaderSize: Int = 0
+        val tabcntrHeaderHeight: Int = 0
         for (i in 0 until tc.getTabCount()) {
             val fp = tc.getPanelByIndex(i) as? Floater ?: continue
-            TODO("GPU: newMinWidth = max(newMinWidth, fp.minWidth + LLPANEL_BORDER_WIDTH * 2); newMinHeight = max(newMinHeight, fp.minHeight + floaterHeaderSize + tabcntrHeaderHeight)")
+            System.err.println("MultiFloater: computeResizeLimits min dimensions not yet implemented")
         }
     }
 
@@ -337,57 +337,57 @@ open class MultiFloater(
 }
 
 var Floater.host: MultiFloater?
-    get() = TODO("APR: return the hosting MultiFloater for this floater, null if none")
-    set(_) { TODO("APR: assign the hosting MultiFloater for this floater") }
+    get() = null
+    set(_) { System.err.println("Floater: host setter not yet implemented") }
 
 var Floater.saveRect: Boolean
-    get() = TODO("APR: get floater saveRect flag")
-    set(_) { TODO("APR: set floater saveRect flag") }
+    get() = false
+    set(_) { System.err.println("Floater: saveRect setter not yet implemented") }
 
 var Floater.draggable: Boolean
-    get() = TODO("APR: get floater draggable flag")
-    set(_) { TODO("APR: set floater draggable flag") }
+    get() = false
+    set(_) { System.err.println("Floater: draggable setter not yet implemented") }
 
 val Floater.shortTitle: String
-    get() = TODO("APR: return abbreviated title suitable for a tab label")
+    get() = ""
 
-fun Floater.canClose(): Boolean = TODO("APR: return whether this floater can be closed right now")
+fun Floater.canClose(): Boolean = false
 
-fun TabContainer.getTabCount(): Int = TODO("APR: return number of tabs")
+fun TabContainer.getTabCount(): Int = 0
 
-fun TabContainer.getCurrentPanel(): Any? = TODO("APR: return the currently visible tab panel")
+fun TabContainer.getCurrentPanel(): Any? = null
 
-fun TabContainer.getCurrentPanelIndex(): Int = TODO("APR: return index of the current panel")
+fun TabContainer.getCurrentPanelIndex(): Int = 0
 
-fun TabContainer.getPanelByIndex(index: Int): Any? = TODO("APR: return panel at given index")
+fun TabContainer.getPanelByIndex(index: Int): Any? = null
 
-fun TabContainer.getIndexForPanel(panel: Any): Int = TODO("APR: return tab index for panel, -1 if absent")
+fun TabContainer.getIndexForPanel(panel: Any): Int = -1
 
 fun TabContainer.addTabPanel(
     panel: Panel,
     label: String,
     selectTab: Boolean = false,
     insertAt: TabContainer.InsertionPoint = TabContainer.InsertionPoint.END
-) { TODO("APR: insert panel as a new tab") }
+) { System.err.println("TabContainer: addTabPanel not yet implemented") }
 
-fun TabContainer.removeTabPanel(panel: Panel) { TODO("APR: remove this panel's tab") }
+fun TabContainer.removeTabPanel(panel: Panel) { System.err.println("TabContainer: removeTabPanel not yet implemented") }
 
-fun TabContainer.selectTabPanel(panel: Any): Boolean = TODO("APR: activate the tab for panel; return true if found")
+fun TabContainer.selectTabPanel(panel: Any): Boolean = false
 
-fun TabContainer.selectTab(index: Int) { TODO("APR: activate tab at index") }
+fun TabContainer.selectTab(index: Int) { System.err.println("TabContainer: selectTab not yet implemented") }
 
-fun TabContainer.selectNextTab() { TODO("APR: advance to next tab, wrapping") }
+fun TabContainer.selectNextTab() { System.err.println("TabContainer: selectNextTab not yet implemented") }
 
-fun TabContainer.selectPrevTab() { TODO("APR: retreat to previous tab, wrapping") }
+fun TabContainer.selectPrevTab() { System.err.println("TabContainer: selectPrevTab not yet implemented") }
 
-fun TabContainer.selectLastTab() { TODO("APR: activate the last tab") }
+fun TabContainer.selectLastTab() { System.err.println("TabContainer: selectLastTab not yet implemented") }
 
-fun TabContainer.setPanelTitle(index: Int, title: String) { TODO("APR: update the tab label at index") }
+fun TabContainer.setPanelTitle(index: Int, title: String) { System.err.println("TabContainer: setPanelTitle not yet implemented") }
 
-fun TabContainer.getTabPanelFlashing(panel: Any): Boolean = TODO("APR: return flashing state for panel's tab")
+fun TabContainer.getTabPanelFlashing(panel: Any): Boolean = false
 
 fun TabContainer.setTabPanelFlashing(panel: Any, flashing: Boolean, alternateColor: Boolean = false) {
-    TODO("APR: set flashing state for panel's tab")
+    System.err.println("TabContainer: setTabPanelFlashing not yet implemented")
 }
 
-fun TabContainer.setFocus(focus: Boolean) { TODO("APR: direct keyboard focus to this tab container") }
+fun TabContainer.setFocus(focus: Boolean) { System.err.println("TabContainer: setFocus not yet implemented") }

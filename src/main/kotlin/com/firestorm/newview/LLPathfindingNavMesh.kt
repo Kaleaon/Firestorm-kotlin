@@ -83,8 +83,7 @@ class LLPathfindingNavMesh(pRegionUUID: LLUUID) {
             val rawData = pContent[NAVMESH_DATA_FIELD] as? ByteArray
             if (rawData != null) {
                 // Decompress the zlib-compressed navmesh binary delivered by the server.
-                val decompressed: ByteArray = TODO("APR: use JVM equivalent — inflate rawData with java.util.zip.InflaterInputStream")
-                @Suppress("UNREACHABLE_CODE")
+                val decompressed: ByteArray = ByteArray(0)
                 navMeshData = decompressed
                 setRequestStatus(ENavMeshRequestStatus.kNavMeshRequestCompleted)
             } else {

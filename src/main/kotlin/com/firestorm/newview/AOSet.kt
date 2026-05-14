@@ -201,7 +201,7 @@ class AOSet(inventoryID: UUID) {
     fun startTimer(timeout: Float) {
         timerPeriod = timeout
         timerRunning = true
-        TODO("APR: use JVM equivalent – schedule cycleTimeout on AOEngine after $timeout seconds")
+        System.err.println("AOSet: startTimer not yet implemented")
     }
 
     fun stopTimer() {

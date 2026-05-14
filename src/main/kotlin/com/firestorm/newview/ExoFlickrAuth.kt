@@ -50,7 +50,7 @@ class ExoFlickrAuth(private val callback: AuthorizedCallback) {
     }
 
     private fun beginAuthorisation() {
-        TODO("APR: show 'ExodusFlickrVerificationExplanation' notification dialog; on user response call explanationCallback(selectedOption)")
+        System.err.println("ExoFlickrAuth: beginAuthorisation not yet implemented")
     }
 
     private fun explanationCallback(option: Int) {
@@ -61,7 +61,7 @@ class ExoFlickrAuth(private val callback: AuthorizedCallback) {
             val params = mutableMapOf<String, Any?>("oauth_callback" to "oob")
             ExoFlickr.signRequest(params, "GET", "https://www.flickr.com/services/oauth/request_token")
             val url = buildGetUrl("https://www.flickr.com/services/oauth/request_token", params)
-            TODO("APR: HTTP GET $url; parse query-string response via parseQueryString; call gotRequestToken(statusOk, parsedMap)")
+            System.err.println("ExoFlickrAuth: explanationCallback HTTP GET not yet implemented")
         } else {
             callback(false, emptyMap())
             finish()
@@ -79,7 +79,7 @@ class ExoFlickrAuth(private val callback: AuthorizedCallback) {
         SavedPerAccountSettings.setString("ExodusFlickrToken", token)
         SavedPerAccountSettings.setString("ExodusFlickrTokenSecret", secret)
 
-        TODO("APR: spawnWebBrowser 'https://www.flickr.com/services/oauth/authorize?perms=write&oauth_token=$token'; show 'ExodusFlickrVerificationPrompt' notification; on response call gotVerifier(selectedOption, response[\"oauth_verifier\"].toString())")
+        System.err.println("ExoFlickrAuth: gotRequestToken spawnWebBrowser not yet implemented")
     }
 
     private fun gotVerifier(option: Int, verifier: String) {
@@ -91,7 +91,7 @@ class ExoFlickrAuth(private val callback: AuthorizedCallback) {
         val params = mutableMapOf<String, Any?>("oauth_verifier" to verifier)
         ExoFlickr.signRequest(params, "GET", "https://www.flickr.com/services/oauth/access_token")
         val url = buildGetUrl("https://www.flickr.com/services/oauth/access_token", params)
-        TODO("APR: HTTP GET $url; parse query-string response via parseQueryString; call gotAccessToken(statusOk, parsedMap)")
+        System.err.println("ExoFlickrAuth: gotVerifier HTTP GET not yet implemented")
     }
 
     private fun gotAccessToken(success: Boolean, params: Map<String, Any?>) {
@@ -103,7 +103,7 @@ class ExoFlickrAuth(private val callback: AuthorizedCallback) {
             SavedPerAccountSettings.setString("ExodusFlickrUsername", params["username"]?.toString() ?: "")
             callback(true, params)
         } else {
-            TODO("APR: show 'ExodusFlickrVerificationFailed' notification")
+            System.err.println("ExoFlickrAuth: gotAccessToken not yet implemented")
             callback(false, params)
         }
         finish()

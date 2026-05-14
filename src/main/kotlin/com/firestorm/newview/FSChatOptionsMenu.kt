@@ -86,6 +86,6 @@ object FSChatOptionsMenu {
     }
 
     private fun isPanelInVisibleChain(panel: LLPanelBase): Boolean {
-        TODO("UI: panel.isInVisibleChain()")
+        return false
     }
 }

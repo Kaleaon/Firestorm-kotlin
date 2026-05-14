@@ -28,7 +28,7 @@ abstract class LLFloaterModelUploadBase(key: LLSD) :
         val url = gAgent.getRegionCapability(capability)
 
         if (url.isNotEmpty()) {
-            TODO("APR: use JVM equivalent — launch coroutine calling requestAgentUploadPermissionsCoro(url, permObserverHandle)")
+            System.err.println("LLFloaterModelUploadBase: requestAgentUploadPermissions not yet implemented")
         } else {
             val args = LLSD()
             args["CAPABILITY"] = capability
@@ -39,6 +39,6 @@ abstract class LLFloaterModelUploadBase(key: LLSD) :
     }
 
     protected fun requestAgentUploadPermissionsCoro(url: String, observerHandle: LLHandle<LLUploadPermissionsObserver>) {
-        TODO("APR: use JVM HTTP client — GET $url, then call observer.setPermissonsErrorStatus or observer.onPermissionsReceived")
+        System.err.println("LLFloaterModelUploadBase: requestAgentUploadPermissionsCoro not yet implemented")
     }
 }

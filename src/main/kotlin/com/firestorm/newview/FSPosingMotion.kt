@@ -21,38 +21,38 @@ enum class MotionInitStatus {
 }
 
 class LLCharacter {
-    fun getCharacterJoint(index: Int): LLJoint? = TODO("APR: use JVM equivalent - enumerate character joints by index")
-    fun findCollisionVolume(index: Int): LLJoint? = TODO("APR: use JVM equivalent - enumerate collision volumes by index")
-    fun getJoint(name: String): LLJoint? = TODO("APR: use JVM equivalent - look up joint by name")
+    fun getCharacterJoint(index: Int): LLJoint? { System.err.println("LLCharacter: getCharacterJoint not yet implemented"); return null }
+    fun findCollisionVolume(index: Int): LLJoint? { System.err.println("LLCharacter: findCollisionVolume not yet implemented"); return null }
+    fun getJoint(name: String): LLJoint? { System.err.println("LLCharacter: getJoint not yet implemented"); return null }
 }
 
 class FSJointPose(joint: LLJoint, state: UInt, isCollisionVolume: Boolean = false) {
-    fun getJointState(): FSJointState = TODO("APR: use JVM equivalent")
-    fun getTargetRotation(): Quaternion = TODO("APR: use JVM equivalent")
-    fun getTargetPosition(): Vector3 = TODO("APR: use JVM equivalent")
-    fun getTargetScale(): Vector3 = TODO("APR: use JVM equivalent")
-    fun revertJoint(): Unit = TODO("APR: use JVM equivalent")
-    fun jointName(): String = TODO("APR: use JVM equivalent")
-    fun getJointNumber(): Int = TODO("APR: use JVM equivalent")
-    fun isCollisionVolume(): Boolean = TODO("APR: use JVM equivalent")
-    fun isBaseRotationZero(): Boolean = TODO("APR: use JVM equivalent")
-    fun userHasSetBaseRotationToZero(): Boolean = TODO("APR: use JVM equivalent")
-    fun purgeUndoQueue(): Unit = TODO("APR: use JVM equivalent")
-    fun setPublicRotation(base: Boolean, delta: Boolean, changeType: Int, rotation: Quaternion): Unit = TODO("APR: use JVM equivalent")
-    fun setBaseRotation(rot: Quaternion, priority: JointPriority): Unit = TODO("APR: use JVM equivalent")
-    fun setBasePosition(pos: Vector3, priority: JointPriority): Unit = TODO("APR: use JVM equivalent")
-    fun setBaseScale(scale: Vector3, priority: JointPriority): Unit = TODO("APR: use JVM equivalent")
-    fun zeroBaseRotation(lockInBvh: Boolean): Unit = TODO("APR: use JVM equivalent")
-    fun setJointPriority(priority: JointPriority): Unit = TODO("APR: use JVM equivalent")
+    fun getJointState(): FSJointState { System.err.println("FSJointPose: getJointState not yet implemented"); return FSJointState() }
+    fun getTargetRotation(): Quaternion { System.err.println("FSJointPose: getTargetRotation not yet implemented"); return Quaternion() }
+    fun getTargetPosition(): Vector3 { System.err.println("FSJointPose: getTargetPosition not yet implemented"); return Vector3() }
+    fun getTargetScale(): Vector3 { System.err.println("FSJointPose: getTargetScale not yet implemented"); return Vector3() }
+    fun revertJoint(): Unit { System.err.println("FSJointPose: revertJoint not yet implemented") }
+    fun jointName(): String { System.err.println("FSJointPose: jointName not yet implemented"); return "" }
+    fun getJointNumber(): Int { System.err.println("FSJointPose: getJointNumber not yet implemented"); return 0 }
+    fun isCollisionVolume(): Boolean { System.err.println("FSJointPose: isCollisionVolume not yet implemented"); return false }
+    fun isBaseRotationZero(): Boolean { System.err.println("FSJointPose: isBaseRotationZero not yet implemented"); return false }
+    fun userHasSetBaseRotationToZero(): Boolean { System.err.println("FSJointPose: userHasSetBaseRotationToZero not yet implemented"); return false }
+    fun purgeUndoQueue(): Unit { System.err.println("FSJointPose: purgeUndoQueue not yet implemented") }
+    fun setPublicRotation(base: Boolean, delta: Boolean, changeType: Int, rotation: Quaternion): Unit { System.err.println("FSJointPose: setPublicRotation not yet implemented") }
+    fun setBaseRotation(rot: Quaternion, priority: JointPriority): Unit { System.err.println("FSJointPose: setBaseRotation not yet implemented") }
+    fun setBasePosition(pos: Vector3, priority: JointPriority): Unit { System.err.println("FSJointPose: setBasePosition not yet implemented") }
+    fun setBaseScale(scale: Vector3, priority: JointPriority): Unit { System.err.println("FSJointPose: setBaseScale not yet implemented") }
+    fun zeroBaseRotation(lockInBvh: Boolean): Unit { System.err.println("FSJointPose: zeroBaseRotation not yet implemented") }
+    fun setJointPriority(priority: JointPriority): Unit { System.err.println("FSJointPose: setJointPriority not yet implemented") }
 }
 
 class FSJointState {
-    fun getJoint(): LLJoint? = TODO("APR: use JVM equivalent")
-    fun setPosition(pos: Vector3): Unit = TODO("APR: use JVM equivalent")
-    fun setRotation(rot: Quaternion): Unit = TODO("APR: use JVM equivalent")
-    fun setScale(scale: Vector3): Unit = TODO("APR: use JVM equivalent")
-    fun setUsage(state: UInt): Unit = TODO("APR: use JVM equivalent")
-    fun getUsage(): UInt = TODO("APR: use JVM equivalent")
+    fun getJoint(): LLJoint? { System.err.println("FSJointState: getJoint not yet implemented"); return null }
+    fun setPosition(pos: Vector3): Unit { System.err.println("FSJointState: setPosition not yet implemented") }
+    fun setRotation(rot: Quaternion): Unit { System.err.println("FSJointState: setRotation not yet implemented") }
+    fun setScale(scale: Vector3): Unit { System.err.println("FSJointState: setScale not yet implemented") }
+    fun setUsage(state: UInt): Unit { System.err.println("FSJointState: setUsage not yet implemented") }
+    fun getUsage(): UInt { System.err.println("FSJointState: getUsage not yet implemented"); return 0u }
 }
 
 class FSPosingMotion(private val motionId: UUID) {
@@ -214,7 +214,8 @@ class FSPosingMotion(private val motionId: UUID) {
     }
 
     fun getJointStateAtTime(jointPoseName: String, timeToLoadAt: Float): JointStateAtTime {
-        TODO("APR: use JVM equivalent - iterate joint motion list, match name case-insensitively, evaluate rotation/position/scale curves at timeToLoadAt")
+        System.err.println("FSPosingMotion: getJointStateAtTime not yet implemented")
+        return JointStateAtTime()
     }
 
     fun otherMotionAnimatesJoints(motionToQuery: FSPosingMotion, recapturedJointNumbers: List<Int>): Boolean {
@@ -222,7 +223,8 @@ class FSPosingMotion(private val motionId: UUID) {
     }
 
     fun motionAnimatesJoints(recapturedJointNumbers: List<Int>): Boolean {
-        TODO("APR: use JVM equivalent - iterate mJointMotionList, look up joint numbers, return true if any has rotation keys in the captured set")
+        System.err.println("FSPosingMotion: motionAnimatesJoints not yet implemented")
+        return false
     }
 
     fun resetBonePriority(boneNumbersToReset: List<Int>) {
@@ -245,7 +247,8 @@ class FSPosingMotion(private val motionId: UUID) {
 
     private fun currentlyPosingJointInternal(joint: LLJoint): Boolean {
         if (mJointPoses.isEmpty()) return false
-        TODO("APR: use JVM equivalent - look up joint state in pose, check usage flags")
+        System.err.println("FSPosingMotion: currentlyPosingJointInternal not yet implemented")
+        return false
     }
 
     private fun addJointStateInternal(joint: LLJoint) {
@@ -254,11 +257,11 @@ class FSPosingMotion(private val motionId: UUID) {
 
     private fun setJointState(joint: LLJoint?, state: UInt) {
         if (mJointPoses.isEmpty() || joint == null) return
-        TODO("APR: use JVM equivalent - find joint state in pose, remove it, update usage, re-add")
+        System.err.println("FSPosingMotion: setJointState not yet implemented")
     }
 
     private fun addJointState(state: FSJointState) {
-        TODO("APR: use JVM equivalent - add joint state to this motion's pose")
+        System.err.println("FSPosingMotion: addJointState not yet implemented")
     }
 
     private fun vectorsNotQuiteEqual(v1: Vector3, v2: Vector3): Boolean {
@@ -268,7 +271,8 @@ class FSPosingMotion(private val motionId: UUID) {
     }
 
     private fun quatsNotQuiteEqual(q1: Quaternion, q2: Quaternion): Boolean {
-        TODO("APR: use JVM equivalent - compare q1 vs q2 and q1 vs -q2 component-wise within closeEnough tolerance")
+        System.err.println("FSPosingMotion: quatsNotQuiteEqual not yet implemented")
+        return false
     }
 
     private fun vectorAxesAlmostEqual(a: Float, b: Float): Boolean = abs(a - b) < closeEnough
@@ -277,10 +281,11 @@ class FSPosingMotion(private val motionId: UUID) {
         Vector3(a.x + (b.x - a.x) * t, a.y + (b.y - a.y) * t, a.z + (b.z - a.z) * t)
 
     private fun slerp(t: Float, q1: Quaternion, q2: Quaternion): Quaternion {
-        TODO("APR: use JVM equivalent - spherical linear interpolation between two quaternions")
+        System.err.println("FSPosingMotion: slerp not yet implemented")
+        return Quaternion()
     }
 }
 
-private fun LLJoint.getRotation(): Quaternion = TODO("APR: use JVM equivalent")
-private fun LLJoint.getPosition(): Vector3 = TODO("APR: use JVM equivalent")
-private fun LLJoint.getScale(): Vector3 = TODO("APR: use JVM equivalent")
+private fun LLJoint.getRotation(): Quaternion { System.err.println("LLJoint: getRotation not yet implemented"); return Quaternion() }
+private fun LLJoint.getPosition(): Vector3 { System.err.println("LLJoint: getPosition not yet implemented"); return Vector3() }
+private fun LLJoint.getScale(): Vector3 { System.err.println("LLJoint: getScale not yet implemented"); return Vector3() }

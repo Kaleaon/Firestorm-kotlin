@@ -40,15 +40,18 @@ abstract class FSScrollListCtrl {
     fun getItemIndex(item: LLScrollListItem): Int = itemList.indexOf(item)
 
     fun hitItem(x: Int, y: Int): LLScrollListItem? {
-        TODO("GPU: hit-test scroll list items at screen coordinates via JVM UI toolkit")
+        System.err.println("FSScrollListCtrl: hitItem not yet implemented")
+        return null
     }
 
     fun getColumnIndexFromOffset(x: Int): Int {
-        TODO("GPU: map pixel x-offset to column index via JVM UI toolkit")
+        System.err.println("FSScrollListCtrl: getColumnIndexFromOffset not yet implemented")
+        return 0
     }
 
     fun getCellRect(rowIndex: Int, columnIndex: Int): LLRect {
-        TODO("GPU: compute cell bounding rect via JVM UI toolkit")
+        System.err.println("FSScrollListCtrl: getCellRect not yet implemented")
+        return LLRect(0, 0, 0, 0)
     }
 
     fun selectNthItem(index: Int) {
@@ -62,7 +65,8 @@ abstract class FSScrollListCtrl {
     fun getFirstSelected(): LLScrollListItem? = itemList.firstOrNull { it.isSelected }
 
     fun getNumColumns(): Int {
-        TODO("GPU: return column count via JVM UI toolkit")
+        System.err.println("FSScrollListCtrl: getNumColumns not yet implemented")
+        return 0
     }
 
     open fun addRow(item: LLScrollListItem, nameItem: Any, pos: EAddPosition) {
@@ -73,23 +77,25 @@ abstract class FSScrollListCtrl {
     }
 
     fun dirtyColumns() {
-        TODO("GPU: mark column layout dirty for re-measure via JVM UI toolkit")
+        System.err.println("FSScrollListCtrl: dirtyColumns not yet implemented")
     }
 
     fun setNeedsSort() {
-        TODO("GPU: schedule deferred sort pass via JVM UI toolkit")
+        System.err.println("FSScrollListCtrl: setNeedsSort not yet implemented")
     }
 
     fun getColumn(index: Int): LLScrollListColumn? {
-        TODO("GPU: return column descriptor by index via JVM UI toolkit")
+        System.err.println("FSScrollListCtrl: getColumn(index) not yet implemented")
+        return null
     }
 
     fun getColumn(name: String): LLScrollListColumn? {
-        TODO("GPU: return column descriptor by name via JVM UI toolkit")
+        System.err.println("FSScrollListCtrl: getColumn(name) not yet implemented")
+        return null
     }
 
     fun sortByColumnIndex(columnIndex: Int, ascending: Boolean) {
-        TODO("GPU: sort rows by column via JVM UI toolkit")
+        System.err.println("FSScrollListCtrl: sortByColumnIndex not yet implemented")
     }
 
     open fun mouseOverHighlightNthItem(index: Int) {
@@ -99,7 +105,8 @@ abstract class FSScrollListCtrl {
     open fun updateColumns(forceUpdate: Boolean) {}
 
     open fun handleRightMouseDown(x: Int, y: Int, mask: Int): Boolean {
-        TODO("GPU: context-menu popup via JVM UI toolkit")
+        System.err.println("FSScrollListCtrl: handleRightMouseDown not yet implemented")
+        return false
     }
 
     fun getToolTip(): String = ""
@@ -261,15 +268,18 @@ class LLNameListCtrl(
     }
 
     private fun resolveGroupName(id: UUID): Pair<Boolean, String> {
-        TODO("APR: use JVM equivalent of gCacheName->getGroupName")
+        System.err.println("LLNameListCtrl: resolveGroupName not yet implemented")
+        return Pair(false, "")
     }
 
     private fun resolveAvatarName(id: UUID): Pair<Boolean, String> {
-        TODO("APR: use JVM equivalent of LLAvatarNameCache::get, returning (found, displayName)")
+        System.err.println("LLNameListCtrl: resolveAvatarName not yet implemented")
+        return Pair(false, "")
     }
 
     private fun nobodyName(): String {
-        TODO("APR: use JVM equivalent of LLTrans::getString(\"AvatarNameNobody\")")
+        System.err.println("LLNameListCtrl: nobodyName not yet implemented")
+        return ""
     }
 
     private fun scheduleAvatarNameLookup(
@@ -278,11 +288,13 @@ class LLNameListCtrl(
         prefix: String,
         item: LLNameListItem
     ): () -> Unit {
-        TODO("APR: register async avatar name callback and return a cancellation lambda")
+        System.err.println("LLNameListCtrl: scheduleAvatarNameLookup not yet implemented")
+        return {}
     }
 
     private fun scheduleGroupNameLookup(id: UUID, item: LLNameListItem): () -> Unit {
-        TODO("APR: register async group name callback and return a cancellation lambda")
+        System.err.println("LLNameListCtrl: scheduleGroupNameLookup not yet implemented")
+        return {}
     }
 
     fun onAvatarNameCache(agentId: UUID, displayName: String, suffix: String, prefix: String, item: LLNameListItem) {
@@ -365,7 +377,8 @@ class LLNameListCtrl(
     }
 
     open fun handleToolTip(x: Int, y: Int, mask: Int): Boolean {
-        TODO("GPU: show inspector tooltip icon via JVM UI toolkit")
+        System.err.println("LLNameListCtrl: handleToolTip not yet implemented")
+        return false
     }
 
     override fun handleRightMouseDown(x: Int, y: Int, mask: Int): Boolean {
@@ -417,7 +430,7 @@ class LLNameListCtrl(
             iconClickedListeners.forEach { it(avatarId) }
             return
         }
-        TODO("APR: use JVM equivalent of LLFloaterReg::showInstance to show inspect floater")
+        System.err.println("LLNameListCtrl: showInspector not yet implemented")
     }
 
     data class NameItem(

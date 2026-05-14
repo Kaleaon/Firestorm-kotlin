@@ -185,7 +185,8 @@ class FocusMgr {
     fun getFocusFlashWidth(): Int = lerpFloat(1f, 3f, getFocusFlashAmt()).roundToInt()
 
     fun getFocusColor(): Color4 {
-        TODO("GPU: look up FocusColor from UI color table, lerp toward white by getFocusFlashAmt(), apply alpha dim if !appHasFocus")
+        System.err.println("FocusMgr: getFocusColor not yet implemented")
+        return Color4(1f, 1f, 1f, 1f)
     }
 
     fun triggerFocusFlash() {

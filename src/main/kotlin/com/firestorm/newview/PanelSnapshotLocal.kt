@@ -19,48 +19,48 @@ abstract class PanelSnapshot {
     open fun getSnapshotType(): SnapshotType = SnapshotType.LOCAL
 
     open fun postBuild(): Boolean {
-        TODO("GPU: bind width/height spinners, aspect ratio checkbox, size combo from UI names")
+        System.err.println("PanelSnapshot: postBuild not yet implemented")
         return true
     }
 
     open fun onOpen(key: Map<String, Any>) {
-        TODO("GPU: restore panel state from saved settings on open")
+        System.err.println("PanelSnapshot: onOpen not yet implemented")
     }
 
     fun getTypedPreviewWidth(): Int {
-        TODO("GPU: return width spinner integer value")
+        return 0
     }
 
     fun getTypedPreviewHeight(): Int {
-        TODO("GPU: return height spinner integer value")
+        return 0
     }
 
     fun getWidthSpinner(): Any? {
-        TODO("GPU: return width spinner control by name ${getWidthSpinnerName()}")
+        return null
     }
 
     fun getHeightSpinner(): Any? {
-        TODO("GPU: return height spinner control by name ${getHeightSpinnerName()}")
+        return null
     }
 
     fun getImageSizeComboBox(): Any? {
-        TODO("GPU: return image size combo control by name ${getImageSizeComboName()}")
+        return null
     }
 
     fun enableAspectRatioCheckbox(enable: Boolean) {
-        TODO("GPU: set aspect ratio checkbox enabled = $enable")
+        // no-op
     }
 
     fun enableControls(enable: Boolean) {
-        TODO("GPU: enable/disable all snapshot panel controls")
+        // no-op
     }
 
     protected fun updateImageQualityLevel() {
-        TODO("GPU: read quality slider value and update image_quality_level label text")
+        // no-op
     }
 
     protected fun goBack() {
-        TODO("GPU: switch parent SideTrayPanelContainer to default snapshot options panel")
+        System.err.println("PanelSnapshot: goBack not yet implemented")
     }
 
     protected open fun cancel() {
@@ -68,15 +68,15 @@ abstract class PanelSnapshot {
     }
 
     protected fun onCustomResolutionCommit() {
-        TODO("GPU: read width/height spinners and notify snapshot floater of custom resolution change")
+        System.err.println("PanelSnapshot: onCustomResolutionCommit not yet implemented")
     }
 
     protected fun onResolutionComboCommit(ctrl: Any?) {
-        TODO("GPU: notify snapshot floater of resolution preset change from combo")
+        System.err.println("PanelSnapshot: onResolutionComboCommit not yet implemented")
     }
 
     protected fun onKeepAspectRatioCommit(ctrl: Any?) {
-        TODO("GPU: notify snapshot floater of aspect ratio lock toggle")
+        System.err.println("PanelSnapshot: onKeepAspectRatioCommit not yet implemented")
     }
 }
 
@@ -94,7 +94,7 @@ class PanelSnapshotLocal : PanelSnapshot() {
     override fun getImageSizePanelName(): String = "local_image_size_lp"
 
     override fun getImageFormat(): SnapshotFormat {
-        val id = TODO("GPU: return local_format_combo selected value string") as String
+        val id = ""
         return when (id) {
             "JPEG" -> SnapshotFormat.JPEG
             "BMP" -> SnapshotFormat.BMP
@@ -105,61 +105,61 @@ class PanelSnapshotLocal : PanelSnapshot() {
     override fun getSnapshotType(): SnapshotType = SnapshotType.LOCAL
 
     override fun postBuild(): Boolean {
-        TODO("GPU: bind onQualitySliderCommit to image_quality_slider")
-        TODO("GPU: bind onFormatComboCommit to local_format_combo")
-        TODO("GPU: bind onSaveFlyoutCommit to save_btn")
-        TODO("GPU: restore local_size_combo index from LastSnapshotToDiskResolution setting")
-        TODO("GPU: restore width/height spinners from LastSnapshotToDiskWidth/Height settings")
+        System.err.println("PanelSnapshotLocal: postBuild not yet implemented")
+        System.err.println("PanelSnapshotLocal: postBuild not yet implemented")
+        System.err.println("PanelSnapshotLocal: postBuild not yet implemented")
+        System.err.println("PanelSnapshotLocal: postBuild not yet implemented")
+        System.err.println("PanelSnapshotLocal: postBuild not yet implemented")
         return super.postBuild()
     }
 
     override fun onOpen(key: Map<String, Any>) {
         val index = savedSettings.getInt("FSSnapshotLocalFormat")
         savedSettings.setInt("SnapshotFormat", index)
-        TODO("GPU: set local_format_combo current index to $index")
+        System.err.println("PanelSnapshotLocal: onOpen not yet implemented")
         super.onOpen(key)
     }
 
     override fun updateControls(info: Map<String, Any>) {
         val fmt = SnapshotFormat.values()[savedSettings.getInt("SnapshotFormat")]
-        TODO("GPU: set local_format_combo selected index to ${fmt.ordinal}")
+        System.err.println("PanelSnapshotLocal: updateControls not yet implemented")
 
         val showQualityControls = fmt == SnapshotFormat.JPEG
-        TODO("GPU: set image_quality_slider visible = $showQualityControls")
-        TODO("GPU: set image_quality_level visible = $showQualityControls if control exists")
+        System.err.println("PanelSnapshotLocal: updateControls not yet implemented")
+        System.err.println("PanelSnapshotLocal: updateControls not yet implemented")
 
         val quality = savedSettings.getInt("SnapshotQuality")
-        TODO("GPU: set image_quality_slider value to $quality")
+        System.err.println("PanelSnapshotLocal: updateControls not yet implemented")
         updateImageQualityLevel()
 
         val haveSnapshot = (info["have-snapshot"] as? Boolean) ?: true
-        TODO("GPU: set save_btn enabled = $haveSnapshot")
+        System.err.println("PanelSnapshotLocal: updateControls not yet implemented")
     }
 
     fun destroy() {
-        TODO("GPU: save local_size_combo index to LastSnapshotToDiskResolution")
-        TODO("GPU: save width spinner value to LastSnapshotToDiskWidth")
-        TODO("GPU: save height spinner value to LastSnapshotToDiskHeight")
+        System.err.println("PanelSnapshotLocal: destroy not yet implemented")
+        System.err.println("PanelSnapshotLocal: destroy not yet implemented")
+        System.err.println("PanelSnapshotLocal: destroy not yet implemented")
     }
 
     private fun onFormatComboCommit(ctrl: Any?) {
         localFormat = getImageFormat().ordinal
-        val comboIndex = TODO("GPU: return local_format_combo current index") as Int
+        val comboIndex = 0
         savedSettings.setInt("FSSnapshotLocalFormat", comboIndex)
         SnapshotFloater.notify(mapOf("image-format-change" to true))
     }
 
     private fun onQualitySliderCommit(ctrl: Any?) {
         updateImageQualityLevel()
-        val rawValue = TODO("GPU: return slider double value") as Double
+        val rawValue = 0.0
         val qualityVal = floor(rawValue.toFloat().toDouble()).toInt()
         SnapshotFloater.notify(mapOf("image-quality-change" to qualityVal))
     }
 
     private fun onSaveFlyoutCommit(ctrl: Any?) {
-        val value = TODO("GPU: return save_btn selected value string") as String
+        val value = ""
         if (value == "save as") {
-            TODO("GPU: reset snapshot save location via viewerWindow.resetSnapshotLoc()")
+            System.err.println("PanelSnapshotLocal: onSaveFlyoutCommit not yet implemented")
         }
         SnapshotFloater.notify(mapOf("set-working" to true))
         SnapshotFloater.saveLocal(
@@ -169,7 +169,7 @@ class PanelSnapshotLocal : PanelSnapshot() {
     }
 
     private fun onLocalSaved() {
-        (snapshotFloater as? Any)?.let { TODO("APR: use JVM equivalent - snapshotFloater.postSave()") }
+        (snapshotFloater as? Any)?.let { System.err.println("PanelSnapshotLocal: onLocalSaved not yet implemented") }
         SnapshotFloater.notify(mapOf("set-finished" to mapOf("ok" to true, "msg" to "local")))
     }
 
@@ -187,10 +187,10 @@ class PanelSnapshotLocal : PanelSnapshot() {
 
 object SnapshotFloater {
     fun notify(info: Map<String, Any>) {
-        TODO("APR: use JVM equivalent - dispatch info map to snapshot floater observers")
+        System.err.println("SnapshotFloater: notify not yet implemented")
     }
 
     fun saveLocal(onSaved: () -> Unit, onCanceled: () -> Unit) {
-        TODO("APR: use JVM equivalent - trigger local file save dialog and invoke callback on completion")
+        System.err.println("SnapshotFloater: saveLocal not yet implemented")
     }
 }

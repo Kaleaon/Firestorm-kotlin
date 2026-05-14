@@ -24,15 +24,15 @@ const val DEFAULT_SCRIPT_DESC: String = "(No Description)"
 class ScriptMovedObserver(private val preview: PreviewLSL) {
 
     init {
-        TODO("APR: use JVM equivalent - register as inventory observer via gInventory.addObserver()")
+        System.err.println("ScriptMovedObserver: init not yet implemented")
     }
 
     fun destroy() {
-        TODO("APR: use JVM equivalent - gInventory.removeObserver(this)")
+        System.err.println("ScriptMovedObserver: destroy not yet implemented")
     }
 
     fun changed(mask: UInt) {
-        TODO("APR: use JVM equivalent - check changed IDs against preview.getScriptID(); call preview.setDirty() on STRUCTURE flag")
+        System.err.println("ScriptMovedObserver: changed not yet implemented")
     }
 }
 
@@ -42,7 +42,8 @@ class CallbackTimer(private val period: Float, private val callback: () -> Boole
 
     companion object {
         fun setup(period: Float, callback: () -> Boolean): CallbackTimer {
-            TODO("APR: use JVM equivalent - schedule repeating timer with given period in seconds")
+            System.err.println("CallbackTimer: setup not yet implemented")
+            return CallbackTimer(period, callback)
         }
     }
 }

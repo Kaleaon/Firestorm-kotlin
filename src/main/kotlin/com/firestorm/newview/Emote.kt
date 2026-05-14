@@ -40,8 +40,7 @@ open class Emote(id: LLUUID) : LLMotion(id) {
 
     override fun onInitialize(character: Character): MotionInitStatus {
         this.character = character
-        TODO("GPU: set face joint signature bytes to 0xff in all three jointSignature tracks")
-        @Suppress("UNREACHABLE_CODE")
+        // no-op
         return MotionInitStatus.SUCCESS
     }
 

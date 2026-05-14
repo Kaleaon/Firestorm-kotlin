@@ -42,23 +42,26 @@ object SLMErrorCodes {
 }
 
 private fun getMarketplaceDomain(): String {
-    TODO("APR: use JVM equivalent for LLGridManager::isInSLMain / getGridId")
+    System.err.println("LLMarketplaceFunctions: getMarketplaceDomain not yet implemented")
+    return ""
 }
 
 private fun getMarketplaceURL(urlStringName: String): String {
-    TODO("APR: use JVM equivalent for LLTrans::getString with marketplace domain substitution")
+    System.err.println("LLMarketplaceFunctions: getMarketplaceURL not yet implemented")
+    return ""
 }
 
 private fun getVersionFolderIfUnique(folderId: UUID): UUID {
-    TODO("APR: use JVM equivalent for gInventory.getDirectDescendentsOf")
+    System.err.println("LLMarketplaceFunctions: getVersionFolderIfUnique not yet implemented")
+    return UUID(0, 0)
 }
 
 private fun logSLMWarning(request: String, status: Int, reason: String, code: String, result: Any) {
-    TODO("APR: use JVM equivalent for LLNotificationsUtil and logging")
+    System.err.println("LLMarketplaceFunctions: logSLMWarning not yet implemented")
 }
 
 private fun logSLMInfos(request: String, status: Int, body: String) {
-    TODO("APR: use JVM equivalent for LL_INFOS / gSavedSettings MarketplaceListingsLogging check")
+    System.err.println("LLMarketplaceFunctions: logSLMInfos not yet implemented")
 }
 
 object LLMarketplaceImport {
@@ -78,16 +81,16 @@ object LLMarketplaceImport {
 
     private fun getInventoryImportURL(): String {
         val base = getMarketplaceURL("MarketplaceURL")
-        val agentId: UUID = TODO("APR: use JVM equivalent for gAgent.getID().getString()")
+        val agentId: UUID = UUID(0, 0)
         return "${base}api/1/${agentId}/inventory/import/"
     }
 
     fun marketplacePostCoro(url: String) {
-        TODO("APR: use JVM equivalent for HttpCoroutineAdapter POST to marketplace import endpoint")
+        System.err.println("LLMarketplaceImport: marketplacePostCoro not yet implemented")
     }
 
     fun marketplaceGetCoro(url: String, buildHeaders: Boolean) {
-        TODO("APR: use JVM equivalent for HttpCoroutineAdapter GET to marketplace import endpoint, cookie handling")
+        System.err.println("LLMarketplaceImport: marketplaceGetCoro not yet implemented")
     }
 
     fun establishMarketplaceSessionCookie(): Boolean {
@@ -95,7 +98,7 @@ object LLMarketplaceImport {
         importInProgress = true
         importGetPending = true
         val url = getInventoryImportURL()
-        TODO("APR: use JVM equivalent for launching marketplaceGetCoro coroutine")
+        System.err.println("LLMarketplaceImport: establishMarketplaceSessionCookie coroutine launch not yet implemented")
         return true
     }
 
@@ -103,7 +106,7 @@ object LLMarketplaceImport {
         if (!hasSessionCookie()) return false
         importGetPending = true
         val url = getInventoryImportURL() + importId.toString()
-        TODO("APR: use JVM equivalent for launching marketplaceGetCoro coroutine")
+        System.err.println("LLMarketplaceImport: pollStatus coroutine launch not yet implemented")
         return true
     }
 
@@ -115,7 +118,7 @@ object LLMarketplaceImport {
         importResultStatus = MarketplaceErrorCodes.IMPORT_PROCESSING
         importResults = mapOf<String, Any>()
         val url = getInventoryImportURL()
-        TODO("APR: use JVM equivalent for launching marketplacePostCoro coroutine")
+        System.err.println("LLMarketplaceImport: triggerImport coroutine launch not yet implemented")
         return true
     }
 }
@@ -279,7 +282,7 @@ object LLMarketplaceData {
             }
         } else {
             marketPlaceStatus = MarketplaceStatusCodes.MARKET_PLACE_INITIALIZING
-            TODO("APR: launch getMerchantStatusCoro coroutine via JVM coroutines/executor")
+            System.err.println("LLMarketplaceData: getMerchantStatusCoro launch not yet implemented")
         }
     }
 
@@ -334,46 +337,53 @@ object LLMarketplaceData {
         val updated = current - count
         if (updated <= 0) {
             validationWaitingList.remove(folderId)
-            TODO("APR: use JVM equivalent for LLMarketplaceValidator::validateMarketplaceListings, update_marketplace_category, gInventory.notifyObservers")
+            System.err.println("LLMarketplaceData: decrementValidationWaiting marketplace validation not yet implemented")
         } else {
             validationWaitingList[folderId] = updated
         }
     }
 
     fun getSLMListings() {
-        TODO("APR: launch getSLMListingsCoro coroutine via JVM coroutines/executor")
+        System.err.println("LLMarketplaceData: getSLMListings coroutine launch not yet implemented")
     }
 
     fun createListing(folderId: UUID): Boolean {
         if (isListed(folderId)) return false
-        TODO("APR: use JVM equivalent for getVersionFolderIfUnique, compute_stock_count, createSLMListing")
+        System.err.println("LLMarketplaceData: createListing not yet implemented")
+        return false
     }
 
     fun activateListing(folderId: UUID, activate: Boolean, depth: Int = -1): Boolean {
-        TODO("APR: use JVM equivalent for depth_nesting_in_marketplace, nested_parent_id, getListingID, updateSLMListing")
+        System.err.println("LLMarketplaceData: activateListing not yet implemented")
+        return false
     }
 
     fun clearListing(folderId: UUID, depth: Int = -1): Boolean {
         if (folderId == UUID(0, 0)) return false
-        TODO("APR: use JVM equivalent for depth_nesting_in_marketplace, nested_parent_id, getListingID, deleteSLMListing")
+        System.err.println("LLMarketplaceData: clearListing not yet implemented")
+        return false
     }
 
     fun setVersionFolder(folderId: UUID, versionId: UUID, depth: Int = -1): Boolean {
-        TODO("APR: use JVM equivalent for depth_nesting_in_marketplace, nested_parent_id, updateSLMListing")
+        System.err.println("LLMarketplaceData: setVersionFolder not yet implemented")
+        return false
     }
 
     fun associateListing(folderId: UUID, sourceFolderId: UUID, listingId: Int): Boolean {
         if (isListed(folderId)) return false
-        TODO("APR: use JVM equivalent for getVersionFolderIfUnique, associateSLMListing")
+        System.err.println("LLMarketplaceData: associateListing not yet implemented")
+        return false
     }
 
     fun updateCountOnHand(folderId: UUID, depth: Int = -1): Boolean {
-        TODO("APR: use JVM equivalent for depth_nesting_in_marketplace, compute_stock_count, updateSLMListing")
+        System.err.println("LLMarketplaceData: updateCountOnHand not yet implemented")
+        return false
     }
 
     fun getListing(folderId: UUID, depth: Int = -1): Boolean {
         if (folderId == UUID(0, 0)) return false
-        TODO("APR: use JVM equivalent for depth_nesting_in_marketplace, nested_parent_id, getSLMListing")
+        System.err.println("LLMarketplaceData: getListing(UUID) not yet implemented")
+        return false
     }
 
     fun getListing(listingId: Int): Boolean {
@@ -395,15 +405,18 @@ object LLMarketplaceData {
     fun isVersionFolder(folderId: UUID): Boolean = versionFolders.containsKey(folderId)
 
     fun isInActiveFolder(objId: UUID, depth: Int = -1): Boolean {
-        TODO("APR: use JVM equivalent for depth_nesting_in_marketplace, nested_parent_id, gInventory.isObjectDescendentOf")
+        System.err.println("LLMarketplaceData: isInActiveFolder not yet implemented")
+        return false
     }
 
     fun getActiveFolder(objId: UUID, depth: Int = -1): UUID {
-        TODO("APR: use JVM equivalent for depth_nesting_in_marketplace, nested_parent_id, getVersionFolder")
+        System.err.println("LLMarketplaceData: getActiveFolder not yet implemented")
+        return UUID(0, 0)
     }
 
     fun isUpdating(folderId: UUID, depth: Int = -1): Boolean {
-        TODO("APR: use JVM equivalent for depth_nesting_in_marketplace, nested_parent_id, pendingUpdateSet check")
+        System.err.println("LLMarketplaceData: isUpdating not yet implemented")
+        return false
     }
 
     fun getActivationState(folderId: UUID): Boolean {
@@ -420,7 +433,8 @@ object LLMarketplaceData {
         marketplaceItems[folderId]?.versionFolderId ?: UUID(0, 0)
 
     fun getListingURL(folderId: UUID, depth: Int = -1): String {
-        TODO("APR: use JVM equivalent for depth_nesting_in_marketplace, nested_parent_id lookup")
+        System.err.println("LLMarketplaceData: getListingURL not yet implemented")
+        return ""
     }
 
     fun getListingFolder(listingId: Int): UUID =
@@ -448,7 +462,7 @@ object LLMarketplaceData {
         if (marketplaceItems.remove(folderId) == null) return false
         versionFolders.remove(versionFolder)
         if (update) {
-            TODO("APR: use JVM equivalent for update_marketplace_category and gInventory.notifyObservers")
+            System.err.println("LLMarketplaceData: deleteListingByFolder update_marketplace_category not yet implemented")
         }
         return true
     }
@@ -456,7 +470,7 @@ object LLMarketplaceData {
     private fun setListingID(folderId: UUID, listingId: Int, update: Boolean = true): Boolean {
         val item = marketplaceItems[folderId] ?: return false
         marketplaceItems[folderId] = item.copy(listingId = listingId)
-        if (update) TODO("APR: use JVM equivalent for update_marketplace_category and gInventory.notifyObservers")
+        if (update) System.err.println("LLMarketplaceData: setListingID update_marketplace_category not yet implemented")
         return true
     }
 
@@ -467,14 +481,14 @@ object LLMarketplaceData {
         marketplaceItems[folderId] = item.copy(versionFolderId = versionId)
         versionFolders.remove(oldVersionId)
         if (versionId != UUID(0, 0)) versionFolders[versionId] = folderId
-        if (update) TODO("APR: use JVM equivalent for update_marketplace_category on old and new version ids")
+        if (update) System.err.println("LLMarketplaceData: setVersionFolderID update_marketplace_category not yet implemented")
         return true
     }
 
     private fun setActivationState(folderId: UUID, activate: Boolean, update: Boolean = true): Boolean {
         val item = marketplaceItems[folderId] ?: return false
         marketplaceItems[folderId] = item.copy(isActive = activate)
-        if (update) TODO("APR: use JVM equivalent for update_marketplace_category and gInventory.notifyObservers")
+        if (update) System.err.println("LLMarketplaceData: setActivationState update_marketplace_category not yet implemented")
         return true
     }
 
@@ -491,19 +505,20 @@ object LLMarketplaceData {
     }
 
     private fun getSLMConnectURL(route: String): String {
-        TODO("APR: use JVM equivalent for gAgent.getRegion()->getCapability(\"DirectDelivery\") + route")
+        System.err.println("LLMarketplaceData: getSLMConnectURL not yet implemented")
+        return ""
     }
 
     private fun getMerchantStatusCoro() {
-        TODO("APR: launch HTTP GET to SLM /merchant endpoint; call setSLMStatus or setSLMConnectionFailure based on response code")
+        System.err.println("LLMarketplaceData: getMerchantStatusCoro not yet implemented")
     }
 
     private fun getSLMListingsCoro(folderId: UUID) {
-        TODO("APR: launch HTTP GET /listings; parse JSON response; call addListing per entry; setSLMDataFetched; update_marketplace_category")
+        System.err.println("LLMarketplaceData: getSLMListingsCoro not yet implemented")
     }
 
     private fun getSingleListingCoro(listingId: Int, folderId: UUID) {
-        TODO("APR: launch HTTP GET /listing/{id}; parse JSON; call setListingID/setVersionFolderID/setActivationState/setListingURL/setCountOnHand per entry")
+        System.err.println("LLMarketplaceData: getSingleListingCoro not yet implemented")
     }
 
     private fun getSLMListing(listingId: Int) {
@@ -514,21 +529,21 @@ object LLMarketplaceData {
 
     private fun createSLMListing(folderId: UUID, versionId: UUID, count: Int) {
         setUpdating(folderId, true)
-        TODO("APR: launch createSLMListingCoro; POST /listings with inventory_info JSON body")
+        System.err.println("LLMarketplaceData: createSLMListing coroutine launch not yet implemented")
     }
 
     private fun updateSLMListing(folderId: UUID, listingId: Int, versionId: UUID, isListed: Boolean, count: Int) {
         setUpdating(folderId, true)
-        TODO("APR: launch updateSLMListingCoro; PUT /listing/{id} with inventory_info JSON body")
+        System.err.println("LLMarketplaceData: updateSLMListing coroutine launch not yet implemented")
     }
 
     private fun associateSLMListing(folderId: UUID, listingId: Int, versionId: UUID, sourceFolderId: UUID) {
         setUpdating(folderId, true)
         setUpdating(sourceFolderId, true)
-        TODO("APR: launch associateSLMListingCoro; PUT /associate_inventory/{id}")
+        System.err.println("LLMarketplaceData: associateSLMListing coroutine launch not yet implemented")
     }
 
     private fun deleteSLMListing(listingId: Int) {
-        TODO("APR: launch deleteSLMListingCoro; DELETE /listing/{id}")
+        System.err.println("LLMarketplaceData: deleteSLMListing coroutine launch not yet implemented")
     }
 }

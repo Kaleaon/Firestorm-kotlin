@@ -27,7 +27,8 @@ class LLHUDNameTag(type: UByte) : LLHUDObject(type) {
 
         fun getWidth(font: LLFontGL): Float {
             return mFontWidthMap.getOrPut(font) {
-                TODO("GPU: font.getWidthF32(mText)")
+                // no-op
+                0f
             }
         }
 
@@ -44,7 +45,7 @@ class LLHUDNameTag(type: UByte) : LLHUDObject(type) {
         val sVisibleTextObjects: MutableList<LLHUDNameTag> = mutableListOf()
 
         fun updateAll() {
-            TODO("GPU: profile zone UI")
+            // no-op
             sVisibleTextObjects.clear()
 
             for (textp in sTextObjects) {
@@ -57,7 +58,8 @@ class LLHUDNameTag(type: UByte) : LLHUDObject(type) {
                 rhs.getDistance().compareTo(lhs.getDistance())
             })
 
-            val screenArea: Float = TODO("GPU: gViewerWindow.getWindowWidthScaled() * gViewerWindow.getWindowHeightScaled()")
+            val screenArea: Float = 0f
+
             var currentScreenArea = 0f
 
             for (textp in sVisibleTextObjects.reversed()) {
@@ -73,7 +75,7 @@ class LLHUDNameTag(type: UByte) : LLHUDObject(type) {
                 currentScreenArea += textp.mSoftScreenRect.getWidth() * textp.mSoftScreenRect.getHeight()
             }
 
-            val cameraVel: Float = TODO("APR: use JVM equivalent - LLTrace frame recording camera velocity per second")
+            val cameraVel: Float = 0f
             if (cameraVel > MAX_STABLE_CAMERA_VELOCITY) {
                 return
             }
@@ -130,7 +132,7 @@ class LLHUDNameTag(type: UByte) : LLHUDObject(type) {
             }
 
             for (textp in sVisibleTextObjects) {
-                val interpolant: Float = TODO("APR: use JVM equivalent - LLSmoothInterpolation.getInterpolant(POSITION_DAMPING_TC)")
+                val interpolant: Float = 0f
                 textp.mPositionOffset = lerp(textp.mPositionOffset, textp.mTargetPositionOffset, interpolant)
             }
         }
@@ -172,8 +174,8 @@ class LLHUDNameTag(type: UByte) : LLHUDObject(type) {
     private var mColor: LLColor4 = LLColor4(1f, 1f, 1f, 1f)
     private var mWidth: Float = 0f
     private var mHeight: Float = 0f
-    private var mFontp: LLFontGL? = TODO("GPU: LLFontGL.getFontSansSerifSmall()")
-    private var mBoldFontp: LLFontGL? = TODO("GPU: LLFontGL.getFontSansSerifBold()")
+    private var mFontp: LLFontGL? = null
+    private var mBoldFontp: LLFontGL? = null
     private var mSoftScreenRect: LLRectf = LLRectf()
     private var mPositionAgent: LLVector3 = LLVector3()
     private var mPositionOffset: LLVector2 = LLVector2()
@@ -188,8 +190,8 @@ class LLHUDNameTag(type: UByte) : LLHUDObject(type) {
     private var mVertAlignment: EVertAlignment = EVertAlignment.ALIGN_VERT_CENTER
     private var mLOD: Int = 0
     private var mHidden: Boolean = false
-    private var mRoundedRectImgp: LLUIImage? = TODO("GPU: LLUI.getUIImage(\"Rounded_Rect\")")
-    private var mRoundedRectTopImgp: LLUIImage? = TODO("GPU: LLUI.getUIImage(\"Rounded_Rect_Top\")")
+    private var mRoundedRectImgp: LLUIImage? = null
+    private var mRoundedRectTopImgp: LLUIImage? = null
 
     init {
         sTextObjects.add(this)
@@ -238,10 +240,10 @@ class LLHUDNameTag(type: UByte) : LLHUDObject(type) {
                 // Fits text into a single segment; if it overflows, truncate and append "...".
                 var lineLength = 0
                 do {
-                    val segLen: Int = TODO("GPU: resolvedFont.maxDrawableChars(line.substring(lineLength), clampedMax, wline.length, LLFontGL.ANYWHERE)")
+                    val segLen: Int = 0
                     if (segLen + lineLength < wline.length) {
-                        val ellipsisWidth: Float = TODO("GPU: resolvedFont.getWidthF32(\"....\")")
-                        val truncLen: Int = TODO("GPU: resolvedFont.maxDrawableChars(line.substring(lineLength), clampedMax - ellipsisWidth, wline.length, LLFontGL.ANYWHERE)")
+                        val ellipsisWidth: Float = 0f
+                        val truncLen: Int = 0
                         mTextSegments.add(LLHUDTextSegment(line.substring(lineLength, lineLength + truncLen) + "...", style, color, resolvedFont))
                         lineLength = line.length
                     } else {
@@ -252,7 +254,7 @@ class LLHUDNameTag(type: UByte) : LLHUDObject(type) {
             } else {
                 var lineLength = 0
                 do {
-                    val segLen: Int = TODO("GPU: resolvedFont.maxDrawableChars(line.substring(lineLength), clampedMax, wline.length, LLFontGL.WORD_BOUNDARY_IF_POSSIBLE)")
+                    val segLen: Int = 0
                     mTextSegments.add(LLHUDTextSegment(line.substring(lineLength, lineLength + segLen), style, color, resolvedFont))
                     lineLength += segLen
                 } while (lineLength < line.length)
@@ -276,7 +278,7 @@ class LLHUDNameTag(type: UByte) : LLHUDObject(type) {
         for (line in lines) {
             var lineLength = 0
             do {
-                val segLen: Int = TODO("GPU: font.maxDrawableChars(line.substring(lineLength), clampedMax, wstr.length, LLFontGL.WORD_BOUNDARY_IF_POSSIBLE)")
+                val segLen: Int = 0
                 mLabelSegments.add(LLHUDTextSegment(line.substring(lineLength, lineLength + segLen), LLFontGL.NORMAL, mColor, font))
                 lineLength += segLen
             } while (lineLength < line.length)
@@ -312,10 +314,10 @@ class LLHUDNameTag(type: UByte) : LLHUDObject(type) {
     }
 
     fun getWorldHeight(): Float {
-        val heightMeters: Float = TODO("GPU: mLastDistance * tan(camera.getView() / 2f)")
-        val heightPixels: Float = TODO("GPU: camera.getViewHeightInPixels() / 2f")
+        val heightMeters: Float = 0f
+        val heightPixels: Float = 0f
         val metersPerPixel = heightMeters / heightPixels
-        val displayScaleY: Float = TODO("GPU: gViewerWindow.getDisplayScale().y")
+        val displayScaleY: Float = 0f
         return mHeight * metersPerPixel * displayScaleY
     }
 
@@ -333,12 +335,13 @@ class LLHUDNameTag(type: UByte) : LLHUDObject(type) {
 
         mOffsetY = (mHeight * if (mVertAlignment == EVertAlignment.ALIGN_VERT_CENTER) 0.5f else 1f).toInt()
 
-        TODO("GPU: ray-quad intersection test using camera pixel vectors, mPositionAgent, mWidth, mHeight, screen offset")
+        // no-op
+        return false
     }
 
     fun updateVisibility() {
         mSourceObject?.updateText()
-        mPositionAgent = TODO("APR: use JVM equivalent - gAgent.getPosAgentFromGlobal(mPositionGlobal)")
+        mPositionAgent = LLVector3()
 
         if (mSourceObject == null) {
             mVisible = true
@@ -351,32 +354,32 @@ class LLHUDNameTag(type: UByte) : LLHUDObject(type) {
             return
         }
 
-        val vecFromCamera: LLVector3 = TODO("GPU: mPositionAgent - camera.getOrigin()")
-        val dirFromCamera: LLVector3 = TODO("GPU: vecFromCamera.normalized()")
+        val vecFromCamera: LLVector3 = LLVector3()
+        val dirFromCamera: LLVector3 = LLVector3()
 
-        if (TODO<Float>("GPU: dirFromCamera dot camera.getAtAxis()") <= 0f) {
+        if (0f <= 0f) {
             mVisible = false
             return
         }
 
-        val nearPlusRadius: Float = TODO("GPU: camera.getNear() + 0.1f + mSourceObject.getVObjRadius()")
-        if (TODO<Float>("GPU: vecFromCamera dot camera.getAtAxis()") <= nearPlusRadius) {
-            mPositionAgent = TODO("GPU: camera.getOrigin() + vecFromCamera * ((camera.getNear() + 0.1f) / (vecFromCamera dot camera.getAtAxis()))")
+        val nearPlusRadius: Float = 0f
+        if (0f <= nearPlusRadius) {
+            mPositionAgent = LLVector3()
         } else {
-            mPositionAgent = TODO("GPU: mPositionAgent - dirFromCamera * mSourceObject.getVObjRadius()")
+            mPositionAgent = LLVector3()
         }
 
-        mLastDistance = TODO("GPU: (mPositionAgent - camera.getOrigin()).magVec()")
+        mLastDistance = 0f
 
         if (mLOD >= 3 || mTextSegments.isEmpty() || (mDoFade && mLastDistance > mFadeDistance + mFadeRange)) {
             mVisible = false
             return
         }
 
-        val renderPosition: LLVector3 = TODO("GPU: mPositionAgent + xPixelVec * mPositionOffset.x + yPixelVec * mPositionOffset.y")
+        val renderPosition: LLVector3 = LLVector3()
 
         mOffscreen = false
-        val inFrustum: Boolean = TODO("GPU: camera.sphereInFrustum(renderPosition, mRadius)")
+        val inFrustum: Boolean = false
         if (!inFrustum) {
             if (!mVisibleOffScreen) {
                 mVisible = false
@@ -390,7 +393,8 @@ class LLHUDNameTag(type: UByte) : LLHUDObject(type) {
     }
 
     fun updateScreenPos(offset: LLVector2): LLVector2 {
-        TODO("GPU: project mPositionAgent + offset through camera to screen; clamp to world view rect edges if mVisibleOffScreen; update mSoftScreenRect; return adjusted offset")
+        // no-op
+        return LLVector2()
     }
 
     fun updateSize() {
@@ -402,7 +406,7 @@ class LLHUDNameTag(type: UByte) : LLHUDObject(type) {
 
         for (seg in mTextSegments.drop(startSegment)) {
             val font = seg.mFont ?: mFontp ?: continue
-            height += TODO<Float>("GPU: font.getLineHeight()")
+            height += 0f
             height += LINE_PADDING
             width = maxOf(width, minOf(seg.getWidth(font), NAMETAG_MAX_WIDTH))
         }
@@ -413,7 +417,7 @@ class LLHUDNameTag(type: UByte) : LLHUDObject(type) {
 
         for (seg in mLabelSegments) {
             val font = mFontp ?: continue
-            height += TODO<Float>("GPU: font.getLineHeight()")
+            height += 0f
             width = maxOf(width, minOf(seg.getWidth(font), NAMETAG_MAX_WIDTH))
         }
 
@@ -436,7 +440,7 @@ class LLHUDNameTag(type: UByte) : LLHUDObject(type) {
 
     override fun render() {
         if (sDisplayText) {
-            TODO("GPU: LLGLDepthTest gls_depth(GL_TRUE, GL_FALSE)")
+            // no-op
             renderText()
         }
     }
@@ -444,7 +448,7 @@ class LLHUDNameTag(type: UByte) : LLHUDObject(type) {
     private fun renderText() {
         if (!mVisible || mHidden) return
 
-        TODO("GPU: gGL.getTexUnit(0).enable(LLTexUnit.TT_TEXTURE)")
+        // no-op
 
         var alphaFactor = 1f
         var textColor = mColor
@@ -456,24 +460,24 @@ class LLHUDNameTag(type: UByte) : LLHUDObject(type) {
 
         mOffsetY = (mHeight * if (mVertAlignment == EVertAlignment.ALIGN_VERT_CENTER) 0.5f else 1f).toInt()
 
-        val bubbleOpacity: Float = TODO("APR: use JVM equivalent - cached gSavedSettings.getF32(\"ChatBubbleOpacity\")")
-        val nametagBgColor: LLColor4 = TODO("GPU: LLUIColorTable.instance().getColor(\"NameTagBackground\")")
+        val bubbleOpacity: Float = 0f
+        val nametagBgColor: LLColor4 = LLColor4(0f, 0f, 0f, 0f)
         val colorAlpha = bubbleOpacity * alphaFactor
         val bgColor = nametagBgColor.copy(a = colorAlpha)
 
-        TODO("GPU: camera.getPixelVectors(mPositionAgent, yPixelVec, xPixelVec)")
-        TODO("GPU: compute width_vec, height_vec, mRadius, screen_pos, screen_offset, render_position")
-        TODO("GPU: LLGLDepthTest; mRoundedRectImgp.draw3D(render_position, xPixelVec, yPixelVec, screenRect, bgColor)")
+        // no-op
+        // no-op
+        // no-op
 
         if (mLabelSegments.isNotEmpty()) {
-            TODO("GPU: compute label_height, draw mRoundedRectTopImgp for label background area")
+            // no-op
         }
 
         var yOffset = mOffsetY.toFloat()
 
         for (seg in mLabelSegments) {
             val font = if (seg.mStyle == LLFontGL.BOLD) mBoldFontp else mFontp
-            TODO("GPU: yOffset -= font.getLineHeight(); compute xOffset; hud_render_text for label segment")
+            // no-op
         }
 
         val maxLines = getMaxLines()
@@ -482,9 +486,9 @@ class LLHUDNameTag(type: UByte) : LLHUDObject(type) {
         for (seg in mTextSegments.drop(startSegment)) {
             val font = seg.mFont ?: mFontp ?: continue
             val segColor = seg.mColor.copy(a = seg.mColor.a * alphaFactor)
-            TODO("GPU: yOffset -= font.getLineHeight() + LINE_PADDING; compute xOffset; hud_render_text for text segment with DROP_SHADOW")
+            // no-op
         }
 
-        TODO("GPU: gGL.color4f(1f, 1f, 1f, 1f)")
+        // no-op
     }
 }

@@ -43,7 +43,7 @@ object AccountingCostManager {
             return
         }
 
-        TODO("APR: use JVM equivalent — launch coroutine: accountingCostCoro(url, selectionType, observer)")
+        System.err.println("AccountingCostManager: fetchCosts not yet implemented")
     }
 
     private suspend fun accountingCostCoro(

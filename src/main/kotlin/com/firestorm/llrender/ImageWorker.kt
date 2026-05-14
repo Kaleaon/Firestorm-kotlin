@@ -25,7 +25,8 @@ private class ImageRequest(
 
     fun processRequest(): Boolean {
         if (formattedImage == null) return true
-        TODO("APR: use JVM equivalent — decode formattedImage into decodedImageRaw; if needsAux decode aux channel into decodedImageAux; populate errorString on failure")
+        System.err.println("ImageWorker: processRequest not yet implemented")
+        return false
     }
 
     fun finishRequest(completed: Boolean) {

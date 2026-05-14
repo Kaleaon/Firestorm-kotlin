@@ -175,11 +175,13 @@ class FSPoseState {
     }
 
     private fun motionIdIsAgentAnimationSource(motionId: UUID): Boolean {
-        TODO("APR: use JVM equivalent to query gAgentAvatarp.mAnimationSources and gInventory")
+        System.err.println("FSPoseState: motionIdIsAgentAnimationSource not yet implemented")
+        return false
     }
 
     private fun motionIdIsFromPrimAgentOwnsAgentIsSittingOn(avatarPlayingMotionId: Any, motionId: UUID): Boolean {
-        TODO("APR: use JVM equivalent to query root object inventory for prim-owned animations")
+        System.err.println("FSPoseState: motionIdIsFromPrimAgentOwnsAgentIsSittingOn not yet implemented")
+        return false
     }
 
     private fun vector2IsSubsetOfVector1(superSet: MutableList<Int>, subSet: MutableList<Int>): Boolean {
@@ -222,17 +224,47 @@ class FSPoseState {
         return decoded
     }
 
-    private fun getAvatarId(avatar: Any): UUID = TODO("APR: use JVM equivalent to get avatar UUID")
-    private fun getPlayingAnimations(avatar: Any): Map<UUID, Any> = TODO("APR: use JVM equivalent")
-    private fun findKeyframeMotion(avatar: Any, animId: UUID): Any? = TODO("APR: use JVM equivalent")
-    private fun getMotionLastUpdateTime(motion: Any): Float = TODO("APR: use JVM equivalent")
-    private fun otherMotionAnimatesJoints(posingMotion: Any, motion: Any, joints: MutableList<Int>): Boolean = TODO("APR: use JVM equivalent")
-    private fun startMotion(avatar: Any, motionId: UUID) = TODO("APR: use JVM equivalent")
-    private fun stopMotion(avatar: Any, motionId: UUID) = TODO("APR: use JVM equivalent")
-    private fun loadOtherMotionToBase(posingMotion: Any, kfm: Any, time: Float, joints: MutableList<Int>): Boolean = TODO("APR: use JVM equivalent")
-    private fun resetBonePriority(posingMotion: Any, joints: MutableList<Int>) = TODO("APR: use JVM equivalent")
-    private fun inventoryOwnsItem(motionId: UUID): Boolean = TODO("APR: use JVM equivalent to check gInventory")
-    private fun avatarIsSelf(avatar: Any): Boolean = TODO("APR: use JVM equivalent")
+    private fun getAvatarId(avatar: Any): UUID {
+        System.err.println("FSPoseState: getAvatarId not yet implemented")
+        return UUID.fromString("00000000-0000-0000-0000-000000000000")
+    }
+    private fun getPlayingAnimations(avatar: Any): Map<UUID, Any> {
+        System.err.println("FSPoseState: getPlayingAnimations not yet implemented")
+        return emptyMap()
+    }
+    private fun findKeyframeMotion(avatar: Any, animId: UUID): Any? {
+        System.err.println("FSPoseState: findKeyframeMotion not yet implemented")
+        return null
+    }
+    private fun getMotionLastUpdateTime(motion: Any): Float {
+        System.err.println("FSPoseState: getMotionLastUpdateTime not yet implemented")
+        return 0f
+    }
+    private fun otherMotionAnimatesJoints(posingMotion: Any, motion: Any, joints: MutableList<Int>): Boolean {
+        System.err.println("FSPoseState: otherMotionAnimatesJoints not yet implemented")
+        return false
+    }
+    private fun startMotion(avatar: Any, motionId: UUID) {
+        System.err.println("FSPoseState: startMotion not yet implemented")
+    }
+    private fun stopMotion(avatar: Any, motionId: UUID) {
+        System.err.println("FSPoseState: stopMotion not yet implemented")
+    }
+    private fun loadOtherMotionToBase(posingMotion: Any, kfm: Any, time: Float, joints: MutableList<Int>): Boolean {
+        System.err.println("FSPoseState: loadOtherMotionToBase not yet implemented")
+        return false
+    }
+    private fun resetBonePriority(posingMotion: Any, joints: MutableList<Int>) {
+        System.err.println("FSPoseState: resetBonePriority not yet implemented")
+    }
+    private fun inventoryOwnsItem(motionId: UUID): Boolean {
+        System.err.println("FSPoseState: inventoryOwnsItem not yet implemented")
+        return false
+    }
+    private fun avatarIsSelf(avatar: Any): Boolean {
+        System.err.println("FSPoseState: avatarIsSelf not yet implemented")
+        return false
+    }
 
     private data class FsMotionState(
         val motionId: UUID,

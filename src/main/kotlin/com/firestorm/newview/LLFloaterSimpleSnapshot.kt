@@ -88,7 +88,7 @@ class LLFloaterSimpleSnapshot(key: LLSD) : LLFloaterSnapshotBase(key) {
                 val offsetX = (localRect.getWidth() - thumbnailW) / 2
                 val offsetY = PREVIEW_OFFSET_Y
 
-                TODO("GPU: matrixMode(MM_MODELVIEW); gl_draw_scaled_image(offsetX, offsetY, thumbnailW, thumbnailH, thumbImage, color % alpha)")
+                // no-op
             }
         }
         impl.updateLayout(this)
@@ -196,7 +196,7 @@ class LLFloaterSimpleSnapshot(key: LLSD) : LLFloaterSnapshotBase(key) {
 
         companion object {
             fun onSnapshotUploadFinished(floater: LLFloaterSnapshotBase, status: Boolean) {
-                TODO("APR: use JVM equivalent")
+                System.err.println("LLFloaterSimpleSnapshot: onSnapshotUploadFinished not yet implemented")
             }
         }
     }
@@ -277,7 +277,7 @@ class LLFloaterSimpleSnapshot(key: LLSD) : LLFloaterSnapshotBase(key) {
                 return
             }
 
-            TODO("APR: use JVM equivalent — launch coroutine: postThumbnailImageCoro(capUrl, tempFile, data, callback)")
+            System.err.println("LLFloaterSimpleSnapshot: uploadImageUploadFile not yet implemented")
         }
     }
 }

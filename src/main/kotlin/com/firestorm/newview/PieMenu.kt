@@ -45,22 +45,22 @@ class PieMenu(params: Params) : LLMenuGL(params), PieAutoHide(params.autohide, p
     private var currentSegment: Int = -1
 
     init {
-        TODO("GPU: reshape(PIE_OUTER_SIZE * 2, PIE_OUTER_SIZE * 2)")
-        TODO("GPU: load font SansSerif/Pie, fallback to Small")
+        // no-op: GPU reshape(PIE_OUTER_SIZE * 2, PIE_OUTER_SIZE * 2)
+        // no-op: GPU load font SansSerif/Pie, fallback to Small
     }
 
     override fun addChild(child: LLView, tabGroup: Int): Boolean {
         if (slices.size >= PIE_MAX_SLICES) return false
         slices.add(child)
         super.addChild(child, tabGroup)
-        TODO("GPU: reshape(PIE_OUTER_SIZE * 2, PIE_OUTER_SIZE * 2)")
+        // no-op: GPU reshape(PIE_OUTER_SIZE * 2, PIE_OUTER_SIZE * 2)
         return true
     }
 
     override fun removeChild(child: LLView) {
         slices.remove(child)
         super.removeChild(child)
-        TODO("GPU: reshape(PIE_OUTER_SIZE * 2, PIE_OUTER_SIZE * 2)")
+        // no-op: GPU reshape(PIE_OUTER_SIZE * 2, PIE_OUTER_SIZE * 2)
     }
 
     override fun handleHover(x: Int, y: Int, mask: Int): Boolean {
@@ -98,7 +98,7 @@ class PieMenu(params: Params) : LLMenuGL(params), PieAutoHide(params.autohide, p
             val currentSlice = slice
             when (currentSlice) {
                 is PieSlice -> {
-                    TODO("APR: use JVM equivalent for make_ui_sound(UISndClickRelease)")
+                    System.err.println("PieMenu: make_ui_sound(UISndClickRelease) not yet implemented")
                     currentSlice.onCommit()
                 }
                 is PieMenu -> {
@@ -108,14 +108,14 @@ class PieMenu(params: Params) : LLMenuGL(params), PieAutoHide(params.autohide, p
                     keepVisible = true
                     popupTimer.reset()
                     popupTimer.start()
-                    TODO("APR: use JVM equivalent for make_ui_sound(UISndPieMenuAppear)")
+                    System.err.println("PieMenu: make_ui_sound(UISndPieMenuAppear) not yet implemented")
                 }
             }
             setVisible(keepVisible)
         }
 
         if (hasMouseCapture()) {
-            TODO("APR: use JVM equivalent for gFocusMgr.setMouseCapture(null)")
+            System.err.println("PieMenu: gFocusMgr.setMouseCapture(null) not yet implemented")
         }
         return super.handleMouseUp(x, y, mask)
     }
@@ -123,7 +123,7 @@ class PieMenu(params: Params) : LLMenuGL(params), PieAutoHide(params.autohide, p
     override fun setVisible(visible: Boolean) {
         if (!visible) {
             hide()
-            TODO("APR: use JVM equivalent for sMenuContainer.hideMenus()")
+            System.err.println("PieMenu: sMenuContainer.hideMenus() not yet implemented")
         }
     }
 
@@ -131,16 +131,16 @@ class PieMenu(params: Params) : LLMenuGL(params), PieAutoHide(params.autohide, p
         if (getVisible()) return
 
         currentSegment = -1
-        TODO("APR: use JVM equivalent for make_ui_sound(UISndPieMenuAppear)")
-        TODO("GPU: reshape(PIE_OUTER_SIZE * 2, PIE_OUTER_SIZE * 2)")
+        System.err.println("PieMenu: make_ui_sound(UISndPieMenuAppear) not yet implemented")
+        // no-op: GPU reshape(PIE_OUTER_SIZE * 2, PIE_OUTER_SIZE * 2)
 
         // Clamp menu position so it stays within the 3-D view rectangle
         var cx = x
         var cy = y
-        TODO("APR: use JVM equivalent for LLMenuGL.sMenuContainer.getMenuRect() bounds-clamping of cx/cy")
+        System.err.println("PieMenu: LLMenuGL.sMenuContainer.getMenuRect() bounds-clamping of cx/cy not yet implemented")
 
-        TODO("APR: use JVM equivalent for LLUI.setMousePositionLocal and setOrigin")
-        TODO("APR: use JVM equivalent for gFocusMgr.setMouseCapture(this)")
+        System.err.println("PieMenu: LLUI.setMousePositionLocal and setOrigin not yet implemented")
+        System.err.println("PieMenu: gFocusMgr.setMouseCapture(this) not yet implemented")
 
         firstClick = true
         slices = mySlices
@@ -154,7 +154,7 @@ class PieMenu(params: Params) : LLMenuGL(params), PieAutoHide(params.autohide, p
     fun hide() {
         if (!getVisible()) return
 
-        TODO("APR: use JVM equivalent for make_ui_sound(UISndPieMenuHide)")
+        System.err.println("PieMenu: make_ui_sound(UISndPieMenuHide) not yet implemented")
         currentSegment = -1
         slices = mySlices
         popupTimer.stop()
@@ -162,16 +162,16 @@ class PieMenu(params: Params) : LLMenuGL(params), PieAutoHide(params.autohide, p
     }
 
     override fun draw() {
-        TODO("GPU: gGL.pushMatrix()")
+        // no-op: GPU gGL.pushMatrix()
         val factor = getScaleFactor()
 
         // Resolve all active colors from the UI color table
-        TODO("GPU: fetch PieMenuLineColor, PieMenuSelectedColor, PieMenuTextColor, PieMenuBgColor from LLUIColorTable")
-        TODO("GPU: apply OverridePieColors / PieMenuOpacity / PieMenuFade user overrides")
-        TODO("GPU: if firstClick, set borderColor alpha = 0 for borderless appearance")
+        // no-op: GPU fetch PieMenuLineColor, PieMenuSelectedColor, PieMenuTextColor, PieMenuBgColor from LLUIColorTable
+        // no-op: GPU apply OverridePieColors / PieMenuOpacity / PieMenuFade user overrides
+        // no-op: GPU if firstClick, set borderColor alpha = 0 for borderless appearance
 
-        TODO("GPU: translate origin to rect center")
-        TODO("GPU: gl_washer_2d(PIE_OUTER_SIZE * factor, PIE_INNER_SIZE, 100, bgColor, borderColor)")
+        // no-op: GPU translate origin to rect center
+        // no-op: GPU gl_washer_2d(PIE_OUTER_SIZE * factor, PIE_INNER_SIZE, 100, bgColor, borderColor)
 
         slice = null
         var num = 0
@@ -246,32 +246,32 @@ class PieMenu(params: Params) : LLMenuGL(params), PieAutoHide(params.autohide, p
                     is PieMenu -> {
                         isSliceOrSubmenu = true
                         label = item.getLabel()
-                        TODO("GPU: gl_washer_segment_2d for submenu outer-ring shade if PieMenuOuterRingShade")
+                        // no-op: GPU gl_washer_segment_2d for submenu outer-ring shade if PieMenuOuterRingShade
                     }
                 }
 
                 if (isSliceOrSubmenu && currentSegment == num && item.getEnabled()) {
                     slice = item
                     if (oldSlice != slice) {
-                        TODO("APR: use JVM equivalent for make_ui_sound(UISndPieMenuSliceHighlight{num})")
+                        System.err.println("PieMenu: make_ui_sound(UISndPieMenuSliceHighlight{num}) not yet implemented")
                         oldSlice = slice
                     }
-                    TODO("GPU: gl_washer_segment_2d highlight for selected slice")
+                    // no-op: GPU gl_washer_segment_2d highlight for selected slice
                 }
             }
 
-            TODO("GPU: gl_washer_segment_2d divider line at segmentStart")
-            TODO("GPU: mFont.renderUTF8(label, PIE_X[num]*factor, PIE_Y[num]*factor, itemColor*itemColorAlpha)")
+            // no-op: GPU gl_washer_segment_2d divider line at segmentStart
+            // no-op: GPU mFont.renderUTF8(label, PIE_X[num]*factor, PIE_Y[num]*factor, itemColor*itemColorAlpha)
 
             num++
         } while (num < PIE_MAX_SLICES)
 
         if (!firstClick) {
-            TODO("GPU: gl_washer_2d outer border ring")
-            TODO("GPU: gl_washer_2d outer shade ring if PieMenuOuterRingShade")
+            // no-op: GPU gl_washer_2d outer border ring
+            // no-op: GPU gl_washer_2d outer shade ring if PieMenuOuterRingShade
         }
-        TODO("GPU: gl_washer_2d inner circle border")
-        TODO("GPU: gGL.popMatrix()")
+        // no-op: GPU gl_washer_2d inner circle border
+        // no-op: GPU gGL.popMatrix()
 
         super.draw()
     }

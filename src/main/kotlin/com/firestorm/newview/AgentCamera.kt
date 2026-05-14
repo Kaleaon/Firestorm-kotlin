@@ -93,7 +93,7 @@ object AgentCamera {
     }
 
     fun setAvatarObject(avatar: Any?) {
-        TODO("APR: setAvatarObject — create HUD look-at and point-at effects")
+        System.err.println("AgentCamera: setAvatarObject — create HUD look-at and point-at effects not yet implemented")
     }
 
     // ---- Mode ----------------------------------------------------------------
@@ -109,14 +109,14 @@ object AgentCamera {
     fun cameraCustomizeAvatar(): Boolean = mCameraMode == CameraMode.CUSTOMIZE_AVATAR
     fun cameraFollow():          Boolean = mCameraMode == CameraMode.FOLLOW          && mLastCameraMode == CameraMode.FOLLOW
 
-    fun changeCameraToDefault()                            { TODO("changeCameraToDefault") }
-    fun changeCameraToMouselook(animate: Boolean = true)   { TODO("changeCameraToMouselook animate=$animate") }
-    fun changeCameraToThirdPerson(animate: Boolean = true) { TODO("changeCameraToThirdPerson animate=$animate") }
-    fun changeCameraToCustomizeAvatar()                    { TODO("changeCameraToCustomizeAvatar") }
-    fun changeCameraToFollow(animate: Boolean = true)      { TODO("changeCameraToFollow animate=$animate") }
+    fun changeCameraToDefault()                            { System.err.println("AgentCamera: changeCameraToDefault not yet implemented") }
+    fun changeCameraToMouselook(animate: Boolean = true)   { System.err.println("AgentCamera: changeCameraToMouselook not yet implemented") }
+    fun changeCameraToThirdPerson(animate: Boolean = true) { System.err.println("AgentCamera: changeCameraToThirdPerson not yet implemented") }
+    fun changeCameraToCustomizeAvatar()                    { System.err.println("AgentCamera: changeCameraToCustomizeAvatar not yet implemented") }
+    fun changeCameraToFollow(animate: Boolean = true)      { System.err.println("AgentCamera: changeCameraToFollow not yet implemented") }
 
-    fun updateCamera()     { TODO("GPU: updateCamera — interpolate position/focus each frame") }
-    fun resetCamera()      { TODO("resetCamera — slam to default position") }
+    fun updateCamera()     { /* GPU: updateCamera — interpolate position/focus each frame */ }
+    fun resetCamera()      { System.err.println("AgentCamera: resetCamera not yet implemented") }
     fun updateLastCamera() { mLastCameraMode = mCameraMode }
 
     // ---- Preset --------------------------------------------------------------
@@ -127,22 +127,22 @@ object AgentCamera {
 
     fun switchCameraPreset(preset: CameraPreset) {
         mCameraPreset = preset
-        TODO("switchCameraPreset preset=$preset — apply offset/focus for preset")
+        System.err.println("AgentCamera: switchCameraPreset not yet implemented")
     }
 
-    fun getCameraOffsetInitial(): Vector3  = TODO("getCameraOffsetInitial — read from saved settings by preset")
-    fun getCameraOffsetScale(): Float      = TODO("getCameraOffsetScale — read from saved settings / RLVa")
-    fun getFocusOffsetInitial(): Vector3d  = TODO("getFocusOffsetInitial — read from saved settings by preset")
+    fun getCameraOffsetInitial(): Vector3  { System.err.println("AgentCamera: getCameraOffsetInitial not yet implemented"); return Vector3.ZERO }
+    fun getCameraOffsetScale(): Float      { System.err.println("AgentCamera: getCameraOffsetScale not yet implemented"); return 0f }
+    fun getFocusOffsetInitial(): Vector3d  { System.err.println("AgentCamera: getFocusOffsetInitial not yet implemented"); return Vector3d.ZERO }
 
-    fun getCurrentCameraOffset(): Vector3     = TODO("getCurrentCameraOffset")
-    fun getCurrentFocusOffset(): Vector3d     = TODO("getCurrentFocusOffset")
-    fun getCurrentAvatarRotation(): Quaternion= TODO("getCurrentAvatarRotation")
+    fun getCurrentCameraOffset(): Vector3     { System.err.println("AgentCamera: getCurrentCameraOffset not yet implemented"); return Vector3.ZERO }
+    fun getCurrentFocusOffset(): Vector3d     { System.err.println("AgentCamera: getCurrentFocusOffset not yet implemented"); return Vector3d.ZERO }
+    fun getCurrentAvatarRotation(): Quaternion{ System.err.println("AgentCamera: getCurrentAvatarRotation not yet implemented"); return Quaternion.IDENTITY }
 
-    fun isJoystickCameraUsed(): Boolean = TODO("isJoystickCameraUsed")
+    fun isJoystickCameraUsed(): Boolean { System.err.println("AgentCamera: isJoystickCameraUsed not yet implemented"); return false }
 
     var initSitRot: Quaternion = Quaternion.IDENTITY
     fun setInitSitRot(rot: Quaternion) { initSitRot = rot }
-    fun rotateToInitSitRot() { TODO("rotateToInitSitRot") }
+    fun rotateToInitSitRot() { System.err.println("AgentCamera: rotateToInitSitRot not yet implemented") }
 
     // ---- Camera position / distance ------------------------------------------
 
@@ -165,13 +165,13 @@ object AgentCamera {
     var cameraPositionAgent: Vector3 = Vector3.ZERO
         private set
 
-    fun getCameraPositionGlobal(): Vector3d = TODO("getCameraPositionGlobal")
+    fun getCameraPositionGlobal(): Vector3d { System.err.println("AgentCamera: getCameraPositionGlobal not yet implemented"); return Vector3d.ZERO }
     fun getCameraPositionAgent(): Vector3   = cameraPositionAgent
-    fun calcCameraPositionTargetGlobal(hitLimit: BooleanArray? = null): Vector3d = TODO("calcCameraPositionTargetGlobal")
-    fun getCameraMinOffGround(): Float = TODO("getCameraMinOffGround")
+    fun calcCameraPositionTargetGlobal(hitLimit: BooleanArray? = null): Vector3d { System.err.println("AgentCamera: calcCameraPositionTargetGlobal not yet implemented"); return Vector3d.ZERO }
+    fun getCameraMinOffGround(): Float { System.err.println("AgentCamera: getCameraMinOffGround not yet implemented"); return 0f }
     fun setCameraCollidePlane(plane: Vector4) { mCameraCollidePlane = plane }
-    fun calcCameraMinDistance(objMinDistance: FloatArray): Boolean = TODO("calcCameraMinDistance")
-    val currentCameraBuildOffset: Float get() = TODO("currentCameraBuildOffset: mCameraFocusOffset.length")
+    fun calcCameraMinDistance(objMinDistance: FloatArray): Boolean { System.err.println("AgentCamera: calcCameraMinDistance not yet implemented"); return false }
+    val currentCameraBuildOffset: Float get() { System.err.println("AgentCamera: currentCameraBuildOffset not yet implemented"); return 0f }
     fun clearCameraLag() { mCameraLag = Vector3.ZERO }
     fun getCameraUpVector(): Vector3 = mCameraUpVector
 
@@ -182,7 +182,7 @@ object AgentCamera {
     private var mSitCameraFocus:   Vector3 = Vector3.ZERO
 
     fun sitCameraEnabled(): Boolean = mSitCameraEnabled
-    fun setupSitCamera()   { TODO("setupSitCamera") }
+    fun setupSitCamera()   { System.err.println("AgentCamera: setupSitCamera not yet implemented") }
     fun setSitCamera(objectId: LLUUID, cameraPos: Vector3 = Vector3.ZERO, cameraFocus: Vector3 = Vector3.ZERO) {
         mSitCameraPos   = cameraPos
         mSitCameraFocus = cameraFocus
@@ -204,7 +204,7 @@ object AgentCamera {
         mAnimationCameraStartGlobal = getCameraPositionGlobal()
         mAnimationFocusStartGlobal  = focusGlobal
         mCameraAnimating = true
-        TODO("startCameraAnimation — record animation start state")
+        System.err.println("AgentCamera: startCameraAnimation not yet implemented")
     }
 
     fun stopCameraAnimation()  { mCameraAnimating = false }
@@ -224,31 +224,31 @@ object AgentCamera {
     private var mTrackFocusObject:  Boolean = true
     private var mFocusOnAvatar:     Boolean = true
 
-    fun calcFocusPositionTargetGlobal(): Vector3d = TODO("calcFocusPositionTargetGlobal")
-    fun calcFocusOffset(obj: Any?, posAgent: Vector3, x: Int, y: Int): Vector3 = TODO("calcFocusOffset")
+    fun calcFocusPositionTargetGlobal(): Vector3d { System.err.println("AgentCamera: calcFocusPositionTargetGlobal not yet implemented"); return Vector3d.ZERO }
+    fun calcFocusOffset(obj: Any?, posAgent: Vector3, x: Int, y: Int): Vector3 { System.err.println("AgentCamera: calcFocusOffset not yet implemented"); return Vector3.ZERO }
     fun getFocusOnAvatar(): Boolean = mFocusOnAvatar
     fun getFocusObject(): Any? = mFocusObject
     fun getFocusObjectDist(): Float = mFocusObjectDist
     fun getFocusGlobal(): Vector3d = focusGlobal
     fun getFocusTargetGlobal(): Vector3d = focusTargetGlobal
-    fun updateFocusOffset()   { TODO("updateFocusOffset") }
-    fun validateFocusObject() { TODO("validateFocusObject") }
+    fun updateFocusOffset()   { System.err.println("AgentCamera: updateFocusOffset not yet implemented") }
+    fun validateFocusObject() { System.err.println("AgentCamera: validateFocusObject not yet implemented") }
     fun clearFocusObject()    { mFocusObject = null }
     fun setFocusObject(obj: Any?) { mFocusObject = obj }
 
     fun setFocusGlobal(focus: Vector3d, objectId: LLUUID = LLUUID.NULL) {
         focusTargetGlobal = focus
-        TODO("setFocusGlobal — begin lerp toward focus")
+        System.err.println("AgentCamera: setFocusGlobal not yet implemented")
     }
 
     fun setFocusOnAvatar(focus: Boolean, animate: Boolean, resetAxes: Boolean = true) {
         mFocusOnAvatar = focus
         focusOnAvatar = focus
-        TODO("setFocusOnAvatar animate=$animate")
+        System.err.println("AgentCamera: setFocusOnAvatar not yet implemented")
     }
 
     fun setCameraPosAndFocusGlobal(pos: Vector3d, focus: Vector3d, objectId: LLUUID) {
-        TODO("setCameraPosAndFocusGlobal")
+        System.err.println("AgentCamera: setCameraPosAndFocusGlobal not yet implemented")
     }
 
     fun setAllowChangeToFollow(allow: Boolean) { mAllowChangeToFollow = allow }
@@ -256,13 +256,13 @@ object AgentCamera {
 
     // ---- Look-at / point-at --------------------------------------------------
 
-    fun updateLookAt(mouseX: Int, mouseY: Int) { TODO("APR: updateLookAt — update head tracking HUD effect") }
-    fun setLookAt(targetType: Int, obj: Any? = null, position: Vector3 = Vector3.ZERO): Boolean = TODO("setLookAt")
-    fun getLookAtType(): Int = TODO("getLookAtType")
-    fun lookAtLastChat() { TODO("lookAtLastChat") }
-    fun slamLookAt(lookAt: Vector3) { TODO("slamLookAt — reset axes toward look_at") }
-    fun setPointAt(targetType: Int, obj: Any? = null, position: Vector3 = Vector3.ZERO): Boolean = TODO("setPointAt")
-    fun getPointAtType(): Int = TODO("getPointAtType")
+    fun updateLookAt(mouseX: Int, mouseY: Int) { System.err.println("AgentCamera: updateLookAt not yet implemented") }
+    fun setLookAt(targetType: Int, obj: Any? = null, position: Vector3 = Vector3.ZERO): Boolean { System.err.println("AgentCamera: setLookAt not yet implemented"); return false }
+    fun getLookAtType(): Int { System.err.println("AgentCamera: getLookAtType not yet implemented"); return 0 }
+    fun lookAtLastChat() { System.err.println("AgentCamera: lookAtLastChat not yet implemented") }
+    fun slamLookAt(lookAt: Vector3) { System.err.println("AgentCamera: slamLookAt not yet implemented") }
+    fun setPointAt(targetType: Int, obj: Any? = null, position: Vector3 = Vector3.ZERO): Boolean { System.err.println("AgentCamera: setPointAt not yet implemented"); return false }
+    fun getPointAtType(): Int { System.err.println("AgentCamera: getPointAtType not yet implemented"); return 0 }
 
     // ---- Orbit ---------------------------------------------------------------
 
@@ -277,7 +277,7 @@ object AgentCamera {
             gAgent.yaw(radians)
         } else {
             mOrbitAroundRadians += radians
-            TODO("GPU: cameraOrbitAround — rotVec mCameraFocusOffsetTarget around Z")
+            // GPU: cameraOrbitAround — rotVec mCameraFocusOffsetTarget around Z
         }
     }
 
@@ -286,7 +286,7 @@ object AgentCamera {
             gAgent.pitch(radians)
         } else {
             mOrbitOverAngle += radians
-            TODO("GPU: cameraOrbitOver — rotVec mCameraFocusOffsetTarget around left axis")
+            // GPU: cameraOrbitOver — rotVec mCameraFocusOffsetTarget around left axis
         }
     }
 
@@ -299,7 +299,7 @@ object AgentCamera {
                 changeCameraToMouselook(false)
             }
         } else {
-            TODO("GPU: cameraOrbitIn — move mCameraFocusOffsetTarget toward focus")
+            // GPU: cameraOrbitIn — move mCameraFocusOffsetTarget toward focus
         }
     }
 
@@ -322,11 +322,11 @@ object AgentCamera {
 
     var defaultFov: Float = Math.toRadians(60.0).toFloat()
 
-    fun handleScrollWheel(clicks: Int) { TODO("handleScrollWheel clicks=$clicks") }
+    fun handleScrollWheel(clicks: Int) { System.err.println("AgentCamera: handleScrollWheel not yet implemented") }
 
     fun cameraZoomIn(factor: Float) {
         if (factor == 1.0f) return
-        TODO("GPU: cameraZoomIn factor=$factor — scale mCameraFocusOffsetTarget with min/max clamps")
+        // GPU: cameraZoomIn — scale mCameraFocusOffsetTarget with min/max clamps
     }
 
     fun getCameraZoomFraction(getThirdPerson: Boolean = false): Float {
@@ -335,9 +335,11 @@ object AgentCamera {
             return 1.0f - (mCameraZoomFraction - MIN_ZOOM_FRACTION) / (MAX_ZOOM_FRACTION - MIN_ZOOM_FRACTION)
         }
         if (cameraCustomizeAvatar()) {
-            TODO("getCameraZoomFraction for CUSTOMIZE_AVATAR mode")
+            System.err.println("AgentCamera: getCameraZoomFraction for CUSTOMIZE_AVATAR mode not yet implemented")
+            return 0f
         }
-        TODO("getCameraZoomFraction for build/free camera mode")
+        System.err.println("AgentCamera: getCameraZoomFraction for build/free camera mode not yet implemented")
+        return 0f
     }
 
     fun setCameraZoomFraction(fraction: Float) {
@@ -346,36 +348,36 @@ object AgentCamera {
             mCameraZoomFraction = MAX_ZOOM_FRACTION - fraction * (MAX_ZOOM_FRACTION - MIN_ZOOM_FRACTION)
             mCameraZoomFraction = mCameraZoomFraction.coerceIn(MIN_ZOOM_FRACTION, MAX_ZOOM_FRACTION)
         } else if (cameraCustomizeAvatar()) {
-            TODO("setCameraZoomFraction for CUSTOMIZE_AVATAR — scale mCameraFocusOffsetTarget")
+            System.err.println("AgentCamera: setCameraZoomFraction for CUSTOMIZE_AVATAR not yet implemented")
         } else {
-            TODO("setCameraZoomFraction for build/free camera mode — scale mCameraFocusOffsetTarget")
+            System.err.println("AgentCamera: setCameraZoomFraction for build/free camera mode not yet implemented")
         }
         startCameraAnimation()
     }
 
-    fun calcCameraFOVZoomFactor(): Float = TODO("calcCameraFOVZoomFactor")
-    fun getAgentHUDTargetZoom(): Float   = TODO("getAgentHUDTargetZoom: hudScaleFactor * mHUDTargetZoom")
+    fun calcCameraFOVZoomFactor(): Float { System.err.println("AgentCamera: calcCameraFOVZoomFactor not yet implemented"); return 0f }
+    fun getAgentHUDTargetZoom(): Float   { System.err.println("AgentCamera: getAgentHUDTargetZoom not yet implemented"); return 0f }
     fun resetCameraZoomFraction()        { mCameraZoomFraction = INITIAL_ZOOM_FRACTION }
     val currentCameraZoomFraction: Float get() = mCameraZoomFraction
 
     // ---- Pan -----------------------------------------------------------------
 
     fun cameraPanIn(meters: Float) {
-        TODO("cameraPanIn meters=$meters — advance along camera at-axis, update focusTarget")
+        System.err.println("AgentCamera: cameraPanIn not yet implemented")
     }
 
     fun cameraPanLeft(meters: Float) {
         cameraSmoothingStop = true
-        TODO("cameraPanLeft meters=$meters — advance along camera left-axis, update focusTarget")
+        System.err.println("AgentCamera: cameraPanLeft not yet implemented")
     }
 
     fun cameraPanUp(meters: Float) {
         cameraSmoothingStop = true
-        TODO("cameraPanUp meters=$meters — advance along camera up-axis, update focusTarget")
+        System.err.println("AgentCamera: cameraPanUp not yet implemented")
     }
 
     fun resetCameraPan() {
-        TODO("resetCameraPan — reverse accumulated mPanFocusDiff from focusTarget")
+        System.err.println("AgentCamera: resetCameraPan not yet implemented")
     }
 
     fun resetPanDiff() { mPanFocusDiff = Vector3d.ZERO }
@@ -396,12 +398,12 @@ object AgentCamera {
         resetPanDiff()
         resetOrbitDiff()
         hudTargetZoom = 1.0f
-        TODO("resetView — stop autopilot, deselect, hide menus")
+        System.err.println("AgentCamera: resetView not yet implemented")
     }
 
     fun unlockView() {
         if (mFocusOnAvatar) {
-            TODO("unlockView — setFocusGlobal(zero, avatarId), setFocusOnAvatar(false)")
+            System.err.println("AgentCamera: unlockView not yet implemented")
         }
     }
 
@@ -538,16 +540,16 @@ object AgentCamera {
     var thirdPersonHeadOffset: Vector3 = Vector3(0f, 0f, 1f)
 
     fun setThirdPersonHeadOffset(offset: Vector3) { thirdPersonHeadOffset = offset }
-    fun calcThirdPersonFocusOffset(): Vector3d = TODO("calcThirdPersonFocusOffset")
+    fun calcThirdPersonFocusOffset(): Vector3d { System.err.println("AgentCamera: calcThirdPersonFocusOffset not yet implemented"); return Vector3d.ZERO }
 
     // ---- Follow cam ----------------------------------------------------------
 
-    fun isFollowCamLocked(): Boolean = TODO("isFollowCamLocked — check mFollowCam")
+    fun isFollowCamLocked(): Boolean { System.err.println("AgentCamera: isFollowCamLocked not yet implemented"); return false }
 
     // ---- Save/load camera position (FS: FIRE-7758) ---------------------------
 
-    fun storeCameraPosition() { TODO("storeCameraPosition — persist to saved settings") }
-    fun loadCameraPosition()  { TODO("loadCameraPosition — restore from saved settings") }
+    fun storeCameraPosition() { System.err.println("AgentCamera: storeCameraPosition not yet implemented") }
+    fun loadCameraPosition()  { System.err.println("AgentCamera: loadCameraPosition not yet implemented") }
 
     // ---- Companion object (static members) -----------------------------------
 

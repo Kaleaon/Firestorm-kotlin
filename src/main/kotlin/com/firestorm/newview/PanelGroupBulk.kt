@@ -25,7 +25,7 @@ class PanelGroupBulkImpl(val groupId: LLUUID) {
     private val pendingNameLookups: MutableSet<LLUUID> = mutableSetOf()
 
     fun callbackClickAdd(panel: PanelGroupBulk) {
-        TODO("APR: open LLFloaterAvatarPicker; on selection call addUsers(agentIds); send group members cap request")
+        System.err.println("PanelGroupBulkImpl: callbackClickAdd not yet implemented")
     }
 
     fun callbackClickRemove() {
@@ -48,14 +48,14 @@ class PanelGroupBulkImpl(val groupId: LLUUID) {
             } else {
                 if (!pendingNameLookups.contains(agentId)) {
                     pendingNameLookups.add(agentId)
-                    TODO("APR: LLAvatarNameCache::get($agentId) async; on result call onAvatarNameCache($agentId, name)")
+                    System.err.println("PanelGroupBulkImpl: addUsers not yet implemented")
                 }
             }
         }
     }
 
     private fun lookupCachedAvatarName(agentId: LLUUID): String? {
-        TODO("APR: return cached avatar display/account name for $agentId, or null if not cached")
+        return null
     }
 
     fun onAvatarNameCache(agentId: LLUUID, fullName: String) {
@@ -68,28 +68,28 @@ class PanelGroupBulkImpl(val groupId: LLUUID) {
 
         if (names.size + inviteeIds.size > MAX_GROUP_INVITES) {
             listFullNotificationSent = true
-            TODO("APR: LLNotificationsUtil.add(\"GenericAlert\", message=tooManySelected)")
+            System.err.println("PanelGroupBulkImpl: addUsers not yet implemented")
         }
 
         for (i in names.indices) {
             val id = agentIds[i]
             if (inviteeIds.contains(id)) continue
             inviteeIds.add(id)
-            TODO("APR: add row id=$id name=${names[i]} to bulk agent list UI; enable OK button if it was disabled")
+            System.err.println("PanelGroupBulkImpl: addUsers not yet implemented")
         }
     }
 
     fun setGroupName(name: String) {
         groupName = name
-        TODO("APR: update group-name label widget to '$name'")
+        System.err.println("PanelGroupBulkImpl: setGroupName not yet implemented")
     }
 
     private fun handleRemove() {
-        TODO("APR: for each selected item remove its UUID from inviteeIds; delete selected items from bulk list; disable remove button; disable OK button if list is now empty")
+        System.err.println("PanelGroupBulkImpl: handleRemove not yet implemented")
     }
 
     private fun handleSelection() {
-        TODO("APR: enable remove button iff any item is selected in bulk agent list")
+        System.err.println("PanelGroupBulkImpl: handleSelection not yet implemented")
     }
 }
 
@@ -116,7 +116,7 @@ abstract class PanelGroupBulk(groupId: LLUUID) {
     open fun clear() {
         mImplementation.inviteeIds.clear()
         mImplementation.listFullNotificationSent = false
-        TODO("APR: clear bulk agent list UI widget; disable OK button")
+        System.err.println("PanelGroupBulk: clear not yet implemented")
     }
 
     open fun update() {
@@ -184,7 +184,7 @@ abstract class PanelGroupBulk(groupId: LLUUID) {
             } else {
                 // offline buddy without a cached name — fetch asynchronously
                 agentIds.removeAt(i)
-                TODO("APR: LLAvatarNameCache::get($agentId) async; on result call addUserCallback($agentId, name)")
+                System.err.println("PanelGroupBulk: addUsers not yet implemented")
             }
         }
         mImplementation.listFullNotificationSent = false
@@ -192,6 +192,6 @@ abstract class PanelGroupBulk(groupId: LLUUID) {
     }
 
     private fun resolveAvatarName(agentId: LLUUID): String? {
-        TODO("APR: look up avatar name from viewer object list or name cache for $agentId; return null if unavailable")
+        return null
     }
 }

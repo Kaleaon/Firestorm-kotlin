@@ -134,15 +134,16 @@ open class FSAreaSearch(val key: Any) {
     // -----------------------------------------------------------------------
 
     open fun postBuild(): Boolean {
-        TODO("GPU: wire tab container child panels and register RLV behaviour callback")
+        /* no-op */
+        return false
     }
 
     open fun draw() {
-        TODO("GPU: draw beacon overlays over matching objects via gObjectList.addDebugBeacon")
+        /* no-op */
     }
 
     open fun onOpen(key: Any) {
-        TODO("GPU: select the Find tab on first open")
+        /* no-op */
     }
 
     // -----------------------------------------------------------------------
@@ -155,10 +156,10 @@ open class FSAreaSearch(val key: Any) {
 
     fun callbackLoadFullName(id: UUID, fullName: String) {
         nameCacheConnections.remove(id)
-        val ourRegion = TODO("GPU: gAgent.getRegion()") as Any?
+        val ourRegion: Any? = null // GPU: gAgent.getRegion()
         for (entry in objectDetails.values) {
             if (entry.nameRequested && !entry.listed) {
-                val objectp = TODO("GPU: gObjectList.findObject(entry.id)") as Any?
+                val objectp: Any? = null // GPU: gObjectList.findObject(entry.id)
                 if (objectp != null) {
                     matchObject(entry, objectp)
                 }
@@ -172,7 +173,7 @@ open class FSAreaSearch(val key: Any) {
     // -----------------------------------------------------------------------
 
     fun processObjectProperties(msg: Any) {
-        TODO("APR: use JVM equivalent - unpack ObjectProperties UDP message; populate objectDetails entries and call matchObject for searchable ones")
+        System.err.println("FSAreaSearch: processObjectProperties not yet implemented")
     }
 
     fun updateObjectCosts(
@@ -183,7 +184,7 @@ open class FSAreaSearch(val key: Any) {
         linkPhysicsCost: Float
     ) {
         if (!isActive) return
-        TODO("GPU: update land_impact cell in result list for objectId with linkCost")
+        System.err.println("FSAreaSearch: updateObjectCosts not yet implemented")
     }
 
     // -----------------------------------------------------------------------
@@ -201,7 +202,7 @@ open class FSAreaSearch(val key: Any) {
 
     fun checkRegion() {
         if (!isActive) return
-        TODO("GPU: compare gAgent.getRegion() to lastRegion; on change clear objectDetails/regionRequests, reset panelList, set needsRefresh=true")
+        System.err.println("FSAreaSearch: checkRegion not yet implemented")
     }
 
     // -----------------------------------------------------------------------
@@ -215,25 +216,25 @@ open class FSAreaSearch(val key: Any) {
             requested = 0
             objectDetails.clear()
             regionRequests.clear()
-            TODO("GPU: restart lastPropertiesReceivedTimer")
+            System.err.println("FSAreaSearch: refreshList cacheClear timer restart not yet implemented")
         } else {
             objectDetails.values.forEach { it.listed = false }
         }
-        TODO("GPU: panelList.getResultList().deleteAllItems()")
+        System.err.println("FSAreaSearch: refreshList deleteAllItems not yet implemented")
         panelList?.setCounterText()
-        TODO("GPU: panelList.setAgentLastPosition(gAgent.getPositionGlobal())")
+        System.err.println("FSAreaSearch: refreshList setAgentLastPosition not yet implemented")
         namesRequested.clear()
         needsRefresh = true
         findObjects()
     }
 
     fun onCommitLine() {
-        searchName = TODO("GPU: panelFind.nameLineEditor.getText()") as String
-        searchDescription = TODO("GPU: panelFind.descriptionLineEditor.getText()") as String
-        searchOwner = TODO("GPU: panelFind.ownerLineEditor.getText()") as String
-        searchGroup = TODO("GPU: panelFind.groupLineEditor.getText()") as String
-        searchCreator = TODO("GPU: panelFind.creatorLineEditor.getText()") as String
-        searchLastOwner = TODO("GPU: panelFind.lastOwnerLineEditor.getText()") as String
+        searchName = ""        // GPU: panelFind.nameLineEditor.getText()
+        searchDescription = "" // GPU: panelFind.descriptionLineEditor.getText()
+        searchOwner = ""       // GPU: panelFind.ownerLineEditor.getText()
+        searchGroup = ""       // GPU: panelFind.groupLineEditor.getText()
+        searchCreator = ""     // GPU: panelFind.creatorLineEditor.getText()
+        searchLastOwner = ""   // GPU: panelFind.lastOwnerLineEditor.getText()
 
         if (regexSearch) {
             fun tryCompile(text: String, setter: (Pattern?) -> Unit, clearer: () -> Unit) {
@@ -258,17 +259,17 @@ open class FSAreaSearch(val key: Any) {
 
     fun onButtonClickedSearch() {
         onCommitLine()
-        TODO("GPU: mTab.selectFirstTab()")
+        System.err.println("FSAreaSearch: onButtonClickedSearch tab select not yet implemented")
         refreshList(false)
     }
 
     fun onCommitCheckboxRegex() {
-        regexSearch = TODO("GPU: panelFind.checkboxRegex.get()") as Boolean
+        regexSearch = false // GPU: panelFind.checkboxRegex.get()
         if (regexSearch) onCommitLine()
     }
 
     fun setFindOwnerText(value: String) {
-        TODO("GPU: panelFind.ownerLineEditor.setText(value)")
+        System.err.println("FSAreaSearch: setFindOwnerText not yet implemented")
     }
 
     // -----------------------------------------------------------------------
@@ -277,48 +278,50 @@ open class FSAreaSearch(val key: Any) {
 
     private fun findObjects() {
         if (!isActive) return
-        if (!(needsRefresh && TODO("GPU: lastUpdateTimer.elapsed > MIN_REFRESH_INTERVAL") as Boolean ||
-                TODO("GPU: lastUpdateTimer.elapsed > REFRESH_INTERVAL") as Boolean)) return
+        val elapsed = false // GPU: lastUpdateTimer.elapsed > MIN_REFRESH_INTERVAL
+        val longElapsed = false // GPU: lastUpdateTimer.elapsed > REFRESH_INTERVAL
+        if (!(needsRefresh && elapsed || longElapsed)) return
 
-        val ourRegion = TODO("GPU: gAgent.getRegion()") as Any? ?: return
+        val ourRegion: Any? = null // GPU: gAgent.getRegion()
+        if (ourRegion == null) return
 
-        TODO("GPU: stop lastUpdateTimer; set requestQueuePause=true; set needsRefresh=false; searchableObjects=0")
+        System.err.println("FSAreaSearch: findObjects timer/queue setup not yet implemented")
         requestQueuePause = true
         needsRefresh = false
         searchableObjects = 0
         checkRegion()
 
-        TODO("GPU: iterate gObjectList; for each object call isSearchableObject; add new entries to objectDetails; call matchObject for FINISHED entries; mark FAILED objects")
+        System.err.println("FSAreaSearch: findObjects object iteration not yet implemented")
 
         panelList?.updateScrollList()
         updateCounterText()
-        TODO("GPU: restart lastUpdateTimer; set requestQueuePause=false")
+        System.err.println("FSAreaSearch: findObjects timer restart not yet implemented")
         requestQueuePause = false
     }
 
     private fun processRequestQueue() {
         if (!isActive || requestQueuePause) return
-        TODO("APR: use JVM equivalent - send ObjectSelect+ObjectDeselect UDP packets for NEED entries per region in MAX_OBJECTS_PER_PACKET batches")
+        System.err.println("FSAreaSearch: processRequestQueue not yet implemented")
     }
 
     private fun requestObjectProperties(requestList: List<UInt>, select: Boolean, regionp: Any) {
-        TODO("APR: use JVM equivalent - pack ObjectSelect or ObjectDeselect message and send in batches of MAX_OBJECTS_PER_PACKET to regionp.host")
+        System.err.println("FSAreaSearch: requestObjectProperties not yet implemented")
     }
 
     private fun matchObject(details: FSObjectProperties, objectp: Any) {
         if (details.listed) return
 
-        if (filterForSale) TODO("GPU: check details.sale_info.isForSale() and price range")
-        if (filterDistance) TODO("GPU: compute distance from panelList.agentLastPosition and compare to filterDistanceMin/filterDistanceMax")
-        if (filterClickAction) TODO("GPU: compare objectp.getClickAction() to filterClickActionType")
-        if (filterPhysical && TODO("GPU: !objectp.flagUsePhysics()") as Boolean) return
-        if (filterTemporary && TODO("GPU: !objectp.flagTemporaryOnRez()") as Boolean) return
+        if (filterForSale) { /* GPU: check details.sale_info.isForSale() and price range */ }
+        if (filterDistance) { /* GPU: compute distance from panelList.agentLastPosition and compare to filterDistanceMin/filterDistanceMax */ }
+        if (filterClickAction) { /* GPU: compare objectp.getClickAction() to filterClickActionType */ }
+        if (filterPhysical && false /* GPU: !objectp.flagUsePhysics() */) return
+        if (filterTemporary && false /* GPU: !objectp.flagTemporaryOnRez() */) return
         if (filterLocked && (details.ownerMask and 0x00008000u) != 0u) return
-        if (filterPhantom && TODO("GPU: !objectp.flagPhantom()") as Boolean) return
-        if (filterAttachment && TODO("GPU: !objectp.isAttachment()") as Boolean) return
-        if (filterMoaP) TODO("GPU: check objectp texture entries for media")
-        if (filterReflectionProbe) TODO("GPU: check objectp.mReflectionProbe.notNull()")
-        if (filterAgentParcelOnly) TODO("GPU: check LLViewerParcelMgr.inAgentParcel(objectp.getPositionGlobal())")
+        if (filterPhantom && false /* GPU: !objectp.flagPhantom() */) return
+        if (filterAttachment && false /* GPU: !objectp.isAttachment() */) return
+        if (filterMoaP) { /* GPU: check objectp texture entries for media */ }
+        if (filterReflectionProbe) { /* GPU: check objectp.mReflectionProbe.notNull() */ }
+        if (filterAgentParcelOnly) { /* GPU: check LLViewerParcelMgr.inAgentParcel(objectp.getPositionGlobal()) */ }
         if (filterPermCopy && (details.ownerMask and 0x00008000u) == 0u) return
         if (filterPermModify && (details.ownerMask and 0x00004000u) == 0u) return
         if (filterPermTransfer && (details.ownerMask and 0x00002000u) == 0u) return
@@ -342,7 +345,7 @@ open class FSAreaSearch(val key: Any) {
             groupName = n; if (pending) details.nameRequested = true
         }
 
-        TODO("GPU: apply RLVa_hideNameIfRestricted to ownerName and lastOwnerName")
+        // GPU: apply RLVa_hideNameIfRestricted to ownerName and lastOwnerName
 
         if (regexSearch) {
             fun matches(pattern: Pattern?, text: String) = pattern == null || pattern.matcher(text).matches()
@@ -363,15 +366,16 @@ open class FSAreaSearch(val key: Any) {
         }
 
         details.listed = true
-        TODO("GPU: build scroll-list row with distance/name/description/price/landImpact/primCount/owner/group/creator/lastOwner columns and add to panelList.resultList")
+        System.err.println("FSAreaSearch: matchObject scroll-list row build not yet implemented")
     }
 
     private fun getNameFromUUID(id: UUID, group: Boolean, callback: (name: String, pending: Boolean) -> Unit) {
-        TODO("APR: use JVM equivalent - async lookup via LLAvatarNameCache / gCacheName; call callback immediately if cached, otherwise schedule and invoke with pending=true")
+        System.err.println("FSAreaSearch: getNameFromUUID not yet implemented")
+        callback("", false)
     }
 
     private fun updateCounterText() {
-        val listed = TODO("GPU: panelList.getResultList().getItemCount()") as Int
+        val listed = 0 // GPU: panelList.getResultList().getItemCount()
         val args = mapOf("[LISTED]" to listed.toString(), "[PENDING]" to requested.toString(), "[TOTAL]" to searchableObjects.toString())
         panelList?.setCounterText(args)
     }
@@ -382,14 +386,13 @@ open class FSAreaSearch(val key: Any) {
             pattern.matcher("asdfghjklqwerty1234567890").matches()
             true
         } catch (e: PatternSyntaxException) {
-            TODO("GPU: show RegExFail notification with e.message")
-            @Suppress("UNREACHABLE_CODE")
+            System.err.println("FSAreaSearch: regexTest RegExFail not yet implemented")
             false
         }
     }
 
     private fun updateRlvRestrictions(behavior: Any) {
-        TODO("GPU: if behavior == RLV_BHVR_SHOWNAMES call refreshList(false)")
+        System.err.println("FSAreaSearch: updateRlvRestrictions not yet implemented")
     }
 
     // -----------------------------------------------------------------------
@@ -424,36 +427,40 @@ open class FSPanelAreaSearchList(private val fsAreaSearch: FSAreaSearch) {
 
     private var columnConfigConnection: (() -> Unit)? = null
 
-    var agentLastPosition: Any = TODO("GPU: LLVector3d zero")
+    var agentLastPosition: Any = Object() // GPU: LLVector3d zero
 
     open fun postBuild(): Boolean {
-        TODO("GPU: bind result_list FSScrollListCtrl, counter LLTextBox, Refresh LLButton, beacons LLCheckBoxCtrl; call updateResultListColumns(); register FSAreaSearchColumnConfig signal")
+        System.err.println("FSPanelAreaSearchList: postBuild not yet implemented")
+        return false
     }
 
-    fun getResultList(): Any? = TODO("GPU: return FSScrollListCtrl mResultList")
+    fun getResultList(): Any? {
+        System.err.println("FSPanelAreaSearchList: getResultList not yet implemented")
+        return null
+    }
 
     fun setCounterText() {
-        TODO("GPU: mCounterText.setText(getString(ListedPendingTotalBlank))")
+        System.err.println("FSPanelAreaSearchList: setCounterText not yet implemented")
     }
 
     fun setCounterText(args: Map<String, String>) {
-        TODO("GPU: mCounterText.setText(getString(ListedPendingTotalFilled, args))")
+        System.err.println("FSPanelAreaSearchList: setCounterText(args) not yet implemented")
     }
 
     fun updateScrollList() {
-        val currentPos = TODO("GPU: gAgent.getPositionGlobal()") as Any
-        val agentMoved = TODO("GPU: dist_vec(agentLastPosition, currentPos) > MIN_DISTANCE_MOVED") as Boolean
+        val currentPos: Any = Object() // GPU: gAgent.getPositionGlobal()
+        val agentMoved = false // GPU: dist_vec(agentLastPosition, currentPos) > MIN_DISTANCE_MOVED
         if (agentMoved) agentLastPosition = currentPos
 
-        TODO("GPU: iterate result list rows; remove rows whose object is gone or no longer searchable; update distance column when agentMoved")
+        System.err.println("FSPanelAreaSearchList: updateScrollList row update not yet implemented")
     }
 
     fun updateName(id: UUID, name: String) {
-        TODO("GPU: find rows matching id in mResultList and set name cell value to name")
+        System.err.println("FSPanelAreaSearchList: updateName not yet implemented")
     }
 
     fun updateResultListColumns() {
-        TODO("GPU: read FSAreaSearchColumnConfig UInt; clear and rebuild columns hiding those whose bit is not set")
+        System.err.println("FSPanelAreaSearchList: updateResultListColumns not yet implemented")
     }
 
     open fun handleKeyHere(key: Int, mask: Int): Boolean {
@@ -462,24 +469,25 @@ open class FSPanelAreaSearchList(private val fsAreaSearch: FSAreaSearch) {
             return true
         }
         if (key == 'A'.code && mask == MASK_CONTROL) {
-            TODO("GPU: mResultList.selectAll()")
-            @Suppress("UNREACHABLE_CODE")
+            System.err.println("FSPanelAreaSearchList: selectAll not yet implemented")
             return true
         }
         return false
     }
 
     private fun onDoubleClick() {
-        val item = TODO("GPU: mResultList.getFirstSelected()") as Any? ?: return
-        val objectId = TODO("GPU: item.getUUID()") as UUID
-        val objectp = TODO("GPU: gObjectList.findObject(objectId)") as Any? ?: return
+        val item: Any? = null // GPU: mResultList.getFirstSelected()
+        if (item == null) return
+        val objectId: UUID = UUID(0L, 0L) // GPU: item.getUUID()
+        val objectp: Any? = null // GPU: gObjectList.findObject(objectId)
+        if (objectp == null) return
         val details = fsAreaSearch.objectDetails[objectId] ?: return
-        TODO("GPU: LLTracker.trackLocation(objectp.getPositionGlobal(), details.name, ...)")
-        if (TODO("GPU: fsAreaSearch.panelAdvanced.checkboxClickBuy.get()") as Boolean)
+        System.err.println("FSPanelAreaSearchList: onDoubleClick trackLocation not yet implemented")
+        if (false /* GPU: fsAreaSearch.panelAdvanced.checkboxClickBuy.get() */)
             buyObject(details, objectp)
-        if (TODO("GPU: fsAreaSearch.panelAdvanced.checkboxClickTouch.get()") as Boolean)
+        if (false /* GPU: fsAreaSearch.panelAdvanced.checkboxClickTouch.get() */)
             touchObject(objectp)
-        if (TODO("GPU: fsAreaSearch.panelAdvanced.checkboxClickSit.get()") as Boolean)
+        if (false /* GPU: fsAreaSearch.panelAdvanced.checkboxClickSit.get() */)
             sitOnObject(details, objectp)
     }
 
@@ -488,48 +496,52 @@ open class FSPanelAreaSearchList(private val fsAreaSearch: FSAreaSearch) {
     }
 
     private fun onCommitCheckboxBeacons() {
-        fsAreaSearch.beacons = TODO("GPU: mCheckboxBeacons.get()") as Boolean
+        fsAreaSearch.beacons = false // GPU: mCheckboxBeacons.get()
     }
 
     private fun onCopyToClipboard() {
-        val selectedItems = TODO("GPU: mResultList.getAllSelected()") as List<Any>
+        val selectedItems: List<Any> = emptyList() // GPU: mResultList.getAllSelected()
         if (selectedItems.isEmpty()) return
         val sb = StringBuilder("Distance\tName\tDescription\tPrice\tLand Impact\tPrim Count\tOwner\tGroup\tCreator\tLast Owner\n")
         for (item in selectedItems) {
-            val colCount = TODO("GPU: item.getNumColumns()") as Int
+            val colCount = 0 // GPU: item.getNumColumns()
             for (i in 0 until colCount) {
-                val value = TODO("GPU: item.getColumn(i)?.getValue()?.asString() ?: \"\"") as String
+                val value = "" // GPU: item.getColumn(i)?.getValue()?.asString() ?: ""
                 sb.append(value)
                 if (i < colCount - 1) sb.append('\t') else sb.append('\n')
             }
         }
         if (sb.endsWith('\n')) sb.deleteCharAt(sb.length - 1)
-        TODO("GPU: LLClipboard.instance().copyToClipboard(wstring, 0, length)")
+        System.err.println("FSPanelAreaSearchList: onCopyToClipboard copyToClipboard not yet implemented")
     }
 
-    private fun onContextMenuItemClick(userdata: Any): Boolean =
-        TODO("GPU: dispatch context-menu actions")
+    private fun onContextMenuItemClick(userdata: Any): Boolean {
+        System.err.println("FSPanelAreaSearchList: onContextMenuItemClick not yet implemented")
+        return false
+    }
 
-    private fun onContextMenuItemEnable(userdata: Any): Boolean =
-        TODO("GPU: return enablement state for context-menu item")
+    private fun onContextMenuItemEnable(userdata: Any): Boolean {
+        System.err.println("FSPanelAreaSearchList: onContextMenuItemEnable not yet implemented")
+        return false
+    }
 
     private fun onColumnVisibilityChecked(userdata: Any) {
-        TODO("GPU: XOR column bit in FSAreaSearchColumnConfig setting")
+        System.err.println("FSPanelAreaSearchList: onColumnVisibilityChecked not yet implemented")
     }
 
     private fun buyObject(details: FSObjectProperties, objectp: Any) {
-        TODO("GPU: initiate buy workflow for objectp")
+        System.err.println("FSPanelAreaSearchList: buyObject not yet implemented")
     }
 
     private fun sitOnObject(details: FSObjectProperties, objectp: Any) {
-        TODO("GPU: send sit request for objectp")
+        System.err.println("FSPanelAreaSearchList: sitOnObject not yet implemented")
     }
 
     companion object {
         private const val MASK_CONTROL = 0x0001
 
         fun touchObject(objectp: Any) {
-            TODO("GPU: send touch interaction for objectp")
+            System.err.println("FSPanelAreaSearchList: touchObject not yet implemented")
         }
     }
 }
@@ -549,15 +561,17 @@ open class FSPanelAreaSearchFind(private val fsAreaSearch: FSAreaSearch) {
     var checkboxRegex: Any? = null
 
     open fun postBuild(): Boolean {
-        TODO("GPU: bind all LLLineEditor and LLCheckBoxCtrl children; bind search/clear buttons")
+        System.err.println("FSPanelAreaSearchFind: postBuild not yet implemented")
+        return false
     }
 
     open fun handleKeyHere(key: Int, mask: Int): Boolean {
-        TODO("GPU: on Enter key trigger fsAreaSearch.onButtonClickedSearch()")
+        System.err.println("FSPanelAreaSearchFind: handleKeyHere not yet implemented")
+        return false
     }
 
     private fun onButtonClickedClear() {
-        TODO("GPU: clear all line editors, then call fsAreaSearch.clearSearchText()")
+        System.err.println("FSPanelAreaSearchFind: onButtonClickedClear not yet implemented")
     }
 }
 
@@ -568,23 +582,24 @@ open class FSPanelAreaSearchFind(private val fsAreaSearch: FSAreaSearch) {
 open class FSPanelAreaSearchFilter(private val fsAreaSearch: FSAreaSearch) {
 
     open fun postBuild(): Boolean {
-        TODO("GPU: bind all filter checkboxes, spin controls, combo box, and save-default button")
+        System.err.println("FSPanelAreaSearchFilter: postBuild not yet implemented")
+        return false
     }
 
     private fun onCommitCheckbox() {
-        TODO("GPU: read all checkbox values and push to fsAreaSearch filter flags")
+        System.err.println("FSPanelAreaSearchFilter: onCommitCheckbox not yet implemented")
     }
 
     private fun onCommitSpin() {
-        TODO("GPU: read min/max spin values and push to fsAreaSearch filter ranges")
+        System.err.println("FSPanelAreaSearchFilter: onCommitSpin not yet implemented")
     }
 
     private fun onCommitCombo() {
-        TODO("GPU: read combo selection index and set fsAreaSearch.filterClickActionType")
+        System.err.println("FSPanelAreaSearchFilter: onCommitCombo not yet implemented")
     }
 
     private fun onButtonClickedSaveAsDefault() {
-        TODO("GPU: persist current filter state to gSavedSettings")
+        System.err.println("FSPanelAreaSearchFilter: onButtonClickedSaveAsDefault not yet implemented")
     }
 }
 
@@ -597,11 +612,13 @@ open class FSPanelAreaSearchOptions(private val fsAreaSearch: FSAreaSearch) {
     private val columnParms: MutableMap<String, Any> = mutableMapOf()
 
     private fun onCommitCheckboxDisplayColumn(userdata: Any) {
-        TODO("GPU: toggle column visibility bit in FSAreaSearchColumnConfig setting; call panelList.updateResultListColumns()")
+        System.err.println("FSPanelAreaSearchOptions: onCommitCheckboxDisplayColumn not yet implemented")
     }
 
-    private fun onEnableColumnVisibilityChecked(userdata: Any): Boolean =
-        TODO("GPU: return whether the column named in userdata is currently visible")
+    private fun onEnableColumnVisibilityChecked(userdata: Any): Boolean {
+        System.err.println("FSPanelAreaSearchOptions: onEnableColumnVisibilityChecked not yet implemented")
+        return false
+    }
 }
 
 // ---------------------------------------------------------------------------
@@ -615,6 +632,7 @@ open class FSPanelAreaSearchAdvanced {
     var checkboxClickSit: Any? = null
 
     open fun postBuild(): Boolean {
-        TODO("GPU: bind checkboxClickTouch, checkboxClickBuy, checkboxClickSit LLCheckBoxCtrl children")
+        System.err.println("FSPanelAreaSearchAdvanced: postBuild not yet implemented")
+        return false
     }
 }

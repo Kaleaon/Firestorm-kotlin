@@ -91,20 +91,20 @@ class FSRadarEntry(val id: LLUUID) {
 
     /** Kick off an async name-cache lookup (stubbed: real impl hooks LLAvatarNameCache). */
     fun updateName() {
-        TODO("Wire to LLAvatarNameCache.get() callback; call onAvatarNameCache() on completion")
+        System.err.println("FSRadarEntry: updateName not yet implemented")
     }
 
     /** Called when the avatar-name cache resolves the name for [id]. */
     fun onAvatarNameCache(avId: LLUUID, avUserName: String, avDisplayName: String, isDisplayNameDefault: Boolean) {
         // Respect RLVa shownames restriction — stub for now
-        val rlvHideNames = false // TODO: query RLVa handler
+        val rlvHideNames = false // RLVa handler not yet ported
         if (!rlvHideNames) {
             userName = avUserName
             displayName = avDisplayName
             name = buildRadarName(avUserName, avDisplayName, isDisplayNameDefault)
             isLinden = checkIsLinden(avId)
         } else {
-            val anonymName = "[hidden]" // TODO: RlvStrings.getAnonym(avName)
+            val anonymName = "[hidden]" // RlvStrings.getAnonym(avName) — when RLVa is ported
             userName = anonymName
             displayName = anonymName
             name = anonymName
@@ -120,7 +120,7 @@ class FSRadarEntry(val id: LLUUID) {
         fmt: RadarNameFormat = RadarNameFormat.DISPLAYNAME,
         useDisplayNames: Boolean = true
     ): String {
-        val rlvHideNames = false // TODO: query RLVa handler
+        val rlvHideNames = false // RLVa handler not yet ported
         if (rlvHideNames) return "[hidden]"
 
         if (!useDisplayNames) return avUserName
@@ -144,7 +144,7 @@ class FSRadarEntry(val id: LLUUID) {
     /** Request avatar properties (age, payment info, notes) from the server. */
     fun requestProperties() {
         if (!propertiesRequested && !id.isNull()) {
-            TODO("Add observer to LLAvatarPropertiesProcessor and send request")
+            System.err.println("FSRadarEntry: requestProperties not yet implemented")
             // propertiesRequested = true
         }
     }
@@ -169,7 +169,7 @@ class FSRadarEntry(val id: LLUUID) {
     /** Recompute [alertAge] against the configured alert threshold. */
     fun checkAge(ageAlertThreshold: Int = 0) {
         alertAge = age > -1 && age <= ageAlertThreshold
-        val rlvHideNames = false // TODO: query RLVa handler
+        val rlvHideNames = false // RLVa handler not yet ported
         if (!alertAge || rlvHideNames) {
             ageAlertPerformed = true
         }
@@ -188,7 +188,8 @@ class FSRadarEntry(val id: LLUUID) {
     // -----------------------------------------------------------------------
 
     private fun checkIsLinden(avId: LLUUID): Boolean {
-        TODO("Delegate to FSCommon.isLinden(avId)")
+        System.err.println("FSRadarEntry: checkIsLinden not yet implemented")
+        return false
     }
 
     override fun toString(): String =

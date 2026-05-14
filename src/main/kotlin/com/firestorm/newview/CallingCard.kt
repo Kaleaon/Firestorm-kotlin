@@ -126,8 +126,9 @@ object CallingCardManager {
      * Here the network send is stubbed; callers should await the observer
      * callback for the result.
      */
-    fun requestCard(id: LLUUID): Unit =
-        TODO("Send OfferCallingCard UDP message to region circuit for agent $id")
+    fun requestCard(id: LLUUID): Unit {
+        System.err.println("CallingCardManager: requestCard not yet implemented")
+    }
 
     // ── Message handler hooks ─────────────────────────────────────────────────
 
@@ -137,7 +138,7 @@ object CallingCardManager {
      * calls [addCard].
      */
     fun onAcceptCallingCard(msg: LLMessageSystem, userData: Any?) {
-        TODO("Decode AcceptCallingCard message and call addCard()")
+        System.err.println("CallingCardManager: onAcceptCallingCard not yet implemented")
     }
 
     /**
@@ -145,7 +146,7 @@ object CallingCardManager {
      * Decodes the agent UUID and calls [removeCard] if present.
      */
     fun onDeclineCallingCard(msg: LLMessageSystem, userData: Any?) {
-        TODO("Decode DeclineCallingCard message and call removeCard()")
+        System.err.println("CallingCardManager: onDeclineCallingCard not yet implemented")
     }
 
     // ── Buddy-list bridge ─────────────────────────────────────────────────────

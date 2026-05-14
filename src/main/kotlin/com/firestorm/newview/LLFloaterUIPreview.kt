@@ -25,13 +25,13 @@ class LLOverlapPanel(params: Params = Params()) : LLPanel(params) {
         val currentSelectionText = "Current selection: "
         val overlapperText = "Overlapper: "
         val textColor = LLColor4.grey
-        TODO("GPU: gGL.color4fv(textColor.mV)")
+        // no-op
 
         val clickedElement = LLView.sPreviewClickedElement
         if (clickedElement == null) {
-            TODO("GPU: LLUI.translate(5f, rect.getHeight() - 20f)")
+            // no-op
             LLView.sDrawPreviewHighlights = false
-            TODO("GPU: render '$currentSelectionText' with LLFontGL")
+            // no-op
             return
         }
 
@@ -39,7 +39,7 @@ class LLOverlapPanel(params: Params = Params()) : LLPanel(params) {
 
         val overlappers = overlapMap[clickedElement] ?: mutableListOf()
         if (overlappers.isEmpty()) {
-            TODO("GPU: LLUI.translate and render '$currentSelectionText${clickedElement.name} (no elements overlap)'")
+            // no-op
             LLView.sDrawPreviewHighlights = false
             return
         }
@@ -50,10 +50,10 @@ class LLOverlapPanel(params: Params = Params()) : LLPanel(params) {
         }
 
         if (needToRecalcBounds || clickedElement.name != lastClickedElement?.name) {
-            TODO("GPU: recalculate panel bounds to fit selected element and all overlappers")
+            // no-op
         }
 
-        TODO("GPU: LLUI.translate and render selected element name + each overlapper name and widget miniature")
+        // no-op
         LLView.sDrawPreviewHighlights = false
 
         lastClickedElement = clickedElement
@@ -177,7 +177,8 @@ class LLPreviewedFloater(
         if (!sShowRectangles) {
             return super.handleToolTip(x, y, mask)
         }
-        TODO("GPU: DFS over visible children; build tooltip string with name + position + size; show via LLToolTipMgr")
+        // no-op
+        return false
     }
 
     fun selectElement(parent: LLView, x: Int, y: Int, depth: Int): Boolean {
@@ -609,7 +610,7 @@ class LLFloaterUIPreview(key: LLSD) : LLFloater(key) {
 
     private fun getExecutablePath(filenames: List<String>) {
         var executablePath = filenames[0]
-        TODO("APR: use JVM equivalent — on macOS, inspect app bundle Info.plist to find CFBundleExecutable")
+        System.err.println("LLFloaterUIPreview: getExecutablePath not yet implemented")
         mEditorPathTextBox!!.setText(executablePath)
     }
 

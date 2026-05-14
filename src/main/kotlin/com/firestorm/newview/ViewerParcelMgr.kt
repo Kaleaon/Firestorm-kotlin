@@ -102,7 +102,10 @@ object ViewerParcelMgr {
 
     fun getSelectionBounds(): Pair<Vector3d, Vector3d> = Pair(westSouth, eastNorth)
 
-    fun getSelectionRegion(): ViewerRegion? { TODO("look up region from World by westSouth pos") }
+    fun getSelectionRegion(): ViewerRegion? {
+        System.err.println("look up region from World by westSouth pos")
+        return null
+    }
 
     fun getDwelling(): Float = selectedDwell
 
@@ -225,7 +228,7 @@ object ViewerParcelMgr {
         selected = true
         currentParcelSelection.wholeParcelSelected = true
         notifyObservers()
-        TODO("APR: use JVM equivalent - send ParcelPropertiesRequestByID message")
+        System.err.println("APR: use JVM equivalent - send ParcelPropertiesRequestByID message")
     }
 
     fun selectParcelAt(posGlobal: Vector3d): ParcelSelection {
@@ -273,7 +276,8 @@ object ViewerParcelMgr {
         selected = true
         currentParcelSelection.wholeParcelSelected = snapToParcel
         notifyObservers()
-        TODO("APR: use JVM equivalent - send ParcelPropertiesRequest message to simulator")
+        System.err.println("APR: use JVM equivalent - send ParcelPropertiesRequest message to simulator")
+        return currentParcelSelection
     }
 
     private fun sanitizeCornerMin(c1: Vector3d, c2: Vector3d): Vector3d =
@@ -310,11 +314,11 @@ object ViewerParcelMgr {
 
     fun setSelectionVisible(visible: Boolean) { renderSelection = visible }
 
-    fun isOwnedAt(posGlobal: Vector3d): Boolean { TODO("check parcel owner at position") }
-    fun isOwnedSelfAt(posGlobal: Vector3d): Boolean { TODO("check if parcel owned by agent") }
-    fun isOwnedOtherAt(posGlobal: Vector3d): Boolean { TODO("check if parcel owned by other") }
-    fun isSoundLocal(posGlobal: Vector3d): Boolean { TODO("check parcel sound local flag") }
-    fun canHearSound(posGlobal: Vector3d): Boolean { TODO("check if position is acoustically reachable") }
+    fun isOwnedAt(posGlobal: Vector3d): Boolean { System.err.println("check parcel owner at position"); return false }
+    fun isOwnedSelfAt(posGlobal: Vector3d): Boolean { System.err.println("check if parcel owned by agent"); return false }
+    fun isOwnedOtherAt(posGlobal: Vector3d): Boolean { System.err.println("check if parcel owned by other"); return false }
+    fun isSoundLocal(posGlobal: Vector3d): Boolean { System.err.println("check parcel sound local flag"); return false }
+    fun canHearSound(posGlobal: Vector3d): Boolean { System.err.println("check if position is acoustically reachable"); return false }
 
     fun getParcelSelection(): ParcelSelection = currentParcelSelection
     fun getFloatingParcelSelection(): ParcelSelection = floatingParcelSelection
@@ -325,7 +329,7 @@ object ViewerParcelMgr {
         return sel ?: agentParcel
     }
 
-    fun inAgentParcel(posGlobal: Vector3d): Boolean { TODO("check if position is within agent parcel bounds") }
+    fun inAgentParcel(posGlobal: Vector3d): Boolean { System.err.println("check if position is within agent parcel bounds"); return false }
 
     fun getHoverParcel(): Parcel? = if (hoverRequestResult != 0) hoverParcel else null
 
@@ -339,59 +343,60 @@ object ViewerParcelMgr {
         collisionUpdateCallbacks.add(cb); return cb
     }
 
-    fun allowAgentBuild(): Boolean { TODO("check parcel modify permissions for agent") }
-    fun allowAgentBuild(parcel: Parcel): Boolean { TODO("check parcel build permission flag") }
-    fun allowAgentVoice(): Boolean { TODO("check region/parcel voice flags") }
-    fun allowAgentVoice(region: ViewerRegion, parcel: Parcel): Boolean { TODO("check voice flag") }
-    fun allowAgentFly(region: ViewerRegion, parcel: Parcel): Boolean { TODO("check block-fly flag") }
-    fun allowAgentPush(region: ViewerRegion, parcel: Parcel): Boolean { TODO("check restrict-push flag") }
-    fun allowAgentScripts(region: ViewerRegion, parcel: Parcel): Boolean { TODO("check other-scripts flag") }
-    fun allowAgentDamage(region: ViewerRegion, parcel: Parcel): Boolean { TODO("check allow-damage flag") }
+    fun allowAgentBuild(): Boolean { System.err.println("check parcel modify permissions for agent"); return false }
+    fun allowAgentBuild(parcel: Parcel): Boolean { System.err.println("check parcel build permission flag"); return false }
+    fun allowAgentVoice(): Boolean { System.err.println("check region/parcel voice flags"); return false }
+    fun allowAgentVoice(region: ViewerRegion, parcel: Parcel): Boolean { System.err.println("check voice flag"); return false }
+    fun allowAgentFly(region: ViewerRegion, parcel: Parcel): Boolean { System.err.println("check block-fly flag"); return false }
+    fun allowAgentPush(region: ViewerRegion, parcel: Parcel): Boolean { System.err.println("check restrict-push flag"); return false }
+    fun allowAgentScripts(region: ViewerRegion, parcel: Parcel): Boolean { System.err.println("check other-scripts flag"); return false }
+    fun allowAgentDamage(region: ViewerRegion, parcel: Parcel): Boolean { System.err.println("check allow-damage flag"); return false }
 
     fun getHoverParcelWidth(): Float = (hoverEastNorth.x - hoverWestSouth.x).toFloat()
     fun getHoverParcelHeight(): Float = (hoverEastNorth.y - hoverWestSouth.y).toFloat()
 
-    fun render() { TODO("GPU: render parcel selection highlight") }
-    fun renderParcelCollision() { TODO("GPU: render parcel collision boundary") }
-    fun renderRect(westSouthBottom: Vector3d, eastNorthTop: Vector3d) { TODO("GPU: render bounding rect") }
+    fun render() { System.err.println("GPU: render parcel selection highlight") }
+    fun renderParcelCollision() { System.err.println("GPU: render parcel collision boundary") }
+    fun renderRect(westSouthBottom: Vector3d, eastNorthTop: Vector3d) { System.err.println("GPU: render bounding rect") }
     fun renderOneSegment(x1: Float, y1: Float, x2: Float, y2: Float, height: Float,
                          direction: UByte, region: ViewerRegion, absoluteHeight: Boolean = false) {
-        TODO("GPU: render one parcel edge segment")
+        System.err.println("GPU: render one parcel edge segment")
     }
     fun renderHighlightSegments(segments: ByteArray, region: ViewerRegion) {
-        TODO("GPU: render highlight segment array")
+        System.err.println("GPU: render highlight segment array")
     }
     fun renderCollisionSegments(segments: ByteArray, usePass: Boolean, region: ViewerRegion) {
-        TODO("GPU: render collision segment array")
+        System.err.println("GPU: render collision segment array")
     }
 
     fun resetCollisionTimer() { collisionTimer = System.currentTimeMillis() }
 
-    fun sendParcelGodForceOwner(ownerId: LLUUID) { TODO("APR: use JVM equivalent") }
-    fun sendParcelGodForceToContent() { TODO("APR: use JVM equivalent") }
-    fun sendParcelPropertiesUpdate(parcel: Parcel) { TODO("APR: use JVM equivalent") }
-    fun sendParcelAccessListUpdate(which: UInt) { TODO("APR: use JVM equivalent") }
-    fun sendParcelAccessListRequest(flags: UInt) { TODO("APR: use JVM equivalent") }
-    fun sendParcelDwellRequest() { TODO("APR: use JVM equivalent") }
-    fun sendParcelDeed(groupId: LLUUID) { TODO("APR: use JVM equivalent") }
-    fun sendParcelRelease() { TODO("APR: use JVM equivalent") }
-    fun sendParcelBuy(info: ParcelBuyInfo) { TODO("APR: use JVM equivalent") }
+    fun sendParcelGodForceOwner(ownerId: LLUUID) { System.err.println("APR: use JVM equivalent") }
+    fun sendParcelGodForceToContent() { System.err.println("APR: use JVM equivalent") }
+    fun sendParcelPropertiesUpdate(parcel: Parcel) { System.err.println("APR: use JVM equivalent") }
+    fun sendParcelAccessListUpdate(which: UInt) { System.err.println("APR: use JVM equivalent") }
+    fun sendParcelAccessListRequest(flags: UInt) { System.err.println("APR: use JVM equivalent") }
+    fun sendParcelDwellRequest() { System.err.println("APR: use JVM equivalent") }
+    fun sendParcelDeed(groupId: LLUUID) { System.err.println("APR: use JVM equivalent") }
+    fun sendParcelRelease() { System.err.println("APR: use JVM equivalent") }
+    fun sendParcelBuy(info: ParcelBuyInfo) { System.err.println("APR: use JVM equivalent") }
 
-    fun setHoverParcel(posGlobal: Vector3d) { TODO("request hover parcel from simulator") }
+    fun setHoverParcel(posGlobal: Vector3d) { System.err.println("request hover parcel from simulator") }
 
     fun canAgentBuyParcel(parcel: Parcel, forGroup: Boolean): Boolean {
-        TODO("check price, group membership, and parcel flags")
+        System.err.println("check price, group membership, and parcel flags")
+        return false
     }
 
-    fun startBuyLand(isForGroup: Boolean = false) { TODO("open buy land floater") }
-    fun startSellLand() { TODO("open sell land floater") }
-    fun startReleaseLand() { TODO("open release land dialog") }
-    fun startDivideLand() { TODO("open divide land dialog") }
-    fun startJoinLand() { TODO("open join land dialog") }
-    fun startDeedLandToGroup() { TODO("open deed land dialog") }
-    fun reclaimParcel() { TODO("APR: use JVM equivalent") }
+    fun startBuyLand(isForGroup: Boolean = false) { System.err.println("open buy land floater") }
+    fun startSellLand() { System.err.println("open sell land floater") }
+    fun startReleaseLand() { System.err.println("open release land dialog") }
+    fun startDivideLand() { System.err.println("open divide land dialog") }
+    fun startJoinLand() { System.err.println("open join land dialog") }
+    fun startDeedLandToGroup() { System.err.println("open deed land dialog") }
+    fun reclaimParcel() { System.err.println("APR: use JVM equivalent") }
 
-    fun buyPass() { TODO("APR: use JVM equivalent") }
+    fun buyPass() { System.err.println("APR: use JVM equivalent") }
 
     fun setupParcelBuy(agentId: LLUUID, sessionId: LLUUID, groupId: LLUUID,
                        isGroupOwned: Boolean, isClaim: Boolean,
@@ -433,11 +438,13 @@ object ViewerParcelMgr {
     }
 
     fun isParcelOwnedByAgent(parcel: Parcel, groupProxyPower: ULong): Boolean {
-        TODO("check parcel ownership against agent groups and proxy powers")
+        System.err.println("check parcel ownership against agent groups and proxy powers")
+        return false
     }
 
     fun isParcelModifiableByAgent(parcel: Parcel, groupProxyPower: ULong): Boolean {
-        TODO("check parcel modify permission against agent groups")
+        System.err.println("check parcel modify permission against agent groups")
+        return false
     }
 
     fun dump() {

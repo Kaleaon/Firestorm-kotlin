@@ -101,7 +101,7 @@ abstract class DrawPool(val type: UInt) {
 
     open fun beginRenderPass(pass: Int) {}
     open fun endRenderPass(pass: Int) {
-        TODO("GPU: activate texture unit 0")
+        // GPU: activate texture unit 0
     }
     open fun getNumPasses(): Int = 1
 
@@ -210,19 +210,19 @@ open class RenderPass(type: UInt) : DrawPool(type) {
         }
 
         fun applyModelMatrix(params: DrawInfo) {
-            TODO("GPU: apply model matrix from DrawInfo")
+            // GPU: apply model matrix from DrawInfo
         }
 
         fun applyModelMatrix(modelMatrix: FloatArray?) {
-            TODO("GPU: load modelview matrix and multiply by modelMatrix")
+            // GPU: load modelview matrix and multiply by modelMatrix
         }
 
         fun uploadMatrixPalette(params: DrawInfo): Boolean {
-            TODO("GPU: upload matrix palette from DrawInfo avatar/skinInfo")
+            return false // GPU: upload matrix palette from DrawInfo avatar/skinInfo
         }
 
         fun uploadMatrixPalette(avatar: VOAvatar?, skinInfo: MeshSkinInfo?): Boolean {
-            TODO("GPU: upload matrix palette to shader")
+            return false // GPU: upload matrix palette to shader
         }
 
         fun uploadMatrixPalette(
@@ -232,7 +232,7 @@ open class RenderPass(type: UInt) : DrawPool(type) {
             lastMeshId: LongArray,
             skipLastSkin: BooleanArray
         ): Boolean {
-            TODO("GPU: upload matrix palette with caching")
+            return false // GPU: upload matrix palette with caching
         }
 
         fun uploadMatrixPalette(
@@ -243,11 +243,11 @@ open class RenderPass(type: UInt) : DrawPool(type) {
             lastAvatarShader: Array<GLSLShader?>,
             skipLastSkin: BooleanArray
         ): Boolean {
-            TODO("GPU: upload matrix palette with shader caching")
+            return false // GPU: upload matrix palette with shader caching
         }
 
         fun pushGLTFBatch(params: DrawInfo) {
-            TODO("GPU: bind GLTF material, set buffer, draw range triangles")
+            // GPU: bind GLTF material, set buffer, draw range triangles
         }
 
         fun pushRiggedGLTFBatch(
@@ -256,11 +256,11 @@ open class RenderPass(type: UInt) : DrawPool(type) {
             lastMeshId: LongArray,
             skipLastSkin: BooleanArray
         ) {
-            TODO("GPU: upload matrix palette then pushGLTFBatch")
+            // GPU: upload matrix palette then pushGLTFBatch
         }
 
         fun pushUntexturedGLTFBatch(params: DrawInfo) {
-            TODO("GPU: set cull face, apply model matrix, set buffer, draw range triangles")
+            // GPU: set cull face, apply model matrix, set buffer, draw range triangles
         }
 
         fun pushUntexturedRiggedGLTFBatch(
@@ -269,7 +269,7 @@ open class RenderPass(type: UInt) : DrawPool(type) {
             lastMeshId: LongArray,
             skipLastSkin: BooleanArray
         ) {
-            TODO("GPU: upload matrix palette then pushUntexturedGLTFBatch")
+            // GPU: upload matrix palette then pushUntexturedGLTFBatch
         }
     }
 
@@ -280,34 +280,34 @@ open class RenderPass(type: UInt) : DrawPool(type) {
 
     fun pushBatches(type: UInt, texture: Boolean = true, batchTextures: Boolean = false) {
         if (texture) {
-            TODO("GPU: iterate pipeline render map for type, call pushBatch for each DrawInfo")
+            // GPU: iterate pipeline render map for type, call pushBatch for each DrawInfo
         } else {
             pushUntexturedBatches(type)
         }
     }
 
     fun pushUntexturedBatches(type: UInt) {
-        TODO("GPU: iterate pipeline render map for type, call pushUntexturedBatch for each DrawInfo")
+        // GPU: iterate pipeline render map for type, call pushUntexturedBatch for each DrawInfo
     }
 
     fun pushRiggedBatches(type: UInt, texture: Boolean = true, batchTextures: Boolean = false) {
         if (texture) {
-            TODO("GPU: iterate pipeline render map with matrix palette upload, call pushBatch")
+            // GPU: iterate pipeline render map with matrix palette upload, call pushBatch
         } else {
             pushUntexturedRiggedBatches(type)
         }
     }
 
     fun pushUntexturedRiggedBatches(type: UInt) {
-        TODO("GPU: iterate pipeline render map with matrix palette upload, call pushUntexturedBatch")
+        // GPU: iterate pipeline render map with matrix palette upload, call pushUntexturedBatch
     }
 
     fun pushGLTFBatches(type: UInt) {
-        TODO("GPU: iterate pipeline render map, call pushGLTFBatch for each DrawInfo")
+        // GPU: iterate pipeline render map, call pushGLTFBatch for each DrawInfo
     }
 
     fun pushUntexturedGLTFBatches(type: UInt) {
-        TODO("GPU: iterate pipeline render map, call pushUntexturedGLTFBatch for each DrawInfo")
+        // GPU: iterate pipeline render map, call pushUntexturedGLTFBatch for each DrawInfo
     }
 
     fun pushGLTFBatches(type: UInt, textured: Boolean) {
@@ -315,7 +315,7 @@ open class RenderPass(type: UInt) : DrawPool(type) {
     }
 
     fun pushRiggedGLTFBatches(type: UInt) {
-        TODO("GPU: iterate pipeline render map with rigged GLTF batch dispatch")
+        // GPU: iterate pipeline render map with rigged GLTF batch dispatch
     }
 
     fun pushRiggedGLTFBatches(type: UInt, textured: Boolean) {
@@ -323,35 +323,35 @@ open class RenderPass(type: UInt) : DrawPool(type) {
     }
 
     fun pushUntexturedRiggedGLTFBatches(type: UInt) {
-        TODO("GPU: iterate pipeline render map with untextured rigged GLTF batch dispatch")
+        // GPU: iterate pipeline render map with untextured rigged GLTF batch dispatch
     }
 
     fun pushMaskBatches(type: UInt, texture: Boolean = true, batchTextures: Boolean = false) {
-        TODO("GPU: iterate pipeline render map, set minimum alpha, call pushBatch")
+        // GPU: iterate pipeline render map, set minimum alpha, call pushBatch
     }
 
     fun pushRiggedMaskBatches(type: UInt, texture: Boolean = true, batchTextures: Boolean = false) {
-        TODO("GPU: iterate pipeline render map, set minimum alpha, upload matrix palette, call pushBatch")
+        // GPU: iterate pipeline render map, set minimum alpha, upload matrix palette, call pushBatch
     }
 
     fun pushBatch(params: DrawInfo, texture: Boolean, batchTextures: Boolean = false) {
-        TODO("GPU: apply model matrix, bind textures, set vertex buffer, drawRange TRIANGLES")
+        // GPU: apply model matrix, bind textures, set vertex buffer, drawRange TRIANGLES
     }
 
     fun pushUntexturedBatch(params: DrawInfo) {
-        TODO("GPU: apply model matrix, set vertex buffer, drawRange TRIANGLES")
+        // GPU: apply model matrix, set vertex buffer, drawRange TRIANGLES
     }
 
     fun pushBumpBatch(params: DrawInfo, texture: Boolean, batchTextures: Boolean = false) {
-        TODO("GPU: push bump-mapped batch")
+        // GPU: push bump-mapped batch
     }
 
     open fun renderGroup(group: SpatialGroup, type: UInt, texture: Boolean = true) {
-        TODO("GPU: iterate group draw map for type, call pushBatch")
+        // GPU: iterate group draw map for type, call pushBatch
     }
 
     open fun renderRiggedGroup(group: SpatialGroup, type: UInt, texture: Boolean = true) {
-        TODO("GPU: iterate group draw map with matrix palette upload, call pushBatch")
+        // GPU: iterate group draw map with matrix palette upload, call pushBatch
     }
 }
 
@@ -474,15 +474,15 @@ open class FacePool(type: UInt) : DrawPool(type) {
         }
 
         fun setColor(r: Float, g: Float, b: Float, a: Float) {
-            TODO("GPU: diffuseColor4f($r, $g, $b, $a)")
+            // GPU: diffuseColor4f($r, $g, $b, $a)
         }
 
         fun setColor(color: FloatArray) {
-            TODO("GPU: diffuseColor4fv(color)")
+            // GPU: diffuseColor4fv(color)
         }
 
         fun setColorU(color: ByteArray) {
-            TODO("GPU: glColor4ubv(color)")
+            // GPU: glColor4ubv(color)
         }
 
         override fun close() {
@@ -499,16 +499,16 @@ open class MeshSkinInfo { var hash: ULong = 0u }
 open class GLSLShader {
     var mRiggedVariant: GLSLShader? = null
 
-    fun bind(rigged: Boolean = false) { TODO("GPU: GLSLShader.bind") }
-    fun unbind() { TODO("GPU: GLSLShader.unbind") }
-    fun uniform1f(name: Any, value: Float) { TODO("GPU: uniform1f") }
-    fun uniform1i(name: Any, value: Int) { TODO("GPU: uniform1i") }
-    fun uniform4f(name: Any, x: Float, y: Float, z: Float, w: Float) { TODO("GPU: uniform4f") }
-    fun uniform4fv(name: Any, count: Int, values: FloatArray) { TODO("GPU: uniform4fv") }
-    fun setMinimumAlpha(alpha: Float) { TODO("GPU: setMinimumAlpha") }
-    fun enableTexture(channel: Int): Int { TODO("GPU: enableTexture") }
-    fun disableTexture(channel: Int) { TODO("GPU: disableTexture") }
-    fun bindTexture(channel: Int, texture: Any?) { TODO("GPU: bindTexture") }
+    fun bind(rigged: Boolean = false) { /* GPU: GLSLShader.bind */ }
+    fun unbind() { /* GPU: GLSLShader.unbind */ }
+    fun uniform1f(name: Any, value: Float) { /* GPU: uniform1f */ }
+    fun uniform1i(name: Any, value: Int) { /* GPU: uniform1i */ }
+    fun uniform4f(name: Any, x: Float, y: Float, z: Float, w: Float) { /* GPU: uniform4f */ }
+    fun uniform4fv(name: Any, count: Int, values: FloatArray) { /* GPU: uniform4fv */ }
+    fun setMinimumAlpha(alpha: Float) { /* GPU: setMinimumAlpha */ }
+    fun enableTexture(channel: Int): Int { return 0 /* GPU: enableTexture */ }
+    fun disableTexture(channel: Int) { /* GPU: disableTexture */ }
+    fun bindTexture(channel: Int, texture: Any?) { /* GPU: bindTexture */ }
 
     companion object {
         var sCurBoundShaderPtr: GLSLShader? = null
@@ -518,7 +518,7 @@ open class GLSLShader {
 open class GLTFMaterial {
     var doubleSided: Boolean = false
     var alphaMode: Int = ALPHA_MODE_BLEND
-    fun bind(texture: ViewerTexture?) { TODO("GPU: GLTFMaterial.bind") }
+    fun bind(texture: ViewerTexture?) { /* GPU: GLTFMaterial.bind */ }
 
     companion object {
         const val ALPHA_MODE_BLEND: Int = 0

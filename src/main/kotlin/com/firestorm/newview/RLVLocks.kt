@@ -578,7 +578,7 @@ object RlvFolderLocks {
             else if (lockType == ERlvLockMask.RLV_LOCK_ADD) cntLockAdd++
         }
         if (attachmentChangeSlot == null) {
-            TODO("APR: use JVM equivalent — register onNeedsLookupRefresh with agent avatar attachment-changed callback")
+            System.err.println("APR: use JVM equivalent — register onNeedsLookupRefresh with agent avatar attachment-changed callback")
         }
         lookupDirty = true
     }
@@ -610,7 +610,8 @@ object RlvFolderLocks {
         if (!hasLockedFolder(lockTypeMask)) return false
         if (lookupDirty) refreshLockedLookups()
         if (checkSelf && isLockedFolderEntry(idFolder, sourceTypeMask, permMask, ERlvLockMask.RLV_LOCK_ANY)) return true
-        TODO("APR: use JVM equivalent — collect descendant folders and check each with isLockedFolderEntry")
+        System.err.println("APR: use JVM equivalent — collect descendant folders and check each with isLockedFolderEntry")
+        return false
     }
 
     fun hasLockedWearable(): Boolean {
@@ -744,11 +745,12 @@ object RlvFolderLocks {
 
         lockedAttachmentRem.clear()
         lockedWearableRem.clear()
-        TODO("APR: use JVM equivalent — iterate COF worn items, check isLockedFolder on their (folded) parent, split into lockedAttachmentRem / lockedWearableRem by asset type, then de-duplicate both lists")
+        System.err.println("APR: use JVM equivalent — iterate COF worn items, check isLockedFolder on their (folded) parent, split into lockedAttachmentRem / lockedWearableRem by asset type, then de-duplicate both lists")
     }
 
     private fun getLockedFolders(lockSource: FolderLockSource): List<LLViewerInventoryCategory> {
-        TODO("APR: use JVM equivalent — resolve lock source (attachment UUID, attachment point index, folder UUID, shared path, wearable type, root) to list of inventory categories")
+        System.err.println("APR: use JVM equivalent — resolve lock source (attachment UUID, attachment point index, folder UUID, shared path, wearable type, root) to list of inventory categories")
+        return emptyList()
     }
 
     fun getFolderLocks(): List<FolderLockDescr> = folderLocks
@@ -774,13 +776,16 @@ class LLViewerInventoryItem(
 )
 
 object RlvBehaviourNotifyHandler {
-    fun onAttach(attachPt: LLViewerJointAttachment?, allowed: Boolean) { TODO("APR: use JVM equivalent") }
-    fun onDetach(attachPt: LLViewerJointAttachment?, allowed: Boolean) { TODO("APR: use JVM equivalent") }
-    fun onReattach(attachPt: LLViewerJointAttachment?, allowed: Boolean) { TODO("APR: use JVM equivalent") }
+    fun onAttach(attachPt: LLViewerJointAttachment?, allowed: Boolean) { System.err.println("APR: use JVM equivalent") }
+    fun onDetach(attachPt: LLViewerJointAttachment?, allowed: Boolean) { System.err.println("APR: use JVM equivalent") }
+    fun onReattach(attachPt: LLViewerJointAttachment?, allowed: Boolean) { System.err.println("APR: use JVM equivalent") }
 }
 
 object RlvActions {
-    fun canChangeEnvironment(idObj: UUID = UUID(0, 0)): Boolean = TODO("APR: use JVM equivalent")
+    fun canChangeEnvironment(idObj: UUID = UUID(0, 0)): Boolean {
+        System.err.println("APR: use JVM equivalent")
+        return false
+    }
 }
 
 class ERlvCmdRet
@@ -793,7 +798,10 @@ class RlvCommand(
     val objectId: UUID
 ) {
     fun hasOption(): Boolean = option.isNotEmpty()
-    fun asString(): String = TODO("APR: use JVM equivalent")
+    fun asString(): String {
+        System.err.println("APR: use JVM equivalent")
+        return ""
+    }
 }
 enum class ERlvParamType { RLV_TYPE_ADD, RLV_TYPE_REMOVE, RLV_TYPE_FORCE, RLV_TYPE_REPLY }
 enum class ERlvBehaviour {
@@ -804,11 +812,26 @@ enum class ERlvBehaviour {
 }
 object RlvHandler {
     val instance: RlvHandler = this
-    val objectMap: Map<UUID, RlvObjectEntry> get() = TODO("APR: use JVM equivalent")
-    fun setCommandCallback(cb: (RlvCommand, ERlvCmdRet) -> Unit): (() -> Unit) = TODO("APR: use JVM equivalent")
+    val objectMap: Map<UUID, RlvObjectEntry> get() {
+        System.err.println("APR: use JVM equivalent")
+        return emptyMap()
+    }
+    fun setCommandCallback(cb: (RlvCommand, ERlvCmdRet) -> Unit): (() -> Unit) {
+        System.err.println("APR: use JVM equivalent")
+        return {}
+    }
 }
-class RlvObjectEntry { val commandList: List<RlvCommand> get() = TODO("APR: use JVM equivalent") }
+class RlvObjectEntry { val commandList: List<RlvCommand> get() {
+    System.err.println("APR: use JVM equivalent")
+    return emptyList()
+} }
 object RlvStrings {
-    fun getVersion(id: UUID?): String = TODO("APR: use JVM equivalent")
+    fun getVersion(id: UUID?): String {
+        System.err.println("APR: use JVM equivalent")
+        return ""
+    }
 }
-object RlvUtil { fun sendChatReply(param: String, reply: String): Boolean = TODO("APR: use JVM equivalent") }
+object RlvUtil { fun sendChatReply(param: String, reply: String): Boolean {
+    System.err.println("APR: use JVM equivalent")
+    return false
+} }

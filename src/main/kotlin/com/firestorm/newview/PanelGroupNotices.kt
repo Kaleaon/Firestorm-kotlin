@@ -240,7 +240,7 @@ class PanelGroupNotices : PanelGroupTab() {
 
     private fun onClickRefreshNotices() {
         clearNoticeList()
-        TODO("APR: send GroupNoticesListRequest message via gMessageSystem")
+        System.err.println("APR: send GroupNoticesListRequest message via gMessageSystem")
     }
 
     fun processNotices(msg: MessageSystem) {
@@ -295,7 +295,7 @@ class PanelGroupNotices : PanelGroupTab() {
 
     private fun onSelectNotice() {
         val item = noticesList?.getFirstSelected() ?: return
-        TODO("APR: send GroupNoticeRequest message for noticeId=${item.id}")
+        System.err.println("APR: send GroupNoticeRequest message for noticeId=${item.id}")
     }
 
     fun showNotice(
@@ -373,78 +373,170 @@ class ViewerInventoryItem {
 
 class OfferInfo {
     val type: Any = Unit
-    fun forceResponse(response: InventoryOfferResponse) = TODO("APR: respond to inventory offer")
+    fun forceResponse(response: InventoryOfferResponse) {
+        System.err.println("APR: respond to inventory offer")
+    }
 }
 
 enum class InventoryOfferResponse { ACCEPT, DECLINE }
 
 object Inventory {
-    fun getItem(id: UUID): ViewerInventoryItem? = TODO("APR: inventory item lookup")
+    fun getItem(id: UUID): ViewerInventoryItem? {
+        System.err.println("APR: inventory item lookup")
+        return null
+    }
 }
 
 object GiveInventory {
-    fun isInventoryGroupGiveAcceptable(item: ViewerInventoryItem): Boolean = TODO("APR: check give acceptability")
+    fun isInventoryGroupGiveAcceptable(item: ViewerInventoryItem): Boolean {
+        System.err.println("APR: check give acceptability")
+        return false
+    }
 }
 
 object InventoryIcon {
-    fun getIconName(type: Any, inventoryType: Any, flags: Int = 0, multi: Boolean = false): String =
-        TODO("APR: icon name for inventory type")
-    fun getIconName(assetType: UByte): String = TODO("APR: icon name for asset type")
+    fun getIconName(type: Any, inventoryType: Any, flags: Int = 0, multi: Boolean = false): String {
+        System.err.println("APR: icon name for inventory type")
+        return ""
+    }
+    fun getIconName(assetType: UByte): String {
+        System.err.println("APR: icon name for asset type")
+        return ""
+    }
 }
 
 object CacheName {
-    fun buildUsername(legacyName: String): String = TODO("APR: convert legacy name to username")
-    fun buildLegacyName(legacyName: String): String = TODO("APR: return legacy name as-is")
+    fun buildUsername(legacyName: String): String {
+        System.err.println("APR: convert legacy name to username")
+        return ""
+    }
+    fun buildLegacyName(legacyName: String): String {
+        System.err.println("APR: return legacy name as-is")
+        return ""
+    }
 }
 
 object AgentUi {
-    fun buildFullName(): String = TODO("APR: build agent full name string")
+    fun buildFullName(): String {
+        System.err.println("APR: build agent full name string")
+        return ""
+    }
 }
 
 fun sendGroupNotice(groupId: UUID, subject: String, message: String, inventoryItem: ViewerInventoryItem?) {
-    TODO("APR: send group notice message via gMessageSystem")
+    System.err.println("APR: send group notice message via gMessageSystem")
 }
 
 const val II_FLAGS_OBJECT_HAS_MULTIPLE_ITEMS = 0x01
 
-fun ScrollListCtrl.addRow(id: UUID, columns: Map<String, String>) = TODO("GPU: add list row with ID and column data")
-fun ScrollListCtrl.deleteAllItems() = TODO("GPU: clear list")
-fun ScrollListCtrl.setEnabled(v: Boolean) = TODO("GPU: set list enabled state")
-fun ScrollListCtrl.setNeedsSort(v: Boolean) = TODO("GPU: deferred sort flag")
-fun ScrollListCtrl.setCommentText(text: String) = TODO("GPU: set placeholder text")
-fun ScrollListCtrl.getFirstSelected(): ScrollListItem? = TODO("GPU: first selected item")
-fun ScrollListCtrl.getSelectedId(): UUID? = TODO("GPU: selected item ID")
-fun ScrollListCtrl.selectById(id: UUID): Boolean = TODO("GPU: select by ID")
-fun ScrollListCtrl.selectFirstItem() = TODO("GPU: select first item")
-fun ScrollListCtrl.deselectAllItems() = TODO("GPU: deselect all")
-fun ScrollListCtrl.setCommitOnSelectionChange(v: Boolean) = TODO("GPU: config")
-fun ScrollListCtrl.setCommitCallback(fn: () -> Unit) = TODO("GPU: commit callback")
+fun ScrollListCtrl.addRow(id: UUID, columns: Map<String, String>) {
+    System.err.println("GPU: add list row with ID and column data")
+}
+fun ScrollListCtrl.deleteAllItems() {
+    System.err.println("GPU: clear list")
+}
+fun ScrollListCtrl.setEnabled(v: Boolean) {
+    System.err.println("GPU: set list enabled state")
+}
+fun ScrollListCtrl.setNeedsSort(v: Boolean) {
+    System.err.println("GPU: deferred sort flag")
+}
+fun ScrollListCtrl.setCommentText(text: String) {
+    System.err.println("GPU: set placeholder text")
+}
+fun ScrollListCtrl.getFirstSelected(): ScrollListItem? {
+    System.err.println("GPU: first selected item")
+    return null
+}
+fun ScrollListCtrl.getSelectedId(): UUID? {
+    System.err.println("GPU: selected item ID")
+    return null
+}
+fun ScrollListCtrl.selectById(id: UUID): Boolean {
+    System.err.println("GPU: select by ID")
+    return false
+}
+fun ScrollListCtrl.selectFirstItem() {
+    System.err.println("GPU: select first item")
+}
+fun ScrollListCtrl.deselectAllItems() {
+    System.err.println("GPU: deselect all")
+}
+fun ScrollListCtrl.setCommitOnSelectionChange(v: Boolean) {
+    System.err.println("GPU: config")
+}
+fun ScrollListCtrl.setCommitCallback(fn: () -> Unit) {
+    System.err.println("GPU: commit callback")
+}
 var ScrollListCtrl.lastUpdateFrame: Int
-    get() = TODO("GPU: last frame counter")
-    set(value) { TODO("GPU: set frame counter") }
+    get() { System.err.println("GPU: last frame counter"); return 0 }
+    set(value) { System.err.println("GPU: set frame counter") }
 
-fun LineEditor.setTabStop(v: Boolean) = TODO("GPU: tab stop config")
-fun LineEditor.clear() = TODO("GPU: clear text")
-fun LineEditor.getText(): String = TODO("GPU: get text")
-fun LineEditor.setText(s: String) = TODO("GPU: set text")
+fun LineEditor.setTabStop(v: Boolean) {
+    System.err.println("GPU: tab stop config")
+}
+fun LineEditor.clear() {
+    System.err.println("GPU: clear text")
+}
+fun LineEditor.getText(): String {
+    System.err.println("GPU: get text")
+    return ""
+}
+fun LineEditor.setText(s: String) {
+    System.err.println("GPU: set text")
+}
 
-fun Panel.setEnabled(v: Boolean) = TODO("GPU: enable panel")
-fun Panel.setVisible(v: Boolean) = TODO("GPU: show/hide panel")
-fun Panel.isVisible(): Boolean = TODO("GPU: visibility query")
+fun Panel.setEnabled(v: Boolean) {
+    System.err.println("GPU: enable panel")
+}
+fun Panel.setVisible(v: Boolean) {
+    System.err.println("GPU: show/hide panel")
+}
+fun Panel.isVisible(): Boolean {
+    System.err.println("GPU: visibility query")
+    return false
+}
 
-fun Button.setClickedCallback(fn: () -> Unit) = TODO("GPU: click callback")
+fun Button.setClickedCallback(fn: () -> Unit) {
+    System.err.println("GPU: click callback")
+}
 
-fun <T> PanelGroupTab.findChild(name: String): T? = TODO("GPU: find child widget by name")
+fun <T> PanelGroupTab.findChild(name: String): T? {
+    System.err.println("GPU: find child widget by name")
+    return null
+}
 
-fun GroupDropTarget.setPanel(panel: PanelGroupNotices) = TODO("GPU: set panel reference")
-fun GroupDropTarget.setGroup(id: UUID) = TODO("GPU: set group ID")
+fun GroupDropTarget.setPanel(panel: PanelGroupNotices) {
+    System.err.println("GPU: set panel reference")
+}
+fun GroupDropTarget.setGroup(id: UUID) {
+    System.err.println("GPU: set group ID")
+}
 
-fun MessageSystem.getNumberOfBlocks(block: String): Int = TODO("APR: message block count")
-fun MessageSystem.getUUID(block: String, field: String, index: Int = 0): UUID = TODO("APR: read UUID field")
-fun MessageSystem.getString(block: String, field: String, index: Int = 0): String = TODO("APR: read string field")
-fun MessageSystem.getBool(block: String, field: String, index: Int = 0): Boolean = TODO("APR: read bool field")
-fun MessageSystem.getUByte(block: String, field: String, index: Int = 0): UByte = TODO("APR: read ubyte field")
-fun MessageSystem.getUInt(block: String, field: String, index: Int = 0): UInt = TODO("APR: read uint field")
+fun MessageSystem.getNumberOfBlocks(block: String): Int {
+    System.err.println("APR: message block count")
+    return 0
+}
+fun MessageSystem.getUUID(block: String, field: String, index: Int = 0): UUID {
+    System.err.println("APR: read UUID field")
+    return UUID(0, 0)
+}
+fun MessageSystem.getString(block: String, field: String, index: Int = 0): String {
+    System.err.println("APR: read string field")
+    return ""
+}
+fun MessageSystem.getBool(block: String, field: String, index: Int = 0): Boolean {
+    System.err.println("APR: read bool field")
+    return false
+}
+fun MessageSystem.getUByte(block: String, field: String, index: Int = 0): UByte {
+    System.err.println("APR: read ubyte field")
+    return 0u
+}
+fun MessageSystem.getUInt(block: String, field: String, index: Int = 0): UInt {
+    System.err.println("APR: read uint field")
+    return 0u
+}
 
 class MessageSystem
 

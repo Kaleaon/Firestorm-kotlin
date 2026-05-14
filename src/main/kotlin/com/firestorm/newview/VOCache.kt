@@ -164,19 +164,20 @@ object VOCache {
 
     fun readGLTFExtrasFromCache(handle: ULong, id: LLUUID,
                                 baseEntries: Map<UInt, VOCacheEntry>): MutableMap<UInt, GLTFOverrideCacheEntry> {
-        TODO("Deserialize GLTF material overrides from extras cache file for handle")
+        System.err.println("VOCache: readGLTFExtrasFromCache not yet implemented")
+        return mutableMapOf()
     }
 
     fun writeGLTFExtrasToCache(handle: ULong, id: LLUUID,
                                extrasMap: Map<UInt, GLTFOverrideCacheEntry>,
                                dirtyCache: Boolean, removalEnabled: Boolean) {
-        TODO("Serialize extrasMap to region extras cache file")
+        System.err.println("VOCache: writeGLTFExtrasToCache not yet implemented")
     }
 
     fun removeEntry(handle: ULong) {
         headerEntries.remove(handle)
         if (numEntries > 0u) numEntries--
-        TODO("Delete the region cache file for this handle from disk")
+        System.err.println("VOCache: removeEntry disk deletion not yet implemented")
     }
 
     private fun getObjectCacheFilename(handle: ULong): String =
@@ -186,15 +187,15 @@ object VOCache {
         "$cacheDirName/${handle.toString(16)}_extras.slc"
 
     private fun purgeEntries(targetSize: UInt) {
-        TODO("Evict oldest header entries until numEntries <= targetSize")
+        System.err.println("VOCache: purgeEntries not yet implemented")
     }
 
     private fun readCacheHeader() {
-        TODO("Read binary cache header: version, address size, entry index")
+        System.err.println("VOCache: readCacheHeader not yet implemented")
     }
 
     private fun writeCacheHeader() {
-        TODO("Write binary cache header to disk")
+        System.err.println("VOCache: writeCacheHeader not yet implemented")
     }
 
     private fun clearCacheInMemory() {

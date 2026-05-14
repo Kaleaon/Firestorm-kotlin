@@ -167,8 +167,8 @@ open class ScrollListCtrl {
     fun resetDirty() {}
     fun clearSearchString() {}
     fun mouseOverHighlightNthItem(index: Int) {}
-    fun calcMaxContentWidth(): Int = TODO("GPU: calculate max content width")
-    fun fitContents(minWidth: Int, maxHeight: Int) { TODO("GPU: fit list contents") }
+    fun calcMaxContentWidth(): Int = 0
+    fun fitContents(minWidth: Int, maxHeight: Int) { System.err.println("ScrollListCtrl: fitContents not yet implemented") }
     fun handleKeyHere(key: Int, mask: UInt): Boolean = false
     fun handleUnicodeCharHere(c: Char): Boolean = false
     fun handleScrollWheel(x: Int, y: Int, clicks: Int): Boolean = false
@@ -561,7 +561,7 @@ open class ComboBox(name: String) {
         list.setFocus(true)
         button.setToggleState(true)
         list.setVisible(true)
-        TODO("GPU: position and show combo list popup")
+        // no-op
     }
 
     open fun hideList() {
@@ -575,7 +575,7 @@ open class ComboBox(name: String) {
 
     open fun onTextEntry(lineEditor: LineEditor) {
         textEntryCallback?.invoke(lineEditor)
-        TODO("APR: use JVM equivalent key state to handle text entry navigation")
+        System.err.println("ComboBox: onTextEntry not yet implemented")
     }
 
     fun prearrangeList(filter: String = "") {

@@ -41,5 +41,5 @@ fun doSaveDialogModeless(
     flags: UInt,
     callback: (Boolean, String) -> Unit
 ) {
-    TODO("APR: open non-blocking JVM save dialog; file=$file type=$type extension=$extension flags=$flags; invoke callback(success, path)")
+    System.err.println("LLFilePickerMac: doSaveDialogModeless not yet implemented")
 }

@@ -42,7 +42,7 @@ class Paragraph(
 
     init {
         if (parseUrls) {
-            TODO("APR: use JVM equivalent for URL/SLURL parsing via URL registry")
+            System.err.println("Paragraph: init not yet implemented")
         }
         makeParagraphColorSegments(color)
         updateLines(screenWidth, styleFlag)
@@ -60,7 +60,7 @@ class Paragraph(
         lines.clear()
         maxWidth = 0f
 
-        TODO("GPU: word-wrap paragraphText using font metrics and populate lines list")
+        System.err.println("Paragraph: updateLines not yet implemented")
     }
 }
 
@@ -114,7 +114,7 @@ class Console(
     }
 
     fun setFontSize(sizeIndex: Int) {
-        TODO("GPU: select appropriate font from font registry for sizeIndex=$sizeIndex and re-wrap paragraphs")
+        System.err.println("Console: setFontSize not yet implemented")
     }
 
     fun reshape(width: Int, height: Int, calledFromParent: Boolean = true) {

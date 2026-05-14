@@ -116,7 +116,7 @@ class FSPrimfeedAuth private constructor(private val callback: AuthorizedCallbac
         )
 
         try {
-            TODO("APR: use JVM equivalent")
+            System.err.println("FSPrimfeedAuth: validateRequest not yet implemented")
             // FSCoreHttpUtil.callbackHttpPostRaw(url, "", headers, PRIMFEED_CONNECT_TIMEOUT,
             //     onSuccess = { data -> handleHttpResponse(data) { success, resp -> gotValidateResponse(success, resp) } },
             //     onFailure = { data -> handleHttpResponse(data) { success, resp -> gotValidateResponse(success, resp) } }

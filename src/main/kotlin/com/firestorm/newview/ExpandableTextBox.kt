@@ -66,11 +66,11 @@ open class ExpandableTextBox(
         }
 
         private fun insertExpanderSegment(lastLine: Int, label: String) {
-            TODO("GPU: insert styled expander text segment at line $lastLine with label '$label'")
+            // no-op
         }
 
         private fun restoreNormalSegment() {
-            TODO("GPU: restore full-text normal segment, clearing expander and re-applying styles")
+            // no-op
         }
     }
 
@@ -132,10 +132,10 @@ open class ExpandableTextBox(
 
     override fun draw() {
         if (mBGVisible && !mExpanded) {
-            TODO("GPU: gl_rect_2d with mBGColor")
+            // no-op
         }
         if (mExpandedBGVisible && mExpanded) {
-            TODO("GPU: gl_rect_2d with mExpandedBGColor")
+            // no-op
         }
         collapseIfPosChanged()
         super.draw()

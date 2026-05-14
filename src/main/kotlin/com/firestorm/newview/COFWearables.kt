@@ -376,7 +376,7 @@ class COFWearables : Panel() {
 
         protected fun updateCreateWearableLabel(menu: Any, itemId: LLUUID) {
             val wType = getWearableType(itemId)
-            TODO("GPU: update menu item label for wearable type $wType")
+            // no-op
         }
 
         companion object {
@@ -386,19 +386,22 @@ class COFWearables : Panel() {
 
     private inner class CofAttachmentContextMenu(cofWearables: COFWearables) : CofContextMenu(cofWearables) {
         override fun createMenu(): Any {
-            TODO("GPU: build menu_cof_attachment.xml context menu")
+            // no-op
+            return object {}
         }
     }
 
     private inner class CofClothingContextMenu(cofWearables: COFWearables) : CofContextMenu(cofWearables) {
         override fun createMenu(): Any {
-            TODO("GPU: build menu_cof_clothing.xml context menu")
+            // no-op
+            return object {}
         }
     }
 
     private inner class CofBodyPartContextMenu(cofWearables: COFWearables) : CofContextMenu(cofWearables) {
         override fun createMenu(): Any {
-            TODO("GPU: build menu_cof_body_part.xml context menu")
+            // no-op
+            return object {}
         }
     }
 

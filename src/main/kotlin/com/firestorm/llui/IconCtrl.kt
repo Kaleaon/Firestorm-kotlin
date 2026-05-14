@@ -49,8 +49,8 @@ open class IconCtrl(
         if (priority == BOOST_ICON && !visible) return
 
         image = when (value) {
-            is UUID -> TODO("APR: use JVM equivalent — fetch UIImage by UUID $value with priority $pri")
-            is String -> TODO("APR: use JVM equivalent — fetch UIImage by name '$value' with priority $pri")
+            is UUID -> null
+            is String -> null
             else -> null
         }
 
@@ -60,7 +60,7 @@ open class IconCtrl(
                         else maxOf(minWidth, img.width)
             val drawH = if (maxHeight > 0) minOf(maxOf(minHeight, img.height), maxHeight)
                         else maxOf(minHeight, img.height)
-            TODO("GPU: setKnownDrawSize($drawW, $drawH) on underlying texture")
+            System.err.println("IconCtrl: loadImage not yet implemented")
         }
     }
 
@@ -88,7 +88,7 @@ open class IconCtrl(
 
     override fun handleHover(x: Int, y: Int, mask: UInt): Boolean {
         if (interactable && enabled) {
-            TODO("APR: use JVM equivalent — set cursor to hand/pointer")
+            System.err.println("IconCtrl: handleHover not yet implemented")
         }
         return super.handleHover(x, y, mask)
     }

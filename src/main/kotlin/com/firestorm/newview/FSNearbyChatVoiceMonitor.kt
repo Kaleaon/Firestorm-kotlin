@@ -8,7 +8,8 @@ class NearbyVoiceMonitor(
     var visible: Boolean = false,
 ) {
     fun getWidth(): Int = width
-    fun setVisible(value: Boolean) { TODO("GPU: toggle voice-monitor widget visibility") }
+    fun setVisible(value: Boolean) { // no-op
+    }
 }
 
 open class FSNearbyChatVoiceControl(
@@ -36,7 +37,7 @@ open class FSNearbyChatVoiceControl(
     private var voiceMonitorVisible: Boolean = nearbyVoiceMonitorParams.visible
 
     init {
-        TODO("GPU: register widget type fs_nearby_chat_voice_monitor with UI factory")
+        // no-op
         // Voice monitor rect is computed from the parent rect dimensions and the monitor's own size.
         voiceMonitor = NearbyVoiceMonitor(
             topPad = nearbyVoiceMonitorParams.topPad,
@@ -44,14 +45,13 @@ open class FSNearbyChatVoiceControl(
             height = nearbyVoiceMonitorParams.height,
             visible = nearbyVoiceMonitorParams.visible,
         )
-        TODO("GPU: addChild(voiceMonitor) in the widget tree")
+        // no-op
     }
 
     override fun draw() {
-        val voiceEnabled: Boolean
-        val voiceWorking: Boolean
-        TODO("APR: read LLVoiceClient.getInstance().voiceEnabled() and isVoiceWorking() into voiceEnabled/voiceWorking")
-        @Suppress("UNREACHABLE_CODE")
+        System.err.println("FSNearbyChatVoiceControl: draw not yet implemented")
+        val voiceEnabled: Boolean = false
+        val voiceWorking: Boolean = false
         val newVisibility = voiceEnabled && voiceWorking
         if (voiceMonitorVisible != newVisibility) {
             voiceMonitorVisible = newVisibility

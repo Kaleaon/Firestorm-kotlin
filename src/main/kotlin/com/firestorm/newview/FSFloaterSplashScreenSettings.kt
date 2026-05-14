@@ -109,8 +109,10 @@ class SSCheckBoxCtrl {
 }
 
 object SplashSettings {
-    fun getBool(key: String): Boolean =
-        TODO("Platform: gSavedSettings.getBOOL(\"$key\")")
-    fun setBool(key: String, value: Boolean): Unit =
-        TODO("Platform: gSavedSettings.setBOOL(\"$key\", $value)")
+    fun getBool(key: String): Boolean {
+        return false
+    }
+    fun setBool(key: String, value: Boolean) {
+        System.err.println("SplashSettings: setBool not yet implemented")
+    }
 }

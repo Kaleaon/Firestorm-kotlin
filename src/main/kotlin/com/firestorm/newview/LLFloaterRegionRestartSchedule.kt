@@ -180,7 +180,7 @@ class LLFloaterRegionRestartSchedule(owner: LLView) : LLFloater(LLSD()) {
         }
 
         fun setRegionShcheduleCoro(url: String, body: LLSD, handle: LLHandle<LLFloater>) {
-            TODO("APR: use JVM equivalent — HTTP POST $url with body; on completion call floater.closeFloater() via handle")
+            System.err.println("LLFloaterRegionRestartSchedule: setRegionShcheduleCoro not yet implemented")
         }
     }
 }

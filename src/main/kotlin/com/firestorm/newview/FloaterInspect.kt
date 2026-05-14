@@ -175,10 +175,10 @@ class FloaterInspect(key: String) : Floater(key) {
     }
 
     private fun getSelectedNode(): Any? {
-        val allSelected: List<Any> = TODO("APR: objectList.getAllSelected()") as List<Any>
+        val allSelected: List<Any> = emptyList() // APR: objectList.getAllSelected()
         if (allSelected.isEmpty()) return null
-        val uuid: String = TODO("APR: objectList.getFirstSelected().getUUID()") as String
-        return TODO("APR: objectSelection.getFirstNode { it.object.id == uuid }")
+        val uuid: String = "" // APR: objectList.getFirstSelected().getUUID()
+        return null // APR: objectSelection.getFirstNode { it.object.id == uuid }
     }
 
     // Accumulates RAM and VRAM usage for all textures on a given object,
@@ -189,31 +189,31 @@ class FloaterInspect(key: String) : Floater(key) {
         outVramMem: UIntArray,
     ) {
         val objectTextureList: MutableList<String> = mutableListOf()
-        val teCount: UByte = TODO("APR: obj.getNumTEs()") as UByte
+        val teCount: UByte = 0u // APR: obj.getNumTEs()
 
         for (j in 0u until teCount) {
-            val te: Any? = TODO("APR: obj.getTE(j.toInt())")
+            val te: Any? = null // APR: obj.getTE(j.toInt())
             te ?: continue
 
-            val gltfMat: Any? = TODO("APR: te.getGLTFRenderMaterial()")
+            val gltfMat: Any? = null // APR: te.getGLTFRenderMaterial()
             if (gltfMat != null) {
                 // PBR path: iterate GLTF_TEXTURE_INFO_COUNT texture slots.
-                TODO("APR: for each non-null texId in gltfMat.mTextureId: fetch LLViewerTexture from gTextureList, call calculateTextureMemory")
+                // APR: for each non-null texId in gltfMat.mTextureId: fetch LLViewerTexture from gTextureList, call calculateTextureMemory
             } else {
                 // Legacy diffuse
-                val diffuseImg: Any? = TODO("APR: obj.getTEImage(j.toInt())")
+                val diffuseImg: Any? = null // APR: obj.getTEImage(j.toInt())
                 if (diffuseImg != null)
                     calculateTextureMemory(diffuseImg, objectTextureList, outTexMem, outVramMem)
 
                 // Legacy normal + specular
-                TODO("APR: if te.getMaterialParams().notNull(): fetch normal and specular IDs, calculateTextureMemory each if present in gTextureList")
+                // APR: if te.getMaterialParams().notNull(): fetch normal and specular IDs, calculateTextureMemory each if present in gTextureList
             }
         }
 
         // Sculpt-map texture
-        if (TODO("APR: obj.isSculpted() && !obj.isMesh()") as Boolean) {
-            val sculptUuid: String = TODO("APR: obj.getSculptParams().getSculptTexture()") as String
-            val img: Any? = TODO("APR: gTextureList.getImage(sculptUuid)")
+        if (false) { // APR: obj.isSculpted() && !obj.isMesh()
+            val sculptUuid: String = "" // APR: obj.getSculptParams().getSculptTexture()
+            val img: Any? = null // APR: gTextureList.getImage(sculptUuid)
             if (img != null) calculateTextureMemory(img, objectTextureList, outTexMem, outVramMem)
         }
     }
@@ -225,10 +225,10 @@ class FloaterInspect(key: String) : Floater(key) {
         outTexMem: UIntArray,
         outVramMem: UIntArray,
     ) {
-        val uuid: String = TODO("APR: texture.getID()") as String
-        val fullHeight: Int = TODO("APR: texture.getFullHeight()") as Int
-        val fullWidth: Int = TODO("APR: texture.getFullWidth()") as Int
-        val components: Int = TODO("APR: texture.getComponents()") as Int
+        val uuid: String = "" // APR: texture.getID()
+        val fullHeight: Int = 0 // APR: texture.getFullHeight()
+        val fullWidth: Int = 0 // APR: texture.getFullWidth()
+        val components: Int = 0 // APR: texture.getComponents()
 
         val vramMem: UInt = (fullHeight * fullWidth * 32 / 8).toUInt()
         val texMem: UInt = (fullHeight * fullWidth * components).toUInt()
@@ -248,17 +248,17 @@ class FloaterInspect(key: String) : Floater(key) {
     // ---- Configurable-column support (Firestorm FIRE-22292) -----------------
 
     private fun registerColumnConfigCallback() {
-        TODO("APR: connect gSavedSettings FSInspectColumnConfig signal to ::onColumnDisplayModeChanged")
+        // APR: connect gSavedSettings FSInspectColumnConfig signal to ::onColumnDisplayModeChanged
     }
 
     private fun disconnectColumnConfigSignal() {
-        TODO("APR: disconnect FSInspectColumnConfig signal connection")
+        // APR: disconnect FSInspectColumnConfig signal connection
     }
 
     fun onColumnDisplayModeChanged() {
-        val config: UInt = TODO("APR: gSavedSettings.getU32(\"FSInspectColumnConfig\")") as UInt
-        TODO("APR: rebuild objectList columns from column_params, hiding columns whose bit is absent in config")
-        TODO("APR: adjust floater min-width by delta, restore or clear sort order, call dirty()")
+        val config: UInt = 0u // APR: gSavedSettings.getU32("FSInspectColumnConfig")
+        // APR: rebuild objectList columns from column_params, hiding columns whose bit is absent in config
+        // APR: adjust floater min-width by delta, restore or clear sort order, call dirty()
     }
 
     fun onColumnVisibilityChecked(columnName: String) {

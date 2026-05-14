@@ -915,11 +915,12 @@ class LLThumbnailsObserver : LLInventoryObserver() {
     private val itemMap: MutableMap<UUID, LLItemData> = mutableMapOf()
 
     override fun changed(mask: UInt) {
-        TODO("APR: use JVM equivalent - check changed UUIDs against itemMap, fire callbacks on thumbnail change")
+        System.err.println("LLThumbnailsObserver: changed not yet implemented")
     }
 
     fun addItem(objId: UUID, cb: () -> Unit): Boolean {
-        TODO("APR: use JVM equivalent - fetch current thumbnail UUID, store entry, return true if added")
+        System.err.println("LLThumbnailsObserver: addItem not yet implemented")
+        return false
     }
 
     fun removeItem(objId: UUID) {

@@ -207,23 +207,26 @@ object Environment {
         private const val SUN_DELTA_YAW: Float = PI.toFloat()
 
         fun updateGLVariablesForSettings(settings: SettingsBase) {
-            TODO("GPU: push all setting uniforms to shader uniform block")
+            // GPU: push all setting uniforms to shader uniform block
         }
 
         fun logEnvironment(env: EnvSelection, settings: SettingsBase, envVersion: Int = NO_VERSION) {
-            TODO("APR: log environment selection event for debugging")
+            System.err.println("Environment: logEnvironment not yet implemented")
         }
 
         fun createWaterFromLegacyPreset(filename: String): SettingsWater? {
-            TODO("APR: parse legacy XML water preset file, call translateLegacySettings")
+            System.err.println("Environment: createWaterFromLegacyPreset not yet implemented")
+            return null
         }
 
         fun createSkyFromLegacyPreset(filename: String): SettingsSky? {
-            TODO("APR: parse legacy XML sky preset file, call translateLegacySettings")
+            System.err.println("Environment: createSkyFromLegacyPreset not yet implemented")
+            return null
         }
 
         fun createDayCycleFromLegacyPreset(filename: String): SettingsDayCycle? {
-            TODO("APR: parse legacy XML day cycle file, build SettingsDayCycle")
+            System.err.println("Environment: createDayCycleFromLegacyPreset not yet implemented")
+            return null
         }
     }
 
@@ -253,29 +256,29 @@ object Environment {
     fun getProgress(): Float        = currentEnvironment?.getProgress() ?: -1f
     fun getRegionProgress(): Float  = environments[EnvSelection.REGION.id]?.getProgress() ?: -1f
 
-    fun canEdit(): Boolean                        = TODO("check agent capabilities for edit permission")
-    fun isExtendedEnvironmentEnabled(): Boolean   = TODO("check region capability 'ExtendedEnvironment'")
-    fun isInventoryEnabled(): Boolean             = TODO("check agent inventory capability")
-    fun canAgentUpdateParcelEnvironment(): Boolean = TODO("check parcel flags and agent group/owner status")
-    fun canAgentUpdateRegionEnvironment(): Boolean = TODO("check region estate manager/owner status")
+    fun canEdit(): Boolean                        { System.err.println("Environment: canEdit not yet implemented"); return false }
+    fun isExtendedEnvironmentEnabled(): Boolean   { System.err.println("Environment: isExtendedEnvironmentEnabled not yet implemented"); return false }
+    fun isInventoryEnabled(): Boolean             { System.err.println("Environment: isInventoryEnabled not yet implemented"); return false }
+    fun canAgentUpdateParcelEnvironment(): Boolean { System.err.println("Environment: canAgentUpdateParcelEnvironment not yet implemented"); return false }
+    fun canAgentUpdateRegionEnvironment(): Boolean { System.err.println("Environment: canAgentUpdateRegionEnvironment not yet implemented"); return false }
 
     fun hasEnvironment(env: EnvSelection): Boolean = environments[env.id] != null
 
     fun setSelectedEnvironment(env: EnvSelection, transition: Double = TRANSITION_DEFAULT, forced: Boolean = false) {
-        TODO("activate env slot, build DayTransition if needed, fire envChangedListeners")
+        System.err.println("Environment: setSelectedEnvironment not yet implemented")
     }
 
     fun setEnvironment(env: EnvSelection, pDay: SettingsDayCycle, dayLength: Long, dayOffset: Long, envVersion: Int = NO_VERSION) {
         val inst = getOrCreateInstance(env)
         inst.setDay(pDay, dayLength, dayOffset)
-        TODO("store envVersion, call updateEnvironment")
+        System.err.println("Environment: setEnvironment (day cycle) not yet implemented")
     }
 
     fun setEnvironment(env: EnvSelection, fixed: FixedEnvironment, envVersion: Int = NO_VERSION) {
         val inst = getOrCreateInstance(env)
         fixed.first?.let  { inst.setSky(it) }
         fixed.second?.let { inst.setWater(it) }
-        TODO("store envVersion, call updateEnvironment")
+        System.err.println("Environment: setEnvironment (fixed) not yet implemented")
     }
 
     fun setEnvironment(env: EnvSelection, sky: SettingsSky, envVersion: Int = NO_VERSION) =
@@ -285,20 +288,20 @@ object Environment {
         setEnvironment(env, FixedEnvironment(null, water), envVersion)
 
     fun setEnvironment(env: EnvSelection, assetId: LLUUID, transition: Double = TRANSITION_DEFAULT, envVersion: Int = NO_VERSION) {
-        TODO("APR: async load asset by ID, then call setEnvironment with loaded settings")
+        System.err.println("Environment: setEnvironment (asset) not yet implemented")
     }
 
     fun clearEnvironment(env: EnvSelection) {
         environments[env.id] = null
-        TODO("rebuild currentEnvironment from remaining priority slots")
+        System.err.println("Environment: clearEnvironment not yet implemented")
     }
 
     fun updateEnvironment(transition: Double = TRANSITION_DEFAULT, forced: Boolean = false) {
-        TODO("resolve highest-priority active env slot, apply transition blender")
+        System.err.println("Environment: updateEnvironment not yet implemented")
     }
 
     fun setCurrentEnvironmentSelection(env: EnvSelection) {
-        TODO("update currentEnvironment to point at env slot instance")
+        System.err.println("Environment: setCurrentEnvironmentSelection not yet implemented")
     }
 
     fun getEnvironmentDay(env: EnvSelection): SettingsDayCycle?     = environments[env.id]?.getDayCycle()
@@ -313,7 +316,7 @@ object Environment {
         lastCamYaw = camYaw + SUN_DELTA_YAW
         if (!isCloudScrollPaused) updateCloudScroll()
         currentEnvironment?.applyTimeDelta(0.0)
-        TODO("GPU: compute per-frame sky/water blend, update light direction cache")
+        // GPU: compute per-frame sky/water blend, update light direction cache
     }
 
     fun updateShaderUniforms() {

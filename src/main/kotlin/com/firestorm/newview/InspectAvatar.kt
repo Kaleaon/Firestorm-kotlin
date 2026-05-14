@@ -39,7 +39,7 @@ class FetchAvatarData(
     }
 
     fun destroy() {
-        TODO("APR: remove observer from AvatarPropertiesProcessor for avatarId")
+        System.err.println("FetchAvatarData: destroy not yet implemented")
     }
 }
 
@@ -80,25 +80,26 @@ class InspectAvatar(avatarIdData: Map<String, Any?>) : Inspect() {
         enableCallbacks["InspectAvatar.VisibleFreeze"] = ::onVisibleFreeze
         enableCallbacks["InspectAvatar.VisibleZoomIn"] = ::onVisibleZoomIn
         enableCallbacks["InspectAvatar.Gear.Enable"] = ::isNotFriend
-        enableCallbacks["InspectAvatar.Gear.EnableCall"] = { TODO("APR: LLAvatarActions.canCall()") }
+        enableCallbacks["InspectAvatar.Gear.EnableCall"] = { System.err.println("InspectAvatar: EnableCall not yet implemented"); false }
         enableCallbacks["InspectAvatar.Gear.EnableTeleportOffer"] = ::enableTeleportOffer
         enableCallbacks["InspectAvatar.Gear.EnableTeleportRequest"] = ::enableTeleportRequest
         enableCallbacks["InspectAvatar.Gear.EnablePay"] = ::enablePay
         enableCallbacks["InspectAvatar.EnableMute"] = ::enableMute
         enableCallbacks["InspectAvatar.EnableUnmute"] = ::enableUnmute
 
-        TODO("APR: register with LLTransientFloaterMgr::GLOBAL")
+        System.err.println("InspectAvatar: init registration not yet implemented")
     }
 
     fun postBuild(): Boolean {
-        TODO("APR: wire add_friend_btn, view_profile_btn, mute_btn, volume_slider UI controls to their callbacks")
+        System.err.println("InspectAvatar: postBuild not yet implemented")
+        return false
     }
 
     override fun onOpen(data: Map<String, Any?>) {
         super.onOpen(data)
         avatarId = data["avatar_id"] as? UUID ?: UUID(0, 0)
 
-        TODO("APR: show/hide gear_btn vs gear_self_btn based on whether avatarId == agentId")
+        System.err.println("InspectAvatar: onOpen gear_btn logic not yet implemented")
 
         repositionInspector(data)
         requestUpdate()
@@ -107,25 +108,25 @@ class InspectAvatar(avatarIdData: Map<String, Any?>) : Inspect() {
     }
 
     fun onClose(appQuitting: Boolean) {
-        TODO("APR: hide gear_btn and gear_self_btn menus")
+        System.err.println("InspectAvatar: onClose not yet implemented")
     }
 
     fun onMouseLeave(x: Int, y: Int, mask: Int) {
-        TODO("APR: only unpause fade timer if neither gear menu nor gear_self menu is visible and no child popup menu is visible")
+        System.err.println("InspectAvatar: onMouseLeave not yet implemented")
     }
 
     private fun requestUpdate() {
         if (avatarId == UUID(0, 0)) {
-            TODO("APR: if startup state >= STATE_STARTED, close floater for null avatar")
+            System.err.println("InspectAvatar: requestUpdate null-avatar close not yet implemented")
             return
         }
 
-        TODO("APR: clear user_name, user_name_small, user_slid, user_subtitle, user_details UI controls")
+        System.err.println("InspectAvatar: requestUpdate UI clear not yet implemented")
 
         propertiesRequest?.destroy()
         propertiesRequest = FetchAvatarData(avatarId, this)
 
-        TODO("APR: show/hide add_friend_btn and im_btn based on isFriend and isSelf; remove avatarId from icon cache; request avatar name from cache")
+        System.err.println("InspectAvatar: requestUpdate friend/self UI not yet implemented")
     }
 
     fun processAvatarData(data: AvatarData) {

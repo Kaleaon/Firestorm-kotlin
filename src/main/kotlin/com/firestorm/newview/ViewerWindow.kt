@@ -74,8 +74,12 @@ data class PickInfo(
     fun isValid(): Boolean = pickType != PickType.INVALID
     fun getObjectId(): String = objectId
 
-    fun fetchResults() { TODO("GPU: read pick framebuffer and populate intersection/UV/normal") }
-    fun getSurfaceInfo() { TODO("GPU: decode surface normal, UV and binormal from pick buffer") }
+    fun fetchResults() {
+        // ViewerWindow: read pick framebuffer and populate intersection/UV/normal not yet implemented
+    }
+    fun getSurfaceInfo() {
+        // ViewerWindow: decode surface normal, UV and binormal from pick buffer not yet implemented
+    }
 
     companion object {
         fun isFlora(vobjPcode: Int): Boolean = vobjPcode == 0x09 // LL_PCODE_LEGACY_GRASS / tree codes
@@ -238,15 +242,16 @@ object ViewerWindow {
         }
 
         fun getLastSnapshotDir(): String {
-            TODO("APR: use JVM equivalent to retrieve saved snapshot directory from settings")
+            System.err.println("ViewerWindow: getLastSnapshotDir not yet implemented")
+            return ""
         }
 
         fun loadUserImage(uuid: String) {
-            TODO("APR: use JVM equivalent to fetch user profile image by UUID")
+            System.err.println("ViewerWindow: loadUserImage not yet implemented")
         }
 
         fun movieSize(newWidth: Int, newHeight: Int) {
-            TODO("GPU: resize movie recording surface to $newWidth x $newHeight")
+            // ViewerWindow: resize movie recording surface not yet implemented
         }
     }
 
@@ -255,9 +260,17 @@ object ViewerWindow {
     // ------------------------------------------------------------------
 
     fun getWindow(): NativeWindow? = nativeWindow
-    fun getPlatformWindow(): Any? { TODO("APR: return native OS window handle") }
-    fun getMediaWindow(): Any? { TODO("APR: return platform media window handle") }
-    fun focusClient() { TODO("APR: request OS keyboard/input focus for this window") }
+    fun getPlatformWindow(): Any? {
+        System.err.println("ViewerWindow: getPlatformWindow not yet implemented")
+        return null
+    }
+    fun getMediaWindow(): Any? {
+        System.err.println("ViewerWindow: getMediaWindow not yet implemented")
+        return null
+    }
+    fun focusClient() {
+        System.err.println("ViewerWindow: focusClient not yet implemented")
+    }
 
     fun getLastMouse(): Pair<Int,Int> = Pair(lastMouseX, lastMouseY)
     fun getCurrentMouse(): Pair<Int,Int> = Pair(currentMouseX, currentMouseY)
@@ -290,16 +303,28 @@ object ViewerWindow {
         windowRectRaw    = Rect(params.x, params.y, params.x + width, params.y + height)
         worldViewRectRaw = windowRectRaw
         calcDisplayScale()
-        TODO("APR: create OS window via LLWindow equivalent; init GL, root view, fonts")
+        System.err.println("ViewerWindow: create OS window via LLWindow equivalent; init GL, root view, fonts not yet implemented")
     }
 
-    fun initGLDefaults() { TODO("GPU: set default GL state (depth test, blend, cull face, etc.)") }
-    fun initBase() { TODO("GPU: create root view, progress view, popup view, debug text overlay") }
-    fun initWorldUI() { TODO("GPU: instantiate HUD, status bar, toolbar, chiclet bar, nav bar") }
-    fun initTextures(locationId: Int) { TODO("GPU: pre-load UI textures for location $locationId") }
+    fun initGLDefaults() {
+        // ViewerWindow: set default GL state (depth test, blend, cull face, etc.) not yet implemented
+    }
+    fun initBase() {
+        // ViewerWindow: create root view, progress view, popup view, debug text overlay not yet implemented
+    }
+    fun initWorldUI() {
+        // ViewerWindow: instantiate HUD, status bar, toolbar, chiclet bar, nav bar not yet implemented
+    }
+    fun initTextures(locationId: Int) {
+        // ViewerWindow: pre-load UI textures not yet implemented
+    }
 
-    fun shutdownViews() { TODO("GPU: destroy all UI views, floaters, and popups") }
-    fun shutdownGL() { TODO("GPU: tear down GL context and free all GPU resources") }
+    fun shutdownViews() {
+        // ViewerWindow: destroy all UI views, floaters, and popups not yet implemented
+    }
+    fun shutdownGL() {
+        // ViewerWindow: tear down GL context and free all GPU resources not yet implemented
+    }
 
     // ------------------------------------------------------------------
     // Cursor control
@@ -307,21 +332,21 @@ object ViewerWindow {
 
     fun showCursor() {
         cursorHidden = false
-        TODO("GPU: restore OS cursor visibility")
+        // ViewerWindow: restore OS cursor visibility not yet implemented
     }
 
     fun hideCursor() {
         cursorHidden = true
-        TODO("GPU: hide OS cursor")
+        // ViewerWindow: hide OS cursor not yet implemented
     }
 
     fun setCursor(type: CursorType) {
         currentCursor = type
-        TODO("GPU: apply OS cursor resource for $type")
+        // ViewerWindow: apply OS cursor resource not yet implemented
     }
 
     fun moveCursorToCenter() {
-        TODO("GPU: warp OS cursor to centre of window")
+        // ViewerWindow: warp OS cursor to centre of window not yet implemented
     }
 
     // ------------------------------------------------------------------
@@ -335,19 +360,21 @@ object ViewerWindow {
         windowRectRaw = Rect(windowRectRaw.left, windowRectRaw.bottom,
                              windowRectRaw.left + w, windowRectRaw.bottom + h)
         windowRectScaled = calcScaledRect(windowRectRaw, displayScaleX, displayScaleY)
-        TODO("GPU: glViewport(0, 0, w, h); reshape root view; update world-view rect")
+        // ViewerWindow: glViewport(0, 0, w, h); reshape root view; update world-view rect not yet implemented
     }
 
     fun calcDisplayScale() {
-        TODO("Query LLWindow pixel aspect ratio and UIScaleFactor setting; clamp to [$MIN_DISPLAY_SCALE..$MAX_UI_SCALE]; set displayScaleX/Y")
+        // ViewerWindow: Query LLWindow pixel aspect ratio and UIScaleFactor setting; clamp and set displayScaleX/Y not yet implemented
     }
 
     fun sendShapeToSim() {
-        TODO("APR: send updated window shape to simulator via LLMessageSystem")
+        System.err.println("ViewerWindow: sendShapeToSim not yet implemented")
     }
 
     fun requestResolutionUpdate() { resDirty = true }
-    fun checkSettings() { TODO("Apply any pending resolution/scale changes flagged by resDirty") }
+    fun checkSettings() {
+        // ViewerWindow: apply any pending resolution/scale changes flagged by resDirty not yet implemented
+    }
 
     // ------------------------------------------------------------------
     // UI visibility
@@ -355,23 +382,23 @@ object ViewerWindow {
 
     fun setUIVisibility(visible: Boolean) {
         uiVisible = visible
-        TODO("GPU: show/hide root view children; refresh screen")
+        // ViewerWindow: show/hide root view children; refresh screen not yet implemented
     }
 
     fun setNormalControlsVisible(visible: Boolean) {
-        TODO("GPU: toggle top-level UI panels for $visible (used during login failure)")
+        // ViewerWindow: toggle top-level UI panels not yet implemented
     }
 
     fun setMenuBackgroundColor(godMode: Boolean = false, devGrid: Boolean = false) {
-        TODO("GPU: apply theme color to menu bar background based on godMode=$godMode devGrid=$devGrid")
+        // ViewerWindow: apply theme color to menu bar background not yet implemented
     }
 
     fun setBalanceVisible(visible: Boolean) {
-        TODO("GPU: show/hide the L$ balance widget in status bar")
+        // ViewerWindow: show/hide the L$ balance widget in status bar not yet implemented
     }
 
     fun setTitle(winTitle: String) {
-        TODO("APR: update OS window title to '$winTitle'")
+        System.err.println("ViewerWindow: setTitle not yet implemented")
     }
 
     // ------------------------------------------------------------------
@@ -379,15 +406,19 @@ object ViewerWindow {
     // ------------------------------------------------------------------
 
     fun setup2DViewport(xOffset: Int = 0, yOffset: Int = 0) {
-        TODO("GPU: glViewport for 2-D UI layer with offset ($xOffset, $yOffset)")
+        // ViewerWindow: glViewport for 2-D UI layer not yet implemented
     }
 
     fun setup3DViewport(xOffset: Int = 0, yOffset: Int = 0) {
-        TODO("GPU: glViewport for 3-D world layer with offset ($xOffset, $yOffset)")
+        // ViewerWindow: glViewport for 3-D world layer not yet implemented
     }
 
-    fun setup3DRender() { TODO("GPU: configure projection/modelview matrices for 3-D render pass") }
-    fun setup2DRender() { TODO("GPU: configure orthographic projection for UI render pass") }
+    fun setup3DRender() {
+        // ViewerWindow: configure projection/modelview matrices for 3-D render pass not yet implemented
+    }
+    fun setup2DRender() {
+        // ViewerWindow: configure orthographic projection for UI render pass not yet implemented
+    }
 
     // ------------------------------------------------------------------
     // Per-frame update
@@ -401,35 +432,35 @@ object ViewerWindow {
     }
 
     fun updateLayout() {
-        TODO("Reflow UI layout: recalculate world-view rect, toolbar positions, etc.")
+        // ViewerWindow: reflow UI layout not yet implemented
     }
 
     fun updateMouseDelta() {
-        TODO("Compute currentMouseDelta from currentMouse - lastMouse; update velocity stat")
+        // ViewerWindow: compute currentMouseDelta from currentMouse - lastMouse; update velocity stat not yet implemented
     }
 
     fun updateKeyboardFocus() {
-        TODO("Advance keyboard focus, handle focus-cycling, tool override from modifier keys")
+        // ViewerWindow: advance keyboard focus, handle focus-cycling, tool override from modifier keys not yet implemented
     }
 
     fun updateObjectUnderCursor() {
-        TODO("GPU: schedule hover pick and update cursor icon / tooltip for hovered object")
+        // ViewerWindow: schedule hover pick and update cursor icon / tooltip for hovered object not yet implemented
     }
 
     fun updateWorldViewRect(useFullWindow: Boolean = false) {
-        TODO("Recompute worldViewRectRaw / Scaled from toolbar heights and full-window flag")
+        // ViewerWindow: recompute worldViewRectRaw / Scaled from toolbar heights not yet implemented
     }
 
     fun updateDebugText() {
-        TODO("Rebuild debug-text overlay lines (FPS, camera pos, memory, render stats)")
+        // ViewerWindow: rebuild debug-text overlay lines (FPS, camera pos, memory, render stats) not yet implemented
     }
 
     fun drawDebugText() {
-        TODO("GPU: render debug-text overlay lines onto the 2-D viewport")
+        // ViewerWindow: render debug-text overlay lines onto the 2-D viewport not yet implemented
     }
 
     fun draw() {
-        TODO("GPU: orchestrate full-frame draw: 3-D world scene, HUD objects, 2-D UI, debug overlays")
+        // ViewerWindow: orchestrate full-frame draw: 3-D world scene, HUD objects, 2-D UI, debug overlays not yet implemented
     }
 
     // ------------------------------------------------------------------
@@ -438,36 +469,43 @@ object ViewerWindow {
 
     fun handleMouseDown(x: Int, y: Int, mask: Int): Boolean {
         leftMouseDown = true
-        TODO("Dispatch left-down event through ViewerInput → tool manager → UI")
+        System.err.println("ViewerWindow: handleMouseDown not yet implemented")
+        return false
     }
 
     fun handleMouseUp(x: Int, y: Int, mask: Int): Boolean {
         leftMouseDown = false
-        TODO("Dispatch left-up event through ViewerInput → tool manager → UI")
+        System.err.println("ViewerWindow: handleMouseUp not yet implemented")
+        return false
     }
 
     fun handleRightMouseDown(x: Int, y: Int, mask: Int): Boolean {
         rightMouseDown = true
-        TODO("Dispatch right-down event through ViewerInput → tool manager → UI")
+        System.err.println("ViewerWindow: handleRightMouseDown not yet implemented")
+        return false
     }
 
     fun handleRightMouseUp(x: Int, y: Int, mask: Int): Boolean {
         rightMouseDown = false
-        TODO("Dispatch right-up event through ViewerInput → tool manager → UI")
+        System.err.println("ViewerWindow: handleRightMouseUp not yet implemented")
+        return false
     }
 
     fun handleMiddleMouseDown(x: Int, y: Int, mask: Int): Boolean {
         middleMouseDown = true
-        TODO("Dispatch middle-down event through ViewerInput")
+        System.err.println("ViewerWindow: handleMiddleMouseDown not yet implemented")
+        return false
     }
 
     fun handleMiddleMouseUp(x: Int, y: Int, mask: Int): Boolean {
         middleMouseDown = false
-        TODO("Dispatch middle-up event through ViewerInput")
+        System.err.println("ViewerWindow: handleMiddleMouseUp not yet implemented")
+        return false
     }
 
     fun handleDoubleClick(x: Int, y: Int, mask: Int): Boolean {
-        TODO("Try CLICK_DOUBLELEFT dispatch; fall back to handleMouseDown")
+        System.err.println("ViewerWindow: handleDoubleClick not yet implemented")
+        return false
     }
 
     fun handleMouseMove(x: Int, y: Int, mask: Int) {
@@ -476,7 +514,7 @@ object ViewerWindow {
         currentMouseX = x
         currentMouseY = y
         isMouseInWindow = true
-        TODO("GPU: update hover pick, tooltip, mouselook delta")
+        // ViewerWindow: update hover pick, tooltip, mouselook delta not yet implemented
     }
 
     fun handleMouseDragged(x: Int, y: Int, mask: Int) {
@@ -488,72 +526,81 @@ object ViewerWindow {
     }
 
     fun handleScrollWheel(clicks: Int) {
-        TODO("Dispatch scroll-wheel event to focused view or tool manager")
+        System.err.println("ViewerWindow: handleScrollWheel not yet implemented")
     }
 
     fun handleScrollHWheel(clicks: Int) {
-        TODO("Dispatch horizontal scroll-wheel event to focused view")
+        System.err.println("ViewerWindow: handleScrollHWheel not yet implemented")
     }
 
     fun handleTranslatedKeyDown(key: Int, mask: Int, repeated: Boolean): Boolean {
-        TODO("Dispatch translated key-down event; handle mouselook, pie-menu hot-keys")
+        System.err.println("ViewerWindow: handleTranslatedKeyDown not yet implemented")
+        return false
     }
 
     fun handleTranslatedKeyUp(key: Int, mask: Int): Boolean {
-        TODO("Dispatch translated key-up event; restore tool override if modifier released")
+        System.err.println("ViewerWindow: handleTranslatedKeyUp not yet implemented")
+        return false
     }
 
     fun handleScanKey(key: Int, keyDown: Boolean, keyUp: Boolean, keyLevel: Boolean) {
-        TODO("Forward raw scan-code event to ViewerInput for joystick/mouselook")
+        System.err.println("ViewerWindow: handleScanKey not yet implemented")
     }
 
     fun handleUnicodeChar(uniChar: Int, mask: Int): Boolean {
-        TODO("Pass unicode character to focused text-edit widget")
+        System.err.println("ViewerWindow: handleUnicodeChar not yet implemented")
+        return false
     }
 
     fun handleResize(w: Int, h: Int) = reshape(w, h)
 
     fun handleFocus() {
         isActive = true
-        TODO("APR: unmute audio, resume watch-dog, notify focus manager")
+        System.err.println("ViewerWindow: handleFocus not yet implemented")
     }
 
     fun handleFocusLost() {
         isActive = false
-        TODO("APR: optionally mute audio, release mouse capture")
+        System.err.println("ViewerWindow: handleFocusLost not yet implemented")
     }
 
     fun handleActivate(activated: Boolean): Boolean {
         isActive = activated
-        TODO("APR: update away-timer, audio muting based on activated=$activated")
+        System.err.println("ViewerWindow: handleActivate not yet implemented")
+        return false
     }
 
     fun handleCloseRequest(): Boolean {
-        TODO("Show confirm-quit dialog; return true to allow close, false to cancel")
+        System.err.println("ViewerWindow: handleCloseRequest not yet implemented")
+        return false
     }
 
     fun handleQuit() {
-        TODO("APR: initiate orderly viewer shutdown sequence")
+        System.err.println("ViewerWindow: handleQuit not yet implemented")
     }
 
     fun handleDragNDrop(x: Int, y: Int, mask: Int, action: DragNDropAction, data: String): DragNDropResult {
-        TODO("Dispatch DnD event: check SLURL / prim-media targets, call pickImmediate if needed")
+        System.err.println("ViewerWindow: handleDragNDrop not yet implemented")
+        return DragNDropResult.NONE
     }
 
     fun handleDPIChanged(uiScaleFactor: Float, windowWidth: Int, windowHeight: Int): Boolean {
-        TODO("Update displayScale from OS DPI change; reshape and recalculate rects")
+        System.err.println("ViewerWindow: handleDPIChanged not yet implemented")
+        return false
     }
 
     fun handleDisplayChanged(): Boolean {
-        TODO("APR: handle monitor-change event; rebuild GL context if needed")
+        System.err.println("ViewerWindow: handleDisplayChanged not yet implemented")
+        return false
     }
 
     fun handleTimerEvent(): Boolean {
-        TODO("APR: service pending pick timer callbacks")
+        System.err.println("ViewerWindow: handleTimerEvent not yet implemented")
+        return false
     }
 
     fun handlePieMenu(x: Int, y: Int, mask: Int) {
-        TODO("Open pie/context menu at ($x, $y) for the object under cursor")
+        System.err.println("ViewerWindow: handlePieMenu not yet implemented")
     }
 
     // ------------------------------------------------------------------
@@ -570,7 +617,7 @@ object ViewerWindow {
         pickUnselectable: Boolean = false,
         pickReflectionProbes: Boolean = false
     ) {
-        TODO("GPU: enqueue pick pass at ($x, $yFromBot); deliver PickInfo to callback on completion")
+        // ViewerWindow: enqueue pick pass; deliver PickInfo to callback on completion not yet implemented
     }
 
     fun pickImmediate(
@@ -582,20 +629,23 @@ object ViewerWindow {
         pickUnselectable: Boolean = true,
         pickReflectionProbe: Boolean = false
     ): PickInfo {
-        TODO("GPU: render pick framebuffer synchronously and decode PickInfo from RGBA pixel")
+        // ViewerWindow: render pick framebuffer synchronously and decode PickInfo not yet implemented
+        return PickInfo()
     }
 
     fun performPick() {
-        TODO("GPU: flush pending pick queue, read framebuffer results, invoke callbacks")
+        // ViewerWindow: flush pending pick queue, read framebuffer results, invoke callbacks not yet implemented
     }
 
     fun returnEmptyPicks() {
-        pendingPicks.forEach { TODO("Invoke each pending pick callback with PICK_INVALID result") }
+        pendingPicks.forEach { _ ->
+            // ViewerWindow: invoke each pending pick callback with PICK_INVALID result not yet implemented
+        }
         pendingPicks.clear()
     }
 
     fun renderSelections(forGlPick: Boolean, pickParcelWalls: Boolean, forHud: Boolean) {
-        TODO("GPU: draw selection boxes around currently selected objects")
+        // ViewerWindow: draw selection boxes around currently selected objects not yet implemented
     }
 
     fun cursorIntersect(
@@ -609,7 +659,8 @@ object ViewerWindow {
         pickUnselectable: Boolean = true,
         pickReflectionProbe: Boolean = true
     ): Any? {
-        TODO("GPU: ray-cast into scene from cursor position; return intersected ViewerObject or null")
+        // ViewerWindow: ray-cast into scene from cursor position not yet implemented
+        return null
     }
 
     // ------------------------------------------------------------------
@@ -617,31 +668,38 @@ object ViewerWindow {
     // ------------------------------------------------------------------
 
     fun mouseDirectionGlobal(x: Int, y: Int): Vector3 {
-        TODO("Unproject screen point ($x,$y) through inverse projection matrix to world ray dir")
+        System.err.println("ViewerWindow: mouseDirectionGlobal not yet implemented")
+        return Vector3.ZERO
     }
 
     fun mouseDirectionCamera(x: Int, y: Int): Vector3 {
-        TODO("Unproject screen point ($x,$y) into camera space direction vector")
+        System.err.println("ViewerWindow: mouseDirectionCamera not yet implemented")
+        return Vector3.ZERO
     }
 
     fun mousePointHUD(x: Int, y: Int): Vector3 {
-        TODO("Unproject screen point ($x,$y) onto HUD plane")
+        System.err.println("ViewerWindow: mousePointHUD not yet implemented")
+        return Vector3.ZERO
     }
 
     fun mousePointOnLandGlobal(x: Int, y: Int, ignoreDistance: Boolean = false): Vector3? {
-        TODO("Ray-cast against terrain mesh from ($x,$y); return global hit point or null on miss")
+        System.err.println("ViewerWindow: mousePointOnLandGlobal not yet implemented")
+        return null
     }
 
     fun mousePointOnPlaneGlobal(x: Int, y: Int, planePoint: Vector3, planeNormal: Vector3): Vector3? {
-        TODO("Ray-plane intersection for the plane through planePoint with planeNormal")
+        System.err.println("ViewerWindow: mousePointOnPlaneGlobal not yet implemented")
+        return null
     }
 
     fun clickPointInWorldGlobal(x: Int, yFromBot: Int, clickedObject: Any?): Vector3 {
-        TODO("Compute global world-space point for click at ($x, $yFromBot) on clickedObject surface")
+        System.err.println("ViewerWindow: clickPointInWorldGlobal not yet implemented")
+        return Vector3.ZERO
     }
 
     fun clickPointOnSurfaceGlobal(x: Int, y: Int, objectp: Any?): Vector3? {
-        TODO("Ray-cast onto specific object surface; return global point or null on miss")
+        System.err.println("ViewerWindow: clickPointOnSurfaceGlobal not yet implemented")
+        return null
     }
 
     // ------------------------------------------------------------------
@@ -649,35 +707,36 @@ object ViewerWindow {
     // ------------------------------------------------------------------
 
     fun setShowProgress(show: Boolean, fullscreen: Boolean) {
-        TODO("GPU: show or hide the login/loading progress view (fullscreen=$fullscreen)")
+        // ViewerWindow: show or hide the login/loading progress view not yet implemented
     }
 
     fun getShowProgress(): Boolean {
-        TODO("Return whether the progress view is currently visible")
+        // ViewerWindow: return whether the progress view is currently visible not yet implemented
+        return false
     }
 
     fun setProgressString(string: String) {
-        TODO("Update the primary status string on the progress view")
+        // ViewerWindow: update the primary status string on the progress view not yet implemented
     }
 
     fun setProgressPercent(percent: Float) {
-        TODO("Update the percentage bar on the progress view to $percent%%")
+        // ViewerWindow: update the percentage bar on the progress view not yet implemented
     }
 
     fun setProgressMessage(msg: String) {
-        TODO("Update the secondary message string on the progress view")
+        // ViewerWindow: update the secondary message string on the progress view not yet implemented
     }
 
     fun setProgressCancelButtonVisible(visible: Boolean, label: String = "") {
-        TODO("Show or hide the cancel button on the progress view")
+        // ViewerWindow: show or hide the cancel button on the progress view not yet implemented
     }
 
     fun revealIntroPanel() {
-        TODO("GPU: transition from progress view to the main intro/login panel")
+        // ViewerWindow: transition from progress view to the main intro/login panel not yet implemented
     }
 
     fun setStartupComplete() {
-        TODO("GPU: dismiss progress view; show normal UI controls")
+        // ViewerWindow: dismiss progress view; show normal UI controls not yet implemented
     }
 
     // ------------------------------------------------------------------
@@ -685,15 +744,15 @@ object ViewerWindow {
     // ------------------------------------------------------------------
 
     fun addPopup(popup: Any) {
-        TODO("GPU: add a transient popup view to the popup layer")
+        // ViewerWindow: add a transient popup view to the popup layer not yet implemented
     }
 
     fun removePopup(popup: Any) {
-        TODO("GPU: remove a transient popup view from the popup layer")
+        // ViewerWindow: remove a transient popup view from the popup layer not yet implemented
     }
 
     fun clearPopups() {
-        TODO("GPU: remove all transient popup views from the popup layer")
+        // ViewerWindow: remove all transient popup views from the popup layer not yet implemented
     }
 
     // ------------------------------------------------------------------
@@ -709,7 +768,8 @@ object ViewerWindow {
         doRebuild: Boolean = false,
         showBalance: Boolean = true
     ): Boolean {
-        TODO("GPU: render off-screen framebuffer at ${imageWidth}x${imageHeight} and encode to $filename")
+        // ViewerWindow: render off-screen framebuffer and encode to file not yet implemented
+        return false
     }
 
     fun rawSnapshot(
@@ -723,11 +783,13 @@ object ViewerWindow {
         noPost: Boolean = false,
         showBalance: Boolean = true
     ): ByteArray? {
-        TODO("GPU: render off-screen framebuffer and return raw RGBA bytes")
+        // ViewerWindow: render off-screen framebuffer and return raw RGBA bytes not yet implemented
+        return null
     }
 
     fun simpleSnapshot(imageWidth: Int, imageHeight: Int, numRenderPasses: Int): Boolean {
-        TODO("GPU: render $numRenderPasses passes into off-screen buffer at ${imageWidth}x${imageHeight}")
+        // ViewerWindow: render passes into off-screen buffer not yet implemented
+        return false
     }
 
     fun cubeSnapshot(
@@ -737,11 +799,13 @@ object ViewerWindow {
         nearClip: Float,
         renderAvatars: Boolean
     ): Boolean {
-        TODO("GPU: render one face of a cubemap at origin $origin into cube array index $index face $face")
+        // ViewerWindow: render one face of a cubemap not yet implemented
+        return false
     }
 
     fun reflectionSnapshot(imageWidth: Int, imageHeight: Int, numRenderPasses: Int): Boolean {
-        TODO("GPU: specialised simpleSnapshot for reflection map probes")
+        // ViewerWindow: specialised simpleSnapshot for reflection map probes not yet implemented
+        return false
     }
 
     fun thumbnailSnapshot(
@@ -752,23 +816,25 @@ object ViewerWindow {
         doRebuild: Boolean,
         noPost: Boolean
     ): ByteArray? {
-        TODO("GPU: render thumbnail at ${previewWidth}x${previewHeight} and return raw bytes")
+        // ViewerWindow: render thumbnail and return raw bytes not yet implemented
+        return null
     }
 
     fun isSnapshotLocSet(): Boolean {
-        TODO("Check whether a custom snapshot save directory has been set in settings")
+        // ViewerWindow: check whether a custom snapshot save directory has been set not yet implemented
+        return false
     }
 
     fun resetSnapshotLoc() {
-        TODO("Clear custom snapshot save directory so next save opens a directory picker")
+        // ViewerWindow: clear custom snapshot save directory not yet implemented
     }
 
     fun playSnapshotAnimAndSound() {
-        TODO("APR: trigger camera-click animation on avatar and play shutter sound")
+        System.err.println("ViewerWindow: playSnapshotAnimAndSound not yet implemented")
     }
 
     fun saveImageNumbered(image: Any, forcePicker: Boolean, onSuccess: () -> Unit, onFailure: () -> Unit) {
-        TODO("APR: write image to numbered file in snapshot dir (or open picker if forcePicker)")
+        System.err.println("ViewerWindow: saveImageNumbered not yet implemented")
     }
 
     // ------------------------------------------------------------------
@@ -776,7 +842,7 @@ object ViewerWindow {
     // ------------------------------------------------------------------
 
     fun dumpState() {
-        TODO("APR: log window dimensions, GL state, and pick state to the log file")
+        System.err.println("ViewerWindow: dumpState not yet implemented")
     }
 
     fun saveLastMouse(x: Int, y: Int) {
@@ -785,31 +851,38 @@ object ViewerWindow {
     }
 
     fun shouldShowToolTip(mouseHandler: Any): Boolean {
-        TODO("Return true if mouse has dwelt on mouseHandler long enough to show a tooltip")
+        // ViewerWindow: return true if mouse has dwelt on mouseHandler long enough not yet implemented
+        return false
     }
 
     fun getChatConsoleBottomPad(): Int {
-        TODO("Compute vertical padding below chat console based on UI element heights")
+        // ViewerWindow: compute vertical padding below chat console not yet implemented
+        return 0
     }
 
     fun getFloaterSnapRegion(): Any? {
-        TODO("Return the floater snap region view reference")
+        // ViewerWindow: return the floater snap region view reference not yet implemented
+        return null
     }
 
     fun getChicletContainer(): Any? {
-        TODO("Return the chiclet container panel reference")
+        // ViewerWindow: return the chiclet container panel reference not yet implemented
+        return null
     }
 
     fun getToolBarHolder(): Any? {
-        TODO("Return the toolbar holder view reference")
+        // ViewerWindow: return the toolbar holder view reference not yet implemented
+        return null
     }
 
     fun getHintHolder(): Any? {
-        TODO("Return the hint holder view reference")
+        // ViewerWindow: return the hint holder view reference not yet implemented
+        return null
     }
 
     fun getLoginPanelHolder(): Any? {
-        TODO("Return the login panel holder view reference")
+        // ViewerWindow: return the login panel holder view reference not yet implemented
+        return null
     }
 }
 

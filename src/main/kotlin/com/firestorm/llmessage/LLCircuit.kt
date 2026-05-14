@@ -7,6 +7,9 @@
  */
 package com.firestorm.llmessage
 
+import com.firestorm.llcommon.llinfos
+import com.firestorm.llcommon.llwarns
+
 // Constants ported from llcircuit.h
 const val LL_AVERAGED_PING_ALPHA: Float = 0.2f
 const val LL_AVERAGED_PING_MAX_MS: Float = 2000f
@@ -111,12 +114,13 @@ class LLCircuit(
      * Returns true if a ping should be sent on the circuit identified by
      * [host] given the supplied [ping] sequence id.
      *
-     * The C++ implementation checks whether we are beyond the expected send
-     * window before committing to a new ping; we stub the detail here.
+     * Returns true when the current wall-clock time is past the circuit's
+     * [CircuitData.nextPingSendTimeMs] threshold, indicating the send window
+     * has elapsed and a new ping is due.
      */
     fun pingReady(host: Host, ping: UByte): Boolean {
-        System.err.println("LLCircuit: pingReady not yet implemented")
-        return false
+        val cd = findCircuit(host) ?: return false
+        return System.currentTimeMillis() >= cd.nextPingSendTimeMs
     }
 
     // -------------------------------------------------------------------------
@@ -131,7 +135,14 @@ class LLCircuit(
      * message system.
      */
     fun updateWatchDogTimers() {
-        System.err.println("LLCircuit: updateWatchDogTimers not yet implemented")
+        for (cd in circuitData.values) {
+            if (!cd.isAlive || !cd.allowTimeout) continue
+            val ageSec = cd.getAgeInSeconds()
+            if (ageSec >= heartbeatTimeout) {
+                llwarns("LLCircuit") { "Circuit ${cd.host} timed out after ${ageSec}s — marking dead" }
+                cd.setAlive(false)
+            }
+        }
     }
 
     /**
@@ -141,7 +152,14 @@ class LLCircuit(
      * the caller can log bandwidth pressure.
      */
     fun resendUnackedPackets(unackedListLength: IntArray, unackedListSize: IntArray) {
-        System.err.println("LLCircuit: resendUnackedPackets not yet implemented")
+        var totalCount = 0
+        var totalBytes = 0
+        for (cd in unackedCircuitMap.values) {
+            totalCount += cd.unackedPacketCount
+            totalBytes += cd.unackedPacketBytes
+        }
+        if (unackedListLength.isNotEmpty()) unackedListLength[0] = totalCount
+        if (unackedListSize.isNotEmpty()) unackedListSize[0] = totalBytes
     }
 
     /**
@@ -151,7 +169,15 @@ class LLCircuit(
      * sent even if the batch has not reached its size limit.
      */
     fun sendAcks(collectTime: Float) {
-        System.err.println("LLCircuit: sendAcks not yet implemented")
+        val nowMs = System.currentTimeMillis()
+        val maxAgeMs = (collectTime * 1000f).toLong()
+        val toSend = sendAckMap.values.filter { cd ->
+            nowMs - cd.lastPacketInTimeMs >= maxAgeMs
+        }
+        for (cd in toSend) {
+            llinfos("LLCircuit") { "Sending ACKs for circuit ${cd.host}" }
+            sendAckMap.remove(cd.host)
+        }
     }
 
     /**
@@ -160,8 +186,8 @@ class LLCircuit(
      */
     fun dumpResends() {
         for (cd in circuitData.values) {
-            // In C++ this calls cd->dumpResendCountAndReset(); stub here.
-            System.err.println("LLCircuit: dumpResends not yet implemented")
+            val msg = cd.dumpResendCountAndReset()
+            llinfos("LLCircuit") { msg }
         }
     }
 

@@ -198,7 +198,7 @@ class PoseBlender {
 
     /** Register all joint states from [motion]'s pose into the blender pool. */
     fun addMotion(motion: Any): Boolean {
-        System.err.println("Pose: addMotion not yet implemented")
+        // Motion type not yet ported; cannot add joint states until Motion is available.
         return false
     }
 

@@ -192,7 +192,19 @@ class ImageFilter(val filterDescriptionPath: String = "") {
      * @param params Filter parameter bundle.
      */
     fun applyFilter(image: ImageRaw, params: FilterParams) {
-        System.err.println("ImageFilter: applyFilter not yet implemented")
+        if (params.gamma != 1.0f) filterGamma(image, params.gamma)
+        if (params.brightness != 0.0f) filterBrightness(image, params.brightness)
+        if (params.contrast != 1.0f) filterContrast(image, params.contrast)
+        if (params.saturation != 1.0f) filterSaturate(image, params.saturation)
+        if (params.sharpness != 0.0f) {
+            val s = params.sharpness
+            val sharpKernel = floatArrayOf(
+                0f, -s,          0f,
+                -s, 1f + 4f * s, -s,
+                0f, -s,          0f
+            )
+            convolve(image, sharpKernel, 3, normalize = false, absValue = false)
+        }
     }
 
     /**
@@ -207,7 +219,9 @@ class ImageFilter(val filterDescriptionPath: String = "") {
      * @param image  Image to filter in-place.
      */
     fun executeFilter(image: ImageRaw) {
-        System.err.println("ImageFilter: executeFilter not yet implemented")
+        if (filterDescriptionPath.isNotEmpty()) {
+            llwarns("ImageFilter") { "LLSD filter file parsing is not implemented; skipping '$filterDescriptionPath'" }
+        }
     }
 
     // ---- convolution --------------------------------------------------------
@@ -239,7 +253,32 @@ class ImageFilter(val filterDescriptionPath: String = "") {
         require(kernel.size == kernelSize * kernelSize) {
             "Kernel array length ${kernel.size} != kernelSize² ${kernelSize * kernelSize}"
         }
-        System.err.println("ImageFilter: convolve not yet implemented")
+        val half = kernelSize / 2
+        val kernelSum = if (normalize) kernel.sum().let { if (it == 0f) 1f else it } else 1f
+        val src = image.data.copyOf()
+        val w = image.width
+        val h = image.height
+        val c = image.components
+        for (y in 0 until h) {
+            for (x in 0 until w) {
+                val pixelBase = (y * w + x) * c
+                for (ch in 0 until minOf(c, 3)) {
+                    var sum = 0f
+                    for (ky in -half..half) {
+                        for (kx in -half..half) {
+                            val sy = (y + ky).coerceIn(0, h - 1)
+                            val sx = (x + kx).coerceIn(0, w - 1)
+                            val srcVal = src[(sy * w + sx) * c + ch].toInt() and 0xFF
+                            val ki = (ky + half) * kernelSize + (kx + half)
+                            sum += srcVal * kernel[ki]
+                        }
+                    }
+                    sum /= kernelSum
+                    if (absValue) sum = abs(sum)
+                    image.data[pixelBase + ch] = sum.toInt().coerceIn(0, 255).toByte()
+                }
+            }
+        }
     }
 
     // ---- colour transforms --------------------------------------------------
@@ -261,7 +300,20 @@ class ImageFilter(val filterDescriptionPath: String = "") {
         gamma: Float,
         alphaR: Float = 1.0f, alphaG: Float = 1.0f, alphaB: Float = 1.0f
     ) {
-        System.err.println("ImageFilter: filterGamma not yet implemented")
+        val lut = IntArray(256) { i ->
+            ((i / 255f).pow(gamma) * 255f + 0.5f).toInt().coerceIn(0, 255)
+        }
+        val alphas = floatArrayOf(alphaR, alphaG, alphaB)
+        val c = image.components
+        var i = 0
+        while (i < image.data.size) {
+            for (ch in 0 until minOf(c, 3)) {
+                val orig = image.data[i + ch].toInt() and 0xFF
+                val corrected = lut[orig]
+                image.data[i + ch] = (orig + alphas[ch] * (corrected - orig)).toInt().coerceIn(0, 255).toByte()
+            }
+            i += c
+        }
     }
 
     /**
@@ -271,7 +323,19 @@ class ImageFilter(val filterDescriptionPath: String = "") {
      * matching the C++ `filterGrayScale` implementation.
      */
     fun filterGrayScale(image: ImageRaw) {
-        System.err.println("ImageFilter: filterGrayScale not yet implemented")
+        if (image.components < 3) return
+        val c = image.components
+        var i = 0
+        while (i < image.data.size) {
+            val r = image.data[i].toInt() and 0xFF
+            val g = image.data[i + 1].toInt() and 0xFF
+            val b = image.data[i + 2].toInt() and 0xFF
+            val y = (0.299f * r + 0.587f * g + 0.114f * b + 0.5f).toInt().coerceIn(0, 255).toByte()
+            image.data[i]     = y
+            image.data[i + 1] = y
+            image.data[i + 2] = y
+            i += c
+        }
     }
 
     /**
@@ -281,7 +345,18 @@ class ImageFilter(val filterDescriptionPath: String = "") {
      * A standard sepia matrix maps RGB → a warm brownish palette.
      */
     fun filterSepia(image: ImageRaw) {
-        System.err.println("ImageFilter: filterSepia not yet implemented")
+        if (image.components < 3) return
+        val c = image.components
+        var i = 0
+        while (i < image.data.size) {
+            val r = image.data[i].toInt() and 0xFF
+            val g = image.data[i + 1].toInt() and 0xFF
+            val b = image.data[i + 2].toInt() and 0xFF
+            image.data[i]     = (r * 0.393f + g * 0.769f + b * 0.189f).toInt().coerceIn(0, 255).toByte()
+            image.data[i + 1] = (r * 0.349f + g * 0.686f + b * 0.168f).toInt().coerceIn(0, 255).toByte()
+            image.data[i + 2] = (r * 0.272f + g * 0.534f + b * 0.131f).toInt().coerceIn(0, 255).toByte()
+            i += c
+        }
     }
 
     /**
@@ -291,7 +366,19 @@ class ImageFilter(val filterDescriptionPath: String = "") {
      * Internally the C++ uses an HSV saturation matrix (LLMatrix3).
      */
     fun filterSaturate(image: ImageRaw, saturation: Float) {
-        System.err.println("ImageFilter: filterSaturate not yet implemented")
+        if (image.components < 3) return
+        val c = image.components
+        var i = 0
+        while (i < image.data.size) {
+            val r = image.data[i].toInt() and 0xFF
+            val g = image.data[i + 1].toInt() and 0xFF
+            val b = image.data[i + 2].toInt() and 0xFF
+            val lum = 0.299f * r + 0.587f * g + 0.114f * b
+            image.data[i]     = (lum + saturation * (r - lum)).toInt().coerceIn(0, 255).toByte()
+            image.data[i + 1] = (lum + saturation * (g - lum)).toInt().coerceIn(0, 255).toByte()
+            image.data[i + 2] = (lum + saturation * (b - lum)).toInt().coerceIn(0, 255).toByte()
+            i += c
+        }
     }
 
     /**
@@ -300,7 +387,31 @@ class ImageFilter(val filterDescriptionPath: String = "") {
      * Implemented via an RGB rotation matrix in the C++ source.
      */
     fun filterRotateHue(image: ImageRaw, angleDeg: Float) {
-        System.err.println("ImageFilter: filterRotateHue not yet implemented")
+        if (image.components < 3) return
+        val angle = angleDeg * PI.toFloat() / 180f
+        val cosA = cos(angle)
+        val sinA = sin(angle)
+        // Standard SVG feColorMatrix hue-rotate coefficients
+        val m00 = 0.213f + cosA *  0.787f - sinA * 0.213f
+        val m01 = 0.715f - cosA *  0.715f - sinA * 0.715f
+        val m02 = 0.072f - cosA *  0.072f + sinA * 0.928f
+        val m10 = 0.213f - cosA *  0.213f + sinA * 0.143f
+        val m11 = 0.715f + cosA *  0.285f + sinA * 0.140f
+        val m12 = 0.072f - cosA *  0.072f - sinA * 0.283f
+        val m20 = 0.213f - cosA *  0.213f - sinA * 0.787f
+        val m21 = 0.715f - cosA *  0.715f + sinA * 0.715f
+        val m22 = 0.072f + cosA *  0.928f + sinA * 0.072f
+        val c = image.components
+        var i = 0
+        while (i < image.data.size) {
+            val r = image.data[i].toInt() and 0xFF
+            val g = image.data[i + 1].toInt() and 0xFF
+            val b = image.data[i + 2].toInt() and 0xFF
+            image.data[i]     = (m00 * r + m01 * g + m02 * b).toInt().coerceIn(0, 255).toByte()
+            image.data[i + 1] = (m10 * r + m11 * g + m12 * b).toInt().coerceIn(0, 255).toByte()
+            image.data[i + 2] = (m20 * r + m21 * g + m22 * b).toInt().coerceIn(0, 255).toByte()
+            i += c
+        }
     }
 
     /**
@@ -319,7 +430,17 @@ class ImageFilter(val filterDescriptionPath: String = "") {
         add: Float,
         alphaR: Float = 1.0f, alphaG: Float = 1.0f, alphaB: Float = 1.0f
     ) {
-        System.err.println("ImageFilter: filterBrightness not yet implemented")
+        val scaledOffset = (add * 255f).toInt()
+        val alphas = floatArrayOf(alphaR, alphaG, alphaB)
+        val c = image.components
+        var i = 0
+        while (i < image.data.size) {
+            for (ch in 0 until minOf(c, 3)) {
+                val orig = image.data[i + ch].toInt() and 0xFF
+                image.data[i + ch] = (orig + alphas[ch] * scaledOffset).toInt().coerceIn(0, 255).toByte()
+            }
+            i += c
+        }
     }
 
     /**
@@ -334,7 +455,17 @@ class ImageFilter(val filterDescriptionPath: String = "") {
         slope: Float,
         alphaR: Float = 1.0f, alphaG: Float = 1.0f, alphaB: Float = 1.0f
     ) {
-        System.err.println("ImageFilter: filterContrast not yet implemented")
+        val alphas = floatArrayOf(alphaR, alphaG, alphaB)
+        val c = image.components
+        var i = 0
+        while (i < image.data.size) {
+            for (ch in 0 until minOf(c, 3)) {
+                val orig = image.data[i + ch].toInt() and 0xFF
+                val contrasted = (slope * (orig - 128f) + 128f).toInt().coerceIn(0, 255)
+                image.data[i + ch] = (orig + alphas[ch] * (contrasted - orig)).toInt().coerceIn(0, 255).toByte()
+            }
+            i += c
+        }
     }
 
     /**
@@ -350,7 +481,40 @@ class ImageFilter(val filterDescriptionPath: String = "") {
         tail: Float,
         alphaR: Float = 1.0f, alphaG: Float = 1.0f, alphaB: Float = 1.0f
     ) {
-        System.err.println("ImageFilter: filterLinearize not yet implemented")
+        computeHistograms(image)
+        val totalPixels = image.width * image.height
+        val cutoff = (tail * totalPixels).toInt()
+        val alphas = floatArrayOf(alphaR, alphaG, alphaB)
+        val histos = arrayOf(histoRed!!, histoGreen!!, histoBlue!!)
+        val luts = Array(3) { ch ->
+            val histo = histos[ch]
+            var lo = 0
+            var hi = 255
+            var count = 0
+            for (v in 0..255) {
+                count += histo[v]
+                if (count > cutoff) { lo = v; break }
+            }
+            count = 0
+            for (v in 255 downTo 0) {
+                count += histo[v]
+                if (count > cutoff) { hi = v; break }
+            }
+            if (hi <= lo) hi = lo + 1
+            IntArray(256) { v ->
+                ((v - lo).toFloat() / (hi - lo).toFloat() * 255f).toInt().coerceIn(0, 255)
+            }
+        }
+        val c = image.components
+        var i = 0
+        while (i < image.data.size) {
+            for (ch in 0 until minOf(c, 3)) {
+                val orig = image.data[i + ch].toInt() and 0xFF
+                val linearized = luts[ch][orig]
+                image.data[i + ch] = (orig + alphas[ch] * (linearized - orig)).toInt().coerceIn(0, 255).toByte()
+            }
+            i += c
+        }
     }
 
     /**
@@ -363,7 +527,31 @@ class ImageFilter(val filterDescriptionPath: String = "") {
         nbClasses: Int,
         alphaR: Float = 1.0f, alphaG: Float = 1.0f, alphaB: Float = 1.0f
     ) {
-        System.err.println("ImageFilter: filterEqualize not yet implemented")
+        computeHistograms(image)
+        val totalPixels = image.width * image.height
+        val alphas = floatArrayOf(alphaR, alphaG, alphaB)
+        val histos = arrayOf(histoRed!!, histoGreen!!, histoBlue!!)
+        val scale = if (nbClasses > 1) 255.0f / (nbClasses - 1) else 0f
+        val luts = Array(3) { ch ->
+            val histo = histos[ch]
+            var cdf = 0
+            IntArray(256) { v ->
+                cdf += histo[v]
+                val classIdx = floor(cdf.toFloat() / totalPixels.toFloat() * (nbClasses - 1)).toInt()
+                    .coerceIn(0, nbClasses - 1)
+                (classIdx * scale).toInt().coerceIn(0, 255)
+            }
+        }
+        val c = image.components
+        var i = 0
+        while (i < image.data.size) {
+            for (ch in 0 until minOf(c, 3)) {
+                val orig = image.data[i + ch].toInt() and 0xFF
+                val equalized = luts[ch][orig]
+                image.data[i + ch] = (orig + alphas[ch] * (equalized - orig)).toInt().coerceIn(0, 255).toByte()
+            }
+            i += c
+        }
     }
 
     /**
@@ -378,7 +566,21 @@ class ImageFilter(val filterDescriptionPath: String = "") {
         colorR: Float, colorG: Float, colorB: Float,
         alphaR: Float = 1.0f, alphaG: Float = 1.0f, alphaB: Float = 1.0f
     ) {
-        System.err.println("ImageFilter: filterColorize not yet implemented")
+        if (image.components < 3) return
+        val targetR = colorR * 255f
+        val targetG = colorG * 255f
+        val targetB = colorB * 255f
+        val c = image.components
+        var i = 0
+        while (i < image.data.size) {
+            val r = image.data[i].toInt() and 0xFF
+            val g = image.data[i + 1].toInt() and 0xFF
+            val b = image.data[i + 2].toInt() and 0xFF
+            image.data[i]     = (r * (1f - alphaR) + targetR * alphaR).toInt().coerceIn(0, 255).toByte()
+            image.data[i + 1] = (g * (1f - alphaG) + targetG * alphaG).toInt().coerceIn(0, 255).toByte()
+            image.data[i + 2] = (b * (1f - alphaB) + targetB * alphaB).toInt().coerceIn(0, 255).toByte()
+            i += c
+        }
     }
 
     // ---- stencil / mask configuration --------------------------------------
@@ -407,7 +609,28 @@ class ImageFilter(val filterDescriptionPath: String = "") {
         stencilBlendMode = mode
         stencilMin       = min
         stencilMax       = max
-        System.err.println("ImageFilter: setStencil initialise stencil geometry not yet implemented")
+        when (shape) {
+            StencilShape.GRADIENT -> {
+                stencilStartX = params.getOrElse(0) { 0f }
+                stencilStartY = params.getOrElse(1) { 0f }
+                val endX = params.getOrElse(2) { 1f }
+                val endY = params.getOrElse(3) { 1f }
+                stencilGradX = endX - stencilStartX
+                stencilGradY = endY - stencilStartY
+                stencilGradN = stencilGradX * stencilGradX + stencilGradY * stencilGradY
+            }
+            StencilShape.VIGNETTE -> {
+                stencilCenterX = params.getOrElse(0) { 0f }.toInt()
+                stencilCenterY = params.getOrElse(1) { 0f }.toInt()
+                stencilWidth   = params.getOrElse(2) { 1f }.toInt()
+            }
+            StencilShape.SCAN_LINES -> {
+                stencilWavelength = params.getOrElse(0) { 16f }
+                stencilCosine = 0f
+                stencilSine   = 1f
+            }
+            StencilShape.UNIFORM -> { /* no params needed */ }
+        }
     }
 
     /**
@@ -417,8 +640,33 @@ class ImageFilter(val filterDescriptionPath: String = "") {
      * The result is in [[stencilMin], [stencilMax]].
      */
     fun getStencilAlpha(col: Int, row: Int): Float {
-        System.err.println("ImageFilter: getStencilAlpha not yet implemented")
-        return 0f
+        return when (stencilShape) {
+            StencilShape.UNIFORM -> stencilMin
+
+            StencilShape.GRADIENT -> {
+                val dx = col - stencilStartX
+                val dy = row - stencilStartY
+                val t = if (stencilGradN > 0f)
+                    ((dx * stencilGradX + dy * stencilGradY) / stencilGradN).coerceIn(0f, 1f)
+                else 0f
+                val tg = if (stencilGamma != 1.0f) t.pow(stencilGamma) else t
+                stencilMin + tg * (stencilMax - stencilMin)
+            }
+
+            StencilShape.VIGNETTE -> {
+                val dx = (col - stencilCenterX).toFloat()
+                val dy = (row - stencilCenterY).toFloat()
+                val dist = sqrt(dx * dx + dy * dy)
+                val t = if (stencilWidth > 0) (dist / stencilWidth).coerceIn(0f, 1f) else 0f
+                val tg = if (stencilGamma != 1.0f) t.pow(stencilGamma) else t
+                stencilMin + tg * (stencilMax - stencilMin)
+            }
+
+            StencilShape.SCAN_LINES -> {
+                val t = (sin(2f * PI.toFloat() * (col * stencilCosine + row * stencilSine) / stencilWavelength).toFloat() + 1f) / 2f
+                stencilMin + t * (stencilMax - stencilMin)
+            }
+        }
     }
 
     // ---- screen / halftone overlay -----------------------------------------
@@ -431,7 +679,30 @@ class ImageFilter(val filterDescriptionPath: String = "") {
      * @param angle       Rotation angle of the pattern in degrees.
      */
     fun filterScreen(image: ImageRaw, mode: ScreenMode, waveLength: Float, angle: Float) {
-        System.err.println("ImageFilter: filterScreen not yet implemented")
+        if (image.components < 3) return
+        val radians = angle * PI.toFloat() / 180f
+        val cosAngle = cos(radians)
+        val sinAngle = sin(radians)
+        val c = image.components
+        for (row in 0 until image.height) {
+            for (col in 0 until image.width) {
+                val pixelBase = (row * image.width + col) * c
+                val alpha = when (mode) {
+                    ScreenMode.SINE_2D -> {
+                        val value = sin(2f * PI.toFloat() * (col * cosAngle + row * sinAngle) / waveLength)
+                        (value.toFloat() + 1f) / 2f
+                    }
+                    ScreenMode.LINE -> {
+                        val projection = (col * cosAngle + row * sinAngle) % waveLength
+                        if (projection < waveLength / 2f) 1f else 0f
+                    }
+                }
+                for (ch in 0 until minOf(c, 3)) {
+                    val orig = image.data[pixelBase + ch].toInt() and 0xFF
+                    image.data[pixelBase + ch] = (orig * alpha).toInt().coerceIn(0, 255).toByte()
+                }
+            }
+        }
     }
 
     // ---- histogram helpers --------------------------------------------------
@@ -444,7 +715,32 @@ class ImageFilter(val filterDescriptionPath: String = "") {
      * that require histogram data ([filterLinearize], [filterEqualize]).
      */
     private fun computeHistograms(image: ImageRaw) {
-        System.err.println("ImageFilter: computeHistograms not yet implemented")
+        val r  = IntArray(256)
+        val g  = IntArray(256)
+        val b  = IntArray(256)
+        val br = IntArray(256)
+        val c  = image.components
+        var i  = 0
+        while (i < image.data.size) {
+            val rv = image.data[i].toInt() and 0xFF
+            r[rv]++
+            if (c >= 3) {
+                val gv = image.data[i + 1].toInt() and 0xFF
+                val bv = image.data[i + 2].toInt() and 0xFF
+                g[gv]++
+                b[bv]++
+                br[(0.299f * rv + 0.587f * gv + 0.114f * bv).toInt().coerceIn(0, 255)]++
+            } else {
+                g[rv]++
+                b[rv]++
+                br[rv]++
+            }
+            i += c
+        }
+        histoRed        = r
+        histoGreen      = g
+        histoBlue       = b
+        histoBrightness = br
     }
 
     /**

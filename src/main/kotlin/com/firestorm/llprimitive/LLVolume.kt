@@ -188,7 +188,10 @@ open class LLVolume(
      * deferred until the algorithm is ported.
      */
     open fun generate(detail: Float) {
-        System.err.println("LLVolume: generate not yet implemented")
+        TODO(
+            "Port LLVolume::generate() — sweep LLProfile along LLPath " +
+            "and populate `faces` with vertices, normals, texcoords and indices."
+        )
     }
 
     // ------------------------------------------------------------------
@@ -224,15 +227,17 @@ open class LLVolume(
     // ------------------------------------------------------------------
     // LOD triangle count helper  (stubbed — mirrors static getLoDTriangleCounts)
     // ------------------------------------------------------------------
-    fun getNumTriangles(): Int {
-        return 0
-    }
+    fun getNumTriangles(): Int = faces.sumOf { it.indices.size / 3 }
 
     // ------------------------------------------------------------------
     // Face-mask generation  (mirrors generateFaceMask / isFaceMaskValid)
     // ------------------------------------------------------------------
     fun generateFaceMask(): UShort {
-        return 0u
+        var mask: UShort = 0u
+        for (face in faces) {
+            mask = (mask or face.id).toUShort()
+        }
+        return mask
     }
 
     // ------------------------------------------------------------------

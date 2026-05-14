@@ -62,7 +62,7 @@ class Joint(
     fun getWorldPosition(): Vector3 {
         val p = parent ?: return position
         val parentWorld = p.getWorldPosition()
-        val rotated = p.getWorldRotation().rotate(position)
+        val rotated = p.getWorldRotation() * position
         return parentWorld + rotated
     }
 

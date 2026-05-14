@@ -36,8 +36,6 @@ class XmlParser {
 
     fun getCurrentColumnNumber(): Int = -1
 
-    fun getDepth(): Int = depth
-
     // SAX-based incremental parse handler, mirrors LLXmlParser's virtual callback API.
     // Subclasses override the on* methods for event-driven processing.
     open class SaxHandler : DefaultHandler(), LexicalHandler {

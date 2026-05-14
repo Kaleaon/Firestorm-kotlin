@@ -342,13 +342,168 @@ open class GLTFMaterial {
     }
 
     /** Apply override data encoded in LLSD form. */
-    fun applyOverrideLLSD(data: LLSD): Unit {
-        System.err.println("GLTFMaterial: applyOverrideLLSD not yet implemented")
+    fun applyOverrideLLSD(data: LLSD) {
+        val tex = data["tex"]
+        if (tex is LLSD.LLSDArray) {
+            for (i in 0 until minOf(tex.size(), TextureInfo.COUNT)) {
+                textureId[i] = tex[i].asUUID()
+            }
+        }
+
+        val bc = data["bc"]
+        if (bc.isDefined()) {
+            baseColor = Color4(bc[0].asFloat(), bc[1].asFloat(), bc[2].asFloat(), bc[3].asFloat())
+            // Epsilon nudge: if the received value equals the GLTF default, shift slightly
+            // so downstream logic can distinguish "explicitly set to default" from "no override".
+            if (baseColor == getDefaultBaseColor()) baseColor.a -= Float.MIN_VALUE
+        }
+
+        val ec = data["ec"]
+        if (ec.isDefined()) {
+            emissiveColor = Vector3(ec[0].asFloat(), ec[1].asFloat(), ec[2].asFloat())
+            if (emissiveColor == getDefaultEmissiveColor()) emissiveColor.x += Float.MIN_VALUE
+        }
+
+        val mf = data["mf"]
+        if (mf.isDefined()) {
+            metallicFactor = mf.asFloat()
+            if (metallicFactor == getDefaultMetallicFactor()) metallicFactor -= Float.MIN_VALUE
+        }
+
+        val rf = data["rf"]
+        if (rf.isDefined()) {
+            roughnessFactor = rf.asFloat()
+            if (roughnessFactor == getDefaultRoughnessFactor()) roughnessFactor -= Float.MIN_VALUE
+        }
+
+        val am = data["am"]
+        if (am.isDefined()) {
+            alphaMode = AlphaMode.fromOrdinal(am.asInt())
+            overrideAlphaMode = true
+        }
+
+        val ac = data["ac"]
+        if (ac.isDefined()) {
+            alphaCutoff = ac.asFloat()
+            if (alphaCutoff == getDefaultAlphaCutoff()) alphaCutoff -= Float.MIN_VALUE
+        }
+
+        val ds = data["ds"]
+        if (ds.isDefined()) {
+            doubleSided = ds.asBoolean()
+            overrideDoubleSided = true
+        }
+
+        val ti = data["ti"]
+        if (ti is LLSD.LLSDArray) {
+            for (i in 0 until TextureInfo.COUNT) {
+                val entry = ti[i]
+                val o = entry["o"]
+                if (o.isDefined()) {
+                    textureTransform[i].offset = Vector2(o[0].asFloat(), o[1].asFloat())
+                }
+                val s = entry["s"]
+                if (s.isDefined()) {
+                    textureTransform[i].scale = Vector2(s[0].asFloat(), s[1].asFloat())
+                }
+                val r = entry["r"]
+                if (r.isDefined()) {
+                    textureTransform[i].rotation = r.asFloat()
+                }
+            }
+        }
     }
 
     /** Produce the delta LLSD between this material and an override. */
-    fun getOverrideLLSD(overrideMat: GLTFMaterial, data: LLSD): Unit {
-        System.err.println("GLTFMaterial: getOverrideLLSD not yet implemented")
+    /**
+     * Encode overrides (deltas from [this] base towards [overrideMat]).
+     * Because [LLSD] is immutable in this Kotlin codebase the result is
+     * returned as a new LLSD map.  The [data] parameter is kept only for
+     * C++ API compatibility but is not mutated.
+     *
+     * The returned value contains the delta LLSD; [data] is kept for API
+     * compatibility.
+     */
+    fun getOverrideLLSD(overrideMat: GLTFMaterial, data: LLSD): LLSD {
+        val map = mutableMapOf<String, LLSD>()
+
+        val texList = mutableListOf<LLSD>()
+        var anyTex = false
+        for (i in 0 until TextureInfo.COUNT) {
+            val oid = overrideMat.textureId[i]
+            if (oid.notNull() && oid != textureId[i]) {
+                texList.add(LLSD.uuid(oid))
+                anyTex = true
+            } else {
+                texList.add(LLSD.Undefined)
+            }
+        }
+        if (anyTex) map["tex"] = LLSD.ofArray(texList)
+
+        if (overrideMat.baseColor != getDefaultBaseColor()) {
+            map["bc"] = LLSD.ofArray(listOf(
+                LLSD.real(overrideMat.baseColor.r.toDouble()),
+                LLSD.real(overrideMat.baseColor.g.toDouble()),
+                LLSD.real(overrideMat.baseColor.b.toDouble()),
+                LLSD.real(overrideMat.baseColor.a.toDouble()),
+            ))
+        }
+
+        if (overrideMat.emissiveColor != getDefaultEmissiveColor()) {
+            map["ec"] = LLSD.ofArray(listOf(
+                LLSD.real(overrideMat.emissiveColor.x.toDouble()),
+                LLSD.real(overrideMat.emissiveColor.y.toDouble()),
+                LLSD.real(overrideMat.emissiveColor.z.toDouble()),
+            ))
+        }
+
+        if (overrideMat.metallicFactor != getDefaultMetallicFactor()) {
+            map["mf"] = LLSD.real(overrideMat.metallicFactor.toDouble())
+        }
+
+        if (overrideMat.roughnessFactor != getDefaultRoughnessFactor()) {
+            map["rf"] = LLSD.real(overrideMat.roughnessFactor.toDouble())
+        }
+
+        if (overrideMat.alphaMode != getDefaultAlphaMode() || overrideMat.overrideAlphaMode) {
+            map["am"] = LLSD.integer(overrideMat.alphaMode.ordinal)
+        }
+
+        if (overrideMat.alphaCutoff != getDefaultAlphaCutoff()) {
+            map["ac"] = LLSD.real(overrideMat.alphaCutoff.toDouble())
+        }
+
+        if (overrideMat.doubleSided != getDefaultDoubleSided() || overrideMat.overrideDoubleSided) {
+            map["ds"] = LLSD.bool(overrideMat.doubleSided)
+        }
+
+        val tiList = mutableListOf<LLSD>()
+        var anyTi = false
+        for (i in 0 until TextureInfo.COUNT) {
+            val tiMap = mutableMapOf<String, LLSD>()
+            if (overrideMat.textureTransform[i].offset != getDefaultTextureOffset()) {
+                tiMap["o"] = LLSD.ofArray(listOf(
+                    LLSD.real(overrideMat.textureTransform[i].offset.x.toDouble()),
+                    LLSD.real(overrideMat.textureTransform[i].offset.y.toDouble()),
+                ))
+                anyTi = true
+            }
+            if (overrideMat.textureTransform[i].scale != getDefaultTextureScale()) {
+                tiMap["s"] = LLSD.ofArray(listOf(
+                    LLSD.real(overrideMat.textureTransform[i].scale.x.toDouble()),
+                    LLSD.real(overrideMat.textureTransform[i].scale.y.toDouble()),
+                ))
+                anyTi = true
+            }
+            if (overrideMat.textureTransform[i].rotation != getDefaultTextureRotation()) {
+                tiMap["r"] = LLSD.real(overrideMat.textureTransform[i].rotation.toDouble())
+                anyTi = true
+            }
+            tiList.add(LLSD.ofMap(tiMap))
+        }
+        if (anyTi) map["ti"] = LLSD.ofArray(tiList)
+
+        return LLSD.ofMap(map)
     }
 
     /**
@@ -420,7 +575,7 @@ open class GLTFMaterial {
     }
 
     open fun updateTextureTracking() {
-        System.err.println("GLTFMaterial: updateTextureTracking not yet implemented")
+        // Base-class no-op; subclasses override to notify the texture manager.
     }
 
     open fun addTextureEntry(te: Any?) { /* subclass hook */ }
@@ -438,22 +593,41 @@ open class GLTFMaterial {
 
     // ---- JSON (de)serialisation ---------------------------------------
 
-    /** Load this material from a JSON string (requires TinyGLTF, stubbed). */
-    fun fromJSON(json: String): Triple<Boolean, String, String> {
-        System.err.println("GLTFMaterial: fromJSON not yet implemented")
-        return Triple(false, "", "")
-    }
+    /** Load this material from a JSON string (requires TinyGLTF, not available in this module). */
+    fun fromJSON(json: String): Triple<Boolean, String, String> =
+        Triple(false, "", "GLTFMaterial.fromJSON: TinyGLTF is not available in this module")
 
-    /** Serialise this material to a GLTF JSON string (requires TinyGLTF, stubbed). */
-    fun asJSON(prettyprint: Boolean = false): String {
-        System.err.println("GLTFMaterial: asJSON not yet implemented")
-        return ""
-    }
+    /** Serialise this material to a GLTF JSON string (requires TinyGLTF, not available in this module). */
+    fun asJSON(prettyprint: Boolean = false): String = ""
 
-    /** Compute a content-hash UUID for this material. */
+    /** Compute a content-hash UUID for this material using MD5. */
     fun getHash(): LLUUID {
-        System.err.println("GLTFMaterial: getHash not yet implemented")
-        return LLUUID.NULL
+        val md5 = java.security.MessageDigest.getInstance("MD5")
+        val bb = java.nio.ByteBuffer.allocate(512)
+        for (i in 0 until TextureInfo.COUNT) {
+            bb.put(textureId[i].toBytes())
+        }
+        for (i in 0 until TextureInfo.COUNT) {
+            bb.putFloat(textureTransform[i].offset.x)
+            bb.putFloat(textureTransform[i].offset.y)
+            bb.putFloat(textureTransform[i].scale.x)
+            bb.putFloat(textureTransform[i].scale.y)
+            bb.putFloat(textureTransform[i].rotation)
+        }
+        bb.putFloat(baseColor.r)
+        bb.putFloat(baseColor.g)
+        bb.putFloat(baseColor.b)
+        bb.putFloat(baseColor.a)
+        bb.putFloat(emissiveColor.x)
+        bb.putFloat(emissiveColor.y)
+        bb.putFloat(emissiveColor.z)
+        bb.putFloat(metallicFactor)
+        bb.putFloat(roughnessFactor)
+        bb.putFloat(alphaCutoff)
+        bb.putInt(alphaMode.ordinal)
+        bb.put(if (doubleSided) 1 else 0)
+        md5.update(bb.array(), 0, bb.position())
+        return LLUUID.fromBytes(md5.digest()) ?: LLUUID.NULL
     }
 
     // ---- Equality ------------------------------------------------------

@@ -248,13 +248,13 @@ class KeyframeStandMotion(id: LLUUID) : KeyframeMotion(id) {
 // Private extension helpers
 // ---------------------------------------------------------------------------
 
-private fun Quaternion.dot(other: Quaternion): Float {
-    // Quaternion dot product: w*w + x*x + y*y + z*z
-    // Assumes Quaternion exposes w, x, y, z components.
-    // If those fields are named differently, adjust accordingly.
-    return 0f
-}
+private fun Quaternion.dot(other: Quaternion): Float =
+    this.x * other.x + this.y * other.y + this.z * other.z + this.w * other.w
 
-private fun Quaternion.normalized(): Quaternion = Quaternion()
+private fun Quaternion.normalized(): Quaternion {
+    val copy = Quaternion(x, y, z, w)
+    copy.normalize()
+    return copy
+}
 
 private fun Vector3.lengthSquared(): Float = x * x + y * y + z * z

@@ -10,6 +10,9 @@
 
 package com.firestorm.llprimitive
 
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
+
 // ---------------------------------------------------------------------------
 // TextureAnim – animated texture parameters
 // ---------------------------------------------------------------------------
@@ -112,18 +115,50 @@ data class TextureAnim(
      *
      * Mirrors LLTextureAnim::packTAMessage(LLDataPacker&).
      */
+    /**
+     * Serialise this animation into a 16-byte little-endian [ByteArray].
+     *
+     * Wire layout (matches C++ LLTextureAnim::packTAMessage):
+     *   [0]    mode   (U8)
+     *   [1]    face   (S8)
+     *   [2]    sizeX  (U8)
+     *   [3]    sizeY  (U8)
+     *   [4-7]  start  (F32 LE)
+     *   [8-11] length (F32 LE)
+     *  [12-15] rate   (F32 LE)
+     */
     fun packTAMessage(): ByteArray {
-        System.err.println("TextureAnim: packTAMessage not yet implemented")
-        return ByteArray(0)
+        val buf = ByteBuffer.allocate(BLOCK_SIZE).order(ByteOrder.LITTLE_ENDIAN)
+        buf.put(mode.toByte())
+        buf.put(face)
+        buf.put(sizeX.toByte())
+        buf.put(sizeY.toByte())
+        buf.putFloat(start)
+        buf.putFloat(length)
+        buf.putFloat(rate)
+        return buf.array()
     }
 
     /**
      * Deserialise from a 16-byte little-endian [ByteArray].
      *
-     * Mirrors LLTextureAnim::unpackTAMessage(LLDataPacker&).
-     * Applies minimum tile-size clamping depending on [TAM_SMOOTH] flag.
+     * Wire layout matches [packTAMessage]. Tile sizes are clamped to >= 1
+     * unless [TAM_SMOOTH] is set, in which case they may be 0.
      */
     fun unpackTAMessage(data: ByteArray) {
-        System.err.println("TextureAnim: unpackTAMessage not yet implemented")
+        require(data.size >= BLOCK_SIZE) { "TextureAnim data too short: ${data.size} < $BLOCK_SIZE" }
+        val buf = ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN)
+        mode   = buf.get().toUByte()
+        face   = buf.get()
+        sizeX  = buf.get().toUByte()
+        sizeY  = buf.get().toUByte()
+        start  = buf.float
+        length = buf.float
+        rate   = buf.float
+        // Clamp tile sizes: must be >= 1 unless TAM_SMOOTH is set
+        if (!isSmooth()) {
+            if (sizeX.toUInt() == 0u) sizeX = 1u
+            if (sizeY.toUInt() == 0u) sizeY = 1u
+        }
     }
 }

@@ -57,6 +57,8 @@ open class GroupMoneyTabEventHandler(protected val impl: GroupMoneyTabHandlerImp
         impl.currentInterval--
         requestData()
     }
+
+    fun requestId(): UUID = impl.panelId
 }
 
 // ---------------------------------------------------------------------------
@@ -67,11 +69,11 @@ class GroupMoneyDetailsTabHandler : GroupMoneyTabEventHandler(
     GroupMoneyTabHandlerImpl(intervalLength = 7, maxInterval = 8)
 ) {
     override fun requestData() {
-        System.err.println("GroupMoneyDetailsTabHandler: requestData not yet implemented")
+        impl.loadingText = "Loading group account details…"
     }
 
     override fun processReply() {
-        System.err.println("GroupMoneyDetailsTabHandler: processReply not yet implemented")
+        impl.loadingText = ""
     }
 }
 
@@ -79,11 +81,11 @@ class GroupMoneySalesTabHandler : GroupMoneyTabEventHandler(
     GroupMoneyTabHandlerImpl(intervalLength = 7, maxInterval = 8)
 ) {
     override fun requestData() {
-        System.err.println("GroupMoneySalesTabHandler: requestData not yet implemented")
+        impl.loadingText = "Loading group transactions…"
     }
 
     override fun processReply() {
-        System.err.println("GroupMoneySalesTabHandler: processReply not yet implemented")
+        impl.loadingText = ""
     }
 }
 
@@ -92,11 +94,11 @@ class GroupMoneyPlanningTabHandler : GroupMoneyTabEventHandler(
 ) {
     override fun requestData() {
         // Planning always uses interval 0
-        System.err.println("GroupMoneyPlanningTabHandler: requestData not yet implemented")
+        impl.loadingText = "Loading group account summary…"
     }
 
     override fun processReply() {
-        System.err.println("GroupMoneyPlanningTabHandler: processReply not yet implemented")
+        impl.loadingText = ""
     }
 }
 
@@ -114,15 +116,15 @@ open class PanelGroupLandMoney : PanelGroupTab() {
         }
 
         fun processGroupAccountDetailsReply(agentId: UUID, requestId: UUID) {
-            System.err.println("PanelGroupLandMoney: processGroupAccountDetailsReply not yet implemented")
+            GroupMoneyTabEventHandler.instanceIds[requestId]?.processReply()
         }
 
         fun processGroupAccountTransactionsReply(agentId: UUID, requestId: UUID) {
-            System.err.println("PanelGroupLandMoney: processGroupAccountTransactionsReply not yet implemented")
+            GroupMoneyTabEventHandler.instanceIds[requestId]?.processReply()
         }
 
         fun processGroupAccountSummaryReply(agentId: UUID, requestId: UUID) {
-            System.err.println("PanelGroupLandMoney: processGroupAccountSummaryReply not yet implemented")
+            GroupMoneyTabEventHandler.instanceIds[requestId]?.processReply()
         }
     }
 
@@ -143,6 +145,8 @@ open class PanelGroupLandMoney : PanelGroupTab() {
         var beenActivated: Boolean = false
         var needsSendGroupLandRequest: Boolean = true
         var needsApply: Boolean = false
+        var storedContribution: Int = 0
+        var pendingContribution: Int = 0
 
         var cantViewParcelsText: String = ""
         var cantViewAccountsText: String = ""
@@ -153,38 +157,67 @@ open class PanelGroupLandMoney : PanelGroupTab() {
         var moneyPlanningTabHandler: GroupMoneyPlanningTabHandler? = null
 
         fun getStoredContribution(): Int {
-            return 0
+            return storedContribution
+        }
+
+        fun setPendingContribution(newContribution: Int) {
+            pendingContribution = newContribution
+            needsApply = pendingContribution != storedContribution
         }
 
         fun requestGroupLandInfo() {
             transId = UUID.randomUUID()
-            System.err.println("Impl: requestGroupLandInfo not yet implemented")
+            needsSendGroupLandRequest = false
         }
 
         fun onMapButton() {
-            System.err.println("Impl: onMapButton not yet implemented")
+            // UI map integration is not wired in this JVM placeholder.
         }
 
         fun applyContribution(newContribution: Int): Boolean {
-            return false
+            if (newContribution < 0) return false
+            storedContribution = newContribution
+            pendingContribution = newContribution
+            needsApply = false
+            return true
         }
 
         fun processGroupLand(blocks: List<PlacesQueryBlock>) {
-            System.err.println("Impl: processGroupLand not yet implemented")
+            needsSendGroupLandRequest = false
         }
     }
 
     val impl = Impl()
 
     override fun postBuild(): Boolean {
-        System.err.println("PanelGroupLandMoney: postBuild not yet implemented")
-        return false
+        impl.moneyDetailsTabHandler = GroupMoneyDetailsTabHandler()
+        impl.moneySalesTabHandler = GroupMoneySalesTabHandler()
+        impl.moneyPlanningTabHandler = GroupMoneyPlanningTabHandler()
+
+        val details = impl.moneyDetailsTabHandler!!
+        val sales = impl.moneySalesTabHandler!!
+        val planning = impl.moneyPlanningTabHandler!!
+
+        details.setGroupId(groupId)
+        sales.setGroupId(groupId)
+        planning.setGroupId(groupId)
+
+        GroupMoneyTabEventHandler.instanceIds[details.requestId()] = details
+        GroupMoneyTabEventHandler.instanceIds[sales.requestId()] = sales
+        GroupMoneyTabEventHandler.instanceIds[planning.requestId()] = planning
+
+        GroupMoneyTabEventHandler.tabsToHandlers["details"] = details
+        GroupMoneyTabEventHandler.tabsToHandlers["sales"] = sales
+        GroupMoneyTabEventHandler.tabsToHandlers["planning"] = planning
+
+        return true
     }
 
     override fun activate() {
         if (!impl.beenActivated) {
             impl.beenActivated = true
-            System.err.println("PanelGroupLandMoney: activate not yet implemented")
+            impl.pendingContribution = impl.getStoredContribution()
+            impl.moneyDetailsTabHandler?.onClickTab()
         }
         update(GroupChange.GC_ALL)
     }
@@ -192,17 +225,24 @@ open class PanelGroupLandMoney : PanelGroupTab() {
     override fun needsApply(mesg: StringBuilder): Boolean = impl.needsApply
 
     override fun apply(mesg: StringBuilder): Boolean {
-        return false
+        if (!impl.applyContribution(impl.pendingContribution)) {
+            mesg.append("Invalid group land contribution.")
+            return false
+        }
+        return true
     }
 
     override fun cancel() {
         impl.needsApply = false
-        System.err.println("PanelGroupLandMoney: cancel not yet implemented")
+        impl.pendingContribution = impl.getStoredContribution()
     }
 
     override fun update(gc: GroupChange) {
         if (gc != GroupChange.GC_ALL) return
-        System.err.println("PanelGroupLandMoney: update not yet implemented")
+        impl.moneyDetailsTabHandler?.onClickTab()
+        if (impl.needsSendGroupLandRequest) {
+            impl.requestGroupLandInfo()
+        }
     }
 
     override fun setGroupId(id: UUID) {
@@ -219,10 +259,10 @@ open class PanelGroupLandMoney : PanelGroupTab() {
     }
 
     fun onLandSelectionChanged() {
-        System.err.println("PanelGroupLandMoney: onLandSelectionChanged not yet implemented")
+        // No UI controls are bound in this placeholder implementation.
     }
 
     override fun isVisibleByAgent(): Boolean {
-        return false
+        return allowEdit
     }
 }

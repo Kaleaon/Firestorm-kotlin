@@ -1,6 +1,14 @@
 package com.firestorm.llcrashlogger
 
+import com.firestorm.llfilesystem.ELLPath
+import com.firestorm.llfilesystem.gDirUtilp
+import java.beans.XMLDecoder
+import java.beans.XMLEncoder
+import java.io.BufferedInputStream
+import java.io.BufferedOutputStream
 import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
 
 class CrashLock {
     private var cleanUp: Boolean = true
@@ -19,7 +27,7 @@ class CrashLock {
 
     fun requestMaster(timeout: Float = 300.0f): Boolean {
         if (master.isEmpty()) {
-            master = ""
+            master = gDirUtilp.getExpandedFilename(ELLPath.LL_PATH_LOGS, "crash_master.lock")
         }
 
         val lockSd = getLockFile(master)
@@ -59,7 +67,7 @@ class CrashLock {
 
     fun getProcessList(): Map<String, Any> {
         if (dumpTable.isEmpty()) {
-            dumpTable = ""
+            dumpTable = gDirUtilp.getExpandedFilename(ELLPath.LL_PATH_LOGS, "crash_table.lock")
         }
         return getLockFile(dumpTable)
     }
@@ -79,7 +87,13 @@ class CrashLock {
         val file = File(filename)
         if (!file.exists()) return mutableMapOf()
         return try {
-            mutableMapOf()
+            BufferedInputStream(FileInputStream(file)).use { stream ->
+                XMLDecoder(stream).use { decoder ->
+                    val decoded = decoder.readObject()
+                    @Suppress("UNCHECKED_CAST")
+                    (normalizeDecoded(decoded) as? Map<String, Any>)?.toMutableMap() ?: mutableMapOf()
+                }
+            }
         } catch (_: Exception) {
             mutableMapOf()
         }
@@ -87,10 +101,51 @@ class CrashLock {
 
     private fun putLockFile(filename: String, data: Map<String, Any>): Boolean {
         return try {
-            false
+            val file = File(filename)
+            file.parentFile?.mkdirs()
+            BufferedOutputStream(FileOutputStream(file)).use { stream ->
+                XMLEncoder(stream).use { encoder ->
+                    encoder.writeObject(prepareForEncoding(data))
+                }
+            }
+            true
         } catch (_: Exception) {
             false
         }
+    }
+
+    private fun prepareForEncoding(value: Any?): Any? = when (value) {
+        is Map<*, *> -> LinkedHashMap<String, Any?>().also { out ->
+            value.forEach { (k, v) ->
+                if (k != null) {
+                    val encoded = prepareForEncoding(v)
+                    if (encoded != null) out[k.toString()] = encoded
+                }
+            }
+        }
+        is Iterable<*> -> ArrayList<Any?>().also { out ->
+            value.forEach {
+                val encoded = prepareForEncoding(it)
+                if (encoded != null) out.add(encoded)
+            }
+        }
+        else -> value
+    }
+
+    private fun normalizeDecoded(value: Any?): Any? = when (value) {
+        is Map<*, *> -> LinkedHashMap<String, Any>().also { out ->
+            value.forEach { (k, v) ->
+                if (k != null) {
+                    val normalized = normalizeDecoded(v)
+                    if (normalized != null) out[k.toString()] = normalized
+                }
+            }
+        }
+        is List<*> -> value.mapNotNull { normalizeDecoded(it) }
+        is Float -> value
+        is Double -> value
+        is Number -> value.toLong()
+        else -> value
     }
 
     private fun executableFilename(): String {

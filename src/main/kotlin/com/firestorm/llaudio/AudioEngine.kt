@@ -30,8 +30,11 @@ data class SoundData(
 abstract class AudioEngine {
     // ---- state ---------------------------------------------------------------
 
+    @set:JvmName("setMutedProp")
     protected var muted: Boolean      = false
+    @set:JvmName("setMasterGainProp")
     protected var masterGain: Float   = 1f
+    @set:JvmName("setInternalGainProp")
     protected var internalGain: Float = 1f
     protected var enableWind: Boolean = false
     var maxWindGain: Float            = 1f
@@ -81,14 +84,10 @@ abstract class AudioEngine {
         setInternalGain(if (muted) 0f else masterGain)
     }
 
-    fun getMasterGain(): Float = masterGain
-
     fun setMuted(muted: Boolean) {
         this.muted = muted
         setInternalGain(if (muted) 0f else masterGain)
     }
-
-    fun getMuted(): Boolean = muted
 
     fun setSecondaryGain(type: Int, gain: Float) {
         if (type in secondaryGain.indices) secondaryGain[type] = gain.coerceIn(0f, 1f)

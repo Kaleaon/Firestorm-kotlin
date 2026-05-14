@@ -80,6 +80,12 @@ data class DIBHeader(
  */
 class ImageBMP : ImageFormatted(ImageCodecType.BMP) {
 
+    // ---- decoded image dimensions --------------------------------------------
+
+    private var imageWidth: Int = 0
+    private var imageHeight: Int = 0
+    private var imageComponents: Int = 0
+
     // ---- internal parsing state (mirrors C++ protected fields) --------------
 
     /** Number of entries in [colorPalette]; 0 when no palette is present. */
@@ -222,9 +228,10 @@ class ImageBMP : ImageFormatted(ImageCodecType.BMP) {
         }
 
         // Mirror C++ setSize(width, height, components)
-        // (ImageFormatted subclasses track dimensions separately; stub here)
-        System.err.println("ImageBMP: updateData not yet implemented")
-        return false
+        imageWidth = width
+        imageHeight = height
+        imageComponents = components
+        return true
     }
 
     /**
@@ -248,8 +255,30 @@ class ImageBMP : ImageFormatted(ImageCodecType.BMP) {
             setLastError("ImageBMP trying to decode an image with no data!")
             return false
         }
-        System.err.println("ImageBMP: decode not yet implemented")
-        return false
+        return try {
+            val img = javax.imageio.ImageIO.read(java.io.ByteArrayInputStream(data))
+                ?: run { setLastError("ImageBMP: ImageIO failed to decode BMP data"); return false }
+            val w = img.width
+            val h = img.height
+            val components = rawImage.components.let { if (it > 0) it else 3 }
+            val pixels = ByteArray(w * h * components)
+            var idx = 0
+            val rows = if (originAtTop) 0 until h else h - 1 downTo 0
+            for (y in rows) {
+                for (x in 0 until w) {
+                    val pixel = img.getRGB(x, y)
+                    pixels[idx++] = ((pixel shr 16) and 0xFF).toByte()
+                    pixels[idx++] = ((pixel shr 8) and 0xFF).toByte()
+                    pixels[idx++] = (pixel and 0xFF).toByte()
+                    if (components == 4) pixels[idx++] = ((pixel shr 24) and 0xFF).toByte()
+                }
+            }
+            pixels.copyInto(rawImage.data, 0, 0, minOf(pixels.size, rawImage.data.size))
+            true
+        } catch (e: Exception) {
+            setLastError(e.message ?: "ImageBMP decode failed")
+            false
+        }
     }
 
     /**
@@ -265,8 +294,29 @@ class ImageBMP : ImageFormatted(ImageCodecType.BMP) {
      */
     override fun encode(rawImage: ImageRaw, encodeTime: Float): Boolean {
         resetLastError()
-        System.err.println("ImageBMP: encode not yet implemented")
-        return false
+        return try {
+            val imgType = if (rawImage.components == 4) java.awt.image.BufferedImage.TYPE_INT_ARGB
+                          else java.awt.image.BufferedImage.TYPE_INT_RGB
+            val img = java.awt.image.BufferedImage(rawImage.width, rawImage.height, imgType)
+            var idx = 0
+            for (y in 0 until rawImage.height) {
+                for (x in 0 until rawImage.width) {
+                    val r = rawImage.data.getOrElse(idx)   { 0 }.toInt() and 0xFF
+                    val g = rawImage.data.getOrElse(idx+1) { 0 }.toInt() and 0xFF
+                    val b = rawImage.data.getOrElse(idx+2) { 0 }.toInt() and 0xFF
+                    val a = if (rawImage.components == 4) rawImage.data.getOrElse(idx+3) { -1 }.toInt() and 0xFF else 0xFF
+                    img.setRGB(x, y, (a shl 24) or (r shl 16) or (g shl 8) or b)
+                    idx += rawImage.components
+                }
+            }
+            val baos = java.io.ByteArrayOutputStream()
+            javax.imageio.ImageIO.write(img, "bmp", baos)
+            data = baos.toByteArray()
+            true
+        } catch (e: Exception) {
+            setLastError(e.message ?: "ImageBMP encode failed")
+            false
+        }
     }
 
     // ---- private decode helpers (correspond to C++ protected methods) -------
@@ -279,8 +329,27 @@ class ImageBMP : ImageFormatted(ImageCodecType.BMP) {
      * Rows are padded to the next 4-byte boundary in the source.
      */
     private fun decodeColorTable8(dst: ByteArray, src: ByteArray, srcOffset: Int): Boolean {
-        System.err.println("ImageBMP: decodeColorTable8 not yet implemented")
-        return false
+        val palette = colorPalette ?: return false
+        val rowStride = imageWidth
+        val rowPad = (4 - (rowStride % 4)) % 4
+        var s = srcOffset
+        var d = 0
+        for (row in 0 until imageHeight) {
+            for (col in 0 until imageWidth) {
+                val idx = src.getOrElse(s++) { 0 }.toInt() and 0xFF
+                val pi = idx * 4
+                val b = palette.getOrElse(pi)   { 0 }.toInt() and 0xFF
+                val g = palette.getOrElse(pi+1) { 0 }.toInt() and 0xFF
+                val r = palette.getOrElse(pi+2) { 0 }.toInt() and 0xFF
+                if (d + 2 < dst.size) {
+                    dst[d++] = r.toByte()
+                    dst[d++] = g.toByte()
+                    dst[d++] = b.toByte()
+                }
+            }
+            s += rowPad
+        }
+        return true
     }
 
     /**
@@ -288,8 +357,29 @@ class ImageBMP : ImageFormatted(ImageCodecType.BMP) {
      * Defaults to 5-5-5 (RGB555) if no masks are provided.
      */
     private fun decodeColorMask16(dst: ByteArray, src: ByteArray, srcOffset: Int): Boolean {
-        System.err.println("ImageBMP: decodeColorMask16 not yet implemented")
-        return false
+        val rMask = if (bitfieldMask[0] != 0) bitfieldMask[0] else 0x7C00
+        val gMask = if (bitfieldMask[1] != 0) bitfieldMask[1] else 0x03E0
+        val bMask = if (bitfieldMask[2] != 0) bitfieldMask[2] else 0x001F
+        val rShift = countTrailingZeros(rMask)
+        val gShift = countTrailingZeros(gMask)
+        val bShift = countTrailingZeros(bMask)
+        val rowBytes = imageWidth * 2
+        val rowPad = (4 - (rowBytes % 4)) % 4
+        var s = srcOffset; var d = 0
+        for (row in 0 until imageHeight) {
+            for (col in 0 until imageWidth) {
+                val lo = src.getOrElse(s++) { 0 }.toInt() and 0xFF
+                val hi = src.getOrElse(s++) { 0 }.toInt() and 0xFF
+                val word = lo or (hi shl 8)
+                if (d + 2 < dst.size) {
+                    dst[d++] = (((word and rMask) ushr rShift) shl (8 - Integer.bitCount(rMask))).coerceIn(0,255).toByte()
+                    dst[d++] = (((word and gMask) ushr gShift) shl (8 - Integer.bitCount(gMask))).coerceIn(0,255).toByte()
+                    dst[d++] = (((word and bMask) ushr bShift) shl (8 - Integer.bitCount(bMask))).coerceIn(0,255).toByte()
+                }
+            }
+            s += rowPad
+        }
+        return true
     }
 
     /**
@@ -298,8 +388,19 @@ class ImageBMP : ImageFormatted(ImageCodecType.BMP) {
      * Rows are padded to the next 4-byte boundary in the source.
      */
     private fun decodeTruecolor24(dst: ByteArray, src: ByteArray, srcOffset: Int): Boolean {
-        System.err.println("ImageBMP: decodeTruecolor24 not yet implemented")
-        return false
+        val rowBytes = imageWidth * 3
+        val rowPad = (4 - (rowBytes % 4)) % 4
+        var s = srcOffset; var d = 0
+        for (row in 0 until imageHeight) {
+            for (col in 0 until imageWidth) {
+                val b = src.getOrElse(s++) { 0 }
+                val g = src.getOrElse(s++) { 0 }
+                val r = src.getOrElse(s++) { 0 }
+                if (d + 2 < dst.size) { dst[d++] = r; dst[d++] = g; dst[d++] = b }
+            }
+            s += rowPad
+        }
+        return true
     }
 
     /**
@@ -308,8 +409,26 @@ class ImageBMP : ImageFormatted(ImageCodecType.BMP) {
      * Alpha channel is not carried through (matches C++ comment "alpha is not supported").
      */
     private fun decodeColorMask32(dst: ByteArray, src: ByteArray, srcOffset: Int): Boolean {
-        System.err.println("ImageBMP: decodeColorMask32 not yet implemented")
-        return false
+        val rMask = if (bitfieldMask[0] != 0) bitfieldMask[0] else 0x00FF0000
+        val gMask = if (bitfieldMask[1] != 0) bitfieldMask[1] else 0x0000FF00
+        val bMask = if (bitfieldMask[2] != 0) bitfieldMask[2] else 0x000000FF
+        val rShift = countTrailingZeros(rMask)
+        val gShift = countTrailingZeros(gMask)
+        val bShift = countTrailingZeros(bMask)
+        var s = srcOffset; var d = 0
+        for (i in 0 until imageWidth * imageHeight) {
+            val b0 = src.getOrElse(s++) { 0 }.toInt() and 0xFF
+            val b1 = src.getOrElse(s++) { 0 }.toInt() and 0xFF
+            val b2 = src.getOrElse(s++) { 0 }.toInt() and 0xFF
+            val b3 = src.getOrElse(s++) { 0 }.toInt() and 0xFF
+            val dword = b0 or (b1 shl 8) or (b2 shl 16) or (b3 shl 24)
+            if (d + 2 < dst.size) {
+                dst[d++] = ((dword and rMask) ushr rShift).coerceIn(0,255).toByte()
+                dst[d++] = ((dword and gMask) ushr gShift).coerceIn(0,255).toByte()
+                dst[d++] = ((dword and bMask) ushr bShift).coerceIn(0,255).toByte()
+            }
+        }
+        return true
     }
 
     /**

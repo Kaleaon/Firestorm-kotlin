@@ -1,5 +1,18 @@
 package com.firestorm.llcorehttp
 
+import com.firestorm.llcommon.LLSD
+import com.firestorm.llcommon.LLSDSerialize
+import com.firestorm.llcommon.llinfos
+import com.firestorm.llcommon.llwarns
+import java.io.File
+import java.net.URI
+import java.net.http.HttpClient
+import java.net.http.HttpRequest
+import java.net.http.HttpResponse
+import java.time.Duration
+import java.util.concurrent.Executors
+import java.util.concurrent.atomic.AtomicLong
+
 const val HTTP_REQUEST_EXPIRY_SECS: Float = 60.0f
 
 typealias CompletionCallback = (Map<String, Any?>) -> Unit
@@ -11,6 +24,48 @@ private const val HTTP_LOGBODY_KEY = "HTTPLogBodyOnError"
 private var boolSettingGet: BoolSettingQuery? = null
 private var boolSettingPut: BoolSettingUpdate? = null
 
+/** Monotonically increasing request ID counter used by fire-and-forget HTTP methods. */
+private val requestIdCounter = AtomicLong(0)
+
+/** Shared HTTP client used for all blocking requests. */
+private val httpClient: HttpClient = HttpClient.newBuilder()
+    .connectTimeout(Duration.ofSeconds(HTTP_REQUEST_EXPIRY_SECS.toLong()))
+    .build()
+
+/** Shared thread pool for fire-and-forget async HTTP requests. */
+private val httpExecutor = Executors.newCachedThreadPool { r ->
+    Thread(r).also { it.isDaemon = true }
+}
+
+// ── LLSD ↔ Map conversion helpers ──────────────────────────────────────────
+
+private fun llsdToAny(sd: LLSD): Any? = when (sd) {
+    is LLSD.Undefined      -> null
+    is LLSD.LLSDBoolean    -> sd.value
+    is LLSD.LLSDInteger    -> sd.value
+    is LLSD.LLSDReal       -> sd.value
+    is LLSD.LLSDString     -> sd.value
+    is LLSD.LLSDUUID       -> sd.value.toString()
+    is LLSD.LLSDDate       -> sd.value.toISOString()
+    is LLSD.LLSDURI        -> sd.value.asString()
+    is LLSD.LLSDBinary     -> sd.value
+    is LLSD.LLSDMap        -> sd.value.mapValues { llsdToAny(it.value) }
+    is LLSD.LLSDArray      -> sd.value.map { llsdToAny(it) }
+}
+
+private fun anyToLLSD(v: Any?): LLSD = when (v) {
+    null            -> LLSD.Undefined
+    is Boolean      -> LLSD.LLSDBoolean(v)
+    is Int          -> LLSD.LLSDInteger(v)
+    is Long         -> LLSD.LLSDInteger(v.toInt())
+    is Double       -> LLSD.LLSDReal(v)
+    is Float        -> LLSD.LLSDReal(v.toDouble())
+    is String       -> LLSD.LLSDString(v)
+    is Map<*, *>    -> LLSD.LLSDMap((v as Map<String, Any?>).mapValues { anyToLLSD(it.value) })
+    is List<*>      -> LLSD.LLSDArray(v.map { anyToLLSD(it) })
+    else            -> LLSD.LLSDString(v.toString())
+}
+
 fun setPropertyMethods(queryfn: BoolSettingQuery, updatefn: BoolSettingUpdate) {
     boolSettingGet = queryfn
     boolSettingPut = updatefn
@@ -19,14 +74,45 @@ fun setPropertyMethods(queryfn: BoolSettingQuery, updatefn: BoolSettingUpdate) {
 
 fun responseToLLSD(body: ByteArray, log: Boolean): Map<String, Any?>? {
     if (body.isEmpty()) return null
-    System.err.println("CoreHttpUtil: responseToLLSD not yet implemented")
-    return null
+    return try {
+        val xml = body.toString(Charsets.UTF_8)
+        val sd = LLSDSerialize.fromXML(xml)
+        @Suppress("UNCHECKED_CAST")
+        llsdToAny(sd) as? Map<String, Any?>
+    } catch (e: Exception) {
+        if (log) llwarns("CoreHttpUtil") { "responseToLLSD: parse failed: ${e.message}" }
+        null
+    }
 }
 
 fun responseToString(body: ByteArray?): String {
     if (body == null || body.isEmpty()) return "[Empty]"
-    System.err.println("CoreHttpUtil: responseToString not yet implemented")
-    return ""
+    return try {
+        val llsd = LLSDSerialize.fromXML(body.toString(Charsets.UTF_8))
+        LLSDSerialize.toXML(llsd).take(1024)
+    } catch (e: Exception) {
+        body.toString(Charsets.UTF_8).take(1024)
+    }
+}
+
+private fun llsdBodyPublisher(body: Map<String, Any?>): HttpRequest.BodyPublisher {
+    val sd = anyToLLSD(body)
+    // LLSDSerialize.toXML already produces the full <llsd>…</llsd> document.
+    val xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n${LLSDSerialize.toXML(sd)}"
+    return HttpRequest.BodyPublishers.ofString(xml)
+}
+
+private fun buildResult(url: String, resp: HttpResponse<ByteArray>): Map<String, Any?> {
+    val status = HttpStatus(0, resp.statusCode())
+    val result = mutableMapOf<String, Any?>()
+    val body = resp.body()
+    if (status.success) {
+        val parsed = responseToLLSD(body, false)
+        if (parsed != null) result.putAll(parsed)
+        else result[HttpCoroutineAdapter.HTTP_RESULTS_CONTENT] = body.toString(Charsets.UTF_8)
+    }
+    HttpCoroHandler.writeStatusCodes(status, url, result)
+    return result
 }
 
 fun requestPostWithLLSD(
@@ -36,8 +122,21 @@ fun requestPostWithLLSD(
     options: Map<String, Any?> = emptyMap(),
     handler: ((Map<String, Any?>) -> Unit)? = null
 ): Long {
-    System.err.println("CoreHttpUtil: requestPostWithLLSD not yet implemented")
-    return 0L
+    val id = requestIdCounter.incrementAndGet()
+    httpExecutor.submit {
+        try {
+            var reqBuilder = HttpRequest.newBuilder(URI.create(url))
+                .header("Content-Type", "application/llsd+xml")
+                .POST(llsdBodyPublisher(body))
+                .timeout(Duration.ofSeconds(HTTP_REQUEST_EXPIRY_SECS.toLong()))
+            headers.forEach { (k, v) -> reqBuilder = reqBuilder.header(k, v) }
+            val resp = httpClient.send(reqBuilder.build(), HttpResponse.BodyHandlers.ofByteArray())
+            handler?.invoke(buildResult(url, resp))
+        } catch (e: Exception) {
+            llwarns("CoreHttpUtil") { "requestPostWithLLSD failed for $url: ${e.message}" }
+        }
+    }
+    return id
 }
 
 fun requestPutWithLLSD(
@@ -47,8 +146,21 @@ fun requestPutWithLLSD(
     options: Map<String, Any?> = emptyMap(),
     handler: ((Map<String, Any?>) -> Unit)? = null
 ): Long {
-    System.err.println("CoreHttpUtil: requestPutWithLLSD not yet implemented")
-    return 0L
+    val id = requestIdCounter.incrementAndGet()
+    httpExecutor.submit {
+        try {
+            var reqBuilder = HttpRequest.newBuilder(URI.create(url))
+                .header("Content-Type", "application/llsd+xml")
+                .PUT(llsdBodyPublisher(body))
+                .timeout(Duration.ofSeconds(HTTP_REQUEST_EXPIRY_SECS.toLong()))
+            headers.forEach { (k, v) -> reqBuilder = reqBuilder.header(k, v) }
+            val resp = httpClient.send(reqBuilder.build(), HttpResponse.BodyHandlers.ofByteArray())
+            handler?.invoke(buildResult(url, resp))
+        } catch (e: Exception) {
+            llwarns("CoreHttpUtil") { "requestPutWithLLSD failed for $url: ${e.message}" }
+        }
+    }
+    return id
 }
 
 fun requestPatchWithLLSD(
@@ -58,8 +170,21 @@ fun requestPatchWithLLSD(
     options: Map<String, Any?> = emptyMap(),
     handler: ((Map<String, Any?>) -> Unit)? = null
 ): Long {
-    System.err.println("CoreHttpUtil: requestPatchWithLLSD not yet implemented")
-    return 0L
+    val id = requestIdCounter.incrementAndGet()
+    httpExecutor.submit {
+        try {
+            var reqBuilder = HttpRequest.newBuilder(URI.create(url))
+                .header("Content-Type", "application/llsd+xml")
+                .method("PATCH", llsdBodyPublisher(body))
+                .timeout(Duration.ofSeconds(HTTP_REQUEST_EXPIRY_SECS.toLong()))
+            headers.forEach { (k, v) -> reqBuilder = reqBuilder.header(k, v) }
+            val resp = httpClient.send(reqBuilder.build(), HttpResponse.BodyHandlers.ofByteArray())
+            handler?.invoke(buildResult(url, resp))
+        } catch (e: Exception) {
+            llwarns("CoreHttpUtil") { "requestPatchWithLLSD failed for $url: ${e.message}" }
+        }
+    }
+    return id
 }
 
 data class HttpStatus(
@@ -139,13 +264,33 @@ class HttpCoroutineAdapter(
             return HttpStatus(type, status, message, success)
         }
 
+        private fun buildErrorResult(url: String, message: String): Map<String, Any?> = mapOf(
+            HTTP_RESULTS_URL to url,
+            HTTP_RESULTS_SUCCESS to false,
+            HTTP_RESULTS_MESSAGE to message
+        )
+
         fun callbackHttpGet(
             url: String,
             policyId: Int = 0,
             success: CompletionCallback? = null,
             failure: CompletionCallback? = null
         ) {
-            System.err.println("HttpCoroutineAdapter: callbackHttpGet not yet implemented")
+            httpExecutor.submit {
+                try {
+                    val req = HttpRequest.newBuilder(URI.create(url))
+                        .GET()
+                        .timeout(Duration.ofSeconds(HTTP_REQUEST_EXPIRY_SECS.toLong()))
+                        .build()
+                    val resp = httpClient.send(req, HttpResponse.BodyHandlers.ofByteArray())
+                    val result = buildResultStatic(url, resp)
+                    val status = HttpStatus(0, resp.statusCode())
+                    if (status.success) success?.invoke(result) else failure?.invoke(result)
+                } catch (e: Exception) {
+                    llwarns("CoreHttpUtil") { "callbackHttpGet failed for $url: ${e.message}" }
+                    failure?.invoke(buildErrorResult(url, e.message ?: ""))
+                }
+            }
         }
 
         fun callbackHttpPost(
@@ -155,7 +300,22 @@ class HttpCoroutineAdapter(
             success: CompletionCallback? = null,
             failure: CompletionCallback? = null
         ) {
-            System.err.println("HttpCoroutineAdapter: callbackHttpPost not yet implemented")
+            httpExecutor.submit {
+                try {
+                    val req = HttpRequest.newBuilder(URI.create(url))
+                        .header("Content-Type", "application/llsd+xml")
+                        .POST(llsdBodyPublisher(postData))
+                        .timeout(Duration.ofSeconds(HTTP_REQUEST_EXPIRY_SECS.toLong()))
+                        .build()
+                    val resp = httpClient.send(req, HttpResponse.BodyHandlers.ofByteArray())
+                    val result = buildResultStatic(url, resp)
+                    val status = HttpStatus(0, resp.statusCode())
+                    if (status.success) success?.invoke(result) else failure?.invoke(result)
+                } catch (e: Exception) {
+                    llwarns("CoreHttpUtil") { "callbackHttpPost failed for $url: ${e.message}" }
+                    failure?.invoke(buildErrorResult(url, e.message ?: ""))
+                }
+            }
         }
 
         fun callbackHttpDel(
@@ -164,16 +324,78 @@ class HttpCoroutineAdapter(
             success: CompletionCallback? = null,
             failure: CompletionCallback? = null
         ) {
-            System.err.println("HttpCoroutineAdapter: callbackHttpDel not yet implemented")
+            httpExecutor.submit {
+                try {
+                    val req = HttpRequest.newBuilder(URI.create(url))
+                        .DELETE()
+                        .timeout(Duration.ofSeconds(HTTP_REQUEST_EXPIRY_SECS.toLong()))
+                        .build()
+                    val resp = httpClient.send(req, HttpResponse.BodyHandlers.ofByteArray())
+                    val result = buildResultStatic(url, resp)
+                    val status = HttpStatus(0, resp.statusCode())
+                    if (status.success) success?.invoke(result) else failure?.invoke(result)
+                } catch (e: Exception) {
+                    llwarns("CoreHttpUtil") { "callbackHttpDel failed for $url: ${e.message}" }
+                    failure?.invoke(buildErrorResult(url, e.message ?: ""))
+                }
+            }
         }
 
         fun messageHttpGet(url: String, success: String = "", failure: String = "") {
-            System.err.println("HttpCoroutineAdapter: messageHttpGet not yet implemented")
+            httpExecutor.submit {
+                try {
+                    val req = HttpRequest.newBuilder(URI.create(url)).GET()
+                        .timeout(Duration.ofSeconds(HTTP_REQUEST_EXPIRY_SECS.toLong())).build()
+                    val resp = httpClient.send(req, HttpResponse.BodyHandlers.ofByteArray())
+                    if (resp.statusCode() in 200..299) {
+                        if (success.isNotEmpty()) llinfos("CoreHttpUtil") { "GET $url: $success" }
+                    } else {
+                        if (failure.isNotEmpty()) llwarns("CoreHttpUtil") { "GET $url failed (${resp.statusCode()}): $failure" }
+                    }
+                } catch (e: Exception) {
+                    if (failure.isNotEmpty()) llwarns("CoreHttpUtil") { "GET $url exception: ${e.message} — $failure" }
+                }
+            }
         }
 
         fun messageHttpPost(url: String, postData: Map<String, Any?>, success: String, failure: String) {
-            System.err.println("HttpCoroutineAdapter: messageHttpPost not yet implemented")
+            httpExecutor.submit {
+                try {
+                    val req = HttpRequest.newBuilder(URI.create(url))
+                        .header("Content-Type", "application/llsd+xml")
+                        .POST(llsdBodyPublisher(postData))
+                        .timeout(Duration.ofSeconds(HTTP_REQUEST_EXPIRY_SECS.toLong())).build()
+                    val resp = httpClient.send(req, HttpResponse.BodyHandlers.ofByteArray())
+                    if (resp.statusCode() in 200..299) {
+                        if (success.isNotEmpty()) llinfos("CoreHttpUtil") { "POST $url: $success" }
+                    } else {
+                        if (failure.isNotEmpty()) llwarns("CoreHttpUtil") { "POST $url failed (${resp.statusCode()}): $failure" }
+                    }
+                } catch (e: Exception) {
+                    if (failure.isNotEmpty()) llwarns("CoreHttpUtil") { "POST $url exception: ${e.message} — $failure" }
+                }
+            }
         }
+
+        private fun buildResultStatic(url: String, resp: HttpResponse<ByteArray>): MutableMap<String, Any?> {
+            val status = HttpStatus(0, resp.statusCode())
+            val result = mutableMapOf<String, Any?>()
+            val body = resp.body()
+            if (status.success) {
+                val parsed = responseToLLSD(body, false)
+                if (parsed != null) result.putAll(parsed)
+                else result[HTTP_RESULTS_CONTENT] = body.toString(Charsets.UTF_8)
+            }
+            writeStatusCodes(status, url, result)
+            return result
+        }
+    }
+
+    // ── Instance HTTP methods (blocking, mirror C++ coroutine-adapter API) ──────
+
+    private fun sendBlocking(req: HttpRequest): Map<String, Any?> {
+        val resp = httpClient.send(req, HttpResponse.BodyHandlers.ofByteArray())
+        return buildResult(req.uri().toString(), resp)
     }
 
     fun postAndSuspend(
@@ -182,8 +404,12 @@ class HttpCoroutineAdapter(
         options: Map<String, Any?> = emptyMap(),
         headers: Map<String, String> = emptyMap()
     ): Map<String, Any?> {
-        System.err.println("HttpCoroutineAdapter: postAndSuspend not yet implemented")
-        return emptyMap()
+        var reqBuilder = HttpRequest.newBuilder(URI.create(url))
+            .header("Content-Type", "application/llsd+xml")
+            .POST(llsdBodyPublisher(body))
+            .timeout(Duration.ofSeconds(HTTP_REQUEST_EXPIRY_SECS.toLong()))
+        headers.forEach { (k, v) -> reqBuilder = reqBuilder.header(k, v) }
+        return sendBlocking(reqBuilder.build())
     }
 
     fun postAndSuspend(
@@ -192,8 +418,12 @@ class HttpCoroutineAdapter(
         options: Map<String, Any?> = emptyMap(),
         headers: Map<String, String> = emptyMap()
     ): Map<String, Any?> {
-        System.err.println("HttpCoroutineAdapter: postAndSuspend (raw) not yet implemented")
-        return emptyMap()
+        var reqBuilder = HttpRequest.newBuilder(URI.create(url))
+            .header("Content-Type", "application/octet-stream")
+            .POST(HttpRequest.BodyPublishers.ofByteArray(rawBody))
+            .timeout(Duration.ofSeconds(HTTP_REQUEST_EXPIRY_SECS.toLong()))
+        headers.forEach { (k, v) -> reqBuilder = reqBuilder.header(k, v) }
+        return sendBlocking(reqBuilder.build())
     }
 
     fun postRawAndSuspend(
@@ -202,8 +432,15 @@ class HttpCoroutineAdapter(
         options: Map<String, Any?> = emptyMap(),
         headers: Map<String, String> = emptyMap()
     ): Map<String, Any?> {
-        System.err.println("HttpCoroutineAdapter: postRawAndSuspend not yet implemented")
-        return emptyMap()
+        var reqBuilder = HttpRequest.newBuilder(URI.create(url))
+            .header("Content-Type", "application/octet-stream")
+            .POST(HttpRequest.BodyPublishers.ofByteArray(rawBody))
+            .timeout(Duration.ofSeconds(HTTP_REQUEST_EXPIRY_SECS.toLong()))
+        headers.forEach { (k, v) -> reqBuilder = reqBuilder.header(k, v) }
+        val resp = httpClient.send(reqBuilder.build(), HttpResponse.BodyHandlers.ofByteArray())
+        val result = buildResult(url, resp).toMutableMap()
+        result[HttpCoroutineAdapter.HTTP_RESULTS_RAW] = resp.body()
+        return result
     }
 
     fun postFileAndSuspend(
@@ -212,8 +449,13 @@ class HttpCoroutineAdapter(
         options: Map<String, Any?> = emptyMap(),
         headers: Map<String, String> = emptyMap()
     ): Map<String, Any?> {
-        System.err.println("HttpCoroutineAdapter: postFileAndSuspend not yet implemented")
-        return emptyMap()
+        val fileBytes = File(fileName).readBytes()
+        var reqBuilder = HttpRequest.newBuilder(URI.create(url))
+            .header("Content-Type", "application/octet-stream")
+            .POST(HttpRequest.BodyPublishers.ofByteArray(fileBytes))
+            .timeout(Duration.ofSeconds(HTTP_REQUEST_EXPIRY_SECS.toLong()))
+        headers.forEach { (k, v) -> reqBuilder = reqBuilder.header(k, v) }
+        return sendBlocking(reqBuilder.build())
     }
 
     fun postJsonAndSuspend(
@@ -222,8 +464,14 @@ class HttpCoroutineAdapter(
         options: Map<String, Any?> = emptyMap(),
         headers: Map<String, String> = emptyMap()
     ): Map<String, Any?> {
-        System.err.println("HttpCoroutineAdapter: postJsonAndSuspend not yet implemented")
-        return emptyMap()
+        // Simple JSON serialization without an external library
+        val json = mapToJson(body)
+        var reqBuilder = HttpRequest.newBuilder(URI.create(url))
+            .header("Content-Type", "application/json")
+            .POST(HttpRequest.BodyPublishers.ofString(json))
+            .timeout(Duration.ofSeconds(HTTP_REQUEST_EXPIRY_SECS.toLong()))
+        headers.forEach { (k, v) -> reqBuilder = reqBuilder.header(k, v) }
+        return sendBlocking(reqBuilder.build())
     }
 
     fun putAndSuspend(
@@ -232,8 +480,12 @@ class HttpCoroutineAdapter(
         options: Map<String, Any?> = emptyMap(),
         headers: Map<String, String> = emptyMap()
     ): Map<String, Any?> {
-        System.err.println("HttpCoroutineAdapter: putAndSuspend not yet implemented")
-        return emptyMap()
+        var reqBuilder = HttpRequest.newBuilder(URI.create(url))
+            .header("Content-Type", "application/llsd+xml")
+            .PUT(llsdBodyPublisher(body))
+            .timeout(Duration.ofSeconds(HTTP_REQUEST_EXPIRY_SECS.toLong()))
+        headers.forEach { (k, v) -> reqBuilder = reqBuilder.header(k, v) }
+        return sendBlocking(reqBuilder.build())
     }
 
     fun putJsonAndSuspend(
@@ -242,8 +494,13 @@ class HttpCoroutineAdapter(
         options: Map<String, Any?> = emptyMap(),
         headers: Map<String, String> = emptyMap()
     ): Map<String, Any?> {
-        System.err.println("HttpCoroutineAdapter: putJsonAndSuspend not yet implemented")
-        return emptyMap()
+        val json = mapToJson(body)
+        var reqBuilder = HttpRequest.newBuilder(URI.create(url))
+            .header("Content-Type", "application/json")
+            .PUT(HttpRequest.BodyPublishers.ofString(json))
+            .timeout(Duration.ofSeconds(HTTP_REQUEST_EXPIRY_SECS.toLong()))
+        headers.forEach { (k, v) -> reqBuilder = reqBuilder.header(k, v) }
+        return sendBlocking(reqBuilder.build())
     }
 
     fun getAndSuspend(
@@ -251,8 +508,11 @@ class HttpCoroutineAdapter(
         options: Map<String, Any?> = emptyMap(),
         headers: Map<String, String> = emptyMap()
     ): Map<String, Any?> {
-        System.err.println("HttpCoroutineAdapter: getAndSuspend not yet implemented")
-        return emptyMap()
+        var reqBuilder = HttpRequest.newBuilder(URI.create(url))
+            .GET()
+            .timeout(Duration.ofSeconds(HTTP_REQUEST_EXPIRY_SECS.toLong()))
+        headers.forEach { (k, v) -> reqBuilder = reqBuilder.header(k, v) }
+        return sendBlocking(reqBuilder.build())
     }
 
     fun getRawAndSuspend(
@@ -260,8 +520,14 @@ class HttpCoroutineAdapter(
         options: Map<String, Any?> = emptyMap(),
         headers: Map<String, String> = emptyMap()
     ): Map<String, Any?> {
-        System.err.println("HttpCoroutineAdapter: getRawAndSuspend not yet implemented")
-        return emptyMap()
+        var reqBuilder = HttpRequest.newBuilder(URI.create(url))
+            .GET()
+            .timeout(Duration.ofSeconds(HTTP_REQUEST_EXPIRY_SECS.toLong()))
+        headers.forEach { (k, v) -> reqBuilder = reqBuilder.header(k, v) }
+        val resp = httpClient.send(reqBuilder.build(), HttpResponse.BodyHandlers.ofByteArray())
+        val result = buildResult(url, resp).toMutableMap()
+        result[HTTP_RESULTS_RAW] = resp.body()
+        return result
     }
 
     fun getJsonAndSuspend(
@@ -269,8 +535,17 @@ class HttpCoroutineAdapter(
         options: Map<String, Any?> = emptyMap(),
         headers: Map<String, String> = emptyMap()
     ): Map<String, Any?> {
-        System.err.println("HttpCoroutineAdapter: getJsonAndSuspend not yet implemented")
-        return emptyMap()
+        var reqBuilder = HttpRequest.newBuilder(URI.create(url))
+            .header("Accept", "application/json")
+            .GET()
+            .timeout(Duration.ofSeconds(HTTP_REQUEST_EXPIRY_SECS.toLong()))
+        headers.forEach { (k, v) -> reqBuilder = reqBuilder.header(k, v) }
+        val resp = httpClient.send(reqBuilder.build(), HttpResponse.BodyHandlers.ofByteArray())
+        val result = buildResult(url, resp).toMutableMap()
+        if (HttpStatus(0, resp.statusCode()).success) {
+            result[HTTP_RESULTS_CONTENT] = resp.body().toString(Charsets.UTF_8)
+        }
+        return result
     }
 
     fun deleteAndSuspend(
@@ -278,8 +553,11 @@ class HttpCoroutineAdapter(
         options: Map<String, Any?> = emptyMap(),
         headers: Map<String, String> = emptyMap()
     ): Map<String, Any?> {
-        System.err.println("HttpCoroutineAdapter: deleteAndSuspend not yet implemented")
-        return emptyMap()
+        var reqBuilder = HttpRequest.newBuilder(URI.create(url))
+            .DELETE()
+            .timeout(Duration.ofSeconds(HTTP_REQUEST_EXPIRY_SECS.toLong()))
+        headers.forEach { (k, v) -> reqBuilder = reqBuilder.header(k, v) }
+        return sendBlocking(reqBuilder.build())
     }
 
     fun deleteJsonAndSuspend(
@@ -287,8 +565,17 @@ class HttpCoroutineAdapter(
         options: Map<String, Any?> = emptyMap(),
         headers: Map<String, String> = emptyMap()
     ): Map<String, Any?> {
-        System.err.println("HttpCoroutineAdapter: deleteJsonAndSuspend not yet implemented")
-        return emptyMap()
+        var reqBuilder = HttpRequest.newBuilder(URI.create(url))
+            .header("Accept", "application/json")
+            .DELETE()
+            .timeout(Duration.ofSeconds(HTTP_REQUEST_EXPIRY_SECS.toLong()))
+        headers.forEach { (k, v) -> reqBuilder = reqBuilder.header(k, v) }
+        val resp = httpClient.send(reqBuilder.build(), HttpResponse.BodyHandlers.ofByteArray())
+        val result = buildResult(url, resp).toMutableMap()
+        if (HttpStatus(0, resp.statusCode()).success) {
+            result[HTTP_RESULTS_CONTENT] = resp.body().toString(Charsets.UTF_8)
+        }
+        return result
     }
 
     fun patchAndSuspend(
@@ -297,8 +584,12 @@ class HttpCoroutineAdapter(
         options: Map<String, Any?> = emptyMap(),
         headers: Map<String, String> = emptyMap()
     ): Map<String, Any?> {
-        System.err.println("HttpCoroutineAdapter: patchAndSuspend not yet implemented")
-        return emptyMap()
+        var reqBuilder = HttpRequest.newBuilder(URI.create(url))
+            .header("Content-Type", "application/llsd+xml")
+            .method("PATCH", llsdBodyPublisher(body))
+            .timeout(Duration.ofSeconds(HTTP_REQUEST_EXPIRY_SECS.toLong()))
+        headers.forEach { (k, v) -> reqBuilder = reqBuilder.header(k, v) }
+        return sendBlocking(reqBuilder.build())
     }
 
     fun copyAndSuspend(
@@ -307,8 +598,12 @@ class HttpCoroutineAdapter(
         options: Map<String, Any?> = emptyMap(),
         headers: Map<String, String> = emptyMap()
     ): Map<String, Any?> {
-        System.err.println("HttpCoroutineAdapter: copyAndSuspend not yet implemented")
-        return emptyMap()
+        var reqBuilder = HttpRequest.newBuilder(URI.create(url))
+            .header("Destination", dest)
+            .method("COPY", HttpRequest.BodyPublishers.noBody())
+            .timeout(Duration.ofSeconds(HTTP_REQUEST_EXPIRY_SECS.toLong()))
+        headers.forEach { (k, v) -> reqBuilder = reqBuilder.header(k, v) }
+        return sendBlocking(reqBuilder.build())
     }
 
     fun moveAndSuspend(
@@ -317,11 +612,57 @@ class HttpCoroutineAdapter(
         options: Map<String, Any?> = emptyMap(),
         headers: Map<String, String> = emptyMap()
     ): Map<String, Any?> {
-        System.err.println("HttpCoroutineAdapter: moveAndSuspend not yet implemented")
-        return emptyMap()
+        var reqBuilder = HttpRequest.newBuilder(URI.create(url))
+            .header("Destination", dest)
+            .method("MOVE", HttpRequest.BodyPublishers.noBody())
+            .timeout(Duration.ofSeconds(HTTP_REQUEST_EXPIRY_SECS.toLong()))
+        headers.forEach { (k, v) -> reqBuilder = reqBuilder.header(k, v) }
+        return sendBlocking(reqBuilder.build())
     }
 
-    fun cancelSuspendedOperation() {
-        System.err.println("HttpCoroutineAdapter: cancelSuspendedOperation not yet implemented")
+    /**
+     * Cancels an in-flight HTTP operation associated with this adapter.
+     *
+     * **Note:** The current synchronous [java.net.http.HttpClient] implementation does not
+     * support mid-flight cancellation without interrupting the calling thread.
+     * This method is a no-op placeholder. A future migration to
+     * [java.util.concurrent.CompletableFuture] or Kotlin coroutines would enable
+     * clean cancellation via `CompletableFuture.cancel()` or coroutine job cancellation.
+     */
+    fun cancelSuspendedOperation() = Unit
+}
+
+// ── Minimal JSON serializer (no external library required) ──────────────────
+
+private fun mapToJson(map: Map<String, Any?>): String = buildString {
+    append('{')
+    map.entries.forEachIndexed { idx, (k, v) ->
+        if (idx > 0) append(',')
+        append('"').append(jsonEscape(k)).append("\":")
+        append(anyToJson(v))
     }
+    append('}')
+}
+
+private fun jsonEscape(s: String): String = buildString {
+    for (c in s) when (c) {
+        '"'  -> append("\\\"")
+        '\\' -> append("\\\\")
+        '\b' -> append("\\b")
+        '\u000C' -> append("\\f")
+        '\n' -> append("\\n")
+        '\r' -> append("\\r")
+        '\t' -> append("\\t")
+        else -> if (c.code < 0x20) append("\\u%04x".format(c.code)) else append(c)
+    }
+}
+
+private fun anyToJson(v: Any?): String = when (v) {
+    null           -> "null"
+    is Boolean     -> v.toString()
+    is Number      -> v.toString()
+    is String      -> '"' + jsonEscape(v) + '"'
+    is Map<*, *>   -> mapToJson(@Suppress("UNCHECKED_CAST") (v as Map<String, Any?>))
+    is List<*>     -> "[${v.joinToString(",") { anyToJson(it) }}]"
+    else           -> '"' + jsonEscape(v.toString()) + '"'
 }

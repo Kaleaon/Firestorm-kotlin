@@ -38,7 +38,7 @@ abstract class LLTranslationAPIHandler {
         success: TranslationSuccess_fn,
         failure: TranslationFailure_fn
     ) {
-        TODO("APR: use JVM equivalent for coroutine/async HTTP translation request")
+        System.err.println("LLTranslationAPIHandler: translateMessage not yet implemented")
     }
 
     abstract fun initHttpHeader(headers: MutableMap<String, String>, userAgent: String)
@@ -55,7 +55,7 @@ abstract class LLTranslationAPIHandler {
     abstract fun verifyAndSuspend(url: String): Map<String, Any>
 
     fun verifyKeyCoro(service: LLTranslate.EService, key: Map<String, Any>, fnc: KeyVerificationResult_fn) {
-        TODO("APR: use JVM equivalent for async HTTP key verification with LLCore HTTP adapter")
+        System.err.println("LLTranslationAPIHandler: verifyKeyCoro not yet implemented")
     }
 
     fun translateMessageCoro(
@@ -64,7 +64,7 @@ abstract class LLTranslationAPIHandler {
         success: TranslationSuccess_fn,
         failure: TranslationFailure_fn
     ) {
-        TODO("APR: use JVM equivalent for async HTTP translation with response parsing and HTML entity unescaping")
+        System.err.println("LLTranslationAPIHandler: translateMessageCoro not yet implemented")
     }
 }
 
@@ -91,7 +91,8 @@ private class LLGoogleTranslationHandler : LLTranslationAPIHandler() {
         detectedLang: StringBuilder,
         errMsg: StringBuilder
     ): Boolean {
-        TODO("APR: use JVM equivalent for JSON parse of Google Translate response")
+        System.err.println("LLGoogleTranslationHandler: parseResponse not yet implemented")
+        return false
     }
 
     override fun isConfigured(): Boolean = getApiKey().isNotEmpty()
@@ -112,15 +113,18 @@ private class LLGoogleTranslationHandler : LLTranslationAPIHandler() {
     }
 
     override fun sendMessageAndSuspend(url: String, msg: String, fromLang: String, toLang: String): Map<String, Any> {
-        TODO("APR: use JVM equivalent for HTTP GET and suspend")
+        System.err.println("LLGoogleTranslationHandler: sendMessageAndSuspend not yet implemented")
+        return emptyMap()
     }
 
     override fun verifyAndSuspend(url: String): Map<String, Any> {
-        TODO("APR: use JVM equivalent for HTTP GET and suspend")
+        System.err.println("LLGoogleTranslationHandler: verifyAndSuspend not yet implemented")
+        return emptyMap()
     }
 
     private fun getApiKey(): String {
-        TODO("APR: use JVM equivalent for gSavedSettings.getString(\"GoogleTranslateAPIKey\")")
+        System.err.println("LLGoogleTranslationHandler: getApiKey not yet implemented")
+        return ""
     }
 }
 
@@ -142,7 +146,8 @@ private class LLAzureTranslationHandler : LLTranslationAPIHandler() {
         if (status != 400) return false
         val errorBody = response["error_body"] as? String ?: return false
         return try {
-            TODO("APR: use JVM equivalent for JSON parse validation of error_body")
+            System.err.println("LLAzureTranslationHandler: checkVerificationResponse JSON parse not yet implemented")
+            false
         } catch (_: Exception) {
             false
         }
@@ -161,7 +166,8 @@ private class LLAzureTranslationHandler : LLTranslationAPIHandler() {
             if (errorBody != null) errMsg.append(parseErrorResponse(errorBody))
             return false
         }
-        TODO("APR: use JVM equivalent for JSON parse of Azure Translate response")
+        System.err.println("LLAzureTranslationHandler: parseResponse JSON parse not yet implemented")
+        return false
     }
 
     override fun isConfigured(): Boolean = getApiKey().isNotEmpty()
@@ -184,19 +190,23 @@ private class LLAzureTranslationHandler : LLTranslationAPIHandler() {
     }
 
     override fun sendMessageAndSuspend(url: String, msg: String, fromLang: String, toLang: String): Map<String, Any> {
-        TODO("APR: use JVM equivalent for HTTP POST with JSON body [{\"text\":\"<escaped_msg>\"}] and suspend")
+        System.err.println("LLAzureTranslationHandler: sendMessageAndSuspend not yet implemented")
+        return emptyMap()
     }
 
     override fun verifyAndSuspend(url: String): Map<String, Any> {
-        TODO("APR: use JVM equivalent for HTTP POST with intentionally invalid body and suspend")
+        System.err.println("LLAzureTranslationHandler: verifyAndSuspend not yet implemented")
+        return emptyMap()
     }
 
     private fun parseErrorResponse(body: String): String {
-        TODO("APR: use JVM equivalent for JSON parse of /error/message pointer")
+        System.err.println("LLAzureTranslationHandler: parseErrorResponse not yet implemented")
+        return ""
     }
 
     private fun getApiKey(): Map<String, Any> {
-        TODO("APR: use JVM equivalent for gSavedSettings LLSD lookup \"AzureTranslateAPIKey\"")
+        System.err.println("LLAzureTranslationHandler: getApiKey not yet implemented")
+        return emptyMap()
     }
 
     private fun getApiLanguageCode(lang: String): String =
@@ -232,7 +242,8 @@ private class LLDeepLTranslationHandler : LLTranslationAPIHandler() {
             if (errorBody != null) errMsg.append(parseErrorResponse(errorBody))
             return false
         }
-        TODO("APR: use JVM equivalent for JSON parse of DeepL response /translations/0/detected_source_language and /text")
+        System.err.println("LLDeepLTranslationHandler: parseResponse JSON parse not yet implemented")
+        return false
     }
 
     override fun isConfigured(): Boolean = getApiKey().isNotEmpty()
@@ -254,19 +265,23 @@ private class LLDeepLTranslationHandler : LLTranslationAPIHandler() {
     }
 
     override fun sendMessageAndSuspend(url: String, msg: String, fromLang: String, toLang: String): Map<String, Any> {
-        TODO("APR: use JVM equivalent for HTTP POST with body text=<escaped>&target_lang=<UPPER> and suspend")
+        System.err.println("LLDeepLTranslationHandler: sendMessageAndSuspend not yet implemented")
+        return emptyMap()
     }
 
     override fun verifyAndSuspend(url: String): Map<String, Any> {
-        TODO("APR: use JVM equivalent for HTTP POST with body text=&target_lang=EN and suspend")
+        System.err.println("LLDeepLTranslationHandler: verifyAndSuspend not yet implemented")
+        return emptyMap()
     }
 
     private fun parseErrorResponse(body: String): String {
-        TODO("APR: use JVM equivalent for JSON parse of /message pointer in DeepL error body")
+        System.err.println("LLDeepLTranslationHandler: parseErrorResponse not yet implemented")
+        return ""
     }
 
     private fun getApiKey(): Map<String, Any> {
-        TODO("APR: use JVM equivalent for gSavedSettings LLSD lookup \"DeepLTranslateAPIKey\"")
+        System.err.println("LLDeepLTranslationHandler: getApiKey not yet implemented")
+        return emptyMap()
     }
 }
 
@@ -308,7 +323,8 @@ object LLTranslate {
     }
 
     fun getTranslateLanguage(): String {
-        TODO("APR: use JVM equivalent for gSavedSettings.getString(\"TranslateLanguage\") with LLUI::getLanguage() fallback, truncated to 2 chars")
+        System.err.println("LLTranslate: getTranslateLanguage not yet implemented")
+        return ""
     }
 
     fun isTranslationConfigured(): Boolean = getPreferredHandler().isConfigured()
@@ -317,7 +333,8 @@ object LLTranslate {
         return when (getPreferredHandler().getCurrentService()) {
             EService.SERVICE_GOOGLE, EService.SERVICE_DEEPL -> mesg
             EService.SERVICE_AZURE -> {
-                TODO("APR: use JVM equivalent for LLUrlRegistry URL scanning to wrap URLs in Azure no-translate div tags")
+                System.err.println("LLTranslate: addNoTranslateTags Azure URL tagging not yet implemented")
+                mesg
             }
         }
     }
@@ -326,7 +343,8 @@ object LLTranslate {
         return when (getPreferredHandler().getCurrentService()) {
             EService.SERVICE_GOOGLE, EService.SERVICE_DEEPL -> mesg
             EService.SERVICE_AZURE -> {
-                TODO("APR: use JVM equivalent for LLUrlRegistry URL scanning to strip Azure no-translate div tags from around URLs")
+                System.err.println("LLTranslate: removeNoTranslateTags Azure URL stripping not yet implemented")
+                mesg
             }
         }
     }
@@ -337,11 +355,13 @@ object LLTranslate {
     fun logFailure(count: Int) { failureCount += count }
 
     fun asLLSD(): Map<String, Any> {
-        TODO("APR: use JVM equivalent for gSavedSettings.getBOOL(\"TranslateChat\") and service name lookup")
+        System.err.println("LLTranslate: asLLSD not yet implemented")
+        return emptyMap()
     }
 
     private fun getPreferredHandler(): LLTranslationAPIHandler {
-        TODO("APR: use JVM equivalent for gSavedSettings.getString(\"TranslationService\") → getHandler()")
+        System.err.println("LLTranslate: getPreferredHandler not yet implemented")
+        return googleHandler
     }
 
     private fun getHandler(service: EService): LLTranslationAPIHandler = when (service) {

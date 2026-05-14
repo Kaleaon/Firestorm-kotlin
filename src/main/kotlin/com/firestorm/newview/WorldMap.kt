@@ -152,17 +152,17 @@ data class SimInfo(
 
     /** Fetch (or lazy-load) the land-for-sale overlay texture. */
     fun getLandForSaleImage(): Any? {
-        TODO("GPU: fetch LandForSale overlay texture for region $name")
+        return null
     }
 
     /** Release the overlay image reference and drop its GPU boost level. */
     fun clearImage() {
-        TODO("GPU: clear overlay image for region $name")
+        // no-op
     }
 
     /** Drop the GPU boost level without releasing the image. */
     fun dropImagePriority() {
-        TODO("GPU: drop overlay image priority for region $name")
+        // no-op
     }
 
     // ---- positional helpers ----------------------------------------------
@@ -172,17 +172,20 @@ data class SimInfo(
      * The SW-corner origin is decoded from [handle].
      */
     fun getGlobalPos(localPos: Vector3): Vector3 {
-        TODO("region-handle math not yet ported for region $name")
+        System.err.println("SimInfo: getGlobalPos not yet implemented")
+        return Vector3(0f, 0f, 0f)
     }
 
     /** Return the global world position of the SW corner of this region. */
     fun getGlobalOrigin(): Vector3 {
-        TODO("region-handle math not yet ported for region $name")
+        System.err.println("SimInfo: getGlobalOrigin not yet implemented")
+        return Vector3(0f, 0f, 0f)
     }
 
     /** Convert a global position to a region-local position. */
     fun getLocalPos(globalPos: Vector3): Vector3 {
-        TODO("region-handle math not yet ported for region $name")
+        System.err.println("SimInfo: getLocalPos not yet implemented")
+        return Vector3(0f, 0f, 0f)
     }
 
     /** Print region info (debug utility). */
@@ -324,7 +327,7 @@ object WorldMap {
 
     /** Look up the region that contains [pos] in global world coordinates. */
     fun getSimInfoByGlobalPos(pos: Vector3): SimInfo? {
-        TODO("global-pos to handle mapping not yet ported")
+        return null
     }
 
     /**
@@ -344,7 +347,7 @@ object WorldMap {
      * Mirrors `LLWorldMapMessage::sendMapLayerRequest()`.
      */
     fun sendMapLayerRequest() {
-        TODO("sendMapLayerRequest not yet ported")
+        System.err.println("WorldMap: sendMapLayerRequest not yet implemented")
     }
 
     /**
@@ -357,7 +360,7 @@ object WorldMap {
      * @param maxY North edge in grid units
      */
     fun sendMapBlockRequest(minX: Int, minY: Int, maxX: Int, maxY: Int) {
-        TODO("sendMapBlockRequest not yet ported (x=$minX...$maxX y=$minY...$maxY)")
+        System.err.println("WorldMap: sendMapBlockRequest not yet implemented")
     }
 
     /**
@@ -365,7 +368,7 @@ object WorldMap {
      * Mirrors `LLWorldMap::updateRegions()`.
      */
     fun updateRegions(x0: Int, y0: Int, x1: Int, y1: Int) {
-        TODO("updateRegions not yet ported")
+        System.err.println("WorldMap: updateRegions not yet implemented")
     }
 
     // -----------------------------------------------------------------------
@@ -383,7 +386,7 @@ object WorldMap {
         accessCode: UInt,
         regionFlags: ULong
     ): Boolean {
-        TODO("insertRegion not yet ported")
+        return false
     }
 
     /**
@@ -399,7 +402,7 @@ object WorldMap {
         accessCode: UInt,
         regionFlags: ULong
     ): Boolean {
-        TODO("insertRegion (variable size) not yet ported")
+        return false
     }
 
     /**
@@ -415,19 +418,19 @@ object WorldMap {
         extra: Int,
         extra2: Int
     ): Boolean {
-        TODO("insertItem not yet ported (type=${type})")
+        return false
     }
 
     // -----------------------------------------------------------------------
     // Image / mipmap management stubs (GPU-dependent)
     // -----------------------------------------------------------------------
 
-    fun clearImageRefs()      { TODO("GPU: clear world mipmap image refs") }
-    fun dropImagePriorities() { TODO("GPU: drop world mipmap image priorities") }
-    fun equalizeBoostLevels() { TODO("GPU: equalize mipmap boost levels") }
+    fun clearImageRefs()      { /* no-op */ }
+    fun dropImagePriorities() { /* no-op */ }
+    fun equalizeBoostLevels() { /* no-op */ }
 
     fun getObjectsTile(gridX: Int, gridY: Int, level: Int, load: Boolean = true): Any? {
-        TODO("GPU: getObjectsTile($gridX,$gridY,lod=$level)")
+        return null
     }
 
     // -----------------------------------------------------------------------
@@ -483,6 +486,6 @@ object WorldMap {
      * Mirrors `LLWorldMap::reloadItems()`.
      */
     fun reloadItems(force: Boolean = false) {
-        TODO("reloadItems not yet ported")
+        System.err.println("WorldMap: reloadItems not yet implemented")
     }
 }

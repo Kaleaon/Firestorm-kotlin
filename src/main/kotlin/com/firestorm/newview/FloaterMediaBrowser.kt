@@ -13,33 +13,38 @@ import java.util.UUID
 // a faithful Kotlin conversion of that equivalent.
 
 open class PanelMediaSettingsGeneral {
-    fun updateMediaPreview()                                          = TODO("GPU: resume/unpause embedded media plugin for preview")
-    fun preApply()                                                    = TODO("APR: validate URL and home-URL fields before applying")
-    fun postApply()                                                   = TODO("APR: refresh in-world media plugin after settings committed")
-    fun getValues(out: MutableMap<String, Any>, includeAlt: Boolean)  = TODO("APR: read all general-tab control values into out map")
-    fun clearValues(parent: Any?, editable: Boolean, updatePreview: Boolean) =
-        TODO("APR: reset general-tab controls to blank/defaults; optionally stop media preview")
-    fun initValues(mediaSettings: Map<String, Any>, editable: Boolean) =
-        TODO("APR: populate general-tab controls from mediaSettings map")
-    fun onClose(appQuitting: Boolean)                                 = TODO("APR: stop in-world media plugin preview on panel close")
+    fun updateMediaPreview()                                          { // no-op
+    }
+    fun preApply()                                                    { System.err.println("PanelMediaSettingsGeneral: validate URL and home-URL fields before applying not yet implemented") }
+    fun postApply()                                                   { System.err.println("PanelMediaSettingsGeneral: refresh in-world media plugin after settings committed not yet implemented") }
+    fun getValues(out: MutableMap<String, Any>, includeAlt: Boolean)  { System.err.println("PanelMediaSettingsGeneral: read all general-tab control values into out map not yet implemented") }
+    fun clearValues(parent: Any?, editable: Boolean, updatePreview: Boolean) {
+        System.err.println("PanelMediaSettingsGeneral: reset general-tab controls to blank/defaults not yet implemented")
+    }
+    fun initValues(mediaSettings: Map<String, Any>, editable: Boolean) {
+        System.err.println("PanelMediaSettingsGeneral: populate general-tab controls from mediaSettings map not yet implemented")
+    }
+    fun onClose(appQuitting: Boolean)                                 { System.err.println("PanelMediaSettingsGeneral: stop in-world media plugin preview on panel close not yet implemented") }
 }
 
 open class PanelMediaSettingsSecurity {
-    fun preApply()                                                    = TODO("APR: validate whitelist URL entries before applying")
-    fun postApply()                                                   = TODO("APR: refresh whitelist state after settings committed")
-    fun getValues(out: MutableMap<String, Any>, includeAlt: Boolean)  = TODO("APR: read security-tab (whitelist) control values into out map")
-    fun clearValues(parent: Any?, editable: Boolean)                  = TODO("APR: clear whitelist entries and reset editable state")
-    fun initValues(mediaSettings: Map<String, Any>, editable: Boolean) =
-        TODO("APR: populate security-tab controls from mediaSettings map")
+    fun preApply()                                                    { System.err.println("PanelMediaSettingsSecurity: validate whitelist URL entries before applying not yet implemented") }
+    fun postApply()                                                   { System.err.println("PanelMediaSettingsSecurity: refresh whitelist state after settings committed not yet implemented") }
+    fun getValues(out: MutableMap<String, Any>, includeAlt: Boolean)  { System.err.println("PanelMediaSettingsSecurity: read security-tab (whitelist) control values into out map not yet implemented") }
+    fun clearValues(parent: Any?, editable: Boolean)                  { System.err.println("PanelMediaSettingsSecurity: clear whitelist entries and reset editable state not yet implemented") }
+    fun initValues(mediaSettings: Map<String, Any>, editable: Boolean) {
+        System.err.println("PanelMediaSettingsSecurity: populate security-tab controls from mediaSettings map not yet implemented")
+    }
 }
 
 open class PanelMediaSettingsPermissions {
-    fun preApply()                                                    = TODO("APR: validate permissions flags before applying")
-    fun postApply()                                                   = TODO("APR: commit permissions flags after apply")
-    fun getValues(out: MutableMap<String, Any>, includeAlt: Boolean)  = TODO("APR: read permissions-tab control values into out map")
-    fun clearValues(parent: Any?, editable: Boolean)                  = TODO("APR: reset permissions-tab controls to defaults")
-    fun initValues(mediaSettings: Map<String, Any>, editable: Boolean) =
-        TODO("APR: populate permissions-tab controls from mediaSettings map")
+    fun preApply()                                                    { System.err.println("PanelMediaSettingsPermissions: validate permissions flags before applying not yet implemented") }
+    fun postApply()                                                   { System.err.println("PanelMediaSettingsPermissions: commit permissions flags after apply not yet implemented") }
+    fun getValues(out: MutableMap<String, Any>, includeAlt: Boolean)  { System.err.println("PanelMediaSettingsPermissions: read permissions-tab control values into out map not yet implemented") }
+    fun clearValues(parent: Any?, editable: Boolean)                  { System.err.println("PanelMediaSettingsPermissions: reset permissions-tab controls to defaults not yet implemented") }
+    fun initValues(mediaSettings: Map<String, Any>, editable: Boolean) {
+        System.err.println("PanelMediaSettingsPermissions: populate permissions-tab controls from mediaSettings map not yet implemented")
+    }
 }
 
 open class FloaterMediaBrowser(key: Any) : Floater(key) {
@@ -61,26 +66,29 @@ open class FloaterMediaBrowser(key: Any) : Floater(key) {
         var instance: FloaterMediaBrowser? = null
 
         fun showInstance(key: Any = Unit): FloaterMediaBrowser? {
-            TODO("APR: use JVM equivalent - look up or create the singleton floater")
+            System.err.println("FloaterMediaBrowser: look up or create the singleton floater not yet implemented")
+            return null
         }
 
         fun hideInstance() {
-            instance?.apply { TODO("APR: use JVM equivalent - hide this floater") }
+            instance?.apply { System.err.println("FloaterMediaBrowser: hide this floater not yet implemented") }
         }
 
-        fun parcelMediaInfoGetter(key: String): Any? =
-            TODO("APR: use JVM equivalent - retrieve parcel media info for key")
+        fun parcelMediaInfoGetter(key: String): Any? {
+            System.err.println("FloaterMediaBrowser: retrieve parcel media info for key not yet implemented")
+            return null
+        }
     }
 
     override fun postBuild(): Boolean {
-        panelSettingsGeneral     = TODO("APR: use JVM equivalent - getChild PanelMediaSettingsGeneral")
-        panelSettingsSecurity    = TODO("APR: use JVM equivalent - getChild PanelMediaSettingsSecurity")
-        panelSettingsPermissions = TODO("APR: use JVM equivalent - getChild PanelMediaSettingsPermissions")
+        panelSettingsGeneral     = null
+        panelSettingsSecurity    = null
+        panelSettingsPermissions = null
         return true
     }
 
     open fun onOpen(key: Any) {
-        TODO("APR: use JVM equivalent - request media settings from selected objects")
+        System.err.println("FloaterMediaBrowser: request media settings from selected objects not yet implemented")
     }
 
     override fun onClose(appQuitting: Boolean) {
@@ -89,15 +97,15 @@ open class FloaterMediaBrowser(key: Any) : Floater(key) {
     }
 
     fun initValues() {
-        TODO("APR: use JVM equivalent - populate all panels from mediaSettings map")
+        System.err.println("FloaterMediaBrowser: populate all panels from mediaSettings map not yet implemented")
     }
 
     fun clearValues() {
-        TODO("APR: use JVM equivalent - reset all panels to blank/defaults")
+        System.err.println("FloaterMediaBrowser: reset all panels to blank/defaults not yet implemented")
     }
 
     fun apply() {
-        TODO("APR: use JVM equivalent - gather values from all panels and commit to selected objects")
+        System.err.println("FloaterMediaBrowser: gather values from all panels and commit to selected objects not yet implemented")
     }
 
     fun onBtnApply() {
@@ -105,15 +113,15 @@ open class FloaterMediaBrowser(key: Any) : Floater(key) {
     }
 
     fun onBtnCancel() {
-        TODO("APR: use JVM equivalent - close floater without committing changes")
+        System.err.println("FloaterMediaBrowser: close floater without committing changes not yet implemented")
     }
 
     fun commitFields() {
-        TODO("APR: use JVM equivalent - force any pending control commits before apply")
+        System.err.println("FloaterMediaBrowser: force any pending control commits before apply not yet implemented")
     }
 
     fun onTabChanged() {
-        TODO("APR: use JVM equivalent - refresh active tab on tab-switch")
+        System.err.println("FloaterMediaBrowser: refresh active tab on tab-switch not yet implemented")
     }
 
     fun addApplyListener(listener: () -> Unit) {

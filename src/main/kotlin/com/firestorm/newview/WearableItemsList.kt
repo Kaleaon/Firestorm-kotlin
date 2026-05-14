@@ -472,7 +472,7 @@ class WearableItemsList(
     }
 
     fun updateList(categoryId: LLUUID) {
-        TODO("APR: collect outfit items from inventory model for $categoryId, call refreshList()")
+        System.err.println("WearableItemsList: updateList not yet implemented")
     }
 
     fun updateChangedItems(changedUuids: List<LLUUID>) {
@@ -554,22 +554,22 @@ class WearableItemsList(
 
         fun show(spawningView: WearableItemsList, uuids: List<LLUUID>, x: Int, y: Int) {
             parent = spawningView
-            TODO("APR: build and display context menu for selected UUIDs $uuids at ($x,$y)")
+            System.err.println("WearableItemsList.ContextMenu: show(uuids) not yet implemented")
             parent = null
         }
 
         fun show(spawningView: WearableItemsList, wType: WearableType, x: Int, y: Int) {
             parent = spawningView
-            TODO("APR: build and display 'create new $wType' context menu at ($x,$y)")
+            System.err.println("WearableItemsList.ContextMenu: show(wType) not yet implemented")
             parent = null
         }
 
         fun createNewWearable(itemId: LLUUID) {
-            TODO("APR: look up linked item by $itemId and call AgentWearables.createWearable(type)")
+            System.err.println("WearableItemsList.ContextMenu: createNewWearable not yet implemented")
         }
 
         fun createNewWearableByType(type: WearableType) {
-            TODO("APR: call AgentWearables.createWearable($type)")
+            System.err.println("WearableItemsList.ContextMenu: createNewWearableByType not yet implemented")
         }
 
         private fun updateMask(mask: Int, at: AssetType): Int = mask or when (at) {
@@ -597,13 +597,13 @@ object FindOutfitItems {
 // ── AppearanceMgr stub (used by panel items above) ────────────────────────────
 
 object AppearanceMgr {
-    fun isLinkedInCOF(uuid: LLUUID): Boolean = TODO("APR: query COF link set for $uuid")
-    fun wearItemOnAvatar(uuid: LLUUID, replace: Boolean, immediately: Boolean): Unit = TODO("APR: trigger wear action for $uuid")
-    fun removeItemFromAvatar(uuid: LLUUID): Unit = TODO("APR: trigger remove/detach action for $uuid")
-    fun removeItemsFromAvatar(uuids: List<LLUUID>): Unit = TODO("APR: trigger batch remove/detach for $uuids")
-    fun isItemWorn(uuid: LLUUID): Boolean = TODO("APR: query worn status for $uuid")
-    fun isWearingAttachment(uuid: LLUUID): Boolean = TODO("APR: query attachment status for $uuid")
-    fun getAttachedPointName(uuid: LLUUID): String? = TODO("APR: return joint name for attached item $uuid, null if not attached")
-    fun canAddWearables(uuids: List<LLUUID>): Boolean = TODO("APR: check wearable capacity for $uuids")
-    fun setAttachmentsChangedCallback(cb: (LLUUID) -> Unit): Any = TODO("APR: register attachment change listener")
+    fun isLinkedInCOF(uuid: LLUUID): Boolean { System.err.println("AppearanceMgr: isLinkedInCOF not yet implemented"); return false }
+    fun wearItemOnAvatar(uuid: LLUUID, replace: Boolean, immediately: Boolean): Unit { System.err.println("AppearanceMgr: wearItemOnAvatar not yet implemented") }
+    fun removeItemFromAvatar(uuid: LLUUID): Unit { System.err.println("AppearanceMgr: removeItemFromAvatar not yet implemented") }
+    fun removeItemsFromAvatar(uuids: List<LLUUID>): Unit { System.err.println("AppearanceMgr: removeItemsFromAvatar not yet implemented") }
+    fun isItemWorn(uuid: LLUUID): Boolean { System.err.println("AppearanceMgr: isItemWorn not yet implemented"); return false }
+    fun isWearingAttachment(uuid: LLUUID): Boolean { System.err.println("AppearanceMgr: isWearingAttachment not yet implemented"); return false }
+    fun getAttachedPointName(uuid: LLUUID): String? { System.err.println("AppearanceMgr: getAttachedPointName not yet implemented"); return null }
+    fun canAddWearables(uuids: List<LLUUID>): Boolean { System.err.println("AppearanceMgr: canAddWearables not yet implemented"); return false }
+    fun setAttachmentsChangedCallback(cb: (LLUUID) -> Unit): Any { System.err.println("AppearanceMgr: setAttachmentsChangedCallback not yet implemented"); return Any() }
 }

@@ -77,7 +77,7 @@ object LLGridManager {
     }
 
     fun initGrids() {
-        TODO("APR: use JVM equivalent — clear gridList, resolve grids.xml / grids.user.xml / grids.remote.xml paths, call initSystemGrids + initGridList for each file, then initCmdLineGrids; apply startupGrid if set")
+        System.err.println("LLGridManager: initGrids not yet implemented")
     }
 
     fun initSystemGrids() {
@@ -85,12 +85,12 @@ object LLGridManager {
     }
 
     fun initGridList(gridFile: String, state: AddState) {
-        TODO("APR: use JVM equivalent — open and parse LLSD XML grid file; for each map entry construct a GridEntry and call addGrid(entry, state)")
+        System.err.println("LLGridManager: initGridList not yet implemented")
     }
 
     fun initCmdLineGrids() {
         commandLineDone = true
-        TODO("APR: use JVM equivalent — read CmdLineGridChoice and CurrentGrid settings; resolve grid by nick/label/name or default to MAINGRID; call setGridChoice or addGrid(FETCH)")
+        System.err.println("LLGridManager: initCmdLineGrids not yet implemented")
     }
 
     fun resetGrids() {
@@ -107,7 +107,7 @@ object LLGridManager {
     }
 
     fun addGrid(gridEntry: GridEntry?, state: AddState) {
-        TODO("APR: use JVM equivalent — validate entry; handle FETCH/FETCHTEMP (HTTP GET get_grid_info via JVM HttpClient), TRYLEGACY (HTTP GET legacy login.cgi), SYSTEM (populate default URIs), FINISH (merge into gridList), FAIL/REMOVE; fire gridListChangedListeners on list change")
+        System.err.println("LLGridManager: addGrid not yet implemented")
     }
 
     fun removeGrid(gridName: String) {
@@ -147,7 +147,7 @@ object LLGridManager {
 
     fun setGridChoice(gridName: String) {
         if (gridName.isEmpty()) return
-        TODO("APR: use JVM equivalent — check login auth state; if gridList empty store in startupGrid for deferred application; resolve by nick/label/name; if found set mGrid, persist CurrentGrid setting, update CURRENT_GRID translation arg, call updateIsInProductionGrid(); otherwise fetch")
+        System.err.println("LLGridManager: setGridChoice not yet implemented")
     }
 
     fun getGrid(gridName: String): String {
@@ -189,11 +189,13 @@ object LLGridManager {
     }
 
     fun getHelperURI(): String {
-        TODO("APR: use JVM equivalent — check CmdLineHelperURI setting and LFSimFeatureHandler override before falling back to gridList entry")
+        System.err.println("LLGridManager: getHelperURI not yet implemented")
+        return ""
     }
 
     fun getLoginPage(): String {
-        TODO("APR: use JVM equivalent — check LoginPage setting override before falling back to gridList entry")
+        System.err.println("LLGridManager: getLoginPage not yet implemented")
+        return ""
     }
 
     fun getGridLoginID(): String = gridList[grid]?.get(GRID_ID_VALUE) as? String ?: ""
@@ -316,11 +318,12 @@ object LLGridManager {
     fun getDirectoryFee(): Int = directoryFee
 
     fun getUpdateServiceURL(): String {
-        TODO("APR: use JVM equivalent — check SL_UPDATE_SERVICE env var, CmdLineUpdateService setting, then gridList GRID_UPDATE_SERVICE_URL entry")
+        System.err.println("LLGridManager: getUpdateServiceURL not yet implemented")
+        return ""
     }
 
     fun saveGridList() {
-        TODO("APR: use JVM equivalent — filter gridList to exclude DEPRECATED/FLAG_TEMPORARY entries, serialize to LLSD XML and write to mGridFile using JVM file I/O")
+        System.err.println("LLGridManager: saveGridList not yet implemented")
     }
 
     protected fun updateIsInProductionGrid() {
@@ -382,7 +385,7 @@ object LLGridManager {
     }
 
     private fun gridInfoResponderCB(gridEntry: GridEntry) {
-        TODO("APR: use JVM equivalent — parse XML info_root for login/gridname/gridnick/gatekeeper/welcome/register/password/help/about/search/web_profile_url/economy/helperuri/platform/message fields; set GRID_SLURL_BASE; call addGrid(FINISH)")
+        System.err.println("LLGridManager: gridInfoResponderCB not yet implemented")
     }
 
     private fun incResponderCount() { responderCount++ }
@@ -397,7 +400,8 @@ class FSGridManagerCommandHandler {
         if (params.size < 2) return false
 
         if (params[0] == "addgrid") {
-            TODO("APR: use JVM equivalent — URL-decode params[1], register grid download callback, call LLGridManager.addGrid(loginUri)")
+            System.err.println("FSGridManagerCommandHandler: addgrid not yet implemented")
+            return false
         }
 
         return false
@@ -409,7 +413,7 @@ class FSGridManagerCommandHandler {
 
         if (success) {
             LLGridManager.saveGridList()
-            TODO("APR: use JVM equivalent — if startup state <= STATE_LOGIN_WAIT call FSPanelLogin.updateServer()")
+            System.err.println("FSGridManagerCommandHandler: handleGridDownloadComplete post-save not yet implemented")
         }
     }
 }

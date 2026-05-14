@@ -26,15 +26,16 @@ class FloaterGroupPicker(seed: LLUUID = LLUUID.NULL) {
 
     fun setPowersMask(mask: ULong) {
         powersMask = mask
-        TODO("APR: rebuild group list filtered by powersMask=$mask")
+        System.err.println("FloaterGroupPicker: rebuild group list not yet implemented")
     }
 
     fun postBuild(): Boolean {
-        TODO("APR: populate group list via initGroupList(agent.groupId, powersMask); wire OK/Cancel buttons")
+        System.err.println("FloaterGroupPicker: postBuild not yet implemented")
+        return false
     }
 
     fun removeNoneOption() {
-        TODO("APR: remove the null-UUID 'none' entry from the group list")
+        System.err.println("FloaterGroupPicker: removeNoneOption not yet implemented")
     }
 
     fun ok() {
@@ -44,11 +45,12 @@ class FloaterGroupPicker(seed: LLUUID = LLUUID.NULL) {
     }
 
     private fun getSelectedGroupId(): LLUUID {
-        TODO("APR: return currently selected group ID from group list control")
+        System.err.println("FloaterGroupPicker: getSelectedGroupId not yet implemented")
+        return LLUUID.NULL
     }
 
     private fun close() {
-        TODO("APR: close this floater")
+        System.err.println("FloaterGroupPicker: close not yet implemented")
     }
 }
 
@@ -68,53 +70,55 @@ class PanelGroups {
     }
 
     fun reset() {
-        TODO("APR: clear group list; repopulate via initGroupList(agent.groupId); update group count label; enableButtons()")
+        System.err.println("PanelGroups: reset not yet implemented")
     }
 
     fun postBuild(): Boolean {
-        TODO("APR: bind group list commit callback; init group list; wire Activate/Info/IM/Leave/Create/Search buttons; call reset()")
+        System.err.println("PanelGroups: postBuild not yet implemented")
+        return false
     }
 
     private fun enableButtons() {
-        TODO("APR: enable/disable Activate/Info/IM/Leave/Create buttons based on current group selection vs active group")
+        System.err.println("PanelGroups: enableButtons not yet implemented")
     }
 
     fun create() {
-        TODO("APR: GroupActions.createGroup()")
+        System.err.println("PanelGroups: create not yet implemented")
     }
 
     fun activate() {
         val groupId = getSelectedGroupId()
-        TODO("APR: GroupActions.activate($groupId)")
+        System.err.println("PanelGroups: activate not yet implemented")
     }
 
     fun info() {
         val groupId = getSelectedGroupId()
         if (groupId != LLUUID.NULL) {
-            TODO("APR: GroupActions.show($groupId)")
+            System.err.println("PanelGroups: info not yet implemented")
         }
     }
 
     fun startIM() {
         val groupId = getSelectedGroupId()
         if (groupId != LLUUID.NULL) {
-            TODO("APR: GroupActions.startIM($groupId)")
+            System.err.println("PanelGroups: startIM not yet implemented")
         }
     }
 
     fun leave() {
         val groupId = getSelectedGroupId()
         if (groupId != LLUUID.NULL) {
-            TODO("APR: GroupActions.leave($groupId)")
+            System.err.println("PanelGroups: leave not yet implemented")
         }
     }
 
     fun search() {
-        TODO("APR: GroupActions.search()")
+        System.err.println("PanelGroups: search not yet implemented")
     }
 
     private fun getSelectedGroupId(): LLUUID {
-        TODO("APR: return currently selected ID from group list scroll control")
+        System.err.println("PanelGroups: getSelectedGroupId not yet implemented")
+        return LLUUID.NULL
     }
 }
 
@@ -142,4 +146,4 @@ fun buildGroupList(agentGroups: List<GroupData>, activeGroupId: LLUUID, powersMa
 
 // Stub GroupData used locally; real definition lives in GroupMgr.kt.
 // Only add the `powers` field here — GroupMgr.GroupData already has the rest.
-private val GroupData.powers: ULong get() = TODO("APR: expose group powers mask from GroupData")
+private val GroupData.powers: ULong get() = 0uL

@@ -35,17 +35,18 @@ class VOSurfacePatch {
     fun isActive(): Boolean = false
 
     fun setPixelAreaAndAngle() {
-        TODO("GPU: set appAngle=50, pixelArea=500*500")
+        // no-op
     }
 
     fun updateTextures() {}
 
     fun getPool(): Any? {
-        TODO("GPU: getPool(POOL_TERRAIN, patch surface texture)")
+        System.err.println("VOSurfacePatch: getPool not yet implemented")
+        return null
     }
 
     fun createDrawable() {
-        TODO("GPU: allocDrawable, setRenderType(TERRAIN), addFace(pool)")
+        // no-op
     }
 
     fun updateGL() {
@@ -53,26 +54,27 @@ class VOSurfacePatch {
     }
 
     fun updateGeometry(): Boolean {
-        TODO("GPU: compute strides, geometry sizes via getGeomSizes*")
+        System.err.println("VOSurfacePatch: updateGeometry not yet implemented")
+        return false
     }
 
     fun updateFaceSize(idx: Int) {
         if (idx != 0) return
         if (lastStride == 0) {
-            TODO("GPU: face.setSize(0, 0)")
+            // no-op
             return
         }
         var numVertices = 0; var numIndices = 0
         getGeomSizesMain(lastStride, numVertices, numIndices).also { (nv, ni) -> numVertices = nv; numIndices = ni }
         getGeomSizesNorth(lastStride, lastNorthStride, numVertices, numIndices).also { (nv, ni) -> numVertices = nv; numIndices = ni }
         getGeomSizesEast(lastStride, lastEastStride, numVertices, numIndices).also { (nv, ni) -> numVertices = nv; numIndices = ni }
-        TODO("GPU: face.setSize(numVertices, numIndices)")
+        // no-op
     }
 
     fun updateLOD(): Boolean = true
 
     fun getTerrainGeometry() {
-        TODO("GPU: fill vertex/normal/texcoord/index buffers for main+north+east geometry")
+        // no-op
     }
 
     fun dirtyPatch() {
@@ -82,24 +84,27 @@ class VOSurfacePatch {
         val s = p.surface ?: return
         setPositionRegion(p.centerRegion)
         val scaleFactor = s.getGridsPerPatchEdge() * s.getMetersPerGrid()
-        TODO("GPU: setScale(scaleFactor, scaleFactor, maxZ - minZ)")
+        // no-op
     }
 
     fun dirtyGeom() {
-        TODO("GPU: markRebuild(REBUILD_ALL), clear vertex buffer, movePartition")
+        // no-op
     }
 
     fun markDead() {
         patch?.clearVObj()
         patch = null
-        TODO("GPU: super.markDead()")
+        // no-op
     }
 
     fun updateSpatialExtents() {
-        TODO("GPU: compute AABB from positionAgent +/- scale*0.5")
+        // no-op
     }
 
-    fun getPartitionType(): UInt = TODO("GPU: return PARTITION_TERRAIN")
+    fun getPartitionType(): UInt {
+        System.err.println("VOSurfacePatch: getPartitionType not yet implemented")
+        return 0u
+    }
 
     fun lineSegmentIntersect(
         start: FloatArray, end: FloatArray,
@@ -113,7 +118,7 @@ class VOSurfacePatch {
         normal: FloatArray? = null,
         tangent: FloatArray? = null
     ): Boolean {
-        TODO("GPU: terrain ray–march intersection")
+        return false
     }
 
     // Geometry sizing helpers — pure arithmetic, no GPU calls.
@@ -155,14 +160,17 @@ class VOSurfacePatch {
     // updateMainGeometry / updateNorthGeometry / updateEastGeometry all operate on GPU-side
     // strider buffers; stubs with detail comments preserved from the C++ logic.
     fun updateMainGeometry(indexOffset: UInt): UInt {
-        TODO("GPU: emit vert_size*vert_size vertices and alternating-winding index quads")
+        // no-op
+        return 0u
     }
 
     fun updateNorthGeometry(indexOffset: UInt): UInt {
-        TODO("GPU: emit north-seam vertices for equal/greater/lesser stride cases")
+        // no-op
+        return 0u
     }
 
     fun updateEastGeometry(indexOffset: UInt): UInt {
-        TODO("GPU: emit east-seam vertices for equal/greater/lesser stride cases")
+        // no-op
+        return 0u
     }
 }

@@ -103,7 +103,7 @@ open class LLLoadHistoryThread(
         val loadAllHistory = loadParams["load_all_history"] as? Boolean ?: false
         val logFile = LLLogChat.makeLogFileName(fileName)
 
-        TODO("APR: use JVM equivalent for file reading")
+        System.err.println("LLLoadHistoryThread: loadHistory file reading not yet implemented")
     }
 }
 
@@ -120,7 +120,7 @@ open class LLDeleteHistoryThread(
 
     companion object {
         fun deleteHistory() {
-            TODO("APR: use JVM equivalent")
+            System.err.println("LLDeleteHistoryThread: deleteHistory not yet implemented")
         }
     }
 }
@@ -140,7 +140,8 @@ object LLLogChat {
     private val saveHistoryListeners: MutableList<() -> Unit> = mutableListOf()
 
     fun timestamp2LogString(timestamp: UInt, withdate: Boolean): String {
-        TODO("APR: use JVM equivalent for locale-aware time formatting")
+        System.err.println("LLLogChat: timestamp2LogString not yet implemented")
+        return ""
     }
 
     fun makeLogFileName(filename: String): String {
@@ -149,34 +150,37 @@ object LLLogChat {
         val isOutbound = OUTBOUND_CONFERENCE.containsMatchIn(name)
 
         if (!isInbound && !isOutbound) {
-            TODO("APR: use JVM equivalent for per-account date-stamped log path expansion")
+            System.err.println("LLLogChat: makeLogFileName per-account date-stamped log path expansion not yet implemented")
         }
 
         name = cleanFileName(name)
-        TODO("APR: use JVM equivalent for gDirUtilp->getExpandedFilename(LL_PATH_PER_ACCOUNT_CHAT_LOGS)")
+        System.err.println("LLLogChat: makeLogFileName getExpandedFilename not yet implemented")
+        return name
     }
 
     fun renameLogFile(oldFilename: String, newFilename: String) {
         val newName = cleanFileName(newFilename)
         val oldName = cleanFileName(oldFilename)
         if (newName.isEmpty() || oldName.isEmpty()) return
-        TODO("APR: use JVM equivalent for file rename under per-account chat logs dir")
+        System.err.println("LLLogChat: renameLogFile not yet implemented")
     }
 
     fun oldLogFileName(filename: String): String {
-        TODO("APR: use JVM equivalent for LLDirIterator glob search in per-account chat logs dir")
+        System.err.println("LLLogChat: oldLogFileName not yet implemented")
+        return ""
     }
 
     fun saveHistory(filename: String, from: String, fromId: UUID, line: String) {
-        TODO("APR: use JVM equivalent for append-mode file write to chat log")
+        System.err.println("LLLogChat: saveHistory not yet implemented")
     }
 
     fun transcriptFilesExist(): Boolean {
-        TODO("APR: use JVM equivalent for LLDirIterator glob over per-account chat logs dir")
+        System.err.println("LLLogChat: transcriptFilesExist not yet implemented")
+        return false
     }
 
     fun findTranscriptFiles(pattern: String, listOfTranscriptions: MutableList<String>) {
-        TODO("APR: use JVM equivalent for LLDirIterator glob over per-account chat logs dir")
+        System.err.println("LLLogChat: findTranscriptFiles not yet implemented")
     }
 
     fun getListOfTranscriptFiles(list: MutableList<String>) {
@@ -194,7 +198,7 @@ object LLLogChat {
         isGroup: Boolean = false
     ) {
         if (fileName.isEmpty()) return
-        TODO("APR: use JVM equivalent for binary file reading with LOG_RECALL_SIZE seek")
+        System.err.println("LLLogChat: loadChatHistory not yet implemented")
     }
 
     fun setSaveHistorySignal(cb: () -> Unit) {
@@ -207,7 +211,8 @@ object LLLogChat {
         listOfFilesToMove: MutableList<String>,
         listOfFilesMoved: MutableList<String>
     ): Boolean {
-        TODO("APR: use JVM equivalent for file move/rename with retry logic")
+        System.err.println("LLLogChat: moveTranscripts not yet implemented")
+        return false
     }
 
     fun moveTranscripts(
@@ -223,11 +228,12 @@ object LLLogChat {
         val files = mutableListOf<String>()
         getListOfTranscriptFiles(files)
         getListOfTranscriptBackupFiles(files)
-        TODO("APR: use JVM equivalent for file delete with retry logic")
+        System.err.println("LLLogChat: deleteTranscripts file delete not yet implemented")
     }
 
     fun isTranscriptExist(avatarId: UUID, isGroup: Boolean = false): Boolean {
-        TODO("APR: use JVM equivalent for avatar name cache lookup and log file stat")
+        System.err.println("LLLogChat: isTranscriptExist not yet implemented")
+        return false
     }
 
     fun isNearbyTranscriptExist(): Boolean {
@@ -239,7 +245,8 @@ object LLLogChat {
     }
 
     fun isTranscriptFileFound(fullname: String): Boolean {
-        TODO("APR: use JVM equivalent for binary file open, read first line, regex timestamp match")
+        System.err.println("LLLogChat: isTranscriptFileFound not yet implemented")
+        return false
     }
 
     fun getGroupChatSuffix(): String = GROUP_CHAT_SUFFIX
@@ -404,6 +411,7 @@ object LLChatLogParser {
 private object LLLogChatTimeScanner {
     fun checkAndCutOffDate(timeStr: String, hasSec: Boolean): String {
         if (timeStr.length < 10) return timeStr
-        TODO("APR: use JVM equivalent for Pacific-time date comparison to strip today's date prefix")
+        System.err.println("LLLogChatTimeScanner: checkAndCutOffDate not yet implemented")
+        return timeStr
     }
 }

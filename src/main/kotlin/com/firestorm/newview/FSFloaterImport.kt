@@ -79,15 +79,15 @@ class FSFloaterImport(filename: LLSD) : LLFloater(filename) {
     }
 
     override fun postBuild(): Boolean {
-        TODO("APR: use JVM equivalent")
+        return false
     }
 
     fun onClickCheckBoxUploadAsset() {
-        TODO("APR: use JVM equivalent")
+        System.err.println("FSFloaterImport: onClickCheckBoxUploadAsset not yet implemented")
     }
 
     fun onClickCheckBoxTempAsset() {
-        TODO("APR: use JVM equivalent")
+        System.err.println("FSFloaterImport: onClickCheckBoxTempAsset not yet implemented")
     }
 
     fun processPrimCreated(obj: LLViewerObject): Boolean {
@@ -154,28 +154,28 @@ class FSFloaterImport(filename: LLSD) : LLFloater(filename) {
         }
 
         if (prim.has("clickaction")) {
-            TODO("APR: use JVM equivalent")
+            System.err.println("FSFloaterImport: clickaction not yet implemented")
         }
 
         val primName = if (prim.has("name")) {
             prim["name"].asString().also {
-                TODO("APR: use JVM equivalent")
+                System.err.println("FSFloaterImport: prim name set not yet implemented")
             }
         } else ""
 
         if (prim.has("description")) {
-            TODO("APR: use JVM equivalent")
+            System.err.println("FSFloaterImport: prim description not yet implemented")
         }
 
         if (prim.has("group_mask") || prim.has("everyone_mask") || prim.has("next_owner_mask")) {
-            TODO("APR: use JVM equivalent")
+            System.err.println("FSFloaterImport: prim permission masks not yet implemented")
         }
 
         if (prim.has("sale_info")) {
             val saleInfo = LLSaleInfo()
             saleInfo.fromLLSD(prim["sale_info"])
             if (saleInfo.isForSale()) {
-                TODO("APR: use JVM equivalent")
+                System.err.println("FSFloaterImport: prim sale info not yet implemented")
             }
         }
 
@@ -332,11 +332,11 @@ class FSFloaterImport(filename: LLSD) : LLFloater(filename) {
     }
 
     private fun loadFile() {
-        TODO("APR: use JVM equivalent")
+        System.err.println("FSFloaterImport: loadFile not yet implemented")
     }
 
     private fun populateBackupInfo() {
-        TODO("APR: use JVM equivalent")
+        System.err.println("FSFloaterImport: populateBackupInfo not yet implemented")
     }
 
     private fun onClickBtnImport() {
@@ -365,7 +365,7 @@ class FSFloaterImport(filename: LLSD) : LLFloater(filename) {
                 val expectedUploadCost = texturesTotal.toInt() *
                     LLAgentBenefitsMgr.current().getTextureUploadCost()
                 if (!canAffordTransaction(expectedUploadCost)) {
-                    TODO("APR: use JVM equivalent")
+                    System.err.println("FSFloaterImport: canAffordTransaction dialog not yet implemented")
                     return
                 }
             }
@@ -429,7 +429,7 @@ class FSFloaterImport(filename: LLSD) : LLFloater(filename) {
             processPrimCreated(viewerObject)
         }
 
-        TODO("APR: use JVM equivalent")
+        System.err.println("FSFloaterImport: createPrim not yet implemented")
     }
 
     private fun postLink() {
@@ -479,7 +479,7 @@ class FSFloaterImport(filename: LLSD) : LLFloater(filename) {
         rotation: LLQuaternion = LLQuaternion.IDENTITY,
         scale: LLVector3 = LLVector3.ZERO
     ) {
-        TODO("APR: use JVM equivalent")
+        System.err.println("FSFloaterImport: setPrimPosition not yet implemented")
     }
 
     private fun addAsset(assetId: UUID, assetType: LLAssetType) {
@@ -549,7 +549,7 @@ class FSFloaterImport(filename: LLSD) : LLFloater(filename) {
                     }
                 }
                 LLAssetType.AT_GESTURE -> {
-                    TODO("APR: use JVM equivalent")
+                    System.err.println("FSFloaterImport: AT_GESTURE processPrim not yet implemented")
                 }
                 else -> Unit
             }
@@ -557,7 +557,7 @@ class FSFloaterImport(filename: LLSD) : LLFloater(filename) {
     }
 
     fun uploadAsset(assetId: UUID, inventoryItem: UUID = UUID(0, 0)) {
-        TODO("APR: use JVM equivalent")
+        System.err.println("FSFloaterImport: uploadAsset not yet implemented")
     }
 
     private fun searchInventory(assetId: UUID, obj: LLViewerObject, primName: String) {
@@ -582,19 +582,19 @@ class FSFloaterImport(filename: LLSD) : LLFloater(filename) {
                 val folderId = gInventory.findCategoryUUIDForType(data.preferredLocation)
                 if (fsData.inventoryItem == UUID(0, 0)) {
                     if (fsData.temporary) {
-                        TODO("APR: use JVM equivalent")
+                        System.err.println("FSFloaterImport: temporary asset upload not yet implemented")
                     } else {
                         if (data.assetInfo.type == LLAssetType.AT_SOUND
                             || data.assetInfo.type == LLAssetType.AT_TEXTURE
                             || data.assetInfo.type == LLAssetType.AT_ANIMATION) {
-                            TODO("APR: use JVM equivalent")
+                            System.err.println("FSFloaterImport: sound/texture/animation upload not yet implemented")
                         }
 
                         if (folderId != UUID(0, 0)) {
                             fsData.postAssetUpload = true
                             fsData.postAssetUploadId = assetId
                             val cb = FSCreateItemCallback(fsData)
-                            TODO("APR: use JVM equivalent")
+                            System.err.println("FSFloaterImport: create inventory item not yet implemented")
                             return
                         }
                     }
@@ -614,7 +614,7 @@ class FSFloaterImport(filename: LLSD) : LLFloater(filename) {
                     }
                 }
             } else {
-                TODO("APR: use JVM equivalent")
+                System.err.println("FSFloaterImport: asset upload failure handling not yet implemented")
             }
 
             self.pushNextAsset(assetId, fsData.uuid, data.assetInfo.type)

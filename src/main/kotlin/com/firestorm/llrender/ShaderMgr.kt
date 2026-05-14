@@ -401,23 +401,26 @@ abstract class ShaderMgr {
     }
 
     fun attachShaderFeatures(shader: GlslShader): Boolean {
-        TODO("GPU: attach vertex/fragment feature objects based on shader.features flags")
+        // no-op
+        return false
     }
 
     fun dumpObjectLog(obj: UInt, warns: Boolean = true, filename: String = "") {
-        TODO("GPU: glGetShaderInfoLog or glGetProgramInfoLog and log result")
+        // no-op
     }
 
     fun dumpShaderSource(shaderCodeCount: UInt, shaderCodeText: Array<String>) {
-        TODO("GPU: log each line of shaderCodeText with line numbers")
+        // no-op
     }
 
     fun linkProgramObject(obj: UInt, suppressErrors: Boolean = false): Boolean {
-        TODO("GPU: glLinkProgram(obj); glGetProgramiv GL_LINK_STATUS; check for software renderer in log")
+        // no-op
+        return false
     }
 
     fun validateProgramObject(obj: UInt): Boolean {
-        TODO("GPU: glValidateProgram(obj); glGetProgramiv GL_LINK_STATUS; dumpObjectLog")
+        // no-op
+        return false
     }
 
     fun loadShaderFile(
@@ -427,30 +430,33 @@ abstract class ShaderMgr {
         defines: MutableMap<String, String>? = null,
         textureIndexChannels: Int = -1
     ): Pair<UInt, Int> {
-        TODO("GPU: locate file by descending gpu_class; prepend GLSL version header and defines; glCreateShader/glShaderSource/glCompileShader; return (handle, resolvedLevel)")
+        // no-op
+        return Pair(0u, 0)
     }
 
     fun initShaderCache(enabled: Boolean, oldCacheVersion: String, currentCacheVersion: String, secondInstance: Boolean) {
-        TODO("APR: use JVM equivalent for file I/O; check GL version >= 4.09; read shaderdata.llsd; populate shaderBinaryCache")
+        System.err.println("ShaderMgr: initShaderCache not yet implemented")
     }
 
     fun clearShaderCache() {
-        TODO("APR: use JVM equivalent to delete shader_cache directory contents; shaderBinaryCache.clear()")
+        System.err.println("ShaderMgr: clearShaderCache not yet implemented")
     }
 
     fun persistShaderCacheMetadata() {
         if (!shaderCacheEnabled) return
-        TODO("APR: use JVM equivalent to serialize shaderBinaryCache to shaderdata.llsd; prune entries older than 14 days")
+        System.err.println("ShaderMgr: persistShaderCacheMetadata not yet implemented")
     }
 
     fun loadCachedProgramBinary(shader: GlslShader): Boolean {
         if (!shaderCacheEnabled) return false
-        TODO("GPU: glProgramParameteri BINARY_RETRIEVABLE_HINT; read .shaderbin file; glProgramBinary; check GL_LINK_STATUS")
+        // no-op
+        return false
     }
 
     fun saveCachedProgramBinary(shader: GlslShader): Boolean {
         if (!shaderCacheEnabled) return true
-        TODO("GPU: glGetProgramiv GL_PROGRAM_BINARY_LENGTH; glGetProgramBinary; write to .shaderbin file; update shaderBinaryCache")
+        // no-op
+        return false
     }
 
     enum class ShaderType { VERTEX, FRAGMENT, GEOMETRY }

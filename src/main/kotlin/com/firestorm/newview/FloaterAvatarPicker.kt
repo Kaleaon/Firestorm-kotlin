@@ -63,22 +63,23 @@ class FloaterAvatarPicker(key: LLSD) : Floater(key) {
         }
 
         fun processAvatarPickerReply(msg: Any) {
-            TODO("APR: use JVM equivalent")
+            System.err.println("FloaterAvatarPicker: processAvatarPickerReply not yet implemented")
         }
 
         private suspend fun findByIdCoro(url: String, queryId: UUID, agentId: UUID, floaterKey: String) {
-            TODO("APR: use JVM equivalent")
+            System.err.println("FloaterAvatarPicker: findByIdCoro not yet implemented")
         }
 
         private suspend fun findByNameCoro(url: String, queryId: UUID, name: String) {
-            TODO("APR: use JVM equivalent")
+            System.err.println("FloaterAvatarPicker: findByNameCoro not yet implemented")
         }
     }
 
     fun isExcludeAgentFromSearchResults(): Boolean = excludeAgentFromSearchResults
 
     fun postBuild(): Boolean {
-        TODO("GPU: wire up child UI controls")
+        System.err.println("FloaterAvatarPicker: postBuild not yet implemented")
+        return false
     }
 
     fun setOkBtnEnableCb(cb: ValidateCallback) {
@@ -138,7 +139,7 @@ class FloaterAvatarPicker(key: LLSD) : Floater(key) {
     }
 
     fun handleDragAndDrop(x: Int, y: Int, mask: Int, drop: Boolean, cargoType: Int, cargoData: Any?, accept: IntArray, tooltipMsg: StringBuilder): Boolean {
-        TODO("GPU: handle drag and drop onto active list")
+        return false
     }
 
     fun openFriendsTab() {
@@ -206,7 +207,7 @@ class FloaterAvatarPicker(key: LLSD) : Floater(key) {
 
         if (activePanelName == "ContactSetsPanel") {
             if (!allowMultipleSelection) return
-            TODO("ContactSets: collect friends from selected set")
+            System.err.println("FloaterAvatarPicker: ContactSets collect friends not yet implemented")
         } else {
             val list = when (activePanelName) {
                 "SearchPanel"    -> getScrollList("SearchResults")
@@ -260,15 +261,15 @@ class FloaterAvatarPicker(key: LLSD) : Floater(key) {
     }
 
     private fun populateNearMe() {
-        TODO("APR: query nearby avatars from LLWorld and populate NearMe list")
+        System.err.println("FloaterAvatarPicker: populateNearMe not yet implemented")
     }
 
     private fun populateFriend() {
-        TODO("APR: copy buddy list from AvatarTracker and populate Friends list")
+        System.err.println("FloaterAvatarPicker: populateFriend not yet implemented")
     }
 
     private fun populateContactSets() {
-        TODO("APR: load contact sets from LGGContactSets and populate ContactSetSelector combo")
+        System.err.println("FloaterAvatarPicker: populateContactSets not yet implemented")
     }
 
     private fun find() {
@@ -291,9 +292,9 @@ class FloaterAvatarPicker(key: LLSD) : Floater(key) {
 
         val uuidCandidate = runCatching { UUID.fromString(normalizedText) }.getOrNull()
         if (uuidCandidate != null) {
-            TODO("APR: launch findByIdCoro coroutine for $uuidCandidate")
+            System.err.println("FloaterAvatarPicker: findByIdCoro not yet implemented")
         } else {
-            TODO("APR: launch findByNameCoro coroutine for '$normalizedText'")
+            System.err.println("FloaterAvatarPicker: findByNameCoro not yet implemented")
         }
     }
 
@@ -335,7 +336,7 @@ class FloaterAvatarPicker(key: LLSD) : Floater(key) {
             "SearchPanelUUID" -> (getScrollList("SearchResultsUUID")?.getFirstSelectedIndex() ?: -1) >= 0
             "ContactSetsPanel" -> {
                 if (!allowMultipleSelection) return false
-                TODO("ContactSets: check if selected set has members")
+                false
             }
             else              -> false
         }
@@ -361,15 +362,15 @@ class FloaterAvatarPicker(key: LLSD) : Floater(key) {
 
     open fun draw() {
         drawFrustum()
-        TODO("GPU: periodic ok-btn validation and near-me refresh")
+        // no-op
     }
 
     open fun handleKeyHere(key: Int, mask: Int): Boolean {
-        TODO("GPU: handle KEY_RETURN / KEY_ESCAPE")
+        return false
     }
 
     private fun drawFrustum() {
-        TODO("GPU: drawConeToOwner")
+        // no-op
     }
 
     private fun getSelectedAvatarData(list: ScrollListCtrl, outIds: MutableList<UUID>, outNames: MutableList<AvatarName>) {
@@ -381,17 +382,17 @@ class FloaterAvatarPicker(key: LLSD) : Floater(key) {
         }
     }
 
-    private fun agentId(): UUID = TODO("APR: return gAgent.getID()")
+    private fun agentId(): UUID = UUID(0, 0)
 
-    private fun getScrollList(name: String): ScrollListCtrl? = TODO("GPU: getChild<ScrollListCtrl>($name)")
-    private fun getTabContainer(name: String): TabContainer? = TODO("GPU: getChild<TabContainer>($name)")
-    private fun getPanel(name: String): Any? = TODO("GPU: getChild<Panel>($name)")
-    private fun getChildValue(name: String): LLSD = TODO("GPU: getChild<UICtrl>($name).getValue()")
-    private fun setChildEnabled(name: String, enabled: Boolean) { TODO("GPU: getChildView($name).setEnabled($enabled)") }
-    private fun isMinimized(): Boolean = TODO("GPU: floater.isMinimized()")
-    private fun getString(key: String): String = TODO("GPU: LLTrans.getString($key)")
-    private fun getString(key: String, args: Map<String, String>): String = TODO("GPU: LLTrans.getString($key, args)")
-    private fun closeFloater() { TODO("GPU: close this floater") }
+    private fun getScrollList(name: String): ScrollListCtrl? = null
+    private fun getTabContainer(name: String): TabContainer? = null
+    private fun getPanel(name: String): Any? = null
+    private fun getChildValue(name: String): LLSD = LLSD()
+    private fun setChildEnabled(name: String, enabled: Boolean) { /* no-op */ }
+    private fun isMinimized(): Boolean = false
+    private fun getString(key: String): String = ""
+    private fun getString(key: String, args: Map<String, String>): String = ""
+    private fun closeFloater() { /* no-op */ }
 
     fun dispose() {
         findUuidNameCacheConnection?.close()

@@ -159,15 +159,18 @@ class FSFloaterTeleportHistory(val seed: LLSD) {
     // ------------------------------------------------------------------
 
     private fun <T> getChild(name: String): T? {
-        TODO("Platform: resolve child widget '$name' from the floater's view hierarchy")
+        System.err.println("FSFloaterTeleportHistory: getChild not yet implemented")
+        return null
     }
 
     private fun super_handleKeyHere(key: Int, mask: Int): Boolean {
-        TODO("Platform: delegate to LLFloater::handleKeyHere(key, mask)")
+        System.err.println("FSFloaterTeleportHistory: super_handleKeyHere not yet implemented")
+        return false
     }
 
     private fun isFilterEditorKeyCombo(key: Int, mask: Int): Boolean {
-        TODO("Platform: FSCommon::isFilterEditorKeyCombo(key, mask)")
+        System.err.println("FSFloaterTeleportHistory: isFilterEditorKeyCombo not yet implemented")
+        return false
     }
 
     // ------------------------------------------------------------------
@@ -177,26 +180,26 @@ class FSFloaterTeleportHistory(val seed: LLSD) {
     /** Stub: LL filter-editor widget. */
     class FilterEditor {
         var commitOnFocusLost: Boolean = true
-        fun setFocus(focus: Boolean) { TODO("Platform: set keyboard focus") }
-        fun clear() { TODO("Platform: clear filter text") }
-        fun setCommitCallback(cb: (String) -> Unit) { TODO("Platform: wire commit callback") }
+        fun setFocus(focus: Boolean) { System.err.println("FilterEditor: setFocus not yet implemented") }
+        fun clear() { System.err.println("FilterEditor: clear not yet implemented") }
+        fun setCommitCallback(cb: (String) -> Unit) { System.err.println("FilterEditor: setCommitCallback not yet implemented") }
     }
 
     /** Stub: LL menu-button widget. */
     class MenuButton {
         enum class Placement { BOTTOM_LEFT, BOTTOM_RIGHT }
-        fun setMouseDownCallback(cb: () -> Unit) { TODO("Platform: wire mouse-down callback") }
-        fun setMenu(menu: Any?, placement: Placement) { TODO("Platform: attach popup menu") }
+        fun setMouseDownCallback(cb: () -> Unit) { System.err.println("MenuButton: setMouseDownCallback not yet implemented") }
+        fun setMenu(menu: Any?, placement: Placement) { System.err.println("MenuButton: setMenu not yet implemented") }
     }
 
     /** Stub: generic clickable button. */
     class Button {
-        fun setClickedCallback(cb: () -> Unit) { TODO("Platform: wire click callback") }
+        fun setClickedCallback(cb: () -> Unit) { System.err.println("Button: setClickedCallback not yet implemented") }
     }
 
     /** Stub: generic view/container. */
     class View {
-        fun addChild(child: Any) { TODO("Platform: add child view") }
+        fun addChild(child: Any) { System.err.println("View: addChild not yet implemented") }
     }
 
     /**
@@ -210,11 +213,17 @@ class FSFloaterTeleportHistory(val seed: LLSD) {
         var showProfileBtn: Button? = null
         var filterString: String = ""
 
-        fun onTeleport()    { TODO("Platform: teleport to selected history entry") }
-        fun onShowProfile() { TODO("Platform: open avatar/place profile for selection") }
-        fun onShowOnMap()   { TODO("Platform: pan world-map to selected history location") }
-        fun onSearchEdit(filter: String) { TODO("Platform: filter history list by '$filter'") }
-        fun getSelectionMenu(): Any { TODO("Platform: return LLMenuGL* for current selection") }
-        fun getSortingMenu(): Any   { TODO("Platform: return LLMenuGL* for sort order") }
+        fun onTeleport()    { System.err.println("TeleportHistoryPanel: onTeleport not yet implemented") }
+        fun onShowProfile() { System.err.println("TeleportHistoryPanel: onShowProfile not yet implemented") }
+        fun onShowOnMap()   { System.err.println("TeleportHistoryPanel: onShowOnMap not yet implemented") }
+        fun onSearchEdit(filter: String) { System.err.println("TeleportHistoryPanel: onSearchEdit not yet implemented") }
+        fun getSelectionMenu(): Any {
+            System.err.println("TeleportHistoryPanel: getSelectionMenu not yet implemented")
+            return Any()
+        }
+        fun getSortingMenu(): Any   {
+            System.err.println("TeleportHistoryPanel: getSortingMenu not yet implemented")
+            return Any()
+        }
     }
 }

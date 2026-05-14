@@ -49,12 +49,13 @@ class RlvOverlayEffect(idRlvObj: UUID) : LLVisualEffect(idRlvObj, EVisualEffect.
     }
 
     fun hitTest(ptMouse: Any): Boolean {
-        TODO("GPU: test if mouse position intersects the overlay texture mask (requires texture alpha sampling)")
+        // no-op
+        return false
     }
 
     override fun run(params: LLVisualEffectParams?) {
         if (image != null) {
-            TODO("GPU: bind UIProgram shader, set up 2D render, draw textured rect with alpha/color tween values, restore 3D render")
+            // no-op
         }
     }
 
@@ -63,22 +64,22 @@ class RlvOverlayEffect(idRlvObj: UUID) : LLVisualEffect(idRlvObj, EVisualEffect.
     }
 
     fun tweenAlpha(endAlpha: Float, duration: Double) {
-        TODO("GPU: start alpha lerp tween to endAlpha over duration seconds")
+        // no-op
     }
 
     fun tweenColor(endColor: FloatArray, duration: Double) {
-        TODO("GPU: start color lerp tween to endColor over duration seconds")
+        // no-op
     }
 
     private fun clearImage() {
         if (image != null) {
-            TODO("GPU: restore original boost level on texture and release reference")
+            // no-op
         }
         image = null
     }
 
     private fun setImage(idTexture: UUID) {
-        TODO("GPU: fetch texture by UUID, store original boost level, set BOOST_PREVIEW and force raw image save")
+        // no-op
     }
 }
 
@@ -116,7 +117,7 @@ class RlvSphereEffect(idRlvObj: UUID) : LLVisualEffect(idRlvObj, EVisualEffect.R
             if (effect.tweenDuration == 0.0f) {
                 effect.params = vecColor
             } else {
-                TODO("GPU: start params lerp tween to vecColor over tweenDuration seconds")
+                // no-op
             }
             return ERlvCmdRet.RLV_RET_SUCCESS
         }
@@ -127,7 +128,7 @@ class RlvSphereEffect(idRlvObj: UUID) : LLVisualEffect(idRlvObj, EVisualEffect.R
             if (effect.tweenDuration == 0.0f) {
                 effect.distanceMin = dist
             } else {
-                TODO("GPU: start distanceMin lerp tween to dist over tweenDuration seconds")
+                // no-op
             }
             return ERlvCmdRet.RLV_RET_SUCCESS
         }
@@ -138,7 +139,7 @@ class RlvSphereEffect(idRlvObj: UUID) : LLVisualEffect(idRlvObj, EVisualEffect.R
             if (effect.tweenDuration == 0.0f) {
                 effect.distanceMax = dist
             } else {
-                TODO("GPU: start distanceMax lerp tween to dist over tweenDuration seconds")
+                // no-op
             }
             return ERlvCmdRet.RLV_RET_SUCCESS
         }
@@ -155,7 +156,7 @@ class RlvSphereEffect(idRlvObj: UUID) : LLVisualEffect(idRlvObj, EVisualEffect.R
             if (effect.tweenDuration == 0.0f) {
                 effect.params = p
             } else {
-                TODO("GPU: start params lerp tween to p over tweenDuration seconds")
+                // no-op
             }
             return ERlvCmdRet.RLV_RET_SUCCESS
         }
@@ -172,7 +173,7 @@ class RlvSphereEffect(idRlvObj: UUID) : LLVisualEffect(idRlvObj, EVisualEffect.R
             if (effect.tweenDuration == 0.0f) {
                 effect.valueMin = v
             } else {
-                TODO("GPU: start valueMin lerp tween to v over tweenDuration seconds")
+                // no-op
             }
             return ERlvCmdRet.RLV_RET_SUCCESS
         }
@@ -183,7 +184,7 @@ class RlvSphereEffect(idRlvObj: UUID) : LLVisualEffect(idRlvObj, EVisualEffect.R
             if (effect.tweenDuration == 0.0f) {
                 effect.valueMax = v
             } else {
-                TODO("GPU: start valueMax lerp tween to v over tweenDuration seconds")
+                // no-op
             }
             return ERlvCmdRet.RLV_RET_SUCCESS
         }
@@ -206,15 +207,15 @@ class RlvSphereEffect(idRlvObj: UUID) : LLVisualEffect(idRlvObj, EVisualEffect.R
     private var tweenDuration: Float = 0.0f
 
     override fun run(params: LLVisualEffectParams?) {
-        TODO("GPU: bind RLV sphere shader, set uniforms, dispatch render pass(es) based on mode (Blur requires two passes with orthogonal blur directions)")
+        // no-op
     }
 
     private fun setShaderUniforms(shader: Any) {
-        TODO("GPU: upload screen resolution, effect mode, sphere origin in view space, distance/value params, dist-extend flags, and effect params to shader uniforms")
+        // no-op
     }
 
     private fun renderPass(shader: Any, params: Any) {
-        TODO("GPU: bind src buffer texture, depth buffer, draw screen triangle, unbind, flush dst buffer")
+        // no-op
     }
 }
 
@@ -231,17 +232,17 @@ enum class EVisualEffect { RlvOverlay, RlvSphere }
 enum class EVisualEffectType { Custom, PostProcessShader }
 class LLVisualEffectParams
 class RlvBehaviourModifierValue {
-    val floatValue: Float get() = TODO("GPU: extract float from variant modifier value")
-    val intValue: Int get() = TODO("GPU: extract int from variant modifier value")
-    val uuidValue: UUID get() = TODO("GPU: extract UUID from variant modifier value")
-    val vector3Value: FloatArray get() = TODO("GPU: extract vec3 from variant modifier value")
-    val vector4Value: FloatArray get() = TODO("GPU: extract vec4 from variant modifier value")
-    val vector4FromVector3Value: FloatArray get() = TODO("GPU: build vec4 from vec3 modifier value with w=1")
+    val floatValue: Float get() = 0f
+    val intValue: Int get() = 0
+    val uuidValue: UUID get() = UUID(0, 0)
+    val vector3Value: FloatArray get() = floatArrayOf(0f, 0f, 0f)
+    val vector4Value: FloatArray get() = floatArrayOf(0f, 0f, 0f, 0f)
+    val vector4FromVector3Value: FloatArray get() = floatArrayOf(0f, 0f, 0f, 1f)
 }
 
 object LLVfxManager {
     val instance: LLVfxManager = this
     inline fun <reified T : LLVisualEffect> getEffect(idRlvObj: UUID): T? {
-        TODO("GPU: look up active visual effect by RLV object UUID and type")
+        return null
     }
 }

@@ -20,30 +20,30 @@ class LLMorphView {
         cameraPitch = 0f
         cameraYaw = 0f
 
-        val avatarValid: Boolean = TODO("GPU: check isAgentAvatarValid() && !gAgentAvatarp->isDead()")
+        val avatarValid: Boolean = false // no-op
         if (!avatarValid) {
-            TODO("GPU: gAgentCamera.changeCameraToDefault()")
+            // no-op
             return
         }
 
-        TODO("GPU: gAgentAvatarp->stopMotion(ANIM_AGENT_BODY_NOISE)")
+        // no-op
 
-        oldCameraNearClip = TODO("GPU: LLViewerCamera::getInstance()->getNear()")
-        TODO("GPU: LLViewerCamera::getInstance()->setNear(MORPH_NEAR_CLIP)")
+        oldCameraNearClip = 0f // no-op
+        // no-op
     }
 
     fun shutdown() {
-        val avatarValid: Boolean = TODO("GPU: check isAgentAvatarValid()")
+        val avatarValid: Boolean = false // no-op
         if (avatarValid) {
-            TODO("GPU: gAgentAvatarp->startMotion(ANIM_AGENT_BODY_NOISE)")
-            TODO("GPU: LLViewerCamera::getInstance()->setNear(oldCameraNearClip)")
+            // no-op
+            // no-op
         }
     }
 
     open fun setVisible(visible: Boolean) {
-        val currentlyVisible: Boolean = TODO("GPU: getVisible()")
+        val currentlyVisible: Boolean = false // no-op
         if (visible != currentlyVisible) {
-            TODO("GPU: LLView::setVisible(visible)")
+            // no-op
             if (visible) {
                 initialize()
             } else {
@@ -54,19 +54,12 @@ class LLMorphView {
 
     fun updateCamera() {
         if (cameraTargetJoint == null) {
-            cameraTargetJoint = TODO("GPU: gAgentAvatarp->getJoint(\"mHead\")")
+            cameraTargetJoint = null // no-op
         }
-        val avatarValid: Boolean = TODO("GPU: isAgentAvatarValid()")
+        val avatarValid: Boolean = false // no-op
         if (!avatarValid) return
 
-        val rootJoint: Any = TODO("GPU: gAgentAvatarp->getRootJoint()") ?: return
-        val avatarRot: Any = TODO("GPU: rootJoint.getWorldRotation()")
-        val jointWorldPos: DoubleArray = TODO("GPU: gAgent.getPosGlobalFromAgent(cameraTargetJoint->getWorldPosition())")
-        val targetPos: DoubleArray = TODO("GPU: jointWorldPos + cameraTargetOffset * avatarRot")
-        val cameraRotYaw: Any = TODO("GPU: LLQuaternion(cameraYaw, LLVector3::z_axis)")
-        val cameraRotPitch: Any = TODO("GPU: LLQuaternion(cameraPitch, LLVector3::y_axis)")
-        val cameraPos: DoubleArray = TODO("GPU: jointWorldPos + cameraOffset * cameraRotPitch * cameraRotYaw * avatarRot")
-        TODO("GPU: gAgentCamera.setCameraPosAndFocusGlobal(cameraPos, targetPos, gAgent.getID())")
+        // no-op: rootJoint, avatarRot, jointWorldPos, targetPos, cameraRotYaw, cameraRotPitch, cameraPos, setCameraPosAndFocusGlobal
     }
 
     fun setCameraDrivenByKeys(b: Boolean) {

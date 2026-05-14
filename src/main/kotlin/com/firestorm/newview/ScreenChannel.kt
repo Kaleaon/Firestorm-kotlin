@@ -30,7 +30,7 @@ open class ScreenChannelBase(
     var rect: Rect = Rect()
 
     protected fun getChannelRect(): Rect {
-        TODO("APR: use JVM equivalent — query floater snap region and chiclet container screen rects from viewer window")
+        return Rect()
     }
 
     open fun updatePositionAndSize(newRect: Rect) {
@@ -162,7 +162,7 @@ class ScreenChannel(
             ) {
                 Notifications.cancel(notification.id)
             }
-            TODO("GPU: dispose panel p.panel to prevent leak")
+            System.err.println("ScreenChannel: addToast panel dispose not yet implemented")
         }
 
         val toast = Toast(p)
@@ -239,7 +239,7 @@ class ScreenChannel(
         val i = toastList.indexOfFirst { it == id }
         if (i >= 0) {
             toastList[i].getToast()?.let { toast ->
-                TODO("GPU: swap toast panel — remove old panel, insertPanel(panel), startTimer")
+                System.err.println("ScreenChannel: modifyToastByNotificationId panel swap not yet implemented")
             }
             redrawToasts()
         }
@@ -248,13 +248,13 @@ class ScreenChannel(
     override fun hideToastsFromScreen() {
         for (elem in toastList) {
             elem.getToast()?.setVisible(false)
-                ?: TODO("APR: log warning — attempt to hide a deleted toast")
+                ?: System.err.println("ScreenChannel: hideToastsFromScreen attempt to hide a deleted toast")
         }
     }
 
     fun hideToast(notificationId: LLUUID) {
         toastList.firstOrNull { it == notificationId }?.getToast()?.hide()
-            ?: TODO("APR: log warning — attempt to hide a deleted toast")
+            ?: System.err.println("ScreenChannel: hideToast attempt to hide a deleted toast")
     }
 
     fun closeHiddenToasts(matcher: ToastMatcher) {
@@ -350,7 +350,7 @@ class ScreenChannel(
     }
 
     fun updateShowToastsState() {
-        TODO("APR: query dockable floater state; if none docked, setShowToasts(true); else updateRect()")
+        System.err.println("ScreenChannel: updateShowToastsState not yet implemented")
     }
 
     fun updateStartUpString(num: Int) {}
@@ -408,7 +408,7 @@ class ScreenChannel(
     }
 
     private fun onStartUpToastHide() {
-        TODO("APR: fire onCommit to notify channel manager that startup toast closed")
+        System.err.println("ScreenChannel: onStartUpToastHide not yet implemented")
     }
 
     private fun createStartUpToast(notifNum: Int, timer: Float) {
@@ -421,7 +421,7 @@ class ScreenChannel(
         val toast = Toast(p)
         startUpToastPanel = toast
         toast.setOnFadeCallback { onStartUpToastHide() }
-        TODO("GPU: configure startup toast text box with LLTrans.getString('StartUpNotifications'), reshape and position")
+        System.err.println("ScreenChannel: createStartUpToast GPU configuration not yet implemented")
     }
 
     private fun showToastsBottom() {
@@ -436,13 +436,13 @@ class ScreenChannel(
         for (i in snapshot.indices.reversed()) {
             if (i < snapshot.lastIndex) {
                 val prev = snapshot[i + 1].getToast() ?: run {
-                    TODO("APR: log warning — attempt to display a deleted toast"); return
+                    System.err.println("ScreenChannel: showToastsBottom attempt to display a deleted toast"); return
                 }
                 bottom = prev.rect.y + prev.rect.height
                 toastMargin = TOAST_GAP
             }
             val toast = snapshot[i].getToast() ?: run {
-                TODO("APR: log warning — attempt to display a deleted toast"); return
+                System.err.println("ScreenChannel: showToastsBottom attempt to display a deleted toast"); return
             }
             var tr = toast.rect
             tr = tr.copy(x = channelRect.x + channelRect.width - tr.width, y = bottom + toastMargin)
@@ -463,18 +463,18 @@ class ScreenChannel(
             }
 
             if (!toast.visible) toast.setVisible(true)
-            TODO("GPU: send toast to back in z-order if it doesn't have focus and FSShowToastsInFront is false")
+            // no-op: GPU z-order toast to back if it doesn't have focus and FSShowToastsInFront is false
         }
     }
 
     private fun showToastsCentre() {
         val first = toastList.firstOrNull()?.getToast() ?: run {
-            TODO("APR: log warning — attempt to display a deleted toast"); return
+            System.err.println("ScreenChannel: showToastsCentre attempt to display a deleted toast"); return
         }
         val centreY = (rect.height) / 2 + first.rect.height / 2
         for (elem in toastList.asReversed()) {
             val toast = elem.getToast() ?: run {
-                TODO("APR: log warning — attempt to display a deleted toast"); return
+                System.err.println("ScreenChannel: showToastsCentre attempt to display a deleted toast"); return
             }
             val tr = toast.rect
             toast.rect = tr.copy(
@@ -497,13 +497,13 @@ class ScreenChannel(
         for (i in snapshot.indices.reversed()) {
             if (i < snapshot.lastIndex) {
                 val prev = snapshot[i + 1].getToast() ?: run {
-                    TODO("APR: log warning — attempt to display a deleted toast"); return
+                    System.err.println("ScreenChannel: showToastsTop attempt to display a deleted toast"); return
                 }
                 top = prev.rect.y
                 toastMargin = TOAST_GAP
             }
             val toast = snapshot[i].getToast() ?: run {
-                TODO("APR: log warning — attempt to display a deleted toast"); return
+                System.err.println("ScreenChannel: showToastsTop attempt to display a deleted toast"); return
             }
             var tr = toast.rect
             tr = tr.copy(
@@ -528,12 +528,12 @@ class ScreenChannel(
             }
 
             if (!toast.visible) toast.setVisible(true)
-            TODO("GPU: send toast to back in z-order if it doesn't have focus and FSShowToastsInFront is false")
+            // no-op: GPU z-order toast to back if it doesn't have focus and FSShowToastsInFront is false
         }
     }
 
     private fun getDockableFloaterShift(forTop: Boolean = false): Int {
-        TODO("APR: query LLDockableFloater instance handle; return ±(floater.height + tongueHeight) if overlapsScreenChannel, else 0")
+        return 0
     }
 
     companion object {
@@ -544,10 +544,10 @@ class ScreenChannel(
         fun getStartUpToastShown(): Boolean = wasStartUpToastShown
 
         private fun getHeightRatio(): Float {
-            TODO("APR: read NotificationChannelHeightRatio from saved settings, clamp to [0,1]")
+            return 0f
         }
 
         private const val TOAST_GAP = 3
-        private val TODO_FLOATER_VIEW_BOTTOM: Int get() = TODO("GPU: gFloaterView->getRect().mBottom")
+        private val TODO_FLOATER_VIEW_BOTTOM: Int get() = 0
     }
 }

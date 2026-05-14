@@ -106,12 +106,8 @@ class FSPanelPrefs {
      */
     fun postBuild(): Boolean {
         refreshBeamLists()
-        TODO(
-            "Wire getChild<LLUICtrl> callbacks: BeamColor_new/refresh/delete, " +
-            "custom_beam_btn/refresh_beams/delete_beam, texture control, " +
-            "embed_item and custom_script drop targets, reset_default_folders, " +
-            "Perms.Copy, Perms.Trans — then call LLPanelPreference::postBuild()"
-        )
+        System.err.println("FSPanelPrefs: postBuild not yet implemented")
+        return false
     }
 
     /**
@@ -124,12 +120,7 @@ class FSPanelPrefs {
      * @param key Unused LLSD key forwarded from the floater.
      */
     fun onOpen(key: LLSD) {
-        TODO(
-            "Check LLStartUp::getStartupState() == STATE_STARTED; " +
-            "reload embeddedItem and customScriptItem from gSavedPerAccountSettings; " +
-            "update build_item_add_disp_rect_txt and custom_script_disp_rect_txt labels; " +
-            "enable/disable FSBuildPrefs_EmbedItem, FSBuildPrefs_UseCustomScript, reset_default_folders"
-        )
+        System.err.println("FSPanelPrefs: onOpen not yet implemented")
     }
 
     // ------------------------------------------------------------------
@@ -145,11 +136,7 @@ class FSPanelPrefs {
      * Called when the user clicks OK or Apply in the Preferences floater.
      */
     fun apply() {
-        TODO(
-            "If STATE_STARTED: gSavedPerAccountSettings.setString(\"FSBuildPrefs_Item\", embeddedItem) " +
-            "and setString(\"FSBuildPrefs_CustomScriptItem\", customScriptItem); " +
-            "then call LLPanelPreference::apply()"
-        )
+        System.err.println("FSPanelPrefs: apply not yet implemented")
     }
 
     /**
@@ -164,7 +151,7 @@ class FSPanelPrefs {
      *                       already handled by child panels).
      */
     fun cancel(settingsToSkip: List<String> = emptyList()) {
-        TODO("Call LLPanelPreference::cancel(settingsToSkip)")
+        System.err.println("FSPanelPrefs: cancel not yet implemented")
     }
 
     /**
@@ -182,7 +169,7 @@ class FSPanelPrefs {
         PrivacyPrefs.hideOnlineStatus  = false
         FirestormPrefs.beamShape       = ""
         FirestormPrefs.beamColorFile   = ""
-        TODO("Write defaults back to gSavedSettings / gSavedPerAccountSettings")
+        System.err.println("FSPanelPrefs: setDefaults not yet implemented")
     }
 
     // ------------------------------------------------------------------
@@ -197,11 +184,7 @@ class FSPanelPrefs {
      * `gSavedSettings`.
      */
     fun refreshBeamLists() {
-        TODO(
-            "Find FSBeamShape_combo and BeamColor_combo; removeall(); " +
-            "add off-label + file names from gLggBeamMaps; " +
-            "setSimple(gSavedSettings.getString(\"FSBeamShape\" / \"FSBeamColorFile\"))"
-        )
+        System.err.println("FSPanelPrefs: refreshBeamLists not yet implemented")
     }
 
     // ------------------------------------------------------------------
@@ -210,12 +193,12 @@ class FSPanelPrefs {
 
     /** Open the beam-colour editor floater. */
     private fun onBeamColorNew() {
-        TODO("LLFloaterReg::showTypedInstance<lggBeamColorMapFloater>(\"lgg_beamcolormap\").setData(this)")
+        System.err.println("FSPanelPrefs: onBeamColorNew not yet implemented")
     }
 
     /** Open the beam-shape editor floater. */
     private fun onBeamNew() {
-        TODO("LLFloaterReg::showTypedInstance<lggBeamMapFloater>(\"lgg_beamshape\").setData(this)")
+        System.err.println("FSPanelPrefs: onBeamNew not yet implemented")
     }
 
     /**
@@ -223,11 +206,7 @@ class FSPanelPrefs {
      * settings directories, then call [refreshBeamLists].
      */
     private fun onBeamColorDelete() {
-        TODO(
-            "Read BeamColor_combo value; construct .xml path in LL_PATH_APP_SETTINGS/beamsColors " +
-            "and LL_PATH_USER_SETTINGS/beamsColors; LLFile::remove(); " +
-            "gSavedSettings.setString(\"FSBeamColorFile\", \"\"); refreshBeamLists()"
-        )
+        System.err.println("FSPanelPrefs: onBeamColorDelete not yet implemented")
     }
 
     /**
@@ -235,26 +214,22 @@ class FSPanelPrefs {
      * settings directories, then call [refreshBeamLists].
      */
     private fun onBeamDelete() {
-        TODO(
-            "Read FSBeamShape_combo value; construct .xml path in LL_PATH_APP_SETTINGS/beams " +
-            "and LL_PATH_USER_SETTINGS/beams; LLFile::remove(); " +
-            "gSavedSettings.setString(\"FSBeamShape\", \"\"); refreshBeamLists()"
-        )
+        System.err.println("FSPanelPrefs: onBeamDelete not yet implemented")
     }
 
     /** Called when the user drops a texture onto the default-object-texture control. */
     private fun onCommitTexture(data: LLSD) {
-        TODO("Retrieve texture UUID from data and persist to gSavedSettings")
+        System.err.println("FSPanelPrefs: onCommitTexture not yet implemented")
     }
 
     /** Sync the Copy-permission checkbox with the Trans-permission checkbox logic. */
     private fun onCommitCopy() {
-        TODO("Ensure 'copy' cannot be set without matching 'transfer' flag; update UI")
+        System.err.println("FSPanelPrefs: onCommitCopy not yet implemented")
     }
 
     /** Sync the Trans-permission checkbox with Copy-permission checkbox logic. */
     private fun onCommitTrans() {
-        TODO("Ensure 'transfer' logic is consistent with 'copy'; update UI")
+        System.err.println("FSPanelPrefs: onCommitTrans not yet implemented")
     }
 
     /**
@@ -263,7 +238,7 @@ class FSPanelPrefs {
      */
     private fun onDADEmbeddedItem(itemId: LLUUID) {
         embeddedItem = itemId.toString()
-        TODO("Update build_item_add_disp_rect_txt label with item name from gInventory")
+        System.err.println("FSPanelPrefs: onDADEmbeddedItem not yet implemented")
     }
 
     /**
@@ -272,12 +247,12 @@ class FSPanelPrefs {
      */
     private fun onDADCustomScript(itemId: LLUUID) {
         customScriptItem = itemId.toString()
-        TODO("Update custom_script_disp_rect_txt label with script name from gInventory")
+        System.err.println("FSPanelPrefs: onDADCustomScript not yet implemented")
     }
 
     /** Reset Firestorm's default inventory folders to their original names. */
     private fun onResetDefaultFolders() {
-        TODO("Call the relevant FSCommon helper to restore default folder names in gInventory")
+        System.err.println("FSPanelPrefs: onResetDefaultFolders not yet implemented")
     }
 
     // ------------------------------------------------------------------
@@ -296,7 +271,7 @@ class FSPanelPrefs {
          * opens the relevant LLFloater via LLFloaterReg.
          */
         fun show() {
-            TODO("LLFloaterReg::showInstance(\"preferences\"); switch to \"firestorm\" tab")
+            System.err.println("FSPanelPrefs: show not yet implemented")
         }
     }
 }

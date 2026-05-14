@@ -52,16 +52,16 @@ data class Vector2(val x: Float, val y: Float)
 class ViewerRegion {
     var handle: Long = 0L
     fun width(): Float = 256f
-    fun getOriginAgent(): Vector3 = TODO("APR: use JVM equivalent")
-    fun getCompositionXY(x: Int, y: Int): Float = TODO("GPU: composition lookup")
-    fun getPosRegionFromGlobal(v: Vector3d): Vector3 = TODO("APR: use JVM equivalent")
-    fun getPosGlobalFromRegion(v: Vector3): Vector3d = TODO("APR: use JVM equivalent")
-    fun getComposition(): Any = TODO("APR: use JVM equivalent")
-    fun dirtyHeights() { TODO("APR: use JVM equivalent") }
-    fun calculateCenterGlobal() { TODO("APR: use JVM equivalent") }
-    fun updateReflectionProbes(didUpdate: Boolean) { TODO("APR: use JVM equivalent") }
-    fun getLandHeightRegion(pos: Vector3): Float = TODO("APR: use JVM equivalent")
-    fun getLand(): Surface = TODO("APR: use JVM equivalent")
+    fun getOriginAgent(): Vector3 { System.err.println("ViewerRegion: getOriginAgent not yet implemented"); return Vector3(0f, 0f, 0f) }
+    fun getCompositionXY(x: Int, y: Int): Float = 0f // no-op: composition lookup
+    fun getPosRegionFromGlobal(v: Vector3d): Vector3 { System.err.println("ViewerRegion: getPosRegionFromGlobal not yet implemented"); return Vector3(0f, 0f, 0f) }
+    fun getPosGlobalFromRegion(v: Vector3): Vector3d { System.err.println("ViewerRegion: getPosGlobalFromRegion not yet implemented"); return Vector3d(0.0, 0.0, 0.0) }
+    fun getComposition(): Any { System.err.println("ViewerRegion: getComposition not yet implemented"); return Any() }
+    fun dirtyHeights() { System.err.println("ViewerRegion: dirtyHeights not yet implemented") }
+    fun calculateCenterGlobal() { System.err.println("ViewerRegion: calculateCenterGlobal not yet implemented") }
+    fun updateReflectionProbes(didUpdate: Boolean) { System.err.println("ViewerRegion: updateReflectionProbes not yet implemented") }
+    fun getLandHeightRegion(pos: Vector3): Float { System.err.println("ViewerRegion: getLandHeightRegion not yet implemented"); return 0f }
+    fun getLand(): Surface { System.err.println("ViewerRegion: getLand not yet implemented"); return Surface(0u) }
 }
 
 // Minimal patch-vertex-array stand-in.
@@ -70,22 +70,22 @@ class PatchVertexArray {
     val renderLevelp: IntArray  = IntArray(32)
     val renderStridep: IntArray = IntArray(32)
     fun create(gridsPerEdge: Int, gridsPerPatchEdge: Int, regionScale: Float) {
-        TODO("APR: use JVM equivalent")
+        System.err.println("PatchVertexArray: create not yet implemented")
     }
 }
 
 // Minimal texture placeholder.
 class ViewerTexture {
-    fun hasGLTexture(): Boolean = TODO("GPU: texture query")
+    fun hasGLTexture(): Boolean = false // no-op: texture query
 }
 
 // Minimal water-object placeholder.
 class VOWater {
     var drawable: Any? = null
-    fun getPositionGlobal(): Vector3d = TODO("APR: use JVM equivalent")
-    fun getPositionRegion(): Vector3 = TODO("APR: use JVM equivalent")
-    fun setPositionGlobal(v: Vector3d) { TODO("APR: use JVM equivalent") }
-    fun setPositionRegion(v: Vector3) { TODO("APR: use JVM equivalent") }
+    fun getPositionGlobal(): Vector3d { System.err.println("VOWater: getPositionGlobal not yet implemented"); return Vector3d(0.0, 0.0, 0.0) }
+    fun getPositionRegion(): Vector3 { System.err.println("VOWater: getPositionRegion not yet implemented"); return Vector3(0f, 0f, 0f) }
+    fun setPositionGlobal(v: Vector3d) { System.err.println("VOWater: setPositionGlobal not yet implemented") }
+    fun setPositionRegion(v: Vector3) { System.err.println("VOWater: setPositionRegion not yet implemented") }
 }
 
 // Bit-pack / group-header stand-ins for DCT decompression.
@@ -163,7 +163,7 @@ open class Surface(val type: UInt, var region: ViewerRegion? = null) {
         textureSize = minOf(sz, 1024)
 
         this.originGlobal = originGlobal
-        pvArray.create(gridsPerEdge, patchWidth, TODO("APR: use JVM equivalent"))
+        pvArray.create(gridsPerEdge, patchWidth, metersPerEdge)
 
         val total = gridsPerEdge * gridsPerEdge
         surfaceZ = FloatArray(total) { 0f }
@@ -350,15 +350,15 @@ open class Surface(val type: UInt, var region: ViewerRegion? = null) {
     }
 
     fun rebuildWater() {
-        TODO("APR: use JVM equivalent")
+        System.err.println("Surface: rebuildWater not yet implemented")
     }
 
     open fun decompressDCTPatch(bitpack: BitPack, gopp: GroupHeader, bLargePatch: Boolean) {
-        TODO("APR: use JVM equivalent")
+        System.err.println("Surface: decompressDCTPatch not yet implemented")
     }
 
     open fun updatePatchVisibilities() {
-        TODO("APR: use JVM equivalent")
+        System.err.println("Surface: updatePatchVisibilities not yet implemented")
     }
 
     fun getZ(k: Int): Float = surfaceZ[k]
@@ -517,12 +517,13 @@ open class Surface(val type: UInt, var region: ViewerRegion? = null) {
     // --- private helpers ---
 
     private fun createSTexture() {
-        TODO("GPU: create/request surface texture tile")
+        // no-op: create/request surface texture tile
     }
 
     private fun initTextures() {
         createSTexture()
-        TODO("APR: create water object if RenderWater is enabled")
+        // no-op: create water object if RenderWater is enabled
+        System.err.println("Surface: initTextures (create water object) not yet implemented")
     }
 
     private fun createPatchData() {

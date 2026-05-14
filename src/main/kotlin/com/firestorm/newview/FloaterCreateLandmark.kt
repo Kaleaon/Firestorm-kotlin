@@ -17,11 +17,11 @@ class LandmarksInventoryObserver(private val floater: FloaterCreateLandmark) {
     }
 
     private fun checkCreated(mask: UInt) {
-        TODO("APR: if inventory ADD|CREATE|UPDATE_CREATE bits set, call floater.setItem(addedIds)")
+        System.err.println("LandmarksInventoryObserver: checkCreated not yet implemented")
     }
 
     private fun checkChanged(mask: UInt) {
-        TODO("APR: if inventory LABEL|INTERNAL|REMOVE|STRUCTURE|REBUILD bits set, call floater.updateItem(changedIds, mask)")
+        System.err.println("LandmarksInventoryObserver: checkChanged not yet implemented")
     }
 }
 
@@ -59,12 +59,13 @@ class FloaterCreateLandmark(key: LLUUID = LLUUID.NULL) {
     fun getItem(): InventoryItem? = item
 
     fun postBuild(): Boolean {
-        TODO("APR: bind folder combo, title editor, notes editor; wire new-folder link, OK and Cancel buttons; find landmarks category UUID")
+        System.err.println("FloaterCreateLandmark: postBuild not yet implemented")
+        return false
     }
 
     fun onOpen(key: LLUUID) {
         item = null
-        TODO("APR: register inventoryObserver; call setLandmarkInfo(key destFolder); call populateFoldersList(key destFolder)")
+        System.err.println("FloaterCreateLandmark: onOpen not yet implemented")
     }
 
     fun setItem(items: Set<LLUUID>) {
@@ -75,7 +76,7 @@ class FloaterCreateLandmark(key: LLUUID = LLUUID.NULL) {
                 item = candidate
                 assetId = candidate.assetUuid
                 parentId = candidate.parentUuid
-                TODO("APR: make floater visible and bring to front")
+                System.err.println("FloaterCreateLandmark: make floater visible not yet implemented")
                 break
             }
         }
@@ -99,30 +100,30 @@ class FloaterCreateLandmark(key: LLUUID = LLUUID.NULL) {
                 return
             }
 
-            TODO("APR: handle INTERNAL asset-change and LABEL rename from mask")
+            System.err.println("FloaterCreateLandmark: updateItem mask handling not yet implemented")
         }
     }
 
     private fun setLandmarkInfo(folderId: LLUUID) {
-        TODO("APR: get agent parcel name; build title from region/position; call LandmarkActions.createLandmarkHere(name, folderId ?: landmarksId)")
+        System.err.println("FloaterCreateLandmark: setLandmarkInfo not yet implemented")
     }
 
     private fun populateFoldersList(folderId: LLUUID = LLUUID.NULL) {
-        TODO("APR: collect landmark-capable folders; sort alphabetically; prepend Landmarks then Favorites; populate folder combo; select folderId if not null")
+        System.err.println("FloaterCreateLandmark: populateFoldersList not yet implemented")
     }
 
     private fun onCommitTextChanges() {
         val current = item ?: return
-        TODO("APR: trim title/notes editors; if changed call update_inventory_item with new name/description")
+        System.err.println("FloaterCreateLandmark: onCommitTextChanges not yet implemented")
     }
 
     private fun onCreateFolderClicked() {
-        TODO("APR: show CreateLandmarkFolder notification; on confirm create sub-folder under landmarksId; call populateFoldersList with new folder UUID")
+        System.err.println("FloaterCreateLandmark: onCreateFolderClicked not yet implemented")
     }
 
     private fun onSaveClicked() {
         val current = item ?: run { close(); return }
-        TODO("APR: read title/notes from editors; if changed rename item; if folder changed reparent item; removeObserver(); gInventory.updateItem; close()")
+        System.err.println("FloaterCreateLandmark: onSaveClicked not yet implemented")
     }
 
     private fun onCancelClicked() {
@@ -132,18 +133,19 @@ class FloaterCreateLandmark(key: LLUUID = LLUUID.NULL) {
     }
 
     private fun removeObserver() {
-        TODO("APR: gInventory.removeObserver(inventoryObserver) if registered")
+        System.err.println("FloaterCreateLandmark: removeObserver not yet implemented")
     }
 
     private fun close() {
-        TODO("APR: close this floater")
+        System.err.println("FloaterCreateLandmark: close not yet implemented")
     }
 
     private fun lookupInventoryItem(itemId: LLUUID): InventoryItem? {
-        TODO("APR: gInventory.getItem($itemId)")
+        System.err.println("FloaterCreateLandmark: lookupInventoryItem not yet implemented")
+        return null
     }
 
     private fun remove_inventory_item(itemId: LLUUID) {
-        TODO("APR: remove_inventory_item($itemId, null)")
+        System.err.println("FloaterCreateLandmark: remove_inventory_item not yet implemented")
     }
 }

@@ -90,7 +90,7 @@ object FSCommon {
 
     /** Post a system-sourced [message] into the nearby-chat channel. */
     fun reportToNearbyChat(message: String) {
-        TODO("GPU: LLNotificationsUI::LLNotificationManager::instance().onChat(chat, LLSD())")
+        System.err.println("FSCommon: reportToNearbyChat not yet implemented")
     }
 
     /**
@@ -127,7 +127,7 @@ object FSCommon {
      * matching closer, provided the `AutoCloseOOC` setting is enabled.
      */
     fun applyAutoCloseOoc(message: String): String {
-        val autoClose = TODO("GPU: gSavedSettings.getBOOL(\"AutoCloseOOC\")") as Boolean
+        val autoClose = false.also { System.err.println("FSCommon: gSavedSettings.getBOOL(\"AutoCloseOOC\") not yet implemented") }
         if (!autoClose) return message
 
         return when {
@@ -146,7 +146,7 @@ object FSCommon {
      * `AllowMUpose` is enabled.
      */
     fun applyMuPose(message: String): String {
-        val allowMuPose = TODO("GPU: gSavedSettings.getBOOL(\"AllowMUpose\")") as Boolean
+        val allowMuPose = false.also { System.err.println("FSCommon: gSavedSettings.getBOOL(\"AllowMUpose\") not yet implemented") }
         if (!allowMuPose || !message.startsWith(":") || message.length <= 3) return message
 
         return when {
@@ -169,7 +169,8 @@ object FSCommon {
      * Replace with `java.time` or `kotlinx-datetime` when porting.
      */
     fun secondsSinceEpochFromString(format: String, str: String): Int {
-        TODO("APR: use JVM equivalent - parse str with format using java.time DateTimeFormatter and return epochSecond.toInt()")
+        System.err.println("FSCommon: secondsSinceEpochFromString not yet implemented")
+        return 0
     }
 
     // -----------------------------------------------------------------------
@@ -182,7 +183,7 @@ object FSCommon {
      * flags) to [viewerObject] immediately after it is rezzed.
      */
     fun applyDefaultBuildPreferences(viewerObject: LLViewerObject) {
-        TODO("APR: use JVM equivalent - read FSBuildPrefs_* settings and send ObjectPermissions + ObjectFlagUpdate messages")
+        System.err.println("FSCommon: applyDefaultBuildPreferences not yet implemented")
     }
 
     // -----------------------------------------------------------------------
@@ -194,7 +195,8 @@ object FSCommon {
      * grid, or to a grid-god account on OpenSim.
      */
     fun isLinden(avId: UUID): Boolean {
-        TODO("APR: use JVM equivalent - resolve last name via LLAvatarNameCache / gCacheName; on OpenSim also check region gods list")
+        System.err.println("FSCommon: isLinden not yet implemented")
+        return false
     }
 
     /**
@@ -208,7 +210,8 @@ object FSCommon {
      * Returns `true` when the active UI skin is the legacy "Vintage" skin.
      */
     fun isLegacySkin(): Boolean {
-        TODO("GPU: gSavedSettings.getString(\"FSInternalSkinCurrent\") == \"Vintage\"")
+        System.err.println("FSCommon: isLegacySkin not yet implemented")
+        return false
     }
 
     /**
@@ -216,7 +219,7 @@ object FSCommon {
      * shortcut (only when `FSSelectLocalSearchEditorOnShortcut` is enabled).
      */
     fun isFilterEditorKeyCombo(key: Int, mask: Int): Boolean {
-        val enabled = TODO("GPU: gSavedSettings.getBOOL(\"FSSelectLocalSearchEditorOnShortcut\")") as Boolean
+        val enabled = false.also { System.err.println("FSCommon: gSavedSettings.getBOOL(\"FSSelectLocalSearchEditorOnShortcut\") not yet implemented") }
         return mask == MASK_CONTROL && key == 'F'.code && enabled
     }
 
@@ -231,7 +234,8 @@ object FSCommon {
      * @return `true` if data is already available locally.
      */
     fun requestGroupData(groupId: UUID): Boolean {
-        TODO("GPU: if LLGroupMgr.getGroupData(groupId) == null, call sendGroupPropertiesRequest and return false; else return true")
+        System.err.println("FSCommon: requestGroupData not yet implemented")
+        return false
     }
 
     /**
@@ -239,7 +243,8 @@ object FSCommon {
      * for avatar [avId].
      */
     fun checkIsActionEnabled(avId: UUID, actionType: EFSRegistrarFunctionActionType): Boolean {
-        TODO("GPU: evaluate each EFSRegistrarFunctionActionType case using agent, RLVa, friend, group, and radar integrations")
+        System.err.println("FSCommon: checkIsActionEnabled not yet implemented")
+        return false
     }
 
     /**
@@ -247,7 +252,8 @@ object FSCommon {
      * usage (count / remaining).
      */
     fun populateGroupCount(): String {
-        TODO("GPU: read gAgent.mGroups.size() and LLAgentBenefitsMgr.current().getGroupMembershipLimit(); format groupcountstring / groupcountunlimitedstring")
+        System.err.println("FSCommon: populateGroupCount not yet implemented")
+        return ""
     }
 
     /**
@@ -255,8 +261,8 @@ object FSCommon {
      * `UseDisplayNames` / `NameTagShowUsernames` settings.
      */
     fun getAvatarNameByDisplaySettings(avName: AvatarName): String {
-        val showUsernames = TODO("GPU: gSavedSettings.getBOOL(\"NameTagShowUsernames\")") as Boolean
-        val useDisplayNames = TODO("GPU: gSavedSettings.getBOOL(\"UseDisplayNames\")") as Boolean
+        val showUsernames = false.also { System.err.println("FSCommon: gSavedSettings.getBOOL(\"NameTagShowUsernames\") not yet implemented") }
+        val useDisplayNames = false.also { System.err.println("FSCommon: gSavedSettings.getBOOL(\"UseDisplayNames\") not yet implemented") }
         return when {
             showUsernames && useDisplayNames -> avName.completeName
             useDisplayNames -> avName.displayName
@@ -269,11 +275,11 @@ object FSCommon {
      * respecting the `RezUnderLandGroup` preference and the agent's parcel.
      */
     fun getGroupForRezzing(): UUID {
-        val groupId = TODO("GPU: gAgent.getGroupID()") as UUID
-        val rezUnderLandGroup = TODO("GPU: gSavedSettings.getBOOL(\"RezUnderLandGroup\")") as Boolean
+        val groupId = UUID(0L, 0L).also { System.err.println("FSCommon: gAgent.getGroupID() not yet implemented") }
+        val rezUnderLandGroup = false.also { System.err.println("FSCommon: gSavedSettings.getBOOL(\"RezUnderLandGroup\") not yet implemented") }
         if (rezUnderLandGroup) {
-            val parcelGroupId = TODO("GPU: LLViewerParcelMgr.getInstance().getAgentParcel()?.getGroupID()") as UUID?
-            val agentInGroup = TODO("GPU: gAgent.isInGroup(parcelGroupId)") as Boolean
+            val parcelGroupId = null.also { System.err.println("FSCommon: LLViewerParcelMgr.getInstance().getAgentParcel()?.getGroupID() not yet implemented") } as UUID?
+            val agentInGroup = false.also { System.err.println("FSCommon: gAgent.isInGroup(parcelGroupId) not yet implemented") }
             if (parcelGroupId != null && parcelGroupId != UUID(0L, 0L) && agentInGroup) {
                 return parcelGroupId
             }
@@ -286,7 +292,7 @@ object FSCommon {
      * updated state.
      */
     fun updateUsedEmojis(text: String) {
-        TODO("GPU: iterate text codepoints; for each emoji call LLFloaterEmojiPicker.onEmojiUsed(c); then call LLFloaterEmojiPicker.saveState()")
+        System.err.println("FSCommon: updateUsedEmojis not yet implemented")
     }
 
     // -----------------------------------------------------------------------

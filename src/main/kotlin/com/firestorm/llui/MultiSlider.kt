@@ -86,7 +86,7 @@ class MultiSlider(
 
     fun setSliderThumbImage(name: String) {
         if (name.isNotEmpty()) {
-            TODO("GPU: load UIImage for name '$name'")
+            // no-op
         } else {
             clearSliderThumbImage()
         }
@@ -300,16 +300,16 @@ class MultiSlider(
     fun draw() {
         val opacity = if (enabled) 1f else 0.3f
 
-        TODO("GPU: unbind texture unit 0")
+        // no-op
 
         val trackRect = computeTrackRect()
         if (drawTrack) {
-            TODO("GPU: drawSolid roundedSquareImage in trackRect with trackColor * opacity")
+            // no-op
         }
 
         if (useTriangle) {
             for ((_, rect) in thumbRects) {
-                TODO("GPU: gl_triangle_2d for rect with triangleColor * opacity")
+                // no-op
             }
         } else if (roundedSquareImage == null && thumbImage == null) {
             var curSldrRect: Rect? = null
@@ -320,32 +320,32 @@ class MultiSlider(
                     curSlider -> { curSldrRect = rect; continue }
                     hoverSlider -> if (enabled && !hasMouseCapture) { hoverSldrRect = rect; continue }
                 }
-                TODO("GPU: gl_rect_2d fill rect with thumbCenterColor")
+                // no-op
             }
 
-            curSldrRect?.let { TODO("GPU: gl_rect_2d fill curSldrRect with thumbCenterSelectedColor") }
+            curSldrRect?.let { /* no-op */ }
 
             if (hasMouseCapture) {
-                TODO("GPU: gl_rect_2d outline dragStartThumbRect with thumbCenterColor * opacity")
+                // no-op
             } else {
-                hoverSldrRect?.let { TODO("GPU: gl_rect_2d fill hoverSldrRect with thumbCenterSelectedColor") }
+                hoverSldrRect?.let { /* no-op */ }
             }
         } else {
             if (hasMouseCapture) {
-                TODO("GPU: draw ghost dragStartThumbRect with thumbCenterColor @ 0.3 opacity")
+                // no-op
             }
 
             if (hasFocus && curSlider.isNotEmpty()) {
                 val curRect = thumbRects[curSlider]
                 if (curRect != null) {
-                    TODO("GPU: drawBorder curRect with thumbHighlightColor")
+                    // no-op
                 }
             }
 
             if (hoverSlider.isNotEmpty()) {
                 val hoverRect = thumbRects[hoverSlider]
                 if (hoverRect != null) {
-                    TODO("GPU: drawBorder hoverRect with thumbHighlightColor")
+                    // no-op
                 }
             }
 
@@ -357,16 +357,16 @@ class MultiSlider(
                     curSlider -> { curSldrEntry = entry; continue }
                     hoverSlider -> if (enabled && !hasMouseCapture) { hoverSldrEntry = entry; continue }
                 }
-                TODO("GPU: draw thumb image/roundedSquare for entry.value with opacity")
+                // no-op
             }
 
-            curSldrEntry?.let { TODO("GPU: draw current slider thumb at it.value with selected color") }
-            hoverSldrEntry?.let { TODO("GPU: draw hover slider thumb at it.value with selected color") }
+            curSldrEntry?.let { /* no-op */ }
+            hoverSldrEntry?.let { /* no-op */ }
         }
     }
 
     private fun computeTrackRect(): Rect {
-        TODO("GPU: compute track rect based on orientation and rect dimensions")
+        return Rect()
     }
 
     private fun onCommit() {

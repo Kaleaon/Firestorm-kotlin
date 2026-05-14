@@ -21,17 +21,17 @@ object LLURLDispatcher {
 data class LLSLURL(val raw: String) {
     enum class SLURLType { EMPTY, APP, LOCATION, OTHER }
 
-    fun getType(): SLURLType = TODO("APR: use JVM equivalent for LLSLURL type parsing")
-    fun getAppCmd(): String = TODO("APR: use JVM equivalent for LLSLURL app command extraction")
-    fun getAppPath(): List<String> = TODO("APR: use JVM equivalent for LLSLURL app path extraction")
-    fun getAppQuery(): String = TODO("APR: use JVM equivalent for LLSLURL app query string extraction")
-    fun getAppQueryMap(): Map<String, Any> = TODO("APR: use JVM equivalent for LLSLURL query map")
-    fun getRegion(): String = TODO("APR: use JVM equivalent for LLSLURL region name extraction")
-    fun getPosition(): Triple<Float, Float, Float> = TODO("APR: use JVM equivalent for LLSLURL position extraction")
+    fun getType(): SLURLType { System.err.println("LLSLURL: getType not yet implemented"); return SLURLType.EMPTY }
+    fun getAppCmd(): String { System.err.println("LLSLURL: getAppCmd not yet implemented"); return "" }
+    fun getAppPath(): List<String> { System.err.println("LLSLURL: getAppPath not yet implemented"); return emptyList() }
+    fun getAppQuery(): String { System.err.println("LLSLURL: getAppQuery not yet implemented"); return "" }
+    fun getAppQueryMap(): Map<String, Any> { System.err.println("LLSLURL: getAppQueryMap not yet implemented"); return emptyMap() }
+    fun getRegion(): String { System.err.println("LLSLURL: getRegion not yet implemented"); return "" }
+    fun getPosition(): Triple<Float, Float, Float> { System.err.println("LLSLURL: getPosition not yet implemented"); return Triple(0f, 0f, 0f) }
     fun getSLURLString(): String = raw
-    fun getLocationString(): String = TODO("APR: use JVM equivalent for LLSLURL location string")
-    fun getGrid(): String = TODO("APR: use JVM equivalent for LLSLURL grid extraction")
-    fun getHypergrid(): Boolean = TODO("APR: use JVM equivalent for LLSLURL hypergrid flag")
+    fun getLocationString(): String { System.err.println("LLSLURL: getLocationString not yet implemented"); return "" }
+    fun getGrid(): String { System.err.println("LLSLURL: getGrid not yet implemented"); return "" }
+    fun getHypergrid(): Boolean { System.err.println("LLSLURL: getHypergrid not yet implemented"); return false }
 }
 
 private object LLURLDispatcherImpl {
@@ -66,13 +66,15 @@ private object LLURLDispatcherImpl {
         val queryMap = slurl.getAppQueryMap()
         val path = slurl.getAppPath()
 
-        TODO("APR: use JVM equivalent for LLCommandDispatcher::dispatch; show UnsupportedCommandSLURL notification if unhandled")
+        System.err.println("LLURLDispatcherImpl: dispatchApp not yet implemented")
+        return false
     }
 
     private fun dispatchRegion(slurl: LLSLURL, navType: String, rightMouse: Boolean): Boolean {
         if (slurl.getType() != LLSLURL.SLURLType.LOCATION) return false
 
-        TODO("APR: use JVM equivalent for LLStartUp state check (login screen → FSPanelLogin.setLocation), grid mismatch notification, and LLWorldMapMessage.sendNamedRegionRequest")
+        System.err.println("LLURLDispatcherImpl: dispatchRegion not yet implemented")
+        return false
     }
 
     fun regionNameCallback(regionHandle: Long, slurl: LLSLURL, snapshotId: java.util.UUID, teleport: Boolean) {
@@ -82,11 +84,12 @@ private object LLURLDispatcherImpl {
     }
 
     fun regionHandleCallback(regionHandle: Long, slurl: LLSLURL, snapshotId: java.util.UUID, teleport: Boolean) {
-        TODO("APR: use JVM equivalent for grid guard, from_region_handle, gAgent.teleportViaLocation or FSFloaterPlaceDetails.showPlaceDetails")
+        System.err.println("LLURLDispatcherImpl: regionHandleCallback not yet implemented")
     }
 
     private fun handleGrid(slurl: LLSLURL): Boolean {
-        TODO("APR: use JVM equivalent for LLGridManager grid comparison; show CantTeleportToGrid notification on mismatch")
+        System.err.println("LLURLDispatcherImpl: handleGrid not yet implemented")
+        return false
     }
 
     private const val NAV_TYPE_CLICKED = "clicked"
@@ -103,10 +106,12 @@ class LLTeleportHandler {
         if (tokens.size >= 4) {
             val coords = Triple(tokens[1].toFloatOrNull() ?: 128f, tokens[2].toFloatOrNull() ?: 128f, tokens[3].toFloatOrNull() ?: 0f)
             regionName = java.net.URLDecoder.decode(tokens[0], "UTF-8")
-            TODO("APR: use JVM equivalent for LLSLURL(grid, regionName, coords).getSLURLString() and TeleportViaSLAPP notification")
+            System.err.println("LLTeleportHandler: LLSLURL(grid, regionName, coords) and TeleportViaSLAPP notification not yet implemented")
+            return false
         } else {
             regionName = java.net.URLDecoder.decode(tokens[0], "UTF-8")
-            TODO("APR: use JVM equivalent for LLSLURL construction and TeleportViaSLAPP notification")
+            System.err.println("LLTeleportHandler: LLSLURL construction and TeleportViaSLAPP notification not yet implemented")
+            return false
         }
     }
 
@@ -116,7 +121,7 @@ class LLTeleportHandler {
             val localX = (params["x"] as? Number)?.toFloat() ?: 128f
             val localY = (params["y"] as? Number)?.toFloat() ?: 128f
             val localZ = (params["z"] as? Number)?.toFloat() ?: 0f
-            TODO("APR: use JVM equivalent for LLSLURL(regionName, localPos).getSLURLString() and LLWorldMapMessage.sendNamedRegionRequest")
+            System.err.println("LLTeleportHandler: LLSLURL(regionName, localPos) and LLWorldMapMessage.sendNamedRegionRequest not yet implemented")
         } else {
             if (!params.containsKey("x") || !params.containsKey("y")) {
                 error("Specify either regionname or global (x, y)")
@@ -124,13 +129,13 @@ class LLTeleportHandler {
             val x = (params["x"] as Number).toDouble()
             val y = (params["y"] as Number).toDouble()
             val z = (params["z"] as? Number)?.toDouble() ?: 0.0
-            TODO("APR: use JVM equivalent for gAgent.teleportViaLocation(globalPos) and LLFloaterWorldMap.trackLocation")
+            System.err.println("LLTeleportHandler: gAgent.teleportViaLocation(globalPos) and LLFloaterWorldMap.trackLocation not yet implemented")
         }
     }
 
     companion object {
         fun teleportViaSlapp(regionName: String, callbackUrl: String) {
-            TODO("APR: use JVM equivalent for LLWorldMapMessage.sendNamedRegionRequest with regionHandleCallback and teleport=true")
+            System.err.println("LLTeleportHandler: teleportViaSlapp not yet implemented")
         }
 
         fun teleportViaSlappCallback(notification: Map<String, Any>, response: Map<String, Any>): Boolean {

@@ -60,28 +60,28 @@ class PanelLogin(
             }
         }
 
-        TODO("APR: use JVM equivalent - load favorites from stored_favorites XML for $adjustedName")
+        System.err.println("PanelLogin: addFavoritesToStartLocation not yet implemented")
     }
 
     fun setFocus(b: Boolean) {
-        if (b) giveFocus() else TODO("GPU: unfocus panel")
+        if (b) giveFocus() else System.err.println("PanelLogin: unfocus panel not yet implemented")
     }
 
     private fun updateLoginButtons() {
         val enabled = usernameLength != 0u && passwordLength != 0u && !alertNotif
-        TODO("GPU: set login button enabled = $enabled")
+        System.err.println("PanelLogin: set login button enabled = $enabled not yet implemented")
     }
 
     private fun populateUserList(credential: Credential?) {
-        TODO("APR: use JVM equivalent - populate username combo from credential store")
+        System.err.println("PanelLogin: populate username combo from credential store not yet implemented")
     }
 
     private fun onSelectServer() {
-        TODO("APR: use JVM equivalent - apply selected grid and reload favorites/login page")
+        System.err.println("PanelLogin: apply selected grid and reload favorites/login page not yet implemented")
     }
 
     private fun onLocationSLURL() {
-        TODO("APR: use JVM equivalent - read location combo and call setStartSLURL")
+        System.err.println("PanelLogin: read location combo and call setStartSLURL not yet implemented")
     }
 
     private fun onUpdateNotification(notify: Map<String, Any>): Boolean {
@@ -97,7 +97,8 @@ class PanelLogin(
     }
 
     private fun getUsername(): String {
-        TODO("GPU: read username combo value")
+        System.err.println("PanelLogin: read username combo value not yet implemented")
+        return ""
     }
 
     companion object {
@@ -114,7 +115,7 @@ class PanelLogin(
             if (sInstance == null) {
                 PanelLogin(rect, callback, callbackData)
             }
-            TODO("GPU: ensure keyboard focus on the login panel")
+            System.err.println("PanelLogin: ensure keyboard focus on the login panel not yet implemented")
         }
 
         fun reshapePanel() {
@@ -125,73 +126,75 @@ class PanelLogin(
 
         fun populateFields(credential: Credential?, rememberUser: Boolean, rememberPassword: Boolean) {
             val inst = sInstance ?: return
-            TODO("GPU: set remember_name checkbox = $rememberUser, populate user list")
+            System.err.println("PanelLogin: set remember_name checkbox = $rememberUser, populate user list not yet implemented")
         }
 
         fun resetFields() {
             val inst = sInstance ?: return
-            TODO("APR: use JVM equivalent - reload credential from SecAPI and repopulate list")
+            System.err.println("PanelLogin: reload credential from SecAPI and repopulate list not yet implemented")
         }
 
         fun getFields(credential: Credential?, rememberUser: Boolean, rememberPassword: Boolean) {
             val inst = sInstance ?: return
-            TODO("APR: use JVM equivalent - build Credential from UI field values including MD5 hash")
+            System.err.println("PanelLogin: build Credential from UI field values including MD5 hash not yet implemented")
         }
 
         fun isCredentialSet(): Boolean = sCredentialSet
 
         fun areCredentialFieldsDirty(): Boolean {
             val inst = sInstance ?: return false
-            TODO("GPU: check if username combo or password field is dirty")
+            System.err.println("PanelLogin: check if username combo or password field is dirty not yet implemented")
+            return false
         }
 
         fun setLocation(slurl: String) {
-            TODO("APR: use JVM equivalent - call setStartSLURL")
+            System.err.println("PanelLogin: call setStartSLURL not yet implemented")
         }
 
         fun autologinToLocation(slurl: String) {
-            TODO("APR: use JVM equivalent - setStartSLURL then trigger connect")
+            System.err.println("PanelLogin: setStartSLURL then trigger connect not yet implemented")
         }
 
         fun updateLocationSelectorsVisibility() {
             val inst = sInstance ?: return
             val showServer = savedSettings.getBool("ForceShowGrid")
-            TODO("GPU: set server_combo visibility = $showServer")
+            System.err.println("PanelLogin: set server_combo visibility = $showServer not yet implemented")
         }
 
         fun closePanel() {
             sInstance?.let {
-                TODO("GPU: remove panel from parent and delete")
+                System.err.println("PanelLogin: remove panel from parent and delete not yet implemented")
             }
             sInstance = null
         }
 
         fun loadLoginPage() {
             val inst = sInstance ?: return
-            TODO("APR: use JVM equivalent - build login URI with params (lang, version, channel, grid, os, sourceid) and navigate browser")
+            System.err.println("PanelLogin: build login URI with params (lang, version, channel, grid, os, sourceid) and navigate browser not yet implemented")
         }
 
         fun giveFocus() {
             val inst = sInstance ?: return
-            TODO("GPU: focus username combo or password field depending on which is empty")
+            System.err.println("PanelLogin: focus username combo or password field depending on which is empty not yet implemented")
         }
 
         fun setAlwaysRefresh(refresh: Boolean) {
-            TODO("GPU: set always-refresh on login_html web browser control")
+            System.err.println("PanelLogin: set always-refresh on login_html web browser control not yet implemented")
         }
 
         fun updateServer() {
             val inst = sInstance ?: return
-            TODO("APR: use JVM equivalent - reload credential, update links visibility, reload login page")
+            System.err.println("PanelLogin: reload credential, update links visibility, reload login page not yet implemented")
         }
 
         fun onUpdateStartSLURL(newStartSlurl: String) {
             val inst = sInstance ?: return
-            TODO("APR: use JVM equivalent - parse slurl type and update location combo and grid selector")
+            System.err.println("PanelLogin: parse slurl type and update location combo and grid selector not yet implemented")
         }
 
         fun getShowFavorites(): Boolean {
-            TODO("APR: use JVM equivalent - return gSavedPerAccountSettings ShowFavoritesOnLogin")
+            System.err.println("PanelLogin: return gSavedPerAccountSettings ShowFavoritesOnLogin not yet implemented")
+            return false
         }
 
         fun getUserName(cred: Credential?): String {
@@ -214,22 +217,22 @@ class PanelLogin(
         private fun setFields(credential: Credential?) {
             val inst = sInstance ?: return
             sCredentialSet = true
-            TODO("GPU: populate username combo and password filler from credential identifier/authenticator")
+            System.err.println("PanelLogin: populate username combo and password filler from credential identifier/authenticator not yet implemented")
         }
 
         private fun onClickConnect(commitFields: Boolean = true) {
             val inst = sInstance ?: return
             if (inst.alertNotif) return
 
-            TODO("APR: use JVM equivalent - validate grid choice, username, password, then invoke callback(0, callbackData)")
+            System.err.println("PanelLogin: validate grid choice, username, password, then invoke callback(0, callbackData) not yet implemented")
         }
 
         private fun onClickForgotPassword() {
-            TODO("APR: use JVM equivalent - open forgot_password_url in external browser")
+            System.err.println("PanelLogin: open forgot_password_url in external browser not yet implemented")
         }
 
         private fun onClickSignUp() {
-            TODO("APR: use JVM equivalent - open sign_up_url in external browser")
+            System.err.println("PanelLogin: open sign_up_url in external browser not yet implemented")
         }
 
         private fun onUserNameTextEntry() {
@@ -241,17 +244,17 @@ class PanelLogin(
 
         private fun onUserListCommit() {
             val inst = sInstance ?: return
-            TODO("APR: use JVM equivalent - load credential for selected username key and setFields")
+            System.err.println("PanelLogin: load credential for selected username key and setFields not yet implemented")
         }
 
         private fun onRememberUserCheck() {
             val inst = sInstance ?: return
-            TODO("GPU: sync remember_password checkbox enabled state with remember_name checkbox value")
+            System.err.println("PanelLogin: sync remember_password checkbox enabled state with remember_name checkbox value not yet implemented")
         }
 
         private fun onRememberPasswordCheck() {
             val inst = sInstance ?: return
-            TODO("APR: use JVM equivalent - mark UpdateRememberPasswordSetting and persist grid/user prefs")
+            System.err.println("PanelLogin: mark UpdateRememberPasswordSetting and persist grid/user prefs not yet implemented")
         }
 
         private fun onPassKey(passwordText: String) {
@@ -274,6 +277,6 @@ class PanelLogin(
     }
 
     fun reshape(width: Int, height: Int) {
-        TODO("GPU: resize panel to ${width}x${height}")
+        System.err.println("PanelLogin: resize panel to ${width}x${height} not yet implemented")
     }
 }

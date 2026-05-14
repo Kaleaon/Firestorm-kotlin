@@ -72,11 +72,12 @@ class Floater360Capture private constructor(key: Any) :
         outputImageWidth  = SavedSettings.getUInt("360CaptureOutputImageWidth").toInt()
         outputImageHeight = outputImageWidth / 2
 
-        TODO("APR: enableResizeCtrls(true, true, true)")
+        System.err.println("Floater360Capture: enableResizeCtrls not yet implemented")
 
         initialHeadingDeg = 0f
 
-        imageSaveDir = TODO("APR: gDirUtilp.getLindenUserDir() + delimiter + 'eqrimg'; mkdir(imageSaveDir)")
+        System.err.println("Floater360Capture: imageSaveDir not yet implemented")
+        imageSaveDir = ""
 
         onCapture360ImagesBtn()
     }
@@ -103,7 +104,7 @@ class Floater360Capture private constructor(key: Any) :
             qualityRadioGroup?.setSelectedIndex(savedIndex)
 
             if (sourceImageSize < minSize) {
-                TODO("APR: log small snapshot size warning")
+                System.err.println("Floater360Capture: small snapshot size warning not yet implemented")
             }
         }
     }
@@ -121,7 +122,8 @@ class Floater360Capture private constructor(key: Any) :
     }
 
     private fun getHTMLBaseFolder(): String {
-        TODO("APR: gDirUtilp.getDefaultSkinDir() + delimiter + 'html' + delimiter + 'common' + delimiter + 'equirectangular' + delimiter")
+        System.err.println("Floater360Capture: getHTMLBaseFolder not yet implemented")
+        return ""
     }
 
     private fun onCapture360ImagesBtn() {
@@ -129,32 +131,34 @@ class Floater360Capture private constructor(key: Any) :
     }
 
     private fun makeFullPathToJS(filename: String): String {
-        TODO("APR: imageSaveDir + gDirUtilp.getDirDelimiter() + filename")
+        System.err.println("Floater360Capture: makeFullPathToJS not yet implemented")
+        return ""
     }
 
     private fun writeDataUrlHeader(filename: String) {
-        TODO("APR: open file at filename for write, emit JS comment header line, close")
+        System.err.println("Floater360Capture: writeDataUrlHeader not yet implemented")
     }
 
     private fun writeDataUrlFooter(filename: String) {
-        TODO("APR: open file at filename for append, emit cubemap_img_js array declaration referencing the 6 image vars, close")
+        System.err.println("Floater360Capture: writeDataUrlFooter not yet implemented")
     }
 
     private fun writeDataUrl(filename: String, prefix: String, data: ByteArray): Boolean {
-        TODO("APR: Base64.encode(data), open file for append, write 'var img_\$prefix = data:image/jpeg;base64,...', close, return success")
+        System.err.println("Floater360Capture: writeDataUrl not yet implemented")
+        return false
     }
 
     private fun encodeAndSave(rawImage: Any, filename: String, prefix: String) {
         val quality = SavedSettings.getUInt("360CaptureJPEGEncodeQuality").toInt()
-        TODO("GPU: encode rawImage as JPEG at quality=$quality, optionally save debug copy, then call writeDataUrl(filename, prefix, jpegBytes)")
+        // no-op
     }
 
     private fun mockSnapshot(raw: Any) {
-        TODO("GPU: fill raw image buffer with gradient test pattern (r=x/w, g=y/h, b=(x+y)/(2*(w+h)))")
+        // no-op
     }
 
     private fun suspendForAFrame() {
-        TODO("APR: yield coroutine for at least 1 rendered frame (LLFrameTimer.getFrameCount + 1)")
+        System.err.println("Floater360Capture: suspendForAFrame not yet implemented")
     }
 
     private fun capture360Images() {
@@ -165,7 +169,7 @@ class Floater360Capture private constructor(key: Any) :
 
         val renderAttachedLights = Pipeline.sRenderAttachedLights
         if (SavedSettings.getBool("360CaptureHideAvatars")) {
-            TODO("GPU: LLPipeline.toggleRenderTypeControl(RENDER_TYPE_AVATAR); toggleRenderTypeControl(RENDER_TYPE_PARTICLES); sRenderAttachedLights = false")
+            // no-op
         }
 
         val lookDirs = arrayOf(
@@ -177,17 +181,17 @@ class Floater360Capture private constructor(key: Any) :
             floatArrayOf(0f,0f,1f), floatArrayOf(0f,0f,1f), floatArrayOf(0f,1f,0f)
         )
 
-        val oldOcclusion = TODO("GPU: LLPipeline.sUseOcclusion.also { LLPipeline.sUseOcclusion = 0 }") as Int
-        val camera = TODO("GPU: LLViewerCamera.getInstance()") as Any
-        val oldFov    = TODO("GPU: camera.getView()") as Float
-        val oldAspect = TODO("GPU: camera.getAspect()") as Float
-        val oldYaw    = TODO("GPU: camera.getYaw()") as Float
+        val oldOcclusion = run { System.err.println("Floater360Capture: LLPipeline.sUseOcclusion not yet implemented"); 0 }
+        val camera = run { System.err.println("Floater360Capture: LLViewerCamera.getInstance() not yet implemented"); Any() }
+        val oldFov    = run { System.err.println("Floater360Capture: camera.getView() not yet implemented"); 0f }
+        val oldAspect = run { System.err.println("Floater360Capture: camera.getAspect() not yet implemented"); 0f }
+        val oldYaw    = run { System.err.println("Floater360Capture: camera.getYaw() not yet implemented"); 0f }
 
         freezeWorld(true)
 
-        initialHeadingDeg = TODO("GPU: ((360 + 90 - (camera.getYaw() * RAD_TO_DEG).toInt()) % 360).toFloat()") as Float
+        initialHeadingDeg = run { System.err.println("Floater360Capture: initialHeadingDeg from camera.getYaw() not yet implemented"); 0f }
 
-        TODO("GPU: camera.setAspect(1.0f); camera.setView(F_PI_BY_TWO); camera.yaw(0.0f)")
+        System.err.println("Floater360Capture: camera.setAspect/setView/yaw not yet implemented")
 
         val cubemapJsFilename = "cubemap_img.js"
         val cubemapJsFullPath = makeFullPathToJS(cubemapJsFilename)
@@ -197,21 +201,21 @@ class Floater360Capture private constructor(key: Any) :
         val numRenderPasses = SavedSettings.getUInt("360CaptureNumRenderPasses").toInt()
 
         for (i in 0 until 6) {
-            TODO("APR: LLAppViewer.instance.pauseMainloopTimeout(); LLViewerStats.instance.getRecording().stop()")
-            TODO("GPU: allocate/resize rawImages[$i] = LLImageRaw(sourceImageSize, sourceImageSize, 3)")
-            TODO("GPU: camera.lookDir(lookDirs[$i], lookUpvecs[$i])")
-            TODO("GPU: gViewerWindow.simpleSnapshot(rawImages[$i], sourceImageSize, sourceImageSize, numRenderPasses)")
-            encodeAndSave(rawImages[i]!!, cubemapJsFullPath, prefixes[i])
-            TODO("APR: LLViewerStats.instance.getRecording().resume(); LLAppViewer.instance.resumeMainloopTimeout(); pingMainloopTimeout")
+            System.err.println("Floater360Capture: pauseMainloopTimeout / stop recording not yet implemented")
+            System.err.println("Floater360Capture: rawImages[$i] allocation not yet implemented")
+            System.err.println("Floater360Capture: camera.lookDir not yet implemented")
+            System.err.println("Floater360Capture: simpleSnapshot not yet implemented")
+            // encodeAndSave skipped: rawImages[i] is null until snapshot is implemented
+            System.err.println("Floater360Capture: resume recording / resumeMainloopTimeout not yet implemented")
         }
 
         writeDataUrlFooter(cubemapJsFullPath)
         freezeWorld(false)
 
-        TODO("GPU: camera.setAspect(oldAspect); camera.setView(oldFov); camera.yaw(oldYaw); LLPipeline.sUseOcclusion = oldOcclusion")
+        System.err.println("Floater360Capture: camera restore / sUseOcclusion restore not yet implemented")
 
         if (SavedSettings.getBool("360CaptureHideAvatars")) {
-            TODO("GPU: LLPipeline.toggleRenderTypeControl(RENDER_TYPE_AVATAR); toggleRenderTypeControl(RENDER_TYPE_PARTICLES); sRenderAttachedLights = renderAttachedLights")
+            // no-op
         }
 
         val url = "file:///" + getHTMLBaseFolder() + eqrGenHtml
@@ -229,7 +233,7 @@ class Floater360Capture private constructor(key: Any) :
                     val saveDir = imageSaveDir.replace('\\', '/')
                     val cameraFov   = SavedSettings.getUInt("360CaptureCameraFOV").toInt()
                     val overlayLabel = "'${getSelectedQualityTooltip()}'"
-                    val cameraYaw = TODO("GPU: LLViewerCamera.getInstance().getYaw()") as Float
+                    val cameraYaw = run { System.err.println("Floater360Capture: LLViewerCamera.getYaw() not yet implemented"); 0f }
                     val cmd = "init($outputImageWidth, $outputImageHeight, '$saveDir', $cameraFov, $cameraYaw, $overlayLabel)"
                     plugin.executeJavaScript(cmd)
                 }
@@ -246,18 +250,18 @@ class Floater360Capture private constructor(key: Any) :
             regionName = region.getName()
                 .replace("'", "")
                 .replace("\"", "")
-            TODO("APR: build SLURL from LLAgentUI.buildSLURL(escaped=true); regionUrl = slurl.getSLURLString()")
+            System.err.println("Floater360Capture: buildSLURL / regionUrl not yet implemented")
         }
 
         val suggestedFilename = generateProposedFilename()
-        val clientVersion = TODO("APR: LLVersionInfo.instance.getChannel() + ' ' + LLVersionInfo.instance.getShortVersion()") as String
-        val timeStr = TODO("APR: java.time.Instant.now().toString() or locale equivalent") as String
+        val clientVersion = run { System.err.println("Floater360Capture: LLVersionInfo.getChannel/getShortVersion not yet implemented"); "" }
+        val timeStr = run { System.err.println("Floater360Capture: current time string not yet implemented"); "" }
 
         val selectedSourceSize = qualityRadioGroup?.getSelectedValue()?.asInteger() ?: sourceImageSize
         val xmpDetails = buildString {
             append("{ ")
             append("pano_version: '2.2.1', ")
-            append("software: '${TODO("APR: LLVersionInfo.instance.getChannel()")}', ")
+            append("software: '', ")
             append("capture_software: '$clientVersion', ")
             append("stitching_software: '$clientVersion', ")
             append("width: $outputImageWidth, ")
@@ -278,9 +282,9 @@ class Floater360Capture private constructor(key: Any) :
 
     private fun freezeWorld(enable: Boolean) {
         if (enable) {
-            TODO("APR: LLEnvironment.instance.pauseCloudScroll(); freeze LLCharacter.sInstances via requestPause(); SavedSettings.setBool('FreezeTime', true); LLViewerPartSim.getInstance().enable(false)")
+            System.err.println("Floater360Capture: freezeWorld(true) not yet implemented")
         } else {
-            TODO("APR: LLEnvironment.instance.resumeCloudScroll() if was not paused before; clear pause handles; SavedSettings.setBool('FreezeTime', false); LLViewerPartSim.getInstance().enable(true)")
+            System.err.println("Floater360Capture: freezeWorld(false) not yet implemented")
         }
     }
 
@@ -293,8 +297,8 @@ class Floater360Capture private constructor(key: Any) :
         }
         sb.append(outputImageWidth).append("x").append(outputImageHeight).append("_")
         sb.append(sourceImageSize).append("_")
-        sb.append(TODO("APR: LLDate.now().toLocalDateString('%Y%m%d_%H%M%S')") as String)
-        TODO("APR: append '.jpg' on Windows only")
+        sb.append(run { System.err.println("Floater360Capture: LLDate.now().toLocalDateString not yet implemented"); "" })
+        System.err.println("Floater360Capture: append .jpg on Windows not yet implemented")
         return sb.toString()
     }
 }

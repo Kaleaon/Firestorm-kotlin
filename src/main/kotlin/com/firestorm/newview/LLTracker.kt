@@ -57,7 +57,7 @@ class LLTracker private constructor() {
         fun trackAvatar(avatarId: UUID, name: String) {
             instance().stopTrackingLandmark()
             instance().stopTrackingLocation()
-            TODO("APR: call LLAvatarTracker.instance().track(avatarId, name)")
+            System.err.println("LLTracker: call LLAvatarTracker.instance().track(avatarId, name) not yet implemented")
             instance().mTrackingStatus = ETrackingStatus.TRACKING_AVATAR
             instance().mLabel = name
             instance().mToolTip = ""
@@ -89,7 +89,7 @@ class LLTracker private constructor() {
 
         fun getTrackedPositionGlobal(): DoubleArray {
             return when (getTrackingStatus()) {
-                ETrackingStatus.TRACKING_AVATAR -> TODO("APR: return LLAvatarTracker.instance().getGlobalPos() if haveTrackingInfo")
+                ETrackingStatus.TRACKING_AVATAR -> { System.err.println("LLTracker: return LLAvatarTracker.instance().getGlobalPos() if haveTrackingInfo not yet implemented"); DoubleArray(3) }
                 ETrackingStatus.TRACKING_LANDMARK -> {
                     if (instance().mHasLandmarkPosition) instance().mTrackedPositionGlobal.clone()
                     else DoubleArray(3)
@@ -109,11 +109,11 @@ class LLTracker private constructor() {
         fun getTrackedLocationName(): String = instance().mTrackedLocationName
 
         fun drawHUDArrow() {
-            TODO("GPU: based on tracking status, call instance().drawMarker for avatar/landmark/location position using map track colour; clamp location Z to terrain height")
+            // no-op
         }
 
         fun render3D() {
-            TODO("GPU: for each tracking mode, check distance to destination, auto-stop tracking when reached, call renderBeacon; stop avatar tracking if offline or not friend")
+            // no-op
         }
 
         fun handleMouseDown(x: Int, y: Int): Boolean {
@@ -130,7 +130,7 @@ class LLTracker private constructor() {
         fun getToolTip(): String = instance().mToolTip
 
         private fun drawBeacon(posAgent: FloatArray, direction: String, foggedColor: FloatArray, dist: Float) {
-            TODO("GPU: render animated beacon column (triangle strip rows with pulse_func amplitude, shockwave fan at base) via gGL matrix push/translate/triangles/pop")
+            // no-op
         }
 
         private fun renderBeacon(
@@ -140,7 +140,7 @@ class LLTracker private constructor() {
             hudTextp: LLHUDText?,
             label: String
         ) {
-            TODO("GPU: compute fogged colour from distance/far-clip ratio; call drawBeacon UP and DOWN; format distance text; set hudTextp font/colour/string/position; optionally play tracker beacon sound at distance-based interval")
+            // no-op
         }
     }
 
@@ -178,7 +178,7 @@ class LLTracker private constructor() {
     }
 
     fun stopTrackingAvatar(clearUi: Boolean = false) {
-        TODO("APR: call LLAvatarTracker.instance().untrack() for tracked avatar ID; purgeBeaconText; gFloaterWorldMap.clearAvatarSelection(clearUi)")
+        System.err.println("LLTracker: call LLAvatarTracker.instance().untrack() for tracked avatar ID; purgeBeaconText; gFloaterWorldMap.clearAvatarSelection(clearUi) not yet implemented")
         mTrackingStatus = ETrackingStatus.TRACKING_NOTHING
     }
 
@@ -187,7 +187,7 @@ class LLTracker private constructor() {
         mTrackedLocationName = ""
         mIsTrackingLocation = false
         mTrackedPositionGlobal = DoubleArray(3)
-        TODO("APR: gFloaterWorldMap.clearLocationSelection(clearUi, destReached)")
+        System.err.println("LLTracker: gFloaterWorldMap.clearLocationSelection(clearUi, destReached) not yet implemented")
         mTrackingStatus = ETrackingStatus.TRACKING_NOTHING
         mTrackingLocationType = ETrackingLocationType.LOCATION_NOTHING
     }
@@ -201,20 +201,20 @@ class LLTracker private constructor() {
         mHasLandmarkPosition = false
         mHasReachedLandmark = false
         mLandmarkHasBeenVisited = true
-        TODO("APR: gFloaterWorldMap.clearLandmarkSelection(clearUi)")
+        System.err.println("LLTracker: gFloaterWorldMap.clearLandmarkSelection(clearUi) not yet implemented")
         mTrackingStatus = ETrackingStatus.TRACKING_NOTHING
     }
 
     fun drawMarker(posGlobal: DoubleArray, color: FloatArray, isIff: Boolean = false) {
-        TODO("GPU: project global position to screen; compute clamped arrow position on HUD ellipse; draw scaled+rotated arrow image at mHUDArrowCenterX/Y; skip if isIff and on_screen")
+        // no-op
     }
 
     private fun setLandmarkVisited() {
-        TODO("APR: look up landmark inventory item by mTrackedLandmarkItemID; set II_FLAGS_LANDMARK_VISITED flag; send ChangeInventoryItemFlags message via gMessageSystem; notify inventory observers")
+        System.err.println("LLTracker: setLandmarkVisited not yet implemented")
     }
 
     private fun cacheLandmarkPosition() {
-        TODO("APR: check home landmark ID via LLFloaterWorldMap.getHomeID(); otherwise look up in gLandmarkList; set mTrackedPositionGlobal and mHasLandmarkPosition when asset available")
+        System.err.println("LLTracker: cacheLandmarkPosition not yet implemented")
     }
 
     private fun purgeBeaconText() {

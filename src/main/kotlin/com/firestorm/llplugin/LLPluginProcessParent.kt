@@ -94,7 +94,7 @@ class LLPluginProcessParent private constructor(private var owner: LLPluginProce
     }
 
     fun killSockets() {
-        TODO("Platform: close TCP listen/data sockets")
+        System.err.println("LLPluginProcessParent: killSockets not yet implemented")
     }
 
     fun errorState() {
@@ -120,7 +120,7 @@ class LLPluginProcessParent private constructor(private var owner: LLPluginProce
             isBlocked = false
         }
         val buffer = message.generate()
-        TODO("Platform: write '$buffer' to the plugin socket/pipe")
+        System.err.println("LLPluginProcessParent: sendMessage not yet implemented")
     }
 
     fun receiveMessageRaw(message: String) {
@@ -202,16 +202,16 @@ class LLPluginProcessParent private constructor(private var owner: LLPluginProce
             when (state) {
                 EState.STATE_UNINITIALIZED -> {}
                 EState.STATE_INITIALIZED -> {
-                    TODO("Platform: create TCP listen socket on 127.0.0.1:$portToBind via java.net.ServerSocket")
+                    System.err.println("LLPluginProcessParent: STATE_INITIALIZED socket creation not yet implemented")
                 }
                 EState.STATE_LISTENING -> {
-                    TODO("Platform: spawn plugin subprocess via ProcessBuilder with port arg $boundPort")
+                    System.err.println("LLPluginProcessParent: STATE_LISTENING subprocess spawn not yet implemented")
                 }
                 EState.STATE_LAUNCHED -> {
-                    TODO("Platform: poll for incoming TCP connection (accept)")
+                    System.err.println("LLPluginProcessParent: STATE_LAUNCHED connection accept not yet implemented")
                 }
                 EState.STATE_CONNECTED -> {
-                    TODO("Platform: wait for hello message from plugin")
+                    System.err.println("LLPluginProcessParent: STATE_CONNECTED hello wait not yet implemented")
                 }
                 EState.STATE_HELLO -> {
                     val msg = LLPluginMessage(LLPLUGIN_MESSAGE_CLASS_INTERNAL, "load_plugin")
@@ -221,10 +221,10 @@ class LLPluginProcessParent private constructor(private var owner: LLPluginProce
                     setState(EState.STATE_LOADING)
                 }
                 EState.STATE_LOADING -> {
-                    TODO("Platform: wait for load_plugin_response")
+                    System.err.println("LLPluginProcessParent: STATE_LOADING response wait not yet implemented")
                 }
                 EState.STATE_RUNNING -> {
-                    TODO("Platform: pump socket I/O")
+                    System.err.println("LLPluginProcessParent: STATE_RUNNING socket I/O pump not yet implemented")
                 }
                 EState.STATE_GOODBYE -> {
                     val msg = LLPluginMessage(LLPLUGIN_MESSAGE_CLASS_INTERNAL, "shutdown_plugin")
@@ -232,7 +232,7 @@ class LLPluginProcessParent private constructor(private var owner: LLPluginProce
                     setState(EState.STATE_EXITING)
                 }
                 EState.STATE_EXITING -> {
-                    TODO("Platform: check process exit, then move to STATE_CLEANUP")
+                    System.err.println("LLPluginProcessParent: STATE_EXITING process exit check not yet implemented")
                 }
                 EState.STATE_LAUNCH_FAILURE -> {
                     owner?.pluginLaunchFailed()
@@ -243,8 +243,8 @@ class LLPluginProcessParent private constructor(private var owner: LLPluginProce
                     setState(EState.STATE_CLEANUP)
                 }
                 EState.STATE_CLEANUP -> {
-                    TODO("Platform: kill process, close sockets, destroy shared memory")
-                    // setState(EState.STATE_DONE)
+                    System.err.println("LLPluginProcessParent: STATE_CLEANUP process/socket/shm teardown not yet implemented")
+                    setState(EState.STATE_DONE)
                 }
                 EState.STATE_DONE -> {}
             }
@@ -252,7 +252,8 @@ class LLPluginProcessParent private constructor(private var owner: LLPluginProce
     }
 
     fun addSharedMemory(size: Long): String {
-        TODO("Platform: create shared memory region of size=$size (e.g. MappedByteBuffer / memfd via JNI); register and send shm_add message")
+        System.err.println("LLPluginProcessParent: addSharedMemory not yet implemented")
+        return ""
     }
 
     fun removeSharedMemory(name: String) {
@@ -322,7 +323,7 @@ class LLPluginProcessParent private constructor(private var owner: LLPluginProce
         }
 
         fun poll(timeout: Double) {
-            TODO("Platform: APR/NIO pollset equivalent — poll registered sockets for timeout=$timeout seconds")
+            System.err.println("LLPluginProcessParent: poll not yet implemented")
         }
 
         fun canPollThreadRun(): Boolean = pollsetNeedsRebuild || useReadThread
@@ -330,7 +331,7 @@ class LLPluginProcessParent private constructor(private var owner: LLPluginProce
         fun setUseReadThread(useReadThread: Boolean) {
             this.useReadThread = useReadThread
             if (useReadThread) {
-                TODO("Platform: start background read thread / coroutine")
+                System.err.println("LLPluginProcessParent: setUseReadThread background thread not yet implemented")
             }
         }
 

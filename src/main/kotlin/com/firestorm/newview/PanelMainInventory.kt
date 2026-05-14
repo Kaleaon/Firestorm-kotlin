@@ -155,13 +155,13 @@ class PanelMainInventory {
      * in postBuild.
      */
     fun setActivePanel() {
-        TODO("Read the selected tab index and update activePanel accordingly")
+        System.err.println("PanelMainInventory: setActivePanel not yet implemented")
     }
 
     fun selectAllItemsPanel() {
         activePanel = allItemsPanel
         showInventoryPanel()
-        TODO("Switch the tab container to the All Items tab")
+        System.err.println("PanelMainInventory: selectAllItemsPanel tab switch not yet implemented")
     }
 
     /** Mirrors [LLPanelMainInventory::showAllItemsPanel]. */
@@ -175,12 +175,12 @@ class PanelMainInventory {
 
     /** Makes the inventory panel visible. */
     fun showInventoryPanel() {
-        TODO("Set panel visibility to true in the UI toolkit")
+        System.err.println("PanelMainInventory: showInventoryPanel not yet implemented")
     }
 
     /** Hides the inventory panel. */
     fun hideInventoryPanel() {
-        TODO("Set panel visibility to false in the UI toolkit")
+        System.err.println("PanelMainInventory: hideInventoryPanel not yet implemented")
     }
 
     fun onVisibilityChange(visible: Boolean) {
@@ -200,7 +200,7 @@ class PanelMainInventory {
     }
 
     fun setFocusOnFilterEditor() {
-        TODO("Move keyboard focus to the filter text box")
+        System.err.println("PanelMainInventory: setFocusOnFilterEditor not yet implemented")
     }
 
     // ── Filter state helpers ──────────────────────────────────────────────────
@@ -230,27 +230,27 @@ class PanelMainInventory {
     }
 
     fun toggleFindOptions() {
-        TODO("Show or hide the LLFloaterInventoryFinder dialog")
+        System.err.println("PanelMainInventory: toggleFindOptions not yet implemented")
     }
 
     // ── Filter-type dropdown (Firestorm extension) ────────────────────────────
 
     fun onFilterTypeSelected(filterTypeName: String) {
-        TODO("Look up filterTypeName in the filter map and apply the bitmask to the active panel")
+        System.err.println("PanelMainInventory: onFilterTypeSelected not yet implemented")
     }
 
     fun updateFilterDropdown(/*filter: InventoryFilter*/) {
-        TODO("Sync combo-box selection to reflect the current filter state")
+        System.err.println("PanelMainInventory: updateFilterDropdown not yet implemented")
     }
 
     // ── Sort ──────────────────────────────────────────────────────────────────
 
     fun setSortBy(userdata: String) {
-        TODO("Parse sort key from userdata and call activePanel.setSortOrder()")
+        System.err.println("PanelMainInventory: setSortBy not yet implemented")
     }
 
     fun isSortByChecked(userdata: String): Boolean {
-        TODO("Return true if the sort key matches activePanel.getSortOrder()")
+        return false
     }
 
     // ── Selection callbacks ───────────────────────────────────────────────────
@@ -310,7 +310,7 @@ class PanelMainInventory {
     fun getCurrentSFVRoot(): LLUUID = getSingleFolderViewRoot()
 
     fun getLocalizedRootName(): String {
-        TODO("Look up the root folder name in InventoryModel and translate if needed")
+        return ""
     }
 
     fun onUpFolderClicked() {
@@ -337,11 +337,11 @@ class PanelMainInventory {
     // ── Gallery selection helpers ─────────────────────────────────────────────
 
     fun setGallerySelection(itemId: LLUUID, newWindow: Boolean = false) {
-        TODO("Select item in the gallery view, optionally in a new window")
+        System.err.println("PanelMainInventory: setGallerySelection not yet implemented")
     }
 
     fun scrollToGallerySelection() {
-        TODO("Scroll the gallery panel to reveal the selected item")
+        System.err.println("PanelMainInventory: scrollToGallerySelection not yet implemented")
     }
 
     fun scrollToInvPanelSelection() {
@@ -351,7 +351,7 @@ class PanelMainInventory {
     // ── Links ─────────────────────────────────────────────────────────────────
 
     fun findLinks(itemId: LLUUID, itemName: String) {
-        TODO("Apply a link filter to show all items that link to itemId named itemName")
+        System.err.println("PanelMainInventory: findLinks not yet implemented")
     }
 
     // ── Item count text ───────────────────────────────────────────────────────
@@ -365,7 +365,7 @@ class PanelMainInventory {
     // ── Panel visibility ──────────────────────────────────────────────────────
 
     private fun updatePanelVisibility() {
-        TODO("Show/hide list, gallery and combination sub-panels according to viewMode")
+        System.err.println("PanelMainInventory: updatePanelVisibility not yet implemented")
     }
 
     // ── Inventory observer callback ───────────────────────────────────────────
@@ -378,16 +378,16 @@ class PanelMainInventory {
     // ── Draw ──────────────────────────────────────────────────────────────────
 
     fun draw() {
-        TODO("Delegate drawing to the active sub-panel and UI chrome")
+        System.err.println("PanelMainInventory: draw not yet implemented")
     }
 
     // ── New window helpers ────────────────────────────────────────────────────
 
     fun newWindow() {
-        TODO("Open a new floating inventory window via FloaterRegistry")
+        System.err.println("PanelMainInventory: newWindow not yet implemented")
     }
 
     fun newFolderWindow(folderId: LLUUID = LLUUID(), itemToSelect: LLUUID = LLUUID()) {
-        TODO("Open a new floating window rooted at folderId, selecting itemToSelect")
+        System.err.println("PanelMainInventory: newFolderWindow not yet implemented")
     }
 }

@@ -92,11 +92,11 @@ class PanelGroup : GroupMgrObserver, VoiceClientStatusObserver {
 
         for (tab in tabs) tab.setGroupId(newGroupId)
 
-        buttonActivate?.let { TODO("GPU: set button visible based on membership") }
-        buttonJoin?.let { TODO("GPU: set button visible = false") }
+        buttonActivate?.let { System.err.println("PanelGroup: setGroupId buttonActivate visibility not yet implemented") }
+        buttonJoin?.let { System.err.println("PanelGroup: setGroupId buttonJoin visibility not yet implemented") }
 
         if (!isSameId) {
-            TODO("GPU: reset accordion / tab container state")
+            System.err.println("PanelGroup: setGroupId accordion reset not yet implemented")
         }
 
         reposButtons()
@@ -110,7 +110,7 @@ class PanelGroup : GroupMgrObserver, VoiceClientStatusObserver {
 
     override fun onChange(status: StatusType, channelInfo: Map<String, Any>, proximal: Boolean) {
         if (status == StatusType.STATUS_JOINING || status == StatusType.STATUS_LEFT_CHANNEL) return
-        TODO("GPU: enable/disable call button based on voice availability")
+        System.err.println("PanelGroup: onChange call button state not yet implemented")
     }
 
     fun notifyObservers() {
@@ -119,7 +119,7 @@ class PanelGroup : GroupMgrObserver, VoiceClientStatusObserver {
 
     open fun update(gc: GroupChange) {
         val gdata = GroupMgr.getGroupData(groupId) ?: return
-        TODO("GPU: update group name control and join/activate button visibility")
+        System.err.println("PanelGroup: update not yet implemented")
     }
 
     fun apply(): Boolean {
@@ -145,7 +145,7 @@ class PanelGroup : GroupMgrObserver, VoiceClientStatusObserver {
             true
         } else {
             if (applyMesg.isNotEmpty()) {
-                TODO("APR: use JVM equivalent notification: ${applyMesg}")
+                System.err.println("PanelGroup: applyTab notification not yet implemented")
             }
             false
         }
@@ -154,12 +154,12 @@ class PanelGroup : GroupMgrObserver, VoiceClientStatusObserver {
     fun draw() {
         if (refreshTimerRunning && System.currentTimeMillis() >= refreshTimerExpiry) {
             refreshTimerRunning = false
-            TODO("GPU: re-enable refresh button and accordion")
+            System.err.println("PanelGroup: draw timer re-enable not yet implemented")
         }
 
         val mesg = StringBuilder()
         val enable = tabs.any { it.needsApply(mesg) }
-        TODO("GPU: set apply button enabled = $enable")
+        System.err.println("PanelGroup: draw apply button state not yet implemented")
     }
 
     fun refreshData() {
@@ -170,7 +170,7 @@ class PanelGroup : GroupMgrObserver, VoiceClientStatusObserver {
         GroupMgr.clearGroupData(groupId)
         setGroupId(groupId)
 
-        TODO("GPU: disable refresh button and accordion")
+        System.err.println("PanelGroup: refreshData disable not yet implemented")
         refreshTimerExpiry = System.currentTimeMillis() + 5_000L
         refreshTimerRunning = true
     }
@@ -190,32 +190,32 @@ class PanelGroup : GroupMgrObserver, VoiceClientStatusObserver {
         inventoryName: String,
         inventoryOffer: Any?
     ) {
-        TODO("APR: use JVM equivalent - delegate to group notices sub-panel")
+        System.err.println("PanelGroup: showNotice not yet implemented")
     }
 
     fun reshape(width: Int, height: Int, calledFromParent: Boolean = true) {
-        TODO("GPU: reshape panel to ${width}x${height}")
+        System.err.println("PanelGroup: reshape not yet implemented")
         reposButtons()
     }
 
     fun hideBackBtn() {
-        TODO("GPU: hide back button and background")
+        System.err.println("PanelGroup: hideBackBtn not yet implemented")
     }
 
     fun handleKeyHere(key: Int, mask: Int): Boolean {
-        TODO("APR: use JVM equivalent key handling for filter editor focus")
+        return false
     }
 
     fun hasAccelerators(): Boolean = true
 
     private fun onBackBtnClick() {
-        TODO("APR: use JVM equivalent - open previous panel in side tray container")
+        System.err.println("PanelGroup: onBackBtnClick not yet implemented")
     }
 
     private fun onBtnJoin() {
         if (GroupActions.isInGroup(groupId)) {
             GroupActions.leave(groupId)
-            TODO("GPU: hide activate button")
+            System.err.println("PanelGroup: onBtnJoin hide activate button not yet implemented")
         } else {
             GroupActions.join(groupId)
         }
@@ -223,11 +223,11 @@ class PanelGroup : GroupMgrObserver, VoiceClientStatusObserver {
 
     private fun onBtnActivate() {
         GroupActions.activate(groupId)
-        TODO("GPU: disable activate button")
+        System.err.println("PanelGroup: onBtnActivate disable button not yet implemented")
     }
 
     private fun reposButton(buttonName: String) {
-        TODO("GPU: reposition button $buttonName by 2px")
+        System.err.println("PanelGroup: reposButton not yet implemented")
     }
 
     private fun reposButtons() {
@@ -247,7 +247,7 @@ class PanelGroup : GroupMgrObserver, VoiceClientStatusObserver {
             inventoryName: String,
             inventoryOffer: Any?
         ) {
-            TODO("APR: use JVM equivalent - look up PanelGroup instance for groupId and show notice")
+            System.err.println("PanelGroup: companion showNotice not yet implemented")
         }
     }
 }

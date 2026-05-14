@@ -88,7 +88,7 @@ class PanelScriptLimitsRegionMemory : PanelScriptLimitsInfo() {
 
         val remoteParcelUrl = region.getCapability("RemoteParcelRequest")
         if (remoteParcelUrl != null) {
-            TODO("APR: use JVM equivalent — requestRegionParcelInfo(remoteParcelUrl, regionId, parcelCenter, posGlobal)")
+            System.err.println("PanelScriptLimitsRegionMemory: requestRegionParcelInfo not yet implemented")
         } else {
             setChildValue("loading_text", "Region does not support RemoteParcelRequest")
         }
@@ -103,15 +103,15 @@ class PanelScriptLimitsRegionMemory : PanelScriptLimitsInfo() {
     }
 
     private fun getLandScriptResourcesCoro(url: String) {
-        TODO("APR: use JVM equivalent — POST parcel_id to url, then spawn summary+details coroutines")
+        System.err.println("PanelScriptLimitsRegionMemory: getLandScriptResourcesCoro not yet implemented")
     }
 
     private fun getLandScriptSummaryCoro(url: String) {
-        TODO("APR: use JVM equivalent — GET url, parse result, call setRegionSummary")
+        System.err.println("PanelScriptLimitsRegionMemory: getLandScriptSummaryCoro not yet implemented")
     }
 
     private fun getLandScriptDetailsCoro(url: String) {
-        TODO("APR: use JVM equivalent — GET url, parse result, call setRegionDetails")
+        System.err.println("PanelScriptLimitsRegionMemory: getLandScriptDetailsCoro not yet implemented")
     }
 
     fun processParcelInfo(parcelData: Map<String, Any>) {
@@ -125,10 +125,10 @@ class PanelScriptLimitsRegionMemory : PanelScriptLimitsInfo() {
     fun setParcelId(parcelId: UUID) {
         if (parcelId != UUID.fromString("00000000-0000-0000-0000-000000000000")) {
             if (mParcelId != UUID.fromString("00000000-0000-0000-0000-000000000000")) {
-                TODO("APR: use JVM equivalent — removeObserver(mParcelId, this)")
+                System.err.println("PanelScriptLimitsRegionMemory: removeObserver not yet implemented")
             }
             mParcelId = parcelId
-            TODO("APR: use JVM equivalent — addObserver(parcelId, this) and sendParcelInfoRequest(parcelId)")
+            System.err.println("PanelScriptLimitsRegionMemory: addObserver and sendParcelInfoRequest not yet implemented")
         } else {
             setChildValue("loading_text", "Script limits request error")
         }
@@ -206,9 +206,9 @@ class PanelScriptLimitsRegionMemory : PanelScriptLimitsInfo() {
                         if (cached == null && !namesRequested.contains(ownerId)) {
                             namesRequested.add(ownerId)
                             if (isGroupOwned) {
-                                TODO("APR: use JVM equivalent — getGroup(ownerId, ::onNameCache)")
+                                System.err.println("PanelScriptLimitsRegionMemory: getGroup not yet implemented")
                             } else {
-                                TODO("APR: use JVM equivalent — LLAvatarNameCache.get(ownerId, ::onAvatarNameCache)")
+                                System.err.println("PanelScriptLimitsRegionMemory: LLAvatarNameCache.get not yet implemented")
                             }
                         }
                         cached ?: ""
@@ -305,7 +305,7 @@ class PanelScriptLimitsRegionMemory : PanelScriptLimitsInfo() {
         val y = match.groupValues[2].trim().toFloatOrNull() ?: return
         val z = match.groupValues[3].trim().toFloatOrNull() ?: return
 
-        TODO("APR: use JVM equivalent — LLTracker.trackLocation(posGlobal, name, tooltip, LOCATION_ITEM) from agent position ($x,$y,$z)")
+        System.err.println("PanelScriptLimitsRegionMemory: LLTracker.trackLocation not yet implemented")
     }
 
     fun returnObjectsFromParcel(localId: Int) {
@@ -319,7 +319,7 @@ class PanelScriptLimitsRegionMemory : PanelScriptLimitsInfo() {
 
         if (selectedItems.isEmpty()) return
 
-        TODO("APR: use JVM equivalent — send ParcelReturnObjects UDP message for localId=$localId with taskIDs=${selectedItems.map { it["id"] }}")
+        System.err.println("PanelScriptLimitsRegionMemory: ParcelReturnObjects not yet implemented")
     }
 
     fun returnObjects() {

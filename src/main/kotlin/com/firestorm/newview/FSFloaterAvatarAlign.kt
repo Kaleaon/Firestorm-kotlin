@@ -86,51 +86,51 @@ abstract class FSAvatarAlignBase(key: LLSD) : LLFloater(key) {
         val cy = lo.cy
         val fR = lo.R.toFloat()
 
-        TODO("GPU: unbind texture unit 0")
-        TODO("GPU: draw filled circle (background) at ($cx,$cy) r=$fR color(0.08,0.08,0.10,0.90)")
-        TODO("GPU: draw circle outline (outer ring) at ($cx,$cy) r=$fR color(0.45,0.45,0.45,1.0)")
-        TODO("GPU: draw circle outline (inner ring) at ($cx,$cy) r=${fR * 0.5f} color(0.25,0.25,0.25,1.0)")
+        // no-op: GPU: unbind texture unit 0
+        // no-op: GPU: draw filled circle (background) at (cx,cy) r=fR color(0.08,0.08,0.10,0.90)
+        // no-op: GPU: draw circle outline (outer ring) at (cx,cy) r=fR color(0.45,0.45,0.45,1.0)
+        // no-op: GPU: draw circle outline (inner ring) at (cx,cy) r=fR*0.5 color(0.25,0.25,0.25,1.0)
 
         // Tick marks at 45° intervals
-        TODO("GPU: draw 8 tick line segments at 45° intervals on the compass ring")
+        // no-op: GPU: draw 8 tick line segments at 45° intervals on the compass ring
 
         // Hover highlight
         when {
-            hoverOctant == -2 -> TODO("GPU: draw filled circle hover highlight at center zone")
-            hoverOctant >= 0 -> TODO("GPU: draw pie-slice highlight for octant $hoverOctant")
+            hoverOctant == -2 -> { /* no-op: GPU: draw filled circle hover highlight at center zone */ }
+            hoverOctant >= 0 -> { /* no-op: GPU: draw pie-slice highlight for octant */ }
         }
 
         // Cardinal arms as kite/diamond shapes: North=red, South=white, East/West=grey
-        TODO("GPU: draw 4 cardinal kite arms (N=red, S=white, E/W=grey)")
+        // no-op: GPU: draw 4 cardinal kite arms (N=red, S=white, E/W=grey)
 
         // Intercardinal arms (NE, SE, SW, NW) — skipped when miniCompact
         if (!lo.miniCompact) {
-            TODO("GPU: draw 4 intercardinal kite arms at 45/135/225/315°")
+            // no-op: GPU: draw 4 intercardinal kite arms at 45/135/225/315°
         }
 
-        TODO("GPU: draw center dot filled+outlined")
+        // no-op: GPU: draw center dot filled+outlined
 
         // Heading needle: yellow triangle pointing in current agent facing direction
         val at = gAgent.getAtAxis().let { v -> FloatArray(3).also { it[0] = v.x; it[1] = v.y; it[2] = 0f } }
         val len = sqrt(at[0] * at[0] + at[1] * at[1])
         if (len > 0.01f) {
-            TODO("GPU: draw yellow heading needle triangle pointing toward agent at-axis projected to XY plane")
+            // no-op: GPU: draw yellow heading needle triangle pointing toward agent at-axis projected to XY plane
         }
 
         // Cardinal labels: N/S/E/W in full mode when compass is large enough
         if (lo.showLabels) {
-            TODO("GPU: render N/S/E/W text labels around compass at distance R+10")
+            // no-op: GPU: render N/S/E/W text labels around compass at distance R+10
         }
 
         // Bearing text below the compass ring
         if (!lo.miniCompact) {
             val hat = gAgent.getAtAxis()
             val bearing = ((atan2(hat.x, hat.y) * (180f / PI.toFloat())) + 360f) % 360f
-            TODO("GPU: render bearing string '${bearing.toInt().toString().padStart(3, '0')}°' at bearingY=${lo.bearingY}")
+            // no-op: GPU: render bearing string at bearingY
         }
 
         // Toggle-mode button in top-right corner of compass bounding square
-        TODO("GPU: draw toggle button rect and label '${lo.toggleLabel}' at top-right of compass square; update toggleBtnRect")
+        // no-op: GPU: draw toggle button rect and label at top-right of compass square; update toggleBtnRect
     }
 
     override fun handleMouseDown(x: Int, y: Int, mask: Int): Boolean {
@@ -185,17 +185,17 @@ abstract class FSAvatarAlignBase(key: LLSD) : LLFloater(key) {
         val up = LLVector3(0f, 0f, 1f)
         val left = (up cross at).normalized()
         val cleanAt = left cross up
-        TODO("GPU: set world rotation of gAgentAvatarp.mRoot from (cleanAt, left, up) and set world position from gAgent.getPositionAgent()")
+        // no-op: GPU: set world rotation of gAgentAvatarp.mRoot from (cleanAt, left, up) and set world position from gAgent.getPositionAgent()
     }
 
     private fun snapRemoteAvatarBody(avatar: LLVOAvatar?) {
         if (avatar == null || avatar.isDead() || avatar.mRoot == null) return
-        TODO("GPU: reset avatar.mRoot world rotation and position to avatar's server rotation/position")
+        // no-op: GPU: reset avatar.mRoot world rotation and position to avatar's server rotation/position
     }
 
     private fun applyRotation(direction: LLVector3) {
         gAgent.resetAxes(direction)
-        TODO("APR: use JVM equivalent for send_agent_update(true, false)")
+        System.err.println("FSFloaterAvatarAlign: applyRotation not yet implemented") // APR: use JVM equivalent for send_agent_update(true, false)
         snapAvatarBody(direction)
         snapRemoteAvatarBody(targetAvatar)
         targetAvatar = null

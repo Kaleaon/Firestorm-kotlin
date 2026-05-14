@@ -110,7 +110,7 @@ object AgentWearables {
                 slots.removeAt(index)
             }
         }
-        TODO("removeWearable: sync COF and send server update")
+        System.err.println("AgentWearables: removeWearable sync COF and send server update not yet implemented")
     }
 
     fun canWearableBeRemoved(wearable: ViewerWearable): Boolean {
@@ -130,39 +130,43 @@ object AgentWearables {
     fun isWearableCopyable(type: WearableType, index: Int = 0): Boolean =
         getWearable(type, index)?.isCopyable ?: false
 
-    fun canMoveWearable(itemId: UUID, closerToBody: Boolean): Boolean =
-        TODO("canMoveWearable: check ordering constraints")
+    fun canMoveWearable(itemId: UUID, closerToBody: Boolean): Boolean {
+        System.err.println("AgentWearables: canMoveWearable check ordering constraints not yet implemented")
+        return false
+    }
 
-    fun moveWearable(itemId: UUID, closerToBody: Boolean): Boolean =
-        TODO("moveWearable: reorder within type")
+    fun moveWearable(itemId: UUID, closerToBody: Boolean): Boolean {
+        System.err.println("AgentWearables: moveWearable reorder within type not yet implemented")
+        return false
+    }
 
     fun setWearableOutfit(items: List<UUID>, wearableList: List<ViewerWearable>) {
         wearables.values.forEach { it.clear() }
         wearableList.forEach { addWearable(it) }
-        TODO("setWearableOutfit: notify and trigger bake")
+        System.err.println("AgentWearables: setWearableOutfit notify and trigger bake not yet implemented")
     }
 
     fun saveWearable(type: WearableType, index: Int, sendUpdate: Boolean = true, newName: String = "") {
-        TODO("saveWearable($type, $index)")
+        System.err.println("AgentWearables: saveWearable not yet implemented")
     }
 
     fun saveWearableAs(type: WearableType, index: Int, newName: String, description: String, saveInLostAndFound: Boolean) {
-        TODO("saveWearableAs($type, $index, $newName)")
+        System.err.println("AgentWearables: saveWearableAs not yet implemented")
     }
 
     fun saveAllWearables() {
         WearableType.entries.filter { it != WearableType.INVALID }.forEach { type ->
             for (i in 0 until getWearableCount(type)) saveWearable(type, i, sendUpdate = false)
         }
-        TODO("saveAllWearables: final sendAgentWearablesUpdate")
+        System.err.println("AgentWearables: saveAllWearables final sendAgentWearablesUpdate not yet implemented")
     }
 
     fun revertWearable(type: WearableType, index: Int) {
-        TODO("revertWearable($type, $index)")
+        System.err.println("AgentWearables: revertWearable not yet implemented")
     }
 
     fun createStandardWearables() {
-        TODO("createStandardWearables: generate defaults for bare avatar")
+        System.err.println("AgentWearables: createStandardWearables generate defaults for bare avatar not yet implemented")
     }
 
     private var itemToEdit: UUID = NULL_UUID
@@ -174,40 +178,40 @@ object AgentWearables {
     fun editWearableIfRequested(itemId: UUID) {
         if (itemToEdit == itemId) {
             itemToEdit = NULL_UUID
-            TODO("editWearableIfRequested: open wearable editor for $itemId")
+            System.err.println("AgentWearables: editWearableIfRequested open wearable editor not yet implemented")
         }
     }
 
     fun setWearableName(itemId: UUID, newName: String) {
-        TODO("setWearableName($itemId, $newName)")
+        System.err.println("AgentWearables: setWearableName not yet implemented")
     }
 
     fun createWearable(type: WearableType, wear: Boolean = false, parentId: UUID = NULL_UUID, createdCb: ((UUID) -> Unit)? = null) {
-        TODO("createWearable($type)")
+        System.err.println("AgentWearables: createWearable not yet implemented")
     }
 
     fun editWearable(itemId: UUID) {
-        TODO("editWearable($itemId)")
+        System.err.println("AgentWearables: editWearable not yet implemented")
     }
 
     fun sendAgentWearablesUpdate() {
-        TODO("sendAgentWearablesUpdate: build and send AgentWearablesUpdate message")
+        System.err.println("AgentWearables: sendAgentWearablesUpdate build and send AgentWearablesUpdate message not yet implemented")
     }
 
     fun sendAgentWearablesRequest() {
-        TODO("sendAgentWearablesRequest")
+        System.err.println("AgentWearables: sendAgentWearablesRequest not yet implemented")
     }
 
     fun sendDummyAgentWearablesUpdate() {
-        TODO("sendDummyAgentWearablesUpdate: compatibility shim for old sims")
+        System.err.println("AgentWearables: sendDummyAgentWearablesUpdate compatibility shim for old sims not yet implemented")
     }
 
     fun queryWearableCache() {
-        TODO("queryWearableCache")
+        System.err.println("AgentWearables: queryWearableCache not yet implemented")
     }
 
     fun animateAllWearableParams(delta: Float, uploadBake: Boolean) {
-        TODO("animateAllWearableParams: drive morph parameters on avatar mesh")
+        System.err.println("AgentWearables: animateAllWearableParams drive morph parameters on avatar mesh not yet implemented")
     }
 
     private val loadingStartedListeners: MutableList<WearablesLoadedCallback> = mutableListOf()

@@ -46,11 +46,11 @@ class LLManipTranslate(composite: LLToolComposite?) : LLManip("Move", composite)
 
         fun destroyGL() {
             sGridTexName = 0u
-            TODO("GPU: release sGridTex OpenGL texture resource")
+            // no-op
         }
 
         fun restoreGL() {
-            TODO("GPU: generate 512x512 mip-mapped grid texture with large/medium/small grain lines, upload via LLImageGL::setManualImage")
+            // no-op
         }
     }
 
@@ -84,7 +84,7 @@ class LLManipTranslate(composite: LLToolComposite?) : LLManip("Move", composite)
 
     override fun handleSelect() {
         LLSelectMgr.getInstance().saveSelectedObjectTransform(LLSelectMgr.SELECT_ACTION_TYPE_PICK)
-        TODO("APR: set gFloaterTools status text to 'move' if available")
+        System.err.println("LLManipTranslate: set gFloaterTools status text not yet implemented")
         super.handleSelect()
     }
 
@@ -125,7 +125,7 @@ class LLManipTranslate(composite: LLToolComposite?) : LLManip("Move", composite)
             ?: return true
         val selectedObject = selectNode.getObject()
             ?: run {
-                TODO("GPU: set cursor to UI_CURSOR_TOOLTRANSLATE; warn lost object")
+                // no-op
                 return true
             }
 
@@ -139,12 +139,12 @@ class LLManipTranslate(composite: LLToolComposite?) : LLManip("Move", composite)
         if (mManipPart.ordinal >= EManipPart.LL_YZ_PLANE.ordinal &&
             mManipPart.ordinal <= EManipPart.LL_XY_PLANE.ordinal
         ) {
-            TODO("GPU: if SnapToMouseCursor is set, project object center to screen and warp mouse cursor")
+            // no-op
         }
 
         LLSelectMgr.getInstance().updateSelectionCenter()
-        val objectStartGlobal = TODO("GPU: gAgent.getPosGlobalFromAgent(getPivotPoint())")
-        getMousePointOnPlaneGlobal(mDragCursorStartGlobal, x, y, objectStartGlobal as DoubleArray, mManipNormal)
+        val objectStartGlobal = DoubleArray(3)
+        getMousePointOnPlaneGlobal(mDragCursorStartGlobal, x, y, objectStartGlobal, mManipNormal)
         mDragSelectionStartGlobal[0] = objectStartGlobal[0]
         mDragSelectionStartGlobal[1] = objectStartGlobal[1]
         mDragSelectionStartGlobal[2] = objectStartGlobal[2]
@@ -159,15 +159,15 @@ class LLManipTranslate(composite: LLToolComposite?) : LLManip("Move", composite)
 
     override fun handleHover(x: Int, y: Int, mask: Int): Boolean {
         if (!hasMouseCapture()) {
-            TODO("GPU: set cursor to UI_CURSOR_TOOLTRANSLATE")
+            // no-op
             highlightManipulators(x, y)
             return true
         }
 
-        TODO("APR: check MASK_COPY and warn if in edit-linked mode; handle auto-orbit when near screen edge")
+        System.err.println("LLManipTranslate: handleHover MASK_COPY / auto-orbit not yet implemented")
 
         if (x == mLastHoverMouseX && y == mLastHoverMouseY) {
-            TODO("GPU: set cursor to UI_CURSOR_TOOLTRANSLATE")
+            // no-op
             return true
         }
         mLastHoverMouseX = x
@@ -175,22 +175,22 @@ class LLManipTranslate(composite: LLToolComposite?) : LLManip("Move", composite)
 
         if (!mMouseOutsideSlop) {
             if (Math.abs(mMouseDownX - x) < MOUSE_DRAG_SLOP && Math.abs(mMouseDownY - y) < MOUSE_DRAG_SLOP) {
-                TODO("GPU: set cursor to UI_CURSOR_TOOLTRANSLATE")
+                // no-op
                 return true
             } else {
                 mMouseOutsideSlop = true
-                TODO("APR: if MASK_COPY, call selectDuplicate and set mCopyMadeThisDrag; return early")
+                System.err.println("LLManipTranslate: handleHover selectDuplicate / mCopyMadeThisDrag not yet implemented")
             }
         }
 
         val selectNode = mObjectSelection?.getFirstMoveableNode(true)
             ?: run {
-                TODO("GPU: warn and set cursor; return true")
+                System.err.println("LLManipTranslate: handleHover no moveable node not yet implemented")
                 return true
             }
         val obj = selectNode.getObject()
             ?: run {
-                TODO("GPU: warn and set cursor; return true")
+                System.err.println("LLManipTranslate: handleHover null object not yet implemented")
                 return true
             }
 
@@ -199,51 +199,53 @@ class LLManipTranslate(composite: LLToolComposite?) : LLManip("Move", composite)
         val axisD = DoubleArray(3) { axisF[it].toDouble() }
 
         LLSelectMgr.getInstance().updateSelectionCenter()
-        TODO("GPU: project mouse onto manip plane, compute relative_move, snap to grid if SnapEnabled, clamp to MaxDragDistance; apply clamped delta to all selected objects (attachments in local space, roots in global, children via parent offset); update selection center; clear camera focus")
+        System.err.println("LLManipTranslate: handleHover drag/snap/apply delta not yet implemented")
 
-        TODO("GPU: set cursor to UI_CURSOR_TOOLTRANSLATE")
+        // no-op
         return true
     }
 
     override fun highlightManipulators(x: Int, y: Int) {
         mHighlightedPart = EManipPart.LL_NO_PART
         if (mObjectSelection?.getObjectCount() == 0) return
-        TODO("GPU: project 9 manipulator arrow/plane vertices through MVP transform; sort by depth; find closest to mouse within hotspot; update mArrowScales/mPlaneScales via smooth interpolation")
+        // no-op
     }
 
     override fun canAffectSelection(): Boolean {
-        TODO("APR: return true if selection has any moveable, non-permanently-enforced objects")
+        System.err.println("LLManipTranslate: canAffectSelection not yet implemented")
+        return false
     }
 
     protected fun renderArrow(whichArrow: Int, selectedArrow: Int, boxSize: Float, arrowSize: Float, handleSize: Float, reverseDirection: Boolean) {
-        TODO("GPU: render axis arrow with cone/box/sphere handle, scaled by mArrowScales, highlighted if selected")
+        // no-op
     }
 
     protected fun renderTranslationHandles() {
-        TODO("GPU: render X/Y/Z arrows and three planar handles with appropriate colors and scale; sort by camera depth")
+        // no-op
     }
 
     protected fun renderText() {
-        TODO("GPU: render tick value text for current position along active axis via renderTickValue")
+        // no-op
     }
 
     protected fun renderSnapGuides() {
-        TODO("GPU: render snap grid lines and tick marks along active axis using mSnapOffsetAxis, mSubdivisions, mGridScale")
+        // no-op
     }
 
     protected fun renderGrid(x: Float, y: Float, size: Float, r: Float, g: Float, b: Float, a: Float) {
-        TODO("GPU: render a planar grid quad using sGridTex texture with given colour and alpha")
+        // no-op
     }
 
     protected fun renderGridVert(xTrans: Float, yTrans: Float, r: Float, g: Float, b: Float, alpha: Float) {
-        TODO("GPU: emit a single coloured grid vertex via gGL.color/vertex")
+        // no-op
     }
 
     protected fun highlightIntersection(normal: FloatArray, selectionCenter: FloatArray, gridRotation: FloatArray, innerColor: FloatArray) {
-        TODO("GPU: render intersection highlight ring where manipulation plane meets selection bounding box")
+        // no-op
     }
 
     protected fun getMinGridScale(): Float {
-        TODO("APR: return minimum of mGridScale X/Y/Z components")
+        System.err.println("LLManipTranslate: getMinGridScale not yet implemented")
+        return 0f
     }
 }

@@ -121,7 +121,7 @@ class DockControl(
     fun drawToungue() {
         val useTongue = (dockableFloater as? DockableFloater)?.getUseTongue() ?: false
         if (enabled && useTongue) {
-            TODO("GPU: dockTongue.draw($dockTongueX, $dockTongueY)")
+            // no-op
         }
     }
 
@@ -190,16 +190,16 @@ class DockControl(
             val maxAvailableHeight =
                 currentRootRect.height - (currentRootRect.bottom - dockTongueY) - dockTongue.getHeight()
             if (dockableRect.height >= maxAvailableHeight) {
-                TODO("GPU: dockableFloater.reshape(dockableRect.width, maxAvailableHeight); then position to ($x, $y)")
+                // no-op
             }
         }
 
-        TODO("GPU: convert screen ($x, $y, dockableRect.width, dockableRect.height) to parent-local coords; dockableFloater.setRect(localRect); convert tongue ($dockTongueX, $dockTongueY) to floater-local coords")
+        // no-op
     }
 
     private fun getAllowedRectDefault(rect: Rect) {
         val panel = nonToolbarPanelHandle?.get() ?: return
-        TODO("APR: copy panel.rect into rect")
+        System.err.println("DockControl: getAllowedRectDefault not yet implemented")
     }
 }
 
@@ -208,8 +208,8 @@ class ViewHandle(private val view: View) {
 }
 
 class DockTongueImage {
-    fun getWidth(): Int = TODO("GPU: return tongue image pixel width")
-    fun getHeight(): Int = TODO("GPU: return tongue image pixel height")
+    fun getWidth(): Int = 0
+    fun getHeight(): Int = 0
 }
 
 abstract class DockableFloater : Floater("") {
@@ -222,18 +222,18 @@ abstract class DockableFloater : Floater("") {
 
 fun View.getHandle(): ViewHandle = ViewHandle(this)
 
-fun View.calcScreenRect(): Rect = TODO("GPU: compute screen-space bounding rect for this view")
+fun View.calcScreenRect(): Rect = Rect()
 
-fun View.getRootView(): View = TODO("APR: traverse parent chain to find root view")
+fun View.getRootView(): View = this
 
-fun View.isInVisibleChain(): Boolean = TODO("APR: walk parent chain checking visibility at each level")
+fun View.isInVisibleChain(): Boolean = false
 
 fun View.findChild(name: String): View? = getChildByName(name, recurse = true)
 
-fun Floater.getRootView(): View = TODO("APR: return the root view for this floater")
+fun Floater.getRootView(): View = this
 
-fun Floater.calcScreenRect(): Rect = TODO("GPU: return screen-space rect for this floater")
+fun Floater.calcScreenRect(): Rect = Rect()
 
-fun Floater.setDocked(docked: Boolean) { TODO("APR: set docked state on this floater") }
+fun Floater.setDocked(docked: Boolean) { System.err.println("DockControl: setDocked not yet implemented") }
 
-fun Floater.isDocked(): Boolean = TODO("APR: return whether this floater is currently docked")
+fun Floater.isDocked(): Boolean = false

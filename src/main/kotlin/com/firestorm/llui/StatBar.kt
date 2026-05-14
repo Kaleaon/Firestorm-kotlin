@@ -143,15 +143,16 @@ class StatBar(
     }
 
     private fun loadSetting(key: String): Int {
-        TODO("APR: use JVM equivalent to read S32 setting '$key'")
+        System.err.println("StatBar: loadSetting not yet implemented")
+        return 0
     }
 
     private fun saveSetting(key: String, value: Int) {
-        TODO("APR: use JVM equivalent to write S32 setting '$key' = $value")
+        System.err.println("StatBar: saveSetting not yet implemented")
     }
 
     override fun handleHover(x: Int, y: Int, mask: UInt): Boolean {
-        TODO("GPU: show tooltip with stat description for statType=$statType, statName=$statName")
+        System.err.println("StatBar: handleHover not yet implemented")
         return true
     }
 
@@ -185,7 +186,7 @@ class StatBar(
             name.isEmpty() -> StatType.NONE
             else -> StatType.NONE
         }
-        TODO("APR: resolve stat name '$name' against CountAccumulator/EventAccumulator/SampleAccumulator registries to set statType")
+        System.err.println("StatBar: setStat not yet implemented")
     }
 
     fun setRange(barMin: Float, barMax: Float) {
@@ -219,7 +220,7 @@ class StatBar(
         var decimal = decimalDigits
         var numRapidChanges = 0
 
-        TODO("GPU: fetch PeriodicRecording, compute current/min/max/mean/displayValue based on statType=$statType, numFrames=$numFrames, showMedian=$showMedian")
+        System.err.println("StatBar: draw (fetch stats) not yet implemented")
 
         val barRect = if (orientation == Orientation.HORIZONTAL) {
             val top = maxOf(5, rect.height - 15)
@@ -251,8 +252,8 @@ class StatBar(
             }
             drawTicks(min, max, valueScale, barRect)
 
-            TODO("GPU: draw background bar gl_rect_2d(barRect, Color4(0,0,0,0.25))")
-            TODO("GPU: draw min-max range, history or current bar, and mean bar using valueScale and orientation=$orientation")
+            // no-op
+            // no-op
         }
 
         super.draw()
@@ -263,7 +264,7 @@ class StatBar(
             "%10.*f %s".format(digits, value, unitLbl).trimEnd()
         else
             "N/A"
-        TODO("GPU: render label '$label' at (0, rect.height) and valueStr '$valueStr' at (barRect.right, rect.height) in monospace font")
+        // no-op
     }
 
     private fun drawTicks(min: Float, max: Float, valueScale: Float, barRect: Rect) {
@@ -305,17 +306,17 @@ class StatBar(
                 val tickLabel = "%.*f".format(digits, tickValue)
                 if (orientation == Orientation.HORIZONTAL) {
                     if (tickBegin > lastLabel + minLabelSpacing) {
-                        TODO("GPU: gl_rect_2d tick line and render tickLabel '$tickLabel' at horizontal position $tickBegin")
+                        // no-op
                         lastLabel = tickBegin
                     } else {
-                        TODO("GPU: gl_rect_2d short tick at horizontal $tickBegin")
+                        // no-op
                     }
                 } else {
                     if (tickBegin > lastLabel + minLabelSpacing) {
-                        TODO("GPU: gl_rect_2d tick line and render tickLabel '$tickLabel' at vertical position $tickBegin")
+                        // no-op
                         lastLabel = tickBegin
                     } else {
-                        TODO("GPU: gl_rect_2d short tick at vertical $tickBegin")
+                        // no-op
                     }
                 }
                 if (tickValue > curMaxBar) break
@@ -327,6 +328,7 @@ class StatBar(
     private fun lerp(a: Float, b: Float, t: Float): Float = a + (b - a) * t
 
     private fun smoothInterpolant(timeFactor: Float): Float {
-        TODO("APR: use JVM equivalent of LLSmoothInterpolation::getInterpolant($timeFactor)")
+        System.err.println("StatBar: smoothInterpolant not yet implemented")
+        return 0f
     }
 }

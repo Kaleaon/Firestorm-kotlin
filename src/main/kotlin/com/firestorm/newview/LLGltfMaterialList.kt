@@ -93,12 +93,12 @@ class LLGLTFMaterialList {
 
         @JvmStatic
         fun queueModify(obj: Any?, side: Int, mat: LLGLTFMaterial?) {
-            TODO("APR: use JVM equivalent – send via capability HTTP POST")
+            System.err.println("LLGLTFMaterialList: queueModify not yet implemented")
         }
 
         @JvmStatic
         fun queueApply(obj: Any?, side: Int, assetId: UUID) {
-            TODO("APR: use JVM equivalent – queue apply to simulator")
+            System.err.println("LLGLTFMaterialList: queueApply not yet implemented")
         }
 
         @JvmStatic
@@ -107,7 +107,7 @@ class LLGLTFMaterialList {
                 queueApply(obj, side, assetId)
                 return
             }
-            TODO("APR: use JVM equivalent – queue apply with JSON override")
+            System.err.println("LLGLTFMaterialList: queueApply with JSON override not yet implemented")
         }
 
         @JvmStatic
@@ -116,7 +116,7 @@ class LLGLTFMaterialList {
                 queueApply(obj, side, assetId)
                 return
             }
-            TODO("APR: use JVM equivalent – queue apply with material override")
+            System.err.println("LLGLTFMaterialList: queueApply with material override not yet implemented")
         }
 
         @JvmStatic
@@ -178,11 +178,11 @@ class LLGLTFMaterialList {
         }
 
         private fun modifyMaterialCoro(capUrl: String?, overrides: List<Map<String, Any>>, callbackHolder: CallbackHolder?) {
-            TODO("APR: use JVM equivalent – HTTP POST to ModifyMaterialParams capability")
+            System.err.println("LLGLTFMaterialList: modifyMaterialCoro not yet implemented")
         }
 
         private fun onAssetLoadComplete(id: UUID, assetType: Int, userData: Any?, status: Int) {
-            TODO("APR: use JVM equivalent – load asset from VFS/cache and deserialize GLTF")
+            System.err.println("LLGLTFMaterialList: onAssetLoadComplete not yet implemented")
         }
     }
 
@@ -192,7 +192,7 @@ class LLGLTFMaterialList {
         list[id] = mat
         if (!mat.mFetching) {
             mat.materialBegin()
-            TODO("APR: use JVM equivalent – request asset via gAssetStorage")
+            System.err.println("LLGLTFMaterialList: getMaterial asset request not yet implemented")
         }
         return mat
     }
@@ -247,11 +247,11 @@ class LLGLTFMaterialList {
     }
 
     fun applyQueuedOverrides(obj: Any?) {
-        TODO("APR: use JVM equivalent – apply cached override data from region cache")
+        System.err.println("LLGLTFMaterialList: applyQueuedOverrides not yet implemented")
     }
 
     fun applyOverrideMessage(data: String) {
-        TODO("APR: use JVM equivalent – parse LLSD notation and apply material overrides")
+        System.err.println("LLGLTFMaterialList: applyOverrideMessage not yet implemented")
     }
 
     private fun queueOverrideUpdate(id: UUID, side: Int, overrideData: LLGLTFMaterial) {

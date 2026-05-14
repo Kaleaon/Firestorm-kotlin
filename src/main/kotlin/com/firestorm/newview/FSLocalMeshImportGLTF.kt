@@ -19,7 +19,10 @@ class FSLocalMeshImportGLTF : FSLocalMeshImportBase() {
         pushLog("GLTF Importer", "Starting")
         setLod(lod)
 
-        val asset: GltfAsset = TODO("APR: use JVM equivalent — load glTF asset from filename")
+        // no-op: load glTF asset from filename not yet implemented
+        System.err.println("FSLocalMeshImportGLTF: load glTF asset from filename not yet implemented")
+        val asset: GltfAsset? = null
+        if (asset == null) return LoadFileReturn(false, mLoadingLog)
 
         mParentMap = buildParentMap(asset)
 
@@ -31,7 +34,7 @@ class FSLocalMeshImportGLTF : FSLocalMeshImportBase() {
         val sceneIdx = if (asset.activeScene >= 0 && asset.activeScene < asset.scenes.size) asset.activeScene else 0
         val scene = asset.scenes[sceneIdx]
 
-        TODO("GPU: scene.updateTransforms(asset) — update node matrices without GL upload")
+        // no-op: scene.updateTransforms(asset) — update node matrices without GL upload
 
         val meshNodes = mutableListOf<Int>()
         for (rootIdx in scene.nodes) {
@@ -148,10 +151,11 @@ class FSLocalMeshImportGLTF : FSLocalMeshImportBase() {
         val meshTransform: FloatArray = run {
             val combined = FloatArray(16)
             computeCombinedNodeTransform(asset, mParentMap, nodeIdx, combined)
-            TODO("GPU: multiply kCoordSystemRotation * combined, and if applyXyRotation then kCoordSystemRotationXY * that")
+            // no-op: multiply kCoordSystemRotation * combined, and if applyXyRotation then kCoordSystemRotationXY * that
+            combined
         }
 
-        val flipWinding: Boolean = TODO("GPU: glm::determinant(meshTransform) < 0")
+        val flipWinding: Boolean = false // no-op: glm::determinant(meshTransform) < 0
 
         var submeshFailureFound = false
         var stopLoadingAdditionalFaces = false
@@ -202,7 +206,7 @@ class FSLocalMeshImportGLTF : FSLocalMeshImportBase() {
             }
         }
 
-        val normalTransform: FloatArray = TODO("GPU: transpose(inverse(mat3(meshTransform)))")
+        val normalTransform: FloatArray = identityMatrix4x4() // no-op: transpose(inverse(mat3(meshTransform)))
 
         val listPositions = submesh.getPositions()
         val listNormals = submesh.getNormals()
@@ -211,7 +215,7 @@ class FSLocalMeshImportGLTF : FSLocalMeshImportBase() {
 
         for (vertIdx in prim.positions.indices) {
             val pos = prim.positions[vertIdx]
-            val transformedPos: FloatArray = TODO("GPU: meshTransform * vec4(pos[0], pos[1], pos[2], 1)")
+            val transformedPos: FloatArray = pos.copyOf() // no-op: meshTransform * vec4(pos[0], pos[1], pos[2], 1)
             listPositions.add(transformedPos)
 
             if (vertIdx == 0) submesh.setFaceBoundingBox(transformedPos, true)
@@ -219,7 +223,7 @@ class FSLocalMeshImportGLTF : FSLocalMeshImportBase() {
 
             if (prim.normals.isNotEmpty() && vertIdx < prim.normals.size) {
                 val norm = prim.normals[vertIdx]
-                val transformedNorm: FloatArray = TODO("GPU: normalTransform * vec3(norm[0], norm[1], norm[2])")
+                val transformedNorm: FloatArray = norm.copyOf() // no-op: normalTransform * vec3(norm[0], norm[1], norm[2])
                 listNormals.add(transformedNorm)
             } else {
                 listNormals.add(floatArrayOf(0f, 0f, 1f, 0f))
@@ -245,7 +249,7 @@ class FSLocalMeshImportGLTF : FSLocalMeshImportBase() {
             && prim.joints.size == prim.positions.size
         ) {
             val skin = asset.skins[skinIdx]
-            val jointComponentTypeIsUShort: Boolean = TODO("GPU: check JOINTS_0 accessor component type == UNSIGNED_SHORT")
+            val jointComponentTypeIsUShort: Boolean = false // no-op: check JOINTS_0 accessor component type == UNSIGNED_SHORT
 
             val listSkin = submesh.getSkin()
             var droppedWeightedInfluences = 0
@@ -255,9 +259,9 @@ class FSLocalMeshImportGLTF : FSLocalMeshImportBase() {
             for (vertIdx in prim.weights.indices) {
                 val weightVec = prim.weights[vertIdx]
                 val rawJointIndices: IntArray = if (jointComponentTypeIsUShort) {
-                    TODO("GPU: unpack prim.joints[vertIdx] as u16vec4")
+                    IntArray(4) // no-op: unpack prim.joints[vertIdx] as u16vec4
                 } else {
-                    TODO("GPU: unpack prim.joints[vertIdx] as u8vec4")
+                    IntArray(4) // no-op: unpack prim.joints[vertIdx] as u8vec4
                 }
 
                 val weightValues = floatArrayOf(weightVec[0], weightVec[1], weightVec[2], weightVec[3])
@@ -331,7 +335,9 @@ class FSLocalMeshImportGLTF : FSLocalMeshImportBase() {
 
         val jointsData: MutableMap<Int, JointNodeData> = mutableMapOf()
         val namesToNodes: MutableMap<String, Int> = mutableMapOf()
-        val viewerSkeleton: List<LLJointData> = TODO("APR: use JVM equivalent — gAgentAvatarp.getJointMatricesAndHierarchy()")
+        // no-op: gAgentAvatarp.getJointMatricesAndHierarchy() not yet implemented
+        System.err.println("FSLocalMeshImportGLTF: gAgentAvatarp.getJointMatricesAndHierarchy() not yet implemented")
+        val viewerSkeleton: List<LLJointData> = emptyList()
 
         val canBuildOverrides = viewerSkeleton.isNotEmpty()
         if (canBuildOverrides) {
@@ -383,7 +389,9 @@ class FSLocalMeshImportGLTF : FSLocalMeshImportBase() {
         skinInfo.invalidJointsScrubbed = false
         skinInfo.jointNumsInitialized = false
 
-        val applyJointOffsets: Boolean = TODO("APR: read FSLocalMeshApplyJointOffsets setting")
+        // no-op: read FSLocalMeshApplyJointOffsets setting not yet implemented
+        System.err.println("FSLocalMeshImportGLTF: read FSLocalMeshApplyJointOffsets setting not yet implemented")
+        val applyJointOffsets: Boolean = false
 
         for (i in skin.joints.indices) {
             val jointNodeIdx = skin.joints[i]
@@ -393,27 +401,27 @@ class FSLocalMeshImportGLTF : FSLocalMeshImportBase() {
             skinInfo.jointNums.add(-1)
 
             val originalBind: FloatArray = if (i < skin.inverseBindMatricesData.size) {
-                TODO("GPU: inverse(skin.inverseBindMatricesData[i])")
+                identityMatrix4x4() // no-op: inverse(skin.inverseBindMatricesData[i])
             } else {
                 identityMatrix4x4()
             }
 
-            val rotatedBind: FloatArray = TODO("GPU: convertTransformToViewerBasis(originalBind, applyXyRotation)")
+            val rotatedBind: FloatArray = originalBind.copyOf() // no-op: convertTransformToViewerBasis(originalBind, applyXyRotation)
             val skeletonTransform: FloatArray = if (canBuildOverrides) {
                 computeGltfToViewerSkeletonTransform(jointsData, jointNodeIdx, applyXyRotation)
             } else {
                 identityMatrix4x4()
             }
 
-            val translatedBind: FloatArray = TODO("GPU: skeletonTransform * rotatedBind")
-            val finalInverseBind: FloatArray = TODO("GPU: inverse(translatedBind)")
+            val translatedBind: FloatArray = rotatedBind.copyOf() // no-op: skeletonTransform * rotatedBind
+            val finalInverseBind: FloatArray = translatedBind.copyOf() // no-op: inverse(translatedBind)
             skinInfo.invBindMatrix.add(finalInverseBind)
 
             if (applyJointOffsets && canBuildOverrides) {
                 val alternateBind = finalInverseBind.copyOf()
                 val jointIt = jointsData[jointNodeIdx]
                 if (jointIt != null) {
-                    TODO("GPU: set translation of alternateBind from jointIt.overrideMatrix translation")
+                    // no-op: set translation of alternateBind from jointIt.overrideMatrix translation
                 }
                 skinInfo.alternateBindMatrix.add(alternateBind)
             }
@@ -435,7 +443,7 @@ class FSLocalMeshImportGLTF : FSLocalMeshImportBase() {
             skinInfo.bindShapeMatrix = identityMatrix4x4()
         }
 
-        TODO("GPU: matMul(normalizedTransformation, skinInfo.bindShapeMatrix) → skinInfo.bindShapeMatrix")
+        // no-op: matMul(normalizedTransformation, skinInfo.bindShapeMatrix) → skinInfo.bindShapeMatrix
 
         buildBindPoseMatrix(skinInfo)
         skinInfo.updateHash()
@@ -489,7 +497,8 @@ class FSLocalMeshImportGLTF : FSLocalMeshImportBase() {
             identity.copyInto(combined)
             return
         }
-        TODO("GPU: accumulate node.matrix up the parent chain into combined")
+        // no-op: accumulate node.matrix up the parent chain into combined
+        System.err.println("FSLocalMeshImportGLTF: accumulate node.matrix up the parent chain into combined not yet implemented")
     }
 
     private fun normalizeJointName(jointMap: Map<String, String>, name: String): String =
@@ -548,7 +557,9 @@ class FSLocalMeshImportGLTF : FSLocalMeshImportBase() {
 
     private fun buildGltfRestMatrix(asset: GltfAsset, parentMap: List<Int>, isSkinJoint: List<Boolean>, jointNodeIndex: Int): FloatArray {
         if (jointNodeIndex < 0 || jointNodeIndex >= asset.nodes.size) return identityMatrix4x4()
-        TODO("GPU: accumulate asset.nodes[jointNodeIndex].matrix up the parent chain, stopping when parent is not a skin joint")
+        // no-op: accumulate asset.nodes[jointNodeIndex].matrix up the parent chain, stopping when parent is not a skin joint
+        System.err.println("FSLocalMeshImportGLTF: accumulate node matrix up parent chain not yet implemented")
+        return identityMatrix4x4()
     }
 
     private fun checkForXYRotation(asset: GltfAsset, skin: GltfSkin, parentMap: List<Int>, jointMap: Map<String, String>): Boolean {
@@ -563,7 +574,7 @@ class FSLocalMeshImportGLTF : FSLocalMeshImportBase() {
             if (jointName != "mShoulderRight" && jointName != "mShoulderLeft") continue
 
             val gltfJointRest = buildGltfRestMatrix(asset, parentMap, isSkinJoint, jointNodeIdx)
-            val isXyRotated: Boolean = TODO("GPU: inverse(gltfJointRest) * inverseBindMatricesData[i], check diag < 0.5")
+            val isXyRotated: Boolean = false // no-op: inverse(gltfJointRest) * inverseBindMatricesData[i], check diag < 0.5
             if (!isXyRotated) return false
             ++jointsFound
         }
@@ -578,7 +589,8 @@ class FSLocalMeshImportGLTF : FSLocalMeshImportBase() {
         parentSupportRest: FloatArray,
         applyXyRotation: Boolean
     ) {
-        TODO("GPU: mirror buildOverrideMatrix — decompose gltf rest in viewer basis, extract translation override, propagate down skeleton hierarchy")
+        // no-op: mirror buildOverrideMatrix — decompose gltf rest in viewer basis, extract translation override, propagate down skeleton hierarchy
+        System.err.println("FSLocalMeshImportGLTF: buildOverrideMatrix not yet implemented")
     }
 
     private fun computeGltfToViewerSkeletonTransform(
@@ -588,7 +600,9 @@ class FSLocalMeshImportGLTF : FSLocalMeshImportBase() {
     ): FloatArray {
         val nodeData = jointsDataMap[gltfNodeIndex] ?: return identityMatrix4x4()
         if (!nodeData.isOverrideValid) return identityMatrix4x4()
-        TODO("GPU: overrideRestMatrix * inverse(convertTransformToViewerBasis(gltfRestMatrix, applyXyRotation))")
+        // no-op: overrideRestMatrix * inverse(convertTransformToViewerBasis(gltfRestMatrix, applyXyRotation))
+        System.err.println("FSLocalMeshImportGLTF: computeGltfToViewerSkeletonTransform not yet implemented")
+        return identityMatrix4x4()
     }
 
     private fun identityMatrix4x4(): FloatArray =

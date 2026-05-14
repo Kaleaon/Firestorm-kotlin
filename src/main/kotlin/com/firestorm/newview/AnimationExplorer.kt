@@ -40,8 +40,8 @@ object RecentAnimationList {
         }
     }
 
-    private fun elapsedSeconds(): Double = TODO("APR: use JVM equivalent for LLTimer::getElapsedSeconds")
-    private fun agentAvatarId(): UUID = TODO("APR: use JVM equivalent for gAgentAvatarp->getID()")
+    private fun elapsedSeconds(): Double = 0.0
+    private fun agentAvatarId(): UUID = UUID.fromString("00000000-0000-0000-0000-000000000000")
 }
 
 class AnimationExplorer(key: LLSD) : LLFloater(key) {
@@ -123,7 +123,7 @@ class AnimationExplorer(key: LLSD) : LLFloater(key) {
                 if (!knownIDs.containsKey(playedBy)) {
                     if (!requestedIDs.contains(playedBy)) {
                         requestedIDs.add(playedBy)
-                        TODO("APR: use JVM equivalent for gMessageSystem ObjectSelect/ObjectDeselect name lookup")
+                        System.err.println("AnimationExplorer: object name lookup not yet implemented")
                     }
                 } else {
                     playedByName = knownIDs[playedBy]!!
@@ -183,7 +183,7 @@ class AnimationExplorer(key: LLSD) : LLFloater(key) {
 
         if (animationPreview != null) {
             animationPreview!!.requestUpdate()
-            TODO("GPU: render animationPreview texture into rect r using GL triangles")
+            // no-op
         }
 
         val time = elapsedSeconds()
@@ -287,7 +287,7 @@ class AnimationExplorer(key: LLSD) : LLFloater(key) {
     override fun handleMouseDown(x: Int, y: Int, mask: Int): Boolean {
         if (previewCtrl != null && previewCtrl!!.rect.contains(x, y)) {
             bringToFront(x, y)
-            TODO("APR: use JVM equivalent for gFocusMgr.setMouseCapture / gViewerWindow.hideCursor")
+            System.err.println("AnimationExplorer: mouse capture / hide cursor not yet implemented")
             lastMouseX = x
             lastMouseY = y
             return true
@@ -296,7 +296,7 @@ class AnimationExplorer(key: LLSD) : LLFloater(key) {
     }
 
     override fun handleMouseUp(x: Int, y: Int, mask: Int): Boolean {
-        TODO("APR: use JVM equivalent for gFocusMgr.setMouseCapture(null) / gViewerWindow.showCursor")
+        System.err.println("AnimationExplorer: release mouse capture / show cursor not yet implemented")
         return super.handleMouseUp(x, y, mask)
     }
 
@@ -324,9 +324,9 @@ class AnimationExplorer(key: LLSD) : LLFloater(key) {
                 }
             }
             animationPreview!!.requestUpdate()
-            TODO("APR: use JVM equivalent for LLUI::setMousePositionLocal")
+            System.err.println("AnimationExplorer: setMousePositionLocal not yet implemented")
         } else {
-            TODO("APR: use JVM equivalent for gViewerWindow cursor changes based on localMask")
+            System.err.println("AnimationExplorer: cursor change not yet implemented")
         }
         return true
     }
@@ -341,17 +341,17 @@ class AnimationExplorer(key: LLSD) : LLFloater(key) {
     }
 
     override fun onMouseCaptureLost() {
-        TODO("APR: use JVM equivalent for gViewerWindow.showCursor")
+        System.err.println("AnimationExplorer: onMouseCaptureLost show cursor not yet implemented")
     }
 
-    private fun elapsedSeconds(): Double = TODO("APR: use JVM equivalent for LLTimer::getElapsedSeconds")
-    private fun agentAvatarId(): UUID = TODO("APR: use JVM equivalent for gAgentAvatarp->getID()")
-    private fun agentAvatarAnimationSources(): List<Pair<UUID, UUID>> = TODO("APR: use JVM equivalent for gAgentAvatarp->mAnimationSources")
-    private fun agentAvatarFindMotion(id: UUID): LLKeyframeMotion? = TODO("APR: use JVM equivalent for gAgentAvatarp->findMotion")
-    private fun agentAvatarStopMotion(id: UUID): Unit = TODO("APR: use JVM equivalent for gAgentAvatarp->stopMotion")
-    private fun agentAvatarRevokePermissionsOnObject(vo: Any): Unit = TODO("APR: use JVM equivalent for gAgentAvatarp->revokePermissionsOnObject")
-    private fun agentSendAnimationRequest(id: UUID, request: Int): Unit = TODO("APR: use JVM equivalent for gAgent.sendAnimationRequest")
-    private fun agentRegionName(): String = TODO("APR: use JVM equivalent for gAgent.getRegion()->getName()")
-    private fun isAgentAvatarValid(): Boolean = TODO("APR: use JVM equivalent for isAgentAvatarValid()")
-    private fun trans(key: String, args: Map<String, String> = emptyMap()): String = TODO("APR: use JVM equivalent for LLTrans::getString")
+    private fun elapsedSeconds(): Double = 0.0
+    private fun agentAvatarId(): UUID = UUID.fromString("00000000-0000-0000-0000-000000000000")
+    private fun agentAvatarAnimationSources(): List<Pair<UUID, UUID>> = emptyList()
+    private fun agentAvatarFindMotion(id: UUID): LLKeyframeMotion? = null
+    private fun agentAvatarStopMotion(id: UUID): Unit { System.err.println("AnimationExplorer: agentAvatarStopMotion not yet implemented") }
+    private fun agentAvatarRevokePermissionsOnObject(vo: Any): Unit { System.err.println("AnimationExplorer: agentAvatarRevokePermissionsOnObject not yet implemented") }
+    private fun agentSendAnimationRequest(id: UUID, request: Int): Unit { System.err.println("AnimationExplorer: agentSendAnimationRequest not yet implemented") }
+    private fun agentRegionName(): String = ""
+    private fun isAgentAvatarValid(): Boolean = false
+    private fun trans(key: String, args: Map<String, String> = emptyMap()): String = ""
 }

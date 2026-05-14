@@ -116,59 +116,59 @@ object ExperienceCache {
         val cap = capability ?: run { return }
         val resolvedUrl = url.ifEmpty { cap("GetMetadata") }
         if (resolvedUrl.isEmpty()) return
-        TODO("APR: use JVM async HTTP — POST {object-id, item-id, fields:[experience]} to $resolvedUrl, then get(expId, fn)")
+        System.err.println("ExperienceCache: fetchAssociatedExperience not yet implemented")
     }
 
     fun findExperienceByName(text: String, page: Int, fn: ExperienceGetFn) {
         val cap = capability ?: return
         val url = cap("FindExperienceByName")
         if (url.isEmpty()) return
-        TODO("APR: use JVM async HTTP — GET $url?page=$page&page_size=$SEARCH_PAGE_SIZE&query=<encoded $text>")
+        System.err.println("ExperienceCache: findExperienceByName not yet implemented")
     }
 
     fun getGroupExperiences(groupId: LLUUID, fn: ExperienceGetFn) {
         val cap = capability ?: return
         val url = cap("GroupExperiences")
         if (url.isEmpty()) return
-        TODO("APR: use JVM async HTTP — GET $url?${groupId}")
+        System.err.println("ExperienceCache: getGroupExperiences not yet implemented")
     }
 
     fun getRegionExperiences(regioncaps: CapabilityQuery, fn: ExperienceGetFn) {
         val url = regioncaps("RegionExperiences")
         if (url.isEmpty()) return
-        TODO("APR: use JVM async HTTP — GET $url, deliver result to fn")
+        System.err.println("ExperienceCache: getRegionExperiences not yet implemented")
     }
 
     fun setRegionExperiences(regioncaps: CapabilityQuery, experiences: Map<String, Any?>, fn: ExperienceGetFn) {
         val url = regioncaps("RegionExperiences")
         if (url.isEmpty()) return
-        TODO("APR: use JVM async HTTP — POST experiences to $url, deliver result to fn")
+        System.err.println("ExperienceCache: setRegionExperiences not yet implemented")
     }
 
     fun getExperiencePermission(experienceId: LLUUID, fn: ExperienceGetFn) {
         val cap = capability ?: return
         val url = cap("ExperiencePreferences") + "?" + experienceId.toString()
-        TODO("APR: use JVM async HTTP — GET $url, deliver result to fn")
+        System.err.println("ExperienceCache: getExperiencePermission not yet implemented")
     }
 
     fun setExperiencePermission(experienceId: LLUUID, permission: String, fn: ExperienceGetFn) {
         val cap = capability ?: return
         val url = cap("ExperiencePreferences")
         if (url.isEmpty()) return
-        TODO("APR: use JVM async HTTP — PUT {experienceId: {permission}} to $url, deliver result to fn")
+        System.err.println("ExperienceCache: setExperiencePermission not yet implemented")
     }
 
     fun forgetExperiencePermission(experienceId: LLUUID, fn: ExperienceGetFn) {
         val cap = capability ?: return
         val url = cap("ExperiencePreferences") + "?" + experienceId.toString()
-        TODO("APR: use JVM async HTTP — DELETE $url, deliver result to fn")
+        System.err.println("ExperienceCache: forgetExperiencePermission not yet implemented")
     }
 
     fun getExperienceAdmin(experienceId: LLUUID, fn: ExperienceGetFn) {
         val cap = capability ?: return
         val url = cap("IsExperienceAdmin")
         if (url.isEmpty()) return
-        TODO("APR: use JVM async HTTP — GET $url?experience_id=$experienceId, deliver result to fn")
+        System.err.println("ExperienceCache: getExperienceAdmin not yet implemented")
     }
 
     fun updateExperience(updateData: MutableMap<String, Any?>, fn: ExperienceGetFn) {
@@ -178,7 +178,7 @@ object ExperienceCache {
         updateData.remove(QUOTA)
         updateData.remove(EXPIRES)
         updateData.remove(AGENT_ID)
-        TODO("APR: use JVM async HTTP — POST updateData to $url, deliver result to fn")
+        System.err.println("ExperienceCache: updateExperience not yet implemented")
     }
 
     private fun processExperience(publicKey: LLUUID, experience: Map<String, Any?>) {
@@ -216,7 +216,7 @@ object ExperienceCache {
             if (requestQueue.isEmpty() || sb.length > 3000) {
                 val url = sb.toString()
                 val batchSnapshot = batch.toSet()
-                TODO("APR: use JVM async HTTP — GET $url, pass batchSnapshot to requestExperiencesCoro logic")
+                System.err.println("ExperienceCache: requestExperiences not yet implemented")
                 sb.clear()
                 sb.append("$urlBase?page_size=$pageSize")
                 batch.clear()
@@ -255,11 +255,11 @@ object ExperienceCache {
     private fun nowSeconds(): Double = System.currentTimeMillis() / 1000.0
 
     fun importFile(content: String) {
-        TODO("APR: use JVM XML parsing of experience_cache LLSD format")
+        System.err.println("ExperienceCache: importFile not yet implemented")
     }
 
     fun exportFile() {
-        TODO("APR: use JVM XML serialisation of cache to $cacheFileName")
+        System.err.println("ExperienceCache: exportFile not yet implemented")
     }
 
     fun getErrorRetryDeltaTime(status: Int, headers: Map<String, String>): Double {

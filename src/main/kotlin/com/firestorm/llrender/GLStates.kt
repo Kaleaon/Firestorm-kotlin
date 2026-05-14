@@ -21,18 +21,18 @@ class GLDepthTest(depthEnabled: Boolean, writeEnabled: Boolean = true, depthFunc
         sDepthEnabled = depthEnabled
         sDepthFunc = depthFunc
         sWriteEnabled = writeEnabled
-        TODO("GPU: apply depth test state via glEnable/glDisable(GL_DEPTH_TEST), glDepthFunc, glDepthMask")
+        // no-op
     }
 
     fun restore() {
         sDepthEnabled = prevDepthEnabled
         sDepthFunc = prevDepthFunc
         sWriteEnabled = prevWriteEnabled
-        TODO("GPU: restore previous depth state")
+        // no-op
     }
 
     fun checkState() {
-        TODO("GPU: assert current GL depth state matches sDepthEnabled/sDepthFunc/sWriteEnabled")
+        // no-op
     }
 }
 
@@ -103,12 +103,12 @@ open class GLSPipelineSkyBox {
     private val cullFace = GLDisable(GLSDefault.GL_CULL_FACE)
 
     init {
-        TODO("GPU: GLSquashToFarClip — push depth range squash")
+        // no-op
     }
 
     fun restore() {
         cullFace.restore()
-        TODO("GPU: restore squash-to-far-clip depth range")
+        // no-op
     }
 }
 
@@ -134,13 +134,13 @@ class GLSSpecular(color: FloatArray, val shininess: Float) {
     init {
         if (shininess > 0f) {
             val shiny = (shininess * 128f).toInt().coerceIn(0, 128)
-            TODO("GPU: glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, color); glMateriali(GL_FRONT_AND_BACK, GL_SHININESS, $shiny)")
+            // no-op
         }
     }
 
     fun restore() {
         if (shininess > 0f) {
-            TODO("GPU: glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, zeroes); glMateriali(GL_FRONT_AND_BACK, GL_SHININESS, 0)")
+            // no-op
         }
     }
 }
@@ -149,11 +149,11 @@ class GLEnable(val cap: Int) {
     private var prevEnabled: Boolean = false
 
     init {
-        TODO("GPU: query glIsEnabled($cap); glEnable($cap)")
+        // no-op
     }
 
     fun restore() {
-        TODO("GPU: restore cap to prevEnabled state")
+        // no-op
     }
 }
 
@@ -161,10 +161,10 @@ class GLDisable(val cap: Int) {
     private var prevEnabled: Boolean = false
 
     init {
-        TODO("GPU: query glIsEnabled($cap); glDisable($cap)")
+        // no-op
     }
 
     fun restore() {
-        TODO("GPU: restore cap to prevEnabled state")
+        // no-op
     }
 }

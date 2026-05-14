@@ -32,11 +32,11 @@ class CheckboxCtrl(
 
     fun setEnabled(b: Boolean) {
         enabled = b
-        TODO("GPU: update label color to enabledColor or disabledColor")
+        // no-op
     }
 
     fun reshape(width: Int, height: Int, calledFromParent: Boolean = true) {
-        TODO("GPU: reshape label and button rects, call updateBoundingRect()")
+        // no-op
     }
 
     fun setValue(v: Boolean) {
@@ -57,7 +57,8 @@ class CheckboxCtrl(
     fun getTentative(): Boolean = tentative
 
     fun setLabelArg(key: String, text: String): Boolean {
-        TODO("GPU: replace label arg and reshape")
+        System.err.println("CheckboxCtrl: setLabelArg not yet implemented")
+        return false
     }
 
     fun clear() = setValue(false)
@@ -65,7 +66,7 @@ class CheckboxCtrl(
     fun onCommit() {
         if (!enabled) return
         tentative = false
-        TODO("GPU: propagate commit to control binding and fire commit signal")
+        // no-op
     }
 
     fun toggle(): Boolean {
@@ -75,7 +76,7 @@ class CheckboxCtrl(
     }
 
     fun setBtnFocus() {
-        TODO("GPU: set keyboard focus on button child")
+        // no-op
     }
 
     fun setEnabledColor(color: Any) { enabledColor = color }
@@ -83,13 +84,13 @@ class CheckboxCtrl(
 
     fun setLabel(text: String) {
         label = text
-        TODO("GPU: update label textbox and reshape")
+        // no-op
     }
 
     fun getLabel(): String = label
 
     fun setControlName(controlName: String, context: Any?) {
-        TODO("GPU: bind button to named control in context")
+        // no-op
     }
 
     fun isDirty(): Boolean = dirty
@@ -105,11 +106,11 @@ class CheckboxCtrl(
             val checked = checkSignal.last().invoke(this)
             if (value != checked) setValue(checked)
         }
-        TODO("GPU: delegate to UICtrl::draw()")
+        // no-op
     }
 
     fun getSearchText(): String = "$label${getToolTip()}${getName()}"
 
-    fun getToolTip(): String = TODO("GPU: return tooltip string from view")
-    fun getName(): String = TODO("GPU: return view name")
+    fun getToolTip(): String = ""
+    fun getName(): String = ""
 }

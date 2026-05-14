@@ -29,14 +29,14 @@ data class Vector4(val x: Float = 0f, val y: Float = 0f, val z: Float = 0f, val 
 class Quaternion
 
 class LLJoint {
-    fun getWorldPosition(): Vector3 = TODO("GPU: get world position from joint")
-    fun getName(): String = TODO("GPU: get joint name")
-    fun getParent(): LLJoint? = TODO("GPU: get parent joint")
+    fun getWorldPosition(): Vector3 = Vector3() // no-op: GPU: get world position from joint
+    fun getName(): String = "" // no-op: GPU: get joint name
+    fun getParent(): LLJoint? = null // no-op: GPU: get parent joint
 }
 
 class LLVOAvatar {
-    fun isDead(): Boolean = TODO("GPU: check avatar dead state")
-    fun isFullyLoaded(): Boolean = TODO("GPU: check avatar fully loaded")
+    fun isDead(): Boolean = false // no-op: GPU: check avatar dead state
+    fun isFullyLoaded(): Boolean = false // no-op: GPU: check avatar fully loaded
 }
 
 class LLToolComposite
@@ -76,11 +76,11 @@ class FSManipTranslateJoint(composite: LLToolComposite) {
         }
 
         fun destroyGL() {
-            TODO("GPU: destroy grid texture GL resource")
+            // no-op: GPU: destroy grid texture GL resource
         }
 
         fun restoreGL() {
-            TODO("GPU: generate grid texture via OpenGL mipmap upload")
+            // no-op: GPU: generate grid texture via OpenGL mipmap upload
         }
     }
 
@@ -97,7 +97,7 @@ class FSManipTranslateJoint(composite: LLToolComposite) {
     }
 
     fun handleSelect() {
-        TODO("GPU: save selected object transform and set status text 'move'")
+        System.err.println("FSManipTranslateJoint: handleSelect not yet implemented")
     }
 
     fun handleMouseDown(x: Int, y: Int, mask: Int): Boolean {
@@ -125,7 +125,7 @@ class FSManipTranslateJoint(composite: LLToolComposite) {
         if (!isArrowOrPlane) return true
 
         if (!isAvatarJointSafeToUse()) {
-            TODO("APR: use JVM equivalent - log warn about lost joint/avatar, set translate cursor")
+            System.err.println("FSManipTranslateJoint: handleMouseDownOnPart not yet implemented")
         }
 
         mManipPart = hitPart
@@ -134,43 +134,46 @@ class FSManipTranslateJoint(composite: LLToolComposite) {
         mMouseOutsideSlop = false
         mDragCursorLastGlobal = Vector3()
 
-        TODO("GPU: compute manip axis/normal, project cursor onto plane, snap if needed, capture mouse")
+        // no-op: GPU: compute manip axis/normal, project cursor onto plane, snap if needed, capture mouse
+        return false
     }
 
     fun handleHover(x: Int, y: Int, mask: Int): Boolean {
-        TODO("GPU: handle hover - rotate camera at edge, project cursor onto manip plane, update posed bones")
+        // no-op: GPU: handle hover - rotate camera at edge, project cursor onto manip plane, update posed bones
+        return false
     }
 
     fun handleMouseUp(x: Int, y: Int, mask: Int): Boolean {
         handleHover(x, y, mask)
-        TODO("GPU: reset manip part, re-enable silhouette, send position update, release mouse capture")
+        // no-op: GPU: reset manip part, re-enable silhouette, send position update, release mouse capture
+        return false
     }
 
     fun render() {
         if (!isMoveableJoint()) return
-        TODO("GPU: push modelview matrix, render guidelines with depth, render translation handles, render text, pop matrix")
+        // no-op: GPU: push modelview matrix, render guidelines with depth, render translation handles, render text, pop matrix
     }
 
     fun highlightManipulators(x: Int, y: Int) {
         mHighlightedPart = EManipPart.LL_NO_PART
         if (!isAvatarJointSafeToUse()) return
 
-        TODO("GPU: project manipulator handle vertices through view/proj matrices, find closest handle under cursor via 2D line-segment test")
+        // no-op: GPU: project manipulator handle vertices through view/proj matrices, find closest handle under cursor via 2D line-segment test
     }
 
     fun canAffectSelection(): Boolean = isAvatarJointSafeToUse()
 
     private fun renderArrow(whichArrow: EManipPart, selectedArrow: EManipPart, boxSize: Float, arrowSize: Float, handleSize: Float, reverseDirection: Boolean) {
-        TODO("GPU: render cone arrow with color based on selection state, two-pass depth rendering")
+        // no-op: GPU: render cone arrow with color based on selection state, two-pass depth rendering
     }
 
     private fun renderTranslationHandles() {
-        TODO("GPU: render YZ/XZ/XY plane handles as colored triangle pairs, then render axis arrows depth-sorted by nearest camera vertex")
+        // no-op: GPU: render YZ/XZ/XY plane handles as colored triangle pairs, then render axis arrows depth-sorted by nearest camera vertex
     }
 
     private fun renderText() {
         if (!isAvatarJointSafeToUse()) return
-        TODO("GPU: render XYZ coordinate overlay text at joint world position")
+        // no-op: GPU: render XYZ coordinate overlay text at joint world position
     }
 
     private fun isAvatarJointSafeToUse(): Boolean {

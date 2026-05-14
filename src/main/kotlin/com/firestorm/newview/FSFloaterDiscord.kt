@@ -26,23 +26,25 @@ class FSFloaterDiscord(private val key: Any) : LLFloaterBase {
     private var statusTextVisible: Boolean = false
 
     init {
-        TODO("APR: use JVM equivalent — register commit callbacks for FSDiscord.Connect/Disconnect/Add/Rem and attach visibility change listener")
+        System.err.println("FSFloaterDiscord: register commit callbacks for FSDiscord.Connect/Disconnect/Add/Rem and attach visibility change listener not yet implemented")
     }
 
     private fun onVisibilityChange(visible: Boolean) {
         if (visible) {
-            TODO("APR: use JVM equivalent — subscribe to DiscordConnectState and DiscordConnectInfo event pumps; query FSDiscordConnect for current info and connection state")
+            System.err.println("FSFloaterDiscord: subscribe to DiscordConnectState and DiscordConnectInfo event pumps not yet implemented")
         } else {
-            TODO("APR: use JVM equivalent — unsubscribe from DiscordConnectState and DiscordConnectInfo event pumps")
+            System.err.println("FSFloaterDiscord: unsubscribe from DiscordConnectState and DiscordConnectInfo event pumps not yet implemented")
         }
     }
 
     private fun onDiscordConnectStateChange(data: Any): Boolean {
-        TODO("APR: use JVM equivalent — check FSDiscordConnect.isConnected() and update accountCaptionLabel; call showConnectedLayout() or showDisconnectedLayout()")
+        System.err.println("FSFloaterDiscord: onDiscordConnectStateChange not yet implemented")
+        return false
     }
 
     private fun onDiscordConnectInfoChange(): Boolean {
-        TODO("APR: use JVM equivalent — read info from FSDiscordConnect.getInfo(); if 'name' key present update accountNameLabel")
+        System.err.println("FSFloaterDiscord: onDiscordConnectInfoChange not yet implemented")
+        return false
     }
 
     private fun showConnectButton() {
@@ -71,11 +73,11 @@ class FSFloaterDiscord(private val key: Any) : LLFloaterBase {
     }
 
     private fun onConnect() {
-        TODO("APR: use JVM equivalent — call FSDiscordConnect.checkConnectionToDiscord(true)")
+        System.err.println("FSFloaterDiscord: onConnect not yet implemented")
     }
 
     private fun onDisconnect() {
-        TODO("APR: use JVM equivalent — call FSDiscordConnect.disconnectFromDiscord()")
+        System.err.println("FSFloaterDiscord: onDisconnect not yet implemented")
     }
 
     private fun onAdd() {
@@ -84,26 +86,27 @@ class FSFloaterDiscord(private val key: Any) : LLFloaterBase {
         val nameLower = name.lowercase()
         if (blacklistedNames.any { it.lowercase() == nameLower }) return
         blacklistedNames.add(name)
-        TODO("APR: use JVM equivalent — persist updated blacklistedNames list to FSBlacklistedRegionNames per-account setting")
+        System.err.println("FSFloaterDiscord: persist updated blacklistedNames list to FSBlacklistedRegionNames not yet implemented")
     }
 
     private fun onRemove() {
-        TODO("APR: use JVM equivalent — remove selected items from blacklistedNames list and persist to FSBlacklistedRegionNames per-account setting")
+        System.err.println("FSFloaterDiscord: onRemove not yet implemented")
     }
 
     override fun postBuild(): Boolean {
-        TODO("APR: use JVM equivalent — bind UI child widgets (accountCaptionLabel, accountNameLabel, connectButton, disconnectButton, blacklistedNames scroll list, blacklistEntry, statusText); load FSBlacklistedRegionNames from per-account settings into blacklistedNames list")
+        System.err.println("FSFloaterDiscord: postBuild not yet implemented")
+        return false
     }
 
     override fun draw() {
         statusTextVisible = false
-        TODO("APR: use JVM equivalent — query FSDiscordConnect.getConnectionState() and set statusTextVisible + statusText string for IN_PROGRESS / FAILED / DISCONNECTING states; call super.draw()")
+        System.err.println("FSFloaterDiscord: draw not yet implemented")
     }
 
     override fun onClose(appQuitting: Boolean) {
         if (appQuitting) {
-            TODO("APR: use JVM equivalent — persist non-selected blacklistedNames items to FSBlacklistedRegionNames per-account setting on app quit")
+            System.err.println("FSFloaterDiscord: persist non-selected blacklistedNames items to FSBlacklistedRegionNames on app quit not yet implemented")
         }
-        TODO("APR: use JVM equivalent — call super.onClose(appQuitting)")
+        System.err.println("FSFloaterDiscord: onClose not yet implemented")
     }
 }

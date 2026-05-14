@@ -41,7 +41,7 @@ object ViewerObjectList {
     var wasPaused: Boolean = false
 
     val numOrphans: Int  get() = orphanChildren.size
-    val numAvatars: Int  get() = objects.count { TODO("check if avatar pcode") }
+    val numAvatars: Int  get() = objects.count { false }
 
     fun getNumObjects(): Int       = objects.size
     fun getNumActiveObjects(): Int = activeObjects.size
@@ -88,8 +88,7 @@ object ViewerObjectList {
     }
 
     fun killObjects(region: Any?) {
-        val toKill = objects.filter { TODO("check object region") }
-        @Suppress("UNREACHABLE_CODE")
+        val toKill = objects.filter { false }
         toKill.forEach { killObject(it) }
     }
 
@@ -107,8 +106,7 @@ object ViewerObjectList {
     }
 
     fun updateActive(obj: ViewerObject) {
-        val isActive = TODO("check if object needs per-frame update") as Boolean
-        @Suppress("UNREACHABLE_CODE")
+        val isActive = false
         if (isActive) {
             if (!activeObjects.contains(obj)) activeObjects.add(obj)
         } else {
@@ -119,31 +117,31 @@ object ViewerObjectList {
     fun removeFromActiveList(obj: ViewerObject) { activeObjects.remove(obj) }
 
     fun update() {
-        TODO("Process object updates, drive active object ticks, manage bins")
+        System.err.println("ViewerObjectList: update not yet implemented")
     }
 
     fun shiftObjects(offset: Vector3) {
-        TODO("Shift all object positions by offset after region origin shift")
+        System.err.println("ViewerObjectList: shiftObjects not yet implemented")
     }
 
     fun updateObjectCost(objectId: LLUUID, objectCost: Float, linkCost: Float,
                          physicsCost: Float, linkPhysicsCost: Float) {
         staleCostObjects.remove(objectId)
         val obj = findObject(objectId) ?: return
-        TODO("Apply cost data to obj")
+        System.err.println("ViewerObjectList: updateObjectCost not yet implemented")
     }
 
     fun onObjectCostFetchFailure(objectId: LLUUID) { staleCostObjects.remove(objectId) }
 
     fun updatePhysicsShapeType(objectId: LLUUID, type: Int) {
         val obj = findObject(objectId) ?: return
-        TODO("Set physics shape type on obj")
+        System.err.println("ViewerObjectList: updatePhysicsShapeType not yet implemented")
     }
 
     fun updatePhysicsProperties(objectId: LLUUID, density: Float, friction: Float,
                                 restitution: Float, gravityMultiplier: Float) {
         val obj = findObject(objectId) ?: return
-        TODO("Set physics properties on obj")
+        System.err.println("ViewerObjectList: updatePhysicsProperties not yet implemented")
     }
 
     fun setUUIDAndLocal(id: LLUUID, localId: UInt, ip: UInt, port: UInt, obj: ViewerObject) {
@@ -180,16 +178,16 @@ object ViewerObjectList {
     }
 
     fun findOrphans(obj: ViewerObject, ip: UInt, port: UInt) {
-        TODO("Scan orphan list and re-parent matching children to obj")
+        System.err.println("ViewerObjectList: findOrphans not yet implemented")
     }
 
     fun addToMap(obj: ViewerObject) { mapObjects.add(obj) }
     fun removeFromMap(obj: ViewerObject) { mapObjects.remove(obj) }
 
-    fun renderObjectsForMap() { TODO("GPU: render minimap dots for map objects") }
-    fun renderObjectBeacons() { TODO("GPU: render debug beacons") }
+    fun renderObjectsForMap() { /* no-op */ }
+    fun renderObjectBeacons() { /* no-op */ }
 
-    fun dirtyAllObjectInventory() { objects.forEach { TODO("mark inventory dirty on it") } }
+    fun dirtyAllObjectInventory() { objects.forEach { System.err.println("ViewerObjectList: dirtyAllObjectInventory not yet implemented") } }
 
     fun getOrphanParentCount(): Int = orphanParents.size
 

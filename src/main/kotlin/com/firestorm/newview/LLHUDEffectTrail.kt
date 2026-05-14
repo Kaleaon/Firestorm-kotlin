@@ -52,10 +52,10 @@ class LLHUDEffectSpiral(type: UByte) : LLHUDEffect(type) {
 
         val packedData = ByteArray(56)
 
-        TODO("APR: use JVM equivalent - htolememcpy mSourceObject.mID bytes into packedData[0..16]")
-        TODO("APR: use JVM equivalent - htolememcpy mTargetObject.mID bytes into packedData[16..32]")
-        TODO("APR: use JVM equivalent - htolememcpy mPositionGlobal bytes into packedData[32..56]")
-        TODO("APR: use JVM equivalent - mesgsys.addBinaryDataFast _PREHASH_TypeData packedData 56")
+        System.err.println("LLHUDEffectSpiral: packData (htolememcpy source object ID) not yet implemented")
+        System.err.println("LLHUDEffectSpiral: packData (htolememcpy target object ID) not yet implemented")
+        System.err.println("LLHUDEffectSpiral: packData (htolememcpy position global) not yet implemented")
+        System.err.println("LLHUDEffectSpiral: packData (addBinaryDataFast TypeData) not yet implemented")
     }
 
     override fun unpackData(mesgsys: LLMessageSystem, blocknum: Int) {
@@ -64,14 +64,17 @@ class LLHUDEffectSpiral(type: UByte) : LLHUDEffect(type) {
 
         super.unpackData(mesgsys, blocknum)
 
-        val size: Int = TODO("APR: use JVM equivalent - mesgsys.getSizeFast _PREHASH_Effect blocknum _PREHASH_TypeData")
+        val size: Int = run {
+            System.err.println("LLHUDEffectSpiral: unpackData (getSizeFast TypeData) not yet implemented")
+            0
+        }
         if (size != effectSize) {
             return
         }
-        TODO("APR: use JVM equivalent - mesgsys.getBinaryDataFast _PREHASH_Effect _PREHASH_TypeData packedData effectSize blocknum effectSize")
-        TODO("APR: use JVM equivalent - htolememcpy objectId from packedData[0..16], targetObjectId from [16..32], mPositionGlobal from [32..56]")
+        System.err.println("LLHUDEffectSpiral: unpackData (getBinaryDataFast TypeData) not yet implemented")
+        System.err.println("LLHUDEffectSpiral: unpackData (htolememcpy objectId/targetObjectId/mPositionGlobal) not yet implemented")
 
-        TODO("APR: use JVM equivalent - resolve source/target objects from gObjectList; call markDead and return if not found")
+        System.err.println("LLHUDEffectSpiral: unpackData (resolve source/target objects) not yet implemented")
 
         triggerLocal()
     }
@@ -79,7 +82,10 @@ class LLHUDEffectSpiral(type: UByte) : LLHUDEffect(type) {
     fun triggerLocal() {
         mKillTime = mTimer.getElapsedTimeF32() + mDuration
 
-        val showBeam: Boolean = TODO("APR: use JVM equivalent - gSavedSettings.getBOOL(\"ShowSelectionBeam\")")
+        val showBeam: Boolean = run {
+            System.err.println("LLHUDEffectSpiral: triggerLocal (gSavedSettings ShowSelectionBeam) not yet implemented")
+            false
+        }
 
         val color: LLColor4 = LLColor4(mColor)
 
@@ -90,8 +96,8 @@ class LLHUDEffectSpiral(type: UByte) : LLHUDEffect(type) {
                     psb.setColor(color)
                     psb.setSourceObject(mSourceObject)
                     psb.setTargetObject(mTargetObject)
-                    TODO("APR: use JVM equivalent - psb.setOwnerUUID(gAgent.getID())")
-                    TODO("GPU: LLViewerPartSim.getInstance().addPartSource(psb)")
+                    System.err.println("LLHUDEffectSpiral: triggerLocal (psb.setOwnerUUID gAgent.getID) not yet implemented")
+                    System.err.println("LLHUDEffectSpiral: triggerLocal (LLViewerPartSim addPartSource psb) not yet implemented")
                     mPartSourcep = psb
                 }
             } else {
@@ -102,23 +108,24 @@ class LLHUDEffectSpiral(type: UByte) : LLHUDEffect(type) {
                         psb.setTargetObject(null)
                         psb.setColor(color)
                         psb.mLKGTargetPosGlobal = mPositionGlobal
-                        TODO("APR: use JVM equivalent - psb.setOwnerUUID(gAgent.getID())")
-                        TODO("GPU: LLViewerPartSim.getInstance().addPartSource(psb)")
+                        System.err.println("LLHUDEffectSpiral: triggerLocal (psb.setOwnerUUID gAgent.getID, beam to point) not yet implemented")
+                        System.err.println("LLHUDEffectSpiral: triggerLocal (LLViewerPartSim addPartSource psb, beam to point) not yet implemented")
                         mPartSourcep = psb
                     }
                 } else {
                     val pos: LLVector3 = if (mSourceObject != null) {
                         mSourceObject!!.getPositionAgent()
                     } else {
-                        TODO("APR: use JVM equivalent - gAgent.getPosAgentFromGlobal(mPositionGlobal)")
+                        System.err.println("LLHUDEffectSpiral: triggerLocal (gAgent.getPosAgentFromGlobal) not yet implemented")
+                        LLVector3()
                     }
                     val pss = LLViewerPartSourceSpiral(pos)
                     if (mSourceObject != null) {
                         pss.setSourceObject(mSourceObject)
                     }
                     pss.setColor(color)
-                    TODO("APR: use JVM equivalent - pss.setOwnerUUID(gAgent.getID())")
-                    TODO("GPU: LLViewerPartSim.getInstance().addPartSource(pss)")
+                    System.err.println("LLHUDEffectSpiral: triggerLocal (pss.setOwnerUUID gAgent.getID) not yet implemented")
+                    System.err.println("LLHUDEffectSpiral: triggerLocal (LLViewerPartSim addPartSource pss) not yet implemented")
                     mPartSourcep = pss
                 }
             }
@@ -144,7 +151,10 @@ class LLHUDEffectSpiral(type: UByte) : LLHUDEffect(type) {
     override fun render() {
         val time = mTimer.getElapsedTimeF32()
 
-        val showSelectionBeam: Boolean = TODO("APR: use JVM equivalent - cached gSavedSettings.getBOOL(\"ShowSelectionBeam\")")
+        val showSelectionBeam: Boolean = run {
+            System.err.println("LLHUDEffectSpiral: render (gSavedSettings ShowSelectionBeam cached) not yet implemented")
+            false
+        }
 
         val sourceObjectDead = mSourceObject != null && mSourceObject!!.isDead()
         val targetObjectDead = mTargetObject != null && mTargetObject!!.isDead()

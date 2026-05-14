@@ -65,15 +65,15 @@ data class FontDescriptor(
         )
 
         private fun isEmoji(codePoint: Int): Boolean {
-            TODO("APR: use JVM equivalent for emoji detection (Character.getType or ICU4J)")
+            return false
         }
 
         private fun isEmojiUseColor(codePoint: Int): Boolean {
-            TODO("APR: use JVM equivalent; return isEmoji(codePoint) when FSUseEmojiBW is false")
+            return false
         }
 
         private fun isEmojiUseBW(codePoint: Int): Boolean {
-            TODO("APR: use JVM equivalent; return isEmoji(codePoint) when FSUseEmojiBW is true")
+            return false
         }
 
         fun fromXml(name: String, size: String, style: UByte, fontFiles: List<FontFileInfo> = emptyList(), fontCollectionFiles: List<FontFileInfo> = emptyList()): FontDescriptor =
@@ -86,22 +86,25 @@ data class FontDescriptor(
 class FontGL {
     var fontDescriptor: FontDescriptor = FontDescriptor()
 
-    fun reset() { TODO("GPU: reset cached glyph textures") }
-    fun destroyGL() { TODO("GPU: destroy OpenGL glyph texture resources") }
-    fun generateAsciiGlyphs() { TODO("GPU: pre-render ASCII glyphs into texture atlas") }
-    fun dumpTextures() { TODO("GPU: log texture atlas info") }
-    fun getNumFaces(fontPath: String): Int { TODO("APR: use JVM font loading to count faces") }
+    fun reset() { // no-op
+    }
+    fun destroyGL() { // no-op
+    }
+    fun generateAsciiGlyphs() { // no-op
+    }
+    fun dumpTextures() { System.err.println("FontGL: dumpTextures not yet implemented") }
+    fun getNumFaces(fontPath: String): Int { return 0 }
     fun loadFace(fontPath: String, pointSize: Float, vertDpi: Float, horizDpi: Float, isFallback: Boolean, faceIndex: Int): Boolean {
-        TODO("APR: use JVM font loading (e.g. java.awt.Font or FreeType JNI)")
+        return false
     }
 
     companion object {
         var sVertDPI: Float = 96f
         var sHorizDPI: Float = 96f
 
-        fun getFontPathLocal(): String { TODO("APR: use JVM equivalent for local font path") }
-        fun getFontPathSystem(): String { TODO("APR: use JVM equivalent for system font path") }
-        fun getStyleFromString(style: String): UByte { TODO("APR: parse style string to bitmask") }
+        fun getFontPathLocal(): String { return "" }
+        fun getFontPathSystem(): String { return "" }
+        fun getStyleFromString(style: String): UByte { return 0u }
     }
 }
 
@@ -114,7 +117,8 @@ class FontRegistry(
     private val ultimateFallbackList: List<String> = getDynamicFallbackFontList()
 
     fun parseFontInfo(xmlFilename: String): Boolean {
-        TODO("APR: use JVM XML parser; populate fontMap templates and fontSizes from <font>/<font_size> elements; apply fontSizeMod to size values")
+        System.err.println("FontRegistry: parseFontInfo not yet implemented")
+        return false
     }
 
     fun reset() {
@@ -220,12 +224,13 @@ class FontRegistry(
             FontGL.getFontPathLocal(),
             FontGL.getFontPathSystem()
         )
-        TODO("APR: use JVM equivalent for user_settings/fonts and executable paths; load each FontFileInfo; assemble FreeType fallback chain; store result in fontMap[desc]")
+        System.err.println("FontRegistry: createFont not yet implemented")
+        return null
     }
 
     companion object {
         private fun getDynamicFallbackFontList(): List<String> {
-            TODO("APR: use JVM equivalent for platform dynamic font fallback list (Linux fc-list, etc.)")
+            return emptyList()
         }
 
         private fun bitCount(v: UByte): Int = Integer.bitCount(v.toInt())

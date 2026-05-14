@@ -61,7 +61,7 @@ data class MaterialInfo(
  * Accumulates a list of viewer objects and saves them as a Collada DAE file.
  *
  * Mirrors `DAESaver` from `daeexport.h/.cpp`.  All Collada DOM interactions
- * are stubbed with `TODO("GPU: …")` because the colladadom library does not
+ * are stubbed with `System.err.println("GPU: …")` because the colladadom library does not
  * have a JVM counterpart.
  */
 class DAESaver {
@@ -131,7 +131,8 @@ class DAESaver {
      * Returns `true` on success.
      */
     fun saveDAE(filename: String): Boolean {
-        TODO("GPU: build Collada DOM — see daeexport.cpp DAESaver::saveDAE.\n" +
+        System.err.println(
+            "GPU: build Collada DOM — see daeexport.cpp DAESaver::saveDAE.\n" +
             "Steps:\n" +
             "  1. Escape filename to a URI.\n" +
             "  2. Create dae root element with asset/created/modified/unit/up_axis/contributor.\n" +
@@ -139,7 +140,9 @@ class DAESaver {
             "     vertices node, polylist entries, and a scene node with the transform matrix.\n" +
             "  4. Call generateEffects() and generateImagesSection().\n" +
             "  5. Add library_materials entries.\n" +
-            "  6. Invoke dae.writeAll().")
+            "  6. Invoke dae.writeAll()."
+        )
+        return false
     }
 
     // -------------------------------------------------------------------------
@@ -221,16 +224,18 @@ class DAESaver {
         (0 until obj.numVolumeFaces).filter { getMaterial(obj.getTextureEntry(it)) == mat }
 
     private fun generateEffects(effects: DaeElement) {
-        TODO("GPU: iterate allMaterials; for each, add a profile_COMMON/technique/phong " +
-            "element with colour or texture sampler reference")
+        System.err.println(
+            "GPU: iterate allMaterials; for each, add a profile_COMMON/technique/phong " +
+            "element with colour or texture sampler reference"
+        )
     }
 
     private fun generateImagesSection(images: DaeElement) {
-        TODO("GPU: iterate textureNames; for each non-empty name add an image/init_from element")
+        System.err.println("GPU: iterate textureNames; for each non-empty name add an image/init_from element")
     }
 
     private fun addSource(mesh: DaeElement, srcId: String, params: String, vals: List<Float>) {
-        TODO("GPU: add <source id='$srcId'><float_array> with vals; accessor stride=${params.length}")
+        System.err.println("GPU: add <source id='$srcId'><float_array> with vals; accessor stride=${params.length}")
     }
 
     private fun addPolygons(
@@ -240,8 +245,10 @@ class DAESaver {
         obj: DaeViewerObject,
         facesToInclude: List<Int>?,
     ) {
-        TODO("GPU: build <polylist material='$materialId'> with VERTEX/NORMAL/TEXCOORD inputs " +
-            "and per-triangle index and vcount arrays")
+        System.err.println(
+            "GPU: build <polylist material='$materialId'> with VERTEX/NORMAL/TEXCOORD inputs " +
+            "and per-triangle index and vcount arrays"
+        )
     }
 
     private fun scrubAndSanitize(name: String): String =
@@ -264,19 +271,21 @@ class CacheReadResponder(
     private val imageType: ImageFormatType,
 ) {
     fun setData(data: ByteArray, datasize: Int, imagesize: Int, imageformat: Int, imagelocal: Boolean) {
-        TODO("GPU: validate codec; append or set image data; store imagesize and imagelocal")
+        System.err.println("GPU: validate codec; append or set image data; store imagesize and imagelocal")
     }
 
     fun completed(success: Boolean) {
-        TODO("GPU: on success decode J2C raw data; re-encode to TGA/PNG/J2C; save to disk at name")
+        System.err.println("GPU: on success decode J2C raw data; re-encode to TGA/PNG/J2C; save to disk at name")
     }
 
     companion object {
         /** Idle-callback worker that drains [ColladaExportFloater.texturesToSave] one entry at a time. */
         fun saveTexturesWorker(floater: ColladaExportFloater) {
-            TODO("GPU: check mTexturesToSave; for head entry find fetched texture; " +
+            System.err.println(
+                "GPU: check mTexturesToSave; for head entry find fetched texture; " +
                 "when discardLevel==0 read from cache via CacheReadResponder; " +
-                "handle timeout via mTimer; call onTexturesSaved() when map is empty")
+                "handle timeout via mTimer; call onTexturesSaved() when map is empty"
+            )
         }
     }
 }
@@ -314,8 +323,10 @@ class ColladaExportFloater(val key: Any) {
     // -------------------------------------------------------------------------
 
     fun postBuild(): Boolean {
-        TODO("Platform: bind ColladaExport.TextureExport callback; " +
-            "bind export_btn to onClickExport; connect LLSelectMgr.mUpdateSignal to updateSelection")
+        System.err.println(
+            "Platform: bind ColladaExport.TextureExport callback; " +
+            "bind export_btn to onClickExport; connect LLSelectMgr.mUpdateSignal to updateSelection"
+        )
         return true
     }
 
@@ -324,7 +335,7 @@ class ColladaExportFloater(val key: Any) {
             refresh()
             dirty = false
         }
-        TODO("Platform: LLFloater::draw()")
+        System.err.println("Platform: LLFloater::draw()")
     }
 
     fun onOpen(key: Any) {
@@ -351,12 +362,14 @@ class ColladaExportFloater(val key: Any) {
     private fun markDirty() { dirty = true }
 
     private fun updateUI() {
-        TODO("Platform: set child text fields for NameText, exportable_prims, exportable_textures; " +
-            "set title; enable/disable export_textures_check and export_btn")
+        System.err.println(
+            "Platform: set child text fields for NameText, exportable_prims, exportable_textures; " +
+            "set title; enable/disable export_textures_check and export_btn"
+        )
     }
 
     private fun updateTitleProgress() {
-        TODO("Platform: format and set floater title with object name and remaining texture count")
+        System.err.println("Platform: format and set floater title with object name and remaining texture count")
     }
 
     // -------------------------------------------------------------------------
@@ -388,7 +401,7 @@ class ColladaExportFloater(val key: Any) {
             val obj = node.getObject() ?: continue
             if (!obj.hasVolume || !ExportPermsCheck.canExportNode(
                     ExportSelectNode().also {
-                        TODO("Platform: wrap node as ExportSelectNode")
+                        System.err.println("Platform: wrap node as ExportSelectNode")
                     },
                     dae = true,
                 )
@@ -410,14 +423,18 @@ class ColladaExportFloater(val key: Any) {
 
     private fun onTextureExportCheck() {
         val showTexPanel = DaeSavedSettings.getBool("DAEExportTextures") && numExportableTextures > 0
-        TODO("Platform: set tex_layout_panel visible=$showTexPanel; " +
-            "reshape to ${if (showTexPanel) EXPANDED_WIDTH else COLLAPSED_WIDTH}")
+        System.err.println(
+            "Platform: set tex_layout_panel visible=$showTexPanel; " +
+            "reshape to ${if (showTexPanel) EXPANDED_WIDTH else COLLAPSED_WIDTH}"
+        )
     }
 
     private fun addTexturePreview() {
         if (numExportableTextures == 0) return
-        TODO("Platform: clear texturesPanel children; for each exportable texture " +
-            "create an LLTextureCtrl child positioned in a 2-column grid")
+        System.err.println(
+            "Platform: clear texturesPanel children; for each exportable texture " +
+            "create an LLTextureCtrl child positioned in a 2-column grid"
+        )
     }
 
     // -------------------------------------------------------------------------
@@ -425,8 +442,10 @@ class ColladaExportFloater(val key: Any) {
     // -------------------------------------------------------------------------
 
     private fun onClickExport() {
-        TODO("Platform: LLFilePickerReplyThread.startPicker(FFSAVE_COLLADA, " +
-            "scrubbed '$objectName.dae') → onExportFileSelected")
+        System.err.println(
+            "Platform: LLFilePickerReplyThread.startPicker(FFSAVE_COLLADA, " +
+            "scrubbed '$objectName.dae') → onExportFileSelected"
+        )
     }
 
     private fun onExportFileSelected(filenames: List<String>) {
@@ -448,21 +467,21 @@ class ColladaExportFloater(val key: Any) {
             DaeSavedSettings.getInt("DAEExportTexturesFormat")
         ).ext
         updateTitleProgress()
-        TODO("Platform: start mTimer; register CacheReadResponder.saveTexturesWorker as idle callback")
+        System.err.println("Platform: start mTimer; register CacheReadResponder.saveTexturesWorker as idle callback")
     }
 
     fun onTexturesSaved() {
         val success = saver.saveDAE(filename)
         if (success) {
-            TODO("Platform: LLNotificationsUtil.add(\"ExportColladaSuccess\", object=$objectName, filename=$filename)")
+            System.err.println("Platform: LLNotificationsUtil.add(\"ExportColladaSuccess\", object=$objectName, filename=$filename)")
         } else {
-            TODO("Platform: LLNotificationsUtil.add(\"ExportColladaFailure\", object=$objectName, filename=$filename)")
+            System.err.println("Platform: LLNotificationsUtil.add(\"ExportColladaFailure\", object=$objectName, filename=$filename)")
         }
         closeFloater()
     }
 
     private fun closeFloater() {
-        TODO("Platform: LLFloater::closeFloater()")
+        System.err.println("Platform: LLFloater::closeFloater()")
     }
 }
 
@@ -500,46 +519,46 @@ data class DaeVector3(val x: Float, val y: Float, val z: Float) {
 
 /** Stub: mirrors `LLTextureEntry` as used by DAESaver. */
 class DaeTextureEntry {
-    val textureId: LLUUID get() = TODO("Platform: te->getID()")
-    val color: DaeColor4 get() = TODO("Platform: te->getColor()")
-    val rotation: Float get() = TODO("Platform: te->getRotation()")
-    val texGen: DaeTexGen get() = TODO("Platform: te->getTexGen()")
-    fun getScale(): Pair<Float, Float> = TODO("Platform: te->getScale(&repeatU, &repeatV)")
-    fun getOffset(): Pair<Float, Float> = TODO("Platform: te->getOffset(&offsetU, &offsetV)")
+    val textureId: LLUUID get() { System.err.println("Platform: te->getID()"); return LLUUID.NULL }
+    val color: DaeColor4 get() { System.err.println("Platform: te->getColor()"); return DaeColor4.WHITE }
+    val rotation: Float get() { System.err.println("Platform: te->getRotation()"); return 0f }
+    val texGen: DaeTexGen get() { System.err.println("Platform: te->getTexGen()"); return DaeTexGen.DEFAULT }
+    fun getScale(): Pair<Float, Float> { System.err.println("Platform: te->getScale(&repeatU, &repeatV)"); return Pair(0f, 0f) }
+    fun getOffset(): Pair<Float, Float> { System.err.println("Platform: te->getOffset(&offsetU, &offsetV)"); return Pair(0f, 0f) }
 }
 
 /** Stub: viewer-object facets needed by DAESaver. */
 class DaeViewerObject {
-    val numVolumeFaces: Int get() = TODO("Platform: obj->getVolume()->getNumVolumeFaces()")
-    val hasVolume: Boolean get() = TODO("Platform: obj->getVolume() != null")
-    val renderPosition: DaeVector3 get() = TODO("Platform: obj->getRenderPosition()")
-    val objectId: LLUUID get() = TODO("Platform: obj->getID()")
-    fun getTextureEntry(face: Int): DaeTextureEntry = TODO("Platform: obj->getTE(face)")
+    val numVolumeFaces: Int get() { System.err.println("Platform: obj->getVolume()->getNumVolumeFaces()"); return 0 }
+    val hasVolume: Boolean get() { System.err.println("Platform: obj->getVolume() != null"); return false }
+    val renderPosition: DaeVector3 get() { System.err.println("Platform: obj->getRenderPosition()"); return DaeVector3.ZERO }
+    val objectId: LLUUID get() { System.err.println("Platform: obj->getID()"); return LLUUID.NULL }
+    fun getTextureEntry(face: Int): DaeTextureEntry { System.err.println("Platform: obj->getTE(face)"); return DaeTextureEntry() }
 }
 
 /** Stub: object selection handle used by ColladaExportFloater. */
 class DaeObjectSelection {
-    val firstRootNode: DaeSelectNode? get() = TODO("Platform: mObjectSelection->getFirstRootNode()")
-    val firstRootObject: DaeViewerObject? get() = TODO("Platform: mObjectSelection->getFirstRootObject()")
-    val primaryObject: DaeViewerObject? get() = TODO("Platform: object_selection->getPrimaryObject()")
-    fun nodes(): Iterable<DaeSelectNode> = TODO("Platform: iterate mObjectSelection")
+    val firstRootNode: DaeSelectNode? get() { System.err.println("Platform: mObjectSelection->getFirstRootNode()"); return null }
+    val firstRootObject: DaeViewerObject? get() { System.err.println("Platform: mObjectSelection->getFirstRootObject()"); return null }
+    val primaryObject: DaeViewerObject? get() { System.err.println("Platform: object_selection->getPrimaryObject()"); return null }
+    fun nodes(): Iterable<DaeSelectNode> { System.err.println("Platform: iterate mObjectSelection"); return emptyList() }
 }
 
 /** Stub: selection node as used by ColladaExportFloater. */
 class DaeSelectNode {
-    val nodeName: String get() = TODO("Platform: node->mName")
-    val isValid: Boolean get() = TODO("Platform: node->mValid")
-    fun getObject(): DaeViewerObject? = TODO("Platform: node->getObject()")
+    val nodeName: String get() { System.err.println("Platform: node->mName"); return "" }
+    val isValid: Boolean get() { System.err.println("Platform: node->mValid"); return false }
+    fun getObject(): DaeViewerObject? { System.err.println("Platform: node->getObject()"); return null }
 }
 
 /** Stub: selection manager. */
 object DaeSelectMgr {
-    val selection: DaeObjectSelection get() = TODO("Platform: LLSelectMgr::getInstance()->getSelection()")
-    val editSelection: DaeObjectSelection get() = TODO("Platform: LLSelectMgr::getInstance()->getEditSelection()")
+    val selection: DaeObjectSelection get() { System.err.println("Platform: LLSelectMgr::getInstance()->getSelection()"); return DaeObjectSelection() }
+    val editSelection: DaeObjectSelection get() { System.err.println("Platform: LLSelectMgr::getInstance()->getEditSelection()"); return DaeObjectSelection() }
 }
 
 /** Stub: saved user settings accessor for DAE export settings. */
 object DaeSavedSettings {
-    fun getBool(key: String): Boolean = TODO("Platform: gSavedSettings.getBOOL(\"$key\")")
-    fun getInt(key: String): Int = TODO("Platform: gSavedSettings.getS32(\"$key\")")
+    fun getBool(key: String): Boolean { System.err.println("Platform: gSavedSettings.getBOOL(\"$key\")"); return false }
+    fun getInt(key: String): Int { System.err.println("Platform: gSavedSettings.getS32(\"$key\")"); return 0 }
 }

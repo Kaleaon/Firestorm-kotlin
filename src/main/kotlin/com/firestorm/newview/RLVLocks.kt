@@ -37,11 +37,13 @@ object RlvAttachPtLookup {
     private val attachPtLookupMap: MutableMap<String, Int> = mutableMapOf()
 
     fun initLookupTable() {
-        TODO("APR: use JVM equivalent — populate attachPtLookupMap from avatar attachment points, including 'root' alias for 'avatar center'")
+        System.err.println("APR: use JVM equivalent — populate attachPtLookupMap from avatar attachment points, including 'root' alias for 'avatar center'")
     }
 
-    fun getAttachPoint(idxAttachPt: Int): LLViewerJointAttachment? =
-        TODO("APR: use JVM equivalent — look up attachment point by index on agent avatar")
+    fun getAttachPoint(idxAttachPt: Int): LLViewerJointAttachment? {
+        System.err.println("APR: use JVM equivalent — look up attachment point by index on agent avatar")
+        return null
+    }
 
     fun getAttachPoint(text: String): LLViewerJointAttachment? =
         getAttachPoint(getAttachPointIndex(text))
@@ -54,11 +56,15 @@ object RlvAttachPtLookup {
         return attachPtLookupMap[lower] ?: 0
     }
 
-    fun getAttachPointIndex(pAttachObj: Any?): Int =
-        TODO("APR: use JVM equivalent — extract attachment state index from viewer object")
+    fun getAttachPointIndex(pAttachObj: Any?): Int {
+        System.err.println("APR: use JVM equivalent — extract attachment state index from viewer object")
+        return 0
+    }
 
-    fun getAttachPointIndex(pAttachPt: LLViewerJointAttachment?): Int =
-        TODO("APR: use JVM equivalent — reverse-lookup attachment point index from agent avatar map")
+    fun getAttachPointIndex(pAttachPt: LLViewerJointAttachment?): Int {
+        System.err.println("APR: use JVM equivalent — reverse-lookup attachment point index from agent avatar map")
+        return 0
+    }
 
     fun getAttachPointIndex(folder: LLInventoryCategory?): Int {
         folder ?: return 0
@@ -123,7 +129,10 @@ object RlvAttachPtLookup {
 
 // Extension to check modifiability
 private val LLInventoryItem.isModifiable: Boolean
-    get() = TODO("APR: use JVM equivalent — check if agent has modify permission on item")
+    get() {
+        System.err.println("APR: use JVM equivalent — check if agent has modify permission on item")
+        return false
+    }
 
 // ============================================================================
 // RlvAttachmentLocks
@@ -178,7 +187,8 @@ class RlvAttachmentLocks {
 
     fun hasLockedAttachment(attachPt: LLViewerJointAttachment?): Boolean {
         attachPt ?: return false
-        TODO("APR: use JVM equivalent — iterate attached objects on attachment point and check isLockedAttachment")
+        System.err.println("APR: use JVM equivalent — iterate attached objects on attachment point and check isLockedAttachment")
+        return false
     }
 
     fun hasLockedAttachmentPoint(eLock: ERlvLockMask): Boolean =
@@ -188,12 +198,14 @@ class RlvAttachmentLocks {
 
     fun isLockedAttachment(attachObj: Any?): Boolean {
         attachObj ?: return false
-        TODO("APR: use JVM equivalent — check attachObjRem map, attachment point RLV_LOCK_REMOVE, and RlvFolderLocks")
+        System.err.println("APR: use JVM equivalent — check attachObjRem map, attachment point RLV_LOCK_REMOVE, and RlvFolderLocks")
+        return false
     }
 
     fun isLockedAttachmentExcept(pObj: Any?, idRlvObj: UUID): Boolean {
         if (idRlvObj == UUID(0, 0)) return isLockedAttachment(pObj)
-        TODO("APR: use JVM equivalent — check locks on object excluding those owned by idRlvObj")
+        System.err.println("APR: use JVM equivalent — check locks on object excluding those owned by idRlvObj")
+        return false
     }
 
     fun isLockedAttachmentPoint(idxAttachPt: Int, eLock: ERlvLockMask): Boolean =
@@ -206,7 +218,8 @@ class RlvAttachmentLocks {
     }
 
     fun canAttach(): Boolean {
-        TODO("APR: use JVM equivalent — return true if any attachment point is not RLV_LOCK_ADD locked")
+        System.err.println("APR: use JVM equivalent — return true if any attachment point is not RLV_LOCK_ADD locked")
+        return false
     }
 
     fun canAttach(item: LLInventoryItem?, ppAttachPtOut: Array<LLViewerJointAttachment?>? = null): ERlvWearMask {
@@ -226,21 +239,24 @@ class RlvAttachmentLocks {
     }
 
     fun canDetach(item: LLInventoryItem?): Boolean {
-        TODO("APR: use JVM equivalent — find worn attachment matching item UUID and check isLockedAttachment")
+        System.err.println("APR: use JVM equivalent — find worn attachment matching item UUID and check isLockedAttachment")
+        return false
     }
 
     fun canDetach(attachPt: LLViewerJointAttachment?, detachAll: Boolean = false): Boolean {
         attachPt ?: return false
-        TODO("APR: use JVM equivalent — iterate attached objects; with detachAll=false return true if any unlocked, with detachAll=true return true only if all unlocked")
+        System.err.println("APR: use JVM equivalent — iterate attached objects; with detachAll=false return true if any unlocked, with detachAll=true return true only if all unlocked")
+        return false
     }
 
     fun updateLockedHUD() {
-        TODO("APR: use JVM equivalent — scan HUD attachment points for locked attachments and update hasLockedHUD; disable wireframe if locked")
+        System.err.println("APR: use JVM equivalent — scan HUD attachment points for locked attachments and update hasLockedHUD; disable wireframe if locked")
     }
 
     fun verifyAttachmentLocks(): Boolean {
         val toRemove = attachObjRem.keys.filter { id ->
-            TODO("APR: use JVM equivalent — return true if object no longer exists or is not attached")
+            System.err.println("APR: use JVM equivalent — return true if object no longer exists or is not attached")
+            false
         }
         toRemove.forEach { attachObjRem.remove(it) }
         return toRemove.isEmpty()
@@ -284,7 +300,8 @@ object RlvAttachmentLockWatchdog {
     fun onAttach(attachObj: Any, attachPt: LLViewerJointAttachment?) {
         val idxAttachPt = RlvAttachPtLookup.getAttachPointIndex(attachObj)
         if (idxAttachPt == 0) return
-        val idAttachItem: UUID = TODO("APR: use JVM equivalent — get attachment item UUID from attachObj")
+        System.err.println("APR: use JVM equivalent — get attachment item UUID from attachObj")
+        val idAttachItem: UUID = UUID(0, 0)
 
         val pendingList = pendingAttach[idxAttachPt]
         if (pendingList != null) {
@@ -308,12 +325,12 @@ object RlvAttachmentLockWatchdog {
                     if (prevAttachments.isEmpty()) {
                         detach(idxAttachPt)
                     } else {
-                        TODO("APR: use JVM equivalent — detach current attachments not in prevAttachments, schedule reattach for remaining")
+                        System.err.println("APR: use JVM equivalent — detach current attachments not in prevAttachments, schedule reattach for remaining")
                     }
                     attachAllowed = false
                 }
             } else if (wearInfo.wearAction == ERlvWearMask.RLV_WEAR_REPLACE) {
-                TODO("APR: use JVM equivalent — handle replace: detach unlocked others, or detach new attachment if a locked one would be displaced")
+                System.err.println("APR: use JVM equivalent — handle replace: detach unlocked others, or detach new attachment if a locked one would be displaced")
             }
         }
         RlvBehaviourNotifyHandler.onAttach(attachPt, allowed = attachAllowed)
@@ -322,9 +339,11 @@ object RlvAttachmentLockWatchdog {
     fun onDetach(attachObj: Any, attachPt: LLViewerJointAttachment?) {
         val idxAttachPt = RlvAttachPtLookup.getAttachPointIndex(attachPt)
         if (idxAttachPt == 0) return
-        val idAttachItem: UUID = TODO("APR: use JVM equivalent — get attachment item UUID from attachObj")
+        System.err.println("APR: use JVM equivalent — get attachment item UUID from attachObj")
+        val idAttachItem: UUID = UUID(0, 0)
 
-        if (TODO<Boolean>("APR: use JVM equivalent — check FSLSLBridge.canDetach")) return
+        System.err.println("APR: use JVM equivalent — check FSLSLBridge.canDetach")
+        if (false) return
 
         val itDetach = pendingDetach.indexOf(idAttachItem)
         if (itDetach >= 0) {
@@ -350,7 +369,7 @@ object RlvAttachmentLockWatchdog {
         for ((idxPt, list) in pendingAttach) {
             for (info in list) {
                 if (!info.assetSaved && idItem == info.idItem) {
-                    TODO("APR: use JVM equivalent — request attachment reattach via LLAttachmentsMgr and update tsAttach")
+                    System.err.println("APR: use JVM equivalent — request attachment reattach via LLAttachmentsMgr and update tsAttach")
                 }
             }
         }
@@ -369,7 +388,7 @@ object RlvAttachmentLockWatchdog {
                 val doAttach = (!info.assetSaved && info.tsDetach + 15 < tsCurrent) ||
                     (info.assetSaved && info.tsAttach + 30 < tsCurrent)
                 if (doAttach) {
-                    TODO("APR: use JVM equivalent — request attachment reattach via LLAttachmentsMgr and update tsAttach")
+                    System.err.println("APR: use JVM equivalent — request attachment reattach via LLAttachmentsMgr and update tsAttach")
                 }
             }
         }
@@ -384,11 +403,11 @@ object RlvAttachmentLockWatchdog {
         if (idItem == UUID(0, 0) || !gRlvAttachmentLocks.hasLockedAttachmentPoint(ERlvLockMask.RLV_LOCK_ANY)) return
 
         val infoWear = RlvWearInfo(idItem, wearAction)
-        TODO("APR: use JVM equivalent — populate infoWear.attachPts with current contents of all RLV_LOCK_ADD locked attachment points, then store in pendingWear and start timer")
+        System.err.println("APR: use JVM equivalent — populate infoWear.attachPts with current contents of all RLV_LOCK_ADD locked attachment points, then store in pendingWear and start timer")
     }
 
     private fun detach(attachObj: Any) {
-        TODO("APR: use JVM equivalent — send ObjectDetach message for attachObj and add its item ID to pendingDetach")
+        System.err.println("APR: use JVM equivalent — send ObjectDetach message for attachObj and add its item ID to pendingDetach")
     }
 
     private fun detach(idxAttachPt: Int) {
@@ -397,11 +416,11 @@ object RlvAttachmentLockWatchdog {
 
     private fun detach(idxAttachPt: Int, idsAttachObjExcept: List<UUID>) {
         val attachPt = RlvAttachPtLookup.getAttachPoint(idxAttachPt) ?: return
-        TODO("APR: use JVM equivalent — send ObjectDetach for all objects on attachPt that are not in idsAttachObjExcept, add their item IDs to pendingDetach")
+        System.err.println("APR: use JVM equivalent — send ObjectDetach for all objects on attachPt that are not in idsAttachObjExcept, add their item IDs to pendingDetach")
     }
 
     private fun startTimer() {
-        TODO("APR: use JVM equivalent — schedule periodic onTimer callback (10-second interval) if not already running")
+        System.err.println("APR: use JVM equivalent — schedule periodic onTimer callback (10-second interval) if not already running")
     }
 
     private fun currentTimeSeconds(): Double = System.currentTimeMillis() / 1000.0
@@ -433,7 +452,8 @@ class RlvWearableLocks {
     }
 
     fun hasLockedWearable(eType: LLWearableType): Boolean {
-        TODO("APR: use JVM equivalent — return true if any worn wearable of this type is isLockedWearable")
+        System.err.println("APR: use JVM equivalent — return true if any worn wearable of this type is isLockedWearable")
+        return false
     }
 
     fun hasLockedWearableType(eLock: ERlvLockMask): Boolean =
@@ -442,12 +462,14 @@ class RlvWearableLocks {
 
     fun isLockedWearable(pWearable: Any?): Boolean {
         pWearable ?: return false
-        TODO("APR: use JVM equivalent — check wearable type RLV_LOCK_REMOVE lock and RlvFolderLocks")
+        System.err.println("APR: use JVM equivalent — check wearable type RLV_LOCK_REMOVE lock and RlvFolderLocks")
+        return false
     }
 
     fun isLockedWearableExcept(pWearable: Any?, idRlvObj: UUID): Boolean {
         if (idRlvObj == UUID(0, 0)) return isLockedWearable(pWearable)
-        TODO("APR: use JVM equivalent — check wearable type lock excluding locks owned by idRlvObj")
+        System.err.println("APR: use JVM equivalent — check wearable type lock excluding locks owned by idRlvObj")
+        return false
     }
 
     fun canWear(item: LLViewerInventoryItem): ERlvWearMask {

@@ -53,16 +53,18 @@ enum class VCChannelState {
  * references within this file until that package is ported.
  */
 class VCVoiceChannel {
-    val sessionId: LLUUID get() = TODO("Platform: voice_channel->getSessionID()")
-    val sessionName: String get() = TODO("Platform: voice_channel->getSessionName()")
-    val state: VCChannelState get() = TODO("Platform: voice_channel->getState()")
+    val sessionId: LLUUID get() = LLUUID.NULL
+    val sessionName: String get() = ""
+    val state: VCChannelState get() = VCChannelState.NO_CHANNEL_INFO
 
-    fun setStateChangedCallback(cb: (VCChannelState, VCChannelState) -> Unit): Any =
-        TODO("Platform: channel->setStateChangedCallback(...)")
+    fun setStateChangedCallback(cb: (VCChannelState, VCChannelState) -> Unit): Any {
+        System.err.println("Platform: channel->setStateChangedCallback(...)")
+        return Unit
+    }
 
     companion object {
         val currentChannel: VCVoiceChannel?
-            get() = TODO("Platform: LLVoiceChannel::getCurrentVoiceChannel()")
+            get() = null
     }
 }
 
@@ -130,7 +132,7 @@ class FSFloaterVoiceControls(val key: Any) : VoiceParticipantObserver {
             mActionDelay = leftRemoveDelaySecs,
         )
         VoiceClient.addObserver(this)
-        TODO("Platform: LLTransientFloaterMgr.addControlView(this); " +
+        System.err.println("Platform: LLTransientFloaterMgr.addControlView(this); " +
             "LLAvatarNameCache.addUseDisplayNamesCallback { updateAgentModeratorState() }; " +
             "LLViewerDisplayName.addNameChangedCallback { updateAgentModeratorState() }")
     }
@@ -139,7 +141,7 @@ class FSFloaterVoiceControls(val key: Any) : VoiceParticipantObserver {
         resetVoiceRemoveTimers()
         speakerDelayRemover = null
         participants = null
-        TODO("Platform: mAvatarListRefreshConnection.disconnect(); " +
+        System.err.println("Platform: mAvatarListRefreshConnection.disconnect(); " +
             "stateChangeConnection disconnect; " +
             "VoiceClient.removeObserver(this); " +
             "LLTransientFloaterMgr.removeControlView(this)")
@@ -147,11 +149,11 @@ class FSFloaterVoiceControls(val key: Any) : VoiceParticipantObserver {
 
     fun postBuild(): Boolean {
         avatarListWidget = getChild("speakers_list")
-        TODO("Platform: avatarListWidget.setRefreshCompleteCallback { onAvatarListRefreshed() }")
+        System.err.println("Platform: avatarListWidget.setRefreshCompleteCallback { onAvatarListRefreshed() }")
 
         setChildAction("leave_call_btn") { leaveCall() }
 
-        TODO("Platform: volumeSlider = findChild('volume_slider'); " +
+        System.err.println("Platform: volumeSlider = findChild('volume_slider'); " +
             "muteButton = findChild('mute_btn'); " +
             "rlvRestrictedText = getChild('rlv_restricted'); " +
             "rlvRestrictedText.setText(RlvStrings.getString('blocked_nearby')); " +
@@ -162,27 +164,27 @@ class FSFloaterVoiceControls(val key: Any) : VoiceParticipantObserver {
 
         initAgentData()
         connectToChannel(VCVoiceChannel.currentChannel)
-        TODO("Platform: updateTransparency(TT_ACTIVE)")
+        System.err.println("Platform: updateTransparency(TT_ACTIVE)")
         updateSession()
         return true
     }
 
     fun onOpen(key: Any) {
-        TODO("Platform: LLFirstUse::speak(false)")
+        System.err.println("Platform: LLFirstUse::speak(false)")
     }
 
     fun draw() {
-        val agentUuid = TODO("Platform: gAgentID as java.util.UUID") as UUID
+        val agentUuid: UUID = NULL_UUID
         val isModeratorMuted = VoiceClient.getIsModeratorMuted(LLUUID(agentUuid))
         if (isModeratorMutedVoice != isModeratorMuted) {
             setModeratorMutedVoice(isModeratorMuted)
         }
         participants?.update()
-        TODO("Platform: LLFloater::draw()")
+        System.err.println("Platform: LLFloater::draw()")
     }
 
     fun setFocus(focused: Boolean) {
-        TODO("Platform: LLFloater::setFocus(focused); updateTransparency(TT_ACTIVE)")
+        System.err.println("Platform: LLFloater::setFocus(focused); updateTransparency(TT_ACTIVE)")
     }
 
     // -------------------------------------------------------------------------
@@ -203,7 +205,7 @@ class FSFloaterVoiceControls(val key: Any) : VoiceParticipantObserver {
 
     private fun leaveCall() {
         val channel = VCVoiceChannel.currentChannel ?: return
-        TODO("Platform: gIMMgr.endCall(channel.sessionId)")
+        System.err.println("Platform: gIMMgr.endCall(channel.sessionId)")
     }
 
     private fun updateSession() {
@@ -221,14 +223,14 @@ class FSFloaterVoiceControls(val key: Any) : VoiceParticipantObserver {
         val imSession = IMMgr.getSession(sessionId)
 
         if (imSession != null) {
-            TODO("Platform: speakerManager = LLIMModel.getSpeakerManager(sessionId)")
+            System.err.println("Platform: speakerManager = LLIMModel.getSpeakerManager(sessionId)")
             voiceType = when (imSession.type) {
                 IMType.NOTHING_SPECIAL,
                 IMType.SESSION_P2P_INVITE -> VoiceControlType.PEER_TO_PEER
                 IMType.SESSION_CONFERENCE_START,
                 IMType.SESSION_GROUP_START,
                 IMType.SESSION_INVITE -> {
-                    TODO("Platform: if gAgent.isInGroup(sessionId) GROUP_CHAT else AD_HOC_CHAT")
+                    System.err.println("Platform: if gAgent.isInGroup(sessionId) GROUP_CHAT else AD_HOC_CHAT")
                     VoiceControlType.GROUP_CHAT
                 }
                 else -> VoiceControlType.GROUP_CHAT
@@ -251,7 +253,7 @@ class FSFloaterVoiceControls(val key: Any) : VoiceParticipantObserver {
         if (!isLocalChat && voiceChannel != null &&
             voiceChannel.state == VCChannelState.CONNECTED
         ) {
-            TODO("Platform: find FSFloaterIM for sessionId; if not visible call setVisible(true)")
+            System.err.println("Platform: find FSFloaterIM for sessionId; if not visible call setVisible(true)")
         }
 
         avatarListWidget?.setRlvCheckShowNames(isLocalChat)
@@ -274,7 +276,7 @@ class FSFloaterVoiceControls(val key: Any) : VoiceParticipantObserver {
         }
 
         if (speakerManager == LocalSpeakerMgr) {
-            TODO("Platform: avatarListWidget.setNoItemsCommentText(getString('no_one_near'))")
+            System.err.println("Platform: avatarListWidget.setNoItemsCommentText(getString('no_one_near'))")
         }
 
         initParticipantsVoiceState = true
@@ -294,7 +296,7 @@ class FSFloaterVoiceControls(val key: Any) : VoiceParticipantObserver {
     // -------------------------------------------------------------------------
 
     private fun onParticipantSelected() {
-        TODO("Platform: get selected UUIDs from avatarListWidget; " +
+        System.err.println("Platform: get selected UUIDs from avatarListWidget; " +
             "if exactly one: enable volumeSlider and muteButton, " +
             "set muteButton toggleState from VoiceClient.getOnMuteList(id), " +
             "set volumeSlider value from VoiceClient.getUserVolume(id); " +
@@ -303,12 +305,12 @@ class FSFloaterVoiceControls(val key: Any) : VoiceParticipantObserver {
 
     private fun onVolumeChanged() {
         if (selectedParticipant == NULL_UUID) return
-        TODO("Platform: VoiceClient.setUserVolume(LLUUID(selectedParticipant), volumeSlider.getValueF32())")
+        System.err.println("Platform: VoiceClient.setUserVolume(LLUUID(selectedParticipant), volumeSlider.getValueF32())")
     }
 
     private fun onMuteChanged() {
         if (selectedParticipant == NULL_UUID) return
-        TODO("Platform: get AvatarListItem for selectedParticipant; " +
+        System.err.println("Platform: get AvatarListItem for selectedParticipant; " +
             "build LLMute; add or remove from LLMuteList with flagVoiceChat")
     }
 
@@ -322,7 +324,7 @@ class FSFloaterVoiceControls(val key: Any) : VoiceParticipantObserver {
             val sessionId = voiceChannel.sessionId
             val imSession = IMMgr.getSession(sessionId)
             if (imSession != null) {
-                TODO("Platform: LLAvatarNameCache.get(imSession.targetId) { av_name -> " +
+                System.err.println("Platform: LLAvatarNameCache.get(imSession.targetId) { av_name -> " +
                     "setTitle(getString('title_peer_2_peer').replace('[NAME]', av_name.completeName)) }")
                 return
             }
@@ -348,7 +350,7 @@ class FSFloaterVoiceControls(val key: Any) : VoiceParticipantObserver {
     // -------------------------------------------------------------------------
 
     private fun initAgentData() {
-        TODO("Platform: mAgentPanel = getChild('my_panel'); " +
+        System.err.println("Platform: mAgentPanel = getChild('my_panel'); " +
             "set user_icon value to gAgentID; " +
             "LLAvatarNameCache.get(gAgentID) { av_name -> set user_text to av_name.displayName }; " +
             "mSpeakingIndicator = mAgentPanel.getChild('speaking_indicator'); " +
@@ -358,26 +360,26 @@ class FSFloaterVoiceControls(val key: Any) : VoiceParticipantObserver {
     private fun setModeratorMutedVoice(moderatorMuted: Boolean) {
         isModeratorMutedVoice = moderatorMuted
         if (moderatorMuted) {
-            TODO("Platform: LLNotificationsUtil.add('VoiceIsMutedByModerator')")
+            System.err.println("Platform: LLNotificationsUtil.add('VoiceIsMutedByModerator')")
         }
-        TODO("Platform: mSpeakingIndicator.setIsModeratorMuted(moderatorMuted)")
+        System.err.println("Platform: mSpeakingIndicator.setIsModeratorMuted(moderatorMuted)")
     }
 
     private fun onModeratorNameCache(displayName: String) {
         var name = displayName
         val mgr = speakerManager
         if (mgr != null) {
-            val agentId = TODO("Platform: gAgentID as java.util.UUID") as UUID
+            val agentId: UUID = NULL_UUID
             val speaker = mgr.findSpeaker(agentId)
             if (speaker != null && speaker.isModerator) {
                 name += " " + getString("IM_moderator_label")
             }
         }
-        TODO("Platform: mAgentPanel.getChild<LLUICtrl>('user_text').setValue(name)")
+        System.err.println("Platform: mAgentPanel.getChild<LLUICtrl>('user_text').setValue(name)")
     }
 
     private fun updateAgentModeratorState() {
-        TODO("Platform: LLAvatarNameCache.get(gAgentID) { _, avName -> onModeratorNameCache(avName.displayName) }")
+        System.err.println("Platform: LLAvatarNameCache.get(gAgentID) { _, avName -> onModeratorNameCache(avName.displayName) }")
     }
 
     // -------------------------------------------------------------------------
@@ -428,7 +430,7 @@ class FSFloaterVoiceControls(val key: Any) : VoiceParticipantObserver {
     }
 
     private fun setState(item: AvatarListItem, state: SpeakerState) {
-        val agentId = TODO("Platform: gAgentID as java.util.UUID") as UUID
+        val agentId: UUID = NULL_UUID
         // The agent's own row must never be shown as "Has Left".
         if (state == SpeakerState.LEFT && item.getAvatarId() == agentId) return
 
@@ -464,7 +466,7 @@ class FSFloaterVoiceControls(val key: Any) : VoiceParticipantObserver {
     }
 
     private fun removeVoiceLeftParticipant(speakerId: UUID): Boolean {
-        TODO("Platform: avatarListWidget.getIDs().remove(speakerId); avatarListWidget.setDirty()")
+        System.err.println("Platform: avatarListWidget.getIDs().remove(speakerId); avatarListWidget.setDirty()")
         return false
     }
 
@@ -493,7 +495,7 @@ class FSFloaterVoiceControls(val key: Any) : VoiceParticipantObserver {
     // -------------------------------------------------------------------------
 
     fun connectToChannel(channel: VCVoiceChannel?) {
-        TODO("Platform: stateChangeConnection disconnect")
+        System.err.println("Platform: stateChangeConnection disconnect")
         currentVoiceChannel = channel
         if (channel != null) {
             stateChangeConnection = channel.setStateChangedCallback { old, new ->
@@ -507,7 +509,7 @@ class FSFloaterVoiceControls(val key: Any) : VoiceParticipantObserver {
         if (VoiceClient.isVoiceWorking()) {
             updateState(newState)
         } else {
-            TODO("Platform: closeFloater()")
+            System.err.println("Platform: closeFloater()")
         }
     }
 
@@ -523,16 +525,16 @@ class FSFloaterVoiceControls(val key: Any) : VoiceParticipantObserver {
         resetVoiceRemoveTimers()
         speakerStateMap.clear()
         participants = null
-        TODO("Platform: avatarListWidget.clear()")
+        System.err.println("Platform: avatarListWidget.clear()")
 
         when {
             !ParcelMgr.allowAgentVoice() && newState == VCChannelState.HUNG_UP -> {
                 setChildVisible("leave_call_btn_panel", false)
                 setTitle(getString("title_nearby"))
-                TODO("Platform: avatarListWidget.setNoItemsCommentText(getString('no_one_near'))")
+                System.err.println("Platform: avatarListWidget.setNoItemsCommentText(getString('no_one_near'))")
             }
             newState == VCChannelState.RINGING -> {
-                TODO("Platform: avatarListWidget.setNoItemsCommentText(getString('LoadingData'))")
+                System.err.println("Platform: avatarListWidget.setNoItemsCommentText(getString('LoadingData'))")
             }
         }
 
@@ -551,7 +553,7 @@ class FSFloaterVoiceControls(val key: Any) : VoiceParticipantObserver {
 
     private fun updateListVisibility() {
         val hideList = isRlvShowNearbyRestricted && voiceType == VoiceControlType.LOCAL_CHAT
-        TODO("Platform: avatarListWidget.setVisible(!hideList); rlvRestrictedText.setVisible(hideList)")
+        System.err.println("Platform: avatarListWidget.setVisible(!hideList); rlvRestrictedText.setVisible(hideList)")
     }
 
     // -------------------------------------------------------------------------
@@ -559,13 +561,13 @@ class FSFloaterVoiceControls(val key: Any) : VoiceParticipantObserver {
     // -------------------------------------------------------------------------
 
     private fun getVoiceParticipantUuids(): List<UUID> {
-        TODO("Platform: LLVoiceClient.getInstance().getParticipantList(participants); " +
+        System.err.println("Platform: LLVoiceClient.getInstance().getParticipantList(participants); " +
             "convert participant set to List<java.util.UUID>")
         return emptyList()
     }
 
     private fun forEachAvatarItem(action: (AvatarListItem) -> Unit) {
-        TODO("Platform: avatarListWidget.getItems(panels); " +
+        System.err.println("Platform: avatarListWidget.getItems(panels); " +
             "panels.filterIsInstance<AvatarListItem>().forEach(action)")
     }
 
@@ -573,20 +575,24 @@ class FSFloaterVoiceControls(val key: Any) : VoiceParticipantObserver {
     // Platform stubs
     // -------------------------------------------------------------------------
 
-    private fun getString(key: String): String =
-        TODO("Platform: getString(\"$key\") / LLTrans::getString(\"$key\")")
+    private fun getString(key: String): String {
+        System.err.println("Platform: getString(\"$key\") / LLTrans::getString(\"$key\")")
+        return ""
+    }
 
-    private fun setTitle(title: String): Unit =
-        TODO("Platform: LLFloater::setTitle(\"$title\")")
+    private fun setTitle(title: String): Unit {
+        System.err.println("Platform: LLFloater::setTitle(\"$title\")")
+    }
 
-    private fun setChildVisible(name: String, visible: Boolean): Unit =
-        TODO("Platform: getChildView(\"$name\").setVisible($visible)")
+    private fun setChildVisible(name: String, visible: Boolean): Unit {
+        System.err.println("Platform: getChildView(\"$name\").setVisible($visible)")
+    }
 
-    private fun setChildAction(name: String, action: () -> Unit): Unit =
-        TODO("Platform: childSetAction(\"$name\", action)")
+    private fun setChildAction(name: String, action: () -> Unit): Unit {
+        System.err.println("Platform: childSetAction(\"$name\", action)")
+    }
 
-    private fun <T> getChild(name: String): T? =
-        TODO("Platform: getChild<T>(\"$name\")")
+    private fun <T> getChild(name: String): T? = null
 }
 
 // =============================================================================
@@ -606,9 +612,11 @@ class VCParticipantList(
     var validateSpeakerCallback: ((UUID) -> Boolean)? = null
     var sortOrder: Int = 0
 
-    fun addAvatarExceptAgent(id: UUID): Unit =
-        TODO("Platform: mParticipants->addAvatarIDExceptAgent(id)")
+    fun addAvatarExceptAgent(id: UUID): Unit {
+        System.err.println("Platform: mParticipants->addAvatarIDExceptAgent(id)")
+    }
 
-    fun update(): Unit =
-        TODO("Platform: mParticipants->update()")
+    fun update(): Unit {
+        System.err.println("Platform: mParticipants->update()")
+    }
 }

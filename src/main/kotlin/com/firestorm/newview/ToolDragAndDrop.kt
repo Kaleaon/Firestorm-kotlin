@@ -274,124 +274,148 @@ object ToolDragAndDrop : Tool("draganddrop") {
     }
 
     private fun dragOrDrop(x: Int, y: Int, mask: MASK, drop: Boolean, acceptanceOut: (EAcceptance) -> Unit) {
-        TODO("APR: use JVM equivalent - perform 2D/3D drag-or-drop routing")
+        System.err.println("APR: use JVM equivalent - perform 2D/3D drag-or-drop routing")
     }
 
     private fun dragOrDrop3D(x: Int, y: Int, mask: MASK, drop: Boolean, acceptanceOut: (EAcceptance) -> Unit) {
-        TODO("APR: use JVM equivalent - perform 3D scene drop test")
+        System.err.println("APR: use JVM equivalent - perform 3D scene drop test")
     }
 
     private fun pick(pickInfo: PickInfo) {
-        TODO("APR: use JVM equivalent - route pick result to appropriate 3D drop handler")
+        System.err.println("APR: use JVM equivalent - route pick result to appropriate 3D drop handler")
     }
 
     private fun locateInventory(
         itemOut: (ViewerInventoryItem?) -> Unit,
         catOut: (ViewerInventoryCategory?) -> Unit
     ) {
-        TODO("APR: use JVM equivalent - locate inventory item or category by cargoID")
+        System.err.println("APR: use JVM equivalent - locate inventory item or category by cargoID")
     }
 
     fun dadUpdateInventory(obj: ViewerObject?, drop: Boolean): Boolean {
-        TODO("APR: use JVM equivalent - update object inventory with current cargo")
+        System.err.println("APR: use JVM equivalent - update object inventory with current cargo")
+        return false
     }
 
     fun dadUpdateInventoryCategory(obj: ViewerObject?, drop: Boolean): Boolean {
-        TODO("APR: use JVM equivalent - update object inventory with current cargo category")
+        System.err.println("APR: use JVM equivalent - update object inventory with current cargo category")
+        return false
     }
 
     private fun dad3dNull(obj: ViewerObject?, face: Int, mask: MASK, drop: Boolean): EAcceptance =
         EAcceptance.ACCEPT_NO
 
     private fun dad3dRezObjectOnLand(obj: ViewerObject?, face: Int, mask: MASK, drop: Boolean): EAcceptance {
-        TODO("APR: use JVM equivalent - rez object on land")
+        System.err.println("APR: use JVM equivalent - rez object on land")
+        return EAcceptance.ACCEPT_NO
     }
 
     private fun dad3dRezObjectOnObject(obj: ViewerObject?, face: Int, mask: MASK, drop: Boolean): EAcceptance {
-        TODO("APR: use JVM equivalent - rez object on object")
+        System.err.println("APR: use JVM equivalent - rez object on object")
+        return EAcceptance.ACCEPT_NO
     }
 
     private fun dad3dRezCategoryOnObject(obj: ViewerObject?, face: Int, mask: MASK, drop: Boolean): EAcceptance {
-        TODO("APR: use JVM equivalent - rez category on object")
+        System.err.println("APR: use JVM equivalent - rez category on object")
+        return EAcceptance.ACCEPT_NO
     }
 
     private fun dad3dRezScript(obj: ViewerObject?, face: Int, mask: MASK, drop: Boolean): EAcceptance {
-        TODO("APR: use JVM equivalent - rez script into object")
+        System.err.println("APR: use JVM equivalent - rez script into object")
+        return EAcceptance.ACCEPT_NO
     }
 
     private fun dad3dTextureObject(obj: ViewerObject?, face: Int, mask: MASK, drop: Boolean): EAcceptance {
-        TODO("APR: use JVM equivalent - apply texture to object face")
+        System.err.println("APR: use JVM equivalent - apply texture to object face")
+        return EAcceptance.ACCEPT_NO
     }
 
     private fun dad3dMaterialObject(obj: ViewerObject?, face: Int, mask: MASK, drop: Boolean): EAcceptance {
-        TODO("APR: use JVM equivalent - apply PBR material to object face")
+        System.err.println("APR: use JVM equivalent - apply PBR material to object face")
+        return EAcceptance.ACCEPT_NO
     }
 
     private fun dad3dMeshObject(obj: ViewerObject?, face: Int, mask: MASK, drop: Boolean): EAcceptance {
-        TODO("APR: use JVM equivalent - apply mesh to object")
+        System.err.println("APR: use JVM equivalent - apply mesh to object")
+        return EAcceptance.ACCEPT_NO
     }
 
     private fun dad3dWearItem(obj: ViewerObject?, face: Int, mask: MASK, drop: Boolean): EAcceptance {
-        TODO("APR: use JVM equivalent - wear wearable item on avatar")
+        System.err.println("APR: use JVM equivalent - wear wearable item on avatar")
+        return EAcceptance.ACCEPT_NO
     }
 
     private fun dad3dWearCategory(obj: ViewerObject?, face: Int, mask: MASK, drop: Boolean): EAcceptance {
-        TODO("APR: use JVM equivalent - wear category (outfit) on avatar")
+        System.err.println("APR: use JVM equivalent - wear category (outfit) on avatar")
+        return EAcceptance.ACCEPT_NO
     }
 
     private fun dad3dUpdateInventory(obj: ViewerObject?, face: Int, mask: MASK, drop: Boolean): EAcceptance {
-        TODO("APR: use JVM equivalent - add item to object inventory")
+        System.err.println("APR: use JVM equivalent - add item to object inventory")
+        return EAcceptance.ACCEPT_NO
     }
 
     private fun dad3dUpdateInventoryCategory(obj: ViewerObject?, face: Int, mask: MASK, drop: Boolean): EAcceptance {
-        TODO("APR: use JVM equivalent - add category to object inventory")
+        System.err.println("APR: use JVM equivalent - add category to object inventory")
+        return EAcceptance.ACCEPT_NO
     }
 
     private fun dad3dGiveInventoryObject(obj: ViewerObject?, face: Int, mask: MASK, drop: Boolean): EAcceptance {
-        TODO("APR: use JVM equivalent - give inventory item to object owner")
+        System.err.println("APR: use JVM equivalent - give inventory item to object owner")
+        return EAcceptance.ACCEPT_NO
     }
 
     private fun dad3dGiveInventory(obj: ViewerObject?, face: Int, mask: MASK, drop: Boolean): EAcceptance {
-        TODO("APR: use JVM equivalent - give inventory item to avatar")
+        System.err.println("APR: use JVM equivalent - give inventory item to avatar")
+        return EAcceptance.ACCEPT_NO
     }
 
     private fun dad3dGiveInventoryCategory(obj: ViewerObject?, face: Int, mask: MASK, drop: Boolean): EAcceptance {
-        TODO("APR: use JVM equivalent - give inventory category to avatar")
+        System.err.println("APR: use JVM equivalent - give inventory category to avatar")
+        return EAcceptance.ACCEPT_NO
     }
 
     private fun dad3dRezFromObjectOnLand(obj: ViewerObject?, face: Int, mask: MASK, drop: Boolean): EAcceptance {
-        TODO("APR: use JVM equivalent - rez object from task inventory onto land")
+        System.err.println("APR: use JVM equivalent - rez object from task inventory onto land")
+        return EAcceptance.ACCEPT_NO
     }
 
     private fun dad3dRezFromObjectOnObject(obj: ViewerObject?, face: Int, mask: MASK, drop: Boolean): EAcceptance {
-        TODO("APR: use JVM equivalent - rez object from task inventory onto object")
+        System.err.println("APR: use JVM equivalent - rez object from task inventory onto object")
+        return EAcceptance.ACCEPT_NO
     }
 
     private fun dad3dRezAttachmentFromInv(obj: ViewerObject?, face: Int, mask: MASK, drop: Boolean): EAcceptance {
-        TODO("APR: use JVM equivalent - attach object from inventory to avatar")
+        System.err.println("APR: use JVM equivalent - attach object from inventory to avatar")
+        return EAcceptance.ACCEPT_NO
     }
 
     private fun dad3dCategoryOnLand(obj: ViewerObject?, face: Int, mask: MASK, drop: Boolean): EAcceptance {
-        TODO("APR: use JVM equivalent - rez category contents on land")
+        System.err.println("APR: use JVM equivalent - rez category contents on land")
+        return EAcceptance.ACCEPT_NO
     }
 
     private fun dad3dAssetOnLand(obj: ViewerObject?, face: Int, mask: MASK, drop: Boolean): EAcceptance {
-        TODO("APR: use JVM equivalent - rez asset on land")
+        System.err.println("APR: use JVM equivalent - rez asset on land")
+        return EAcceptance.ACCEPT_NO
     }
 
     private fun dad3dActivateGesture(obj: ViewerObject?, face: Int, mask: MASK, drop: Boolean): EAcceptance {
-        TODO("APR: use JVM equivalent - activate gesture")
+        System.err.println("APR: use JVM equivalent - activate gesture")
+        return EAcceptance.ACCEPT_NO
     }
 
     private fun dad3dApplyToObject(
         obj: ViewerObject?, face: Int, mask: MASK, drop: Boolean, cargoType: EDragAndDropType
     ): EAcceptance {
-        TODO("APR: use JVM equivalent - apply item (texture/mesh/material) to object face")
+        System.err.println("APR: use JVM equivalent - apply item (texture/mesh/material) to object face")
+        return EAcceptance.ACCEPT_NO
     }
 
     companion object {
         fun isInventoryDropAcceptable(obj: ViewerObject?, item: InventoryItem?): Boolean {
-            TODO("APR: use JVM equivalent - check willObjectAcceptInventory")
+            System.err.println("APR: use JVM equivalent - check willObjectAcceptInventory")
+            return false
         }
 
         fun willObjectAcceptInventory(
@@ -399,7 +423,8 @@ object ToolDragAndDrop : Tool("draganddrop") {
             item: InventoryItem?,
             type: ToolDragAndDrop.EDragAndDropType = ToolDragAndDrop.EDragAndDropType.DAD_NONE
         ): EAcceptance {
-            TODO("APR: use JVM equivalent - check permissions/copyability for drop")
+            System.err.println("APR: use JVM equivalent - check permissions/copyability for drop")
+            return EAcceptance.ACCEPT_NO
         }
 
         fun handleDropMaterialProtections(
@@ -408,55 +433,56 @@ object ToolDragAndDrop : Tool("draganddrop") {
             source: ESource,
             srcId: Uuid
         ): Boolean {
-            TODO("APR: use JVM equivalent - validate material drop permissions")
+            System.err.println("APR: use JVM equivalent - validate material drop permissions")
+            return false
         }
 
         fun dropScript(hitObj: ViewerObject?, item: InventoryItem?, active: Boolean, source: ESource, srcId: Uuid) {
-            TODO("APR: use JVM equivalent - send script drop to sim")
+            System.err.println("APR: use JVM equivalent - send script drop to sim")
         }
 
         fun dropTexture(
             hitObj: ViewerObject?, hitFace: Int, item: InventoryItem?,
             source: ESource, srcId: Uuid, allFaces: Boolean, replacePbr: Boolean, texChannel: Int = -1
         ) {
-            TODO("GPU: apply texture drop to object face")
+            System.err.println("GPU: apply texture drop to object face")
         }
 
         fun dropTextureOneFace(
             hitObj: ViewerObject?, hitFace: Int, item: InventoryItem?,
             source: ESource, srcId: Uuid, removePbr: Boolean, texChannel: Int = -1
         ) {
-            TODO("GPU: apply texture to one face")
+            System.err.println("GPU: apply texture to one face")
         }
 
         fun dropTextureAllFaces(
             hitObj: ViewerObject?, item: InventoryItem?,
             source: ESource, srcId: Uuid, removePbr: Boolean
         ) {
-            TODO("GPU: apply texture to all faces")
+            System.err.println("GPU: apply texture to all faces")
         }
 
         fun dropMaterial(
             hitObj: ViewerObject?, hitFace: Int, item: InventoryItem?,
             source: ESource, srcId: Uuid, allFaces: Boolean
         ) {
-            TODO("GPU: apply PBR material to face(s)")
+            System.err.println("GPU: apply PBR material to face(s)")
         }
 
         fun dropMaterialOneFace(hitObj: ViewerObject?, hitFace: Int, item: InventoryItem?, source: ESource, srcId: Uuid) {
-            TODO("GPU: apply PBR material to one face")
+            System.err.println("GPU: apply PBR material to one face")
         }
 
         fun dropMaterialAllFaces(hitObj: ViewerObject?, item: InventoryItem?, source: ESource, srcId: Uuid) {
-            TODO("GPU: apply PBR material to all faces")
+            System.err.println("GPU: apply PBR material to all faces")
         }
 
         fun dropMesh(hitObj: ViewerObject?, item: InventoryItem?, source: ESource, srcId: Uuid) {
-            TODO("APR: use JVM equivalent - send mesh drop to sim")
+            System.err.println("APR: use JVM equivalent - send mesh drop to sim")
         }
 
         fun dropInventory(hitObj: ViewerObject?, item: InventoryItem?, source: ESource, srcId: Uuid) {
-            TODO("APR: use JVM equivalent - send inventory item drop to sim")
+            System.err.println("APR: use JVM equivalent - send inventory item drop to sim")
         }
 
         fun handleGiveDragAndDrop(
@@ -467,7 +493,8 @@ object ToolDragAndDrop : Tool("draganddrop") {
             cargoData: Any?,
             acceptOut: (EAcceptance) -> Unit
         ): Boolean {
-            TODO("APR: use JVM equivalent - process give-inventory drag-drop")
+            System.err.println("APR: use JVM equivalent - process give-inventory drag-drop")
+            return false
         }
 
         @JvmStatic fun pickCallback(pickInfo: PickInfo) {
@@ -476,6 +503,6 @@ object ToolDragAndDrop : Tool("draganddrop") {
     }
 
     fun packPermissionsSlam(flags: UInt, perms: Any) {
-        TODO("APR: use JVM equivalent - pack permission slam into message")
+        System.err.println("APR: use JVM equivalent - pack permission slam into message")
     }
 }

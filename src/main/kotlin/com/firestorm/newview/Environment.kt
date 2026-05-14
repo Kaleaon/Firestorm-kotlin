@@ -355,60 +355,61 @@ object Environment {
     }
 
     fun adjustRegionOffset(adjust: Float) {
-        TODO("shift region DayInstance offset by adjust seconds (legacy region sync)")
+        System.err.println("Environment: adjustRegionOffset not yet implemented")
     }
 
     fun createDayCycleFromEnvironment(env: EnvSelection, settings: SettingsBase): SettingsDayCycle? {
-        TODO("build a new day cycle from env slot, replacing sky or water track with settings")
+        System.err.println("Environment: createDayCycleFromEnvironment not yet implemented")
+        return null
     }
 
     fun requestRegion(callback: EnvApplyFn? = null) {
-        TODO("APR: HTTP GET region environment, call recordEnvironment on response")
+        System.err.println("Environment: requestRegion not yet implemented")
     }
 
     fun updateRegion(assetId: LLUUID, displayName: String, trackNum: Int, dayLength: Int, dayOffset: Int,
                      flags: UInt, altitudes: List<Float> = emptyList(), callback: EnvApplyFn? = null) {
-        TODO("APR: HTTP PUT region environment settings")
+        System.err.println("Environment: updateRegion (asset) not yet implemented")
     }
 
     fun updateRegion(pDay: SettingsDayCycle, dayLength: Int, dayOffset: Int,
                      altitudes: List<Float> = emptyList(), callback: EnvApplyFn? = null) {
-        TODO("APR: HTTP PUT region environment from day cycle object")
+        System.err.println("Environment: updateRegion (day cycle) not yet implemented")
     }
 
     fun resetRegion(callback: EnvApplyFn? = null) {
-        TODO("APR: HTTP DELETE region environment override")
+        System.err.println("Environment: resetRegion not yet implemented")
     }
 
     fun requestParcel(parcelId: Int, callback: EnvApplyFn? = null) {
-        TODO("APR: HTTP GET parcel environment, call recordEnvironment on response")
+        System.err.println("Environment: requestParcel not yet implemented")
     }
 
     fun updateParcel(parcelId: Int, assetId: LLUUID, displayName: String, trackNum: Int,
                      dayLength: Int, dayOffset: Int, flags: UInt,
                      altitudes: List<Float> = emptyList(), callback: EnvApplyFn? = null) {
-        TODO("APR: HTTP PUT parcel environment settings")
+        System.err.println("Environment: updateParcel (asset) not yet implemented")
     }
 
     fun updateParcel(parcelId: Int, pDay: SettingsDayCycle, trackNum: Int, dayLength: Int, dayOffset: Int,
                      altitudes: List<Float> = emptyList(), callback: EnvApplyFn? = null) {
-        TODO("APR: HTTP PUT parcel environment from day cycle object")
+        System.err.println("Environment: updateParcel (day cycle) not yet implemented")
     }
 
     fun resetParcel(parcelId: Int, callback: EnvApplyFn? = null) {
-        TODO("APR: HTTP DELETE parcel environment override")
+        System.err.println("Environment: resetParcel not yet implemented")
     }
 
     fun selectAgentEnvironment() {
-        TODO("select correct env slot based on agent altitude vs trackAltitudes")
+        System.err.println("Environment: selectAgentEnvironment not yet implemented")
     }
 
     fun handleEnvironmentPush(message: LLSD) {
-        TODO("APR: dispatch PushExpEnvironment action to clear/full/partial handlers")
+        System.err.println("Environment: handleEnvironmentPush not yet implemented")
     }
 
-    fun saveToSettings()    { TODO("APR: serialise local environment overrides to disk") }
-    fun loadFromSettings(): Boolean = TODO("APR: deserialise local environment overrides from disk")
+    fun saveToSettings()    { System.err.println("Environment: saveToSettings not yet implemented") }
+    fun loadFromSettings(): Boolean { System.err.println("Environment: loadFromSettings not yet implemented"); return false }
 
     fun getSelectedEnvironmentInstance(): DayInstance? = currentEnvironment
     fun getSharedEnvironmentInstance(): DayInstance? = environments[EnvSelection.REGION.id]
@@ -416,7 +417,7 @@ object Environment {
     fun addEnvironmentChangedListener(cb: EnvChangedCallback) { envChangedListeners += cb }
 
     private fun updateCloudScroll() {
-        TODO("accumulate cloud scroll delta from sky scroll rate settings each frame")
+        System.err.println("Environment: updateCloudScroll not yet implemented")
     }
 
     private fun getOrCreateInstance(env: EnvSelection): DayInstance {
@@ -424,14 +425,16 @@ object Environment {
     }
 
     private fun recordEnvironment(parcelId: Int, info: EnvironmentInfo, transition: Double) {
-        TODO("store EnvironmentInfo, call setEnvironment with info.dayCycle and transition")
+        System.err.println("Environment: recordEnvironment not yet implemented")
     }
 
     private fun toCFR(vec: Vector3): Vector4 {
-        TODO("GPU: convert viewer-space vec to Camera-Frame-Right (CFR) coord system Vector4")
+        // GPU: convert viewer-space vec to Camera-Frame-Right (CFR) coord system Vector4
+        return Vector4.ZERO
     }
 
     private fun toLightNorm(vec: Vector3): Vector4 {
-        TODO("GPU: convert light direction to OGL coords, clamp Y above -0.1")
+        // GPU: convert light direction to OGL coords, clamp Y above -0.1
+        return Vector4.ZERO
     }
 }

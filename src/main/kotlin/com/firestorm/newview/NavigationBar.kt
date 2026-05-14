@@ -39,11 +39,11 @@ class PullButton(val direction: String = "down") {
     }
 
     fun setEnabled(enabled: Boolean) {
-        TODO("APR: set button enabled state to $enabled")
+        System.err.println("PullButton: set button enabled state not yet implemented")
     }
 
     fun setForcePressedState(pressed: Boolean) {
-        TODO("APR: force button pressed visual state = $pressed")
+        System.err.println("PullButton: force button pressed visual state not yet implemented")
     }
 
     private companion object {
@@ -79,16 +79,16 @@ object NavigationBar {
     private val rlvBehaviorListeners: MutableList<(Any, Any) -> Unit>   = mutableListOf()
 
     fun setupPanel() {
-        TODO("APR: bind UI child controls from navigation_bar XUI view")
+        System.err.println("NavigationBar: bind UI child controls from navigation_bar XUI view not yet implemented")
     }
 
     fun handleLoginComplete() {
-        TODO("APR: notify TeleportHistory, StatusBar, and LocationInputCtrl of login completion")
+        System.err.println("NavigationBar: notify TeleportHistory, StatusBar, and LocationInputCtrl of login completion not yet implemented")
     }
 
     fun clearHistoryCache() {
         cmbLocation?.removeAll()
-        TODO("APR: clear LLLocationHistory and TeleportHistory items, save history")
+        System.err.println("NavigationBar: clear LLLocationHistory and TeleportHistory items, save history not yet implemented")
     }
 
     fun isRebakeNavMeshAvailable(): Boolean =
@@ -99,81 +99,81 @@ object NavigationBar {
     }
 
     fun clearHistory() {
-        TODO("APR: clear search combo box history")
+        System.err.println("NavigationBar: clear search combo box history not yet implemented")
     }
 
     fun getView(): Any? = view
 
     private fun fillSearchComboBox() {
-        TODO("APR: load search history entries into the search combo box")
+        System.err.println("NavigationBar: load search history entries into the search combo box not yet implemented")
     }
 
     private fun rebuildTeleportHistoryMenu() {
-        TODO("APR: rebuild teleport history popup menu from LLTeleportHistory items")
+        System.err.println("NavigationBar: rebuild teleport history popup menu from LLTeleportHistory items not yet implemented")
     }
 
     private fun showTeleportHistoryMenu(btnCtrl: Any) {
         if (teleportHistoryMenu == null) rebuildTeleportHistoryMenu()
-        TODO("APR: show teleport history popup near btnCtrl and capture mouse")
+        System.err.println("NavigationBar: show teleport history popup near btnCtrl and capture mouse not yet implemented")
     }
 
     private fun invokeSearch(searchText: String) {
-        TODO("APR: open search floater with query='$searchText'")
+        System.err.println("NavigationBar: open search floater with query not yet implemented")
     }
 
     private fun resizeLayoutPanel() {
-        TODO("APR: resize navigation layout panel based on saved ratio setting")
+        System.err.println("NavigationBar: resize navigation layout panel based on saved ratio setting not yet implemented")
     }
 
     private fun onTeleportHistoryMenuItemClicked(userdata: Any) {
-        TODO("APR: navigate TeleportHistory to item index from userdata")
+        System.err.println("NavigationBar: navigate TeleportHistory to item index from userdata not yet implemented")
     }
 
     private fun onTeleportHistoryChanged() {
-        TODO("APR: update back/forward button enabled states from TeleportHistory cursor")
+        System.err.println("NavigationBar: update back/forward button enabled states from TeleportHistory cursor not yet implemented")
     }
 
     private fun onBackButtonClicked(ctrl: Any) {
-        TODO("APR: LLTeleportHistory.goBack() and release focus")
+        System.err.println("NavigationBar: LLTeleportHistory.goBack() and release focus not yet implemented")
     }
 
     private fun onBackOrForwardButtonHeldDown(ctrl: Any, param: Any) {
-        TODO("APR: show teleport history menu on first held-down event")
+        System.err.println("NavigationBar: show teleport history menu on first held-down event not yet implemented")
     }
 
     private fun onNavigationButtonHeldUp(navButton: Any) {
-        TODO("APR: clear forced-pressed state and release mouse capture")
+        System.err.println("NavigationBar: clear forced-pressed state and release mouse capture not yet implemented")
     }
 
     private fun onForwardButtonClicked(ctrl: Any) {
-        TODO("APR: LLTeleportHistory.goForward() and release focus")
+        System.err.println("NavigationBar: LLTeleportHistory.goForward() and release focus not yet implemented")
     }
 
     private fun onHomeButtonClicked(ctrl: Any) {
-        TODO("APR: agent.teleportHome() and release focus")
+        System.err.println("NavigationBar: agent.teleportHome() and release focus not yet implemented")
     }
 
     private fun onLandmarksButtonClicked() {
-        TODO("APR: toggle/show places floater on landmarks tab")
+        System.err.println("NavigationBar: toggle/show places floater on landmarks tab not yet implemented")
     }
 
     private fun onLocationSelection() {
         val typedLocation = cmbLocation?.getSimple()?.trim() ?: return
         if (typedLocation.isEmpty()) return
-        TODO("APR: resolve typedLocation as SLURL/landmark/region-name and teleport")
+        System.err.println("NavigationBar: resolve typedLocation as SLURL/landmark/region-name and teleport not yet implemented")
     }
 
     private fun onLocationPrearrange(data: Any) {
-        TODO("APR: pre-arrange location dropdown list based on current input")
+        System.err.println("NavigationBar: pre-arrange location dropdown list based on current input not yet implemented")
     }
 
     private fun onSearchCommit() {
-        TODO("APR: add search query to history and invoke search floater")
+        System.err.println("NavigationBar: add search query to history and invoke search floater not yet implemented")
     }
 
     private fun onTeleportFinished(globalAgentPos: Vector3d) {
         if (!saveToLocationHistory) return
-        TODO("APR: build location string and add to LLLocationHistory, then save")
+        System.err.println("NavigationBar: build location string and add to LLLocationHistory, then save not yet implemented")
     }
 
     private fun onTeleportFailed() {
@@ -181,7 +181,7 @@ object NavigationBar {
     }
 
     private fun onNavbarResized() {
-        TODO("APR: recalculate and persist NavigationBarRatio setting")
+        System.err.println("NavigationBar: recalculate and persist NavigationBarRatio setting not yet implemented")
     }
 
     private fun onRegionNameResponse(
@@ -194,21 +194,21 @@ object NavigationBar {
         teleport: Boolean
     ) {
         if (regionHandle != 0UL) {
-            TODO("APR: convert regionHandle to global pos, teleport agent there")
+            System.err.println("NavigationBar: convert regionHandle to global pos, teleport agent there not yet implemented")
         } else if (typedLocation.isNotEmpty()) {
             invokeSearch(typedLocation)
         }
     }
 
     private fun onRightMouseDown(x: Int, y: Int, mask: Int) {
-        TODO("APR: show_navbar_context_menu at ($x, $y)")
+        System.err.println("NavigationBar: show_navbar_context_menu not yet implemented")
     }
 
     private fun onClickedLightingBtn() {
-        TODO("APR: open env_adjust_snapshot floater")
+        System.err.println("NavigationBar: open env_adjust_snapshot floater not yet implemented")
     }
 
     private fun updateRlvRestrictions(behavior: Any, type: Any) {
-        TODO("APR: enable/disable PersonalLighting button based on RLV SETENV restriction")
+        System.err.println("NavigationBar: enable/disable PersonalLighting button based on RLV SETENV restriction not yet implemented")
     }
 }

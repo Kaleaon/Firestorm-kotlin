@@ -36,11 +36,11 @@ class LLBlockList {
     private var mPrevNameFilter: String = ""
 
     init {
-        TODO("APR: LLMuteList.getInstance().addObserver(this); cache mMuteListSize; load menu_people_blocked_gear.xml context menu; register Block.Action/Enable/Check/Visible callbacks")
+        System.err.println("LLBlockList: APR: LLMuteList.getInstance().addObserver(this); cache mMuteListSize; load menu_people_blocked_gear.xml context menu; register Block.Action/Enable/Check/Visible callbacks not yet implemented")
     }
 
     fun destroy() {
-        TODO("APR: if mContextMenu exists, call die() on it; LLMuteList.getInstance().removeObserver(this)")
+        System.err.println("LLBlockList: APR: if mContextMenu exists, call die() on it; LLMuteList.getInstance().removeObserver(this) not yet implemented")
     }
 
     // ---- LLMuteListObserver ------------------------------------------------
@@ -59,18 +59,20 @@ class LLBlockList {
     // ---- UI events ---------------------------------------------------------
 
     fun handleRightMouseDown(x: Int, y: Int): Boolean {
-        TODO("GPU: delegate to LLUICtrl.handleRightMouseDown(); if context menu exists and list is non-empty, show popup at x=$x y=$y")
+        // GPU: delegate to LLUICtrl.handleRightMouseDown(); if context menu exists and list is non-empty, show popup at x=$x y=$y
+        return false
     }
 
     fun getContextMenu(): Any? = mContextMenu
 
     fun getBlockedItem(): LLBlockedListItem? {
-        TODO("GPU: return dynamic_cast of LLFlatListView.getSelectedItem() to LLBlockedListItem, or null")
+        // GPU: return dynamic_cast of LLFlatListView.getSelectedItem() to LLBlockedListItem, or null
+        return null
     }
 
     fun draw() {
         if (mDirty) refresh()
-        TODO("GPU: LLFlatListView.draw()")
+        // GPU: LLFlatListView.draw()
     }
 
     // ---- public filter / sort API ------------------------------------------
@@ -84,11 +86,11 @@ class LLBlockList {
     }
 
     fun sortByName() {
-        TODO("GPU: setComparator(NAME_COMPARATOR); sort()")
+        // GPU: setComparator(NAME_COMPARATOR); sort()
     }
 
     fun sortByType() {
-        TODO("GPU: setComparator(NAME_TYPE_COMPARATOR); sort()")
+        // GPU: setComparator(NAME_TYPE_COMPARATOR); sort()
     }
 
     fun getMuteListSize(): UInt = mMuteListSize
@@ -99,22 +101,22 @@ class LLBlockList {
         val item = LLBlockedListItem(mute)
         if (mNameFilter.isNotEmpty()) item.highlightName(mNameFilter)
         if (mute.id != UUID(0, 0)) {
-            TODO("GPU: addItem(item, item.getUUID(), ADD_BOTTOM)")
+            // GPU: addItem(item, item.getUUID(), ADD_BOTTOM)
         } else {
-            TODO("GPU: addItem(item, item.getName(), ADD_BOTTOM)")
+            // GPU: addItem(item, item.getName(), ADD_BOTTOM)
         }
     }
 
     private fun removeListItem(mute: LLMute) {
         if (mute.id != UUID(0, 0)) {
-            TODO("GPU: removeItemByUUID(mute.id)")
+            // GPU: removeItemByUUID(mute.id)
         } else {
-            TODO("GPU: removeItemByValue(mute.name)")
+            // GPU: removeItemByValue(mute.name)
         }
     }
 
     private fun hideListItem(item: LLBlockedListItem, show: Boolean) {
-        TODO("GPU: item.setVisible($show)")
+        // GPU: item.setVisible($show)
     }
 
     private fun setDirty(dirty: Boolean = true) {
@@ -125,22 +127,23 @@ class LLBlockList {
         haystack.uppercase().contains(needleUpper)
 
     private fun getCurrentMuteListActionType(): BlockListActionType {
-        TODO("APR: compare LLMuteList.getInstance().getMutes().size with mMuteListSize to determine ADD/REMOVE/NONE")
+        // APR: compare LLMuteList.getInstance().getMutes().size with mMuteListSize to determine ADD/REMOVE/NONE
+        return BlockListActionType.NONE
     }
 
     fun refresh() {
         val haveFilter = mNameFilter.isNotEmpty()
 
-        TODO("GPU: save current selection; rebuild or incrementally update the list; apply name filter visibility; restore selection; update mMuteListSize; sort(); setDirty(false)")
+        // GPU: save current selection; rebuild or incrementally update the list; apply name filter visibility; restore selection; update mMuteListSize; sort(); setDirty(false)
 
         if (mShouldAddAll) {
-            TODO("GPU: clear(); createList(); mShouldAddAll = false")
+            // GPU: clear(); createList(); mShouldAddAll = false
         } else {
             val mute = LLMute(mCurItemId, mCurItemName, mCurItemType, mCurItemFlags)
             when (mActionType) {
                 BlockListActionType.ADD    -> addNewItem(mute)
                 BlockListActionType.REMOVE -> {
-                    TODO("GPU: handle selection migration before remove; removeListItem(mute)")
+                    // GPU: handle selection migration before remove; removeListItem(mute)
                 }
                 BlockListActionType.NONE   -> {}
             }
@@ -148,16 +151,16 @@ class LLBlockList {
         }
 
         if (haveFilter || mPrevNameFilter.isNotEmpty()) {
-            TODO("GPU: iterate all items; call hideListItem(item, findInsensitive(item.getName(), mNameFilter))")
+            // GPU: iterate all items; call hideListItem(item, findInsensitive(item.getName(), mNameFilter))
         }
         mPrevNameFilter = mNameFilter
 
-        mMuteListSize = TODO("APR: LLMuteList.getInstance().getMutes().size.toUInt()")
+        mMuteListSize = 0u
         setDirty(false)
     }
 
     private fun createList() {
-        TODO("APR: iterate LLMuteList.instance.getMutes(); call addNewItem() for each")
+        // APR: iterate LLMuteList.instance.getMutes(); call addNewItem() for each
     }
 
     // ---- context-menu callbacks --------------------------------------------
@@ -165,10 +168,12 @@ class LLBlockList {
     private fun isActionEnabled(userdata: String): Boolean {
         return when (userdata) {
             "profile_item", "block_voice", "block_text", "block_particles", "block_obj_sounds" -> {
-                TODO("GPU: return true only when exactly one selected item and it is of type AGENT")
+                // GPU: return true only when exactly one selected item and it is of type AGENT
+                false
             }
             "unblock_item" -> {
-                TODO("GPU: return getSelectedItem() != null")
+                // GPU: return getSelectedItem() != null
+                false
             }
             else -> true
         }
@@ -178,10 +183,10 @@ class LLBlockList {
         if (!isActionEnabled(userdata)) return
         when (userdata) {
             "unblock_item" -> {
-                TODO("GPU: for each selected item, build LLMute and call LLMuteList.getInstance().remove(mute)")
+                // GPU: for each selected item, build LLMute and call LLMuteList.getInstance().remove(mute)
             }
             "profile_item" -> {
-                TODO("GPU: get single blocked item; if AGENT call LLAvatarActions.showProfile(item.getUUID())")
+                // GPU: get single blocked item; if AGENT call LLAvatarActions.showProfile(item.getUUID())
             }
             "block_voice"      -> toggleMute(MuteFlags.VOICE_CHAT)
             "block_text"       -> toggleMute(MuteFlags.TEXT_CHAT)
@@ -214,14 +219,15 @@ class LLBlockList {
         val item = getBlockedItem() ?: return
         val mute = LLMute(item.getUUID(), item.getName(), item.getType())
         if (!isMuted(item.getUUID(), flags)) {
-            TODO("APR: LLMuteList.getInstance().add(mute, flags)")
+            // APR: LLMuteList.getInstance().add(mute, flags)
         } else {
-            TODO("APR: LLMuteList.getInstance().remove(mute, flags)")
+            // APR: LLMuteList.getInstance().remove(mute, flags)
         }
     }
 
     private fun isMuted(id: UUID, flags: UInt): Boolean {
-        TODO("APR: return LLMuteList.getInstance().isMuted(id, flags)")
+        // APR: return LLMuteList.getInstance().isMuted(id, flags)
+        return false
     }
 }
 

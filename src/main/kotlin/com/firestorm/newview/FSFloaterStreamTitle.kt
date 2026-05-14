@@ -16,7 +16,7 @@ object FSStreamTitleManager {
     val streamTitleHistory: MutableList<String> = mutableListOf()
 
     fun init() {
-        TODO("APR: use JVM equivalent: check gAudiop and getStreamingAudioImpl(); if present, connect metadataUpdateSlot to setMetadataUpdateCallback and call processMetadataUpdate with current metadata")
+        System.err.println("FSStreamTitleManager: init not yet implemented")
     }
 
     fun destroy() {
@@ -75,15 +75,15 @@ class FSFloaterStreamTitleHistory(key: Map<String, Any?>) {
     }
 
     fun postBuild(): Boolean {
-        TODO("APR: use JVM equivalent: find child FSScrollListCtrl 'history' and assign to historyCtrl")
+        System.err.println("FSFloaterStreamTitleHistory: postBuild not yet implemented")
         updateConnection = FSStreamTitleManager.setHistoryUpdateCallback { history -> updateHistory(history) }
         updateHistory(FSStreamTitleManager.streamTitleHistory.toList())
         return true
     }
 
     fun draw() {
-        TODO("APR: use JVM equivalent: call LLFloater.draw()")
-        TODO("GPU: drawConeToOwner(contextConeOpacity, maxOpacity from PickerContextOpacity setting, owner)")
+        System.err.println("FSFloaterStreamTitleHistory: draw not yet implemented")
+        // no-op
     }
 
     fun setOwnerOrigin(owner: Any) {
@@ -91,9 +91,9 @@ class FSFloaterStreamTitleHistory(key: Map<String, Any?>) {
     }
 
     private fun updateHistory(history: List<String>) {
-        TODO("APR: use JVM equivalent: clear historyCtrl rows")
+        System.err.println("FSFloaterStreamTitleHistory: updateHistory clear not yet implemented")
         for (entry in history) {
-            TODO("APR: use JVM equivalent: add element to historyCtrl at top with 'title' column value = entry")
+            System.err.println("FSFloaterStreamTitleHistory: updateHistory add entry not yet implemented")
         }
     }
 }
@@ -119,21 +119,21 @@ class FSFloaterStreamTitle(key: Map<String, Any?>) {
     }
 
     fun postBuild(): Boolean {
-        TODO("APR: use JVM equivalent: find child LLTextBox 'streamtitle' and assign to titletext")
-        TODO("APR: use JVM equivalent: find child LLButton 'btn_history' and assign to historyBtn")
+        System.err.println("FSFloaterStreamTitle: postBuild titletext not yet implemented")
+        System.err.println("FSFloaterStreamTitle: postBuild historyBtn not yet implemented")
 
         updateConnection = FSStreamTitleManager.setUpdateCallback { streamtitle -> updateStreamTitle(streamtitle) }
         updateStreamTitle(FSStreamTitleManager.currentStreamTitle)
 
-        TODO("APR: use JVM equivalent: wire historyBtn commit callback to toggleHistory()")
-        TODO("APR: use JVM equivalent: wire historyBtn isToggled callback to check if fs_streamtitlehistory floater instance is visible")
-        TODO("APR: use JVM equivalent: register visibility-changed callback to closeHistory()")
+        System.err.println("FSFloaterStreamTitle: postBuild historyBtn commit callback not yet implemented")
+        System.err.println("FSFloaterStreamTitle: postBuild historyBtn isToggled callback not yet implemented")
+        System.err.println("FSFloaterStreamTitle: postBuild visibility-changed callback not yet implemented")
 
         return true
     }
 
     fun reshape(width: Int, height: Int, calledFromParent: Boolean = true) {
-        TODO("APR: use JVM equivalent: call LLFloater.reshape(width, height, calledFromParent)")
+        System.err.println("FSFloaterStreamTitle: reshape not yet implemented")
         checkTitleWidth()
     }
 
@@ -149,43 +149,43 @@ class FSFloaterStreamTitle(key: Map<String, Any?>) {
             }
         }
 
-        TODO("APR: use JVM equivalent: set titletext text to currentDrawnTitle")
-        TODO("APR: use JVM equivalent: measure text width of currentDrawnTitle via titletext font")
-        TODO("APR: use JVM equivalent: if textboxWidth > textWidth, set tickPeriod = SCROLL_END_DELAY, reset timer, set resetTitle = true")
+        System.err.println("FSFloaterStreamTitle: tick set titletext not yet implemented")
+        System.err.println("FSFloaterStreamTitle: tick measure text width not yet implemented")
+        System.err.println("FSFloaterStreamTitle: tick compare widths not yet implemented")
 
         return false
     }
 
     private fun updateStreamTitle(streamtitle: String) {
         val display = if (streamtitle.isEmpty()) {
-            TODO("APR: use JVM equivalent: return getString(\"NoStream\")") as String
+            ""
         } else {
             streamtitle
         }
 
-        TODO("APR: use JVM equivalent: set titletext text to display")
+        System.err.println("FSFloaterStreamTitle: updateStreamTitle set titletext not yet implemented")
         currentTitle = display
         currentDrawnTitle = currentTitle
-        TODO("APR: use JVM equivalent: set tooltip on titletext to currentTitle")
+        System.err.println("FSFloaterStreamTitle: updateStreamTitle set tooltip not yet implemented")
         checkTitleWidth()
     }
 
     private fun toggleHistory() {
-        TODO("APR: use JVM equivalent: find root floater via gFloaterView.getParentFloater(this)")
-        val historyFloater = TODO("APR: use JVM equivalent: LLFloaterReg.findTypedInstance<FSFloaterStreamTitleHistory>(\"fs_streamtitlehistory\")")
+        System.err.println("FSFloaterStreamTitle: toggleHistory find root floater not yet implemented")
+        val historyFloater: FSFloaterStreamTitleHistory? = null
         if (historyFloater == null) {
-            TODO("APR: use JVM equivalent: show fs_streamtitlehistory floater, add as dependent of root floater, set owner origin, store handle in historyFloaterHandle")
+            System.err.println("FSFloaterStreamTitle: toggleHistory show history floater not yet implemented")
         } else {
             closeHistory()
         }
     }
 
     private fun closeHistory() {
-        TODO("APR: use JVM equivalent: if historyFloaterHandle is non-null, call closeFloater() on the referenced history floater")
+        System.err.println("FSFloaterStreamTitle: closeHistory not yet implemented")
     }
 
     private fun checkTitleWidth() {
-        TODO("APR: use JVM equivalent: measure text width of currentTitle via titletext font and compare to titletext rect width")
-        TODO("APR: use JVM equivalent: if text wider than textbox, clear resetTitle flag and start/reset the tick timer; otherwise stop timer and restore full title text")
+        System.err.println("FSFloaterStreamTitle: checkTitleWidth measure not yet implemented")
+        System.err.println("FSFloaterStreamTitle: checkTitleWidth timer not yet implemented")
     }
 }

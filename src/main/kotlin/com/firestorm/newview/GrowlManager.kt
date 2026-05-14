@@ -229,31 +229,31 @@ class GrowlManager : EventTimer(GROWL_THROTTLE_CLEANUP_PERIOD) {
             return activatedWhenVisible || !isViewerWindowVisible() || !appHasFocus()
         }
 
-        private fun platformNotifier(): GrowlNotifier = TODO("APR: use JVM equivalent to select platform notifier (Win/Linux/generic)")
-        private fun isPlatformWindows(): Boolean = TODO("APR: use JVM System.getProperty(\"os.name\") to detect Windows")
-        private fun isAppExiting(): Boolean = TODO("APR: use JVM equivalent for LLAppViewer::isExiting")
-        private fun isFSEnableGrowl(): Boolean = TODO("APR: use JVM equivalent for gSavedSettings getBOOL(\"FSEnableGrowl\")")
-        private fun isFSGrowlWhenActive(): Boolean = TODO("APR: use JVM equivalent for gSavedSettings getBOOL(\"FSGrowlWhenActive\")")
-        private fun filterGrowlKeywordDuplicateIMs(): Boolean = TODO("APR: use JVM equivalent for gSavedSettings getBOOL(\"FSFilterGrowlKeywordDuplicateIMs\")")
-        private fun totalTimeMicros(): Long = TODO("APR: use JVM equivalent for LLTimer::getTotalTime")
-        private fun isStartupComplete(): Boolean = TODO("APR: use JVM equivalent for LLStartUp::getStartupState >= STATE_STARTED")
-        private fun isAgentDoNotDisturb(): Boolean = TODO("APR: use JVM equivalent for gAgent.isDoNotDisturb()")
-        private fun isViewerWindowVisible(): Boolean = TODO("APR: use JVM equivalent for gViewerWindow->getWindow()->getVisible()")
-        private fun appHasFocus(): Boolean = TODO("APR: use JVM equivalent for gFocusMgr.getAppHasFocus()")
-        private fun agentId(): UUID = TODO("APR: use JVM equivalent for gAgentID")
-        private fun expandFilename(path: Int, name: String): String = TODO("APR: use JVM equivalent for gDirUtilp->getExpandedFilename")
-        private fun parseLLSDXml(path: String): LLSDMap? = TODO("APR: use JVM equivalent for LLSDSerialize::fromXML")
-        private fun llNotificationsFind(id: UUID): LLNotification? = TODO("APR: use JVM equivalent for LLNotifications::instance().find")
-        private fun formatString(template: String, substitutions: Map<String, String>): String = TODO("APR: use JVM equivalent for LLStringUtil::format")
-        private fun replaceUrlsWithLabels(text: String): String = TODO("APR: use JVM equivalent for LLUrlRegistry URL-to-label replacement")
-        private fun imModelFindSession(sessionId: UUID): IMSession? = TODO("APR: use JVM equivalent for LLIMModel::instance().findIMSession")
-        private fun isIrcMePrefix(msg: String): Boolean = TODO("APR: use JVM equivalent for FSCommon::is_irc_me_prefix")
-        private fun getAvatarNameByDisplaySettings(avName: AvatarName): String = TODO("APR: use JVM equivalent for FSCommon::getAvatarNameByDisplaySettings")
-        private fun avatarNameCacheGetAsync(id: UUID, callback: (AvatarName) -> Unit): Unit = TODO("APR: use JVM equivalent for LLAvatarNameCache::get with callback")
-        private fun connectLLNotificationChannel(name: String, filter: (LLNotification) -> Boolean, handler: (LLSD) -> Boolean): () -> Unit = TODO("APR: use JVM equivalent for LLNotificationChannel + connectChanged")
-        private fun connectImNewMsgCallback(handler: (LLSD) -> Unit): () -> Unit = TODO("APR: use JVM equivalent for LLIMModel::addNewMsgCallback")
-        private fun connectScriptDialogCallback(handler: (LLSD) -> Unit): () -> Unit = TODO("APR: use JVM equivalent for LLScriptFloaterManager::addNewObjectCallback")
-        private fun connectNearbyChatCallback(handler: (LLSD) -> Unit): () -> Unit = TODO("APR: use JVM equivalent for LLNotificationManager getChatHandler addNewChatCallback")
-        private fun nowSecondsSinceEpoch(): Double = TODO("APR: use JVM equivalent for LLDate::now().secondsSinceEpoch()")
+        private fun platformNotifier(): GrowlNotifier { System.err.println("GrowlManager: APR: use JVM equivalent to select platform notifier (Win/Linux/generic) not yet implemented"); return GrowlNotifier() }
+        private fun isPlatformWindows(): Boolean { System.err.println("GrowlManager: APR: use JVM System.getProperty(\"os.name\") to detect Windows not yet implemented"); return false }
+        private fun isAppExiting(): Boolean { System.err.println("GrowlManager: APR: use JVM equivalent for LLAppViewer::isExiting not yet implemented"); return false }
+        private fun isFSEnableGrowl(): Boolean { System.err.println("GrowlManager: APR: use JVM equivalent for gSavedSettings getBOOL(\"FSEnableGrowl\") not yet implemented"); return false }
+        private fun isFSGrowlWhenActive(): Boolean { System.err.println("GrowlManager: APR: use JVM equivalent for gSavedSettings getBOOL(\"FSGrowlWhenActive\") not yet implemented"); return false }
+        private fun filterGrowlKeywordDuplicateIMs(): Boolean { System.err.println("GrowlManager: APR: use JVM equivalent for gSavedSettings getBOOL(\"FSFilterGrowlKeywordDuplicateIMs\") not yet implemented"); return false }
+        private fun totalTimeMicros(): Long { System.err.println("GrowlManager: APR: use JVM equivalent for LLTimer::getTotalTime not yet implemented"); return 0L }
+        private fun isStartupComplete(): Boolean { System.err.println("GrowlManager: APR: use JVM equivalent for LLStartUp::getStartupState >= STATE_STARTED not yet implemented"); return false }
+        private fun isAgentDoNotDisturb(): Boolean { System.err.println("GrowlManager: APR: use JVM equivalent for gAgent.isDoNotDisturb() not yet implemented"); return false }
+        private fun isViewerWindowVisible(): Boolean { System.err.println("GrowlManager: APR: use JVM equivalent for gViewerWindow->getWindow()->getVisible() not yet implemented"); return false }
+        private fun appHasFocus(): Boolean { System.err.println("GrowlManager: APR: use JVM equivalent for gFocusMgr.getAppHasFocus() not yet implemented"); return false }
+        private fun agentId(): UUID { System.err.println("GrowlManager: APR: use JVM equivalent for gAgentID not yet implemented"); return UUID(0, 0) }
+        private fun expandFilename(path: Int, name: String): String { System.err.println("GrowlManager: APR: use JVM equivalent for gDirUtilp->getExpandedFilename not yet implemented"); return "" }
+        private fun parseLLSDXml(path: String): LLSDMap? { System.err.println("GrowlManager: APR: use JVM equivalent for LLSDSerialize::fromXML not yet implemented"); return null }
+        private fun llNotificationsFind(id: UUID): LLNotification? { System.err.println("GrowlManager: APR: use JVM equivalent for LLNotifications::instance().find not yet implemented"); return null }
+        private fun formatString(template: String, substitutions: Map<String, String>): String { System.err.println("GrowlManager: APR: use JVM equivalent for LLStringUtil::format not yet implemented"); return "" }
+        private fun replaceUrlsWithLabels(text: String): String { System.err.println("GrowlManager: APR: use JVM equivalent for LLUrlRegistry URL-to-label replacement not yet implemented"); return "" }
+        private fun imModelFindSession(sessionId: UUID): IMSession? { System.err.println("GrowlManager: APR: use JVM equivalent for LLIMModel::instance().findIMSession not yet implemented"); return null }
+        private fun isIrcMePrefix(msg: String): Boolean { System.err.println("GrowlManager: APR: use JVM equivalent for FSCommon::is_irc_me_prefix not yet implemented"); return false }
+        private fun getAvatarNameByDisplaySettings(avName: AvatarName): String { System.err.println("GrowlManager: APR: use JVM equivalent for FSCommon::getAvatarNameByDisplaySettings not yet implemented"); return "" }
+        private fun avatarNameCacheGetAsync(id: UUID, callback: (AvatarName) -> Unit): Unit { System.err.println("GrowlManager: APR: use JVM equivalent for LLAvatarNameCache::get with callback not yet implemented") }
+        private fun connectLLNotificationChannel(name: String, filter: (LLNotification) -> Boolean, handler: (LLSD) -> Boolean): () -> Unit { System.err.println("GrowlManager: APR: use JVM equivalent for LLNotificationChannel + connectChanged not yet implemented"); return {} }
+        private fun connectImNewMsgCallback(handler: (LLSD) -> Unit): () -> Unit { System.err.println("GrowlManager: APR: use JVM equivalent for LLIMModel::addNewMsgCallback not yet implemented"); return {} }
+        private fun connectScriptDialogCallback(handler: (LLSD) -> Unit): () -> Unit { System.err.println("GrowlManager: APR: use JVM equivalent for LLScriptFloaterManager::addNewObjectCallback not yet implemented"); return {} }
+        private fun connectNearbyChatCallback(handler: (LLSD) -> Unit): () -> Unit { System.err.println("GrowlManager: APR: use JVM equivalent for LLNotificationManager getChatHandler addNewChatCallback not yet implemented"); return {} }
+        private fun nowSecondsSinceEpoch(): Double { System.err.println("GrowlManager: APR: use JVM equivalent for LLDate::now().secondsSinceEpoch() not yet implemented"); return 0.0 }
     }
 }

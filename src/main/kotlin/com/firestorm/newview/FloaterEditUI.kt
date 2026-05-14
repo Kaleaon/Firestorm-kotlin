@@ -95,11 +95,11 @@ class FloaterTools(private val key: Map<String, Any>) {
         )
 
         fun setGridMode(mode: Int) {
-            TODO("GPU: forward grid mode $mode to LLSelectMgr / grid options")
+            System.err.println("FloaterTools: setGridMode not yet implemented")
         }
 
         fun setEditTool(data: Any?) {
-            TODO("GPU: activate edit tool from data=$data via LLToolMgr")
+            System.err.println("FloaterTools: setEditTool not yet implemented")
         }
     }
 
@@ -109,18 +109,19 @@ class FloaterTools(private val key: Map<String, Any>) {
     }
 
     open fun postBuild(): Boolean {
-        TODO("GPU: build full tool floater UI — wire all button/checkbox/combo children from XML")
+        System.err.println("FloaterTools: postBuild not yet implemented")
+        return false
     }
 
     open fun onOpen(key: Map<String, Any>) {
-        TODO("GPU: restore tool state on open")
+        System.err.println("FloaterTools: onOpen not yet implemented")
     }
 
     open fun canClose(): Boolean = true
 
     open fun onClose(appQuitting: Boolean) {
         resetToolState()
-        TODO("GPU: restore focus to avatar if sPreviousFocusOnAvatar was set")
+        System.err.println("FloaterTools: onClose not yet implemented")
     }
 
     open fun draw() {
@@ -128,15 +129,15 @@ class FloaterTools(private val key: Map<String, Any>) {
             refresh()
             mDirty = false
         }
-        TODO("GPU: draw() — delegate to parent LLFloater draw")
+        // no-op
     }
 
     open fun onFocusReceived() {
-        TODO("GPU: push build tool to LLToolMgr on focus")
+        System.err.println("FloaterTools: onFocusReceived not yet implemented")
     }
 
     fun updatePopup(centerX: Int, centerY: Int, mask: Int) {
-        TODO("GPU: reposition floater popup, update button highlights from LLToolMgr state, mask=$mask")
+        System.err.println("FloaterTools: updatePopup not yet implemented")
     }
 
     fun updateToolsSizeLimits() {
@@ -150,7 +151,7 @@ class FloaterTools(private val key: Map<String, Any>) {
     }
 
     fun resetToolState() {
-        TODO("GPU: clear any transient tool options (grid snap, copy mode, etc.)")
+        System.err.println("FloaterTools: resetToolState not yet implemented")
     }
 
     fun dirty() {
@@ -166,39 +167,43 @@ class FloaterTools(private val key: Map<String, Any>) {
     }
 
     fun setTool(userData: Map<String, Any>) {
-        TODO("GPU: parse tool key from userData and activate via LLToolMgr")
+        System.err.println("FloaterTools: setTool not yet implemented")
     }
 
     fun saveLastTool() {
-        TODO("GPU: persist current active tool to gSavedSettings")
+        System.err.println("FloaterTools: saveLastTool not yet implemented")
     }
 
     fun updateLandImpacts() {
-        TODO("GPU: query LLViewerParcelMgr for current parcel land impact and update UI text")
+        System.err.println("FloaterTools: updateLandImpacts not yet implemented")
     }
 
     fun getTextureDropChannel(): Int {
-        TODO("GPU: return active texture drop channel from FSPanelFace / LLPanelFace")
+        System.err.println("FloaterTools: getTextureDropChannel not yet implemented")
+        return 0
     }
 
     fun getTextureChannelToEdit(): Int {
-        TODO("GPU: return texture channel currently selected for editing")
+        System.err.println("FloaterTools: getTextureChannelToEdit not yet implemented")
+        return 0
     }
 
     fun getPBRDropChannel(): Int {
-        TODO("GPU: return active PBR texture slot from FSPanelFace")
+        System.err.println("FloaterTools: getPBRDropChannel not yet implemented")
+        return 0
     }
 
     fun createDefaultMaterial(oldMat: Any?): Any? {
-        TODO("GPU: clone or construct a default LLMaterial based on oldMat")
+        System.err.println("FloaterTools: createDefaultMaterial not yet implemented")
+        return null
     }
 
     fun refreshPanelFace() {
-        TODO("GPU: trigger refresh on the active face panel (LLPanelFace or FSPanelFace)")
+        System.err.println("FloaterTools: refreshPanelFace not yet implemented")
     }
 
     fun onClickBtnCopyKeys() {
-        TODO("GPU: copy selected object UUIDs to clipboard via LLSelectMgr")
+        System.err.println("FloaterTools: onClickBtnCopyKeys not yet implemented")
     }
 
     fun onClickExpand() {
@@ -210,28 +215,28 @@ class FloaterTools(private val key: Map<String, Any>) {
             mTab?.setVisible(true)
             reshape(getWidth(), mExpandedHeight)
         }
-        TODO("GPU: persist FSToolboxExpanded setting and update button arrow overlay")
+        System.err.println("FloaterTools: onClickExpand not yet implemented")
     }
 
     private fun refresh() {
-        TODO("GPU: refresh all tool panel states from LLSelectMgr / LLToolMgr")
+        System.err.println("FloaterTools: refresh not yet implemented")
     }
 
     private fun onClickGridOptions() {
-        TODO("GPU: open LLFloaterBuildOptions")
+        System.err.println("FloaterTools: onClickGridOptions not yet implemented")
     }
 
     private fun buildTreeGrassCombo() {
-        TODO("GPU: populate mTreeGrassCombo with available tree/grass variants from LLVOTree/LLVOGrass")
+        System.err.println("FloaterTools: buildTreeGrassCombo not yet implemented")
     }
 
     private fun onSelectTreeGrassCombo() {
-        TODO("GPU: apply selected tree/grass pcode to the create tool placer")
+        System.err.println("FloaterTools: onSelectTreeGrassCombo not yet implemented")
     }
 
     private fun getWidth(): Int = 0
     private fun reshape(width: Int, height: Int) {
-        TODO("GPU: reshape floater to ($width × $height)")
+        System.err.println("FloaterTools: reshape not yet implemented")
     }
 
     class Button { fun setEnabled(v: Boolean) {} }

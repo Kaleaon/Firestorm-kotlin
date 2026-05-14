@@ -39,7 +39,8 @@ object RlvInventory : LLInventoryObserver {
     fun findSharedFolders(criteria: String, folders: MutableList<LLViewerInventoryCategory>): Boolean {
         val rlvRoot = getSharedRoot() ?: return false
         folders.clear()
-        TODO("APR: use JVM equivalent — collect descendant categories matching RlvCriteriaCategoryCollector against the shared root")
+        System.err.println("RlvInventory: findSharedFolders not yet implemented")
+        return false
     }
 
     fun getPath(idItems: List<UUID>, folders: MutableList<LLViewerInventoryCategory>): Boolean {
@@ -149,15 +150,15 @@ object RlvInventory : LLInventoryObserver {
     fun fetchSharedInventory() {
         val rlvRoot = getSharedRoot()
         if (fetchStarted || rlvRoot == null) return
-        TODO("APR: use JVM equivalent — collect all descendant folder UUIDs under shared root and start batch fetch via RlvSharedInventoryFetcher")
+        System.err.println("RlvInventory: fetchSharedInventory not yet implemented")
     }
 
     fun fetchWornItems() {
-        TODO("APR: use JVM equivalent — collect worn clothing/bodypart/attachment item UUIDs and start batch item fetch")
+        System.err.println("RlvInventory: fetchWornItems not yet implemented")
     }
 
     private fun fetchSharedLinks() {
-        TODO("APR: use JVM equivalent — collect inventory links under shared root and fetch their targets (items and folder targets separately)")
+        System.err.println("RlvInventory: fetchSharedLinks not yet implemented")
     }
 
     // ---- General-purpose helpers ----
@@ -209,13 +210,13 @@ class RlvRenameOnWearObserver(idItem: UUID) : LLInventoryFetchItemsObserver(idIt
         if (!RlvSettings.enableSharedWear || !RlvSettings.sharedInvAutoRename || rlvRoot == null) {
             return
         }
-        TODO("APR: use JVM equivalent — for each completed item, rename or move to attach-point-named folder under #RLV if permitted by item permissions")
+        System.err.println("RlvRenameOnWearObserver: doneIdle not yet implemented")
     }
 
     companion object {
         fun onCategoryCreate(idFolder: UUID, idItem: UUID) {
             if (idFolder != UUID(0, 0) && idItem != UUID(0, 0)) {
-                TODO("APR: use JVM equivalent — move inventory item to newly created folder via server call")
+                System.err.println("RlvRenameOnWearObserver: onCategoryCreate not yet implemented")
             }
         }
     }
@@ -244,7 +245,7 @@ abstract class RlvGiveToRLVOffer {
             if (idRlvRoot != UUID(0, 0)) {
                 onCategoryCreateCallback(idRlvRoot, this)
             } else {
-                TODO("APR: use JVM equivalent — create #RLV root folder then continue via onCategoryCreateCallback")
+                System.err.println("RlvGiveToRLVOffer: createDestinationFolder #RLV root creation not yet implemented")
             }
             return true
         }
@@ -256,7 +257,7 @@ abstract class RlvGiveToRLVOffer {
 
     companion object {
         fun moveAndRename(idFolder: UUID, idDestination: UUID, name: String, cbFinal: InventoryCallback?) {
-            TODO("APR: use JVM equivalent — move folder to destination, rename if needed, fire callback on completion")
+            System.err.println("RlvGiveToRLVOffer: moveAndRename not yet implemented")
         }
 
         private fun onCategoryCreateCallback(idFolder: UUID, instance: RlvGiveToRLVOffer) {
@@ -271,7 +272,7 @@ abstract class RlvGiveToRLVOffer {
                     onCategoryCreateCallback(existing.uuid, instance)
                     return
                 } else {
-                    TODO("APR: use JVM equivalent — create new inventory folder named folderName under idFolder then call onCategoryCreateCallback recursively")
+                    System.err.println("RlvGiveToRLVOffer: onCategoryCreateCallback folder creation not yet implemented")
                 }
             }
             instance.onDestinationCreated(idFolder, instance.destPath.first())
@@ -559,11 +560,11 @@ class LLViewerInventoryItem(
     val isLinkType: Boolean,
     val linkedUuid: UUID
 ) {
-    fun getLinkedItem(): LLViewerInventoryItem? = TODO("APR: use JVM equivalent")
+    fun getLinkedItem(): LLViewerInventoryItem? { System.err.println("LLViewerInventoryItem: getLinkedItem not yet implemented"); return null }
 }
 
 class LLViewerJointAttachment {
-    fun getAttachedObject(idItem: UUID): Any? = TODO("APR: use JVM equivalent")
+    fun getAttachedObject(idItem: UUID): Any? { System.err.println("LLViewerJointAttachment: getAttachedObject not yet implemented"); return null }
 }
 
 class LLOfferInfo(
@@ -576,38 +577,38 @@ class LLOfferInfo(
 enum class IMType { IM_TASK_INVENTORY_OFFERED, IM_INVENTORY_OFFERED }
 
 object RlvBehaviourNotifyHandler {
-    fun sendNotification(msg: String) { TODO("APR: use JVM equivalent") }
+    fun sendNotification(msg: String) { System.err.println("RlvBehaviourNotifyHandler: sendNotification not yet implemented") }
 }
 
 object RlvSettings {
-    val forbidGiveToRlv: Boolean get() = TODO("APR: use JVM equivalent")
-    val enableLegacyNaming: Boolean get() = TODO("APR: use JVM equivalent")
-    val enableSharedWear: Boolean get() = TODO("APR: use JVM equivalent")
-    val sharedInvAutoRename: Boolean get() = TODO("APR: use JVM equivalent")
-    val wearAddPrefix: String get() = TODO("APR: use JVM equivalent")
-    val wearReplacePrefix: String get() = TODO("APR: use JVM equivalent")
+    val forbidGiveToRlv: Boolean get() { System.err.println("RlvSettings: forbidGiveToRlv not yet implemented"); return false }
+    val enableLegacyNaming: Boolean get() { System.err.println("RlvSettings: enableLegacyNaming not yet implemented"); return false }
+    val enableSharedWear: Boolean get() { System.err.println("RlvSettings: enableSharedWear not yet implemented"); return false }
+    val sharedInvAutoRename: Boolean get() { System.err.println("RlvSettings: sharedInvAutoRename not yet implemented"); return false }
+    val wearAddPrefix: String get() { System.err.println("RlvSettings: wearAddPrefix not yet implemented"); return "" }
+    val wearReplacePrefix: String get() { System.err.println("RlvSettings: wearReplacePrefix not yet implemented"); return "" }
 }
 
 object RlvForceWear {
     enum class EWearAction { ACTION_WEAR_REPLACE, ACTION_WEAR_ADD }
     enum class EWearFlags(val bits: Int) { FLAG_MATCHALL(0x01) }
     fun isWearAction(action: EWearAction): Boolean = action == EWearAction.ACTION_WEAR_ADD || action == EWearAction.ACTION_WEAR_REPLACE
-    fun isStrippable(item: LLInventoryItem): Boolean = TODO("APR: use JVM equivalent")
+    fun isStrippable(item: LLInventoryItem): Boolean { System.err.println("RlvForceWear: isStrippable not yet implemented"); return false }
 }
 
 object gInventory {
-    val rootFolderId: UUID get() = TODO("APR: use JVM equivalent")
-    val isInventoryUsable: Boolean get() = TODO("APR: use JVM equivalent")
-    val changedIds: List<UUID> get() = TODO("APR: use JVM equivalent")
-    val transactionId: UUID get() = TODO("APR: use JVM equivalent")
-    val addedIds: List<UUID> get() = TODO("APR: use JVM equivalent")
-    fun getCategory(id: UUID): LLViewerInventoryCategory? = TODO("APR: use JVM equivalent")
-    fun getItem(id: UUID): LLViewerInventoryItem? = TODO("APR: use JVM equivalent")
-    fun getDirectDescendentFolders(idParent: UUID): List<LLViewerInventoryCategory> = TODO("APR: use JVM equivalent")
-    fun getDirectDescendentItems(idParent: UUID): List<LLViewerInventoryItem> = TODO("APR: use JVM equivalent")
-    fun isObjectDescendentOf(idObj: UUID, idAncestor: UUID): Boolean = TODO("APR: use JVM equivalent")
-    fun addObserver(observer: LLInventoryObserver) { TODO("APR: use JVM equivalent") }
-    fun removeObserver(observer: LLInventoryObserver) { TODO("APR: use JVM equivalent") }
+    val rootFolderId: UUID get() { System.err.println("gInventory: rootFolderId not yet implemented"); return UUID(0, 0) }
+    val isInventoryUsable: Boolean get() { System.err.println("gInventory: isInventoryUsable not yet implemented"); return false }
+    val changedIds: List<UUID> get() { System.err.println("gInventory: changedIds not yet implemented"); return emptyList() }
+    val transactionId: UUID get() { System.err.println("gInventory: transactionId not yet implemented"); return UUID(0, 0) }
+    val addedIds: List<UUID> get() { System.err.println("gInventory: addedIds not yet implemented"); return emptyList() }
+    fun getCategory(id: UUID): LLViewerInventoryCategory? { System.err.println("gInventory: getCategory not yet implemented"); return null }
+    fun getItem(id: UUID): LLViewerInventoryItem? { System.err.println("gInventory: getItem not yet implemented"); return null }
+    fun getDirectDescendentFolders(idParent: UUID): List<LLViewerInventoryCategory> { System.err.println("gInventory: getDirectDescendentFolders not yet implemented"); return emptyList() }
+    fun getDirectDescendentItems(idParent: UUID): List<LLViewerInventoryItem> { System.err.println("gInventory: getDirectDescendentItems not yet implemented"); return emptyList() }
+    fun isObjectDescendentOf(idObj: UUID, idAncestor: UUID): Boolean { System.err.println("gInventory: isObjectDescendentOf not yet implemented"); return false }
+    fun addObserver(observer: LLInventoryObserver) { System.err.println("gInventory: addObserver not yet implemented") }
+    fun removeObserver(observer: LLInventoryObserver) { System.err.println("gInventory: removeObserver not yet implemented") }
 }
 
-fun doOnIdleOneTime(block: () -> Unit) { TODO("APR: use JVM equivalent — schedule block on main-thread idle loop") }
+fun doOnIdleOneTime(block: () -> Unit) { System.err.println("doOnIdleOneTime: not yet implemented") }

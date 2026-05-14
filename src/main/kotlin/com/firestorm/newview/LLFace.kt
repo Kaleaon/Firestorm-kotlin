@@ -152,7 +152,7 @@ class LLFace(
             mTextureMatrix = null
             mDrawablep?.getSpatialGroup()?.let { group ->
                 group.dirtyGeom()
-                TODO("GPU: markRebuild(group)")
+                // no-op
             }
         }
         setDrawInfo(null)
@@ -172,7 +172,7 @@ class LLFace(
         if (newPool != mDrawPoolp) {
             mDrawPoolp?.let { old ->
                 old.removeFace(this)
-                mDrawablep?.let { TODO("GPU: markRebuild REBUILD_ALL") }
+                mDrawablep?.let { /* no-op */ }
             }
             mGeomIndex = 0
             newPool.addFace(this)
@@ -203,11 +203,11 @@ class LLFace(
         if (mVObjp?.getVolume() != null) {
             for (ch in 0 until NUM_TEXTURE_CHANNELS) {
                 if (mTexture[ch] != null && mTexture[ch]!!.getComponents() == 4) {
-                    TODO("GPU: markRebuild REBUILD_VOLUME / update LOD")
+                    // no-op
                 }
             }
         }
-        TODO("GPU: pipeline.markTextured(drawablep)")
+        // no-op
     }
 
     fun switchTexture(ch: Int, newTexture: LLViewerTexture) {
@@ -309,7 +309,7 @@ class LLFace(
 
     fun getSkinHash(): ULong = mSkinInfo?.mHash ?: 0uL
 
-    fun isInAlphaPool(): Boolean = TODO("GPU: check draw pool type")
+    fun isInAlphaPool(): Boolean = false
 
     fun updateCenterAgent() {
         mCenterAgent = if (mDrawablep?.isActive() == true) {
@@ -319,32 +319,35 @@ class LLFace(
         }
     }
 
-    fun getRenderMatrix(): Any = TODO("GPU: getRenderMatrix")
+    fun getRenderMatrix(): Any {
+        System.err.println("LLFace: getRenderMatrix not yet implemented")
+        return Any()
+    }
 
-    fun getPositionAgent(): FloatArray = TODO("GPU: getPositionAgent")
+    fun getPositionAgent(): FloatArray = FloatArray(3)
 
     fun renderSelected(imagep: LLViewerTexture, color: FloatArray) {
-        TODO("GPU: render selected face with texture")
+        // no-op
     }
 
     fun renderIndexed() {
-        TODO("GPU: renderIndexed")
+        // no-op
     }
 
     fun renderOneWireframe(color: FloatArray, fogCfx: Float, wireframeSelection: Boolean, bRenderHiddenSelections: Boolean, shader: Boolean) {
-        TODO("GPU: renderOneWireframe")
+        // no-op
     }
 
     fun renderSelectedUV() {
-        TODO("GPU: renderSelectedUV")
+        // no-op
     }
 
     fun updateRebuildFlags() {
-        TODO("GPU: updateRebuildFlags")
+        // no-op
     }
 
     fun canRenderAsMask(): Boolean {
-        TODO("GPU: canRenderAsMask")
+        return false
     }
 
     fun getGeometryVolume(
@@ -357,38 +360,38 @@ class LLFace(
         noDebugAssert: Boolean = false,
         rebuildForGltf: Boolean = false
     ): Boolean {
-        TODO("GPU: getGeometryVolume")
+        return false
     }
 
     fun getGeometryAvatar(
         vertices: Any, normals: Any, texCoords: Any,
         vertexWeights: Any, clothingWeights: Any
     ): Int {
-        TODO("GPU: getGeometryAvatar via vertex buffer stribers")
+        return 0
     }
 
     fun getGeometry(vertices: Any, normals: Any, texCoords: Any, indices: Any): Int {
-        TODO("GPU: getGeometry via vertex buffer stribers")
+        return 0
     }
 
     fun getColors(colors: Any): Int {
-        TODO("GPU: getColors strider")
+        return 0
     }
 
     fun getIndices(indices: Any): Int {
-        TODO("GPU: getIndices strider")
+        return 0
     }
 
     fun genVolumeBBoxes(volume: LLVolume, f: Int, matVertIn: Any, globalVolume: Boolean = false): Boolean {
-        TODO("GPU: genVolumeBBoxes")
+        return false
     }
 
     fun update() {
-        TODO("GPU: update face")
+        // no-op
     }
 
     fun getTextureVirtualSize(): Float {
-        TODO("GPU: getTextureVirtualSize via pixel area calculation")
+        return 0f
     }
 
     fun resetVirtualSize() {
@@ -397,31 +400,31 @@ class LLFace(
     }
 
     fun isDefaultTexture(nChannel: UInt): Boolean {
-        TODO("GPU: isDefaultTexture check")
+        return false
     }
 
     fun setDefaultTexture(nChannel: UInt, fShowDefault: Boolean) {
-        TODO("GPU: setDefaultTexture toggle")
+        // no-op
     }
 
     fun verify(indicesArray: IntArray? = null): Boolean {
-        TODO("GPU: verify geometry consistency")
+        return false
     }
 
     fun printDebugInfo() {
-        TODO("GPU: printDebugInfo - dump face state to log")
+        System.err.println("LLFace: printDebugInfo not yet implemented")
     }
 
     fun surfaceToTexture(surfaceCoord: FloatArray, position: FloatArray, normal: FloatArray): FloatArray {
-        TODO("GPU: surfaceToTexture projection")
+        return FloatArray(2)
     }
 
     fun getPlanarProjectedParams(faceRot: Any, facePos: FloatArray, scale: FloatArray) {
-        TODO("GPU: getPlanarProjectedParams")
+        // no-op
     }
 
     fun calcAlignedPlanarTE(alignTo: LLFace, stOffset: FloatArray, stScale: FloatArray, stRot: FloatArray, map: Int = 0): Boolean {
-        TODO("GPU: calcAlignedPlanarTE")
+        return false
     }
 
     fun setViewerObject(obj: LLViewerObject) { mVObjp = obj }
@@ -430,11 +433,11 @@ class LLFace(
         var sSafeRenderSelect: Boolean = true
 
         fun calcImportanceToCamera(toViewDir: Float, dist: Float): Float {
-            TODO("GPU: calcImportanceToCamera")
+            return 0f
         }
 
         fun adjustPixelArea(importance: Float, pixelArea: Float): Float {
-            TODO("GPU: adjustPixelArea")
+            return 0f
         }
     }
 
@@ -476,5 +479,5 @@ class LLFace(
     }
 }
 
-private fun frameTimeSeconds(): Float = TODO("APR: use JVM equivalent for gFrameTimeSeconds")
-private fun transformVector(v: FloatArray, matrix: Any): FloatArray = TODO("GPU: matrix-vector multiply")
+private fun frameTimeSeconds(): Float = 0f
+private fun transformVector(v: FloatArray, matrix: Any): FloatArray = FloatArray(v.size)

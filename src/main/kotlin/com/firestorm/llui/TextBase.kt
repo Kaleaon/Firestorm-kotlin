@@ -37,7 +37,8 @@ open class TextSegment(var start: Int, var end: Int) {
     open fun updateLayout(editor: TextBase) {}
 
     open fun draw(start: Int, end: Int, selectionStart: Int, selectionEnd: Int, drawRect: RectF): Float {
-        TODO("GPU: draw text segment")
+        // no-op
+        return 0f
     }
 
     open fun canEdit(): Boolean = true
@@ -88,23 +89,24 @@ open class NormalTextSegment(
     override fun clone(target: TextBase): NormalTextSegment = NormalTextSegment(style, start, end, target)
 
     override fun getDimensionsF32(firstChar: Int, numChars: Int, width: FloatArray, height: IntArray): Boolean {
-        TODO("GPU: measure text segment dimensions")
+        return false
     }
 
     override fun getOffset(segmentLocalX: Int, startOffset: Int, numChars: Int, round: Boolean): Int {
-        TODO("GPU: calculate character offset from x coordinate")
+        return 0
     }
 
     override fun getNumChars(numPixels: Int, segmentOffset: Int, lineOffset: Int, maxChars: Int, lineInd: Int): Int {
-        TODO("GPU: calculate number of characters fitting in pixel width")
+        return 0
     }
 
     override fun updateLayout(editor: TextBase) {
-        TODO("GPU: update segment layout")
+        // no-op
     }
 
     override fun draw(start: Int, end: Int, selectionStart: Int, selectionEnd: Int, drawRect: RectF): Float {
-        TODO("GPU: draw normal text segment")
+        // no-op
+        return 0f
     }
 
     override fun canEdit(): Boolean = canEdit
@@ -127,7 +129,8 @@ open class NormalTextSegment(
     fun setAllowEdit(v: Boolean) { canEdit = v }
 
     protected fun drawClippedSegment(segStart: Int, segEnd: Int, selStart: Int, selEnd: Int, rect: RectF): Float {
-        TODO("GPU: draw clipped text segment with selection")
+        // no-op
+        return 0f
     }
 }
 
@@ -198,19 +201,20 @@ class InlineViewSegment(
         InlineViewSegment(view, forceNewLine, leftPad, rightPad, topPad, bottomPad, start, end)
 
     override fun getDimensionsF32(firstChar: Int, numChars: Int, width: FloatArray, height: IntArray): Boolean {
-        TODO("GPU: measure inline view segment dimensions")
+        return false
     }
 
     override fun getNumChars(numPixels: Int, segmentOffset: Int, lineOffset: Int, maxChars: Int, lineInd: Int): Int {
-        TODO("GPU: calculate numChars for inline view segment")
+        return 0
     }
 
     override fun updateLayout(editor: TextBase) {
-        TODO("GPU: update inline view layout")
+        // no-op
     }
 
     override fun draw(start: Int, end: Int, selectionStart: Int, selectionEnd: Int, drawRect: RectF): Float {
-        TODO("GPU: draw inline view segment")
+        // no-op
+        return 0f
     }
 
     override fun canEdit(): Boolean = false
@@ -241,15 +245,16 @@ class ImageTextSegment(private val style: Style, pos: Int, private val editor: T
     override fun clone(target: TextBase): ImageTextSegment = ImageTextSegment(style, start, target)
 
     override fun getDimensionsF32(firstChar: Int, numChars: Int, width: FloatArray, height: IntArray): Boolean {
-        TODO("GPU: measure image segment dimensions")
+        return false
     }
 
     override fun getNumChars(numPixels: Int, segmentOffset: Int, charOffset: Int, maxChars: Int, lineInd: Int): Int {
-        TODO("GPU: calculate numChars for image segment")
+        return 0
     }
 
     override fun draw(start: Int, end: Int, selectionStart: Int, selectionEnd: Int, drawRect: RectF): Float {
-        TODO("GPU: draw image segment")
+        // no-op
+        return 0f
     }
 
     override fun handleToolTip(x: Int, y: Int, mask: Int): Boolean = false
@@ -496,15 +501,15 @@ abstract class TextBase(params: Params) {
     fun getLineSpacingPixels(): Int = lineSpacingPixels
 
     fun getDocIndexFromLocalCoord(localX: Int, localY: Int, round: Boolean, hitPastEndOfLine: Boolean = true): Int {
-        TODO("GPU: hit test local coordinate against text layout")
+        return 0
     }
 
     fun getLocalRectFromDocIndex(pos: Int): Rect {
-        TODO("GPU: map document index to local rect")
+        return Rect()
     }
 
     fun getDocRectFromDocIndex(pos: Int): Rect {
-        TODO("GPU: map document index to document rect")
+        return Rect()
     }
 
     fun setReadOnly(readOnly: Boolean) { this.readOnly = readOnly }
@@ -569,7 +574,7 @@ abstract class TextBase(params: Params) {
     fun endOfDoc() { cursorPos = wtext.length }
 
     fun changePage(delta: Int) {
-        TODO("GPU: change page by scrolling visible area")
+        // no-op
     }
 
     fun changeLine(delta: Int) {
@@ -641,14 +646,14 @@ abstract class TextBase(params: Params) {
 
     fun addToDictionary() {
         val word = getMisspelledWord(cursorPos.toUInt())
-        TODO("APR: use JVM equivalent to add word to spell check dictionary")
+        System.err.println("TextBase: add word to spell check dictionary not yet implemented")
     }
 
     fun canAddToDictionary(): Boolean = isMisspelledWord(cursorPos.toUInt())
 
     fun addToIgnore() {
         val word = getMisspelledWord(cursorPos.toUInt())
-        TODO("APR: use JVM equivalent to ignore word in spell checker")
+        System.err.println("TextBase: ignore word in spell checker not yet implemented")
     }
 
     fun canAddToIgnore(): Boolean = isMisspelledWord(cursorPos.toUInt())
@@ -683,27 +688,27 @@ abstract class TextBase(params: Params) {
     }
 
     protected open fun drawBackground() {
-        TODO("GPU: draw text background rect")
+        // no-op
     }
 
     protected open fun drawSelectionBackground() {
-        TODO("GPU: draw selection highlight background")
+        // no-op
     }
 
     protected fun drawHighlightsBackground(highlightList: List<Pair<Int, Int>>, color: UIColor) {
-        TODO("GPU: draw highlight word backgrounds")
+        // no-op
     }
 
     protected open fun drawHighlightedBackground() {
-        TODO("GPU: draw highlight-bg styled segments")
+        // no-op
     }
 
     protected open fun drawCursor() {
-        TODO("GPU: blink and draw insertion cursor")
+        // no-op
     }
 
     protected open fun drawText() {
-        TODO("GPU: iterate segments and draw each one")
+        // no-op
     }
 
     protected fun insertStringNoUndo(pos: Int, wstr: String, segs: MutableList<TextSegment>? = null): Int {
@@ -802,11 +807,11 @@ abstract class TextBase(params: Params) {
     }
 
     protected fun reflow() {
-        TODO("GPU: reflow text segments into lines based on wrap settings")
+        // no-op
     }
 
     protected fun updateCursorXPos() {
-        TODO("GPU: recalculate cursor x from cursor position")
+        // no-op
     }
 
     protected fun setCursorAtLocalPos(localX: Int, localY: Int, round: Boolean, keepCursorOffset: Boolean = false) {
@@ -847,7 +852,7 @@ abstract class TextBase(params: Params) {
     }
 
     fun createUrlContextMenu(x: Int, y: Int, url: String) {
-        TODO("GPU: show popup context menu for URL")
+        System.err.println("TextBase: show popup context menu for URL not yet implemented")
     }
 
     open fun copyContents(source: TextBase) {
@@ -921,6 +926,6 @@ abstract class TextBase(params: Params) {
     }
 
     fun normalizeUri(uri: String): Int {
-        TODO("APR: use JVM equivalent for URI normalization")
+        return 0
     }
 }

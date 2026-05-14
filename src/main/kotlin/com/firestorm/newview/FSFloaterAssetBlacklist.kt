@@ -64,7 +64,7 @@ class FSFloaterAssetBlacklist(val key: Any) {
 
     fun closeFloater(appQuitting: Boolean = false) {
         onStopBtn()
-        TODO("Platform: LLFloater::closeFloater()")
+        System.err.println("FSFloaterAssetBlacklist: closeFloater not yet implemented")
     }
 
     fun hasAccelerators(): Boolean = true
@@ -92,7 +92,7 @@ class FSFloaterAssetBlacklist(val key: Any) {
             getChild<ABFilterEditor>("filter_input")?.requestFocus()
             return true
         }
-        TODO("Platform: return LLFloater::handleKeyHere(key, mask)")
+        System.err.println("FSFloaterAssetBlacklist: handleKeyHere not yet implemented")
         return false
     }
 
@@ -202,7 +202,7 @@ class FSFloaterAssetBlacklist(val key: Any) {
     protected fun onRemoveBtn() { removeElements() }
 
     protected fun onRemoveAllTemporaryBtn() {
-        TODO("Platform: gObjectList.resetDerenderList(true)")
+        System.err.println("FSFloaterAssetBlacklist: onRemoveAllTemporaryBtn not yet implemented")
     }
 
     protected fun onPlayBtn() {
@@ -218,7 +218,7 @@ class FSFloaterAssetBlacklist(val key: Any) {
         audioSourceId = UUID.randomUUID()
         ABLAudioEngine.triggerSound(
             soundId  = item.id,
-            ownerId  = TODO("Platform: gAgentID as LLUUID") as LLUUID,
+            ownerId  = LLUUID.NULL,
             gain     = 1.0f,
             audioType = ABLAudioType.UI,
             sourceId = audioSourceId,
@@ -290,26 +290,36 @@ class FSFloaterAssetBlacklist(val key: Any) {
     // Platform stubs
     // -------------------------------------------------------------------------
 
-    private fun getString(key: String): String =
-        TODO("Platform: getString(\"$key\") from floater XUI strings")
+    private fun getString(key: String): String {
+        System.err.println("FSFloaterAssetBlacklist: getString not yet implemented")
+        return ""
+    }
 
-    private fun formatDate(epochMs: Long): String =
-        TODO("Platform: format epochMs using the floater's DateFormatString XUI string")
+    private fun formatDate(epochMs: Long): String {
+        System.err.println("FSFloaterAssetBlacklist: formatDate not yet implemented")
+        return ""
+    }
 
-    private fun <T> getChild(name: String): T? =
-        TODO("Platform: resolve child widget '$name'")
+    private fun <T> getChild(name: String): T? {
+        System.err.println("FSFloaterAssetBlacklist: getChild not yet implemented")
+        return null
+    }
 
-    private fun setChildAction(name: String, action: () -> Unit): Unit =
-        TODO("Platform: childSetAction(\"$name\", action)")
+    private fun setChildAction(name: String, action: () -> Unit): Unit {
+        System.err.println("FSFloaterAssetBlacklist: setChildAction not yet implemented")
+    }
 
-    private fun setFilterEditorCallback(name: String, cb: (String) -> Unit): Unit =
-        TODO("Platform: getChild<LLFilterEditor>(\"$name\").setCommitCallback(cb)")
+    private fun setFilterEditorCallback(name: String, cb: (String) -> Unit): Unit {
+        System.err.println("FSFloaterAssetBlacklist: setFilterEditorCallback not yet implemented")
+    }
 
-    private fun setChildEnabled(name: String, enabled: Boolean): Unit =
-        TODO("Platform: childSetEnabled(\"$name\", $enabled)")
+    private fun setChildEnabled(name: String, enabled: Boolean): Unit {
+        System.err.println("FSFloaterAssetBlacklist: setChildEnabled not yet implemented")
+    }
 
-    private fun setChildVisible(name: String, visible: Boolean): Unit =
-        TODO("Platform: childSetVisible(\"$name\", $visible)")
+    private fun setChildVisible(name: String, visible: Boolean): Unit {
+        System.err.println("FSFloaterAssetBlacklist: setChildVisible not yet implemented")
+    }
 }
 
 // =============================================================================
@@ -324,8 +334,8 @@ class FSFloaterAssetBlacklist(val key: Any) {
 object FSAssetBlacklistMenu {
 
     fun createMenu(): Any {
-        TODO("Platform: register Blacklist.Remove callback; " +
-            "return createFromFile(\"menu_fs_asset_blacklist.xml\")")
+        System.err.println("FSAssetBlacklistMenu: createMenu not yet implemented")
+        return Unit
     }
 
     fun onContextMenuItemClick(param: String) {
@@ -362,38 +372,41 @@ class ABScrollListCtrl {
     var isSorted: Boolean = false
     var onSelectionChanged: (() -> Unit)? = null
 
-    fun clearRows(): Unit = TODO("Platform: mResultList->clearRows()")
-    fun addRow(row: ABScrollListRow): Unit = TODO("Platform: mResultList->addElement(element, ADD_BOTTOM)")
-    fun deleteRows(id: LLUUID): Unit = TODO("Platform: mResultList->deleteItems(id)")
-    fun allSelected(): List<ABScrollListRow> = TODO("Platform: mResultList->getAllSelected()")
-    fun firstSelected(): ABScrollListRow? = TODO("Platform: mResultList->getFirstSelected()")
-    fun columnIndex(name: String): Int? = TODO("Platform: mResultList->getColumn(\"$name\")->mIndex")
-    fun setFilterString(filter: String): Unit = TODO("Platform: mResultList->setFilterString(filter)")
-    fun updateSort(): Unit = TODO("Platform: mResultList->updateSort()")
-    fun updateLayout(): Unit = TODO("Platform: mResultList->updateLayout()")
-    fun setNeedsSort(value: Boolean): Unit = TODO("Platform: mResultList->setNeedsSort($value)")
+    fun clearRows(): Unit { System.err.println("ABScrollListCtrl: clearRows not yet implemented") }
+    fun addRow(row: ABScrollListRow): Unit { System.err.println("ABScrollListCtrl: addRow not yet implemented") }
+    fun deleteRows(id: LLUUID): Unit { System.err.println("ABScrollListCtrl: deleteRows not yet implemented") }
+    fun allSelected(): List<ABScrollListRow> { System.err.println("ABScrollListCtrl: allSelected not yet implemented"); return emptyList() }
+    fun firstSelected(): ABScrollListRow? { System.err.println("ABScrollListCtrl: firstSelected not yet implemented"); return null }
+    fun columnIndex(name: String): Int? { System.err.println("ABScrollListCtrl: columnIndex not yet implemented"); return null }
+    fun setFilterString(filter: String): Unit { System.err.println("ABScrollListCtrl: setFilterString not yet implemented") }
+    fun updateSort(): Unit { System.err.println("ABScrollListCtrl: updateSort not yet implemented") }
+    fun updateLayout(): Unit { System.err.println("ABScrollListCtrl: updateLayout not yet implemented") }
+    fun setNeedsSort(value: Boolean): Unit { System.err.println("ABScrollListCtrl: setNeedsSort not yet implemented") }
 }
 
 /** Stub: filter editor widget. */
 class ABFilterEditor {
-    fun requestFocus(): Unit = TODO("Platform: filter_input->setFocus(true)")
+    fun requestFocus(): Unit { System.err.println("ABFilterEditor: requestFocus not yet implemented") }
 }
 
 /** Stub: audio engine as used by this floater. */
 object ABLAudioEngine {
-    fun findAudioSource(id: UUID): ABLAudioSource? =
-        TODO("Platform: gAudiop->findAudioSource(id)")
+    fun findAudioSource(id: UUID): ABLAudioSource? {
+        System.err.println("ABLAudioEngine: findAudioSource not yet implemented")
+        return null
+    }
     fun triggerSound(
         soundId: LLUUID, ownerId: LLUUID, gain: Float,
         audioType: ABLAudioType, sourceId: UUID,
-    ): Unit =
-        TODO("Platform: gAudiop->triggerSound(soundId, ownerId, gain, audioType, LLVector3d::zero, LLUUID::null, sourceId)")
+    ): Unit {
+        System.err.println("ABLAudioEngine: triggerSound not yet implemented")
+    }
 }
 
 /** Stub: audio source. */
 class ABLAudioSource {
-    val isDone: Boolean get() = TODO("Platform: audio_source->isDone()")
-    fun stop(): Unit = TODO("Platform: audio_source->play(LLUUID::null)")
+    val isDone: Boolean get() { System.err.println("ABLAudioSource: isDone not yet implemented"); return false }
+    fun stop(): Unit { System.err.println("ABLAudioSource: stop not yet implemented") }
 }
 
 enum class ABLAudioType { UI, AMBIENT, OBJECT_MEDIA }

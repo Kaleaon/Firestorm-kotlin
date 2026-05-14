@@ -22,7 +22,8 @@ class InspectObject(objectIdData: Map<String, Any?>) : Inspect() {
     }
 
     fun postBuild(): Boolean {
-        TODO("APR: clear object_name, object_creator, object_description, object_media_url controls; hideButtons(); wire URL-click on object_creator to closeFloater; wire all button commit callbacks; subscribe to LLSelectMgr.mUpdateSignal -> update()")
+        System.err.println("InspectObject: postBuild not yet implemented")
+        return false
     }
 
     override fun onOpen(data: Map<String, Any?>) {
@@ -32,99 +33,99 @@ class InspectObject(objectIdData: Map<String, Any?>) : Inspect() {
 
         repositionInspector(data)
 
-        TODO("APR: find object in gObjectList; clear media focus; deselectAll; selectObjectAndFamily; mark selection as transient; resolve media entry and impl for objectFace")
+        System.err.println("InspectObject: onOpen not yet implemented")
     }
 
     fun onClose(appQuitting: Boolean) {
-        TODO("APR: release mObjectSelection = null; save previousObjectId = objectId; hide gear_btn menu")
+        System.err.println("InspectObject: onClose not yet implemented")
     }
 
     fun onMouseLeave(x: Int, y: Int, mask: Int) {
-        TODO("APR: only unpause fade timer if gear menu is not visible and no child popup menu is visible")
+        System.err.println("InspectObject: onMouseLeave not yet implemented")
     }
 
     private fun update() {
-        TODO("APR: bail if not visible; get first root node from LLSelectMgr selection; if !nodep.mValid and same as previous object, return; call updateButtons, updateName, updateDescription, updateCreator, updatePrice, updateMediaCurrentURL, updateSecureBrowsing")
+        System.err.println("InspectObject: update not yet implemented")
     }
 
     private fun hideButtons() {
-        TODO("APR: setVisible(false) on buy_btn, pay_btn, take_free_copy_btn, touch_btn, sit_btn, open_btn")
+        System.err.println("InspectObject: hideButtons not yet implemented")
     }
 
     private fun updateButtons(nodeValid: Boolean, objectFlags: Int, parentFlags: Int, forCopy: Boolean, forSale: Boolean, price: Int, clickAction: UByte) {
         hideButtons()
-        TODO("APR: choose the highest-priority visible button: free-copy > buy > pay > sit(click-action) > touch(handleTouch flag) > open > sit(default); also apply RLV canTouch/canSit checks on touch_btn and sit_btn; call focusFirstItem(false, false)")
+        System.err.println("InspectObject: updateButtons not yet implemented")
     }
 
     private fun updateSitLabel(sitName: String) {
-        TODO("APR: set sit_btn label to sitName if non-empty else getString('Sit'); if RLV enabled, enable/disable based on RlvActions.canSit(pick.object, pick.offset)")
+        System.err.println("InspectObject: updateSitLabel not yet implemented")
     }
 
     private fun updateTouchLabel(touchName: String) {
-        TODO("APR: set touch_btn label to touchName if non-empty else getString('Touch')")
+        System.err.println("InspectObject: updateTouchLabel not yet implemented")
     }
 
     private fun updateName(name: String) {
         val displayName = name.ifEmpty { "Tooltip_No_Name" }
-        TODO("APR: set object_name control value to displayName")
+        System.err.println("InspectObject: updateName not yet implemented")
     }
 
     private fun updateDescription(description: String) {
         val desc = if (description == "(No Description)") "" else description
-        TODO("APR: set object_description textbox value to desc")
+        System.err.println("InspectObject: updateDescription not yet implemented")
     }
 
     private fun updatePrice(forCopy: Boolean, forSale: Boolean, price: Int) {
-        TODO("APR: display 'Free' if forCopy or price==0; display formatted price if forSale; show/hide price_icon accordingly")
+        System.err.println("InspectObject: updatePrice not yet implemented")
     }
 
     private fun updateCreator(creatorId: UUID, ownerId: UUID, groupOwned: Boolean, nodeValid: Boolean) {
-        TODO("APR: if nodeValid, build SLURL links for creator and owner (RLV-anonym if canShowName() returns false for nearby avatars); choose 'Creator' or 'CreatorAndOwner' string; set object_creator control value")
+        System.err.println("InspectObject: updateCreator not yet implemented")
     }
 
     private fun updateMediaCurrentURL() {
-        TODO("APR: determine current URL from media plugin (location or mediaURL depending on pluginSupportsMediaTime); fall back to mediaEntry.currentURL; set object_media_url textbox text and tooltip")
+        System.err.println("InspectObject: updateMediaCurrentURL not yet implemented")
     }
 
     private fun updateSecureBrowsing() {
-        TODO("APR: determine current URL from media impl/plugin; set secure_browsing control visible iff URL starts with 'https://'")
+        System.err.println("InspectObject: updateSecureBrowsing not yet implemented")
     }
 
     private fun onClickBuy() {
-        TODO("APR: handle_buy(); close floater")
+        System.err.println("InspectObject: onClickBuy not yet implemented")
     }
 
     private fun onClickPay() {
-        TODO("APR: handle_give_money_dialog(); close floater")
+        System.err.println("InspectObject: onClickPay not yet implemented")
     }
 
     private fun onClickTakeFreeCopy() {
-        TODO("APR: if forCopy call handle_take_copy() else call handle_buy(); close floater")
+        System.err.println("InspectObject: onClickTakeFreeCopy not yet implemented")
     }
 
     private fun onClickTouch() {
-        TODO("APR: handle_object_touch(); close floater")
+        System.err.println("InspectObject: onClickTouch not yet implemented")
     }
 
     private fun onClickSit() {
-        TODO("APR: if currently sitting on this object, standUp() (check RLV canStand); else handle_object_sit(objectId); close floater")
+        System.err.println("InspectObject: onClickSit not yet implemented")
     }
 
     private fun onClickOpen() {
-        TODO("APR: LLFloaterReg.showInstance('openobject'); close floater")
+        System.err.println("InspectObject: onClickOpen not yet implemented")
     }
 
     private fun onClickMoreInfo() {
-        TODO("APR: LLFloaterReg.showInstance('task_properties'); close floater")
+        System.err.println("InspectObject: onClickMoreInfo not yet implemented")
     }
 
     private fun onClickZoomIn() {
-        TODO("APR: handle_look_at_selection('zoom'); close floater")
+        System.err.println("InspectObject: onClickZoomIn not yet implemented")
     }
 
     companion object {
         fun registerFloater() {
-            TODO("APR: LLFloaterReg.add(\"inspect_object\", \"inspect_object.xml\", build<InspectObject>)")
+            System.err.println("InspectObject: registerFloater not yet implemented")
         }
     }
 }

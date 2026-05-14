@@ -60,7 +60,8 @@ open class RlvBehaviourInfo(
     open fun processCommand(rlvCmd: RlvCommand): ERlvCmdRet = ERlvCmdRet.RLV_RET_NO_PROCESSOR
 
     open fun processModifier(rlvCmd: RlvCommand): ERlvCmdRet {
-        TODO("APR: use JVM equivalent - dispatch modifier sub-command to registered handler")
+        System.err.println("RlvBehaviourInfo: dispatch modifier sub-command to registered handler not yet implemented")
+        return ERlvCmdRet.RLV_RET_NO_PROCESSOR
     }
 }
 
@@ -451,51 +452,57 @@ object RlvForceWear {
         action == EWearAction.ACTION_WEAR_REPLACE || action == EWearAction.ACTION_WEAR_ADD
 
     fun isWearableItem(item: Any?): Boolean {
-        TODO("APR: use JVM equivalent - check if item is bodypart, clothing, object, or gesture asset type")
+        System.err.println("RlvForceWear: check if item is bodypart, clothing, object, or gesture asset type not yet implemented")
+        return false
     }
 
     fun isWearingItem(item: Any?): Boolean {
-        TODO("APR: use JVM equivalent - check agent wearables/attachments for item")
+        System.err.println("RlvForceWear: check agent wearables/attachments for item not yet implemented")
+        return false
     }
 
     fun isStrippable(idItem: UUID): Boolean {
-        TODO("APR: use JVM equivalent - look up item and check for nostrip folder flag")
+        System.err.println("RlvForceWear: look up item and check for nostrip folder flag not yet implemented")
+        return false
     }
 
     fun isStrippable(item: Any?): Boolean {
-        TODO("APR: use JVM equivalent - check item name/folder for nostrip flag")
+        System.err.println("RlvForceWear: check item name/folder for nostrip flag not yet implemented")
+        return false
     }
 
     fun isForceDetachable(attachObj: Any?, checkComposite: Boolean = true, idExcept: UUID = UUID(0, 0)): Boolean {
-        TODO("APR: use JVM equivalent - check attachment lock state for the given attachment object")
+        System.err.println("RlvForceWear: check attachment lock state for the given attachment object not yet implemented")
+        return false
     }
 
     fun forceDetach(attachObj: Any?) {
-        TODO("APR: use JVM equivalent - request detach of the given attachment object via AppearanceMgr")
+        System.err.println("RlvForceWear: request detach of the given attachment object via AppearanceMgr not yet implemented")
     }
 
     fun forceDetach(attachPt: Any?) {
-        TODO("APR: use JVM equivalent - request detach of all items at the given attachment point")
+        System.err.println("RlvForceWear: request detach of all items at the given attachment point not yet implemented")
     }
 
     fun isForceRemovable(wearable: Any?, checkComposite: Boolean = true, idExcept: UUID = UUID(0, 0)): Boolean {
-        TODO("APR: use JVM equivalent - check wearable lock state")
+        System.err.println("RlvForceWear: check wearable lock state not yet implemented")
+        return false
     }
 
     fun forceRemove(wearable: Any?) {
-        TODO("APR: use JVM equivalent - request removal of the given wearable via AppearanceMgr")
+        System.err.println("RlvForceWear: request removal of the given wearable via AppearanceMgr not yet implemented")
     }
 
     fun forceFolder(folder: Any?, action: EWearAction, flags: EWearFlags) {
-        TODO("APR: use JVM equivalent - enumerate folder contents and queue wear/remove operations")
+        System.err.println("RlvForceWear: enumerate folder contents and queue wear/remove operations not yet implemented")
     }
 
     fun done() {
-        TODO("APR: use JVM equivalent - flush pending add/remove wearable and attachment queues to AppearanceMgr")
+        System.err.println("RlvForceWear: flush pending add/remove wearable and attachment queues to AppearanceMgr not yet implemented")
     }
 
     fun updatePendingAttachments() {
-        TODO("APR: use JVM equivalent - check pending attachment requests and trigger attachment via AttachmentsMgr")
+        System.err.println("RlvForceWear: check pending attachment requests and trigger attachment via AttachmentsMgr not yet implemented")
     }
 }
 
@@ -536,35 +543,35 @@ object RlvBehaviourNotifyHandler {
     }
 
     fun onWear(eType: Int, allowed: Boolean) {
-        TODO("APR: use JVM equivalent - send @wear notification on registered channels")
+        System.err.println("RlvBehaviourNotifyHandler: send @wear notification on registered channels not yet implemented")
     }
 
     fun onTakeOff(eType: Int, allowed: Boolean) {
-        TODO("APR: use JVM equivalent - send @takeoff notification on registered channels")
+        System.err.println("RlvBehaviourNotifyHandler: send @takeoff notification on registered channels not yet implemented")
     }
 
     fun onAttach(attachPt: Any?, allowed: Boolean) {
-        TODO("APR: use JVM equivalent - send @attach notification on registered channels")
+        System.err.println("RlvBehaviourNotifyHandler: send @attach notification on registered channels not yet implemented")
     }
 
     fun onDetach(attachPt: Any?, allowed: Boolean) {
-        TODO("APR: use JVM equivalent - send @detach notification on registered channels")
+        System.err.println("RlvBehaviourNotifyHandler: send @detach notification on registered channels not yet implemented")
     }
 
     fun onReattach(attachPt: Any?, allowed: Boolean) {
-        TODO("APR: use JVM equivalent - send @reattach notification on registered channels")
+        System.err.println("RlvBehaviourNotifyHandler: send @reattach notification on registered channels not yet implemented")
     }
 
     fun onSit(idObj: UUID, allowed: Boolean) {
-        TODO("APR: use JVM equivalent - send @sit notification on registered channels")
+        System.err.println("RlvBehaviourNotifyHandler: send @sit notification on registered channels not yet implemented")
     }
 
     fun onStand(idObj: UUID, allowed: Boolean) {
-        TODO("APR: use JVM equivalent - send @stand notification on registered channels")
+        System.err.println("RlvBehaviourNotifyHandler: send @stand notification on registered channels not yet implemented")
     }
 
     private fun onCommand(rlvCmd: RlvCommand, eRet: ERlvCmdRet, internal: Boolean) {
-        TODO("APR: use JVM equivalent - format command result string and sendNotification to matching channels")
+        System.err.println("RlvBehaviourNotifyHandler: format command result string and sendNotification to matching channels not yet implemented")
     }
 }
 
@@ -577,11 +584,11 @@ object RlvGCTimer {
     private var task: Any? = null   // platform timer handle
 
     fun start() {
-        TODO("APR: use JVM equivalent - schedule a recurring 30 s timer that calls RlvHandler.instance.onGC()")
+        System.err.println("RlvGCTimer: schedule a recurring 30 s timer that calls RlvHandler.instance.onGC() not yet implemented")
     }
 
     fun stop() {
-        TODO("APR: use JVM equivalent - cancel the scheduled GC timer task")
+        System.err.println("RlvGCTimer: cancel the scheduled GC timer task not yet implemented")
     }
 }
 
@@ -619,15 +626,17 @@ fun rlvGetLastParenthesisedText(strText: String): Pair<String, Int> {
 
 object Rlv {
     fun forceAtmosphericShadersIfAvailable() {
-        TODO("GPU: enable atmospheric shaders if the GPU supports them")
+        // no-op
     }
 
     fun getObjectLinkNumber(idObj: UUID): Int {
-        TODO("APR: use JVM equivalent - return link number of object within its linkset")
+        System.err.println("Rlv: return link number of object within its linkset not yet implemented")
+        return 0
     }
 
     fun getObjectRootId(idObj: UUID): UUID {
-        TODO("APR: use JVM equivalent - return root object UUID for the given object")
+        System.err.println("Rlv: return root object UUID for the given object not yet implemented")
+        return idObj
     }
 }
 

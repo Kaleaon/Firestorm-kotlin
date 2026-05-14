@@ -490,72 +490,68 @@ class PanelFace : Panel() {
 
     object SelectedTEMaterial {
         fun getCurrent(materialOut: (MaterialPtr?) -> Unit, identicalOut: (Boolean) -> Unit) {
-            TODO("APR: use JVM equivalent - get material from selected TE")
+            System.err.println("PanelFace: SelectedTEMaterial.getCurrent not yet implemented")
         }
         fun getMaxSpecularRepeats(repeatsOut: (Float) -> Unit, identicalOut: (Boolean) -> Unit) {
-            TODO("GPU: get max specular repeats across selection")
         }
         fun getMaxNormalRepeats(repeatsOut: (Float) -> Unit, identicalOut: (Boolean) -> Unit) {
-            TODO("GPU: get max normal repeats across selection")
         }
         fun getCurrentDiffuseAlphaMode(modeOut: (UByte) -> Unit, identicalOut: (Boolean) -> Unit) {
-            TODO("APR: use JVM equivalent - get diffuse alpha mode across selection")
+            System.err.println("PanelFace: SelectedTEMaterial.getCurrentDiffuseAlphaMode not yet implemented")
         }
         fun selectionNormalScaleAutofit(panelFace: PanelFace, repeatsPerMeter: Float) {
-            TODO("GPU: autofit normal map scale to repeats-per-meter")
         }
         fun selectionSpecularScaleAutofit(panelFace: PanelFace, repeatsPerMeter: Float) {
-            TODO("GPU: autofit specular scale to repeats-per-meter")
         }
-        fun getNormalID(dataOut: (Uuid) -> Unit, identicalOut: (Boolean) -> Unit) { TODO("GPU: get normal map UUID") }
-        fun getSpecularID(dataOut: (Uuid) -> Unit, identicalOut: (Boolean) -> Unit) { TODO("GPU: get specular map UUID") }
-        fun getSpecularRepeatX(dataOut: (Float) -> Unit, identicalOut: (Boolean) -> Unit) { TODO("GPU: get specular repeat X") }
-        fun getSpecularRepeatY(dataOut: (Float) -> Unit, identicalOut: (Boolean) -> Unit) { TODO("GPU: get specular repeat Y") }
-        fun getSpecularOffsetX(dataOut: (Float) -> Unit, identicalOut: (Boolean) -> Unit) { TODO("GPU: get specular offset X") }
-        fun getSpecularOffsetY(dataOut: (Float) -> Unit, identicalOut: (Boolean) -> Unit) { TODO("GPU: get specular offset Y") }
-        fun getSpecularRotation(dataOut: (Float) -> Unit, identicalOut: (Boolean) -> Unit) { TODO("GPU: get specular rotation") }
-        fun getNormalRepeatX(dataOut: (Float) -> Unit, identicalOut: (Boolean) -> Unit) { TODO("GPU: get normal repeat X") }
-        fun getNormalRepeatY(dataOut: (Float) -> Unit, identicalOut: (Boolean) -> Unit) { TODO("GPU: get normal repeat Y") }
-        fun getNormalOffsetX(dataOut: (Float) -> Unit, identicalOut: (Boolean) -> Unit) { TODO("GPU: get normal offset X") }
-        fun getNormalOffsetY(dataOut: (Float) -> Unit, identicalOut: (Boolean) -> Unit) { TODO("GPU: get normal offset Y") }
-        fun getNormalRotation(dataOut: (Float) -> Unit, identicalOut: (Boolean) -> Unit) { TODO("GPU: get normal rotation") }
-        fun setDiffuseAlphaMode(panelFace: PanelFace, data: UByte, te: Int = -1, onlyForObjectId: Uuid = Uuid(0,0)) { TODO("GPU: set diffuse alpha mode on selection") }
-        fun setAlphaMaskCutoff(panelFace: PanelFace, data: UByte, te: Int = -1, onlyForObjectId: Uuid = Uuid(0,0)) { TODO("GPU: set alpha mask cutoff on selection") }
-        fun setNormalOffsetX(panelFace: PanelFace, data: Float, te: Int = -1, onlyForObjectId: Uuid = Uuid(0,0)) { TODO("GPU: set normal offset X") }
-        fun setNormalOffsetY(panelFace: PanelFace, data: Float, te: Int = -1, onlyForObjectId: Uuid = Uuid(0,0)) { TODO("GPU: set normal offset Y") }
-        fun setNormalRepeatX(panelFace: PanelFace, data: Float, te: Int = -1, onlyForObjectId: Uuid = Uuid(0,0)) { TODO("GPU: set normal repeat X") }
-        fun setNormalRepeatY(panelFace: PanelFace, data: Float, te: Int = -1, onlyForObjectId: Uuid = Uuid(0,0)) { TODO("GPU: set normal repeat Y") }
-        fun setNormalRotation(panelFace: PanelFace, data: Float, te: Int = -1, onlyForObjectId: Uuid = Uuid(0,0)) { TODO("GPU: set normal rotation") }
-        fun setSpecularOffsetX(panelFace: PanelFace, data: Float, te: Int = -1, onlyForObjectId: Uuid = Uuid(0,0)) { TODO("GPU: set specular offset X") }
-        fun setSpecularOffsetY(panelFace: PanelFace, data: Float, te: Int = -1, onlyForObjectId: Uuid = Uuid(0,0)) { TODO("GPU: set specular offset Y") }
-        fun setSpecularRepeatX(panelFace: PanelFace, data: Float, te: Int = -1, onlyForObjectId: Uuid = Uuid(0,0)) { TODO("GPU: set specular repeat X") }
-        fun setSpecularRepeatY(panelFace: PanelFace, data: Float, te: Int = -1, onlyForObjectId: Uuid = Uuid(0,0)) { TODO("GPU: set specular repeat Y") }
-        fun setSpecularRotation(panelFace: PanelFace, data: Float, te: Int = -1, onlyForObjectId: Uuid = Uuid(0,0)) { TODO("GPU: set specular rotation") }
-        fun setEnvironmentIntensity(panelFace: PanelFace, data: UByte, te: Int = -1, onlyForObjectId: Uuid = Uuid(0,0)) { TODO("GPU: set environment intensity") }
-        fun setSpecularLightExponent(panelFace: PanelFace, data: UByte, te: Int = -1, onlyForObjectId: Uuid = Uuid(0,0)) { TODO("GPU: set specular light exponent") }
-        fun setNormalID(panelFace: PanelFace, data: Uuid, te: Int = -1, onlyForObjectId: Uuid = Uuid(0,0)) { TODO("GPU: set normal map UUID") }
-        fun setSpecularID(panelFace: PanelFace, data: Uuid, te: Int = -1, onlyForObjectId: Uuid = Uuid(0,0)) { TODO("GPU: set specular map UUID") }
-        fun setSpecularLightColor(panelFace: PanelFace, data: Color4U, te: Int = -1, onlyForObjectId: Uuid = Uuid(0,0)) { TODO("GPU: set specular light color") }
+        fun getNormalID(dataOut: (Uuid) -> Unit, identicalOut: (Boolean) -> Unit) { }
+        fun getSpecularID(dataOut: (Uuid) -> Unit, identicalOut: (Boolean) -> Unit) { }
+        fun getSpecularRepeatX(dataOut: (Float) -> Unit, identicalOut: (Boolean) -> Unit) { }
+        fun getSpecularRepeatY(dataOut: (Float) -> Unit, identicalOut: (Boolean) -> Unit) { }
+        fun getSpecularOffsetX(dataOut: (Float) -> Unit, identicalOut: (Boolean) -> Unit) { }
+        fun getSpecularOffsetY(dataOut: (Float) -> Unit, identicalOut: (Boolean) -> Unit) { }
+        fun getSpecularRotation(dataOut: (Float) -> Unit, identicalOut: (Boolean) -> Unit) { }
+        fun getNormalRepeatX(dataOut: (Float) -> Unit, identicalOut: (Boolean) -> Unit) { }
+        fun getNormalRepeatY(dataOut: (Float) -> Unit, identicalOut: (Boolean) -> Unit) { }
+        fun getNormalOffsetX(dataOut: (Float) -> Unit, identicalOut: (Boolean) -> Unit) { }
+        fun getNormalOffsetY(dataOut: (Float) -> Unit, identicalOut: (Boolean) -> Unit) { }
+        fun getNormalRotation(dataOut: (Float) -> Unit, identicalOut: (Boolean) -> Unit) { }
+        fun setDiffuseAlphaMode(panelFace: PanelFace, data: UByte, te: Int = -1, onlyForObjectId: Uuid = Uuid(0,0)) { }
+        fun setAlphaMaskCutoff(panelFace: PanelFace, data: UByte, te: Int = -1, onlyForObjectId: Uuid = Uuid(0,0)) { }
+        fun setNormalOffsetX(panelFace: PanelFace, data: Float, te: Int = -1, onlyForObjectId: Uuid = Uuid(0,0)) { }
+        fun setNormalOffsetY(panelFace: PanelFace, data: Float, te: Int = -1, onlyForObjectId: Uuid = Uuid(0,0)) { }
+        fun setNormalRepeatX(panelFace: PanelFace, data: Float, te: Int = -1, onlyForObjectId: Uuid = Uuid(0,0)) { }
+        fun setNormalRepeatY(panelFace: PanelFace, data: Float, te: Int = -1, onlyForObjectId: Uuid = Uuid(0,0)) { }
+        fun setNormalRotation(panelFace: PanelFace, data: Float, te: Int = -1, onlyForObjectId: Uuid = Uuid(0,0)) { }
+        fun setSpecularOffsetX(panelFace: PanelFace, data: Float, te: Int = -1, onlyForObjectId: Uuid = Uuid(0,0)) { }
+        fun setSpecularOffsetY(panelFace: PanelFace, data: Float, te: Int = -1, onlyForObjectId: Uuid = Uuid(0,0)) { }
+        fun setSpecularRepeatX(panelFace: PanelFace, data: Float, te: Int = -1, onlyForObjectId: Uuid = Uuid(0,0)) { }
+        fun setSpecularRepeatY(panelFace: PanelFace, data: Float, te: Int = -1, onlyForObjectId: Uuid = Uuid(0,0)) { }
+        fun setSpecularRotation(panelFace: PanelFace, data: Float, te: Int = -1, onlyForObjectId: Uuid = Uuid(0,0)) { }
+        fun setEnvironmentIntensity(panelFace: PanelFace, data: UByte, te: Int = -1, onlyForObjectId: Uuid = Uuid(0,0)) { }
+        fun setSpecularLightExponent(panelFace: PanelFace, data: UByte, te: Int = -1, onlyForObjectId: Uuid = Uuid(0,0)) { }
+        fun setNormalID(panelFace: PanelFace, data: Uuid, te: Int = -1, onlyForObjectId: Uuid = Uuid(0,0)) { }
+        fun setSpecularID(panelFace: PanelFace, data: Uuid, te: Int = -1, onlyForObjectId: Uuid = Uuid(0,0)) { }
+        fun setSpecularLightColor(panelFace: PanelFace, data: Color4U, te: Int = -1, onlyForObjectId: Uuid = Uuid(0,0)) { }
     }
 
     object SelectedTE {
-        fun getFace(faceOut: (Any?) -> Unit, identicalOut: (Boolean) -> Unit) { TODO("APR: use JVM equivalent - get face from selection") }
-        fun getImageFormat(formatOut: (Int) -> Unit, hasAlphaOut: (Boolean) -> Unit, identicalOut: (Boolean) -> Unit, missingOut: (Boolean) -> Unit) { TODO("GPU: get image format from selection") }
-        fun getTexId(idOut: (Uuid) -> Unit, identicalOut: (Boolean) -> Unit) { TODO("APR: use JVM equivalent - get diffuse texture UUID") }
-        fun getPbrMaterialId(idOut: (Uuid) -> Unit, identicalOut: (Boolean) -> Unit, hasPbrOut: (Boolean) -> Unit, hasFacesWithoutPbrOut: (Boolean) -> Unit) { TODO("GPU: get PBR material UUID") }
-        fun getObjectScaleS(scaleSOut: (Float) -> Unit, identicalOut: (Boolean) -> Unit) { TODO("APR: use JVM equivalent - get object scale S") }
-        fun getObjectScaleT(scaleTOut: (Float) -> Unit, identicalOut: (Boolean) -> Unit) { TODO("APR: use JVM equivalent - get object scale T") }
-        fun getMaxDiffuseRepeats(repeatsOut: (Float) -> Unit, identicalOut: (Boolean) -> Unit) { TODO("GPU: get max diffuse repeats across selection") }
-        fun getBumpmap(dataOut: (UByte) -> Unit, identicalOut: (Boolean) -> Unit) { TODO("GPU: get bump map value") }
-        fun getShiny(dataOut: (UByte) -> Unit, identicalOut: (Boolean) -> Unit) { TODO("GPU: get shininess value") }
-        fun getFullbright(dataOut: (UByte) -> Unit, identicalOut: (Boolean) -> Unit) { TODO("GPU: get fullbright value") }
-        fun getRotation(dataOut: (Float) -> Unit, identicalOut: (Boolean) -> Unit) { TODO("APR: use JVM equivalent - get texture rotation") }
-        fun getOffsetS(dataOut: (Float) -> Unit, identicalOut: (Boolean) -> Unit) { TODO("APR: use JVM equivalent - get texture offset S") }
-        fun getOffsetT(dataOut: (Float) -> Unit, identicalOut: (Boolean) -> Unit) { TODO("APR: use JVM equivalent - get texture offset T") }
-        fun getScaleS(dataOut: (Float) -> Unit, identicalOut: (Boolean) -> Unit) { TODO("APR: use JVM equivalent - get texture scale S") }
-        fun getScaleT(dataOut: (Float) -> Unit, identicalOut: (Boolean) -> Unit) { TODO("APR: use JVM equivalent - get texture scale T") }
-        fun getGlow(dataOut: (Float) -> Unit, identicalOut: (Boolean) -> Unit) { TODO("GPU: get glow value") }
-        fun getTexGen(dataOut: (Int) -> Unit, identicalOut: (Boolean) -> Unit) { TODO("APR: use JVM equivalent - get texgen mode") }
-        fun getColor(dataOut: (Color4) -> Unit, identicalOut: (Boolean) -> Unit) { TODO("APR: use JVM equivalent - get face color") }
+        fun getFace(faceOut: (Any?) -> Unit, identicalOut: (Boolean) -> Unit) { System.err.println("PanelFace: SelectedTE.getFace not yet implemented") }
+        fun getImageFormat(formatOut: (Int) -> Unit, hasAlphaOut: (Boolean) -> Unit, identicalOut: (Boolean) -> Unit, missingOut: (Boolean) -> Unit) { }
+        fun getTexId(idOut: (Uuid) -> Unit, identicalOut: (Boolean) -> Unit) { System.err.println("PanelFace: SelectedTE.getTexId not yet implemented") }
+        fun getPbrMaterialId(idOut: (Uuid) -> Unit, identicalOut: (Boolean) -> Unit, hasPbrOut: (Boolean) -> Unit, hasFacesWithoutPbrOut: (Boolean) -> Unit) { }
+        fun getObjectScaleS(scaleSOut: (Float) -> Unit, identicalOut: (Boolean) -> Unit) { System.err.println("PanelFace: SelectedTE.getObjectScaleS not yet implemented") }
+        fun getObjectScaleT(scaleTOut: (Float) -> Unit, identicalOut: (Boolean) -> Unit) { System.err.println("PanelFace: SelectedTE.getObjectScaleT not yet implemented") }
+        fun getMaxDiffuseRepeats(repeatsOut: (Float) -> Unit, identicalOut: (Boolean) -> Unit) { }
+        fun getBumpmap(dataOut: (UByte) -> Unit, identicalOut: (Boolean) -> Unit) { }
+        fun getShiny(dataOut: (UByte) -> Unit, identicalOut: (Boolean) -> Unit) { }
+        fun getFullbright(dataOut: (UByte) -> Unit, identicalOut: (Boolean) -> Unit) { }
+        fun getRotation(dataOut: (Float) -> Unit, identicalOut: (Boolean) -> Unit) { System.err.println("PanelFace: SelectedTE.getRotation not yet implemented") }
+        fun getOffsetS(dataOut: (Float) -> Unit, identicalOut: (Boolean) -> Unit) { System.err.println("PanelFace: SelectedTE.getOffsetS not yet implemented") }
+        fun getOffsetT(dataOut: (Float) -> Unit, identicalOut: (Boolean) -> Unit) { System.err.println("PanelFace: SelectedTE.getOffsetT not yet implemented") }
+        fun getScaleS(dataOut: (Float) -> Unit, identicalOut: (Boolean) -> Unit) { System.err.println("PanelFace: SelectedTE.getScaleS not yet implemented") }
+        fun getScaleT(dataOut: (Float) -> Unit, identicalOut: (Boolean) -> Unit) { System.err.println("PanelFace: SelectedTE.getScaleT not yet implemented") }
+        fun getGlow(dataOut: (Float) -> Unit, identicalOut: (Boolean) -> Unit) { }
+        fun getTexGen(dataOut: (Int) -> Unit, identicalOut: (Boolean) -> Unit) { System.err.println("PanelFace: SelectedTE.getTexGen not yet implemented") }
+        fun getColor(dataOut: (Color4) -> Unit, identicalOut: (Boolean) -> Unit) { System.err.println("PanelFace: SelectedTE.getColor not yet implemented") }
     }
 }

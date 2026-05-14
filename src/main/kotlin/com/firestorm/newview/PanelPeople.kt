@@ -415,23 +415,26 @@ class PanelPeople : Panel(), FriendObserver, VoiceClientStatusObserver {
     }
 
     private fun onGroupsViewSortMenuItemClicked(userdata: LLSD) {
-        TODO("APR: use JVM equivalent - change groups list sort order")
+        System.err.println("PanelPeople: onGroupsViewSortMenuItemClicked not yet implemented")
     }
 
     private fun onRecentViewSortMenuItemClicked(userdata: LLSD) {
-        TODO("APR: use JVM equivalent - change recent list sort order")
+        System.err.println("PanelPeople: onRecentViewSortMenuItemClicked not yet implemented")
     }
 
     private fun onFriendsViewSortMenuItemCheck(userdata: LLSD): Boolean {
-        TODO("APR: use JVM equivalent - return whether this sort order is active")
+        System.err.println("PanelPeople: onFriendsViewSortMenuItemCheck not yet implemented")
+        return false
     }
 
     private fun onRecentViewSortMenuItemCheck(userdata: LLSD): Boolean {
-        TODO("APR: use JVM equivalent - return whether this sort order is active")
+        System.err.println("PanelPeople: onRecentViewSortMenuItemCheck not yet implemented")
+        return false
     }
 
     private fun onNearbyViewSortMenuItemCheck(userdata: LLSD): Boolean {
-        TODO("APR: use JVM equivalent - return whether this sort order is active")
+        System.err.println("PanelPeople: onNearbyViewSortMenuItemCheck not yet implemented")
+        return false
     }
 
     private fun onFriendsAccordionExpandedCollapsed(ctrl: UICtrl, param: LLSD, avatarList: AvatarList) {
@@ -441,11 +444,11 @@ class PanelPeople : Panel(), FriendObserver, VoiceClientStatusObserver {
     }
 
     private fun showAccordion(tab: AccordionCtrlTab, show: Boolean) {
-        TODO("APR: use JVM equivalent - show/hide accordion tab")
+        System.err.println("PanelPeople: showAccordion not yet implemented")
     }
 
     private fun showFriendsAccordionsIfNeeded() {
-        TODO("APR: use JVM equivalent - make friends online/all accordion tabs visible")
+        System.err.println("PanelPeople: showFriendsAccordionsIfNeeded not yet implemented")
     }
 
     private fun onFriendListRefreshComplete(ctrl: UICtrl, param: LLSD) {

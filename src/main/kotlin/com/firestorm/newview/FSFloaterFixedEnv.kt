@@ -109,11 +109,11 @@ abstract class FloaterEditEnvironmentBase(val seed: LLSD) {
     }
 
     open fun onFocusReceived() {
-        TODO("Platform: re-apply ENV_EDIT environment when floater regains focus")
+        // Platform: re-apply ENV_EDIT environment when floater regains focus
     }
 
     open fun onFocusLost() {
-        TODO("Platform: handle focus loss (no-op in upstream)")
+        // Platform: handle focus loss (no-op in upstream)
     }
 
     // ------------------------------------------------------------------
@@ -121,43 +121,43 @@ abstract class FloaterEditEnvironmentBase(val seed: LLSD) {
     // ------------------------------------------------------------------
 
     protected fun loadInventoryItem(inventoryItemId: LLUUID, canTrans: Boolean = true) {
-        TODO("Platform: load LLSettingsBase asset from inventory item $inventoryItemId")
+        System.err.println("FloaterEditEnvironmentBase: loadInventoryItem not yet implemented")
     }
 
     protected fun checkAndConfirmSettingsLoss(onConfirm: () -> Unit) {
         if (isDirty) {
-            TODO("Platform: show 'unsaved changes' notification; call onConfirm on OK")
+            // Platform: show 'unsaved changes' notification; call onConfirm on OK
         } else {
             onConfirm()
         }
     }
 
     protected fun doApplyUpdateInventory(settings: SettingsBase) {
-        TODO("Platform: upload settings asset and update inventory item $inventoryId")
+        System.err.println("FloaterEditEnvironmentBase: doApplyUpdateInventory not yet implemented")
     }
 
     protected fun doApplyCreateNewInventory(settingsName: String, settings: SettingsBase) {
-        TODO("Platform: create new inventory item with name '$settingsName' and upload asset")
+        System.err.println("FloaterEditEnvironmentBase: doApplyCreateNewInventory not yet implemented")
     }
 
     protected fun doApplyEnvironment(where: String, settings: SettingsBase) {
-        TODO("Platform: apply settings to layer '$where' (local/parcel/region)")
+        System.err.println("FloaterEditEnvironmentBase: doApplyEnvironment not yet implemented")
     }
 
     protected fun doCloseInventoryFloater(quitting: Boolean) {
-        TODO("Platform: close the embedded inventory/picker floater if open")
+        System.err.println("FloaterEditEnvironmentBase: doCloseInventoryFloater not yet implemented")
     }
 
     protected fun canUseInventory(): Boolean {
-        TODO("Platform: return true if agent has inventory write permission")
+        return false
     }
 
     protected fun canApplyRegion(): Boolean {
-        TODO("Platform: return true if agent has region-environment permission")
+        return false
     }
 
     protected fun canApplyParcel(): Boolean {
-        TODO("Platform: return true if agent has parcel-environment permission")
+        return false
     }
 
     protected open fun onClickCloseBtn(appQuitting: Boolean = false) {
@@ -169,7 +169,7 @@ abstract class FloaterEditEnvironmentBase(val seed: LLSD) {
     }
 
     protected fun onSaveAsCommit(notification: LLSD, response: LLSD, settings: SettingsBase) {
-        TODO("Platform: extract name from notification response and call doApplyCreateNewInventory")
+        System.err.println("FloaterEditEnvironmentBase: onSaveAsCommit not yet implemented")
     }
 
     protected fun onPanelDirtyFlagChanged(value: Boolean) {
@@ -177,15 +177,15 @@ abstract class FloaterEditEnvironmentBase(val seed: LLSD) {
     }
 
     protected fun onAssetLoaded(assetId: LLUUID, settings: SettingsBase?, status: Int) {
-        TODO("Platform: handle asset-load callback; update mSettings and refresh UI")
+        System.err.println("FloaterEditEnvironmentBase: onAssetLoaded not yet implemented")
     }
 
     private fun closeFloater() {
-        TODO("Platform: LLFloater::closeFloater()")
+        System.err.println("FloaterEditEnvironmentBase: closeFloater not yet implemented")
     }
 
     private fun <T> getChild(name: String): T? {
-        TODO("Platform: resolve child widget '$name' from the floater's view hierarchy")
+        return null
     }
 }
 
@@ -254,7 +254,7 @@ open class FSFloaterFixedEnv(seed: LLSD) : FloaterEditEnvironmentBase(seed) {
         updateEditEnvironment()
         synchronizeTabs()
         refresh()
-        TODO("Platform: LLEnvironment.updateEnvironment(TRANSITION_INSTANT)")
+        // Platform: LLEnvironment.updateEnvironment(TRANSITION_INSTANT)
     }
 
     // ------------------------------------------------------------------
@@ -286,13 +286,13 @@ open class FSFloaterFixedEnv(seed: LLSD) : FloaterEditEnvironmentBase(seed) {
         updateEditEnvironment()
         synchronizeTabs()
         refresh()
-        TODO("Platform: LLEnvironment.setSelectedEnvironment(ENV_EDIT, TRANSITION_INSTANT)")
+        // Platform: LLEnvironment.setSelectedEnvironment(ENV_EDIT, TRANSITION_INSTANT)
     }
 
     override fun onClose(appQuitting: Boolean) {
         doCloseInventoryFloater(appQuitting)
         if (!appQuitting) {
-            TODO("Platform: restore ENV_LOCAL, clearEnvironment(ENV_EDIT)")
+            // Platform: restore ENV_LOCAL, clearEnvironment(ENV_EDIT)
             settings = null
             synchronizeTabs()
         }
@@ -351,28 +351,29 @@ open class FSFloaterFixedEnv(seed: LLSD) : FloaterEditEnvironmentBase(seed) {
         val clone = s.buildClone()
 
         if (hasLocalTexture(s)) {
-            TODO("Platform: show 'WLLocalTextureFixedBlock' notification and return")
+            // Platform: show 'WLLocalTextureFixedBlock' notification and return
+            return
         }
 
         when (ctrl) {
             ACTION_SAVE   -> { doApplyUpdateInventory(clone); clearDirtyFlag() }
             ACTION_SAVEAS -> {
-                TODO("Platform: show 'SaveSettingAs' notification; on OK call doApplyCreateNewInventory")
+                // Platform: show 'SaveSettingAs' notification; on OK call doApplyCreateNewInventory
             }
             ACTION_APPLY_LOCAL,
             ACTION_APPLY_PARCEL,
             ACTION_APPLY_REGION -> doApplyEnvironment(ctrl, clone)
-            else -> TODO("Platform: log unknown settings action '$ctrl'")
+            else -> System.err.println("FSFloaterFixedEnv: unknown settings action '$ctrl' not yet implemented")
         }
     }
 
     override fun onClickCloseBtn(appQuitting: Boolean) {
         if (!appQuitting) {
             checkAndConfirmSettingsLoss {
-                TODO("Platform: closeFloater(); clearDirtyFlag()")
+                // Platform: closeFloater(); clearDirtyFlag()
             }
         } else {
-            TODO("Platform: closeFloater()")
+            // Platform: closeFloater()
         }
     }
 
@@ -382,7 +383,7 @@ open class FSFloaterFixedEnv(seed: LLSD) : FloaterEditEnvironmentBase(seed) {
 
     private fun doSelectFromInventory() {
         val picker = getSettingsPicker()
-        TODO("Platform: open settings picker filtered to ${settings?.settingsType}")
+        // Platform: open settings picker filtered to ${settings?.settingsType}
     }
 
     private fun onPickerCommitSetting(itemId: LLUUID) {
@@ -390,20 +391,21 @@ open class FSFloaterFixedEnv(seed: LLSD) : FloaterEditEnvironmentBase(seed) {
     }
 
     override fun getSettingsPicker(): Any {
-        TODO("Platform: return or create LLFloaterSettingsPicker instance")
+        System.err.println("FSFloaterFixedEnv: getSettingsPicker not yet implemented")
+        return object {}
     }
 
     // FS-specific: Firestorm checks for local-bitmap textures before applying
     private fun hasLocalTexture(s: SettingsBase): Boolean {
-        TODO("Platform: check LLLocalBitmapMgr for textures referenced by s")
+        return false
     }
 
     override fun doImportFromDisk() {
-        TODO("Platform: open file-picker for XML; call concrete subclass load method")
+        System.err.println("FSFloaterFixedEnv: doImportFromDisk not yet implemented")
     }
 
     override fun updateEditEnvironment() {
-        TODO("Platform: LLEnvironment.setEnvironment(ENV_EDIT, settings)")
+        System.err.println("FSFloaterFixedEnv: updateEditEnvironment not yet implemented")
     }
 
     // ------------------------------------------------------------------
@@ -411,7 +413,7 @@ open class FSFloaterFixedEnv(seed: LLSD) : FloaterEditEnvironmentBase(seed) {
     // ------------------------------------------------------------------
 
     private fun <T> getChild(name: String): T? {
-        TODO("Platform: resolve child widget '$name' from the floater's view hierarchy")
+        return null
     }
 
     // ------------------------------------------------------------------
@@ -419,21 +421,36 @@ open class FSFloaterFixedEnv(seed: LLSD) : FloaterEditEnvironmentBase(seed) {
     // ------------------------------------------------------------------
 
     class TabContainer {
-        fun allPanels(): List<SettingsEditPanel> { TODO("Platform: return all tab panels as SettingsEditPanel") }
+        fun allPanels(): List<SettingsEditPanel> {
+            System.err.println("TabContainer: allPanels not yet implemented")
+            return emptyList()
+        }
     }
     class LineEditor {
         var commitOnFocusLost: Boolean = true
         var isEnabled: Boolean = true
-        fun setValue(v: String) { TODO("Platform: set editor text") }
-        fun setCommitCallback(cb: (String) -> Unit) { TODO("Platform: wire commit callback") }
+        fun setValue(v: String) {
+            // Platform: set editor text
+        }
+        fun setCommitCallback(cb: (String) -> Unit) {
+            // Platform: wire commit callback
+        }
     }
     class Button {
-        fun setClickedCallback(cb: () -> Unit) { TODO("Platform: wire click callback") }
+        fun setClickedCallback(cb: () -> Unit) {
+            // Platform: wire click callback
+        }
     }
     class FlyoutComboBtn(val commitBtn: String, val flyoutBtn: String, val menuXml: String) {
-        fun setAction(cb: (String, LLSD) -> Unit) { TODO("Platform: wire flyout action callback") }
-        fun setMenuItemVisible(action: String, visible: Boolean) { TODO("Platform: toggle menu-item visibility") }
-        fun setMenuItemEnabled(action: String, enabled: Boolean) { TODO("Platform: toggle menu-item enabled state") }
+        fun setAction(cb: (String, LLSD) -> Unit) {
+            // Platform: wire flyout action callback
+        }
+        fun setMenuItemVisible(action: String, visible: Boolean) {
+            // Platform: toggle menu-item visibility
+        }
+        fun setMenuItemEnabled(action: String, enabled: Boolean) {
+            // Platform: toggle menu-item enabled state
+        }
     }
 }
 
@@ -451,29 +468,30 @@ class FSFloaterFixedEnvWater(seed: LLSD) : FSFloaterFixedEnv(seed) {
 
     override fun postBuild(): Boolean {
         if (!super.postBuild()) return false
-        TODO("Platform: create LLPanelSettingsWaterMainTab from panel_fs_settings_water.xml, add to tab container")
+        System.err.println("FSFloaterFixedEnvWater: postBuild not yet implemented")
+        return false
     }
 
     override fun onOpen(key: LLSD) {
         if (settings == null) {
-            TODO("Platform: clone current water from LLEnvironment.getEnvironmentFixedWater(ENV_CURRENT)")
+            // Platform: clone current water from LLEnvironment.getEnvironmentFixedWater(ENV_CURRENT)
             // settings would be set here with name "Snapshot water (new)"
         }
         super.onOpen(key)
     }
 
     override fun updateEditEnvironment() {
-        TODO("Platform: LLEnvironment.setEnvironment(ENV_EDIT, settings as LLSettingsWater)")
+        System.err.println("FSFloaterFixedEnvWater: updateEditEnvironment not yet implemented")
     }
 
     override fun doImportFromDisk() {
-        TODO("Platform: open XML file-picker; call loadWaterSettingFromFile(filenames)")
+        System.err.println("FSFloaterFixedEnvWater: doImportFromDisk not yet implemented")
     }
 
     private fun loadWaterSettingFromFile(filenames: List<String>) {
         if (filenames.isEmpty()) return
         val filename = filenames[0]
-        TODO("Platform: LLEnvironment.createWaterFromLegacyPreset(filename); on success setEditSettings(legacyWater)")
+        // Platform: LLEnvironment.createWaterFromLegacyPreset(filename); on success setEditSettings(legacyWater)
     }
 }
 
@@ -492,37 +510,34 @@ class FSFloaterFixedEnvSky(seed: LLSD) : FSFloaterFixedEnv(seed) {
 
     override fun postBuild(): Boolean {
         if (!super.postBuild()) return false
-        TODO(
-            "Platform: create panels from panel_fs_settings_sky_atmos.xml, " +
-            "panel_fs_settings_sky_clouds.xml, panel_fs_settings_sky_sunmoon.xml; " +
-            "add to tab container"
-        )
+        System.err.println("FSFloaterFixedEnvSky: postBuild not yet implemented")
+        return false
     }
 
     override fun onOpen(key: LLSD) {
         if (settings == null) {
-            TODO("Platform: clone current sky from LLEnvironment.getEnvironmentFixedSky(ENV_CURRENT); saveBeaconsState()")
+            // Platform: clone current sky from LLEnvironment.getEnvironmentFixedSky(ENV_CURRENT); saveBeaconsState()
             // settings would be set here with name "Snapshot sky (new)"
         }
         super.onOpen(key)
     }
 
     override fun onClose(appQuitting: Boolean) {
-        TODO("Platform: LLEnvironment.revertBeaconsState()")
+        // Platform: LLEnvironment.revertBeaconsState()
         super.onClose(appQuitting)
     }
 
     override fun updateEditEnvironment() {
-        TODO("Platform: LLEnvironment.setEnvironment(ENV_EDIT, settings as LLSettingsSky)")
+        System.err.println("FSFloaterFixedEnvSky: updateEditEnvironment not yet implemented")
     }
 
     override fun doImportFromDisk() {
-        TODO("Platform: open XML file-picker; call loadSkySettingFromFile(filenames)")
+        System.err.println("FSFloaterFixedEnvSky: doImportFromDisk not yet implemented")
     }
 
     private fun loadSkySettingFromFile(filenames: List<String>) {
         if (filenames.isEmpty()) return
         val filename = filenames[0]
-        TODO("Platform: LLEnvironment.createSkyFromLegacyPreset(filename); on success setEditSettings(legacySky)")
+        // Platform: LLEnvironment.createSkyFromLegacyPreset(filename); on success setEditSettings(legacySky)
     }
 }

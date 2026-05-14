@@ -211,7 +211,7 @@ object IMModel {
     fun addNoUnreadMsgsCallback(callback: (Map<String, Any>) -> Unit) { noUnreadMsgListeners += callback }
 
     fun sendLeaveSession(sessionId: UUID, otherParticipantId: UUID) {
-        TODO("APR: use JVM equivalent - send ImprovedInstantMessage leave-session packet for $sessionId")
+        System.err.println("IMModel: sendLeaveSession not yet implemented")
     }
 
     fun sendStartSession(
@@ -221,30 +221,34 @@ object IMModel {
         dialog: InstantMessageType,
         p2pAsAdhocCall: Boolean,
     ): Boolean {
-        TODO("APR: use JVM equivalent - HTTP POST to capability to start IM/conference session; return true if async wait needed")
+        System.err.println("IMModel: sendStartSession not yet implemented")
+        return false
     }
 
     fun sendTypingState(sessionId: UUID, otherParticipantId: UUID, typing: Boolean) {
-        TODO("APR: use JVM equivalent - send TypingStart or TypingStop instant-message packet for $sessionId")
+        System.err.println("IMModel: sendTypingState not yet implemented")
     }
 
     fun sendMessage(utf8Text: String, imSessionId: UUID, otherParticipantId: UUID, dialog: InstantMessageType) {
-        TODO("APR: use JVM equivalent - send ImprovedInstantMessage with text=$utf8Text to session=$imSessionId")
+        System.err.println("IMModel: sendMessage not yet implemented")
     }
 
     fun addSpeakersToRecent(imSessionId: UUID) {
-        TODO("APR: use JVM equivalent - add all speakers in session $imSessionId to recent people list")
+        System.err.println("IMModel: addSpeakersToRecent not yet implemented")
     }
 
     private fun shouldTranslate(text: String, sessionId: UUID): Boolean {
-        TODO("APR: use JVM equivalent - check if auto-translation is enabled and applicable for this session")
+        System.err.println("IMModel: shouldTranslate not yet implemented")
+        return false
     }
 
     private fun formatTimestamp(timestamp: UInt): String {
         if (timestamp == 0u) {
-            TODO("APR: use JVM equivalent - return current local time as HH:MM string")
+            System.err.println("IMModel: formatTimestamp (current time) not yet implemented")
+            return ""
         }
-        TODO("APR: use JVM equivalent - convert Unix timestamp to local datetime string")
+        System.err.println("IMModel: formatTimestamp not yet implemented")
+        return ""
     }
 
     private fun addToHistory(
@@ -325,19 +329,19 @@ object IMModel {
             loadHistory()
 
             if (isAdHocSessionType() && type == InstantMessageType.IM_SESSION_INVITE) {
-                TODO("APR: use JVM equivalent - subscribe to avatar name cache for $otherParticipantID to localize ad-hoc title")
+                System.err.println("IMSession: subscribe to avatar name cache for ad-hoc title not yet implemented")
             }
         }
 
         fun initVoiceChannel(voiceChannelInfo: Map<String, Any>) {
-            TODO("APR: use JVM equivalent - create LLVoiceChannelP2P or LLVoiceChannelGroup based on session type; wire state-change callback; create IMSpeakerMgr")
+            System.err.println("IMSession: initVoiceChannel not yet implemented")
         }
 
         fun sessionInitReplyReceived(newSessionId: UUID) {
             sessionInitialized = true
             if (newSessionId != sessionID) {
                 sessionID = newSessionId
-                TODO("APR: use JVM equivalent - update voice channel session id to $newSessionId")
+                System.err.println("IMSession: update voice channel session id not yet implemented")
             }
         }
 
@@ -361,7 +365,7 @@ object IMModel {
                 "is_region_msg" to isRegionMsg,
             )
             msgs.addFirst(message)
-            TODO("APR: use JVM equivalent - speakerChatted(fromId); setSpeakerTyping(fromId, false)")
+            System.err.println("IMSession: speakerChatted/setSpeakerTyping not yet implemented")
         }
 
         fun addMessagesFromHistoryCache(history: List<Map<String, Any>>) {
@@ -411,7 +415,8 @@ object IMModel {
                 val sender = serverMsg["from"] as? String ?: ""
                 val senderId = serverMsg["from_id"] as? UUID ?: UUID(0, 0)
                 val msgText = serverMsg["message"] as? String ?: ""
-                val chatTimeStr = TODO("APR: use JVM equivalent - Conversation.createTimestamp(histTs)") as String
+                System.err.println("IMSession: Conversation.createTimestamp not yet implemented")
+                val chatTimeStr = ""
                 addMessage(sender, senderId, msgText, chatTimeStr, CHAT_STYLE_SERVER_HISTORY, false, histTs)
             }
 

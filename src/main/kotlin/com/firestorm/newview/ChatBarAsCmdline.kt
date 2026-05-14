@@ -943,26 +943,36 @@ private fun savedSettingsString(key: String): String {
     return ""
 }
 
-private fun savedSettingsSetBool(key: String, value: Boolean): Unit =
-    TODO("APR: use JVM equivalent for gSavedSettings.setBOOL")
+private fun savedSettingsSetBool(key: String, value: Boolean) {
+    System.err.println("ChatBarAsCmdline: savedSettingsSetBool not yet implemented")
+}
 
-private fun savedSettingsSetFloat(key: String, value: Float): Unit =
-    TODO("APR: use JVM equivalent for gSavedSettings.setF32")
+private fun savedSettingsSetFloat(key: String, value: Float) {
+    System.err.println("ChatBarAsCmdline: savedSettingsSetFloat not yet implemented")
+}
 
-private fun perAccountSettingsBool(key: String): Boolean =
-    TODO("APR: use JVM equivalent for gSavedPerAccountSettings.getBOOL")
+private fun perAccountSettingsBool(key: String): Boolean {
+    System.err.println("ChatBarAsCmdline: perAccountSettingsBool not yet implemented")
+    return false
+}
 
-private fun perAccountSettingsSetBool(key: String, value: Boolean): Unit =
-    TODO("APR: use JVM equivalent for gSavedPerAccountSettings.setBOOL")
+private fun perAccountSettingsSetBool(key: String, value: Boolean) {
+    System.err.println("ChatBarAsCmdline: perAccountSettingsSetBool not yet implemented")
+}
 
-private fun perAccountSettingsFloat(key: String): Float =
-    TODO("APR: use JVM equivalent for gSavedPerAccountSettings.getF32")
+private fun perAccountSettingsFloat(key: String): Float {
+    System.err.println("ChatBarAsCmdline: perAccountSettingsFloat not yet implemented")
+    return 0f
+}
 
-private fun perAccountSettingsSetFloat(key: String, value: Float): Unit =
-    TODO("APR: use JVM equivalent for gSavedPerAccountSettings.setF32")
+private fun perAccountSettingsSetFloat(key: String, value: Float) {
+    System.err.println("ChatBarAsCmdline: perAccountSettingsSetFloat not yet implemented")
+}
 
-private fun agentPositionZ(): Float =
-    TODO("APR: use JVM equivalent for gAgent.getPositionGlobal().mdV[VZ]")
+private fun agentPositionZ(): Float {
+    System.err.println("ChatBarAsCmdline: agentPositionZ not yet implemented")
+    return 0f
+}
 
 private fun agentCameraSetDrawDistance(dist: Float): Unit =
     TODO("APR: use JVM equivalent for gAgentCamera.mDrawDistance")

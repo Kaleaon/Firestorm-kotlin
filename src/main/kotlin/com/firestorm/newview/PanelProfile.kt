@@ -164,9 +164,9 @@ class PanelProfileSecondLife :
             pic.setCommitCallback { onSecondLifePicChanged() }
         }
         descriptionEdit?.setKeystrokeCallback { onSetDescriptionDirty() }
-        previewButton?.setClickedCallback { TODO("APR: use JVM equivalent - toggle description preview") }
+        previewButton?.setClickedCallback { System.err.println("PanelProfileSecondLife: toggle description preview not yet implemented") }
 
-        TODO("APR: use JVM equivalent - wire remaining button callbacks, register RLVa restriction listener")
+        System.err.println("PanelProfileSecondLife: postBuild remaining callbacks not yet implemented")
         return true
     }
 
@@ -176,40 +176,40 @@ class PanelProfileSecondLife :
         descriptionText = ""
         imageId = UUID.NULL
         groupList?.clear()
-        TODO("APR: use JVM equivalent - clear all profile UI fields")
+        System.err.println("PanelProfileSecondLife: resetData clear UI fields not yet implemented")
     }
 
     override fun setAvatarId(avatarId: UUID) {
         super.setAvatarId(avatarId)
         propertiesObserver.requester = avatarId
-        TODO("APR: use JVM equivalent - register properties observer for non-friend online status")
+        System.err.println("PanelProfileSecondLife: setAvatarId observer registration not yet implemented")
     }
 
     override fun updateData() {
-        TODO("APR: use JVM equivalent - request avatar properties from server via cap or message")
+        System.err.println("PanelProfileSecondLife: updateData not yet implemented")
     }
 
     fun refreshName() {
-        TODO("APR: use JVM equivalent - refresh display/username via avatar name cache")
+        System.err.println("PanelProfileSecondLife: refreshName not yet implemented")
     }
 
     fun apply(data: AvatarData) {
-        TODO("APR: use JVM equivalent - send updated avatar properties to server")
+        System.err.println("PanelProfileSecondLife: apply not yet implemented")
     }
 
     fun onAvatarNameCache(agentId: UUID, avName: AvatarName) {
-        TODO("APR: use JVM equivalent - populate name fields from cache result")
+        System.err.println("PanelProfileSecondLife: onAvatarNameCache not yet implemented")
     }
 
     fun setProfileImageUploading(loading: Boolean) {
         waitingForImageUpload = loading
-        TODO("APR: use JVM equivalent - show/hide loading indicator on profile image")
+        System.err.println("PanelProfileSecondLife: setProfileImageUploading not yet implemented")
     }
 
     fun setProfileImageUploaded(imageAssetId: UUID) {
         imageId = imageAssetId
         setProfileImageUploading(false)
-        TODO("APR: use JVM equivalent - update texture control with uploaded image")
+        System.err.println("PanelProfileSecondLife: setProfileImageUploaded not yet implemented")
     }
 
     override fun hasUnsavedChanges(): Boolean = hasUnsavedDescriptionChanges
@@ -248,7 +248,7 @@ class PanelProfileSecondLife :
     }
 
     protected fun refreshGroupAndContactSetList() {
-        TODO("APR: use JVM equivalent - merge groups and contact set entries, populate group list UI")
+        System.err.println("PanelProfileSecondLife: refreshGroupAndContactSetList not yet implemented")
     }
 
     protected fun fillCommonData(avatarData: AvatarData) {
@@ -261,35 +261,35 @@ class PanelProfileSecondLife :
     }
 
     protected fun fillPartnerData(avatarData: AvatarData) {
-        TODO("APR: use JVM equivalent - show partner name and SLURL")
+        System.err.println("PanelProfileSecondLife: fillPartnerData not yet implemented")
     }
 
     protected fun fillAccountStatus(avatarData: AvatarData) {
-        TODO("APR: use JVM equivalent - set badge icons for premium/linden status")
+        System.err.println("PanelProfileSecondLife: fillAccountStatus not yet implemented")
     }
 
     protected fun fillRightsData() {
-        TODO("APR: use JVM equivalent - show/hide rights icons based on friend relationship permissions")
+        System.err.println("PanelProfileSecondLife: fillRightsData not yet implemented")
     }
 
     protected fun fillAgeData(avatarData: AvatarData) {
-        TODO("APR: use JVM equivalent - compute and display age string from born-on date")
+        System.err.println("PanelProfileSecondLife: fillAgeData not yet implemented")
     }
 
     protected fun onImageLoaded(success: Boolean, imagep: ViewerFetchedTexture?) {
-        TODO("GPU: update profile image texture on load completion")
+        System.err.println("PanelProfileSecondLife: onImageLoaded not yet implemented")
     }
 
     protected fun updateOnlineStatus() {
-        TODO("APR: use JVM equivalent - check tracker and privacy settings to determine online display")
+        System.err.println("PanelProfileSecondLife: updateOnlineStatus not yet implemented")
     }
 
     protected fun processOnlineStatus(isFriend: Boolean, showOnline: Boolean, online: Boolean) {
-        TODO("APR: use JVM equivalent - update status text and icon visibility")
+        System.err.println("PanelProfileSecondLife: processOnlineStatus not yet implemented")
     }
 
     override fun setLoaded() {
-        TODO("APR: use JVM equivalent - hide loading indicators, enable editing controls if allowed")
+        System.err.println("PanelProfileSecondLife: setLoaded not yet implemented")
     }
 
     override fun changed(mask: UInt) {
@@ -310,7 +310,7 @@ class PanelProfileSecondLife :
     }
 
     private fun reparseDescriptionText(text: String) {
-        TODO("APR: use JVM equivalent - re-parse description for URL styling")
+        System.err.println("PanelProfileSecondLife: reparseDescriptionText not yet implemented")
     }
 
     private fun onSetDescriptionDirty() {
@@ -342,15 +342,15 @@ class PanelProfileSecondLife :
     }
 
     private fun onShowAgentPermissionsDialog() {
-        TODO("APR: use JVM equivalent - open friend permissions floater")
+        System.err.println("PanelProfileSecondLife: onShowAgentPermissionsDialog not yet implemented")
     }
 
     private fun onShowAgentProfileTexture() {
-        TODO("APR: use JVM equivalent - open full-size profile texture floater")
+        System.err.println("PanelProfileSecondLife: onShowAgentProfileTexture not yet implemented")
     }
 
     private fun onShowTexturePicker() {
-        TODO("APR: use JVM equivalent - open texture picker for profile image selection")
+        System.err.println("PanelProfileSecondLife: onShowTexturePicker not yet implemented")
     }
 
     private fun onSecondLifePicChanged() {
@@ -360,43 +360,44 @@ class PanelProfileSecondLife :
 
     private fun onCommitProfileImage(id: UUID) {
         imageId = id
-        TODO("APR: use JVM equivalent - upload image and notify server via profile image cap")
+        System.err.println("PanelProfileSecondLife: onCommitProfileImage not yet implemented")
     }
 
     private fun updateButtons() {
-        TODO("APR: use JVM equivalent - set enabled state of action buttons based on relationship and voice status")
+        System.err.println("PanelProfileSecondLife: updateButtons not yet implemented")
     }
 
     private fun setBadge(iconName: String, tooltip: String, location: BadgeLocation) {
-        TODO("APR: use JVM equivalent - set icon badge at top or bottom of profile image")
+        System.err.println("PanelProfileSecondLife: setBadge not yet implemented")
     }
 
     private fun buildAvatarDataFromUI(): AvatarData {
-        TODO("APR: use JVM equivalent - construct AvatarData from current UI field values")
+        System.err.println("PanelProfileSecondLife: buildAvatarDataFromUI not yet implemented")
+        return AvatarData()
     }
 
     private fun updateRlvRestrictions(behavior: Any) {
-        TODO("APR: use JVM equivalent - disable restricted controls when RLVa behavior active")
+        System.err.println("PanelProfileSecondLife: updateRlvRestrictions not yet implemented")
     }
 
     private fun openGroupProfile() {
-        TODO("APR: use JVM equivalent - open group profile for selected group in list")
+        System.err.println("PanelProfileSecondLife: openGroupProfile not yet implemented")
     }
 
     private fun onCommitMenu(userdata: LLSD) {
-        TODO("APR: use JVM equivalent - dispatch action menu item")
+        System.err.println("PanelProfileSecondLife: onCommitMenu not yet implemented")
     }
 
     private fun onEnableMenu(userdata: LLSD): Boolean {
-        TODO("APR: use JVM equivalent - return enabled state for action menu item")
+        return false
     }
 
     private fun onCheckMenu(userdata: LLSD): Boolean {
-        TODO("APR: use JVM equivalent - return checked state for action menu item")
+        return false
     }
 
     private fun onAvatarNameCacheSetName(id: UUID, avName: AvatarName) {
-        TODO("APR: use JVM equivalent - update title/name UI fields from cached name")
+        System.err.println("PanelProfileSecondLife: onAvatarNameCacheSetName not yet implemented")
     }
 
     private enum class BadgeLocation { TOP, BOTTOM }
@@ -428,23 +429,23 @@ class PanelProfileWeb : PanelProfileTab(), ViewerMediaObserver {
     }
 
     override fun updateData() {
-        TODO("APR: use JVM equivalent - resolve web profile URL from avatar name cache and navigate browser")
+        System.err.println("PanelProfileWeb: updateData not yet implemented")
     }
 
     fun apply(data: AvatarData) {
-        TODO("APR: use JVM equivalent - update home page URL from avatar data")
+        System.err.println("PanelProfileWeb: apply not yet implemented")
     }
 
     override fun handleMediaEvent(self: PluginClassMedia, event: EMediaEvent) {
-        TODO("APR: use JVM equivalent - track navigation performance and handle media events")
+        System.err.println("PanelProfileWeb: handleMediaEvent not yet implemented")
     }
 
     fun onAvatarNameCache(agentId: UUID, avName: AvatarName) {
-        TODO("APR: use JVM equivalent - build profile URL from display name and navigate")
+        System.err.println("PanelProfileWeb: onAvatarNameCache not yet implemented")
     }
 
     private fun onCommitLoad(ctrl: Any) {
-        TODO("APR: use JVM equivalent - navigate browser to home or profile URL on button click")
+        System.err.println("PanelProfileWeb: onCommitLoad not yet implemented")
     }
 }
 
@@ -497,7 +498,7 @@ class PanelProfileFirstLife : PanelProfilePropertiesProcessorTab() {
     }
 
     fun apply(data: AvatarData) {
-        TODO("APR: use JVM equivalent - write first-life fields back into AvatarData for upload")
+        System.err.println("PanelProfileFirstLife: apply not yet implemented")
     }
 
     override fun resetData() {
@@ -508,7 +509,7 @@ class PanelProfileFirstLife : PanelProfilePropertiesProcessorTab() {
     }
 
     fun setProfileImageUploading(loading: Boolean) {
-        TODO("APR: use JVM equivalent - show/hide loading indicator on first-life image")
+        System.err.println("PanelProfileFirstLife: setProfileImageUploading not yet implemented")
     }
 
     fun setProfileImageUploaded(imageAssetId: UUID) {
@@ -524,15 +525,15 @@ class PanelProfileFirstLife : PanelProfilePropertiesProcessorTab() {
     }
 
     override fun setLoaded() {
-        TODO("APR: use JVM equivalent - enable editing controls if avatar is self")
+        System.err.println("PanelProfileFirstLife: setLoaded not yet implemented")
     }
 
     protected fun onUploadPhoto() {
-        TODO("APR: use JVM equivalent - open file picker for first-life photo upload")
+        System.err.println("PanelProfileFirstLife: onUploadPhoto not yet implemented")
     }
 
     protected fun onChangePhoto() {
-        TODO("APR: use JVM equivalent - open texture picker for first-life photo change")
+        System.err.println("PanelProfileFirstLife: onChangePhoto not yet implemented")
     }
 
     protected fun onRemovePhoto() {
@@ -547,7 +548,7 @@ class PanelProfileFirstLife : PanelProfilePropertiesProcessorTab() {
     }
 
     protected fun onCommitPhoto(id: UUID) {
-        TODO("APR: use JVM equivalent - upload first-life photo via cap")
+        System.err.println("PanelProfileFirstLife: onCommitPhoto not yet implemented")
     }
 
     protected fun setDescriptionText(text: String) {
@@ -556,7 +557,7 @@ class PanelProfileFirstLife : PanelProfilePropertiesProcessorTab() {
     }
 
     protected fun reparseDescriptionText(text: String) {
-        TODO("APR: use JVM equivalent - re-parse description with URL styling")
+        System.err.println("PanelProfileFirstLife: reparseDescriptionText not yet implemented")
     }
 
     protected fun onSetDescriptionDirty() {
@@ -581,11 +582,12 @@ class PanelProfileFirstLife : PanelProfilePropertiesProcessorTab() {
 
     protected fun onClickPreview() {
         preview = !preview
-        TODO("APR: use JVM equivalent - toggle preview rendering of description")
+        System.err.println("PanelProfileFirstLife: onClickPreview toggle preview not yet implemented")
     }
 
     private fun buildAvatarDataFromUI(): AvatarData {
-        TODO("APR: use JVM equivalent - construct AvatarData with first-life fields from UI")
+        System.err.println("PanelProfileFirstLife: buildAvatarDataFromUI not yet implemented")
+        return AvatarData()
     }
 }
 
@@ -624,7 +626,7 @@ class PanelProfileNotes : PanelProfilePropertiesProcessorTab() {
     }
 
     override fun updateData() {
-        TODO("APR: use JVM equivalent - request notes data from server (OpenSim path)")
+        System.err.println("PanelProfileNotes: updateData not yet implemented")
     }
 
     override fun hasUnsavedChanges(): Boolean = hasUnsavedChanges
@@ -646,7 +648,7 @@ class PanelProfileNotes : PanelProfilePropertiesProcessorTab() {
 
     protected fun onSaveNotesChanges() {
         hasUnsavedChanges = false
-        TODO("APR: use JVM equivalent - send updated notes to server")
+        System.err.println("PanelProfileNotes: onSaveNotesChanges send to server not yet implemented")
         saveChanges?.setEnabled(false)
         discardChanges?.setEnabled(false)
     }
@@ -696,26 +698,26 @@ class PanelProfile : PanelProfileTab() {
     override fun onOpen(key: LLSD) {
         panelSecondlife?.onOpen(key)
         panelWeb?.onOpen(key)
-        panelPicks?.let { TODO("APR: use JVM equivalent - open picks panel") }
-        panelClassifieds?.let { TODO("APR: use JVM equivalent - open classifieds panel") }
+        panelPicks?.let { System.err.println("PanelProfile: open picks panel not yet implemented") }
+        panelClassifieds?.let { System.err.println("PanelProfile: open classifieds panel not yet implemented") }
         panelFirstlife?.onOpen(key)
         panelNotes?.onOpen(key)
     }
 
     fun createPick(data: Any) {
-        TODO("APR: use JVM equivalent - delegate to picks panel for pick creation")
+        System.err.println("PanelProfile: createPick not yet implemented")
     }
 
     fun showPick(pickId: UUID = UUID.NULL) {
-        TODO("APR: use JVM equivalent - switch to picks tab and show specific pick")
+        System.err.println("PanelProfile: showPick not yet implemented")
     }
 
     fun isPickTabSelected(): Boolean {
-        TODO("APR: use JVM equivalent - check if picks tab is currently active")
+        return false
     }
 
     fun isNotesTabSelected(): Boolean {
-        TODO("APR: use JVM equivalent - check if notes tab is currently active")
+        return false
     }
 
     override fun hasUnsavedChanges(): Boolean {
@@ -725,7 +727,7 @@ class PanelProfile : PanelProfileTab() {
     }
 
     fun hasUnpublishedClassifieds(): Boolean {
-        TODO("APR: use JVM equivalent - delegate to classifieds panel")
+        return false
     }
 
     override fun commitUnsavedChanges() {
@@ -735,18 +737,18 @@ class PanelProfile : PanelProfileTab() {
     }
 
     fun showClassified(classifiedId: UUID = UUID.NULL, edit: Boolean = false) {
-        TODO("APR: use JVM equivalent - switch to classifieds tab and show specific classified")
+        System.err.println("PanelProfile: showClassified not yet implemented")
     }
 
     fun createClassified() {
-        TODO("APR: use JVM equivalent - delegate to classifieds panel for creation")
+        System.err.println("PanelProfile: createClassified not yet implemented")
     }
 
     fun getAvatarData(): AvatarData = avatarData
     fun setAvatarData(avatarData: AvatarData) { this.avatarData = avatarData }
 
     private fun onTabChange() {
-        TODO("APR: use JVM equivalent - trigger data load for newly visible tab")
+        System.err.println("PanelProfile: onTabChange not yet implemented")
     }
 }
 
@@ -756,7 +758,8 @@ fun postProfileImage(
     pathToImage: String,
     handle: Any,
 ): UUID {
-    TODO("APR: use JVM equivalent - HTTP POST to profile image cap, then PUT image bytes to uploader URL")
+    System.err.println("postProfileImage: not yet implemented")
+    return UUID.NULL
 }
 
 enum class ProfileImageType { PROFILE_IMAGE_SL, PROFILE_IMAGE_FL }
@@ -767,5 +770,5 @@ fun postProfileImageCoro(
     pathToImage: String,
     handle: Any,
 ) {
-    TODO("APR: use JVM equivalent - coroutine wrapper that posts image and dispatches result to correct panel")
+    System.err.println("postProfileImageCoro: not yet implemented")
 }

@@ -25,74 +25,98 @@ object AppearanceMgr {
 
     private var appearanceServiceUrl: String = ""
 
-    fun initCOFID() { TODO("initCOFID: locate COF in inventory tree") }
+    fun initCOFID() {
+        System.err.println("AppearanceMgr: initCOFID not yet implemented")
+    }
     fun getCOF(): UUID = cofId
     fun getCOFVersion(): Int = cofVersion
     fun setOutfitDirty(dirty: Boolean) { isOutfitDirty = dirty }
 
     fun setOutfitLocked(locked: Boolean) {
         isOutfitLocked = locked
-        TODO("setOutfitLocked: start/stop OutfitUnLockTimer, notify observers")
+        System.err.println("AppearanceMgr: setOutfitLocked not yet implemented")
     }
 
-    fun updateIsDirty() { TODO("updateIsDirty: compare COF contents to base outfit link") }
+    fun updateIsDirty() {
+        System.err.println("AppearanceMgr: updateIsDirty not yet implemented")
+    }
 
     fun updateAppearanceFromCOF(
         enforceItemRestrictions: Boolean = true,
         enforceOrdering: Boolean = true,
         postUpdateFunc: AppearanceCallback = {}
     ) {
-        TODO("updateAppearanceFromCOF")
+        System.err.println("AppearanceMgr: updateAppearanceFromCOF not yet implemented")
     }
 
     fun updateCOF(categoryId: UUID, append: Boolean = false) {
-        TODO("updateCOF($categoryId, append=$append)")
+        System.err.println("AppearanceMgr: updateCOF not yet implemented")
     }
 
-    fun updateAgentWearables() { TODO("updateAgentWearables: sync wearable holding pattern to avatar") }
-    fun countActiveHoldingPatterns(): Int = TODO("countActiveHoldingPatterns")
+    fun updateAgentWearables() {
+        System.err.println("AppearanceMgr: updateAgentWearables not yet implemented")
+    }
+    fun countActiveHoldingPatterns(): Int {
+        System.err.println("AppearanceMgr: countActiveHoldingPatterns not yet implemented")
+        return 0
+    }
 
-    fun requestServerAppearanceUpdate() { TODO("requestServerAppearanceUpdate: POST to appearance bake service") }
+    fun requestServerAppearanceUpdate() {
+        System.err.println("AppearanceMgr: requestServerAppearanceUpdate not yet implemented")
+    }
 
     fun setAppearanceServiceURL(url: String) { appearanceServiceUrl = url }
     fun getAppearanceServiceURL(): String = appearanceServiceUrl
 
-    fun replaceCurrentOutfit(newOutfit: UUID) { TODO("replaceCurrentOutfit($newOutfit)") }
+    fun replaceCurrentOutfit(newOutfit: UUID) {
+        System.err.println("AppearanceMgr: replaceCurrentOutfit not yet implemented")
+    }
 
     fun wearInventoryCategory(categoryId: UUID, copy: Boolean, append: Boolean) {
-        TODO("wearInventoryCategory($categoryId, copy=$copy, append=$append)")
+        System.err.println("AppearanceMgr: wearInventoryCategory not yet implemented")
     }
 
     fun wearInventoryCategoryOnAvatar(categoryId: UUID, append: Boolean) {
-        TODO("wearInventoryCategoryOnAvatar($categoryId, append=$append)")
+        System.err.println("AppearanceMgr: wearInventoryCategoryOnAvatar not yet implemented")
     }
 
     fun wearCategoryFinal(catId: UUID, copyItems: Boolean, append: Boolean) {
-        TODO("wearCategoryFinal($catId, copyItems=$copyItems, append=$append)")
+        System.err.println("AppearanceMgr: wearCategoryFinal not yet implemented")
     }
 
-    fun wearOutfitByName(name: String) { TODO("wearOutfitByName($name)") }
+    fun wearOutfitByName(name: String) {
+        System.err.println("AppearanceMgr: wearOutfitByName not yet implemented")
+    }
 
     fun wearOutfit(queryMap: Map<String, Any>, append: Boolean = false): Boolean {
-        TODO("wearOutfit(append=$append)")
+        System.err.println("AppearanceMgr: wearOutfit not yet implemented")
+        return false
     }
 
     fun changeOutfit(proceed: Boolean, category: UUID, append: Boolean) {
         if (!proceed) return
-        TODO("changeOutfit: wearInventoryCategory or link-based approach")
+        System.err.println("AppearanceMgr: changeOutfit not yet implemented")
     }
 
-    fun takeOffOutfit(catId: UUID)              { TODO("takeOffOutfit($catId)") }
-    fun addCategoryToCurrentOutfit(catId: UUID) { TODO("addCategoryToCurrentOutfit($catId)") }
-    fun renameOutfit(outfitId: UUID)            { TODO("renameOutfit($outfitId)") }
-    fun removeOutfitPhoto(outfitId: UUID)       { TODO("removeOutfitPhoto($outfitId)") }
+    fun takeOffOutfit(catId: UUID) {
+        System.err.println("AppearanceMgr: takeOffOutfit not yet implemented")
+    }
+    fun addCategoryToCurrentOutfit(catId: UUID) {
+        System.err.println("AppearanceMgr: addCategoryToCurrentOutfit not yet implemented")
+    }
+    fun renameOutfit(outfitId: UUID) {
+        System.err.println("AppearanceMgr: renameOutfit not yet implemented")
+    }
+    fun removeOutfitPhoto(outfitId: UUID) {
+        System.err.println("AppearanceMgr: removeOutfitPhoto not yet implemented")
+    }
 
     fun makeNewOutfitLinks(newFolderName: String, showPanel: Boolean = true) {
-        TODO("makeNewOutfitLinks($newFolderName, showPanel=$showPanel)")
+        System.err.println("AppearanceMgr: makeNewOutfitLinks not yet implemented")
     }
 
     fun wearItemOnAvatar(itemId: UUID, doUpdate: Boolean, replace: Boolean = false) {
-        TODO("wearItemOnAvatar($itemId, replace=$replace)")
+        System.err.println("AppearanceMgr: wearItemOnAvatar not yet implemented")
     }
 
     fun wearItemsOnAvatar(itemIds: List<UUID>, doUpdate: Boolean, replace: Boolean) {
@@ -101,73 +125,162 @@ object AppearanceMgr {
     }
 
     fun removeItemFromAvatar(itemId: UUID, postUpdateFunc: AppearanceCallback = {}, immediateDelete: Boolean = false) {
-        TODO("removeItemFromAvatar($itemId)")
+        System.err.println("AppearanceMgr: removeItemFromAvatar not yet implemented")
     }
 
     fun removeItemsFromAvatar(itemIds: List<UUID>, postUpdateFunc: AppearanceCallback = {}, immediateDelete: Boolean = false) {
         itemIds.forEach { removeItemFromAvatar(it, postUpdateFunc, immediateDelete) }
     }
 
-    fun removeAllClothesFromAvatar()      { TODO("removeAllClothesFromAvatar: removeCOFLinksOfType for every clothing type") }
-    fun removeAllAttachmentsFromAvatar()  { TODO("removeAllAttachmentsFromAvatar") }
+    fun removeAllClothesFromAvatar() {
+        System.err.println("AppearanceMgr: removeAllClothesFromAvatar not yet implemented")
+    }
+    fun removeAllAttachmentsFromAvatar() {
+        System.err.println("AppearanceMgr: removeAllAttachmentsFromAvatar not yet implemented")
+    }
 
-    fun shouldRemoveTempAttachment(itemId: UUID): Boolean = TODO("shouldRemoveTempAttachment($itemId)")
+    fun shouldRemoveTempAttachment(itemId: UUID): Boolean {
+        System.err.println("AppearanceMgr: shouldRemoveTempAttachment not yet implemented")
+        return false
+    }
 
-    fun addCOFItemLink(itemId: UUID, description: String = "") { TODO("addCOFItemLink($itemId)") }
+    fun addCOFItemLink(itemId: UUID, description: String = "") {
+        System.err.println("AppearanceMgr: addCOFItemLink not yet implemented")
+    }
 
     fun removeCOFItemLinks(itemId: UUID, immediateDelete: Boolean = false) {
-        TODO("removeCOFItemLinks($itemId, immediateDelete=$immediateDelete)")
+        System.err.println("AppearanceMgr: removeCOFItemLinks not yet implemented")
     }
 
-    fun removeCOFLinksOfType(wearableType: Int) { TODO("removeCOFLinksOfType($wearableType)") }
+    fun removeCOFLinksOfType(wearableType: Int) {
+        System.err.println("AppearanceMgr: removeCOFLinksOfType not yet implemented")
+    }
 
-    fun findCOFItemLinks(itemId: UUID): List<UUID> = TODO("findCOFItemLinks($itemId)")
-    fun isLinkedInCOF(itemId: UUID): Boolean       = TODO("isLinkedInCOF($itemId)")
-    fun getIsInCOF(objId: UUID): Boolean           = TODO("getIsInCOF($objId)")
-    fun getIsProtectedCOFItem(objId: UUID): Boolean = TODO("getIsProtectedCOFItem($objId)")
+    fun findCOFItemLinks(itemId: UUID): List<UUID> {
+        System.err.println("AppearanceMgr: findCOFItemLinks not yet implemented")
+        return emptyList()
+    }
+    fun isLinkedInCOF(itemId: UUID): Boolean {
+        System.err.println("AppearanceMgr: isLinkedInCOF not yet implemented")
+        return false
+    }
+    fun getIsInCOF(objId: UUID): Boolean {
+        System.err.println("AppearanceMgr: getIsInCOF not yet implemented")
+        return false
+    }
+    fun getIsProtectedCOFItem(objId: UUID): Boolean {
+        System.err.println("AppearanceMgr: getIsProtectedCOFItem not yet implemented")
+        return false
+    }
 
     fun slamCategoryLinks(srcId: UUID, dstId: UUID, includeFolderLinks: Boolean) {
-        TODO("slamCategoryLinks($srcId -> $dstId)")
+        System.err.println("AppearanceMgr: slamCategoryLinks not yet implemented")
     }
 
-    fun shallowCopyCategory(srcId: UUID, dstId: UUID) { TODO("shallowCopyCategory($srcId -> $dstId)") }
-    fun shallowCopyCategoryContents(srcId: UUID, dstId: UUID) { TODO("shallowCopyCategoryContents($srcId -> $dstId)") }
+    fun shallowCopyCategory(srcId: UUID, dstId: UUID) {
+        System.err.println("AppearanceMgr: shallowCopyCategory not yet implemented")
+    }
+    fun shallowCopyCategoryContents(srcId: UUID, dstId: UUID) {
+        System.err.println("AppearanceMgr: shallowCopyCategoryContents not yet implemented")
+    }
 
-    fun purgeBaseOutfitLink(categoryId: UUID)                  { TODO("purgeBaseOutfitLink($categoryId)") }
-    fun createBaseOutfitLink(categoryId: UUID)                  { TODO("createBaseOutfitLink($categoryId)") }
+    fun purgeBaseOutfitLink(categoryId: UUID) {
+        System.err.println("AppearanceMgr: purgeBaseOutfitLink not yet implemented")
+    }
+    fun createBaseOutfitLink(categoryId: UUID) {
+        System.err.println("AppearanceMgr: createBaseOutfitLink not yet implemented")
+    }
 
-    fun getBaseOutfitName(): String? = TODO("getBaseOutfitName")
-    fun getBaseOutfitUUID(): UUID    = TODO("getBaseOutfitUUID")
-    fun wearBaseOutfit()             { TODO("wearBaseOutfit") }
-    fun updateBaseOutfit(): Boolean  = TODO("updateBaseOutfit")
-    fun updatePanelOutfitName(name: String) { TODO("updatePanelOutfitName") }
+    fun getBaseOutfitName(): String? {
+        System.err.println("AppearanceMgr: getBaseOutfitName not yet implemented")
+        return null
+    }
+    fun getBaseOutfitUUID(): UUID {
+        System.err.println("AppearanceMgr: getBaseOutfitUUID not yet implemented")
+        return UUID(0, 0)
+    }
+    fun wearBaseOutfit() {
+        System.err.println("AppearanceMgr: wearBaseOutfit not yet implemented")
+    }
+    fun updateBaseOutfit(): Boolean {
+        System.err.println("AppearanceMgr: updateBaseOutfit not yet implemented")
+        return false
+    }
+    fun updatePanelOutfitName(name: String) {
+        System.err.println("AppearanceMgr: updatePanelOutfitName not yet implemented")
+    }
 
-    fun registerAttachment(itemId: UUID)   { TODO("registerAttachment($itemId)") }
-    fun unregisterAttachment(itemId: UUID) { TODO("unregisterAttachment($itemId)") }
+    fun registerAttachment(itemId: UUID) {
+        System.err.println("AppearanceMgr: registerAttachment not yet implemented")
+    }
+    fun unregisterAttachment(itemId: UUID) {
+        System.err.println("AppearanceMgr: unregisterAttachment not yet implemented")
+    }
     fun setAttachmentInvLinkEnable(enabled: Boolean) { attachmentInvLinkEnabled = enabled }
 
-    fun validateClothingOrderingInfo(catId: UUID? = null): Boolean = TODO("validateClothingOrderingInfo")
-    fun updateClothingOrderingInfo(catId: UUID? = null)            { TODO("updateClothingOrderingInfo") }
-    fun enforceCOFItemRestrictions()                               { TODO("enforceCOFItemRestrictions") }
+    fun validateClothingOrderingInfo(catId: UUID? = null): Boolean {
+        System.err.println("AppearanceMgr: validateClothingOrderingInfo not yet implemented")
+        return false
+    }
+    fun updateClothingOrderingInfo(catId: UUID? = null) {
+        System.err.println("AppearanceMgr: updateClothingOrderingInfo not yet implemented")
+    }
+    fun enforceCOFItemRestrictions() {
+        System.err.println("AppearanceMgr: enforceCOFItemRestrictions not yet implemented")
+    }
 
-    fun findExcessOrDuplicateItems(catId: UUID, assetType: Int, maxPerType: Int, maxTotal: Int): List<UUID> =
-        TODO("findExcessOrDuplicateItems($catId)")
+    fun findExcessOrDuplicateItems(catId: UUID, assetType: Int, maxPerType: Int, maxTotal: Int): List<UUID> {
+        System.err.println("AppearanceMgr: findExcessOrDuplicateItems not yet implemented")
+        return emptyList()
+    }
 
-    fun findAllExcessOrDuplicateItems(catId: UUID): List<UUID> = TODO("findAllExcessOrDuplicateItems($catId)")
+    fun findAllExcessOrDuplicateItems(catId: UUID): List<UUID> {
+        System.err.println("AppearanceMgr: findAllExcessOrDuplicateItems not yet implemented")
+        return emptyList()
+    }
 
-    fun getCanMakeFolderIntoOutfit(folderId: UUID): Boolean  = TODO("getCanMakeFolderIntoOutfit")
-    fun getCanRemoveOutfit(outfitCatId: UUID): Boolean       = TODO("getCanRemoveOutfit")
-    fun getCanReplaceCOF(outfitCatId: UUID): Boolean         = TODO("getCanReplaceCOF")
-    fun canAddWearables(itemIds: List<UUID>, warnOnTypeMismatch: Boolean = true): Boolean = TODO("canAddWearables")
-    fun moveWearable(item: Any, closerToBody: Boolean): Boolean = TODO("moveWearable")
+    fun getCanMakeFolderIntoOutfit(folderId: UUID): Boolean {
+        System.err.println("AppearanceMgr: getCanMakeFolderIntoOutfit not yet implemented")
+        return false
+    }
+    fun getCanRemoveOutfit(outfitCatId: UUID): Boolean {
+        System.err.println("AppearanceMgr: getCanRemoveOutfit not yet implemented")
+        return false
+    }
+    fun getCanReplaceCOF(outfitCatId: UUID): Boolean {
+        System.err.println("AppearanceMgr: getCanReplaceCOF not yet implemented")
+        return false
+    }
+    fun canAddWearables(itemIds: List<UUID>, warnOnTypeMismatch: Boolean = true): Boolean {
+        System.err.println("AppearanceMgr: canAddWearables not yet implemented")
+        return false
+    }
+    fun moveWearable(item: Any, closerToBody: Boolean): Boolean {
+        System.err.println("AppearanceMgr: moveWearable not yet implemented")
+        return false
+    }
 
-    fun onFirstFullyVisible() { TODO("onFirstFullyVisible: trigger initial appearance bake if needed") }
-    fun copyLibraryGestures() { TODO("copyLibraryGestures") }
-    fun cleanup()             { TODO("cleanup: release COF resources") }
-    fun dumpCOF(): String     = TODO("dumpCOF: return LLSD summary of COF contents")
+    fun onFirstFullyVisible() {
+        System.err.println("AppearanceMgr: onFirstFullyVisible not yet implemented")
+    }
+    fun copyLibraryGestures() {
+        System.err.println("AppearanceMgr: copyLibraryGestures not yet implemented")
+    }
+    fun cleanup() {
+        System.err.println("AppearanceMgr: cleanup not yet implemented")
+    }
+    fun dumpCOF(): String {
+        System.err.println("AppearanceMgr: dumpCOF not yet implemented")
+        return ""
+    }
 
-    fun syncCofVersionAndRefresh() { TODO("syncCofVersionAndRefresh") }
-    fun getActiveCopyOperations(): Int = TODO("getActiveCopyOperations")
+    fun syncCofVersionAndRefresh() {
+        System.err.println("AppearanceMgr: syncCofVersionAndRefresh not yet implemented")
+    }
+    fun getActiveCopyOperations(): Int {
+        System.err.println("AppearanceMgr: getActiveCopyOperations not yet implemented")
+        return 0
+    }
 
     private val attachmentsChangedListeners: MutableList<AttachmentsChangedCallback> = mutableListOf()
     private val appearanceChangedListeners:  MutableList<AppearanceCallback>          = mutableListOf()
@@ -193,37 +306,44 @@ object AppearanceMgr {
         private const val BAKE_RETRY_MAX_COUNT = 5
         private const val BAKE_RETRY_TIMEOUT   = 2.0f
 
-        fun getCanRemoveFromCOF(outfitCatId: UUID): Boolean = TODO("getCanRemoveFromCOF($outfitCatId)")
-        fun getCanAddToCOF(outfitCatId: UUID): Boolean      = TODO("getCanAddToCOF($outfitCatId)")
+        fun getCanRemoveFromCOF(outfitCatId: UUID): Boolean {
+            System.err.println("AppearanceMgr: getCanRemoveFromCOF not yet implemented")
+            return false
+        }
+        fun getCanAddToCOF(outfitCatId: UUID): Boolean {
+            System.err.println("AppearanceMgr: getCanAddToCOF not yet implemented")
+            return false
+        }
 
         fun sortItemsByActualDescription(items: MutableList<Any>) {
-            TODO("sortItemsByActualDescription: sort by link description field")
+            System.err.println("AppearanceMgr: sortItemsByActualDescription not yet implemented")
         }
 
         fun divvyWearablesByType(items: List<Any>, itemsByType: MutableList<MutableList<Any>>) {
-            TODO("divvyWearablesByType: partition items list by wearable asset type")
+            System.err.println("AppearanceMgr: divvyWearablesByType not yet implemented")
         }
     }
 }
 
 fun findDescendentCategoryIDByName(parentId: UUID, name: String): UUID {
-    TODO("findDescendentCategoryIDByName: search inventory tree under $parentId for category named '$name'")
+    System.err.println("AppearanceMgr: findDescendentCategoryIDByName not yet implemented")
+    return UUID(0, 0)
 }
 
 fun callAfterCOFFetch(cb: AppearanceCallback) {
-    TODO("callAfterCOFFetch: fetch COF contents then invoke cb")
+    System.err.println("AppearanceMgr: callAfterCOFFetch not yet implemented")
 }
 
 fun callAfterCategoryFetch(catId: UUID, cb: AppearanceCallback) {
-    TODO("callAfterCategoryFetch($catId): fetch category, then invoke cb")
+    System.err.println("AppearanceMgr: callAfterCategoryFetch not yet implemented")
 }
 
 fun callAfterCategoryLinksFetch(catId: UUID, cb: AppearanceCallback) {
-    TODO("callAfterCategoryLinksFetch($catId): fetch category links, then invoke cb")
+    System.err.println("AppearanceMgr: callAfterCategoryLinksFetch not yet implemented")
 }
 
 fun wearMultiple(ids: List<UUID>, replace: Boolean) {
-    TODO("wearMultiple: wear all items in ids list, replace=$replace")
+    System.err.println("AppearanceMgr: wearMultiple not yet implemented")
 }
 
 class UpdateAppearanceOnDestroy(
@@ -245,7 +365,7 @@ class UpdateAppearanceAndEditWearableOnDestroy(private val itemId: UUID) {
 
     fun destroy() {
         AppearanceMgr.updateAppearanceFromCOF(true, true) {
-            TODO("edit_wearable_and_customize_avatar($itemId)")
+            System.err.println("UpdateAppearanceAndEditWearableOnDestroy: edit_wearable_and_customize_avatar not yet implemented")
         }
     }
 }

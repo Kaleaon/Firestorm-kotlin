@@ -151,39 +151,40 @@ class LLInventoryGallery(params: Params = Params()) : LLPanel(), LLEditMenuHandl
     }
 
     open fun handleKeyHere(key: Int, mask: Int): Boolean {
-        TODO("APR: use JVM equivalent - dispatch KEY_RETURN/DELETE/F2/arrows to gallery actions")
+        System.err.println("LLInventoryGallery: handleKeyHere not yet implemented")
+        return false
     }
 
     fun moveUp(mask: Int) {
-        TODO("APR: use JVM equivalent - shift selection up by one row")
+        System.err.println("LLInventoryGallery: moveUp not yet implemented")
     }
 
     fun moveDown(mask: Int) {
-        TODO("APR: use JVM equivalent - shift selection down by one row")
+        System.err.println("LLInventoryGallery: moveDown not yet implemented")
     }
 
     fun moveLeft(mask: Int) {
-        TODO("APR: use JVM equivalent - shift selection left by one column")
+        System.err.println("LLInventoryGallery: moveLeft not yet implemented")
     }
 
     fun moveRight(mask: Int) {
-        TODO("APR: use JVM equivalent - shift selection right by one column")
+        System.err.println("LLInventoryGallery: moveRight not yet implemented")
     }
 
     fun toggleSelectionRange(startIdx: Int, endIdx: Int) {
-        TODO("APR: use JVM equivalent - add/remove items in index range from selection")
+        System.err.println("LLInventoryGallery: toggleSelectionRange not yet implemented")
     }
 
     fun toggleSelectionRangeFromLast(target: UUID) {
-        TODO("APR: use JVM equivalent - extend selection from last interacted item to target")
+        System.err.println("LLInventoryGallery: toggleSelectionRangeFromLast not yet implemented")
     }
 
     open fun onFocusLost() {
-        TODO("GPU: call super onFocusLost and redraw selected items")
+        // GPU: call super onFocusLost and redraw selected items
     }
 
     open fun onFocusReceived() {
-        TODO("GPU: call super onFocusReceived and redraw selected items")
+        // GPU: call super onFocusReceived and redraw selected items
     }
 
     fun setFilterSubString(string: String) {
@@ -196,7 +197,8 @@ class LLInventoryGallery(params: Params = Params()) : LLPanel(), LLEditMenuHandl
     fun getFilter(): LLInventoryFilter = filter
 
     fun checkAgainstFilterType(objectId: UUID): Boolean {
-        TODO("APR: use JVM equivalent - check item/category type against active filter mask")
+        System.err.println("LLInventoryGallery: checkAgainstFilterType not yet implemented")
+        return false
     }
 
     fun getCurrentCategories(vcur: MutableList<UUID>) {
@@ -206,7 +208,8 @@ class LLInventoryGallery(params: Params = Params()) : LLPanel(), LLEditMenuHandl
     }
 
     fun updateAddedItem(itemId: UUID): Boolean {
-        TODO("APR: use JVM equivalent - build gallery item from inventory object and add to map")
+        System.err.println("LLInventoryGallery: updateAddedItem not yet implemented")
+        return false
     }
 
     fun updateRemovedItem(itemId: UUID) {
@@ -214,7 +217,7 @@ class LLInventoryGallery(params: Params = Params()) : LLPanel(), LLEditMenuHandl
         val item = itemMap.remove(itemId) ?: return
         deselectItem(itemId)
         removeFromGalleryMiddle(item)
-        TODO("GPU: call item.die() to destroy panel")
+        // GPU: call item.die() to destroy panel
         itemBuildQuery.remove(itemId)
     }
 
@@ -225,7 +228,7 @@ class LLInventoryGallery(params: Params = Params()) : LLPanel(), LLEditMenuHandl
     }
 
     fun updateItemThumbnail(itemId: UUID) {
-        TODO("APR: use JVM equivalent - fetch thumbnail UUID and update gallery item")
+        System.err.println("LLInventoryGallery: updateItemThumbnail not yet implemented")
     }
 
     fun updateWornItem(itemId: UUID, isWorn: Boolean) {

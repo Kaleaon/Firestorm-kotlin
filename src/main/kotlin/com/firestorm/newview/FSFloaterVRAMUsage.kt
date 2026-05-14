@@ -133,12 +133,8 @@ class FSFloaterVRAMUsage {
      * C++ equivalent: `FSFloaterVRAMUsage::postBuild()`
      */
     fun postBuild(): Boolean {
-        TODO(
-            "Get child LLButton 'refresh_button' and bind to doRefresh(); " +
-            "get child LLScrollListCtrl 'result_list'; " +
-            "LLSelectMgr::registerPropertyListener(this); " +
-            "LLSelectMgr::enableSilhouette(false)"
-        )
+        System.err.println("FSFloaterVRAMUsage: postBuild not yet implemented")
+        return false
     }
 
     /**
@@ -161,11 +157,7 @@ class FSFloaterVRAMUsage {
      * C++ equivalent: `FSFloaterVRAMUsage::~FSFloaterVRAMUsage()`
      */
     fun onDestroy() {
-        TODO(
-            "gIdleCallbacks.deleteFunction(onIdle); " +
-            "LLSelectMgr::removePropertyListener(this); " +
-            "LLSelectMgr::enableSilhouette(true)"
-        )
+        System.err.println("FSFloaterVRAMUsage: onDestroy not yet implemented")
     }
 
     // ------------------------------------------------------------------
@@ -186,13 +178,7 @@ class FSFloaterVRAMUsage {
         totalUsageMB = 0
         pendingObjects.clear()
         pendingRequestCount = 0u
-        TODO(
-            "Iterate gObjectList; skip non-selectable, terrain, sky, water, avatar objects; " +
-            "skip objects beyond gAgentCamera.mDrawDistance; " +
-            "compute textureSizeKB via calcTextureSize(); " +
-            "sort pendingObjects by textureSizeKB descending; " +
-            "LLSelectMgr::deselectAll()"
-        )
+        System.err.println("FSFloaterVRAMUsage: refresh not yet implemented")
     }
 
     /**
@@ -205,14 +191,7 @@ class FSFloaterVRAMUsage {
      * C++ equivalent: `FSFloaterVRAMUsage::onIdle()`
      */
     fun onIdle() {
-        TODO(
-            "If pendingRequestCount == 0 and pendingObjects.isEmpty() → deselectAll and return. " +
-            "If pendingRequestCount > 0 and timer < PROPERTIES_REQUEST_TIMEOUT → return. " +
-            "If pendingRequestCount == 0 and timer.started and timer < PROPERY_REQUEST_INTERVAL → return. " +
-            "Otherwise: deselectAll; reset pendingRequestCount; " +
-            "pull up to PROPERTIES_MAX_REQUEST_COUNT items from pendingObjects whose objects are in a region; " +
-            "call LLSelectMgr::enableBatchMode / selectObjectAndFamily / disableBatchMode"
-        )
+        System.err.println("FSFloaterVRAMUsage: onIdle not yet implemented")
     }
 
     /**
@@ -224,10 +203,7 @@ class FSFloaterVRAMUsage {
      * C++ equivalent: `FSFloaterVRAMUsage::onProperties(LLSelectNode const*)`
      */
     fun onProperties(nodeId: LLUUID, objectName: String) {
-        TODO(
-            "Find object via gObjectList.findObject(nodeId); " +
-            "call addObjectToList(object, objectName)"
-        )
+        System.err.println("FSFloaterVRAMUsage: onProperties not yet implemented")
     }
 
     // ------------------------------------------------------------------
@@ -243,11 +219,8 @@ class FSFloaterVRAMUsage {
      * C++ equivalent: `FSFloaterVRAMUsage::calcTexturSize(LLViewerObject*, ostream*)`
      */
     private fun calcTextureSize(objectId: LLUUID): UInt {
-        TODO(
-            "Get object from gObjectList; iterate getNumTEs(); for each TE get LLViewerTexture; " +
-            "accumulate fullWidth * fullHeight * components; add mip overhead if useMipMaps; " +
-            "divide by 1024; return as UInt"
-        )
+        System.err.println("FSFloaterVRAMUsage: calcTextureSize not yet implemented")
+        return 0u
     }
 
     /**
@@ -256,10 +229,8 @@ class FSFloaterVRAMUsage {
      * C++ equivalent: `FSFloaterVRAMUsage::calcVBOEntrySize(LLVertexBuffer*)`
      */
     private fun calcVboEntrySize(typeMask: UInt): Int {
-        TODO(
-            "Iterate LLVertexBuffer::TYPE_MAX bits; for each set bit (excluding TYPE_TEXTURE_INDEX) " +
-            "add LLVertexBuffer::sTypeSize[k]"
-        )
+        System.err.println("FSFloaterVRAMUsage: calcVboEntrySize not yet implemented")
+        return 0
     }
 
     /**
@@ -268,10 +239,8 @@ class FSFloaterVRAMUsage {
      * C++ equivalent: `FSFloaterVRAMUsage::calcFaceSize(LLFace*, S32&, S32&)`
      */
     private fun calcFaceSize(faceIndex: Int): Pair<Int, Int> {
-        TODO(
-            "Get LLFace from drawable; subtract mExtents[0] from mExtents[1]; " +
-            "compute cmX/Y/Z as size * 100; return (w, h) choosing non-zero axes"
-        )
+        System.err.println("FSFloaterVRAMUsage: calcFaceSize not yet implemented")
+        return Pair(0, 0)
     }
 
     /**
@@ -283,12 +252,7 @@ class FSFloaterVRAMUsage {
      * C++ equivalent: `FSFloaterVRAMUsage::addObjectToList(LLViewerObject*, string const&)`
      */
     private fun addObjectToList(objectId: LLUUID, name: String) {
-        TODO(
-            "Compute totalTexSizeKB = calcTextureSize(objectId); " +
-            "iterate drawable faces; for each face: calcFaceSize + calcVboEntrySize * numVertices + indexSize; " +
-            "sum totalVboSizeKB; build VRAMEntry(name, (totalTexSizeKB+totalVboSizeKB)/1024, COMBINED); " +
-            "add to entries; recalculate totalUsageMB; add row to mList scroll control"
-        )
+        System.err.println("FSFloaterVRAMUsage: addObjectToList not yet implemented")
         // Maintain totalUsageMB in sync with entries after update.
         totalUsageMB = entries.sumOf { it.usageMB }
     }
@@ -317,7 +281,7 @@ class FSFloaterVRAMUsage {
          */
         fun show() {
             getInstance()
-            TODO("LLFloaterReg::showInstance(\"fs_vramUsage\")")
+            System.err.println("FSFloaterVRAMUsage: show not yet implemented")
         }
     }
 }

@@ -565,11 +565,11 @@ abstract class LLInvFVBridge protected constructor(
     protected open fun isItemPermissive(): Boolean = false
 
     fun purgeItem(model: LLInventoryModel, id: UUID) {
-        TODO("APR: use JVM equivalent for purge-item network message")
+        System.err.println("LLInvFVBridge: purgeItem not yet implemented")
     }
 
     fun removeObject(model: LLInventoryModel, id: UUID) {
-        TODO("APR: use JVM equivalent for remove-object network message")
+        System.err.println("LLInvFVBridge: removeObject not yet implemented")
     }
 
     protected open fun buildDisplayName() {}
@@ -588,7 +588,7 @@ abstract class LLInvFVBridge protected constructor(
             }
         }
 
-        TODO("APR: use JVM equivalent for MoveInventoryItem / MoveInventoryFolder network messages")
+        System.err.println("LLInvFVBridge: removeBatchNoCheck not yet implemented")
     }
 
     companion object {
@@ -767,7 +767,7 @@ open class LLFolderBridge(
         }
 
         fun createWearable(bridge: LLFolderBridge, type: LLWearableType.EType) {
-            TODO("APR: use JVM equivalent for create-wearable in folder")
+            System.err.println("LLFolderBridge: createWearable not yet implemented")
         }
 
         fun getIcon(preferredType: LLFolderType.EType): LLUIImagePtr? =
@@ -779,7 +779,7 @@ open class LLFolderBridge(
             cb: LLInventoryCallback?,
             inventoryPanel: LLHandle<LLInventoryPanel>
         ) {
-            TODO("APR: use JVM equivalent for outfit-folder-created callback")
+            System.err.println("LLFolderBridge: outfitFolderCreatedCallback not yet implemented")
         }
     }
 
@@ -795,7 +795,8 @@ open class LLFolderBridge(
         tooltipMsg: StringBuilder, userConfirm: Boolean = true,
         cb: LLInventoryCallback? = null
     ): Boolean {
-        TODO("APR: use JVM equivalent for drag-item-into-folder")
+        System.err.println("LLFolderBridge: dragItemIntoFolder not yet implemented")
+        return false
     }
 
     fun dragCategoryIntoFolder(
@@ -803,7 +804,8 @@ open class LLFolderBridge(
         tooltipMsg: StringBuilder, isLink: Boolean = false,
         userConfirm: Boolean = true, cb: LLInventoryCallback? = null
     ): Boolean {
-        TODO("APR: use JVM equivalent for drag-category-into-folder")
+        System.err.println("LLFolderBridge: dragCategoryIntoFolder not yet implemented")
+        return false
     }
 
     fun callbackDropItemIntoFolder(notification: LLSD, response: LLSD, invItem: LLInventoryItem) {
@@ -906,7 +908,8 @@ open class LLFolderBridge(
     }
 
     fun removeSystemFolder(): Boolean {
-        TODO("APR: use JVM equivalent for remove-system-folder network message")
+        System.err.println("LLFolderBridge: removeSystemFolder not yet implemented")
+        return false
     }
 
     fun removeItemResponse(notification: LLSD, response: LLSD): Boolean {
@@ -934,7 +937,7 @@ open class LLFolderBridge(
                 if (LLClipboard.instance().isCutMode()) {
                     changeItemParent(model, item as LLViewerInventoryItem, uuid, false)
                 } else {
-                    TODO("APR: use JVM equivalent for copy-item network message")
+                    System.err.println("LLFolderBridge: pasteFromClipboard copy-item not yet implemented")
                 }
             }
             val cat = model.getCategory(itemId)
@@ -942,7 +945,7 @@ open class LLFolderBridge(
                 if (LLClipboard.instance().isCutMode()) {
                     changeCategoryParent(model, cat as LLViewerInventoryCategory, uuid, false)
                 } else {
-                    TODO("APR: use JVM equivalent for copy-category network message")
+                    System.err.println("LLFolderBridge: pasteFromClipboard copy-category not yet implemented")
                 }
             }
         }
@@ -952,7 +955,7 @@ open class LLFolderBridge(
     }
 
     override fun pasteLinkFromClipboard() {
-        TODO("APR: use JVM equivalent for paste-link network message")
+        System.err.println("LLFolderBridge: pasteLinkFromClipboard not yet implemented")
     }
 
     override fun buildContextMenu(menu: LLMenuGL, flags: UInt) {
@@ -1248,7 +1251,7 @@ open class LLLandmarkBridge(
                 LLFloaterWorldMap.instance().trackLandmark(landmark.uuid)
             }
             "copy_slurl" -> doActionOnCurSelectedLandmark { landmark, _ ->
-                TODO("APR: use JVM equivalent for copy SLURL to clipboard")
+                System.err.println("LLLandmarkBridge: copy SLURL to clipboard not yet implemented")
             }
         }
     }
@@ -2063,7 +2066,7 @@ fun rezAttachment(
     attachment: LLViewerJointAttachment?,
     replace: Boolean
 ) {
-    TODO("APR: use JVM equivalent for rez-attachment network message")
+    System.err.println("LLInventoryBridge: rezAttachment not yet implemented")
 }
 
 fun moveInvCategoryWorldToAgent(
@@ -2074,7 +2077,8 @@ fun moveInvCategoryWorldToAgent(
     userData: Any? = null,
     filter: LLInventoryFilter? = null
 ): Boolean {
-    TODO("APR: use JVM equivalent for move-task-inventory network message")
+    System.err.println("LLInventoryBridge: moveInvCategoryWorldToAgent not yet implemented")
+    return false
 }
 
 fun hideContextEntries(
@@ -2124,7 +2128,7 @@ open class LLFolderViewGroupedItemBridge : LLFolderViewGroupedItemModel() {
 }
 
 fun warnMoveInventory(obj: LLViewerObject, moveInv: LLMoveInv) {
-    TODO("APR: use JVM equivalent for warn-move-inventory dialog")
+    System.err.println("LLInventoryBridge: warnMoveInventory not yet implemented")
 }
 
 fun moveTaskInventoryCallback(
@@ -2132,5 +2136,6 @@ fun moveTaskInventoryCallback(
     response: LLSD,
     moveInv: LLMoveInv
 ): Boolean {
-    TODO("APR: use JVM equivalent for move-task-inventory-callback")
+    System.err.println("LLInventoryBridge: moveTaskInventoryCallback not yet implemented")
+    return false
 }

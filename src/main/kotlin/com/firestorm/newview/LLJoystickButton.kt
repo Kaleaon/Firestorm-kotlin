@@ -346,20 +346,20 @@ open class LLJoystickCameraRotate(
         val dy = mLastMouse.y - mFirstMouse.y + mInitialOffset.y
 
         if (dx > mHorizSlopNear) {
-            TODO("GPU: gAgentCamera.unlockView(); gAgentCamera.setOrbitLeftKey(getOrbitRate())")
+            // GPU: gAgentCamera.unlockView(); gAgentCamera.setOrbitLeftKey(getOrbitRate())
         } else if (dx < -mHorizSlopNear) {
-            TODO("GPU: gAgentCamera.unlockView(); gAgentCamera.setOrbitRightKey(getOrbitRate())")
+            // GPU: gAgentCamera.unlockView(); gAgentCamera.setOrbitRightKey(getOrbitRate())
         }
 
         if (dy > mVertSlopNear) {
-            TODO("GPU: gAgentCamera.unlockView(); gAgentCamera.setOrbitUpKey(getOrbitRate())")
+            // GPU: gAgentCamera.unlockView(); gAgentCamera.setOrbitUpKey(getOrbitRate())
         } else if (dy < -mVertSlopNear) {
-            TODO("GPU: gAgentCamera.unlockView(); gAgentCamera.setOrbitDownKey(getOrbitRate())")
+            // GPU: gAgentCamera.unlockView(); gAgentCamera.setOrbitDownKey(getOrbitRate())
         }
     }
 
     open fun resetJoystickCamera() {
-        TODO("GPU: if !gSavedSettings.getBOOL(DisableCameraJoystickCenterReset) then gAgentCamera.resetCameraOrbit()")
+        // GPU: if !gSavedSettings.getBOOL(DisableCameraJoystickCenterReset) then gAgentCamera.resetCameraOrbit()
     }
 
     protected fun getOrbitRate(): Float {
@@ -376,11 +376,11 @@ open class LLJoystickCameraRotate(
     }
 
     open fun draw() {
-        TODO("GPU: draw unselected base image; if mInCenter draw center image rotated 0; else draw selected image rotated per active quadrant flags (top=0, right=1, bottom=2, left=3)")
+        // GPU: draw unselected base image; if mInCenter draw center image rotated 0; else draw selected image rotated per active quadrant flags (top=0, right=1, bottom=2, left=3)
     }
 
     protected fun drawRotatedImage(image: Any, rotations: Int) {
-        TODO("GPU: bind texture, scale UVs to handle image vs texture size difference (EXT-2023), emit two triangles with UV array rotated by 'rotations' positions")
+        // GPU: bind texture, scale UVs to handle image vs texture size difference (EXT-2023), emit two triangles with UV array rotated by 'rotations' positions
     }
 }
 
@@ -397,20 +397,20 @@ class LLJoystickCameraTrack : LLJoystickCameraRotate() {
         val dy = mLastMouse.y - mFirstMouse.y + mInitialOffset.y
 
         if (dx > mVertSlopNear) {
-            TODO("GPU: gAgentCamera.unlockView(); gAgentCamera.setPanRightKey(getOrbitRate())")
+            // GPU: gAgentCamera.unlockView(); gAgentCamera.setPanRightKey(getOrbitRate())
         } else if (dx < -mVertSlopNear) {
-            TODO("GPU: gAgentCamera.unlockView(); gAgentCamera.setPanLeftKey(getOrbitRate())")
+            // GPU: gAgentCamera.unlockView(); gAgentCamera.setPanLeftKey(getOrbitRate())
         }
 
         if (dy > mVertSlopNear) {
-            TODO("GPU: gAgentCamera.unlockView(); gAgentCamera.setPanUpKey(getOrbitRate())")
+            // GPU: gAgentCamera.unlockView(); gAgentCamera.setPanUpKey(getOrbitRate())
         } else if (dy < -mVertSlopNear) {
-            TODO("GPU: gAgentCamera.unlockView(); gAgentCamera.setPanDownKey(getOrbitRate())")
+            // GPU: gAgentCamera.unlockView(); gAgentCamera.setPanDownKey(getOrbitRate())
         }
     }
 
     override fun resetJoystickCamera() {
-        TODO("GPU: if !gSavedSettings.getBOOL(DisableCameraJoystickCenterReset) then gAgentCamera.resetCameraPan()")
+        // GPU: if !gSavedSettings.getBOOL(DisableCameraJoystickCenterReset) then gAgentCamera.resetCameraPan()
     }
 }
 
@@ -498,7 +498,7 @@ class LLJoystickQuaternion(
     }
 
     override fun draw() {
-        TODO("GPU: draw unselected image at (0,0); draw rotated selected images for active quadrant flags; project mVectorZero*mRotation into widget space and draw indicator dot via gl_circle_2d")
+        // GPU: draw unselected image at (0,0); draw rotated selected images for active quadrant flags; project mVectorZero*mRotation into widget space and draw indicator dot via gl_circle_2d
     }
 
     override fun updateSlop() {

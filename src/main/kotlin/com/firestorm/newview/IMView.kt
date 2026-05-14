@@ -1001,15 +1001,18 @@ class OutgoingCallDialog(payload: Map<String, Any>) : CallDialog(payload) {
 // ─── Platform stubs ──────────────────────────────────────────────────────────
 
 private fun elapsedSeconds(): Double {
-    TODO("APR: use JVM equivalent - return elapsed seconds since viewer startup (monotonic clock)")
+    System.err.println("IMView: elapsedSeconds not yet implemented")
+    return 0.0
 }
 
 private fun agentIsInGroup(groupId: UUID): Boolean {
-    TODO("APR: use JVM equivalent - gAgent.isInGroup($groupId)")
+    System.err.println("IMView: agentIsInGroup not yet implemented")
+    return false
 }
 
 private fun sendStartSession(
     sessionId: UUID, otherParticipantId: UUID, ids: List<UUID>, dialog: InstantMessageType, p2pAsAdhocCall: Boolean,
 ): Boolean {
-    TODO("APR: use JVM equivalent - IMModel.sendStartSession call, returns true if async reply needed")
+    System.err.println("IMView: sendStartSession not yet implemented")
+    return false
 }

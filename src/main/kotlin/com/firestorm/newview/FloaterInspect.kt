@@ -79,18 +79,20 @@ class FloaterInspect(key: String) : Floater(key) {
     }
 
     fun getSelectedUUID(): String {
-        val allSelected: List<Any> =
-            TODO("APR: objectList.getAllSelected()") as List<Any>
+        val allSelected: List<Any> = emptyList() // APR: objectList.getAllSelected()
         if (allSelected.isEmpty()) return ""
-        val first: Any = TODO("APR: objectList.getFirstSelected()") as Any
-        return TODO("APR: first.getUUID()") as String
+        val first: Any = Any() // APR: objectList.getFirstSelected()
+        return "" // APR: first.getUUID()
     }
 
     fun dirty() {
         dirty = true
     }
 
-    fun isVisible(): Boolean = TODO("APR: super.getVisible()") as Boolean
+    fun isVisible(): Boolean {
+        System.err.println("FloaterInspect: isVisible not yet implemented")
+        return false
+    }
 
     override fun draw() {
         if (dirty) {
@@ -102,7 +104,7 @@ class FloaterInspect(key: String) : Floater(key) {
 
     fun onFocusReceived() {
         ToolMgr.setTransientTool(ToolCompInspect)
-        TODO("APR: super.onFocusReceived()")
+        // APR: super.onFocusReceived()
     }
 
     fun refresh() {
@@ -117,37 +119,35 @@ class FloaterInspect(key: String) : Floater(key) {
         textureMemory = 0u
         textureVramMemory = 0u
 
-        val selectedIndex: Int = TODO("APR: objectList.getFirstSelectedIndex()") as Int
+        val selectedIndex: Int = 0 // APR: objectList.getFirstSelectedIndex()
         val selectedUuid: String = if (selectedIndex > -1) getSelectedUUID() else ""
 
-        TODO("APR: objectList.deleteAllItems()")
+        // APR: objectList.deleteAllItems()
 
-        TODO("""
-            APR: iterate objectSelection.validIterator():
-              - skip nodes with mCreationDate == 0
-              - resolve timestamp from mCreationDate/1000000
-              - resolve owner name via LLAvatarNameCache (or LLCacheName for group owners)
-              - resolve creator name via LLAvatarNameCache
-              - apply RLVa name-anonymization rules
-              - compute texture/VRAM memory via getObjectTextureMemory()
-              - accumulate faceCount, faceCountVisible, triangleCount, vertexCount, primCount, objCount
-              - call objectList.addElement(row, ADD_TOP)
-        """)
+        // APR: iterate objectSelection.validIterator():
+        //   - skip nodes with mCreationDate == 0
+        //   - resolve timestamp from mCreationDate/1000000
+        //   - resolve owner name via LLAvatarNameCache (or LLCacheName for group owners)
+        //   - resolve creator name via LLAvatarNameCache
+        //   - apply RLVa name-anonymization rules
+        //   - compute texture/VRAM memory via getObjectTextureMemory()
+        //   - accumulate faceCount, faceCountVisible, triangleCount, vertexCount, primCount, objCount
+        //   - call objectList.addElement(row, ADD_TOP)
 
         // Firestorm: accumulate attachment complexity for each root object.
-        TODO("APR: iterate valid root objects; for each VOVolume accumulate getRenderCost + children + texture costs, clamped to MaxAttachmentComplexity, add to complexity")
+        // APR: iterate valid root objects; for each VOVolume accumulate getRenderCost + children + texture costs, clamped to MaxAttachmentComplexity, add to complexity
 
         if (selectedIndex > -1 &&
-            TODO("APR: objectList.getItemIndex(selectedUuid) == selectedIndex") as Boolean
+            false // APR: objectList.getItemIndex(selectedUuid) == selectedIndex
         ) {
-            TODO("APR: objectList.selectNthItem(selectedIndex)")
+            // APR: objectList.selectNthItem(selectedIndex)
         } else {
-            TODO("APR: objectList.selectNthItem(0)")
+            // APR: objectList.selectNthItem(0)
         }
 
         onSelectObject()
-        TODO("APR: objectList.setScrollPos(savedScrollPos)")
-        TODO("APR: update linksetstats_text with formatted totals for objects, prims, faces, vertices, triangles, textures, RAM, VRAM, complexity")
+        // APR: objectList.setScrollPos(savedScrollPos)
+        // APR: update linksetstats_text with formatted totals for objects, prims, faces, vertices, triangles, textures, RAM, VRAM, complexity
     }
 
     fun onClickCreatorProfile() {

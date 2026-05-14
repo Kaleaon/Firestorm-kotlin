@@ -108,7 +108,7 @@ class DayInstance(val envSelection: EnvSelection) {
     fun setDayOffset(offset: Long) { dayOffset = offset; animate() }
 
     open fun animate() {
-        TODO("build TrackBlenderLoopingTime blenders for sky/water tracks using dayCycle, dayLength, dayOffset")
+        System.err.println("DayInstance: animate not yet implemented")
     }
 
     fun setBlenders(skyBlend: SettingsBlender?, waterBlend: SettingsBlender?) {
@@ -120,7 +120,8 @@ class DayInstance(val envSelection: EnvSelection) {
 
     fun getProgress(): Float {
         val day = dayCycle ?: return -1f
-        TODO("compute normalized position within day cycle using current time and dayOffset/dayLength")
+        System.err.println("DayInstance: getProgress not yet implemented")
+        return 0f
     }
 
     fun setFlags(flag: UInt)  { animateFlags = animateFlags or flag }
@@ -143,11 +144,12 @@ open class DayTransition(
     override fun isTransition(): Boolean = true
 
     override fun applyTimeDelta(deltaSeconds: Double): Boolean {
-        TODO("blend startSky→nextInstance.sky and startWater→nextInstance.water over transitionTime seconds")
+        System.err.println("DayTransition: applyTimeDelta not yet implemented")
+        return false
     }
 
     override fun animate() {
-        TODO("set up transition blenders from startSky/startWater toward nextInstance sky/water")
+        System.err.println("DayTransition: animate not yet implemented")
     }
 }
 

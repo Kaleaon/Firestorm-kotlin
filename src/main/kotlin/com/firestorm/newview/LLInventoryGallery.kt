@@ -769,48 +769,62 @@ class LLInventoryGalleryItem(params: Params = Params()) : LLPanel() {
     private var gallery: LLInventoryGallery? = null
 
     fun postBuild(): Boolean {
-        nameText = TODO("GPU: find child text box 'item_name'")
+        nameText = null
         return true
     }
 
     override fun draw() {
-        TODO("GPU: draw thumbnail, name text, selection highlight, worn/link overlays")
+        // GPU: draw thumbnail, name text, selection highlight, worn/link overlays
     }
 
     fun handleMouseDown(x: Int, y: Int, mask: Int): Boolean {
-        TODO("APR: use JVM equivalent - update gallery selection state with ctrl/shift modifiers")
+        System.err.println("LLInventoryGalleryItem: handleMouseDown not yet implemented")
+        return false
     }
 
     fun handleRightMouseDown(x: Int, y: Int, mask: Int): Boolean {
-        TODO("APR: use JVM equivalent - update selection, update lastInteractedUUID, show context menu")
+        System.err.println("LLInventoryGalleryItem: handleRightMouseDown not yet implemented")
+        return false
     }
 
     fun handleDoubleClick(x: Int, y: Int, mask: Int): Boolean {
-        TODO("APR: use JVM equivalent - open folder or execute item action")
+        System.err.println("LLInventoryGalleryItem: handleDoubleClick not yet implemented")
+        return false
     }
 
     fun handleMouseUp(x: Int, y: Int, mask: Int): Boolean {
-        TODO("APR: use JVM equivalent - finalize drag or click")
+        System.err.println("LLInventoryGalleryItem: handleMouseUp not yet implemented")
+        return false
     }
 
     fun handleHover(x: Int, y: Int, mask: Int): Boolean {
-        TODO("GPU: show tooltip with item name/desc, update hover state")
+        // GPU: show tooltip with item name/desc, update hover state
+        return false
     }
 
     fun handleDragAndDrop(
         x: Int, y: Int, mask: Int, drop: Boolean,
         cargoType: EDragAndDropType, cargoData: Any?,
         accept: Array<EAcceptance>, tooltipMsg: StringBuilder
-    ): Boolean = TODO("APR: use JVM equivalent - delegate to gallery baseHandleDragAndDrop for this item's UUID")
-
-    fun handleKeyHere(key: Int, mask: Int): Boolean {
-        TODO("APR: use JVM equivalent - delegate key handling to parent gallery")
+    ): Boolean {
+        System.err.println("LLInventoryGalleryItem: handleDragAndDrop not yet implemented")
+        return false
     }
 
-    fun onFocusLost() { TODO("GPU: redraw item without focus highlight") }
-    fun onFocusReceived() { TODO("GPU: redraw item with focus highlight") }
+    fun handleKeyHere(key: Int, mask: Int): Boolean {
+        System.err.println("LLInventoryGalleryItem: handleKeyHere not yet implemented")
+        return false
+    }
 
-    fun getTextFont(): LLFontGL? { TODO("GPU: return bold font if folder, plain otherwise") }
+    fun onFocusLost() { // GPU: redraw item without focus highlight
+    }
+    fun onFocusReceived() { // GPU: redraw item with focus highlight
+    }
+
+    fun getTextFont(): LLFontGL? {
+        // GPU: return bold font if folder, plain otherwise
+        return null
+    }
 
     fun setItemName(name: String) {
         itemName = name
@@ -821,7 +835,7 @@ class LLInventoryGalleryItem(params: Params = Params()) : LLPanel() {
 
     fun setSelected(value: Boolean) {
         selected = value
-        TODO("GPU: redraw selection highlight")
+        // GPU: redraw selection highlight
     }
 
     fun setWorn(value: Boolean) {
@@ -856,11 +870,11 @@ class LLInventoryGalleryItem(params: Params = Params()) : LLPanel() {
             !isFolder -> EInventorySortGroup.SG_ITEM
             else -> EInventorySortGroup.SG_NORMAL_FOLDER
         }
-        TODO("APR: use JVM equivalent - set permSuffix from item flags")
+        System.err.println("LLInventoryGalleryItem: setType permSuffix not yet implemented")
     }
 
     fun setFavorite(isFavorite: Boolean) {
-        TODO("GPU: update visual indicator for favorite state")
+        // GPU: update visual indicator for favorite state
     }
 
     fun getAssetType(): LLAssetType.EType = type

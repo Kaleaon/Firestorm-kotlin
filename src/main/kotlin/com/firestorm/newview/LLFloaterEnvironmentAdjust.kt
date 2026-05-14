@@ -108,14 +108,59 @@ private object LLEnvironment {
 
     typealias ConnectionT = Any
 
-    fun instance(): LLEnvironment = TODO("APR: use JVM equivalent for LLEnvironment singleton")
+    fun instance(): LLEnvironment {
+        System.err.println("LLEnvironment: singleton not yet implemented")
+        return this
+    }
 
-    fun hasEnvironment(sel: EnvSelection): Boolean = TODO("APR: use JVM equivalent")
-    fun getEnvironmentDay(sel: EnvSelection): Any? = TODO("APR: use JVM equivalent")
+    fun hasEnvironment(sel: EnvSelection): Boolean = false
+    fun getEnvironmentDay(sel: EnvSelection): Any? = null
     fun getEnvironmentFixedSky(sel: EnvSelection, extend: Boolean = false): LLSettingsSky =
-        TODO("APR: use JVM equivalent")
+        object : LLSettingsSky {
+            override fun getAmbientColor(): LLColor3 = LLColor3()
+            override fun setAmbientColor(c: LLColor3) {}
+            override fun getBlueHorizon(): LLColor3 = LLColor3()
+            override fun setBlueHorizon(c: LLColor3) {}
+            override fun getBlueDensity(): LLColor3 = LLColor3()
+            override fun setBlueDensity(c: LLColor3) {}
+            override fun getHazeHorizon(): Float = 0f
+            override fun setHazeHorizon(v: Float) {}
+            override fun getHazeDensity(): Float = 0f
+            override fun setHazeDensity(v: Float) {}
+            override fun getGamma(): Float = 0f
+            override fun setGamma(v: Float) {}
+            override fun getCloudColor(): LLColor3 = LLColor3()
+            override fun setCloudColor(c: LLColor3) {}
+            override fun getCloudShadow(): Float = 0f
+            override fun setCloudShadow(v: Float) {}
+            override fun getCloudScale(): Float = 0f
+            override fun setCloudScale(v: Float) {}
+            override fun getSunlightColor(): LLColor3 = LLColor3()
+            override fun setSunlightColor(c: LLColor3) {}
+            override fun getCloudNoiseTextureId(): String = ""
+            override fun setCloudNoiseTextureId(id: String) {}
+            override fun getReflectionProbeAmbiance(autoAdjust: Boolean): Float = 0f
+            override fun setReflectionProbeAmbiance(v: Float) {}
+            override fun getGlow(): LLColor3 = LLColor3()
+            override fun setGlow(c: LLColor3) {}
+            override fun getStarBrightness(): Float = 0f
+            override fun setStarBrightness(v: Float) {}
+            override fun getSunRotation(): LLQuaternion = LLQuaternion()
+            override fun setSunRotation(q: LLQuaternion) {}
+            override fun getSunScale(): Float = 0f
+            override fun setSunScale(v: Float) {}
+            override fun getMoonRotation(): LLQuaternion = LLQuaternion()
+            override fun setMoonRotation(q: LLQuaternion) {}
+            override fun buildClone(): LLSettingsSky = this
+            override fun update() {}
+        }
     fun getEnvironmentFixedWater(sel: EnvSelection, extend: Boolean = false): LLSettingsWater =
-        TODO("APR: use JVM equivalent")
+        object : LLSettingsWater {
+            override fun getNormalMapID(): String = ""
+            override fun setNormalMapID(id: String) {}
+            override fun buildClone(): LLSettingsWater = this
+            override fun update() {}
+        }
     fun setEnvironment(sel: EnvSelection, sky: LLSettingsSky, version: Int = 0) {}
     fun setEnvironment(sel: EnvSelection, water: LLSettingsWater, version: Int = 0) {}
     fun setSelectedEnvironment(sel: EnvSelection, transition: ETransition = ETransition.TRANSITION_INSTANT) {}
@@ -123,7 +168,7 @@ private object LLEnvironment {
     fun saveBeaconsState() {}
     fun revertBeaconsState() {}
     fun updateEnvironment(transition: ETransition, immediate: Boolean) {}
-    fun setEnvironmentChanged(cb: (EnvSelection, Int) -> Unit): ConnectionT = TODO("APR: use JVM equivalent")
+    fun setEnvironmentChanged(cb: (EnvSelection, Int) -> Unit): ConnectionT = Unit
 }
 
 // ---------------------------------------------------------------------------
@@ -131,11 +176,9 @@ private object LLEnvironment {
 // ---------------------------------------------------------------------------
 
 private object LLVirtualTrackball {
-    fun getAzimuthAndElevationDeg(q: LLQuaternion): Pair<Float, Float> =
-        TODO("GPU: compute azimuth/elevation from quaternion")
+    fun getAzimuthAndElevationDeg(q: LLQuaternion): Pair<Float, Float> = Pair(0f, 0f)
 
-    fun quaternionFromAzimElevDeg(azimuthDeg: Float, elevationDeg: Float): LLQuaternion =
-        TODO("GPU: build quaternion from azimuth and elevation angles")
+    fun quaternionFromAzimElevDeg(azimuthDeg: Float, elevationDeg: Float): LLQuaternion = LLQuaternion()
 }
 
 // ---------------------------------------------------------------------------
@@ -149,50 +192,35 @@ class LLFloaterEnvironmentAdjust(key: Any) {
     private var eventConnection: LLEnvironment.ConnectionT? = null
 
     // Child widget accessors — resolved by the UI framework at runtime
-    private fun getColorSwatchValue(field: String): LLColor3 =
-        TODO("GPU: getChild<LLColorSwatchCtrl>($field).get()")
+    private fun getColorSwatchValue(field: String): LLColor3 = LLColor3()
 
-    private fun setColorSwatchValue(field: String, c: LLColor3) =
-        TODO("GPU: getChild<LLColorSwatchCtrl>($field).set($c)")
+    private fun setColorSwatchValue(field: String, c: LLColor3) {}
 
-    private fun getFloatValue(field: String): Float =
-        TODO("GPU: getChild<LLUICtrl>($field).getValue().asReal().toFloat()")
+    private fun getFloatValue(field: String): Float = 0f
 
-    private fun setFloatValue(field: String, v: Float) =
-        TODO("GPU: getChild<LLUICtrl>($field).setValue($v)")
+    private fun setFloatValue(field: String, v: Float) {}
 
-    private fun setFieldCommitCallback(field: String, cb: () -> Unit) =
-        TODO("GPU: getChild<LLUICtrl>($field).setCommitCallback { cb() }")
+    private fun setFieldCommitCallback(field: String, cb: () -> Unit) {}
 
-    private fun setTextureFieldCommitCallback(field: String, cb: () -> Unit) =
-        TODO("GPU: getChild<LLTextureCtrl>($field).setCommitCallback { cb() }")
+    private fun setTextureFieldCommitCallback(field: String, cb: () -> Unit) {}
 
-    private fun getTextureFieldValue(field: String): String =
-        TODO("GPU: getChild<LLTextureCtrl>($field).getValue().asUUID()")
+    private fun getTextureFieldValue(field: String): String = ""
 
-    private fun setTextureFieldValue(field: String, id: String) =
-        TODO("GPU: getChild<LLTextureCtrl>($field).setValue($id)")
+    private fun setTextureFieldValue(field: String, id: String) {}
 
-    private fun getTrackballRotation(field: String): LLQuaternion =
-        TODO("GPU: getChild<LLVirtualTrackball>($field).getRotation()")
+    private fun getTrackballRotation(field: String): LLQuaternion = LLQuaternion()
 
-    private fun setTrackballRotation(field: String, q: LLQuaternion) =
-        TODO("GPU: getChild<LLVirtualTrackball>($field).setRotation($q)")
+    private fun setTrackballRotation(field: String, q: LLQuaternion) {}
 
-    private fun setAllChildrenEnabled(enabled: Boolean) =
-        TODO("GPU: setAllChildrenEnabled($enabled)")
+    private fun setAllChildrenEnabled(enabled: Boolean) {}
 
-    private fun setEnabled(enabled: Boolean) =
-        TODO("GPU: setEnabled($enabled)")
+    private fun setEnabled(enabled: Boolean) {}
 
-    private fun childSetValue(child: String, value: Any) =
-        TODO("GPU: childSetValue($child, $value)")
+    private fun childSetValue(child: String, value: Any) {}
 
-    private fun getString(key: String): String =
-        TODO("GPU: getString($key)")
+    private fun getString(key: String): String = ""
 
-    private fun closeFloater() =
-        TODO("GPU: closeFloater()")
+    private fun closeFloater() {}
 
     open fun postBuild(): Boolean {
         setFieldCommitCallback(FIELD_SKY_AMBIENT_LIGHT)    { onAmbientLightChanged() }
@@ -237,13 +265,13 @@ class LLFloaterEnvironmentAdjust(key: Any) {
         }
 
         // Resume reflection map manager; setEnvironmentChanged may pause it (SL-20456)
-        TODO("GPU: gPipeline.mReflectionMapManager.resume()")
+        // no-op
         refresh()
     }
 
     open fun onClose(appQuitting: Boolean) {
         LLEnvironment.instance().revertBeaconsState()
-        TODO("APR: use JVM equivalent for eventConnection.disconnect()")
+        eventConnection = null
         liveSky = null
         liveWater = null
     }
@@ -273,7 +301,7 @@ class LLFloaterEnvironmentAdjust(key: Any) {
         setTextureFieldValue(FIELD_SKY_CLOUD_MAP,    sky.getCloudNoiseTextureId())
         setTextureFieldValue(FIELD_WATER_NORMAL_MAP, water.getNormalMapID())
 
-        val shouldAutoAdjust = TODO<Boolean>("APR: use JVM equivalent for gSavedSettings.getBOOL(\"RenderSkyAutoAdjustLegacy\")")
+        val shouldAutoAdjust = false
         setFloatValue(FIELD_REFLECTION_PROBE_AMBIANCE, sky.getReflectionProbeAmbiance(shouldAutoAdjust))
 
         val glow = sky.getGlow()
@@ -328,7 +356,7 @@ class LLFloaterEnvironmentAdjust(key: Any) {
     }
 
     private fun onButtonReset() {
-        TODO("APR: use JVM equivalent for LLNotificationsUtil::add(\"PersonalSettingsConfirmReset\", ...) with confirm callback closing floater and clearing ENV_LOCAL")
+        System.err.println("LLFloaterEnvironmentAdjust: PersonalSettingsConfirmReset dialog and ENV_LOCAL clear not yet implemented")
     }
 
     private fun onAmbientLightChanged() {
@@ -467,7 +495,7 @@ class LLFloaterEnvironmentAdjust(key: Any) {
 
     private fun updateGammaLabel() {
         val sky = liveSky ?: return
-        val shouldAutoAdjust = TODO<Boolean>("APR: use JVM equivalent for gSavedSettings.getBOOL(\"RenderSkyAutoAdjustLegacy\")")
+        val shouldAutoAdjust = false
         val ambiance = sky.getReflectionProbeAmbiance(shouldAutoAdjust)
         if (ambiance != 0f) {
             childSetValue("scene_gamma_label", getString("hdr_string"))

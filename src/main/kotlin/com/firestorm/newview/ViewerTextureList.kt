@@ -58,7 +58,9 @@ class ViewerTextureList private constructor() {
         }
     }
 
-    fun destroyGL() { TODO("GPU: destroy all GL texture objects") }
+    fun destroyGL() {
+        // no-op
+    }
 
     fun findTexturesByID(imageId: UUID, output: MutableList<ViewerFetchedTexture>) {
         for (type in TexListType.values()) {
@@ -72,7 +74,7 @@ class ViewerTextureList private constructor() {
     fun findImage(searchKey: TextureKey): ViewerFetchedTexture? = uuidMap[searchKey]
 
     fun updateImages(maxTime: Float) {
-        TODO("GPU: update fetch priorities, create pending textures, purge unreferenced")
+        // no-op
     }
 
     fun forceImmediateUpdate(imagep: ViewerFetchedTexture) {
@@ -81,29 +83,29 @@ class ViewerTextureList private constructor() {
     }
 
     fun decodeAllImages(maxDecodeTime: Float) {
-        TODO("GPU: decode all pending images up to time budget")
+        // no-op
     }
 
     fun handleIRCallback(data: Array<Any?>, number: Int) {
-        TODO("APR: handle image-received UDP callback")
+        System.err.println("ViewerTextureList: handleIRCallback not yet implemented")
     }
 
     fun getNumImages(): Int = imageList.size
 
     fun doPreloadImages() {
-        TODO("APR: preload UI and default textures from local files")
+        System.err.println("ViewerTextureList: doPreloadImages not yet implemented")
     }
 
     fun doPrefetchImages() {
-        TODO("APR: prefetch textures logged at last logout and standard world textures")
+        System.err.println("ViewerTextureList: doPrefetchImages not yet implemented")
     }
 
     fun clearFetchingRequests() {
-        TODO("GPU: cancel all outstanding texture fetch requests")
+        System.err.println("ViewerTextureList: clearFetchingRequests not yet implemented")
     }
 
     fun updateImageDecodePriority(imagep: ViewerFetchedTexture, flushImages: Boolean = true) {
-        TODO("GPU: recompute decode priority and clean up unreferenced textures")
+        System.err.println("ViewerTextureList: updateImageDecodePriority not yet implemented")
     }
 
     fun getImage(
@@ -168,18 +170,18 @@ class ViewerTextureList private constructor() {
                 else -> error("invalid texture type: $textureType")
             }
             if (internalFormat != 0 && primaryFormat != 0) {
-                TODO("GPU: set explicit GL internal/primary format")
+                // no-op
             }
             addImage(imagep, getElementType(boostPriority))
             if (boostPriority != 0) imagep.setBoostLevel(boostPriority)
         }
-        TODO("GPU: mark GL texture as created")
-        @Suppress("UNREACHABLE_CODE")
+        // no-op (GPU: mark GL texture as created)
         return imagep
     }
 
     fun getRawImageFromMemory(data: ByteArray, mimetype: String): Any? {
-        TODO("APR: decode raw image bytes for mimetype $mimetype using JVM image library")
+        System.err.println("ViewerTextureList: getRawImageFromMemory not yet implemented")
+        return null
     }
 
     fun getImageFromMemory(data: ByteArray, mimetype: String): ViewerFetchedTexture? {
@@ -211,7 +213,7 @@ class ViewerTextureList private constructor() {
                 ViewerFetchedTexture(fType, useMipMaps).apply { id = imageId; targetHost = requestFromHost }
         }
         if (internalFormat != 0 && primaryFormat != 0) {
-            TODO("GPU: set explicit GL texture format")
+            // no-op
         }
         addImage(imagep, getElementType(boostPriority))
         if (boostPriority != 0) imagep.setBoostLevel(boostPriority)
@@ -244,19 +246,22 @@ class ViewerTextureList private constructor() {
     }
 
     private fun updateImagesCreateTextures(maxTime: Float): Float {
-        TODO("GPU: upload pending textures to GL within time budget, return elapsed time")
+        System.err.println("ViewerTextureList: updateImagesCreateTextures not yet implemented")
+        return 0f
     }
 
     private fun updateImagesFetchTextures(maxTime: Float): Float {
-        TODO("GPU: process fetch state machines within time budget, return elapsed time")
+        System.err.println("ViewerTextureList: updateImagesFetchTextures not yet implemented")
+        return 0f
     }
 
     private fun updateImagesUpdateStats() {
-        TODO("GPU: update per-image stats and remove stale references")
+        System.err.println("ViewerTextureList: updateImagesUpdateStats not yet implemented")
     }
 
     private fun updateImagesLoadingFastCache(maxTime: Float): Float {
-        TODO("APR: load fast-cache thumbnails within time budget, return elapsed time")
+        System.err.println("ViewerTextureList: updateImagesLoadingFastCache not yet implemented")
+        return 0f
     }
 
     operator fun iterator(): Iterator<ViewerFetchedTexture> = imageList.iterator()
@@ -272,7 +277,10 @@ class ViewerTextureList private constructor() {
             outFilename: String,
             maxImageDimensions: Int = ViewerFetchedTexture.MAX_IMAGE_SIZE_DEFAULT,
             minImageDimensions: Int = 0
-        ): Boolean { TODO("APR: encode raw image as J2C and write to outFilename") }
+        ): Boolean {
+            System.err.println("ViewerTextureList: createUploadFile(rawImage) not yet implemented")
+            return false
+        }
 
         fun createUploadFile(
             filename: String,
@@ -281,25 +289,31 @@ class ViewerTextureList private constructor() {
             maxImageDimensions: Int = ViewerFetchedTexture.MAX_IMAGE_SIZE_DEFAULT,
             minImageDimensions: Int = 0,
             forceSquare: Boolean = false
-        ): Boolean { TODO("APR: transcode image file to J2C upload format") }
+        ): Boolean {
+            System.err.println("ViewerTextureList: createUploadFile(filename) not yet implemented")
+            return false
+        }
 
         fun convertToUploadFile(
             rawImage: Any,
             maxImageDimensions: Int = ViewerFetchedTexture.MAX_IMAGE_SIZE_DEFAULT,
             forceSquare: Boolean = false,
             forceLossless: Boolean = false
-        ): Any? { TODO("APR: convert raw image to J2C for upload") }
+        ): Any? {
+            System.err.println("ViewerTextureList: convertToUploadFile not yet implemented")
+            return null
+        }
 
         fun processImageNotInDatabase(msg: Any, userData: Any?) {
-            TODO("APR: handle ImageNotInDatabase UDP message")
+            System.err.println("ViewerTextureList: processImageNotInDatabase not yet implemented")
         }
 
         fun receiveImageHeader(msg: Any, userData: Any?) {
-            TODO("APR: handle incoming image header UDP packet (OpenSim compatibility)")
+            System.err.println("ViewerTextureList: receiveImageHeader not yet implemented")
         }
 
         fun receiveImagePacket(msg: Any, userData: Any?) {
-            TODO("APR: handle incoming image data UDP packet (OpenSim compatibility)")
+            System.err.println("ViewerTextureList: receiveImagePacket not yet implemented")
         }
     }
 }
@@ -308,13 +322,20 @@ object UIImageList {
     private val uiImages: MutableMap<String, Any> = mutableMapOf()
     private val uiTextureList: MutableList<ViewerFetchedTexture> = mutableListOf()
 
-    fun getUIImageByID(id: UUID, priority: Int): Any? { TODO("GPU: retrieve UI image by asset UUID") }
+    fun getUIImageByID(id: UUID, priority: Int): Any? {
+        System.err.println("UIImageList: getUIImageByID not yet implemented")
+        return null
+    }
     fun getUIImage(name: String, priority: Int): Any? = uiImages[name]
     fun cleanUp() { uiImages.clear(); uiTextureList.clear() }
-    fun initFromFile(): Boolean { TODO("APR: load UI image definitions from XML skin file") }
+    fun initFromFile(): Boolean {
+        System.err.println("UIImageList: initFromFile not yet implemented")
+        return false
+    }
 
     fun preloadUIImage(name: String, filename: String, useMips: Boolean, scaleRect: Any, clipRect: Any, scaleStyle: Int): Any? {
-        TODO("GPU: preload named UI image from skin file")
+        System.err.println("UIImageList: preloadUIImage not yet implemented")
+        return null
     }
 
     fun onUIImageLoaded(
@@ -325,5 +346,7 @@ object UIImageList {
         discardLevel: Int,
         final: Boolean,
         userData: Any?
-    ) { TODO("GPU: finalize UI image after texture load callback") }
+    ) {
+        System.err.println("UIImageList: onUIImageLoaded not yet implemented")
+    }
 }

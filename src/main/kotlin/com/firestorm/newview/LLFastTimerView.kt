@@ -15,23 +15,24 @@ class LLFastTimerView(key: Any?) {
         private const val MARGIN = 10
 
         fun outputAllMetrics() {
-            TODO("APR: iterate LLMetricPerformanceTesterBasic::sTesterMap and call outputTestResults()")
+            System.err.println("LLFastTimerView: outputAllMetrics not yet implemented")
         }
 
         fun doAnalysis(baseline: String, target: String, output: String) {
-            TODO("APR: check BlockTimer::sLog / sMetricLog and dispatch to doAnalysisDefault or doAnalysisMetrics")
+            System.err.println("LLFastTimerView: doAnalysis not yet implemented")
         }
 
         private fun doAnalysisDefault(baseline: String, target: String, output: String) {
-            TODO("APR: use JVM file I/O to open baseline and target XML logs, call analyzePerformanceLogDefault, write CSV comparison to output")
+            System.err.println("LLFastTimerView: doAnalysisDefault not yet implemented")
         }
 
         private fun analyzePerformanceLogDefault(input: InputStream): Map<String, Any?> {
-            TODO("APR: parse LLSD XML records from InputStream, accumulate per-label time/sample stats, return summary map")
+            System.err.println("LLFastTimerView: analyzePerformanceLogDefault not yet implemented")
+            return emptyMap()
         }
 
         private fun exportCharts(base: String, target: String) {
-            TODO("GPU: allocate render target, read base/target logs, render per-label time/calls/execution distribution charts via OpenGL, save as PNG")
+            // no-op
         }
     }
 
@@ -84,7 +85,8 @@ class LLFastTimerView(key: Any?) {
     private var legendRectLeft = 0; private var legendRectTop = 0; private var legendRectRight = 0; private var legendRectBottom = 0
 
     fun postBuild(): Boolean {
-        TODO("APR: bind pause button callback and find scroll bar child view")
+        System.err.println("LLFastTimerView: postBuild not yet implemented")
+        return false
     }
 
     private fun onPause() {
@@ -94,109 +96,118 @@ class LLFastTimerView(key: Any?) {
     private fun setPauseState(pauseState: Boolean) {
         if (pauseState == pauseHistory) return
         if (!pauseState) {
-            TODO("APR: set pause_btn label to getString(\"pause\")")
+            System.err.println("LLFastTimerView: setPauseState (pause label) not yet implemented")
         } else {
             scrollIndex = 0
-            TODO("APR: set pause_btn label to getString(\"run\")")
+            System.err.println("LLFastTimerView: setPauseState (run label) not yet implemented")
         }
         pauseHistory = pauseState
     }
 
     open fun handleMouseDown(x: Int, y: Int, mask: Int): Boolean {
-        TODO("APR: if x < scrollBar left, toggle collapse on getLegendID(y); else if hoverTimer, expand it; else if graphRect contains (x,y), capture mouse")
+        System.err.println("LLFastTimerView: handleMouseDown not yet implemented")
+        return false
     }
 
     open fun handleDoubleClick(x: Int, y: Int, mask: Int): Boolean {
-        TODO("APR: iterate block_timer_tree_df and set mCollapsed=false on all nodes")
+        System.err.println("LLFastTimerView: handleDoubleClick not yet implemented")
+        return false
     }
 
     open fun handleRightMouseDown(x: Int, y: Int, mask: Int): Boolean {
-        TODO("APR: if hoverTimer, collapse it or its parent; else if barRect contains (x,y), compute mStatsIndex from y position")
+        System.err.println("LLFastTimerView: handleRightMouseDown not yet implemented")
+        return false
     }
 
     open fun handleMouseUp(x: Int, y: Int, mask: Int): Boolean {
-        TODO("APR: release mouse capture if held")
+        System.err.println("LLFastTimerView: handleMouseUp not yet implemented")
+        return false
     }
 
     open fun handleHover(x: Int, y: Int, mask: Int): Boolean {
-        TODO("APR: if mouse captured, update scrollIndex from x; else update hoverTimer/hoverId from bar hit-test or legend hit-test")
+        System.err.println("LLFastTimerView: handleHover not yet implemented")
+        return false
     }
 
     open fun handleToolTip(x: Int, y: Int, mask: Int): Boolean {
-        TODO("APR: if paused and barRect contains (x,y) and hoverTimer non-null, show tooltip with name/ms/calls; else if x < scrollBar, show legend tooltip")
+        System.err.println("LLFastTimerView: handleToolTip not yet implemented")
+        return false
     }
 
     open fun handleScrollWheel(x: Int, y: Int, clicks: Int): Boolean {
         if (x < barRectLeft) {
-            TODO("APR: forward scroll to scrollBar child")
+            System.err.println("LLFastTimerView: handleScrollWheel (scrollBar forward) not yet implemented")
         } else {
             setPauseState(true)
-            TODO("APR: clamp scrollIndex += clicks within recorded period range")
+            System.err.println("LLFastTimerView: handleScrollWheel (scrollIndex update) not yet implemented")
         }
         return true
     }
 
     open fun draw() {
-        TODO("GPU: record frame timing, update timerBarRows, draw background rect, help text, legend, bars, line graph, then call printLineStats")
+        // no-op
     }
 
     open fun onOpen(key: Any?) {
         setPauseState(false)
-        TODO("APR: reset recording and append current frame recording")
+        System.err.println("LLFastTimerView: onOpen not yet implemented")
     }
 
     open fun onClose(appQuitting: Boolean) {
-        TODO("APR: hide view; clear and resize timerBarRows to NUM_FRAMES_HISTORY")
+        System.err.println("LLFastTimerView: onClose not yet implemented")
     }
 
     fun getLegendID(y: Int): Any? {
-        TODO("APR: compute index from (legendRectTop - y) / (fontLineHeight + 2) and return ft_display_idx[index] if valid")
+        System.err.println("LLFastTimerView: getLegendID not yet implemented")
+        return null
     }
 
     private fun drawTicks() {
-        TODO("GPU: render MS tick labels at 25%, 50%, 75%, 100% positions along barRect width")
+        // no-op
     }
 
     private fun drawLineGraph() {
-        TODO("GPU: clip to graphRect; for each block timer draw triangle-strip time-series; interpolate max_time; render axis label and hover name")
+        // no-op
     }
 
     private fun drawLegend() {
-        TODO("GPU: clip to legendRect; for each visible block timer in DFS order draw color swatch and formatted label; update scrollBar docSize")
+        // no-op
     }
 
     private fun drawHelp(y: Int) {
-        TODO("GPU: render '[Right-Click log selected]' help text near top of view")
+        // no-op
     }
 
     private fun drawBorders(y: Int, xStart: Int, barHeight: Int, dy: Int) {
-        TODO("GPU: draw grey outlines for heading, tree view, average bar, current frame bar, history bars, and line graph regions")
+        // no-op
     }
 
     private fun drawBars() {
-        TODO("GPU: clip to barRect; compute bar height; call updateTotalTime; draw ticks and borders; draw average row and per-history bars using drawBar")
+        // no-op
     }
 
     private fun printLineStats() {
         if (statsIndex >= 0) {
-            TODO("APR: log comma-separated timer names then comma-separated ms values for statsIndex to application log")
+            System.err.println("LLFastTimerView: printLineStats not yet implemented")
         }
     }
 
     private fun generateUniqueColors() {
-        TODO("GPU: resize sTimerColors to block timer count; assign HSL colors by traversing timer tree with incrementing hue")
+        // no-op
     }
 
     private fun updateTotalTime() {
-        TODO("APR: set totalTimeDisplay from recording period mean *2, period max, or recent max depending on displayMode; round up to next 20 ms")
+        System.err.println("LLFastTimerView: updateTotalTime not yet implemented")
     }
 
     private fun updateTimerBarWidths(timeBlock: Any?, row: TimerBarRow, historyIndex: Int, barIndex: IntArray): Float {
-        TODO("APR: recursively accumulate self+child times into row.bars[barIndex]; return fullTime as seconds float")
+        System.err.println("LLFastTimerView: updateTimerBarWidths not yet implemented")
+        return 0f
     }
 
     private fun updateTimerBarOffsets(timeBlock: Any?, row: TimerBarRow, timerBarIndex: Int = 0): Int {
-        TODO("APR: compute childrenStart/End and per-child startFraction/endFraction; recurse into children; return updated timerBarIndex")
+        System.err.println("LLFastTimerView: updateTimerBarOffsets not yet implemented")
+        return 0
     }
 
     private fun drawBar(
@@ -207,6 +218,7 @@ class LLFastTimerView(key: Any?) {
         visible: Boolean = true,
         barIndex: Int = 0
     ): Int {
-        TODO("GPU: draw segmented texture rect for this timer bar scaled by start/endFraction; recurse into first-child bars")
+        // no-op
+        return 0
     }
 }

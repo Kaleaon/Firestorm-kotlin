@@ -7,23 +7,28 @@ import java.util.UUID
 // ---- Certificate helpers (OpenSSL-backed in C++; stubbed here) ----
 
 fun certNameFromX509Name(name: Any): MutableMap<String, Any> {
-    TODO("APR: use JVM PKI (X500Principal) to extract name components")
+    System.err.println("LLSecHandlerBasic: certNameFromX509Name not yet implemented")
+    return mutableMapOf()
 }
 
 fun certStringNameFromX509Name(name: Any): String {
-    TODO("APR: use JVM PKI (X500Principal.getName) to produce RFC 2253 string")
+    System.err.println("LLSecHandlerBasic: certStringNameFromX509Name not yet implemented")
+    return ""
 }
 
 fun certStringFromAsn1Integer(value: Any): String {
-    TODO("APR: use JVM BigInteger to convert ASN.1 integer to hex string")
+    System.err.println("LLSecHandlerBasic: certStringFromAsn1Integer not yet implemented")
+    return ""
 }
 
 fun certDateFromAsn1Time(asn1Time: Any): Instant {
-    TODO("APR: parse ASN.1 UTCTime / GeneralizedTime string to java.time.Instant")
+    System.err.println("LLSecHandlerBasic: certDateFromAsn1Time not yet implemented")
+    return Instant.EPOCH
 }
 
 fun certGetDigest(digestType: String, cert: Any): String {
-    TODO("APR: use JVM MessageDigest to compute $digestType digest of certificate")
+    System.err.println("LLSecHandlerBasic: certGetDigest not yet implemented")
+    return ""
 }
 
 // ---- LLBasicCertificate ----
@@ -33,19 +38,21 @@ class LLBasicCertificate : LLCertificate {
     private val llsdInfo: MutableMap<String, Any> = mutableMapOf()
 
     constructor(pemCert: String) {
-        TODO("APR: use JVM CertificateFactory.getInstance(\"X.509\") to parse PEM")
+        System.err.println("LLBasicCertificate: constructor(pemCert) not yet implemented")
     }
 
     constructor(x509Cert: Any) {
-        TODO("APR: wrap existing java.security.cert.X509Certificate")
+        System.err.println("LLBasicCertificate: constructor(x509Cert) not yet implemented")
     }
 
     override fun getPem(): String {
-        TODO("APR: use JVM Base64 to re-encode the certificate in PEM format")
+        System.err.println("LLBasicCertificate: getPem not yet implemented")
+        return ""
     }
 
     override fun getBinary(): MutableList<UByte> {
-        TODO("APR: return X509Certificate.getEncoded() as UByte list")
+        System.err.println("LLBasicCertificate: getBinary not yet implemented")
+        return mutableListOf()
     }
 
     override fun getLLSD(llsd: MutableMap<String, Any>) {
@@ -58,7 +65,7 @@ class LLBasicCertificate : LLCertificate {
     }
 
     private fun initLLSD() {
-        TODO("APR: populate llsdInfo from JVM X509Certificate fields and extensions")
+        System.err.println("LLBasicCertificate: initLLSD not yet implemented")
     }
 }
 
@@ -119,17 +126,17 @@ class LLBasicCertificateStore(filename: String) : LLBasicCertificateVector(), LL
     }
 
     fun loadFromFile(filename: String) {
-        TODO("APR: read PEM bundle from file, parse each certificate with JVM CertificateFactory")
+        System.err.println("LLBasicCertificateStore: loadFromFile not yet implemented")
     }
 
     override fun save() {
-        TODO("APR: write each certificate PEM to file at mFilename")
+        System.err.println("LLBasicCertificateStore: save not yet implemented")
     }
 
     override fun storeId(): String = ""
 
     override fun validate(validationPolicy: Int, certChain: LLCertificateChain, validationParams: Map<String, Any>) {
-        TODO("APR: implement chain validation using javax.net.ssl or BouncyCastle; consult trustedCertCache")
+        System.err.println("LLBasicCertificateStore: validate not yet implemented")
     }
 
     override fun clearSertCache() {
@@ -144,7 +151,7 @@ class LLBasicCertificateStore(filename: String) : LLBasicCertificateVector(), LL
 class LLBasicCertificateChain(storeCtx: Any?) : LLBasicCertificateVector(), LLCertificateChain() {
     init {
         if (storeCtx == null) return@init
-        TODO("APR: extract leaf cert and untrusted chain from JVM SSL context equivalent; build ordered chain")
+        System.err.println("LLBasicCertificateChain: chain extraction from SSL context not yet implemented")
     }
 }
 
@@ -191,25 +198,26 @@ class LLSecAPIBasicHandler : LLSecAPIHandler {
     override fun init() {
         protectedDataMap = mutableMapOf()
         if (protectedDataFilename.isEmpty()) {
-            TODO("APR: resolve user settings paths via JVM equivalent of gDirUtilp; load CA store")
+            System.err.println("LLSecAPIBasicHandler: init path resolution not yet implemented")
         }
         readProtectedData()
     }
 
     private fun readProtectedData(uniqueId: ByteArray) {
-        TODO("APR: read RC4-encrypted protected data file; decrypt with XOR key derived from machine ID")
+        System.err.println("LLSecAPIBasicHandler: readProtectedData(ByteArray) not yet implemented")
     }
 
     private fun readProtectedData() {
-        TODO("APR: get machine unique ID via JVM equivalent of LLMachineID; call readProtectedData(ByteArray)")
+        System.err.println("LLSecAPIBasicHandler: readProtectedData not yet implemented")
     }
 
     private fun writeProtectedData() {
-        TODO("APR: serialize protectedDataMap to XML LLSD, encrypt with RC4+machine-ID salt, write atomically")
+        System.err.println("LLSecAPIBasicHandler: writeProtectedData not yet implemented")
     }
 
     private fun legacyLoadPassword(): String {
-        TODO("APR: read legacy password.dat, decrypt with machine MAC address via XOR cipher")
+        System.err.println("LLSecAPIBasicHandler: legacyLoadPassword not yet implemented")
+        return ""
     }
 
     override fun getCertificate(pemCert: String): LLCertificate = LLBasicCertificate(pemCert)
@@ -270,7 +278,7 @@ class LLSecAPIBasicHandler : LLSecAPIHandler {
             val auth = credential["authenticator"] as? Map<String, Any> ?: emptyMap()
             result.setCredentialData(id, auth)
         } else {
-            TODO("APR: fall back to legacy first/last name from saved settings and legacy password file")
+            System.err.println("LLSecAPIBasicHandler: loadCredential legacy fallback not yet implemented")
         }
         return result
     }

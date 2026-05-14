@@ -19,12 +19,14 @@ fun setPropertyMethods(queryfn: BoolSettingQuery, updatefn: BoolSettingUpdate) {
 
 fun responseToLLSD(body: ByteArray, log: Boolean): Map<String, Any?>? {
     if (body.isEmpty()) return null
-    TODO("APR: use JVM XML parser to deserialise LLSD body into Map<String,Any?>")
+    System.err.println("CoreHttpUtil: responseToLLSD not yet implemented")
+    return null
 }
 
 fun responseToString(body: ByteArray?): String {
     if (body == null || body.isEmpty()) return "[Empty]"
-    TODO("APR: attempt LLSD parse, fall back to raw string truncated at 1024 chars")
+    System.err.println("CoreHttpUtil: responseToString not yet implemented")
+    return ""
 }
 
 fun requestPostWithLLSD(
@@ -34,7 +36,8 @@ fun requestPostWithLLSD(
     options: Map<String, Any?> = emptyMap(),
     handler: ((Map<String, Any?>) -> Unit)? = null
 ): Long {
-    TODO("APR: use JVM HttpClient — POST LLSD-serialised body to $url")
+    System.err.println("CoreHttpUtil: requestPostWithLLSD not yet implemented")
+    return 0L
 }
 
 fun requestPutWithLLSD(
@@ -44,7 +47,8 @@ fun requestPutWithLLSD(
     options: Map<String, Any?> = emptyMap(),
     handler: ((Map<String, Any?>) -> Unit)? = null
 ): Long {
-    TODO("APR: use JVM HttpClient — PUT LLSD-serialised body to $url")
+    System.err.println("CoreHttpUtil: requestPutWithLLSD not yet implemented")
+    return 0L
 }
 
 fun requestPatchWithLLSD(
@@ -54,7 +58,8 @@ fun requestPatchWithLLSD(
     options: Map<String, Any?> = emptyMap(),
     handler: ((Map<String, Any?>) -> Unit)? = null
 ): Long {
-    TODO("APR: use JVM HttpClient — PATCH LLSD-serialised body to $url")
+    System.err.println("CoreHttpUtil: requestPatchWithLLSD not yet implemented")
+    return 0L
 }
 
 data class HttpStatus(
@@ -140,7 +145,7 @@ class HttpCoroutineAdapter(
             success: CompletionCallback? = null,
             failure: CompletionCallback? = null
         ) {
-            TODO("APR: use JVM coroutine — async GET $url, call success/failure callback")
+            System.err.println("HttpCoroutineAdapter: callbackHttpGet not yet implemented")
         }
 
         fun callbackHttpPost(
@@ -150,7 +155,7 @@ class HttpCoroutineAdapter(
             success: CompletionCallback? = null,
             failure: CompletionCallback? = null
         ) {
-            TODO("APR: use JVM coroutine — async POST postData to $url, call success/failure callback")
+            System.err.println("HttpCoroutineAdapter: callbackHttpPost not yet implemented")
         }
 
         fun callbackHttpDel(
@@ -159,15 +164,15 @@ class HttpCoroutineAdapter(
             success: CompletionCallback? = null,
             failure: CompletionCallback? = null
         ) {
-            TODO("APR: use JVM coroutine — async DELETE $url, call success/failure callback")
+            System.err.println("HttpCoroutineAdapter: callbackHttpDel not yet implemented")
         }
 
         fun messageHttpGet(url: String, success: String = "", failure: String = "") {
-            TODO("APR: use JVM coroutine — GET $url, log result at INFO/WARN level")
+            System.err.println("HttpCoroutineAdapter: messageHttpGet not yet implemented")
         }
 
         fun messageHttpPost(url: String, postData: Map<String, Any?>, success: String, failure: String) {
-            TODO("APR: use JVM coroutine — POST to $url, log result at INFO/WARN level")
+            System.err.println("HttpCoroutineAdapter: messageHttpPost not yet implemented")
         }
     }
 
@@ -177,7 +182,8 @@ class HttpCoroutineAdapter(
         options: Map<String, Any?> = emptyMap(),
         headers: Map<String, String> = emptyMap()
     ): Map<String, Any?> {
-        TODO("APR: use JVM coroutine/suspend — POST LLSD body to $url and return decorated result map")
+        System.err.println("HttpCoroutineAdapter: postAndSuspend not yet implemented")
+        return emptyMap()
     }
 
     fun postAndSuspend(
@@ -186,7 +192,8 @@ class HttpCoroutineAdapter(
         options: Map<String, Any?> = emptyMap(),
         headers: Map<String, String> = emptyMap()
     ): Map<String, Any?> {
-        TODO("APR: use JVM coroutine/suspend — POST raw bytes to $url and return decorated result map")
+        System.err.println("HttpCoroutineAdapter: postAndSuspend (raw) not yet implemented")
+        return emptyMap()
     }
 
     fun postRawAndSuspend(
@@ -195,7 +202,8 @@ class HttpCoroutineAdapter(
         options: Map<String, Any?> = emptyMap(),
         headers: Map<String, String> = emptyMap()
     ): Map<String, Any?> {
-        TODO("APR: use JVM coroutine/suspend — POST raw body to $url, return result with HTTP_RESULTS_RAW bytes")
+        System.err.println("HttpCoroutineAdapter: postRawAndSuspend not yet implemented")
+        return emptyMap()
     }
 
     fun postFileAndSuspend(
@@ -204,7 +212,8 @@ class HttpCoroutineAdapter(
         options: Map<String, Any?> = emptyMap(),
         headers: Map<String, String> = emptyMap()
     ): Map<String, Any?> {
-        TODO("APR: use JVM coroutine/suspend — read $fileName and POST bytes to $url")
+        System.err.println("HttpCoroutineAdapter: postFileAndSuspend not yet implemented")
+        return emptyMap()
     }
 
     fun postJsonAndSuspend(
@@ -213,7 +222,8 @@ class HttpCoroutineAdapter(
         options: Map<String, Any?> = emptyMap(),
         headers: Map<String, String> = emptyMap()
     ): Map<String, Any?> {
-        TODO("APR: use JVM coroutine/suspend — POST JSON-serialised body to $url")
+        System.err.println("HttpCoroutineAdapter: postJsonAndSuspend not yet implemented")
+        return emptyMap()
     }
 
     fun putAndSuspend(
@@ -222,7 +232,8 @@ class HttpCoroutineAdapter(
         options: Map<String, Any?> = emptyMap(),
         headers: Map<String, String> = emptyMap()
     ): Map<String, Any?> {
-        TODO("APR: use JVM coroutine/suspend — PUT LLSD body to $url")
+        System.err.println("HttpCoroutineAdapter: putAndSuspend not yet implemented")
+        return emptyMap()
     }
 
     fun putJsonAndSuspend(
@@ -231,7 +242,8 @@ class HttpCoroutineAdapter(
         options: Map<String, Any?> = emptyMap(),
         headers: Map<String, String> = emptyMap()
     ): Map<String, Any?> {
-        TODO("APR: use JVM coroutine/suspend — PUT JSON body to $url")
+        System.err.println("HttpCoroutineAdapter: putJsonAndSuspend not yet implemented")
+        return emptyMap()
     }
 
     fun getAndSuspend(
@@ -239,7 +251,8 @@ class HttpCoroutineAdapter(
         options: Map<String, Any?> = emptyMap(),
         headers: Map<String, String> = emptyMap()
     ): Map<String, Any?> {
-        TODO("APR: use JVM coroutine/suspend — GET $url and return decorated result map")
+        System.err.println("HttpCoroutineAdapter: getAndSuspend not yet implemented")
+        return emptyMap()
     }
 
     fun getRawAndSuspend(
@@ -247,7 +260,8 @@ class HttpCoroutineAdapter(
         options: Map<String, Any?> = emptyMap(),
         headers: Map<String, String> = emptyMap()
     ): Map<String, Any?> {
-        TODO("APR: use JVM coroutine/suspend — GET $url, return result with HTTP_RESULTS_RAW bytes")
+        System.err.println("HttpCoroutineAdapter: getRawAndSuspend not yet implemented")
+        return emptyMap()
     }
 
     fun getJsonAndSuspend(
@@ -255,7 +269,8 @@ class HttpCoroutineAdapter(
         options: Map<String, Any?> = emptyMap(),
         headers: Map<String, String> = emptyMap()
     ): Map<String, Any?> {
-        TODO("APR: use JVM coroutine/suspend — GET $url, parse JSON response into result map")
+        System.err.println("HttpCoroutineAdapter: getJsonAndSuspend not yet implemented")
+        return emptyMap()
     }
 
     fun deleteAndSuspend(
@@ -263,7 +278,8 @@ class HttpCoroutineAdapter(
         options: Map<String, Any?> = emptyMap(),
         headers: Map<String, String> = emptyMap()
     ): Map<String, Any?> {
-        TODO("APR: use JVM coroutine/suspend — DELETE $url and return decorated result map")
+        System.err.println("HttpCoroutineAdapter: deleteAndSuspend not yet implemented")
+        return emptyMap()
     }
 
     fun deleteJsonAndSuspend(
@@ -271,7 +287,8 @@ class HttpCoroutineAdapter(
         options: Map<String, Any?> = emptyMap(),
         headers: Map<String, String> = emptyMap()
     ): Map<String, Any?> {
-        TODO("APR: use JVM coroutine/suspend — DELETE $url, parse JSON response")
+        System.err.println("HttpCoroutineAdapter: deleteJsonAndSuspend not yet implemented")
+        return emptyMap()
     }
 
     fun patchAndSuspend(
@@ -280,7 +297,8 @@ class HttpCoroutineAdapter(
         options: Map<String, Any?> = emptyMap(),
         headers: Map<String, String> = emptyMap()
     ): Map<String, Any?> {
-        TODO("APR: use JVM coroutine/suspend — PATCH LLSD body to $url")
+        System.err.println("HttpCoroutineAdapter: patchAndSuspend not yet implemented")
+        return emptyMap()
     }
 
     fun copyAndSuspend(
@@ -289,7 +307,8 @@ class HttpCoroutineAdapter(
         options: Map<String, Any?> = emptyMap(),
         headers: Map<String, String> = emptyMap()
     ): Map<String, Any?> {
-        TODO("APR: use JVM coroutine/suspend — COPY $url with Destination: $dest header")
+        System.err.println("HttpCoroutineAdapter: copyAndSuspend not yet implemented")
+        return emptyMap()
     }
 
     fun moveAndSuspend(
@@ -298,10 +317,11 @@ class HttpCoroutineAdapter(
         options: Map<String, Any?> = emptyMap(),
         headers: Map<String, String> = emptyMap()
     ): Map<String, Any?> {
-        TODO("APR: use JVM coroutine/suspend — MOVE $url with Destination: $dest header")
+        System.err.println("HttpCoroutineAdapter: moveAndSuspend not yet implemented")
+        return emptyMap()
     }
 
     fun cancelSuspendedOperation() {
-        TODO("APR: cancel the in-flight JVM HTTP request associated with this adapter")
+        System.err.println("HttpCoroutineAdapter: cancelSuspendedOperation not yet implemented")
     }
 }

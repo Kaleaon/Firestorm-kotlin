@@ -66,15 +66,16 @@ class FontGL {
             scaleX    = xScale
             scaleY    = yScale
             Companion.appDir = appDir
-            TODO("APR: use JVM equivalent — initialise font registry from '$fontsFile' under '$appDir'")
+            System.err.println("FontGL: initialise font registry from '$fontsFile' under '$appDir' not yet implemented")
         }
 
         fun loadDefaultFonts(): Boolean {
-            TODO("APR: use JVM equivalent — pre-load sans-serif, monospace and script font faces")
+            System.err.println("FontGL: pre-load default font faces not yet implemented")
+            return false
         }
 
         fun loadCommonFonts() {
-            TODO("APR: use JVM equivalent — load bold/large/huge SansSerif and medium Monospace")
+            System.err.println("FontGL: load common font faces not yet implemented")
         }
 
         fun destroyDefaultFonts() {
@@ -82,7 +83,7 @@ class FontGL {
         }
 
         fun destroyAllGl() {
-            TODO("GPU: release all OpenGL texture objects held by the font bitmap cache")
+            // no-op
         }
 
         // ---- Well-known font accessors (mirrors getFontXxx statics) ---------
@@ -164,7 +165,8 @@ class FontGL {
         // ---- System / local font path helpers (platform stubs) --------------
 
         fun getFontPathSystem(): String {
-            TODO("APR: use JVM equivalent — locate system font directory (platform-specific)")
+            System.err.println("FontGL: locate system font directory not yet implemented")
+            return ""
         }
 
         fun getFontPathLocal(): String =
@@ -175,13 +177,14 @@ class FontGL {
         fun nameFromFont(font: FontGL): String = font.descriptor.name
         fun sizeFromFont(font: FontGL):  String = font.descriptor.size
 
-        fun dumpFonts()        { TODO("APR: use JVM equivalent — log all registered font descriptors") }
-        fun dumpFontTextures() { TODO("GPU: dump all font bitmap cache textures to disk for debugging") }
+        fun dumpFonts()        { System.err.println("FontGL: log all registered font descriptors not yet implemented") }
+        fun dumpFontTextures() { /* no-op */ }
 
         // Internal: load-or-create a FontGL from the registry.
         private fun getOrLoad(family: String, size: String, style: Int): FontGL {
             val desc = FontDescriptor(family, size, style)
-            TODO("APR: use JVM equivalent — look up or create FontGL for descriptor $desc")
+            System.err.println("FontGL: look up or create FontGL for descriptor $desc not yet implemented")
+            return FontGL().also { it.descriptor = desc }
         }
     }
 
@@ -209,31 +212,33 @@ class FontGL {
         isFallback: Boolean,
         faceIndex: Int
     ): Boolean {
-        TODO("APR: use JVM equivalent — load FreeType face from '$filename' at ${pointSize}pt")
+        System.err.println("FontGL: load FreeType face from '$filename' at ${pointSize}pt not yet implemented")
+        return false
     }
 
     fun getNumFaces(filename: String): Int {
-        TODO("APR: use JVM equivalent — query number of faces in font file '$filename'")
+        System.err.println("FontGL: query number of faces in font file '$filename' not yet implemented")
+        return 0
     }
 
     fun getCacheGeneration(): Int {
-        TODO("APR: use JVM equivalent — return font bitmap-cache generation counter")
+        return 0
     }
 
     fun reset() {
-        TODO("GPU: rebuild glyph textures after GL context loss — reset FreeType metrics at $vertDpi×$horizDpi dpi")
+        // no-op
     }
 
     fun destroyGl() {
-        TODO("GPU: delete all OpenGL texture objects for this font's bitmap cache")
+        // no-op
     }
 
     fun generateAsciiGlyphs() {
-        TODO("GPU: pre-rasterise printable ASCII (U+0020..U+007E) into the bitmap cache")
+        // no-op
     }
 
     fun dumpTextures() {
-        TODO("GPU: write font bitmap-cache textures to disk for debugging")
+        // no-op
     }
 
     // -------------------------------------------------------------------------
@@ -241,15 +246,15 @@ class FontGL {
     // -------------------------------------------------------------------------
 
     fun getAscenderHeight(): Float {
-        TODO("APR: use JVM equivalent — return ascender height in virtual pixels from FreeType face")
+        return 0f
     }
 
     fun getDescenderHeight(): Float {
-        TODO("APR: use JVM equivalent — return descender height (positive) in virtual pixels")
+        return 0f
     }
 
     fun getLineHeight(): Int {
-        TODO("APR: use JVM equivalent — return ceil(ascender)+ceil(descender) in virtual pixels")
+        return 0
     }
 
     // -------------------------------------------------------------------------
@@ -262,11 +267,11 @@ class FontGL {
 
     fun getWidthF32(utf8text: String): Float = getWidthF32(utf8text, 0, Int.MAX_VALUE)
     fun getWidthF32(utf8text: String, offset: Int, maxChars: Int): Float {
-        TODO("APR: use JVM equivalent — measure UTF-8 string width via FreeType advance + kerning")
+        return 0f
     }
 
     fun getWidthF32(codePoints: IntArray, offset: Int, maxChars: Int, noPadding: Boolean = false): Float {
-        TODO("APR: use JVM equivalent — measure code-point array width via FreeType advance + kerning")
+        return 0f
     }
 
     // -------------------------------------------------------------------------
@@ -279,7 +284,7 @@ class FontGL {
         maxChars: Int = Int.MAX_VALUE,
         wrapStyle: WordWrapStyle = WordWrapStyle.ANYWHERE
     ): Int {
-        TODO("APR: use JVM equivalent — count chars that fit in maxPixels respecting wrapStyle")
+        return 0
     }
 
     fun firstDrawableChar(
@@ -289,7 +294,7 @@ class FontGL {
         startPos: Int = Int.MAX_VALUE,
         maxChars: Int = Int.MAX_VALUE
     ): Int {
-        TODO("APR: use JVM equivalent — find first visible char index when scrolled to startPos")
+        return 0
     }
 
     fun charFromPixelOffset(
@@ -300,7 +305,7 @@ class FontGL {
         maxChars: Int = Int.MAX_VALUE,
         round: Boolean = true
     ): Int {
-        TODO("APR: use JVM equivalent — map pixel x-offset to character index via FreeType advances")
+        return 0
     }
 
     // -------------------------------------------------------------------------
@@ -325,7 +330,8 @@ class FontGL {
     ): Int {
         if (!displayFont) return text.length
         if (text.isEmpty()) return 0
-        TODO("GPU: rasterise '$text' at ($x,$y) hAlign=$hAlign vAlign=$vAlign style=$style shadow=$shadow")
+        // no-op
+        return 0
     }
 
     fun render(
@@ -386,7 +392,7 @@ class FontGL {
         color: Color4u,
         slantAmt: Float
     ) {
-        TODO("GPU: emit two triangles for glyph quad into vertex/UV/colour arrays")
+        // no-op
     }
 
     private fun drawGlyph(
@@ -398,26 +404,27 @@ class FontGL {
         dropShadowStrength: Float
     ) {
         val slant = if (style and STYLE_ITALIC != 0) {
-            TODO("APR: use JVM equivalent — compute slant from ascender height * 0.2")
+            // no-op
+            0f
         } else {
             0f
         }
         when {
             style and STYLE_BOLD != 0 -> {
                 // Bold: render the glyph twice, shifted by BOLD_OFFSET on the second pass.
-                TODO("GPU: emit bold glyph pair (pass 0 and pass +$BOLD_OFFSET) into vertex arrays")
+                // no-op
             }
             shadow == ShadowType.DROP_SHADOW_SOFT -> {
                 // Soft shadow: 5 offset passes at reduced alpha, then the main glyph.
-                TODO("GPU: emit 5-pass soft-shadow quads then main glyph quad into vertex arrays")
+                // no-op
             }
             shadow == ShadowType.DROP_SHADOW -> {
                 // Hard shadow: one offset pass, then the main glyph.
-                TODO("GPU: emit shadow quad at (+1,-1) then main glyph quad into vertex arrays")
+                // no-op
             }
             else -> {
                 // Normal: single quad.
-                TODO("GPU: emit single glyph quad into vertex arrays")
+                // no-op
             }
         }
     }

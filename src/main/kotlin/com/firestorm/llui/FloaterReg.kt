@@ -92,7 +92,7 @@ object FloaterReg {
                     list.add(f)
                 }
                 res = built2
-                TODO("APR: adjustToFitScreen for newly created floater '$name'")
+                System.err.println("FloaterReg: adjustToFitScreen for newly created floater '$name' not yet implemented")
             }
         }
         if (res == null) println("Floater type: '$name' not registered.")
@@ -185,31 +185,36 @@ object FloaterReg {
 
     fun declareRectControl(name: String): String {
         val controlName = getRectControlName(name)
-        TODO("APR: declare rect control variable '$controlName' for floater '$name'")
+        System.err.println("FloaterReg: declare rect control variable '$controlName' for floater '$name' not yet implemented")
+        return ""
     }
 
     fun declarePosXControl(name: String): String {
         val controlName = "floater_pos_${getBaseControlName(name)}_x"
-        TODO("APR: declare posX control variable '$controlName' for floater '$name'")
+        System.err.println("FloaterReg: declare posX control variable '$controlName' for floater '$name' not yet implemented")
+        return ""
     }
 
     fun declarePosYControl(name: String): String {
         val controlName = "floater_pos_${getBaseControlName(name)}_y"
-        TODO("APR: declare posY control variable '$controlName' for floater '$name'")
+        System.err.println("FloaterReg: declare posY control variable '$controlName' for floater '$name' not yet implemented")
+        return ""
     }
 
     fun getVisibilityControlName(name: String): String = "floater_vis_${getBaseControlName(name)}"
 
     fun declareVisibilityControl(name: String): String {
         val controlName = getVisibilityControlName(name)
-        TODO("APR: declare visibility control variable '$controlName' for floater '$name'")
+        System.err.println("FloaterReg: declare visibility control variable '$controlName' for floater '$name' not yet implemented")
+        return ""
     }
 
     fun getBaseControlName(name: String): String = name.replace(' ', '_')
 
     fun declareDockStateControl(name: String): String {
         val controlName = getDockStateControlName(name)
-        TODO("APR: declare dock-state control variable '$controlName' for floater '$name'")
+        System.err.println("FloaterReg: declare dock-state control variable '$controlName' for floater '$name' not yet implemented")
+        return ""
     }
 
     fun getDockStateControlName(name: String): String =
@@ -224,7 +229,7 @@ object FloaterReg {
                 declareVisibilityControl(name)
             }
         }
-        TODO("APR: populate alwaysShowableList from settings config")
+        System.err.println("FloaterReg: populate alwaysShowableList from settings config not yet implemented")
     }
 
     fun toggleInstanceOrBringToFront(sdname: Any, key: Any? = null) {
@@ -313,36 +318,38 @@ object FloaterReg {
 }
 
 private fun floaterControlExists(name: String): Boolean {
-    TODO("APR: check if floater control variable '$name' exists")
+    System.err.println("FloaterReg: check if floater control variable '$name' exists not yet implemented")
+    return false
 }
 
 private fun getFloaterControlBool(name: String): Boolean {
-    TODO("APR: get boolean value of floater control variable '$name'")
+    System.err.println("FloaterReg: get boolean value of floater control variable '$name' not yet implemented")
+    return false
 }
 
-private fun Floater.rectTop(): Int { TODO("APR: get floater rect top") }
-private fun Floater.isCascading(): Boolean { TODO("APR: check if floater uses cascading positioning") }
+private fun Floater.rectTop(): Int { System.err.println("FloaterReg: get floater rect top not yet implemented"); return 0 }
+private fun Floater.isCascading(): Boolean { System.err.println("FloaterReg: check if floater uses cascading positioning not yet implemented"); return false }
 private fun Floater.matchesKey(key: Any?): Boolean = this.key == key
-private fun Floater.destroy() { TODO("APR: destroy floater") }
-private fun Floater.buildFromFile(file: String): Boolean { TODO("APR: build floater from XUI file '$file'") }
-private fun Floater.applyControlsAndPosition(lastFloater: Floater?) { TODO("APR: apply saved controls and position") }
+private fun Floater.destroy() { System.err.println("FloaterReg: destroy floater not yet implemented") }
+private fun Floater.buildFromFile(file: String): Boolean { System.err.println("FloaterReg: build floater from XUI file '$file' not yet implemented"); return false }
+private fun Floater.applyControlsAndPosition(lastFloater: Floater?) { System.err.println("FloaterReg: apply saved controls and position not yet implemented") }
 private fun Floater.openFloater(key: Any?) { this.key = key; open_() }
 private fun Floater.closeHostedFloater() { close() }
 private fun Floater.isShown(): Boolean = visible && !isMinimized
 private fun Floater.isVisible(): Boolean = visible
-private fun Floater.setFocus(focus: Boolean) { TODO("APR: set keyboard focus on floater") }
-private fun Floater.hasFocus(): Boolean { TODO("APR: check if floater has focus") }
-private fun Floater.isFrontmost(): Boolean { TODO("APR: check if floater is frontmost") }
-private fun Floater.setVisibleAndFrontmost(vis: Boolean, key: Any?) { TODO("APR: set floater visible and bring to front") }
-private fun Floater.getHost(): Floater? { TODO("APR: get host multi-floater") }
-private fun Floater.pushVisible(vis: Boolean) { TODO("APR: push visibility state") }
-private fun Floater.popVisible() { TODO("APR: pop visibility state") }
-private fun Floater.updateTransparency() { TODO("APR: update floater transparency") }
+private fun Floater.setFocus(focus: Boolean) { System.err.println("FloaterReg: set keyboard focus on floater not yet implemented") }
+private fun Floater.hasFocus(): Boolean { System.err.println("FloaterReg: check if floater has focus not yet implemented"); return false }
+private fun Floater.isFrontmost(): Boolean { System.err.println("FloaterReg: check if floater is frontmost not yet implemented"); return false }
+private fun Floater.setVisibleAndFrontmost(vis: Boolean, key: Any?) { System.err.println("FloaterReg: set floater visible and bring to front not yet implemented") }
+private fun Floater.getHost(): Floater? { System.err.println("FloaterReg: get host multi-floater not yet implemented"); return null }
+private fun Floater.pushVisible(vis: Boolean) { System.err.println("FloaterReg: push visibility state not yet implemented") }
+private fun Floater.popVisible() { System.err.println("FloaterReg: pop visibility state not yet implemented") }
+private fun Floater.updateTransparency() { System.err.println("FloaterReg: update floater transparency not yet implemented") }
 
 var Floater.key: Any?
-    get() = TODO("APR: get floater key")
-    set(value) { TODO("APR: set floater key to '$value'") }
+    get() { System.err.println("FloaterReg: get floater key not yet implemented"); return null }
+    set(value) { System.err.println("FloaterReg: set floater key not yet implemented") }
 
 var Floater.instanceName: String
     get() = name
-    set(value) { TODO("APR: set floater instance name to '$value'") }
+    set(value) { System.err.println("FloaterReg: set floater instance name not yet implemented") }

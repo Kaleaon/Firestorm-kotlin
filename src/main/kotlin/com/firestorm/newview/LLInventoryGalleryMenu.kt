@@ -184,3 +184,7 @@ open class LLListContextMenu {
 }
 
 class LLContextMenu
+
+open class LLInventoryModel {
+    open fun getCategory(id: UUID): Any? = null
+}

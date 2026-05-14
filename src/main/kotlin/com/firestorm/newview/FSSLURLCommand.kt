@@ -85,24 +85,24 @@ private class FSHelpSlurlCommandHandler : LLCommandHandler("fshelp", TrustLevel.
 val gFSSlurlHandler = FSSlurlCommandHandler()
 val gFSHelpSlurlCommandHandler = FSHelpSlurlCommandHandler()
 
-private fun agentId(): UUID = TODO("APR: use JVM equivalent — gAgentID")
-private fun canZoomIn(id: UUID): Boolean = TODO("APR: use JVM equivalent — LLAvatarActions.canZoomIn")
-private fun zoomIn(id: UUID): Unit = TODO("APR: use JVM equivalent — LLAvatarActions.zoomIn")
-private fun showNotification(name: String): Unit = TODO("APR: use JVM equivalent — LLNotificationsUtil.add")
-private fun offerTeleport(id: UUID): Unit = TODO("APR: use JVM equivalent — LLAvatarActions.offerTeleport")
-private fun teleportRequest(id: UUID): Unit = TODO("APR: use JVM equivalent — LLAvatarActions.teleportRequest")
-private fun teleportTo(id: UUID): Unit = TODO("APR: use JVM equivalent — LLAvatarActions.teleportTo")
-private fun track(id: UUID): Unit = TODO("APR: use JVM equivalent — LLAvatarActions.track")
-private fun addToContactSet(id: UUID): Unit = TODO("APR: use JVM equivalent — LLAvatarActions.addToContactSet")
-private fun toggleBlock(id: UUID): Unit = TODO("APR: use JVM equivalent — LLAvatarActions.toggleBlock")
-private fun transcriptExists(id: UUID): Boolean = TODO("APR: use JVM equivalent — LLLogChat.isTranscriptExist")
-private fun viewChatHistory(id: UUID): Unit = TODO("APR: use JVM equivalent — LLAvatarActions.viewChatHistory")
-private fun groupJoin(id: UUID): Unit = TODO("APR: use JVM equivalent — LLGroupActions.join")
-private fun groupLeave(id: UUID): Unit = TODO("APR: use JVM equivalent — LLGroupActions.leave")
-private fun groupActivate(id: UUID): Unit = TODO("APR: use JVM equivalent — LLGroupActions.activate")
-private fun getFocusedGroupImSessionId(): UUID? = TODO("APR: use JVM equivalent — gFloaterView focused floater → FSFloaterIM/FSFloaterIMContainer → session UUID")
-private fun isGroupImSession(groupId: UUID): Boolean = TODO("APR: use JVM equivalent — LLIMModel session lookup + isGroupSessionType()")
-private fun allowTextChat(groupId: UUID, targetId: UUID, allow: Boolean): Unit = TODO("APR: use JVM equivalent — LLIMSpeakerMgr.allowTextChat")
-private fun ejectFromGroup(groupId: UUID, targetId: UUID): Unit = TODO("APR: use JVM equivalent — LLGroupActions.ejectFromGroup")
-private fun banFromGroup(groupId: UUID, targetId: UUID): Unit = TODO("APR: use JVM equivalent — LLGroupMgr ban+eject+refresh sequence")
-private fun showDebugControl(settingName: String): Unit = TODO("APR: use JVM equivalent — LLFloaterSettingsDebug.showControl")
+private fun agentId(): UUID = UUID.fromString("00000000-0000-0000-0000-000000000000")
+private fun canZoomIn(id: UUID): Boolean = false
+private fun zoomIn(id: UUID): Unit { System.err.println("FSSlurlCommandHandler: zoomIn not yet implemented") }
+private fun showNotification(name: String): Unit { System.err.println("FSSlurlCommandHandler: showNotification not yet implemented") }
+private fun offerTeleport(id: UUID): Unit { System.err.println("FSSlurlCommandHandler: offerTeleport not yet implemented") }
+private fun teleportRequest(id: UUID): Unit { System.err.println("FSSlurlCommandHandler: teleportRequest not yet implemented") }
+private fun teleportTo(id: UUID): Unit { System.err.println("FSSlurlCommandHandler: teleportTo not yet implemented") }
+private fun track(id: UUID): Unit { System.err.println("FSSlurlCommandHandler: track not yet implemented") }
+private fun addToContactSet(id: UUID): Unit { System.err.println("FSSlurlCommandHandler: addToContactSet not yet implemented") }
+private fun toggleBlock(id: UUID): Unit { System.err.println("FSSlurlCommandHandler: toggleBlock not yet implemented") }
+private fun transcriptExists(id: UUID): Boolean = false
+private fun viewChatHistory(id: UUID): Unit { System.err.println("FSSlurlCommandHandler: viewChatHistory not yet implemented") }
+private fun groupJoin(id: UUID): Unit { System.err.println("FSSlurlCommandHandler: groupJoin not yet implemented") }
+private fun groupLeave(id: UUID): Unit { System.err.println("FSSlurlCommandHandler: groupLeave not yet implemented") }
+private fun groupActivate(id: UUID): Unit { System.err.println("FSSlurlCommandHandler: groupActivate not yet implemented") }
+private fun getFocusedGroupImSessionId(): UUID? = null
+private fun isGroupImSession(groupId: UUID): Boolean = false
+private fun allowTextChat(groupId: UUID, targetId: UUID, allow: Boolean): Unit { System.err.println("FSSlurlCommandHandler: allowTextChat not yet implemented") }
+private fun ejectFromGroup(groupId: UUID, targetId: UUID): Unit { System.err.println("FSSlurlCommandHandler: ejectFromGroup not yet implemented") }
+private fun banFromGroup(groupId: UUID, targetId: UUID): Unit { System.err.println("FSSlurlCommandHandler: banFromGroup not yet implemented") }
+private fun showDebugControl(settingName: String): Unit { System.err.println("FSHelpSlurlCommandHandler: showDebugControl not yet implemented") }

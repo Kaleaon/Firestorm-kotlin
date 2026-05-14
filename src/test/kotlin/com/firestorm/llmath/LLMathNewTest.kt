@@ -63,4 +63,13 @@ class LLCalcParserTest {
     @Test fun pi() = assertTrue(p.evaluate("pi") > 3.14)
     @Test fun power() = assertEquals(8.0, p.evaluate("2^3"), 0.001)
     @Test fun unaryMinus() = assertEquals(-5.0, p.evaluate("-5"))
+    @Test fun multiArgumentFunctions() {
+        assertEquals(2.0, p.evaluate("min(2, 3)"), 0.001)
+        assertEquals(4.0, p.evaluate("clamp(10, 0, 4)"), 0.001)
+        assertEquals(0.0, p.evaluate("atan2(0, 1)"), 0.001)
+    }
+    @Test fun invalidDomainsReturnNaN() {
+        assertTrue(p.evaluate("sqrt(-1)").isNaN())
+        assertTrue(p.evaluate("log(0)").isNaN())
+    }
 }

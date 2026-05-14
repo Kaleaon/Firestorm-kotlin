@@ -6,6 +6,7 @@ import com.firestorm.llmath.Vector3
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
@@ -55,5 +56,17 @@ class VertexBufferTest {
 
         buffer.unbind()
         assertFalse(buffer.isBound())
+    }
+
+    @Test
+    fun outOfBoundsAccessThrows() {
+        val buffer = VertexBuffer(VertexBuffer.MAP_VERTEX, numVerts = 1, numIndices = 1)
+
+        assertFailsWith<IndexOutOfBoundsException> {
+            buffer.putVertex(1, Vector3(0f, 0f, 0f))
+        }
+        assertFailsWith<IndexOutOfBoundsException> {
+            buffer.putIndex(1, 0)
+        }
     }
 }

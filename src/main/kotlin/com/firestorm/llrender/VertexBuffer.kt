@@ -66,7 +66,20 @@ class VertexBuffer(
     private fun allocDirect(bytes: Int): ByteBuffer =
         ByteBuffer.allocateDirect(bytes).order(ByteOrder.nativeOrder())
 
+    private fun requireVertexIndex(index: Int) {
+        if (index !in 0 until numVerts) {
+            throw IndexOutOfBoundsException("Vertex index $index outside 0 until $numVerts")
+        }
+    }
+
+    private fun requireIndexBufferSlot(index: Int) {
+        if (index !in 0 until numIndices) {
+            throw IndexOutOfBoundsException("Index $index outside 0 until $numIndices")
+        }
+    }
+
     fun putVertex(index: Int, v: Vector3) {
+        requireVertexIndex(index)
         val buf = requireNotNull(vertexData) { "MAP_VERTEX not set" }
         val off = index * VERTEX_STRIDE
         buf.putFloat(off, v.x)
@@ -75,12 +88,14 @@ class VertexBuffer(
     }
 
     fun getVertex(index: Int): Vector3 {
+        requireVertexIndex(index)
         val buf = requireNotNull(vertexData) { "MAP_VERTEX not set" }
         val off = index * VERTEX_STRIDE
         return Vector3(buf.getFloat(off), buf.getFloat(off + 4), buf.getFloat(off + 8))
     }
 
     fun putNormal(index: Int, n: Vector3) {
+        requireVertexIndex(index)
         val buf = requireNotNull(normalData) { "MAP_NORMAL not set" }
         val off = index * NORMAL_STRIDE
         buf.putFloat(off, n.x)
@@ -89,12 +104,14 @@ class VertexBuffer(
     }
 
     fun getNormal(index: Int): Vector3 {
+        requireVertexIndex(index)
         val buf = requireNotNull(normalData) { "MAP_NORMAL not set" }
         val off = index * NORMAL_STRIDE
         return Vector3(buf.getFloat(off), buf.getFloat(off + 4), buf.getFloat(off + 8))
     }
 
     fun putTexCoord(index: Int, channel: Int, tc: Vector2) {
+        requireVertexIndex(index)
         require(channel in 0..3)
         val buf = requireNotNull(texCoordData[channel]) { "MAP_TEXCOORD$channel not set" }
         val off = index * TEXCOORD_STRIDE
@@ -103,6 +120,7 @@ class VertexBuffer(
     }
 
     fun getTexCoord(index: Int, channel: Int): Vector2 {
+        requireVertexIndex(index)
         require(channel in 0..3)
         val buf = requireNotNull(texCoordData[channel]) { "MAP_TEXCOORD$channel not set" }
         val off = index * TEXCOORD_STRIDE
@@ -110,6 +128,7 @@ class VertexBuffer(
     }
 
     fun putColor(index: Int, c: Color4) {
+        requireVertexIndex(index)
         val buf = requireNotNull(colorData) { "MAP_COLOR not set" }
         val off = index * COLOR_STRIDE
         buf.put(off, (c.r * 255f + 0.5f).toInt().coerceIn(0, 255).toByte())
@@ -119,6 +138,7 @@ class VertexBuffer(
     }
 
     fun getColor(index: Int): Color4 {
+        requireVertexIndex(index)
         val buf = requireNotNull(colorData) { "MAP_COLOR not set" }
         val off = index * COLOR_STRIDE
         return Color4(
@@ -130,11 +150,13 @@ class VertexBuffer(
     }
 
     fun putIndex(i: Int, value: Short) {
+        requireIndexBufferSlot(i)
         val buf = requireNotNull(indexData) { "No index buffer allocated" }
         buf.putShort(i * INDEX_STRIDE, value)
     }
 
     fun getIndex(i: Int): Short {
+        requireIndexBufferSlot(i)
         val buf = requireNotNull(indexData) { "No index buffer allocated" }
         return buf.getShort(i * INDEX_STRIDE)
     }

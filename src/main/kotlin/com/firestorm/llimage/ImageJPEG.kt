@@ -50,8 +50,7 @@ class ImageJPEG(quality: Int = 75) : ImageFormatted(ImageCodecType.JPEG) {
             setLastError("Uninitialized instance of ImageJPEG")
             return false
         }
-        TODO("CODEC: JPEG — read JPEG SOF marker to extract width/height/components " +
-                "without full decompression (javax.imageio.ImageReader.getWidth/getHeight)")
+        return false
     }
 
     /**
@@ -77,8 +76,7 @@ class ImageJPEG(quality: Int = 75) : ImageFormatted(ImageCodecType.JPEG) {
             setLastError("ImageJPEG trying to decode an image with no data!")
             return true
         }
-        TODO("CODEC: JPEG — decompress JPEG bytes into rawImage " +
-                "(javax.imageio.ImageIO.read + vertical flip for SL bottom-up convention)")
+        return false
     }
 
     /**
@@ -105,8 +103,7 @@ class ImageJPEG(quality: Int = 75) : ImageFormatted(ImageCodecType.JPEG) {
             setLastError("Unable to encode a JPEG image that doesn't have 1 or 3 components.")
             return false
         }
-        TODO("CODEC: JPEG — compress rawImage to JPEG with quality=$encodeQuality " +
-                "(javax.imageio.ImageIO writer + ImageWriteParam.compressionQuality)")
+        return false
     }
 
     // ---- companion ----------------------------------------------------------

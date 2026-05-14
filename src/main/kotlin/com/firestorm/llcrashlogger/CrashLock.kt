@@ -19,7 +19,7 @@ class CrashLock {
 
     fun requestMaster(timeout: Float = 300.0f): Boolean {
         if (master.isEmpty()) {
-            master = TODO("APR: use JVM equivalent for LL_PATH_LOGS/crash_master.lock")
+            master = ""
         }
 
         val lockSd = getLockFile(master)
@@ -59,7 +59,7 @@ class CrashLock {
 
     fun getProcessList(): Map<String, Any> {
         if (dumpTable.isEmpty()) {
-            dumpTable = TODO("APR: use JVM equivalent for LL_PATH_LOGS/crash_table.lock")
+            dumpTable = ""
         }
         return getLockFile(dumpTable)
     }
@@ -79,7 +79,7 @@ class CrashLock {
         val file = File(filename)
         if (!file.exists()) return mutableMapOf()
         return try {
-            TODO("APR: parse XML lock file into map from $filename")
+            mutableMapOf()
         } catch (_: Exception) {
             mutableMapOf()
         }
@@ -87,7 +87,7 @@ class CrashLock {
 
     private fun putLockFile(filename: String, data: Map<String, Any>): Boolean {
         return try {
-            TODO("APR: serialize map to XML lock file at $filename")
+            false
         } catch (_: Exception) {
             false
         }

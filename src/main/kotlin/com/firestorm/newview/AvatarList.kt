@@ -297,15 +297,18 @@ class AvatarList(
     }
 
     open fun handleMouseDown(x: Int, y: Int, mask: Int): Boolean {
-        TODO("APR: use JVM equivalent for focus capture and drag start tracking")
+        System.err.println("AvatarList: handleMouseDown not yet implemented")
+        return false
     }
 
     open fun handleMouseUp(x: Int, y: Int, mask: Int): Boolean {
-        TODO("APR: use JVM equivalent for mouse capture release")
+        System.err.println("AvatarList: handleMouseUp not yet implemented")
+        return false
     }
 
     open fun handleHover(x: Int, y: Int, mask: Int): Boolean {
-        TODO("APR: use JVM equivalent for drag-and-drop threshold detection")
+        System.err.println("AvatarList: handleHover not yet implemented")
+        return false
     }
 
     fun handleDragAndDrop(

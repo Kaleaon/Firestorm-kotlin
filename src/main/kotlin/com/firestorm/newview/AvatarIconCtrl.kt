@@ -27,11 +27,11 @@ object AvatarIconIDCache {
     }
 
     fun load() {
-        TODO("APR: use JVM equivalent for reading $filename from cache dir")
+        System.err.println("AvatarIconIDCache: load not yet implemented")
     }
 
     fun save() {
-        TODO("APR: use JVM equivalent for writing $filename to cache dir")
+        System.err.println("AvatarIconIDCache: save not yet implemented")
     }
 
     fun get(avatarId: UUID): UUID? {
@@ -173,5 +173,8 @@ open class AvatarIconCtrl(
         avatarNameCacheConnection = null
     }
 
-    private fun agentId(): UUID = TODO("APR: return gAgent.getID()")
+    private fun agentId(): UUID {
+        System.err.println("AvatarIconCtrl: agentId not yet implemented")
+        return UUID(0L, 0L)
+    }
 }

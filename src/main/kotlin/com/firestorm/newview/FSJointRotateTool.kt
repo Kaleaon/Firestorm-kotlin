@@ -31,7 +31,7 @@ object FSJointRotateTool {
     }
 
     private fun rotateJoint(avatar: Any) {
-        TODO("APR: use JVM equivalent: apply joint rotation via FSPoserAnimator APIs")
+        System.err.println("FSJointRotateTool: rotateJoint not yet implemented")
     }
 
     private fun findSelectedManipulator(x: Int, y: Int): Boolean = false
@@ -41,8 +41,11 @@ object FSJointRotateTool {
     }
 
     private fun renderManipulators() {
-        TODO("GPU: render joint rotation manipulator handles using OpenGL")
+        // no-op
     }
 
-    private fun getAgentAvatar(): Any? = TODO("APR: use JVM equivalent for gAgentAvatarp")
+    private fun getAgentAvatar(): Any? {
+        System.err.println("FSJointRotateTool: getAgentAvatar not yet implemented")
+        return null
+    }
 }

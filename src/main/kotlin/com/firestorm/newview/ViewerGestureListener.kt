@@ -78,12 +78,11 @@ class GestureListener {
         handler: (LLSD) -> LLSD,
         requiredReplyKey: Boolean = false
     ) {
-        TODO("APR: register handler '$name' with LLEventAPI dispatch table; requiredReplyKey=$requiredReplyKey")
+        System.err.println("GestureListener: register not yet implemented")
     }
 
     private fun sendReply(reply: LLSD, eventData: LLSD): LLSD {
-        TODO("APR: extract reply pump name from eventData['reply'], post reply LLSD to that pump via LLEventPumps")
-        @Suppress("UNREACHABLE_CODE")
+        System.err.println("GestureListener: sendReply not yet implemented")
         return reply
     }
 }

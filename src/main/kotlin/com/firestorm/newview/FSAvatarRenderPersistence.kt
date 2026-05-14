@@ -61,14 +61,16 @@ object FSAvatarRenderPersistence {
     }
 
     private fun resolvePerAccountFilename(name: String): String {
-        TODO("APR: use JVM equivalent of gDirUtilp->getExpandedFilename(LL_PATH_PER_SL_ACCOUNT, name)")
+        System.err.println("FSAvatarRenderPersistence: resolvePerAccountFilename not yet implemented")
+        return ""
     }
 
     private fun parseXmlSettingsFile(file: File): Map<String, String> {
-        TODO("APR: use JVM XML parser (e.g. javax.xml or kotlinx.serialization) to deserialise LLSD map from file")
+        System.err.println("FSAvatarRenderPersistence: parseXmlSettingsFile not yet implemented")
+        return emptyMap()
     }
 
     private fun writeXmlSettingsFile(file: File, data: Map<String, String>) {
-        TODO("APR: serialise data as LLSD-compatible XML and write to file using standard JVM I/O")
+        System.err.println("FSAvatarRenderPersistence: writeXmlSettingsFile not yet implemented")
     }
 }

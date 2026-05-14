@@ -136,7 +136,7 @@ object AvatarNameCache {
             pendingQueue.remove(agentId)
             existing.setExpires(TEMP_CACHE_ENTRY_LIFETIME)
         } else {
-            TODO("APR: use JVM equivalent of legacy name fetch via gCacheName->get()")
+            System.err.println("AvatarNameCache: handleAgentError not yet implemented")
         }
     }
 
@@ -222,11 +222,11 @@ object AvatarNameCache {
     }
 
     private fun requestNamesViaCapability() {
-        TODO("APR: use JVM equivalent — launch coroutine/async HTTP GET to $nameLookupUrl?ids=...")
+        System.err.println("AvatarNameCache: requestNamesViaCapability not yet implemented")
     }
 
     private fun requestNamesViaLegacy() {
-        TODO("APR: use JVM equivalent of gCacheName->get() for legacy name lookup")
+        System.err.println("AvatarNameCache: requestNamesViaLegacy not yet implemented")
     }
 }
 

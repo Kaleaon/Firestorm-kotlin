@@ -7,16 +7,13 @@ class FSBlockListMenu : LLListContextMenu() {
     private var spawningCtrl: LLView? = null
 
     override fun createMenu(): LLContextMenu? {
-        TODO(
-            "UI: register Block.Action→onContextMenuItemClick, Block.Check→onContextMenuItemCheck, " +
-            "Block.Enable→onContextMenuItemEnable, Block.Visible→onContextMenuItemVisible; " +
-            "load menu_fs_block_list.xml"
-        )
+        System.err.println("FSBlockListMenu: createMenu not yet implemented")
+        return null
     }
 
     fun show(spawningView: LLView, uuids: MutableList<Any>, x: Int, y: Int) {
         spawningCtrl = spawningView
-        TODO("UI: delegate to LLListContextMenu.show(spawningView, uuids, x, y)")
+        System.err.println("FSBlockListMenu: show not yet implemented")
     }
 
     private fun onContextMenuItemClick(userdata: Any?) {
@@ -37,7 +34,8 @@ class FSBlockListMenu : LLListContextMenu() {
     }
 
     private fun findBlockListPanel(): FSPanelBlockListContract? {
-        TODO("UI: spawningCtrl.getParentByType<FSPanelBlockList>()")
+        System.err.println("FSBlockListMenu: findBlockListPanel not yet implemented")
+        return null
     }
 
     companion object {

@@ -92,7 +92,7 @@ object ViewerWeb {
         devMode: Boolean = false
     ) {
         val escaped = escapeURL(url)
-        TODO("Show internal web-content floater for url='$escaped' target='$target' uuid='$uuid' devMode=$devMode")
+        System.err.println("ViewerWeb: loadURLInternal not yet implemented")
     }
 
     /**
@@ -110,7 +110,7 @@ object ViewerWeb {
         uuid: String = ""
     ) {
         val escaped = escapeURL(url)
-        TODO("Show WebLaunchExternalTarget notification then spawn OS browser for url='$escaped' async=$async uuid='$uuid'")
+        System.err.println("ViewerWeb: loadURLExternal not yet implemented")
     }
 
     // -----------------------------------------------------------------------
@@ -151,7 +151,7 @@ object ViewerWeb {
         url: String,
         substitutions: Map<String, String> = emptyMap()
     ): String {
-        TODO("Expand [TOKEN] placeholders in url='$url' using substitutions=$substitutions plus viewer globals")
+        return ""
     }
 
     // -----------------------------------------------------------------------

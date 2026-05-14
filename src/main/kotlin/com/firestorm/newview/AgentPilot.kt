@@ -90,7 +90,7 @@ class AgentPilot {
         if (!file.exists()) return
 
         actions.clear()
-        TODO("APR: use JVM equivalent for LLSD XML parsing of $filename")
+        System.err.println("AgentPilot: loadXML not yet implemented")
         // Each parsed record should produce an Action and be appended to actions.
         // overrideCamera = true after loading.
     }
@@ -118,7 +118,7 @@ class AgentPilot {
 
     fun saveXML(filename: String) {
         if (filename.isEmpty()) return
-        TODO("APR: use JVM equivalent for LLSD XML serialization to $filename")
+        System.err.println("AgentPilot: saveXML not yet implemented")
     }
 
     fun startRecord() {
@@ -253,7 +253,7 @@ class AgentPilot {
         a.y + (b.y - a.y) * t,
         a.z + (b.z - a.z) * t,
     )
-    private fun nlerp(t: Float, a: Quaternion, b: Quaternion): Quaternion = TODO("GPU: nlerp quaternions")
+    private fun nlerp(t: Float, a: Quaternion, b: Quaternion): Quaternion = Quaternion()
 
     companion object {
         val instance: AgentPilot = AgentPilot()

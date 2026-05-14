@@ -91,7 +91,7 @@ class FSRadarEntry(val id: LLUUID) {
 
     /** Kick off an async name-cache lookup (stubbed: real impl hooks LLAvatarNameCache). */
     fun updateName() {
-        TODO("Wire to LLAvatarNameCache.get() callback; call onAvatarNameCache() on completion")
+        System.err.println("FSRadarEntry: updateName not yet implemented")
     }
 
     /** Called when the avatar-name cache resolves the name for [id]. */
@@ -144,7 +144,7 @@ class FSRadarEntry(val id: LLUUID) {
     /** Request avatar properties (age, payment info, notes) from the server. */
     fun requestProperties() {
         if (!propertiesRequested && !id.isNull()) {
-            TODO("Add observer to LLAvatarPropertiesProcessor and send request")
+            System.err.println("FSRadarEntry: requestProperties not yet implemented")
             // propertiesRequested = true
         }
     }
@@ -188,7 +188,8 @@ class FSRadarEntry(val id: LLUUID) {
     // -----------------------------------------------------------------------
 
     private fun checkIsLinden(avId: LLUUID): Boolean {
-        TODO("Delegate to FSCommon.isLinden(avId)")
+        System.err.println("FSRadarEntry: checkIsLinden not yet implemented")
+        return false
     }
 
     override fun toString(): String =

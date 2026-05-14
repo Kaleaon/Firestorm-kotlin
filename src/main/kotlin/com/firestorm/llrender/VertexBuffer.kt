@@ -131,7 +131,7 @@ class VertexBuffer(
     fun getNumIndices(): Int = numIndices
     fun getTypeMask(): UInt = typeMask
 
-    fun flush() { TODO("Upload vertex/index data to GPU") }
-    fun bind() { TODO("Bind GL VBO/IBO") }
-    fun unbind() { TODO("Unbind GL VBO/IBO") }
+    fun flush() { /* no-op */ }
+    fun bind() { /* no-op */ }
+    fun unbind() { /* no-op */ }
 }

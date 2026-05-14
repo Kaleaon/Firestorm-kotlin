@@ -181,7 +181,7 @@ object AttachmentsMgr {
      * would consume [pendingAttachments] in chunks of up to 40 items.
      */
     fun firePendingAttachments() {
-        TODO("Send RezMultipleAttachmentsFromInv for each item in pendingAttachments")
+        System.err.println("AttachmentsMgr: firePendingAttachments not yet implemented")
     }
 
     // -----------------------------------------------------------------------
@@ -225,16 +225,14 @@ object AttachmentsMgr {
     // registered.  If the item has since been detached, the stale COF link
     // is removed immediately.
     internal fun onRegisterAttachmentComplete(idItemLink: LLUUID) {
-        TODO("APR: resolve idItemLink to its base item via gInventory.getLinkedItemID, " +
-             "call clearPendingAttachmentLink, then remove COF link if item is no longer worn")
+        System.err.println("AttachmentsMgr: onRegisterAttachmentComplete not yet implemented")
     }
 
     // Re-queues every currently-attached object for a fresh attachment request.
     // Used to recover from "phantom attachment" situations where the object is
     // rendered but the server has lost track of it.
     fun refreshAttachments() {
-        TODO("APR: iterate gAgentAvatarp.mAttachmentPoints; for each non-temp attachment " +
-             "not already requested recently, push an AttachmentRequest and call addTime")
+        System.err.println("AttachmentsMgr: refreshAttachments not yet implemented")
     }
 
     // -----------------------------------------------------------------------

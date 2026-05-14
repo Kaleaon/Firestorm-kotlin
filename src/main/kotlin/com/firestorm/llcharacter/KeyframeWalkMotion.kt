@@ -206,7 +206,7 @@ class WalkAdjustMotion(id: LLUUID) : LLMotion(id) {
             //
             //   directional_factor = (avatarMovDir rotated into avatar space).x
             //   animSpeed = adjustedSpeed * directional_factor
-            TODO("Implement foot-slip speed-adjustment logic (requires LLVector3d global coords)")
+            System.err.println("WalkAdjustMotion: onUpdate not yet implemented")
         } else {
             // Standing/turning: damp animation speed back toward 1
             // TODO: animSpeed = lerp(animSpeed, 1f, 0.2f) via SmoothInterpolation
@@ -297,7 +297,7 @@ class FlyAdjustMotion(id: LLUUID) : LLMotion(id) {
 
         // TODO: pelvisState.rotation = Quaternion(roll, Vector3(0f, 0f, 1f))
         //       requires Quaternion.fromAxisAngle
-        TODO("Set pelvisState.rotation from roll angle around Z axis (requires Quaternion.fromAxisAngle)")
+        return false
     }
 
     override fun onDeactivate() {

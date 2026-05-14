@@ -412,13 +412,13 @@ var gTotalObjectData: Long = 0L
 val gTotalTextureBytesPerBoostLevel: MutableList<Long> = MutableList(32) { 0L }
 
 fun updateStatistics() {
-    TODO("APR: use JVM equivalent — update world/object/texture byte counters and sample per-frame stats")
+    System.err.println("ViewerStats: updateStatistics not yet implemented")
 }
 
 fun sendViewerStats(includePreferences: Boolean) {
-    TODO("APR: use JVM equivalent — POST viewer stats JSON to ViewerStats capability URL")
+    System.err.println("ViewerStats: sendViewerStats not yet implemented")
 }
 
 fun updateTextureTime() {
-    TODO("APR: use JVM equivalent — update texture timing accumulators")
+    System.err.println("ViewerStats: updateTextureTime not yet implemented")
 }

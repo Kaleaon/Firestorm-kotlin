@@ -99,7 +99,7 @@ class FSFloaterIM(val sessionId: LLUUID) {
      * C++ equivalent: `FSFloaterIM::sendMsg(const std::string& msg)`.
      */
     fun sendMsg(msg: String) {
-        TODO("Route '$msg' through LLIMMgr to session $sessionId")
+        System.err.println("FSFloaterIM: sendMsg not yet implemented")
     }
 
     /**
@@ -110,7 +110,7 @@ class FSFloaterIM(val sessionId: LLUUID) {
      */
     fun reloadMessages(cleanMessages: Boolean = false) {
         if (cleanMessages) messages.clear()
-        TODO("Re-fetch message history from LLIMModel for session $sessionId")
+        System.err.println("FSFloaterIM: reloadMessages not yet implemented")
     }
 
     // -----------------------------------------------------------------------
@@ -154,7 +154,8 @@ class FSFloaterIM(val sessionId: LLUUID) {
          * @return `true` if the floater is now visible, `false` otherwise.
          */
         fun toggle(sessionId: LLUUID): Boolean {
-            TODO("Check current visibility state and call show() or hide() accordingly for $sessionId")
+            System.err.println("FSFloaterIM: toggle not yet implemented")
+            return false
         }
 
         /**

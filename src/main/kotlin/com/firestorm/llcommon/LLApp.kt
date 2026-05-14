@@ -143,8 +143,8 @@ abstract class LLApp {
     // Concrete apps should replace this by calling setInstance().
     // -------------------------------------------------------------------------
     object App : LLApp() {
-        override fun init():     Boolean { TODO("Override App.init() in a concrete subclass") }
-        override fun mainLoop(): Boolean { TODO("Override App.mainLoop() in a concrete subclass") }
-        override fun cleanup():  Boolean { TODO("Override App.cleanup() in a concrete subclass") }
+        override fun init():     Boolean { System.err.println("LLApp: init not yet implemented"); return false }
+        override fun mainLoop(): Boolean { System.err.println("LLApp: mainLoop not yet implemented"); return false }
+        override fun cleanup():  Boolean { System.err.println("LLApp: cleanup not yet implemented"); return false }
     }
 }

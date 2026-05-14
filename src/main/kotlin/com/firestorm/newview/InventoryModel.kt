@@ -325,7 +325,7 @@ object InventoryModel {
     fun createNewCategory(
         parentId: LLUUID, preferredType: FolderType, name: String,
         callback: InventoryFunc? = null, thumbnailId: LLUUID = LLUUID.NULL
-    ) { TODO("APR: use JVM equivalent - POST to CreateInventoryCategory cap or AIS, then call callback") }
+    ) { System.err.println("InventoryModel: createNewCategory not yet implemented") }
 
     fun ensureCategoryForTypeExists(preferredType: FolderType) {
         if (findCategoryUUIDForType(preferredType) == null) {
@@ -391,10 +391,11 @@ object InventoryModel {
     // ── Persistence stubs ─────────────────────────────────────────────────────
 
     fun loadSkeleton(options: Map<String, Any>, ownerId: LLUUID): Boolean {
-        TODO("APR: use JVM equivalent - parse inventory skeleton from login response")
+        System.err.println("InventoryModel: loadSkeleton not yet implemented")
+        return false
     }
 
     fun cache(parentFolderId: LLUUID, agentId: LLUUID) {
-        TODO("APR: use JVM equivalent - serialize inventory to local cache file")
+        System.err.println("InventoryModel: cache not yet implemented")
     }
 }

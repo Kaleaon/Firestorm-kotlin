@@ -541,7 +541,7 @@ open class IMSpeakerMgr(channel: VoiceChannel?) : SpeakerMgr(channel) {
         data["params"]["agent_id"] = speakerId
         data["params"]["mute_info"] = LLSD.emptyMap()
         data["params"]["mute_info"]["text"] = !allow
-        TODO("APR: use JVM equivalent for coroutine HTTP POST to $url with data=$data")
+        System.err.println("IMSpeakerMgr: allowTextChat not yet implemented")
     }
 
     fun moderateVoiceParticipant(avatarId: UUID, unmute: Boolean) {
@@ -559,7 +559,7 @@ open class IMSpeakerMgr(channel: VoiceChannel?) : SpeakerMgr(channel) {
         data["params"]["agent_id"] = avatarId
         data["params"]["mute_info"] = LLSD.emptyMap()
         data["params"]["mute_info"]["voice"] = !unmute
-        TODO("APR: use JVM equivalent for coroutine HTTP POST to $url with data=$data")
+        System.err.println("IMSpeakerMgr: moderateVoiceParticipant not yet implemented")
     }
 
     fun moderateVoiceAllParticipants(unmuteEveryone: Boolean) {
@@ -585,7 +585,7 @@ open class IMSpeakerMgr(channel: VoiceChannel?) : SpeakerMgr(channel) {
         data["params"]["update_info"] = LLSD.emptyMap()
         data["params"]["update_info"]["moderated_mode"] = LLSD.emptyMap()
         data["params"]["update_info"]["moderated_mode"]["voice"] = disallowVoice
-        TODO("APR: use JVM equivalent for coroutine HTTP POST to $url with data=$data")
+        System.err.println("IMSpeakerMgr: moderateVoiceSession not yet implemented")
     }
 
     private fun forceVoiceModeratedMode(shouldBeMuted: Boolean) {

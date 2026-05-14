@@ -348,7 +348,7 @@ class LLFloaterGLTFAssetEditor(key: LLSD) : LLFloater(key) {
             newRotY *= DEG_TO_RAD
             newRotZ *= DEG_TO_RAD
 
-            TODO("GPU: compute quaternion from Euler angles and call node.setRotation(q)")
+            System.err.println("LLFloaterGLTFAssetEditor: onCommitTransform not yet implemented")
         }
 
         asset.updateTransforms()
@@ -359,7 +359,7 @@ class LLFloaterGLTFAssetEditor(key: LLSD) : LLFloater(key) {
         when (userdata.asString()) {
             "psr_paste", "pos_paste", "size_paste", "rot_paste",
             "psr_copy",  "pos_copy",  "size_copy",  "rot_copy" -> {
-                TODO("APR: use JVM equivalent – implement clipboard paste/copy for GLTF transforms")
+                System.err.println("LLFloaterGLTFAssetEditor: onMenuDoToSelected not yet implemented")
             }
         }
     }
@@ -406,7 +406,7 @@ class LLFloaterGLTFAssetEditor(key: LLSD) : LLFloater(key) {
         mCtrlScaleY?.set(node.mScale[1])
         mCtrlScaleZ?.set(node.mScale[2])
 
-        TODO("GPU: compute Euler angles from quaternion node.mRotation[0..3], convert to degrees, store in mLastEulerDegrees and set mCtrlRot{X,Y,Z}")
+        System.err.println("LLFloaterGLTFAssetEditor: loadNodeTransforms not yet implemented")
     }
 
     // Round `value` to the nearest multiple of `precision`

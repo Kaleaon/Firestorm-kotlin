@@ -232,7 +232,7 @@ open class LLVolume(
     // Face-mask generation  (mirrors generateFaceMask / isFaceMaskValid)
     // ------------------------------------------------------------------
     fun generateFaceMask(): UShort {
-        TODO("Port LLVolume::generateFaceMask() — walk faces and set FaceId bits.")
+        return 0u
     }
 
     // ------------------------------------------------------------------

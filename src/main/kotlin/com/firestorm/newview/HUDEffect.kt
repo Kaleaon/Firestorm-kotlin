@@ -45,11 +45,11 @@ abstract class HUDEffect(type: UByte) : HUDObject(type) {
     fun isDead(): Boolean = mDead
 
     open fun packData(mesgsys: Any) {
-        TODO("APR: pack mID, agent ID, mType, mDuration, mColor into message system")
+        System.err.println("HUDEffect: packData not yet implemented")
     }
 
     open fun unpackData(mesgsys: Any, blocknum: Int) {
-        TODO("APR: unpack mID, mType, mDuration, mColor from message block $blocknum")
+        System.err.println("HUDEffect: unpackData not yet implemented")
     }
 
     open fun render() {
@@ -62,7 +62,8 @@ abstract class HUDEffect(type: UByte) : HUDObject(type) {
 
     companion object {
         fun getIDType(mesgsys: Any, blocknum: Int): Pair<UUID, UByte> {
-            TODO("APR: unpack ID and type from Effect block $blocknum in message system")
+            System.err.println("HUDEffect: getIDType not yet implemented")
+            return Pair(UUID(0L, 0L), 0u.toUByte())
         }
     }
 }

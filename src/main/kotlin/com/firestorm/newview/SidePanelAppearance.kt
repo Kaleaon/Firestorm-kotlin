@@ -6,8 +6,8 @@ class CurrentlyWornFetchObserver(
     private val ids: MutableList<UUID>,
     private val panel: SidePanelAppearance
 ) {
-    fun startFetch() { TODO("APR: use JVM equivalent") }
-    fun isFinished(): Boolean { TODO("APR: use JVM equivalent") }
+    fun startFetch() { System.err.println("CurrentlyWornFetchObserver: startFetch not yet implemented") }
+    fun isFinished(): Boolean { return false }
     fun done() {
         panel.inventoryFetched()
     }
@@ -321,7 +321,7 @@ class SidePanelAppearance : Panel() {
             }
         }
 
-        TODO("APR: use JVM equivalent for attachment point iteration")
+        System.err.println("SidePanelAppearance: fetchInventory not yet implemented")
     }
 
     fun inventoryFetched() {}

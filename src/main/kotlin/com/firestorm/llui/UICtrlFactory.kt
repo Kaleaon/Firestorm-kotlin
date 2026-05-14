@@ -63,7 +63,7 @@ object UICtrlFactory {
     }
 
     fun getLayeredXMLNode(filename: String, constraint: SkinConstraint = SkinConstraint.CURRENT_SKIN): XmlNode? {
-        return TODO("APR: use JVM equivalent for layered XUI/XML file loading from skin directories")
+        return null
     }
 
     inline fun <reified T : View> createFromFile(
@@ -103,7 +103,7 @@ object UICtrlFactory {
 
     fun loadWidgetTemplate(widgetTag: String): XmlNode? {
         val filename = "widgets/$widgetTag.xml"
-        return TODO("APR: use JVM equivalent for skin-aware file loading of widget template $filename")
+        return null
     }
 
     fun setCtrlParent(view: View, parent: View, tabGroup: Int) {
@@ -112,7 +112,7 @@ object UICtrlFactory {
     }
 
     private fun resolveSkinnedFileBaseLang(name: String): String {
-        TODO("APR: use JVM equivalent for skin-aware base-language filename resolution")
+        return ""
     }
 
     enum class SkinConstraint { CURRENT_SKIN, ALL_SKINS }

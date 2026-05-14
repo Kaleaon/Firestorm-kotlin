@@ -186,11 +186,12 @@ open class KeyframeMotion(id: LLUUID) : LLMotion(id) {
         if (jointMotionList != null) return MotionInitStatus.SUCCESS
         // Async fetch not yet wired; hold until loaded externally.
         assetStatus = AssetStatus.NEEDS_FETCH
-        TODO("Trigger async asset fetch and return HOLD")
+        return MotionInitStatus.HOLD
     }
 
     override fun onActivate(): Boolean {
-        TODO("Build JointState list from character skeleton and activate constraints")
+        System.err.println("KeyframeMotion: onActivate not yet implemented")
+        return false
     }
 
     override fun onUpdate(activeTime: Float): Boolean {

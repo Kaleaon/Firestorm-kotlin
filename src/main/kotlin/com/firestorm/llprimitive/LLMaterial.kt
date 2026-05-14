@@ -227,10 +227,14 @@ data class LLMaterial(
      * Mirrors `LLMaterial::getShaderMask()` in the C++ source; actual shader
      * selection tables are not yet ported.
      */
-    fun getShaderMask(alphaMode: UInt, isAlpha: Boolean): UInt =
-        TODO("LLMaterial.getShaderMask shader table not yet ported")
+    fun getShaderMask(alphaMode: UInt, isAlpha: Boolean): UInt {
+        System.err.println("LLMaterial: getShaderMask not yet implemented")
+        return 0u
+    }
 
     /** Returns a UUID-based hash of this material's content. */
-    fun getHash(): LLUUID =
-        TODO("LLMaterial.getHash not yet implemented")
+    fun getHash(): LLUUID {
+        System.err.println("LLMaterial: getHash not yet implemented")
+        return LLUUID.NULL
+    }
 }

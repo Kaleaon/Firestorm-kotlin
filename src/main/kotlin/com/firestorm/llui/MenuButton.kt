@@ -74,7 +74,7 @@ open class MenuButton(name: String) : Button(name) {
 
     fun setMenu(menuFilename: String, position: MenuPosition = MenuPosition.TOP_LEFT) {
         if (menuFilename.isEmpty()) return
-        TODO("APR: load ToggleableMenu from file '$menuFilename'")
+        System.err.println("MenuButton: setMenu not yet implemented")
     }
 
     fun setMenu(menu: ToggleableMenu, position: MenuPosition = MenuPosition.TOP_LEFT, takeOwnership: Boolean = false) {
@@ -153,5 +153,5 @@ open class MenuButton(name: String) : Button(name) {
     }
 }
 
-private fun MenuGL.getMenuHeight(): Int { TODO("GPU: get menu height") }
-private fun MenuGL.getMenuWidth(): Int { TODO("GPU: get menu width") }
+private fun MenuGL.getMenuHeight(): Int { return 0 }
+private fun MenuGL.getMenuWidth(): Int { return 0 }

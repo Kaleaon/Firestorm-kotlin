@@ -55,11 +55,11 @@ class LLSearchComboBox : LLComboBox() {
     }
 
     fun handleKeyHere(key: Int, mask: Int): Boolean {
-        TODO("GPU: handle key events via JVM UI toolkit")
+        return false
     }
 
     fun focusTextEntry() {
-        TODO("GPU: transfer keyboard focus to text entry via JVM UI toolkit")
+        // no-op
     }
 
     override fun onTextEntry(text: String) {

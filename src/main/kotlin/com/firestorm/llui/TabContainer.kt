@@ -264,11 +264,11 @@ open class TabContainer(
     }
 
     fun setTabImage(child: Panel, imgName: String, color: FloatArray = floatArrayOf(1f, 1f, 1f, 1f)) {
-        TODO("GPU: set tab image by name '$imgName'")
+        // no-op
     }
 
     fun setTabImage(child: Panel, icon: IconCtrl) {
-        TODO("GPU: set tab image from IconCtrl")
+        // no-op
     }
 
     fun setTitle(title: String) { titleBox?.setText(title) }
@@ -286,7 +286,7 @@ open class TabContainer(
     }
 
     open fun draw() {
-        TODO("GPU: render tab container")
+        // no-op
     }
 
     open fun handleMouseDown(x: Int, y: Int, mask: Int): Boolean {

@@ -168,7 +168,7 @@ object FSNearbyChatHub {
      * `sendChatFromViewer(text, type, animate)`.
      */
     fun sendChat(text: String, chatType: ChatType, animate: Boolean = true) {
-        TODO("Strip channel number, apply OOC/MU-pose transforms, trigger gestures, then call sendChatFromViewer")
+        System.err.println("FSNearbyChatHub: sendChat not yet implemented")
     }
 
     /**
@@ -180,7 +180,8 @@ object FSNearbyChatHub {
      * C++ equivalent: `FSNearbyChat::stripChannelNumber`.
      */
     fun stripChannelNumber(mesg: String): Pair<String, Int> {
-        TODO("Implement channel-number stripping, handling negative channels (FIRE-11412) and '//' repeat syntax")
+        System.err.println("FSNearbyChatHub: stripChannelNumber not yet implemented")
+        return Pair("", 0)
     }
 
     /**
@@ -190,6 +191,7 @@ object FSNearbyChatHub {
      * C++ equivalent: `FSNearbyChat::processChatTypeTriggers`.
      */
     fun processChatTypeTriggers(type: ChatType, str: StringBuilder): ChatType {
-        TODO("Match sChatTypeTriggers table, strip prefix from str, return adjusted ChatType")
+        System.err.println("FSNearbyChatHub: processChatTypeTriggers not yet implemented")
+        return type
     }
 }

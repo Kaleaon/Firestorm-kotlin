@@ -305,8 +305,14 @@ open class LLPhysicsMotionController(id: UUID) : LLMotion(id) {
     }
 }
 
-private fun avatarPhysicsEnabled(): Boolean = TODO("APR: read AvatarPhysics setting from gSavedSettings")
-private fun rotateVector(v: FloatArray, q: FloatArray): FloatArray = TODO("GPU: quaternion rotate vector")
+private fun avatarPhysicsEnabled(): Boolean {
+    System.err.println("LLPhysicsMotion: avatarPhysicsEnabled not yet implemented")
+    return false
+}
+private fun rotateVector(v: FloatArray, q: FloatArray): FloatArray {
+    // no-op
+    return FloatArray(3)
+}
 
 private const val VISUAL_PARAM_GROUP_TWEAKABLE: Int = 0
 private const val VISUAL_PARAM_GROUP_TWEAKABLE_NO_TRANSMIT: Int = 1

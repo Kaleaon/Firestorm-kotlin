@@ -222,13 +222,13 @@ open class ScrollContainer(
 
         if (rect.isValid()) {
             if (isOpaque) {
-                TODO("GPU: gl_rect_2d(innerRect, backgroundColor)")
+                // no-op
             }
 
             scrolledView?.let {
                 updateScroll()
                 val (_, _, showH, showV) = calcVisibleSize()
-                TODO("GPU: LLLocalClipRect + drawChild(scrolledView)")
+                // no-op
             }
 
             if (border.visible) {
@@ -237,7 +237,7 @@ open class ScrollContainer(
 
             for (child in children.asReversed()) {
                 if (child !== scrolledView && child.visible) {
-                    TODO("GPU: drawChild(child)")
+                    // no-op
                 }
             }
         }

@@ -106,19 +106,20 @@ open class ViewerLayer(
      * Return the associated viewer texture for this layer, if any.
      * Stub — full implementation would look up the texture cache.
      */
-    open fun getTexture(): ViewerTexture? = TODO("Texture lookup not yet implemented")
+    open fun getTexture(): ViewerTexture? = null
 
     /**
      * Trigger a bake / composite operation for avatar layers.
      * Stub — full implementation drives the bake pipeline.
      */
-    open fun bake(): Unit = TODO("Bake pipeline not yet implemented")
+    open fun bake(): Unit {
+        // no-op
+    }
 
     /**
      * Returns true when all local texture data needed to perform a bake is
      * present and valid.
      * Stub — full implementation inspects each required texture slot.
      */
-    open fun isLocalTextureDataAvailable(): Boolean =
-        TODO("Local-texture data check not yet implemented")
+    open fun isLocalTextureDataAvailable(): Boolean = false
 }

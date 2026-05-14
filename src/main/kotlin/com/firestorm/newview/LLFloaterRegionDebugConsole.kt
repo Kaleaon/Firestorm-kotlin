@@ -60,10 +60,10 @@ class LLFloaterRegionDebugConsole(val key: Any) {
             if (url.isEmpty()) {
                 mOutput?.appendText(text + CONSOLE_UNAVAILABLE + PROMPT, false)
             } else {
-                TODO("APR: use JVM equivalent - HTTP POST to $url with input text, callbacks onConsoleSuccess/onConsoleError")
+                System.err.println("LLFloaterRegionDebugConsole: onInput not yet implemented")
             }
         } else {
-            TODO("APR: use JVM equivalent - HTTP POST to $url with input text, error callback onAsyncConsoleError")
+            System.err.println("LLFloaterRegionDebugConsole: onInput not yet implemented")
         }
 
         mOutput?.appendText(text, false)
@@ -79,7 +79,7 @@ class LLFloaterRegionDebugConsole(val key: Any) {
     }
 
     private fun onConsoleSuccess(result: Any?) {
-        TODO("APR: extract HTTP_RESULTS_CONTENT from result LLSD and append to mOutput with PROMPT")
+        System.err.println("LLFloaterRegionDebugConsole: onConsoleSuccess not yet implemented")
     }
 
     private fun onReplyReceived(output: String) {

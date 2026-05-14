@@ -180,68 +180,117 @@ class PanelLandGeneral(private val parcel: Any?) {
     private var btnSetGroup: Any? = null
 
     fun postBuild(): Boolean {
-        TODO("APR: use JVM equivalent")
+        System.err.println("PanelLandGeneral: postBuild not yet implemented")
+        return true
     }
 
     fun refresh() {
-        TODO("APR: use JVM equivalent")
+        System.err.println("PanelLandGeneral: refresh not yet implemented")
     }
 
     fun refreshNames() {
-        TODO("APR: use JVM equivalent")
+        System.err.println("PanelLandGeneral: refreshNames not yet implemented")
     }
 
     open fun draw() {
-        TODO("APR: use JVM equivalent")
+        System.err.println("PanelLandGeneral: draw not yet implemented")
     }
 
     fun setGroup(groupId: UUID) {
-        TODO("APR: use JVM equivalent")
+        System.err.println("PanelLandGeneral: setGroup not yet implemented")
     }
 
     fun onClickSetGroup() {
-        TODO("APR: use JVM equivalent")
+        System.err.println("PanelLandGeneral: onClickSetGroup not yet implemented")
     }
 
     fun processParcelInfo(parcelData: Any?) {
-        TODO("APR: use JVM equivalent")
+        System.err.println("PanelLandGeneral: processParcelInfo not yet implemented")
     }
 
     fun setParcelID(parcelId: UUID) {
-        TODO("APR: use JVM equivalent")
+        System.err.println("PanelLandGeneral: setParcelID not yet implemented")
     }
 
     fun setErrorStatus(status: Int, reason: String) {
-        TODO("APR: use JVM equivalent")
+        System.err.println("PanelLandGeneral: setErrorStatus not yet implemented")
     }
 
     companion object {
-        fun onClickDeed() { TODO("APR: use JVM equivalent") }
-        fun onClickBuyLand(buyGroupLand: Boolean) { TODO("APR: use JVM equivalent") }
-        fun onClickScriptLimits() { TODO("APR: use JVM equivalent") }
-        fun onClickRelease() { TODO("APR: use JVM equivalent") }
-        fun onClickReclaim() { TODO("APR: use JVM equivalent") }
-        fun onClickBuyPass() { TODO("APR: use JVM equivalent") }
-        fun enableBuyPass(): Boolean = TODO("APR: use JVM equivalent")
-        fun onCommitAny() { TODO("APR: use JVM equivalent") }
-        fun finalizeCommit() { TODO("APR: use JVM equivalent") }
-        fun onForSaleChange() { TODO("APR: use JVM equivalent") }
-        fun finalizeSetSellChange() { TODO("APR: use JVM equivalent") }
-        fun onSalePriceChange() { TODO("APR: use JVM equivalent") }
-        fun cbBuyPass(selectedOption: Int): Boolean = TODO("APR: use JVM equivalent")
-        fun onClickSellLand() { TODO("APR: use JVM equivalent") }
-        fun onClickStopSellLand() { TODO("APR: use JVM equivalent") }
-        fun onClickSet() { TODO("APR: use JVM equivalent") }
-        fun onClickClear() { TODO("APR: use JVM equivalent") }
-        fun onClickShow() { TODO("APR: use JVM equivalent") }
-        fun callbackAvatarPick(names: List<String>, ids: List<UUID>) { TODO("APR: use JVM equivalent") }
-        fun finalizeAvatarPick() { TODO("APR: use JVM equivalent") }
-        fun callbackHighlightTransferable(option: Int) { TODO("APR: use JVM equivalent") }
-        fun onClickStartAuction() { TODO("APR: use JVM equivalent") }
-        fun confirmSaleChange(landSize: Int, salePrice: Int, authorizedName: String, callback: () -> Unit) {
-            TODO("APR: use JVM equivalent")
+        fun onClickDeed() {
+            System.err.println("PanelLandGeneral: onClickDeed not yet implemented")
         }
-        fun callbackConfirmSaleChange(option: Int) { TODO("APR: use JVM equivalent") }
+        fun onClickBuyLand(buyGroupLand: Boolean) {
+            System.err.println("PanelLandGeneral: onClickBuyLand not yet implemented")
+        }
+        fun onClickScriptLimits() {
+            System.err.println("PanelLandGeneral: onClickScriptLimits not yet implemented")
+        }
+        fun onClickRelease() {
+            System.err.println("PanelLandGeneral: onClickRelease not yet implemented")
+        }
+        fun onClickReclaim() {
+            System.err.println("PanelLandGeneral: onClickReclaim not yet implemented")
+        }
+        fun onClickBuyPass() {
+            System.err.println("PanelLandGeneral: onClickBuyPass not yet implemented")
+        }
+        fun enableBuyPass(): Boolean {
+            System.err.println("PanelLandGeneral: enableBuyPass not yet implemented")
+            return false
+        }
+        fun onCommitAny() {
+            System.err.println("PanelLandGeneral: onCommitAny not yet implemented")
+        }
+        fun finalizeCommit() {
+            System.err.println("PanelLandGeneral: finalizeCommit not yet implemented")
+        }
+        fun onForSaleChange() {
+            System.err.println("PanelLandGeneral: onForSaleChange not yet implemented")
+        }
+        fun finalizeSetSellChange() {
+            System.err.println("PanelLandGeneral: finalizeSetSellChange not yet implemented")
+        }
+        fun onSalePriceChange() {
+            System.err.println("PanelLandGeneral: onSalePriceChange not yet implemented")
+        }
+        fun cbBuyPass(selectedOption: Int): Boolean {
+            System.err.println("PanelLandGeneral: cbBuyPass not yet implemented")
+            return false
+        }
+        fun onClickSellLand() {
+            System.err.println("PanelLandGeneral: onClickSellLand not yet implemented")
+        }
+        fun onClickStopSellLand() {
+            System.err.println("PanelLandGeneral: onClickStopSellLand not yet implemented")
+        }
+        fun onClickSet() {
+            System.err.println("PanelLandGeneral: onClickSet not yet implemented")
+        }
+        fun onClickClear() {
+            System.err.println("PanelLandGeneral: onClickClear not yet implemented")
+        }
+        fun onClickShow() {
+            System.err.println("PanelLandGeneral: onClickShow not yet implemented")
+        }
+        fun callbackAvatarPick(names: List<String>, ids: List<UUID>) {
+            System.err.println("PanelLandGeneral: callbackAvatarPick not yet implemented")
+        }
+        fun finalizeAvatarPick() {
+            System.err.println("PanelLandGeneral: finalizeAvatarPick not yet implemented")
+        }
+        fun callbackHighlightTransferable(option: Int) {
+            System.err.println("PanelLandGeneral: callbackHighlightTransferable not yet implemented")
+        }
+        fun onClickStartAuction() {
+            System.err.println("PanelLandGeneral: onClickStartAuction not yet implemented")
+        }
+        fun confirmSaleChange(landSize: Int, salePrice: Int, authorizedName: String, callback: () -> Unit) {
+            System.err.println("PanelLandGeneral: confirmSaleChange not yet implemented")
+        }
+        fun callbackConfirmSaleChange(option: Int) {
+            System.err.println("PanelLandGeneral: callbackConfirmSaleChange not yet implemented")
+        }
     }
 }
 
@@ -274,48 +323,65 @@ class PanelLandObjects(private val parcel: Any?) {
     private var selectedIsGroup: Boolean = false
 
     fun postBuild(): Boolean {
-        TODO("APR: use JVM equivalent")
+        System.err.println("PanelLandObjects: postBuild not yet implemented")
+        return true
     }
 
     fun refresh() {
-        TODO("APR: use JVM equivalent")
+        System.err.println("PanelLandObjects: refresh not yet implemented")
     }
 
     open fun draw() {
-        TODO("APR: use JVM equivalent")
+        System.err.println("PanelLandObjects: draw not yet implemented")
     }
 
     fun callbackReturnOwnerObjects(selectedOption: Int): Boolean {
-        TODO("APR: use JVM equivalent")
+        System.err.println("PanelLandObjects: callbackReturnOwnerObjects not yet implemented")
+        return false
     }
 
     fun callbackReturnGroupObjects(selectedOption: Int): Boolean {
-        TODO("APR: use JVM equivalent")
+        System.err.println("PanelLandObjects: callbackReturnGroupObjects not yet implemented")
+        return false
     }
 
     fun callbackReturnOtherObjects(selectedOption: Int): Boolean {
-        TODO("APR: use JVM equivalent")
+        System.err.println("PanelLandObjects: callbackReturnOtherObjects not yet implemented")
+        return false
     }
 
     fun callbackReturnOwnerList(selectedOption: Int): Boolean {
-        TODO("APR: use JVM equivalent")
+        System.err.println("PanelLandObjects: callbackReturnOwnerList not yet implemented")
+        return false
     }
 
     companion object {
         fun clickShowCore(panel: PanelLandObjects, returnType: Int, list: Set<UUID>? = null) {
-            TODO("APR: use JVM equivalent")
+            System.err.println("PanelLandObjects: clickShowCore not yet implemented")
         }
 
         fun onClickShowOwnerObjects(panel: PanelLandObjects) { clickShowCore(panel, 0) }
         fun onClickShowGroupObjects(panel: PanelLandObjects) { clickShowCore(panel, 1) }
         fun onClickShowOtherObjects(panel: PanelLandObjects) { clickShowCore(panel, 2) }
-        fun onClickReturnOwnerObjects(panel: PanelLandObjects) { TODO("APR: use JVM equivalent") }
-        fun onClickReturnGroupObjects(panel: PanelLandObjects) { TODO("APR: use JVM equivalent") }
-        fun onClickReturnOtherObjects(panel: PanelLandObjects) { TODO("APR: use JVM equivalent") }
-        fun onClickReturnOwnerList(panel: PanelLandObjects) { TODO("APR: use JVM equivalent") }
+        fun onClickReturnOwnerObjects(panel: PanelLandObjects) {
+            System.err.println("PanelLandObjects: onClickReturnOwnerObjects not yet implemented")
+        }
+        fun onClickReturnGroupObjects(panel: PanelLandObjects) {
+            System.err.println("PanelLandObjects: onClickReturnGroupObjects not yet implemented")
+        }
+        fun onClickReturnOtherObjects(panel: PanelLandObjects) {
+            System.err.println("PanelLandObjects: onClickReturnOtherObjects not yet implemented")
+        }
+        fun onClickReturnOwnerList(panel: PanelLandObjects) {
+            System.err.println("PanelLandObjects: onClickReturnOwnerList not yet implemented")
+        }
         fun onClickRefresh(panel: PanelLandObjects) { panel.refresh() }
-        fun onDoubleClickOwner(panel: PanelLandObjects) { TODO("APR: use JVM equivalent") }
-        fun processParcelObjectOwnersReply(msg: Any?) { TODO("APR: use JVM equivalent") }
+        fun onDoubleClickOwner(panel: PanelLandObjects) {
+            System.err.println("PanelLandObjects: onDoubleClickOwner not yet implemented")
+        }
+        fun processParcelObjectOwnersReply(msg: Any?) {
+            System.err.println("PanelLandObjects: processParcelObjectOwnersReply not yet implemented")
+        }
     }
 }
 
@@ -344,32 +410,44 @@ class PanelLandOptions(private val parcel: Any?) {
     private var seeAvatarsCtrl: Any? = null
 
     fun postBuild(): Boolean {
-        TODO("APR: use JVM equivalent")
+        System.err.println("PanelLandOptions: postBuild not yet implemented")
+        return true
     }
 
     open fun draw() {
-        TODO("APR: use JVM equivalent")
+        System.err.println("PanelLandOptions: draw not yet implemented")
     }
 
     fun refresh() {
-        TODO("APR: use JVM equivalent")
+        System.err.println("PanelLandOptions: refresh not yet implemented")
     }
 
     private fun refreshSearch() {
-        TODO("APR: use JVM equivalent")
+        System.err.println("PanelLandOptions: refreshSearch not yet implemented")
     }
 
-    private fun getDirectoryFee(): Int = TODO("APR: use JVM equivalent")
+    private fun getDirectoryFee(): Int {
+        System.err.println("PanelLandOptions: getDirectoryFee not yet implemented")
+        return 0
+    }
 
     fun onClickTeleport() {
-        TODO("APR: use JVM equivalent")
+        System.err.println("PanelLandOptions: onClickTeleport not yet implemented")
     }
 
     companion object {
-        fun onCommitAny() { TODO("APR: use JVM equivalent") }
-        fun onClickSet() { TODO("APR: use JVM equivalent") }
-        fun onClickClear() { TODO("APR: use JVM equivalent") }
-        fun toggleSeeAvatars() { TODO("APR: use JVM equivalent") }
+        fun onCommitAny() {
+            System.err.println("PanelLandOptions: onCommitAny not yet implemented")
+        }
+        fun onClickSet() {
+            System.err.println("PanelLandOptions: onClickSet not yet implemented")
+        }
+        fun onClickClear() {
+            System.err.println("PanelLandOptions: onClickClear not yet implemented")
+        }
+        fun toggleSeeAvatars() {
+            System.err.println("PanelLandOptions: toggleSeeAvatars not yet implemented")
+        }
     }
 }
 
@@ -397,66 +475,89 @@ class PanelLandAccess(private val parcel: Any?) {
     private var btnImportBanned: Any? = null
 
     fun postBuild(): Boolean {
-        TODO("APR: use JVM equivalent")
+        System.err.println("PanelLandAccess: postBuild not yet implemented")
+        return true
     }
 
     fun refresh() {
-        TODO("APR: use JVM equivalent")
+        System.err.println("PanelLandAccess: refresh not yet implemented")
     }
 
     fun refreshUi() {
-        TODO("APR: use JVM equivalent")
+        System.err.println("PanelLandAccess: refreshUi not yet implemented")
     }
 
     fun refreshNames() {
-        TODO("APR: use JVM equivalent")
+        System.err.println("PanelLandAccess: refreshNames not yet implemented")
     }
 
     open fun draw() {
-        TODO("APR: use JVM equivalent")
+        System.err.println("PanelLandAccess: draw not yet implemented")
     }
 
     fun onClickAddAccess() {
-        TODO("APR: use JVM equivalent")
+        System.err.println("PanelLandAccess: onClickAddAccess not yet implemented")
     }
 
     fun onClickAddBanned() {
-        TODO("APR: use JVM equivalent")
+        System.err.println("PanelLandAccess: onClickAddBanned not yet implemented")
     }
 
     fun onClickRemoveAccess() {
-        TODO("APR: use JVM equivalent")
+        System.err.println("PanelLandAccess: onClickRemoveAccess not yet implemented")
     }
 
     fun onClickRemoveBanned() {
-        TODO("APR: use JVM equivalent")
+        System.err.println("PanelLandAccess: onClickRemoveBanned not yet implemented")
     }
 
     fun callbackAvatarCBBanned(ids: List<UUID>) {
-        TODO("APR: use JVM equivalent")
+        System.err.println("PanelLandAccess: callbackAvatarCBBanned not yet implemented")
     }
 
     fun callbackAvatarCBBanned2(ids: List<UUID>, duration: Int) {
-        TODO("APR: use JVM equivalent")
+        System.err.println("PanelLandAccess: callbackAvatarCBBanned2 not yet implemented")
     }
 
     fun callbackAvatarCBAccess(ids: List<UUID>) {
-        TODO("APR: use JVM equivalent")
+        System.err.println("PanelLandAccess: callbackAvatarCBAccess not yet implemented")
     }
 
-    fun onClickExportAccess() { TODO("APR: use JVM equivalent") }
-    fun onClickExportBanned() { TODO("APR: use JVM equivalent") }
-    fun onClickExportList(list: Any?, filename: String) { TODO("APR: use JVM equivalent") }
-    fun exportListCallback(list: Any?, filenames: List<String>) { TODO("APR: use JVM equivalent") }
-    fun onClickImportAccess() { TODO("APR: use JVM equivalent") }
-    fun onClickImportBanned() { TODO("APR: use JVM equivalent") }
-    fun onClickImportList(list: Any?) { TODO("APR: use JVM equivalent") }
-    fun importListCallback(list: Any?, filenames: List<String>) { TODO("APR: use JVM equivalent") }
+    fun onClickExportAccess() {
+        System.err.println("PanelLandAccess: onClickExportAccess not yet implemented")
+    }
+    fun onClickExportBanned() {
+        System.err.println("PanelLandAccess: onClickExportBanned not yet implemented")
+    }
+    fun onClickExportList(list: Any?, filename: String) {
+        System.err.println("PanelLandAccess: onClickExportList not yet implemented")
+    }
+    fun exportListCallback(list: Any?, filenames: List<String>) {
+        System.err.println("PanelLandAccess: exportListCallback not yet implemented")
+    }
+    fun onClickImportAccess() {
+        System.err.println("PanelLandAccess: onClickImportAccess not yet implemented")
+    }
+    fun onClickImportBanned() {
+        System.err.println("PanelLandAccess: onClickImportBanned not yet implemented")
+    }
+    fun onClickImportList(list: Any?) {
+        System.err.println("PanelLandAccess: onClickImportList not yet implemented")
+    }
+    fun importListCallback(list: Any?, filenames: List<String>) {
+        System.err.println("PanelLandAccess: importListCallback not yet implemented")
+    }
 
     companion object {
-        fun onCommitPublicAccess() { TODO("APR: use JVM equivalent") }
-        fun onCommitAny() { TODO("APR: use JVM equivalent") }
-        fun onCommitGroupCheck() { TODO("APR: use JVM equivalent") }
+        fun onCommitPublicAccess() {
+            System.err.println("PanelLandAccess: onCommitPublicAccess not yet implemented")
+        }
+        fun onCommitAny() {
+            System.err.println("PanelLandAccess: onCommitAny not yet implemented")
+        }
+        fun onCommitGroupCheck() {
+            System.err.println("PanelLandAccess: onCommitGroupCheck not yet implemented")
+        }
     }
 }
 
@@ -467,19 +568,30 @@ class PanelLandCovenant(private val parcel: Any?) {
     private var nextUpdateTime: Double = 0.0
 
     fun postBuild(): Boolean {
-        TODO("APR: use JVM equivalent")
+        System.err.println("PanelLandCovenant: postBuild not yet implemented")
+        return true
     }
 
     fun refresh() {
-        TODO("APR: use JVM equivalent")
+        System.err.println("PanelLandCovenant: refresh not yet implemented")
     }
 
     companion object {
-        fun updateCovenant(source: Any?) { TODO("APR: use JVM equivalent") }
-        fun updateCovenantText(text: String) { TODO("APR: use JVM equivalent") }
-        fun updateEstateName(name: String) { TODO("APR: use JVM equivalent") }
-        fun updateLastModified(text: String) { TODO("APR: use JVM equivalent") }
-        fun updateEstateOwnerName(name: String) { TODO("APR: use JVM equivalent") }
+        fun updateCovenant(source: Any?) {
+            System.err.println("PanelLandCovenant: updateCovenant not yet implemented")
+        }
+        fun updateCovenantText(text: String) {
+            System.err.println("PanelLandCovenant: updateCovenantText not yet implemented")
+        }
+        fun updateEstateName(name: String) {
+            System.err.println("PanelLandCovenant: updateEstateName not yet implemented")
+        }
+        fun updateLastModified(text: String) {
+            System.err.println("PanelLandCovenant: updateLastModified not yet implemented")
+        }
+        fun updateEstateOwnerName(name: String) {
+            System.err.println("PanelLandCovenant: updateEstateOwnerName not yet implemented")
+        }
     }
 }
 
@@ -489,27 +601,29 @@ class PanelLandExperiences(private val parcel: Any?) {
     private var blocked: Any? = null
 
     fun postBuild(): Boolean {
-        TODO("APR: use JVM equivalent")
+        System.err.println("PanelLandExperiences: postBuild not yet implemented")
+        return true
     }
 
     fun refresh() {
-        TODO("APR: use JVM equivalent")
+        System.err.println("PanelLandExperiences: refresh not yet implemented")
     }
 
     fun experienceAdded(id: UUID, xpType: UInt, accessType: UInt) {
-        TODO("APR: use JVM equivalent")
+        System.err.println("PanelLandExperiences: experienceAdded not yet implemented")
     }
 
     fun experienceRemoved(id: UUID, accessType: UInt) {
-        TODO("APR: use JVM equivalent")
+        System.err.println("PanelLandExperiences: experienceRemoved not yet implemented")
     }
 
     private fun setupList(controlName: String, xpType: UInt, accessType: UInt): Any? {
-        TODO("APR: use JVM equivalent")
+        System.err.println("PanelLandExperiences: setupList not yet implemented")
+        return null
     }
 
     private fun refreshPanel(panel: Any?, xpType: UInt) {
-        TODO("APR: use JVM equivalent")
+        System.err.println("PanelLandExperiences: refreshPanel not yet implemented")
     }
 }
 
@@ -518,26 +632,40 @@ class PanelLandEnvironment(private val parcel: Any?) {
     private var lastParcelId: Int = 0
 
     fun postBuild(): Boolean {
-        TODO("APR: use JVM equivalent")
+        System.err.println("PanelLandEnvironment: postBuild not yet implemented")
+        return true
     }
 
     fun refresh() {
-        TODO("APR: use JVM equivalent")
+        System.err.println("PanelLandEnvironment: refresh not yet implemented")
     }
 
     fun isRegion(): Boolean = false
 
     fun isLargeEnough(): Boolean {
-        TODO("APR: use JVM equivalent")
+        System.err.println("PanelLandEnvironment: isLargeEnough not yet implemented")
+        return false
     }
 
-    fun getParcel(): Any? = TODO("APR: use JVM equivalent")
-    fun canEdit(): Boolean = TODO("APR: use JVM equivalent")
-    fun getParcelId(): Int = TODO("APR: use JVM equivalent")
+    fun getParcel(): Any? {
+        System.err.println("PanelLandEnvironment: getParcel not yet implemented")
+        return null
+    }
+    fun canEdit(): Boolean {
+        System.err.println("PanelLandEnvironment: canEdit not yet implemented")
+        return false
+    }
+    fun getParcelId(): Int {
+        System.err.println("PanelLandEnvironment: getParcelId not yet implemented")
+        return 0
+    }
 
     private fun refreshFromSource() {
-        TODO("APR: use JVM equivalent")
+        System.err.println("PanelLandEnvironment: refreshFromSource not yet implemented")
     }
 
-    private fun isSameRegion(): Boolean = TODO("APR: use JVM equivalent")
+    private fun isSameRegion(): Boolean {
+        System.err.println("PanelLandEnvironment: isSameRegion not yet implemented")
+        return false
+    }
 }

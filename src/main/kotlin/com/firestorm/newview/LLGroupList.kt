@@ -51,7 +51,8 @@ class LLSharedGroupComparator : Comparator<LLGroupListItem> {
 
 // Stub: check whether the local agent belongs to a group
 private fun isAgentInGroup(groupId: UUID): Boolean {
-    TODO("APR: use JVM equivalent – gAgent.isInGroup(groupId)")
+    System.err.println("LLGroupList: isAgentInGroup not yet implemented")
+    return false
 }
 
 // ---------------------------------------------------------------------------
@@ -89,70 +90,72 @@ class LLGroupListItem(
     private var iconWidth: Int = 0
 
     fun postBuild(): Boolean {
-        TODO("APR: use JVM equivalent – inflate UI layout from XML and wire button callbacks")
+        System.err.println("LLGroupListItem: postBuild not yet implemented")
+        return false
     }
 
     fun setValue(value: Map<String, Any>) {
         if (!value.containsKey("selected")) return
-        TODO("APR: use JVM equivalent – toggle selected_icon visibility")
+        System.err.println("LLGroupListItem: setValue not yet implemented")
     }
 
     fun onMouseEnter(x: Int, y: Int) {
-        TODO("APR: use JVM equivalent – show hovered_icon and action buttons")
+        System.err.println("LLGroupListItem: onMouseEnter not yet implemented")
     }
 
     fun onMouseLeave(x: Int, y: Int) {
-        TODO("APR: use JVM equivalent – hide hovered_icon and action buttons")
+        System.err.println("LLGroupListItem: onMouseLeave not yet implemented")
     }
 
     fun setName(name: String, highlight: String = "") {
         groupName = name
-        TODO("APR: use JVM equivalent – highlight matching text in the group name text box")
+        System.err.println("LLGroupListItem: setName not yet implemented")
     }
 
     fun setGroupID(groupId: UUID) {
         this.groupId = groupId
         // Active or shared group displayed bold
         bold = if (forAgent) {
-            TODO("APR: use JVM equivalent – compare to gAgent.getGroupID()")
+            System.err.println("LLGroupListItem: setGroupID (compare to gAgent.getGroupID) not yet implemented")
+            false
         } else {
             isAgentInGroup(groupId)
         }
-        TODO("APR: use JVM equivalent – register with LLGroupMgr as observer")
+        System.err.println("LLGroupListItem: setGroupID (register with LLGroupMgr) not yet implemented")
     }
 
     fun setGroupIconID(iconId: UUID) {
-        TODO("APR: use JVM equivalent – set icon texture on group icon control")
+        System.err.println("LLGroupListItem: setGroupIconID not yet implemented")
     }
 
     fun setGroupIconVisible(visible: Boolean) {
-        TODO("APR: use JVM equivalent – show/hide icon and shift name rect accordingly")
+        System.err.println("LLGroupListItem: setGroupIconVisible not yet implemented")
     }
 
     fun setVisibleInProfile(visible: Boolean) {
         // Colour the group name differently when hidden from profile
         val colorKey = if (visible) "GroupVisibleInProfile" else "GroupHiddenInProfile"
-        TODO("APR: use JVM equivalent – apply named UI colour to the name text box")
+        System.err.println("LLGroupListItem: setVisibleInProfile not yet implemented")
     }
 
     fun setCustomTextColor(color: LLColor4) {
         customTextColor = color
-        TODO("APR: use JVM equivalent – apply color to the name text box")
+        System.err.println("LLGroupListItem: setCustomTextColor not yet implemented")
     }
 
     override fun changed(gc: LLGroupChange) {
         if (gc == LLGroupChange.GC_ALL || gc == LLGroupChange.GC_PROPERTIES) {
-            TODO("APR: use JVM equivalent – update group icon from LLGroupMgr::getGroupData")
+            System.err.println("LLGroupListItem: changed not yet implemented")
         }
     }
 
     private fun setBold(bold: Boolean) {
         this.bold = bold
-        TODO("APR: use JVM equivalent – rebuild text with bold/normal font descriptor")
+        System.err.println("LLGroupListItem: setBold not yet implemented")
     }
 
     private fun onInfoBtnClick() {
-        TODO("APR: use JVM equivalent – show inspect_group floater for groupId")
+        System.err.println("LLGroupListItem: onInfoBtnClick not yet implemented")
     }
 
     private fun onProfileBtnClick() {
@@ -164,7 +167,7 @@ class LLGroupListItem(
     }
 
     private fun onVisibilityBtnClick(newVisibility: Boolean) {
-        TODO("APR: use JVM equivalent – call gAgent.setUserGroupFlags and refresh buttons")
+        System.err.println("LLGroupListItem: onVisibilityBtnClick not yet implemented")
     }
 }
 
@@ -199,23 +202,24 @@ class LLGroupList(forAgent: Boolean = true) {
     fun enableForAgent(showIcons: Boolean) {
         this.forAgent = true
         this.showIcons = showIcons
-        TODO("APR: use JVM equivalent – listen to agent group changes, build context menu, wire favorites callback")
+        System.err.println("LLGroupList: enableForAgent not yet implemented")
     }
 
     fun draw() {
         if (dirty) refresh()
-        TODO("APR: use JVM equivalent – LLFlatListView::draw()")
+        System.err.println("LLGroupList: draw not yet implemented")
     }
 
     fun handleRightMouseDown(x: Int, y: Int): Boolean {
         if (forAgent) {
-            TODO("APR: use JVM equivalent – show context menu popup if a non-separator item is selected")
+            System.err.println("LLGroupList: handleRightMouseDown not yet implemented")
         }
         return false
     }
 
     fun handleDoubleClick(x: Int, y: Int): Boolean {
-        TODO("APR: use JVM equivalent – fire double-click signal for selected item")
+        System.err.println("LLGroupList: handleDoubleClick not yet implemented")
+        return false
     }
 
     fun setNameFilter(filter: String) {
@@ -228,7 +232,7 @@ class LLGroupList(forAgent: Boolean = true) {
 
     fun toggleIcons() {
         showIcons = !showIcons
-        TODO("APR: use JVM equivalent – persist to gSavedSettings and update all existing items")
+        System.err.println("LLGroupList: toggleIcons not yet implemented")
     }
 
     fun getIconsVisible(): Boolean = showIcons
@@ -251,11 +255,13 @@ class LLGroupList(forAgent: Boolean = true) {
     }
 
     fun getSelectedGroupName(): String {
-        TODO("APR: use JVM equivalent – return name of selected LLGroupListItem or empty string")
+        System.err.println("LLGroupList: getSelectedGroupName not yet implemented")
+        return ""
     }
 
     fun getContextMenu(): Any? {
-        TODO("APR: use JVM equivalent – return LLToggleableMenu handle")
+        System.err.println("LLGroupList: getContextMenu not yet implemented")
+        return null
     }
 
     fun refreshFavorites() { dirty = true }
@@ -273,7 +279,7 @@ class LLGroupList(forAgent: Boolean = true) {
             refreshSharedGroups()
         }
         setDirty(false)
-        TODO("APR: use JVM equivalent – onCommit() to notify observers")
+        System.err.println("LLGroupList: refresh (onCommit) not yet implemented")
     }
 
     private fun refreshForAgent() {
@@ -282,7 +288,7 @@ class LLGroupList(forAgent: Boolean = true) {
         var hasFavorites = false
         var hasNonFavorites = false
 
-        TODO("APR: use JVM equivalent – iterate gAgent.mGroups, filter by nameFilter, build LLGroupListItems")
+        System.err.println("LLGroupList: refreshForAgent not yet implemented")
         // Pseudocode outline preserved as comments so the sort / separator logic is clear:
         //   for each groupData in gAgent.mGroups:
         //     if haveFilter && name doesn't contain nameFilter: continue
@@ -299,7 +305,7 @@ class LLGroupList(forAgent: Boolean = true) {
 
     private fun refreshSharedGroups() {
         items.clear()
-        TODO("APR: use JVM equivalent – build LLGroupListItems for mGroups and mSecondaryGroups with separator")
+        System.err.println("LLGroupList: refreshSharedGroups not yet implemented")
     }
 
     private fun addNewItem(
@@ -324,7 +330,7 @@ class LLGroupList(forAgent: Boolean = true) {
     private fun addFavoritesSeparator() {
         val favoriteCount = items.count { it.isFavorite }
         if (favoriteCount > 0) {
-            TODO("APR: use JVM equivalent – insert LLGroupListSeparator after the last favorite and re-sort")
+            System.err.println("LLGroupList: addFavoritesSeparator not yet implemented")
         }
     }
 
@@ -352,9 +358,9 @@ class LLGroupList(forAgent: Boolean = true) {
             "call"        -> LLGroupActions.startCall(selectedGroup)
             "activate"    -> LLGroupActions.activate(selectedGroup)
             "leave"       -> LLGroupActions.leave(selectedGroup)
-            "copy_slurl"  -> TODO("APR: use JVM equivalent – copy SLURL for group to clipboard")
-            "favorite"    -> TODO("APR: use JVM equivalent – FSFavoriteGroups.addFavorite(selectedGroup)")
-            "unfavorite"  -> TODO("APR: use JVM equivalent – FSFavoriteGroups.removeFavorite(selectedGroup)")
+            "copy_slurl"  -> System.err.println("LLGroupList: onContextMenuItemClick copy_slurl not yet implemented")
+            "favorite"    -> System.err.println("LLGroupList: onContextMenuItemClick favorite not yet implemented")
+            "unfavorite"  -> System.err.println("LLGroupList: onContextMenuItemClick unfavorite not yet implemented")
         }
         return true
     }
@@ -363,9 +369,9 @@ class LLGroupList(forAgent: Boolean = true) {
         val selectedGroupId = getSelectedUUID()
         val realGroupSelected = selectedGroupId != UUID(0, 0)
         return when (action) {
-            "activate"   -> TODO("APR: use JVM equivalent – check current group and RLV canChangeActiveGroup")
-            "leave"      -> TODO("APR: use JVM equivalent – check selection and RLV canChangeActiveGroup")
-            "call"       -> TODO("APR: use JVM equivalent – check voice enabled and working")
+            "activate"   -> { System.err.println("LLGroupList: onContextMenuItemEnable activate not yet implemented"); false }
+            "leave"      -> { System.err.println("LLGroupList: onContextMenuItemEnable leave not yet implemented"); false }
+            "call"       -> { System.err.println("LLGroupList: onContextMenuItemEnable call not yet implemented"); false }
             "favorite", "unfavorite" -> realGroupSelected
             else         -> realGroupSelected
         }
@@ -374,10 +380,8 @@ class LLGroupList(forAgent: Boolean = true) {
     private fun onContextMenuItemVisible(action: String): Boolean {
         val selectedGroupId = getSelectedUUID()
         return when (action) {
-            "favorite"   -> selectedGroupId != UUID(0, 0) &&
-                TODO("APR: use JVM equivalent – !FSFavoriteGroups.isFavorite(selectedGroupId)")
-            "unfavorite" -> selectedGroupId != UUID(0, 0) &&
-                TODO("APR: use JVM equivalent – FSFavoriteGroups.isFavorite(selectedGroupId)")
+            "favorite"   -> { System.err.println("LLGroupList: onContextMenuItemVisible favorite not yet implemented"); false }
+            "unfavorite" -> { System.err.println("LLGroupList: onContextMenuItemVisible unfavorite not yet implemented"); false }
             else -> true
         }
     }
@@ -385,6 +389,7 @@ class LLGroupList(forAgent: Boolean = true) {
     private fun onFavoritesChanged() { setDirty() }
 
     private fun getSelectedUUID(): UUID {
-        TODO("APR: use JVM equivalent – return UUID of selected item in flat list view")
+        System.err.println("LLGroupList: getSelectedUUID not yet implemented")
+        return UUID(0, 0)
     }
 }

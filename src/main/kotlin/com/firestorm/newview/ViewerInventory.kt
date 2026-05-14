@@ -68,16 +68,16 @@ open class ViewerInventoryItem(
 
     open fun updateServer(isNew: Boolean) {
         if (!isComplete) return
-        TODO("APR: use JVM equivalent - send UpdateInventoryItem or AIS UpdateItem to server")
+        System.err.println("ViewerInventoryItem: updateServer not yet implemented")
     }
 
     open fun updateParentOnServer(restamp: Boolean) {
-        TODO("APR: use JVM equivalent - send MoveInventoryItem to server")
+        System.err.println("ViewerInventoryItem: updateParentOnServer not yet implemented")
     }
 
     fun fetchFromServer() {
         if (!isComplete) {
-            TODO("APR: use JVM equivalent - schedule fetch via InventoryModelBackgroundFetch or HTTP cap")
+            System.err.println("ViewerInventoryItem: fetchFromServer not yet implemented")
         }
     }
 
@@ -85,11 +85,13 @@ open class ViewerInventoryItem(
     fun setComplete(complete: Boolean) { isComplete = complete }
 
     fun isBrokenLink(): Boolean {
-        TODO("APR: use JVM equivalent - check linked item exists in InventoryModel")
+        System.err.println("ViewerInventoryItem: isBrokenLink not yet implemented")
+        return false
     }
 
     fun getLinkedItem(): ViewerInventoryItem? {
-        TODO("APR: use JVM equivalent - resolve link target in InventoryModel")
+        System.err.println("ViewerInventoryItem: getLinkedItem not yet implemented")
+        return null
     }
 
     fun checkPermissionsSet(mask: UInt): Boolean =
@@ -160,7 +162,7 @@ open class ViewerInventoryCategory(
     fun fetch(expirySeconds: Int = 10): Boolean {
         if (version == VERSION_UNKNOWN && isDescendentsTimerExpired()) {
             resetDescendentsTimer(expirySeconds.toLong() * 1000L)
-            TODO("APR: use JVM equivalent - schedule background fetch via InventoryModelBackgroundFetch")
+            System.err.println("ViewerInventoryCategory: fetch not yet implemented")
             return true
         }
         return false
@@ -191,29 +193,30 @@ open class ViewerInventoryCategory(
     }
 
     fun getViewerDescendentCount(): Int {
-        TODO("APR: use JVM equivalent - call InventoryModel.getDirectDescendentsOf(uuid)")
+        System.err.println("ViewerInventoryCategory: getViewerDescendentCount not yet implemented")
+        return 0
     }
 
     open fun updateParentOnServer(restamp: Boolean) {
-        TODO("APR: use JVM equivalent - send MoveInventoryFolder to server")
+        System.err.println("ViewerInventoryCategory: updateParentOnServer not yet implemented")
     }
 
     open fun updateServer(isNew: Boolean) {
         if (FolderType.fromValue(preferredType) in FolderType.isProtectedTypes) return
-        TODO("APR: use JVM equivalent - send UpdateInventoryFolder or AIS UpdateCategory")
+        System.err.println("ViewerInventoryCategory: updateServer not yet implemented")
     }
 
     fun acceptItem(item: InventoryItem): Boolean {
         if (preferredType == FolderType.MARKETPLACE_STOCK.value) {
             if (item.permissions.maskOwner and PERM_COPY != 0u) return false
-            TODO("APR: use JVM equivalent - check existing items in folder via InventoryModel")
+            System.err.println("ViewerInventoryCategory: acceptItem not yet implemented")
         }
         return true
     }
 
     fun changeType(newType: Int) {
         preferredType = newType
-        TODO("APR: use JVM equivalent - send UpdateInventoryFolder or AIS UpdateCategory")
+        System.err.println("ViewerInventoryCategory: changeType not yet implemented")
     }
 
     fun localizeName() {
@@ -284,7 +287,7 @@ class FuncInventoryCallback(
 class AddFavoriteLandmarkCallback : InventoryCallback() {
     var targetLandmarkId: LLUUID = LLUUID.NULL
     override fun fire(itemId: LLUUID) {
-        TODO("APR: use JVM equivalent - handle favorite landmark creation for item $itemId")
+        System.err.println("AddFavoriteLandmarkCallback: fire not yet implemented")
     }
 }
 
@@ -322,7 +325,7 @@ fun createInventoryItem(
     agentId: LLUUID, sessionId: LLUUID, parentId: LLUUID, transactionId: LLUUID,
     name: String, desc: String, assetType: Int, invType: Int, subtype: UByte,
     nextOwnerPerm: UInt, cb: InventoryCallback?
-) { TODO("APR: use JVM equivalent - send CreateInventoryItem message or AIS CreateInventory") }
+) { System.err.println("ViewerInventory: createInventoryItem not yet implemented") }
 
 fun createInventoryWearable(
     agentId: LLUUID, sessionId: LLUUID, parentId: LLUUID, transactionId: LLUUID,
@@ -338,45 +341,45 @@ fun createInventorySettings(
         name, desc, AT_SETTINGS, INV_TYPE_SETTINGS, settingsType.toUByte(), nextOwnerPerm, cb) }
 
 fun createInventoryCallingCard(avatarId: LLUUID, parentId: LLUUID = LLUUID.NULL, cb: InventoryCallback? = null) {
-    TODO("APR: use JVM equivalent - look up avatar name then createInventoryItem(AT_CALLINGCARD)")
+    System.err.println("ViewerInventory: createInventoryCallingCard not yet implemented")
 }
 
 fun copyInventoryItem(
     agentId: LLUUID, currentOwner: LLUUID, itemId: LLUUID,
     parentId: LLUUID, newName: String, cb: InventoryCallback?
-) { TODO("APR: use JVM equivalent - send CopyInventoryItem message") }
+) { System.err.println("ViewerInventory: copyInventoryItem not yet implemented") }
 
 fun linkInventoryObject(category: LLUUID, baseObjId: LLUUID, cb: InventoryCallback?) {
-    TODO("APR: use JVM equivalent - build link payload and call AIS CreateInventory or LinkInventoryItem msg")
+    System.err.println("ViewerInventory: linkInventoryObject not yet implemented")
 }
 
 fun linkInventoryArray(category: LLUUID, baseObjIds: List<LLUUID>, cb: InventoryCallback?) {
-    TODO("APR: use JVM equivalent - batch link creation via AIS or individual LinkInventoryItem msgs")
+    System.err.println("ViewerInventory: linkInventoryArray not yet implemented")
 }
 
 fun moveInventoryItem(
     agentId: LLUUID, sessionId: LLUUID, itemId: LLUUID,
     parentId: LLUUID, newName: String, cb: InventoryCallback?
-) { TODO("APR: use JVM equivalent - send MoveInventoryItem message") }
+) { System.err.println("ViewerInventory: moveInventoryItem not yet implemented") }
 
 fun updateInventoryItem(updateItem: ViewerInventoryItem, cb: InventoryCallback?) {
-    TODO("APR: use JVM equivalent - send UpdateInventoryItem or AIS UpdateItem")
+    System.err.println("ViewerInventory: updateInventoryItem not yet implemented")
 }
 
 fun updateInventoryItemById(itemId: LLUUID, updates: Map<String, Any>, cb: InventoryCallback?) {
-    TODO("APR: use JVM equivalent - send AIS UpdateItem with partial field map")
+    System.err.println("ViewerInventory: updateInventoryItemById not yet implemented")
 }
 
 fun updateInventoryCategory(catId: LLUUID, updates: Map<String, Any>, cb: InventoryCallback?) {
-    TODO("APR: use JVM equivalent - send UpdateInventoryFolder or AIS UpdateCategory")
+    System.err.println("ViewerInventory: updateInventoryCategory not yet implemented")
 }
 
 fun removeInventoryItem(itemId: LLUUID, cb: InventoryCallback?, immediateDelete: Boolean = false) {
-    TODO("APR: use JVM equivalent - send RemoveInventoryItem or AIS delete")
+    System.err.println("ViewerInventory: removeInventoryItem not yet implemented")
 }
 
 fun removeInventoryCategory(catId: LLUUID, cb: InventoryCallback?) {
-    TODO("APR: use JVM equivalent - send RemoveInventoryFolder or AIS delete folder")
+    System.err.println("ViewerInventory: removeInventoryCategory not yet implemented")
 }
 
 fun removeInventoryObject(objectId: LLUUID, cb: InventoryCallback?) {
@@ -385,49 +388,49 @@ fun removeInventoryObject(objectId: LLUUID, cb: InventoryCallback?) {
 }
 
 fun purgeDescendentsOf(catId: LLUUID, cb: InventoryCallback?) {
-    TODO("APR: use JVM equivalent - purge all descendents of folder via AIS or message")
+    System.err.println("ViewerInventory: purgeDescendentsOf not yet implemented")
 }
 
 fun copyInventoryFromNotecard(
     destinationId: LLUUID, objectId: LLUUID, notecardInvId: LLUUID,
     src: InventoryItem, callbackId: UInt = 0u
-) { TODO("APR: use JVM equivalent - request copy from notecard inventory via HTTP cap") }
+) { System.err.println("ViewerInventory: copyInventoryFromNotecard not yet implemented") }
 
 fun slamInventoryFolder(folderId: LLUUID, contents: List<Map<String, Any>>, cb: InventoryCallback?) {
-    TODO("APR: use JVM equivalent - send AIS/HTTP slam folder request")
+    System.err.println("ViewerInventory: slamInventoryFolder not yet implemented")
 }
 
 fun removeFolderContents(folderId: LLUUID, keepOutfitLinks: Boolean, cb: InventoryCallback?) {
-    TODO("APR: use JVM equivalent - remove all contents of folder, optionally preserving outfit links")
+    System.err.println("ViewerInventory: removeFolderContents not yet implemented")
 }
 
 fun activateGestureCallback(itemId: LLUUID) {
     if (itemId == LLUUID.NULL) return
     val item = InventoryModel.getItem(itemId) ?: return
     if (item.type != AT_GESTURE) return
-    TODO("APR: use JVM equivalent - activate gesture via GestureMgr")
+    System.err.println("ViewerInventory: activateGestureCallback not yet implemented")
 }
 
 fun createScriptCallback(itemId: LLUUID) {
     if (itemId == LLUUID.NULL) return
     InventoryModel.getItem(itemId) ?: return
-    TODO("APR: use JVM equivalent - set default permissions for Scripts and notify observers")
+    System.err.println("ViewerInventory: createScriptCallback not yet implemented")
 }
 
 fun createGestureCallback(itemId: LLUUID) {
     if (itemId == LLUUID.NULL) return
     InventoryModel.getItem(itemId) ?: return
-    TODO("APR: use JVM equivalent - activate gesture and set default permissions for Gestures")
+    System.err.println("ViewerInventory: createGestureCallback not yet implemented")
 }
 
 fun createNotecardCallback(itemId: LLUUID) {
     if (itemId == LLUUID.NULL) return
     InventoryModel.getItem(itemId) ?: return
-    TODO("APR: use JVM equivalent - set default permissions for Notecards and notify observers")
+    System.err.println("ViewerInventory: createNotecardCallback not yet implemented")
 }
 
 fun rezAttachmentCallback(itemId: LLUUID, attachmentPoint: Int, replace: Boolean) {
     if (itemId == LLUUID.NULL) return
     InventoryModel.getItem(itemId) ?: return
-    TODO("APR: use JVM equivalent - rez attachment via agent/object manager")
+    System.err.println("ViewerInventory: rezAttachmentCallback not yet implemented")
 }

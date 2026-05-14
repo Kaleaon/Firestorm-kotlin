@@ -70,7 +70,7 @@ class FloaterAboutLand(seed: Any) : Floater(seed) {
 
     companion object {
         fun refreshAll() {
-            TODO("APR: use JVM equivalent - LLFloaterReg::findTypedInstance<FloaterAboutLand> and call refresh()")
+            System.err.println("FloaterAboutLand: refreshAll not yet implemented")
         }
     }
 
@@ -81,74 +81,74 @@ class FloaterAboutLand(seed: Any) : Floater(seed) {
 
     inner class PanelLandGeneral : Panel() {
         override fun postBuild(): Boolean = true
-        fun refresh() { TODO("APR: populate general parcel fields from ParcelMgr selection") }
-        fun onClickSetGroup() { TODO("APR: open group picker for parcel group") }
-        fun onClickDeed() { TODO("APR: send DeedLandToGroup message") }
-        fun onClickBuyLand() { TODO("APR: open buy-land floater") }
-        fun onClickReleaseLand() { TODO("APR: send AbandonLand message after confirmation") }
-        fun onClickStartAuction() { TODO("APR: open FloaterAuction") }
-        fun onClickSellLand() { TODO("APR: open sell-land confirmation") }
-        fun onClickStopSellLand() { TODO("APR: clear for-sale flag via ParcelPropertiesUpdate") }
-        fun onCommitAny() { TODO("APR: commit changed parcel flags back to simulator") }
+        fun refresh() { System.err.println("PanelLandGeneral: refresh not yet implemented") }
+        fun onClickSetGroup() { System.err.println("PanelLandGeneral: onClickSetGroup not yet implemented") }
+        fun onClickDeed() { System.err.println("PanelLandGeneral: onClickDeed not yet implemented") }
+        fun onClickBuyLand() { System.err.println("PanelLandGeneral: onClickBuyLand not yet implemented") }
+        fun onClickReleaseLand() { System.err.println("PanelLandGeneral: onClickReleaseLand not yet implemented") }
+        fun onClickStartAuction() { System.err.println("PanelLandGeneral: onClickStartAuction not yet implemented") }
+        fun onClickSellLand() { System.err.println("PanelLandGeneral: onClickSellLand not yet implemented") }
+        fun onClickStopSellLand() { System.err.println("PanelLandGeneral: onClickStopSellLand not yet implemented") }
+        fun onCommitAny() { System.err.println("PanelLandGeneral: onCommitAny not yet implemented") }
     }
 
     inner class PanelLandObjects : Panel() {
         override fun postBuild(): Boolean = true
-        fun refresh() { TODO("APR: populate prim counts and owner lists from ParcelMgr") }
-        fun onClickShowOwnerObjects() { TODO("APR: select objects owned by parcel owner") }
-        fun onClickShowGroupObjects() { TODO("APR: select objects owned by parcel group") }
-        fun onClickShowOtherObjects() { TODO("APR: select objects owned by others") }
-        fun onClickReturnOwnerObjects() { TODO("APR: send SimWideDeletes for owner objects") }
-        fun onClickReturnGroupObjects() { TODO("APR: send SimWideDeletes for group objects") }
-        fun onClickReturnOtherObjects() { TODO("APR: send SimWideDeletes for other objects") }
+        fun refresh() { System.err.println("PanelLandObjects: refresh not yet implemented") }
+        fun onClickShowOwnerObjects() { System.err.println("PanelLandObjects: onClickShowOwnerObjects not yet implemented") }
+        fun onClickShowGroupObjects() { System.err.println("PanelLandObjects: onClickShowGroupObjects not yet implemented") }
+        fun onClickShowOtherObjects() { System.err.println("PanelLandObjects: onClickShowOtherObjects not yet implemented") }
+        fun onClickReturnOwnerObjects() { System.err.println("PanelLandObjects: onClickReturnOwnerObjects not yet implemented") }
+        fun onClickReturnGroupObjects() { System.err.println("PanelLandObjects: onClickReturnGroupObjects not yet implemented") }
+        fun onClickReturnOtherObjects() { System.err.println("PanelLandObjects: onClickReturnOtherObjects not yet implemented") }
     }
 
     inner class PanelLandOptions : Panel() {
         override fun postBuild(): Boolean = true
-        fun refresh() { TODO("APR: populate option checkboxes from parcel flags") }
-        fun onCommitAny() { TODO("APR: commit changed option flags to simulator") }
-        fun onClickSet() { TODO("APR: open landmark picker for landing point") }
-        fun onClickClear() { TODO("APR: clear landing point") }
-        fun onClickPublishHelp() { TODO("APR: open help about show-in-search") }
+        fun refresh() { System.err.println("PanelLandOptions: refresh not yet implemented") }
+        fun onCommitAny() { System.err.println("PanelLandOptions: onCommitAny not yet implemented") }
+        fun onClickSet() { System.err.println("PanelLandOptions: onClickSet not yet implemented") }
+        fun onClickClear() { System.err.println("PanelLandOptions: onClickClear not yet implemented") }
+        fun onClickPublishHelp() { System.err.println("PanelLandOptions: onClickPublishHelp not yet implemented") }
     }
 
     inner class PanelLandAudio : Panel() {
         override fun postBuild(): Boolean = true
-        fun refresh() { TODO("APR: populate music URL field from parcel data") }
-        fun onCommitMusicUrl() { TODO("APR: commit music URL to simulator") }
+        fun refresh() { System.err.println("PanelLandAudio: refresh not yet implemented") }
+        fun onCommitMusicUrl() { System.err.println("PanelLandAudio: onCommitMusicUrl not yet implemented") }
     }
 
     inner class PanelLandMedia : Panel() {
         override fun postBuild(): Boolean = true
-        fun refresh() { TODO("APR: populate media fields from parcel data") }
-        fun onCommitMedia() { TODO("APR: commit media settings to simulator") }
-        fun onClickSetMediaUrl() { TODO("APR: open URL entry dialog") }
+        fun refresh() { System.err.println("PanelLandMedia: refresh not yet implemented") }
+        fun onCommitMedia() { System.err.println("PanelLandMedia: onCommitMedia not yet implemented") }
+        fun onClickSetMediaUrl() { System.err.println("PanelLandMedia: onClickSetMediaUrl not yet implemented") }
     }
 
     inner class PanelLandAccess : Panel() {
         override fun postBuild(): Boolean = true
-        fun refresh() { TODO("APR: populate access list from parcel data") }
-        fun onClickAddAccess() { TODO("APR: open avatar picker, then add to AL_ACCESS list") }
-        fun onClickRemoveAccess() { TODO("APR: send ParcelAccessListUpdate to remove selected entry") }
-        fun onClickAddAllowedGroup() { TODO("APR: open group picker, then add group to access") }
-        fun onClickRemoveAllowedGroup() { TODO("APR: remove selected group from access") }
+        fun refresh() { System.err.println("PanelLandAccess: refresh not yet implemented") }
+        fun onClickAddAccess() { System.err.println("PanelLandAccess: onClickAddAccess not yet implemented") }
+        fun onClickRemoveAccess() { System.err.println("PanelLandAccess: onClickRemoveAccess not yet implemented") }
+        fun onClickAddAllowedGroup() { System.err.println("PanelLandAccess: onClickAddAllowedGroup not yet implemented") }
+        fun onClickRemoveAllowedGroup() { System.err.println("PanelLandAccess: onClickRemoveAllowedGroup not yet implemented") }
     }
 
     inner class PanelLandBan : Panel() {
         override fun postBuild(): Boolean = true
-        fun refresh() { TODO("APR: populate ban list from parcel data") }
-        fun onClickAddBan() { TODO("APR: open avatar picker, then add to AL_BAN list") }
-        fun onClickRemoveBan() { TODO("APR: send ParcelAccessListUpdate to remove ban entry") }
+        fun refresh() { System.err.println("PanelLandBan: refresh not yet implemented") }
+        fun onClickAddBan() { System.err.println("PanelLandBan: onClickAddBan not yet implemented") }
+        fun onClickRemoveBan() { System.err.println("PanelLandBan: onClickRemoveBan not yet implemented") }
     }
 
     inner class PanelLandExperiences : Panel() {
         override fun postBuild(): Boolean = true
-        fun refresh() { TODO("APR: populate experience allow/block lists") }
+        fun refresh() { System.err.println("PanelLandExperiences: refresh not yet implemented") }
     }
 
     inner class PanelLandEnvironment : Panel() {
         override fun postBuild(): Boolean = true
-        fun refresh() { TODO("APR: populate parcel environment override settings") }
+        fun refresh() { System.err.println("PanelLandEnvironment: refresh not yet implemented") }
     }
 
     // Lightweight placeholder so the compiler resolves getChild<T> calls above.

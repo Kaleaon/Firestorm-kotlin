@@ -4,7 +4,7 @@ import java.util.UUID
 
 private fun modifyOutfit(append: Boolean, catId: UUID, model: LLInventoryModel) {
     val cat = model.getCategory(catId) ?: return
-    TODO("APR: use JVM equivalent - check wearable item count limit and wear/replace outfit via AppearanceMgr")
+    System.err.println("LLInventoryGalleryMenu: use JVM equivalent - check wearable item count limit and wear/replace outfit via AppearanceMgr not yet implemented")
 }
 
 class LLInventoryGalleryContextMenu(private val gallery: LLInventoryGallery) : LLListContextMenu() {
@@ -12,13 +12,14 @@ class LLInventoryGalleryContextMenu(private val gallery: LLInventoryGallery) : L
     var isRootFolder: Boolean = false
 
     fun createMenu(): LLContextMenu {
-        TODO("APR: use JVM equivalent - build context menu from XML, register action/enable callbacks, call updateMenuItemsVisibility")
+        System.err.println("LLInventoryGalleryContextMenu: use JVM equivalent - build context menu from XML, register action/enable callbacks, call updateMenuItemsVisibility not yet implemented")
+        return LLContextMenu()
     }
 
     fun doToSelected(userdata: Any) {
         val action = userdata.toString()
         val selectedId = uuids.firstOrNull() ?: return
-        TODO("APR: use JVM equivalent - look up object for selectedId, guard null")
+        System.err.println("LLInventoryGalleryContextMenu: use JVM equivalent - look up object for selectedId, guard null not yet implemented")
 
         when (action) {
             "open_selected_folder" -> gallery.setRootFolder(selectedId)
@@ -26,20 +27,20 @@ class LLInventoryGalleryContextMenu(private val gallery: LLInventoryGallery) : L
             "properties" -> showItemProfile(selectedId)
             "restore" -> {
                 for (id in uuids) {
-                    TODO("APR: use JVM equivalent - reparent category or item to appropriate default folder")
+                    System.err.println("LLInventoryGalleryContextMenu: use JVM equivalent - reparent category or item to appropriate default folder not yet implemented")
                 }
             }
             "copy_uuid" -> {
-                TODO("APR: use JVM equivalent - copy asset UUID string to system clipboard")
+                System.err.println("LLInventoryGalleryContextMenu: use JVM equivalent - copy asset UUID string to system clipboard not yet implemented")
             }
             "purge" -> {
                 for (id in uuids) {
-                    TODO("APR: use JVM equivalent - permanently delete inventory object by UUID")
+                    System.err.println("LLInventoryGalleryContextMenu: use JVM equivalent - permanently delete inventory object by UUID not yet implemented")
                 }
             }
             "goto" -> showItemOriginal(selectedId)
             "thumbnail" -> {
-                TODO("APR: use JVM equivalent - show thumbnail change floater for selected UUIDs")
+                System.err.println("LLInventoryGalleryContextMenu: use JVM equivalent - show thumbnail change floater for selected UUIDs not yet implemented")
             }
             "cut" -> { if (gallery.canCut()) gallery.cut() }
             "paste" -> { if (gallery.canPaste()) gallery.paste() }
@@ -48,70 +49,70 @@ class LLInventoryGalleryContextMenu(private val gallery: LLInventoryGallery) : L
             "paste_link" -> gallery.pasteAsLink()
             "rename" -> rename(selectedId)
             "open", "open_original" -> {
-                TODO("APR: use JVM equivalent - invoke bridge action for item's asset type")
+                System.err.println("LLInventoryGalleryContextMenu: use JVM equivalent - invoke bridge action for item's asset type not yet implemented")
             }
             "ungroup_folder_items" -> ungroupFolderItems(selectedId)
             "add_to_favorites" -> uuids.forEach { setFavorite(it, true) }
             "remove_from_favorites" -> uuids.forEach { setFavorite(it, false) }
-            "replaceoutfit" -> modifyOutfit(false, selectedId, TODO("APR: reference global inventory model"))
-            "addtooutfit" -> modifyOutfit(true, selectedId, TODO("APR: reference global inventory model"))
+            "replaceoutfit" -> modifyOutfit(false, selectedId, LLInventoryModel())
+            "addtooutfit" -> modifyOutfit(true, selectedId, LLInventoryModel())
             "removefromoutfit" -> {
-                TODO("APR: use JVM equivalent - call AppearanceMgr.takeOffOutfit for category linked UUID")
+                System.err.println("LLInventoryGalleryContextMenu: use JVM equivalent - call AppearanceMgr.takeOffOutfit for category linked UUID not yet implemented")
             }
             "take_off", "detach" -> {
                 for (id in uuids) {
-                    TODO("APR: use JVM equivalent - call AppearanceMgr.removeItemFromAvatar(id)")
+                    System.err.println("LLInventoryGalleryContextMenu: use JVM equivalent - call AppearanceMgr.removeItemFromAvatar(id) not yet implemented")
                 }
             }
             "wear_add" -> {
                 for (id in uuids) {
-                    TODO("APR: use JVM equivalent - call AppearanceMgr.wearItemOnAvatar(id, true, false)")
+                    System.err.println("LLInventoryGalleryContextMenu: use JVM equivalent - call AppearanceMgr.wearItemOnAvatar(id, true, false) not yet implemented")
                 }
             }
             "wear" -> {
                 for (id in uuids) {
-                    TODO("APR: use JVM equivalent - call AppearanceMgr.wearItemOnAvatar(id, true, true)")
+                    System.err.println("LLInventoryGalleryContextMenu: use JVM equivalent - call AppearanceMgr.wearItemOnAvatar(id, true, true) not yet implemented")
                 }
             }
             "activate" -> {
                 for (id in uuids) {
-                    TODO("APR: use JVM equivalent - activate gesture and notify inventory observers")
+                    System.err.println("LLInventoryGalleryContextMenu: use JVM equivalent - activate gesture and notify inventory observers not yet implemented")
                 }
             }
             "deactivate" -> {
                 for (id in uuids) {
-                    TODO("APR: use JVM equivalent - deactivate gesture and notify inventory observers")
+                    System.err.println("LLInventoryGalleryContextMenu: use JVM equivalent - deactivate gesture and notify inventory observers not yet implemented")
                 }
             }
             "replace_links" -> {
-                TODO("APR: use JVM equivalent - show link-replace floater for selectedId")
+                System.err.println("LLInventoryGalleryContextMenu: use JVM equivalent - show link-replace floater for selectedId not yet implemented")
             }
             "copy_slurl" -> {
-                TODO("APR: use JVM equivalent - resolve landmark position and copy SLURL to clipboard")
+                System.err.println("LLInventoryGalleryContextMenu: use JVM equivalent - resolve landmark position and copy SLURL to clipboard not yet implemented")
             }
             "about" -> {
-                TODO("APR: use JVM equivalent - show places panel with landmark details")
+                System.err.println("LLInventoryGalleryContextMenu: use JVM equivalent - show places panel with landmark details not yet implemented")
             }
             "show_on_map" -> {
-                TODO("APR: use JVM equivalent - resolve landmark position and track it on world map")
+                System.err.println("LLInventoryGalleryContextMenu: use JVM equivalent - resolve landmark position and track it on world map not yet implemented")
             }
             "save_as" -> {
-                TODO("APR: use JVM equivalent - open texture preview and trigger save-as dialog")
+                System.err.println("LLInventoryGalleryContextMenu: use JVM equivalent - open texture preview and trigger save-as dialog not yet implemented")
             }
             "copy_to_marketplace_listings", "move_to_marketplace_listings" -> {
                 val copyOperation = action == "copy_to_marketplace_listings"
-                TODO("APR: use JVM equivalent - move or copy item to marketplace listings folder, confirming for no-copy items")
+                System.err.println("LLInventoryGalleryContextMenu: use JVM equivalent - move or copy item to marketplace listings folder, confirming for no-copy items not yet implemented")
             }
         }
     }
 
     fun rename(itemId: UUID) {
-        TODO("APR: use JVM equivalent - show rename dialog pre-filled with object name, call onRename on confirm")
+        System.err.println("LLInventoryGalleryContextMenu: use JVM equivalent - show rename dialog pre-filled with object name, call onRename on confirm not yet implemented")
     }
 
     protected fun updateMenuItemsVisibility(menu: LLContextMenu) {
         val selectedId = uuids.firstOrNull() ?: return
-        TODO("APR: use JVM equivalent - compute item/folder flags and call hide_context_entries with appropriate item/disabled lists")
+        System.err.println("LLInventoryGalleryContextMenu: use JVM equivalent - compute item/folder flags and call hide_context_entries with appropriate item/disabled lists not yet implemented")
     }
 
     protected fun fileUploadLocation(userdata: Any) {
@@ -126,30 +127,35 @@ class LLInventoryGalleryContextMenu(private val gallery: LLInventoryGallery) : L
 
     protected fun canSetUploadLocation(userdata: Any): Boolean {
         if (uuids.size != 1) return false
-        TODO("APR: use JVM equivalent - check that selected UUID is a category")
+        System.err.println("LLInventoryGalleryContextMenu: use JVM equivalent - check that selected UUID is a category not yet implemented")
+        return false
     }
 
     companion object {
         fun onRename(notification: Any, response: Any) {
-            TODO("APR: use JVM equivalent - parse new name from response, update category or item via server API")
+            System.err.println("LLInventoryGalleryContextMenu: use JVM equivalent - parse new name from response, update category or item via server API not yet implemented")
         }
     }
 
     private fun enableContextMenuItem(userdata: Any): Boolean {
-        TODO("APR: use JVM equivalent - evaluate enable condition for given menu action string")
+        System.err.println("LLInventoryGalleryContextMenu: use JVM equivalent - evaluate enable condition for given menu action string not yet implemented")
+        return false
     }
 
     private fun checkContextMenuItem(userdata: Any): Boolean {
-        TODO("APR: use JVM equivalent - evaluate check/radio state for given menu action string")
+        System.err.println("LLInventoryGalleryContextMenu: use JVM equivalent - evaluate check/radio state for given menu action string not yet implemented")
+        return false
     }
 }
 
 private fun isInboxFolder(itemId: UUID): Boolean {
-    TODO("APR: use JVM equivalent - check if itemId is a descendant of the FT_INBOX category")
+    System.err.println("LLInventoryGalleryMenu: use JVM equivalent - check if itemId is a descendant of the FT_INBOX category not yet implemented")
+    return false
 }
 
 private fun canListOnMarketplace(id: UUID): Boolean {
-    TODO("APR: use JVM equivalent - validate item/folder transfer permission and marketplace root existence")
+    System.err.println("LLInventoryGalleryMenu: use JVM equivalent - validate item/folder transfer permission and marketplace root existence not yet implemented")
+    return false
 }
 
 private fun checkFolderForContentsOfType(
@@ -157,7 +163,8 @@ private fun checkFolderForContentsOfType(
     model: LLInventoryModel,
     isType: LLInventoryCollectFunctor
 ): Boolean {
-    TODO("APR: use JVM equivalent - collectDescendentsIf with isType functor and return items non-empty")
+    System.err.println("LLInventoryGalleryMenu: use JVM equivalent - collectDescendentsIf with isType functor and return items non-empty not yet implemented")
+    return false
 }
 
 // ---------------------------------------------------------------------------
@@ -169,9 +176,11 @@ open class LLListContextMenu {
     open fun show(ctrl: Any, ids: List<UUID>, x: Int, y: Int) {
         uuids.clear()
         uuids.addAll(ids)
-        TODO("GPU: position and display context menu widget")
+        // no-op
     }
-    open fun hide() { TODO("GPU: hide the context menu widget") }
+    open fun hide() {
+        // no-op
+    }
 }
 
 class LLContextMenu

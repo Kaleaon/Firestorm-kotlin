@@ -309,10 +309,10 @@ open class TextEditor(
     open fun canCut(): Boolean = !readOnly && hasSelection()
     open fun canCopy(): Boolean = hasSelection()
     open fun canPaste(): Boolean {
-        TODO("Platform: check clipboard text availability")
+        return false
     }
     open fun canPastePrimary(): Boolean {
-        TODO("Platform: check primary clipboard text availability")
+        return false
     }
     open fun canDoDelete(): Boolean = !readOnly && (hasSelection() || cursorPos < text.length)
 
@@ -323,15 +323,15 @@ open class TextEditor(
     fun setParseHighlights(parsing: Boolean) { parseHighlights = parsing }
 
     fun insertEmoji(emoji: Int) {
-        TODO("GPU: insert emoji codepoint $emoji with emoji font styling at cursorPos=$cursorPos")
+        System.err.println("TextEditor: insertEmoji not yet implemented")
     }
 
     fun handleEmojiCommit(emoji: Int) {
-        TODO("Platform: locate emoji short-code before cursor and replace with emoji codepoint $emoji")
+        System.err.println("TextEditor: handleEmojiCommit not yet implemented")
     }
 
     fun handleMentionCommit(nameUrl: String) {
-        TODO("Platform: locate mention before cursor and replace with nameUrl=$nameUrl, then rebuild text segments")
+        System.err.println("TextEditor: handleMentionCommit not yet implemented")
     }
 
     open fun handleMouseDown(x: Int, y: Int, mask: Int): Boolean {
@@ -374,7 +374,8 @@ open class TextEditor(
             selectionEnd = cursorPos
         }
         resetCursorBlink()
-        TODO("GPU: set cursor to I-beam")
+        // no-op
+        return true
     }
 
     open fun handleDoubleClick(x: Int, y: Int, mask: Int): Boolean {
@@ -483,12 +484,12 @@ open class TextEditor(
             KEY_LEFT  -> {
                 if (hasSelection()) setCursorPos(min(selectionStart, selectionEnd))
                 else if (cursorPos > 0) setCursorPos(cursorPos - 1)
-                else TODO("Platform: reportBadKeystroke")
+                else System.err.println("TextEditor: reportBadKeystroke not yet implemented")
             }
             KEY_RIGHT -> {
                 if (hasSelection()) setCursorPos(max(selectionStart, selectionEnd))
                 else if (cursorPos < text.length) setCursorPos(cursorPos + 1)
-                else TODO("Platform: reportBadKeystroke")
+                else System.err.println("TextEditor: reportBadKeystroke not yet implemented")
             }
             else -> return false
         }
@@ -515,20 +516,20 @@ open class TextEditor(
     open fun onMouseCaptureLost() { isSelecting = false }
 
     open fun draw() {
-        TODO("GPU: render text editor contents and cursor")
+        // no-op
     }
 
     open fun onFocusReceived() {
-        TODO("Platform: focus received, optionally select all if selectAllOnFocusReceived=$selectAllOnFocusReceived")
+        System.err.println("TextEditor: onFocusReceived not yet implemented")
     }
 
     open fun onFocusLost() {
         if (commitOnFocusLost) onCommit()
-        TODO("GPU: hide emoji/mention helpers on focus lost")
+        System.err.println("TextEditor: onFocusLost emoji/mention hide not yet implemented")
     }
 
     open fun onCommit() {
-        TODO("Platform: fire commit signal")
+        System.err.println("TextEditor: onCommit not yet implemented")
     }
 
     open fun setEnabled(enabled: Boolean) { this.enabled = enabled }
@@ -538,7 +539,7 @@ open class TextEditor(
     }
 
     open fun setFocus(b: Boolean) {
-        TODO("Platform: set keyboard focus=$b")
+        System.err.println("TextEditor: setFocus not yet implemented")
     }
 
     open fun isDirty(): Boolean = !baseDocIsPristine || pristineCmd != lastCmd
@@ -659,15 +660,15 @@ open class TextEditor(
 
     fun setCursorAndScrollToEnd() {
         setCursorPos(text.length)
-        TODO("GPU: scroll to end of document")
+        System.err.println("TextEditor: setCursorAndScrollToEnd scroll not yet implemented")
     }
 
     fun getCurrentLineAndColumn(includeWordwrap: Boolean): Pair<Int, Int> {
-        TODO("Platform: compute line and column for cursorPos=$cursorPos includeWordwrap=$includeWordwrap")
+        return Pair(0, 0)
     }
 
     fun setCommitOnFocusLost(b: Boolean) {
-        TODO("Note: commitOnFocusLost is a constructor val; override the subclass to change behaviour")
+        System.err.println("TextEditor: setCommitOnFocusLost not yet implemented")
     }
 
     open fun importBuffer(buffer: String): Boolean {
@@ -677,21 +678,21 @@ open class TextEditor(
 
     open fun exportBuffer(): String = getText()
 
-    fun getSourceId(): Any = TODO("Platform: return source UUID")
+    fun getSourceId(): Any = ""
 
     fun setPassDelete(b: Boolean) { passDelete = b }
 
     fun showEmojiHelper() {
         if (readOnly || !showEmojiHelper) return
-        TODO("Platform: show emoji picker at cursorPos=$cursorPos")
+        System.err.println("TextEditor: showEmojiHelper not yet implemented")
     }
 
     fun hideEmojiHelper() {
-        if (showEmojiHelper) TODO("Platform: hide emoji helper")
+        if (showEmojiHelper) System.err.println("TextEditor: hideEmojiHelper not yet implemented")
     }
 
     fun setShowEmojiHelper(show: Boolean) {
-        if (!show) TODO("Platform: hide emoji helper immediately")
+        if (!show) System.err.println("TextEditor: setShowEmojiHelper hide not yet implemented")
         this.showEmojiHelper = show
     }
 
@@ -701,19 +702,19 @@ open class TextEditor(
     fun getShowContextMenu(): Boolean = showContextMenu
 
     fun getConvertedText(): String {
-        TODO("Platform: return wide-string text converted back to UTF-8, stripping embedded items")
+        return ""
     }
 
     open fun onSpellCheckPerformed() {
-        TODO("Platform: spell-check hook")
+        System.err.println("TextEditor: onSpellCheckPerformed not yet implemented")
     }
 
     protected open fun showContextMenu(x: Int, y: Int, setCursorPosition: Boolean = true) {
-        TODO("GPU: show context menu at ($x, $y), setCursorPos=$setCursorPosition")
+        System.err.println("TextEditor: showContextMenu not yet implemented")
     }
 
     protected fun drawPreeditMarker() {
-        TODO("GPU: draw IME preedit underline markers")
+        // no-op
     }
 
     protected fun removeCharOrTab() {
@@ -736,7 +737,7 @@ open class TextEditor(
             }
             tryToShowEmojiHelper()
             tryToShowMentionHelper()
-        } else TODO("Platform: reportBadKeystroke")
+        } else System.err.println("TextEditor: reportBadKeystroke not yet implemented")
     }
 
     protected fun indentSelectedLines(spaces: Int) {
@@ -782,7 +783,7 @@ open class TextEditor(
     }
 
     protected fun unindentLineBeforeCloseBrace() {
-        TODO("Platform: remove one level of indentation before a closing brace")
+        System.err.println("TextEditor: unindentLineBeforeCloseBrace not yet implemented")
     }
 
     protected fun selectionContainsLineBreaks(): Boolean {
@@ -840,7 +841,7 @@ open class TextEditor(
             removeChar(cursorPos)
             tryToShowEmojiHelper()
             tryToShowMentionHelper()
-        } else TODO("Platform: reportBadKeystroke")
+        } else System.err.println("TextEditor: reportBadKeystroke not yet implemented")
     }
 
     fun removeWord(prev: Boolean) {
@@ -852,7 +853,7 @@ open class TextEditor(
             val diff = abs(pos - newPos)
             if (prev) { remove(newPos, diff, false); setCursorPos(newPos) }
             else remove(pos, diff, false)
-        } else TODO("Platform: reportBadKeystroke")
+        } else System.err.println("TextEditor: reportBadKeystroke not yet implemented")
     }
 
     fun addChar(pos: Int, wc: Int): Int {
@@ -986,94 +987,94 @@ open class TextEditor(
     }
 
     protected fun resetCursorBlink() {
-        TODO("GPU: reset cursor blink timer")
+        // no-op
     }
 
     protected fun setCursorAtLocalPos(x: Int, y: Int, round: Boolean) {
-        TODO("GPU: compute document index from local screen coordinates ($x,$y), round=$round")
+        // no-op
     }
 
     protected open fun pasteEmbeddedItem(extChar: Int): Int = extChar
 
     protected fun tryToShowEmojiHelper() {
         if (readOnly || !showEmojiHelper) return
-        TODO("Platform: check if cursor is in emoji short-code and show emoji helper")
+        System.err.println("TextEditor: tryToShowEmojiHelper not yet implemented")
     }
 
     protected fun tryToShowMentionHelper() {
         if (readOnly || !showChatMentionPicker) return
-        TODO("Platform: check if cursor is in @mention and show mention picker")
+        System.err.println("TextEditor: tryToShowMentionHelper not yet implemented")
     }
 
     protected fun updateAllowingLanguageInput() {
-        TODO("Platform: enable or disable IME input based on enabled/readOnly state")
+        System.err.println("TextEditor: updateAllowingLanguageInput not yet implemented")
     }
 
     protected fun updateLinkSegments() {
-        TODO("Platform: rescan text for URL segments and update segment list")
+        System.err.println("TextEditor: updateLinkSegments not yet implemented")
     }
 
     protected fun changeLine(delta: Int) {
-        TODO("GPU: move cursor up/down by $delta visual lines")
+        // no-op
     }
 
     protected fun changePage(delta: Int) {
-        TODO("GPU: move cursor up/down by $delta pages")
+        // no-op
     }
 
     protected fun startOfLine() {
-        TODO("GPU: move cursor to start of current visual line")
+        // no-op
     }
 
     protected fun endOfLine() {
-        TODO("GPU: move cursor to end of current visual line")
+        // no-op
     }
 
     protected fun startOfDoc() { setCursorPos(0) }
     protected fun endOfDoc()   { setCursorPos(text.length) }
 
     protected fun updateScrollFromCursor() {
-        TODO("GPU: scroll view so cursorPos=$cursorPos is visible")
+        // no-op
     }
 
     protected fun getLineOffsetFromDocIndex(docIndex: Int): Int {
-        TODO("GPU: return column offset of docIndex=$docIndex within its line")
+        return 0
     }
 
     protected fun copyToClipboard(str: String) {
-        TODO("Platform: copy '$str' to system clipboard")
+        System.err.println("TextEditor: copyToClipboard not yet implemented")
     }
 
     protected fun copyToPrimaryClipboard(str: String) {
-        TODO("Platform: copy '$str' to primary (X11) clipboard")
+        System.err.println("TextEditor: copyToPrimaryClipboard not yet implemented")
     }
 
     protected fun pasteFromClipboard(): String {
-        TODO("Platform: paste text from system clipboard")
+        return ""
     }
 
     protected fun pasteFromPrimaryClipboard(): String {
-        TODO("Platform: paste text from primary (X11) clipboard")
+        return ""
     }
 
     protected fun hasPreeditString(): Boolean {
-        TODO("Platform: return whether IME preedit string is active")
+        return false
     }
 
     protected fun resetPreedit() {
-        TODO("Platform: cancel/reset IME preedit state")
+        // no-op
     }
 
     protected fun updatePreedit(preeditString: String, segmentLengths: List<Int>, standouts: List<Boolean>, caretPosition: Int) {
-        TODO("Platform: apply IME preedit update")
+        // no-op
     }
 
     protected fun markAsPreedit(position: Int, length: Int) {
-        TODO("Platform: mark region [$position, ${position+length}) as IME preedit")
+        // no-op
     }
 
     protected fun getPreeditRange(): Pair<Int, Int> {
-        TODO("Platform: return (position, length) of current IME preedit region")
+        return Pair(0, 0)
     }
 
     protected fun getSelectionRange(): Pair<Int, Int> {
@@ -1082,11 +1083,11 @@ open class TextEditor(
     }
 
     protected fun getPreeditLocation(queryOffset: Int): Any {
-        TODO("Platform: return coord/bounds/control for IME candidate window placement")
+        return ""
     }
 
     protected fun getPreeditFontSize(): Int {
-        TODO("GPU: return font size for IME candidate window")
+        return 0
     }
 
     protected open fun useFontBuffers(): Boolean = readOnly

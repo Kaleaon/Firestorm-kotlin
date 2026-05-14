@@ -61,7 +61,8 @@ class PreviewTexture(private val key: Any) {
     }
 
     private fun keyHas(field: String): Boolean {
-        TODO("APR: check if LLSD key contains field $field")
+        System.err.println("PreviewTexture: check if LLSD key contains field not yet implemented")
+        return false
     }
 
     fun destroy() {
@@ -69,30 +70,31 @@ class PreviewTexture(private val key: Any) {
         if (loadingFullImage) decWindowBusyCount()
         image?.let {
             it.setBoostLevel(imageOldBoostLevel)
-            TODO("GPU: call forceActive() to clear NO_DELETE texture state")
+            // no-op
         }
         image = null
     }
 
-    private fun decWindowBusyCount() { TODO("APR: decrement viewer window busy counter") }
-    private fun incWindowBusyCount() { TODO("APR: increment viewer window busy counter") }
+    private fun decWindowBusyCount() { System.err.println("PreviewTexture: decrement viewer window busy counter not yet implemented") }
+    private fun incWindowBusyCount() { System.err.println("PreviewTexture: increment viewer window busy counter not yet implemented") }
 
     fun populateRatioList() {
         ratiosList.clear()
         ratiosList.addAll(listOf(
             "Unconstrained", "1:1", "4:3", "10:7", "3:2", "16:10", "16:9", "2:1"
         ))
-        TODO("APR: populate combo_aspect_ratio UI widget with ratiosList")
+        System.err.println("PreviewTexture: populate combo_aspect_ratio UI widget not yet implemented")
     }
 
     fun postBuild(): Boolean {
         populateRatioList()
-        TODO("APR: wire up UI buttons and callbacks from XUI layout")
+        System.err.println("PreviewTexture: wire up UI buttons and callbacks from XUI layout not yet implemented")
+        return false
     }
 
     fun draw() {
         updateDimensionsInternal()
-        TODO("GPU: draw texture preview with checkerboard background and progress bar")
+        // no-op
     }
 
     fun canSaveAs(): Boolean =
@@ -113,13 +115,13 @@ class PreviewTexture(private val key: Any) {
         }
         val itemName = getItemName() ?: ""
         val filename = checkFileExtension(scrubFileName(itemName), format)
-        TODO("APR: open file picker for format $format, then call saveTextureToFile")
+        System.err.println("PreviewTexture: open file picker for format not yet implemented")
     }
 
     fun saveTextureToFile(filenames: List<String>, format: FileFormatType, callback: LoadedCallbackFunc, remainingIds: List<UUID> = emptyList()) {
         if (previewToSave) {
             previewToSave = false
-            TODO("APR: show preview_texture floater for this item")
+            System.err.println("PreviewTexture: show preview_texture floater for this item not yet implemented")
         }
         saveFileName = checkFileExtension(filenames[0], format)
         loadingFullImage = true
@@ -149,44 +151,49 @@ class PreviewTexture(private val key: Any) {
     }
 
     private fun fileExists(path: String): Boolean {
-        TODO("APR: use java.io.File(path).exists()")
+        System.err.println("PreviewTexture: fileExists not yet implemented")
+        return false
     }
 
     private fun getTextureSaveLocation(): String {
-        TODO("APR: read TextureSaveLocation from saved settings")
+        System.err.println("PreviewTexture: getTextureSaveLocation not yet implemented")
+        return ""
     }
 
     private fun getDefaultSaveFormatIsPng(): Boolean {
-        TODO("APR: read FSTextureDefaultSaveAsFormat from saved settings")
+        System.err.println("PreviewTexture: getDefaultSaveFormatIsPng not yet implemented")
+        return false
     }
 
     private fun getItemName(): String? {
-        TODO("APR: retrieve inventory item name for imageId")
+        System.err.println("PreviewTexture: getItemName not yet implemented")
+        return null
     }
 
     private fun scrubFileName(name: String): String {
-        TODO("APR: remove filesystem-unsafe characters from name")
+        System.err.println("PreviewTexture: scrubFileName not yet implemented")
+        return ""
     }
 
     fun reshape(width: Int, height: Int, calledFromParent: Boolean = true) {
-        val horizPad = TODO("APR: compute horizontal padding from border widths") as Int
-        TODO("GPU: recompute mClientRect for aspect ratio and resize floater")
+        val horizPad = 0
+        // no-op
     }
 
-    fun onFocusReceived() { TODO("APR: forward focus to LLPreview base class") }
+    fun onFocusReceived() { System.err.println("PreviewTexture: onFocusReceived not yet implemented") }
 
     fun openToSave() { previewToSave = true }
 
-    fun loadAsset() { TODO("APR: request texture fetch for imageId with preview boost level") }
+    fun loadAsset() { System.err.println("PreviewTexture: loadAsset not yet implemented") }
 
     fun getAssetStatus(): AssetStatus = assetStatus
 
     fun setObjectId(objectId: UUID) {
-        TODO("APR: update object context for permissions check")
+        System.err.println("PreviewTexture: setObjectId not yet implemented")
     }
 
     private fun updateImageId() {
-        TODO("APR: extract UUID from LLSD key and assign to imageId, then find/create image")
+        System.err.println("PreviewTexture: updateImageId not yet implemented")
     }
 
     private fun updateDimensionsInternal() {
@@ -208,12 +215,12 @@ class PreviewTexture(private val key: Any) {
 
         if (updateDimensions) {
             updateDimensions = false
-            TODO("APR: resize floater to match image dimensions and fit within viewer window")
+            System.err.println("PreviewTexture: resize floater to match image dimensions not yet implemented")
         }
     }
 
-    private fun updateDimensionTextWidth(width: Int) { TODO("APR: set [WIDTH] text arg to $width") }
-    private fun updateDimensionTextHeight(height: Int) { TODO("APR: set [HEIGHT] text arg to $height") }
+    private fun updateDimensionTextWidth(width: Int) { System.err.println("PreviewTexture: updateDimensionTextWidth not yet implemented") }
+    private fun updateDimensionTextHeight(height: Int) { System.err.println("PreviewTexture: updateDimensionTextHeight not yet implemented") }
 
     private fun adjustAspectRatio() {
         val img = image ?: return
@@ -231,14 +238,14 @@ class PreviewTexture(private val key: Any) {
     }
 
     fun callbackLoadName(agentId: UUID, avName: Any) {
-        TODO("APR: update uploader name field in UI from avatar name cache callback")
+        System.err.println("PreviewTexture: callbackLoadName not yet implemented")
     }
 
-    fun onButtonClickProfile() { TODO("APR: open profile for uploader UUID from image comment") }
-    fun onButtonClickUUID() { TODO("APR: copy image UUID to clipboard") }
+    fun onButtonClickProfile() { System.err.println("PreviewTexture: onButtonClickProfile not yet implemented") }
+    fun onButtonClickUUID() { System.err.println("PreviewTexture: onButtonClickUUID not yet implemented") }
     fun onButtonRefresh() {
         image?.forceToRefetchTexture()
-        TODO("APR: reset preview state to trigger re-download")
+        System.err.println("PreviewTexture: onButtonRefresh not yet implemented")
     }
 
     private fun onFileLoadedForSaveTGA(
@@ -255,11 +262,11 @@ class PreviewTexture(private val key: Any) {
             loadingFullImage = false
         }
         if (final && success && src != null) {
-            TODO("APR: encode src as TGA and write to saveFileName using java.io")
+            System.err.println("PreviewTexture: encode src as TGA and write to saveFileName not yet implemented")
             saveFileName = ""
             resetSavedFileTimer()
         }
-        if (!success) { TODO("APR: show CannotDownloadFile notification") }
+        if (!success) { System.err.println("PreviewTexture: show CannotDownloadFile notification not yet implemented") }
     }
 
     private fun onFileLoadedForSavePNG(
@@ -276,11 +283,11 @@ class PreviewTexture(private val key: Any) {
             loadingFullImage = false
         }
         if (final && success && src != null) {
-            TODO("APR: encode src as PNG and write to saveFileName using javax.imageio")
+            System.err.println("PreviewTexture: encode src as PNG and write to saveFileName not yet implemented")
             saveFileName = ""
             resetSavedFileTimer()
         }
-        if (!success) { TODO("APR: show CannotDownloadFile notification") }
+        if (!success) { System.err.println("PreviewTexture: show CannotDownloadFile notification not yet implemented") }
     }
 
     private fun resetSavedFileTimer() {
@@ -294,7 +301,7 @@ class PreviewTexture(private val key: Any) {
     companion object {
         fun onSaveAsBtn(ctrl: Any, data: Any?) {
             val self = data as? PreviewTexture ?: return
-            val value = TODO("APR: read string value from ctrl") as String
+            val value = ""
             when (value) {
                 "format_png" -> self.saveAs(FileFormatType.FORMAT_PNG)
                 "format_tga" -> self.saveAs(FileFormatType.FORMAT_TGA)
@@ -304,12 +311,12 @@ class PreviewTexture(private val key: Any) {
 
         fun onAspectRatioCommit(ctrl: Any, userData: Any?) {
             val self = userData as? PreviewTexture ?: return
-            TODO("APR: read aspect ratio choice from combo box and update self.aspectRatio")
+            System.err.println("PreviewTexture: onAspectRatioCommit not yet implemented")
         }
 
         fun saveMultiple(ids: List<UUID>) {
             if (ids.isEmpty()) return
-            TODO("APR: open file picker for each remaining UUID and trigger saveMultipleToFile")
+            System.err.println("PreviewTexture: saveMultiple not yet implemented")
         }
 
         fun onTextureLoaded(
@@ -321,7 +328,7 @@ class PreviewTexture(private val key: Any) {
             final: Boolean,
             userData: Any?
         ) {
-            TODO("APR: decode texture comment metadata (uploader UUID and upload timestamp)")
+            System.err.println("PreviewTexture: onTextureLoaded not yet implemented")
         }
     }
 }

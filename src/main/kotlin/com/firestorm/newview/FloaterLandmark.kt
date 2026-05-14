@@ -146,7 +146,7 @@ class FloaterLandmark(private val key: Any?) {
     }
 
     private fun onCreateFolderClicked() {
-        TODO("APR: use JVM equivalent")
+        System.err.println("FloaterLandmark: onCreateFolderClicked not yet implemented")
     }
 
     private fun folderCreatedCallback(folderId: UUID) {
@@ -195,11 +195,11 @@ class FloaterLandmark(private val key: Any?) {
     }
 
     private fun closeFloater() {
-        TODO("APR: use JVM equivalent")
+        System.err.println("FloaterLandmark: closeFloater not yet implemented")
     }
 
     private fun setVisibleAndFrontmost(takeFocus: Boolean) {
-        TODO("APR: use JVM equivalent")
+        System.err.println("FloaterLandmark: setVisibleAndFrontmost not yet implemented")
     }
 }
 
@@ -247,37 +247,38 @@ private val INVENTORY_OBSERVER_REMOVE: UInt = 0x20u
 private val INVENTORY_OBSERVER_STRUCTURE: UInt = 0x40u
 private val INVENTORY_OBSERVER_REBUILD: UInt = 0x80u
 
-private fun findChildByName(name: String): Any? = TODO("APR: use JVM equivalent")
-private fun inventoryFindLandmarksCategory(): UUID = TODO("APR: use JVM equivalent")
-private fun inventoryFindFavoritesCategory(): UUID = TODO("APR: use JVM equivalent")
-private fun inventoryGetCategory(id: UUID?): Any? = TODO("APR: use JVM equivalent")
-private fun inventoryGetItem(id: UUID): Any? = TODO("APR: use JVM equivalent")
-private fun inventoryAddObserver(observer: Any?) { TODO("APR: use JVM equivalent") }
-private fun inventoryRemoveObserver(observer: Any?) { TODO("APR: use JVM equivalent") }
-private fun inventoryNotifyObservers() { TODO("APR: use JVM equivalent") }
-private fun inventoryGetAddedIDs(): Set<UUID> = TODO("APR: use JVM equivalent")
-private fun inventoryGetChangedIDs(): Set<UUID> = TODO("APR: use JVM equivalent")
-private fun inventoryUpdateItemNameAndDescription(item: Any, name: String, description: String) { TODO("APR: use JVM equivalent") }
-private fun inventoryMoveItemToFolder(item: Any, folderId: UUID?) { TODO("APR: use JVM equivalent") }
-private fun inventoryRemoveItem(itemId: UUID) { TODO("APR: use JVM equivalent") }
-private fun inventoryItemGetUUID(item: Any): UUID = TODO("APR: use JVM equivalent")
-private fun inventoryItemGetAssetUUID(item: Any): UUID = TODO("APR: use JVM equivalent")
-private fun inventoryItemGetParentUUID(item: Any): UUID? = TODO("APR: use JVM equivalent")
-private fun inventoryItemGetName(item: Any): String = TODO("APR: use JVM equivalent")
-private fun inventoryItemGetDescription(item: Any): String = TODO("APR: use JVM equivalent")
-private fun isLandmarkAssetType(item: Any): Boolean = TODO("APR: use JVM equivalent")
-private fun collectLandmarkFolders(): List<Any> = TODO("APR: use JVM equivalent")
-private fun getCategoryUUID(cat: Any): UUID = TODO("APR: use JVM equivalent")
-private fun getCategoryFullName(cat: Any): String = TODO("APR: use JVM equivalent")
-private fun comboRemoveAll(combo: Any?) { TODO("APR: use JVM equivalent") }
-private fun comboAdd(combo: Any?, label: String, value: UUID) { TODO("APR: use JVM equivalent") }
-private fun comboSetCurrentById(combo: Any?, id: UUID) { TODO("APR: use JVM equivalent") }
-private fun comboGetCurrentUUID(combo: Any?): UUID? = TODO("APR: use JVM equivalent")
-private fun setEditorText(editor: Any?, text: String) { TODO("APR: use JVM equivalent") }
-private fun getEditorText(editor: Any?): String = TODO("APR: use JVM equivalent")
-private fun parcelMgrGetAgentParcel(): Any? = TODO("APR: use JVM equivalent")
-private fun parcelGetName(parcel: Any?): String = TODO("APR: use JVM equivalent")
-private fun parcelMgrGetSelectionRegionName(): String? = TODO("APR: use JVM equivalent")
-private fun agentGetPositionAgent(): FloatArray = TODO("APR: use JVM equivalent")
-private fun agentBuildLocationString(pos: FloatArray): String = TODO("APR: use JVM equivalent")
-private fun landmarkActionsCreateLandmarkHere(name: String, notes: String, folderId: UUID?) { TODO("APR: use JVM equivalent") }
+private fun findChildByName(name: String): Any? = null
+private fun inventoryFindLandmarksCategory(): UUID = UUID(0, 0)
+private fun inventoryFindFavoritesCategory(): UUID = UUID(0, 0)
+private fun inventoryGetCategory(id: UUID?): Any? = null
+private fun inventoryGetItem(id: UUID): Any? = null
+private fun inventoryAddObserver(observer: Any?) { System.err.println("FloaterLandmark: inventoryAddObserver not yet implemented") }
+private fun inventoryRemoveObserver(observer: Any?) { System.err.println("FloaterLandmark: inventoryRemoveObserver not yet implemented") }
+private fun inventoryNotifyObservers() { System.err.println("FloaterLandmark: inventoryNotifyObservers not yet implemented") }
+private fun inventoryGetAddedIDs(): Set<UUID> = emptySet()
+private fun inventoryGetChangedIDs(): Set<UUID> = emptySet()
+private fun inventoryUpdateItemNameAndDescription(item: Any, name: String, description: String) { System.err.println("FloaterLandmark: inventoryUpdateItemNameAndDescription not yet implemented") }
+private fun inventoryMoveItemToFolder(item: Any, folderId: UUID?) { System.err.println("FloaterLandmark: inventoryMoveItemToFolder not yet implemented") }
+private fun inventoryRemoveItem(itemId: UUID) { System.err.println("FloaterLandmark: inventoryRemoveItem not yet implemented") }
+private fun inventoryItemGetUUID(item: Any): UUID = UUID(0, 0)
+private fun inventoryItemGetAssetUUID(item: Any): UUID = UUID(0, 0)
+private fun inventoryItemGetParentUUID(item: Any): UUID? = null
+private fun inventoryItemGetName(item: Any): String = ""
+private fun inventoryItemGetDescription(item: Any): String = ""
+private fun isLandmarkAssetType(item: Any): Boolean = false
+private fun collectLandmarkFolders(): List<Any> = emptyList()
+private fun getCategoryUUID(cat: Any): UUID = UUID(0, 0)
+private fun getCategoryFullName(cat: Any): String = ""
+private fun comboRemoveAll(combo: Any?) { System.err.println("FloaterLandmark: comboRemoveAll not yet implemented") }
+private fun comboAdd(combo: Any?, label: String, value: UUID) { System.err.println("FloaterLandmark: comboAdd not yet implemented") }
+private fun comboSetCurrentById(combo: Any?, id: UUID) { System.err.println("FloaterLandmark: comboSetCurrentById not yet implemented") }
+private fun comboGetCurrentUUID(combo: Any?): UUID? = null
+private fun setEditorText(editor: Any?, text: String) { System.err.println("FloaterLandmark: setEditorText not yet implemented") }
+private fun getEditorText(editor: Any?): String = ""
+private fun parcelMgrGetAgentParcel(): Any? = null
+private fun parcelGetName(parcel: Any?): String = ""
+private fun parcelMgrGetSelectionRegionName(): String? = null
+private fun agentGetPositionAgent(): FloatArray = FloatArray(3)
+private fun agentBuildLocationString(pos: FloatArray): String = ""
+private fun landmarkActionsCreateLandmarkHere(name: String, notes: String, folderId: UUID?) { System.err.println("FloaterLandmark: landmarkActionsCreateLandmarkHere not yet implemented") }
+private fun extractDestFolderFromKey(key: Any?): UUID? = null

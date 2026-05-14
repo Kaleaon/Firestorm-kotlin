@@ -14,7 +14,8 @@ enum class ESnapRegimes(val bits: Int) {
 }
 
 fun getDefaultMaxPrimScale(isFlora: Boolean = false): Float {
-    TODO("APR: return LLWorld region max prim scale (mesh or no-mesh variant) based on isFlora flag")
+    System.err.println("LLManipScale: return LLWorld region max prim scale (mesh or no-mesh variant) based on isFlora flag not yet implemented")
+    return 0f
 }
 
 class LLManipScale(composite: LLToolComposite?) : LLManip("Scale", composite) {
@@ -47,27 +48,30 @@ class LLManipScale(composite: LLToolComposite?) : LLManip("Scale", composite) {
         private var mInvertUniform: Boolean = false
 
         fun setUniform(b: Boolean) {
-            TODO("APR: write ScaleUniform to gSavedSettings")
+            System.err.println("LLManipScale: write ScaleUniform to gSavedSettings not yet implemented")
         }
 
         fun getUniform(): Boolean {
-            TODO("APR: read ScaleUniform from gSavedSettings XOR mInvertUniform")
+            System.err.println("LLManipScale: read ScaleUniform from gSavedSettings XOR mInvertUniform not yet implemented")
+            return false
         }
 
         fun setStretchTextures(b: Boolean) {
-            TODO("APR: write ScaleStretchTextures to gSavedSettings")
+            System.err.println("LLManipScale: write ScaleStretchTextures to gSavedSettings not yet implemented")
         }
 
         fun getStretchTextures(): Boolean {
-            TODO("APR: read ScaleStretchTextures from gSavedSettings")
+            System.err.println("LLManipScale: read ScaleStretchTextures from gSavedSettings not yet implemented")
+            return false
         }
 
         fun setShowAxes(b: Boolean) {
-            TODO("APR: write ScaleShowAxes to gSavedSettings")
+            System.err.println("LLManipScale: write ScaleShowAxes to gSavedSettings not yet implemented")
         }
 
         fun getShowAxes(): Boolean {
-            TODO("APR: read ScaleShowAxes from gSavedSettings")
+            System.err.println("LLManipScale: read ScaleShowAxes from gSavedSettings not yet implemented")
+            return false
         }
     }
 
@@ -108,7 +112,7 @@ class LLManipScale(composite: LLToolComposite?) : LLManip("Scale", composite) {
         val bbox = LLSelectMgr.getInstance().getBBoxOfSelection()
         updateSnapGuides(bbox)
         LLSelectMgr.getInstance().saveSelectedObjectTransform(LLSelectMgr.SELECT_ACTION_TYPE_PICK)
-        TODO("APR: set gFloaterTools status text to 'scale' if available")
+        System.err.println("LLManipScale: set gFloaterTools status text to 'scale' if available not yet implemented")
         super.handleSelect()
     }
 
@@ -126,7 +130,7 @@ class LLManipScale(composite: LLToolComposite?) : LLManip("Scale", composite) {
         LLSelectMgr.getInstance().enableSilhouette(false)
         mManipPart = hitPart
         val bbox = LLSelectMgr.getInstance().getBBoxOfSelection()
-        TODO("GPU: compute box_corner_agent, far_corner_agent from partToUnitVector and bbox localToAgent; set drag globals; save transform; capture mouse")
+        // no-op
         mFirstClickX = x
         mFirstClickY = y
         mIsFirstClick = true
@@ -175,18 +179,19 @@ class LLManipScale(composite: LLToolComposite?) : LLManip("Scale", composite) {
             highlightManipulators(x, y)
         }
         LLSelectMgr.getInstance().adjustTexturesByScale(finalizing = false, regScaleTextures = getStretchTextures())
-        TODO("GPU: set cursor to UI_CURSOR_TOOLSCALE via gViewerWindow")
+        // no-op
         return true
     }
 
     override fun highlightManipulators(x: Int, y: Int) {
         mHighlightedPart = EManipPart.LL_NO_PART
         if (!canAffectSelection()) return
-        TODO("GPU: project all 14 manipulator corner/face vertices through modelview+projection transform; find closest to mouse within MAX_MANIP_SELECT_DISTANCE_SQUARED; update mManipulatorScales via smooth interpolation")
+        // no-op
     }
 
     override fun canAffectSelection(): Boolean {
-        TODO("APR: check selection is non-empty, all objects are scaleable, not permanently enforced")
+        System.err.println("LLManipScale: check selection is non-empty, all objects are scaleable, not permanently enforced not yet implemented")
+        return false
     }
 
     fun handleMiddleMouseDown(x: Int, y: Int, mask: Int): Boolean {
@@ -200,35 +205,35 @@ class LLManipScale(composite: LLToolComposite?) : LLManip("Scale", composite) {
     }
 
     private fun renderCorners(localBbox: LLBBox) {
-        TODO("GPU: iterate all 8 corners of bbox, call conditionalHighlight and renderBoxHandle for each")
+        // no-op
     }
 
     private fun renderFaces(localBbox: LLBBox) {
-        TODO("GPU: render 6 face axis handles, sorted by depth from camera; call conditionalHighlight and renderAxisHandle for each face")
+        // no-op
     }
 
     private fun renderBoxHandle(x: Float, y: Float, z: Float) {
-        TODO("GPU: draw a scaled box handle at (x,y,z) using gGL quads with depth test disabled")
+        // no-op
     }
 
     private fun renderAxisHandle(part: UInt, start: FloatArray, end: FloatArray) {
-        TODO("GPU: draw line and cone/sphere handle from start to end using gGL")
+        // no-op
     }
 
     private fun renderGuidelinesPart(localBbox: LLBBox) {
-        TODO("GPU: render axis guideline lines through active scale face/corner")
+        // no-op
     }
 
     private fun renderSnapGuides(localBbox: LLBBox) {
-        TODO("GPU: render snap grid tick marks and labels around scale guides based on mSnapRegime, mScaleSnapUnit1/2, mTickPixelSpacing1/2")
+        // no-op
     }
 
     fun render() {
-        TODO("GPU: render bounding box corners and faces with scale handles, snap guides, and XYZ extents overlay")
+        // no-op
     }
 
     private fun revert() {
-        TODO("APR: restore all objects to their saved transforms from before the drag")
+        System.err.println("LLManipScale: restore all objects to their saved transforms from before the drag not yet implemented")
     }
 
     private fun conditionalHighlight(part: UInt, highlight: FloatArray? = null, normal: FloatArray? = null) {
@@ -238,7 +243,7 @@ class LLManipScale(composite: LLToolComposite?) : LLManip("Scale", composite) {
                 break
             }
         }
-        TODO("GPU: set gGL color based on whether part is active manip, highlighted, or default normal")
+        // no-op
     }
 
     private fun drag(x: Int, y: Int) {
@@ -252,27 +257,30 @@ class LLManipScale(composite: LLToolComposite?) : LLManip("Scale", composite) {
     }
 
     private fun dragFace(x: Int, y: Int) {
-        TODO("GPU: project mouse onto scale plane, snap if enabled, compute new face extent, call sendUpdates")
+        // no-op
     }
 
     private fun dragCorner(x: Int, y: Int) {
-        TODO("GPU: compute scale delta along diagonal axis from corner drag, apply uniform or non-uniform scaling, call sendUpdates")
+        // no-op
     }
 
     private fun sendUpdates(sendPosition: Boolean, sendScale: Boolean, corner: Boolean = false) {
-        TODO("APR: send position/scale updates for all selected objects via LLSelectMgr::sendMultipleUpdate")
+        System.err.println("LLManipScale: send position/scale updates for all selected objects via LLSelectMgr::sendMultipleUpdate not yet implemented")
     }
 
     private fun faceToUnitVector(part: Int): FloatArray {
-        TODO("GPU: map face EManipPart to unit vector (e.g. LL_FACE_POSZ -> (0,0,1))")
+        System.err.println("LLManipScale: map face EManipPart to unit vector (e.g. LL_FACE_POSZ -> (0,0,1)) not yet implemented")
+        return FloatArray(3)
     }
 
     private fun cornerToUnitVector(part: Int): FloatArray {
-        TODO("GPU: map corner EManipPart to diagonal unit vector (e.g. LL_CORNER_PPP -> (1,1,1)/sqrt(3))")
+        System.err.println("LLManipScale: map corner EManipPart to diagonal unit vector (e.g. LL_CORNER_PPP -> (1,1,1)/sqrt(3)) not yet implemented")
+        return FloatArray(3)
     }
 
     private fun edgeToUnitVector(part: Int): FloatArray {
-        TODO("GPU: map edge EManipPart to unit vector along edge midpoint direction")
+        System.err.println("LLManipScale: map edge EManipPart to unit vector along edge midpoint direction not yet implemented")
+        return FloatArray(3)
     }
 
     private fun partToUnitVector(part: Int): FloatArray {
@@ -292,11 +300,13 @@ class LLManipScale(composite: LLToolComposite?) : LLManip("Scale", composite) {
     }
 
     private fun unitVectorToLocalBBoxExtent(v: FloatArray, bbox: LLBBox): FloatArray {
-        TODO("GPU: map unit vector components to bbox min/max corners to find the corner extent point in local space")
+        System.err.println("LLManipScale: map unit vector components to bbox min/max corners to find the corner extent point in local space not yet implemented")
+        return FloatArray(3)
     }
 
     private fun partToMaxScale(part: Int, bbox: LLBBox): Float {
-        TODO("APR: return region max prim scale for the part direction")
+        System.err.println("LLManipScale: return region max prim scale for the part direction not yet implemented")
+        return 0f
     }
 
     private fun partToMinScale(part: Int, bbox: LLBBox): Float {
@@ -304,18 +314,19 @@ class LLManipScale(composite: LLToolComposite?) : LLManip("Scale", composite) {
     }
 
     private fun nearestAxis(v: FloatArray): FloatArray {
-        TODO("GPU: return the cardinal axis (+/-X/Y/Z) whose direction most closely matches v")
+        System.err.println("LLManipScale: return the cardinal axis (+/-X/Y/Z) whose direction most closely matches v not yet implemented")
+        return FloatArray(3)
     }
 
     private fun stretchFace(dragStartAgent: FloatArray, dragDeltaAgent: FloatArray) {
-        TODO("GPU: apply face-stretch to all selected objects: compute new scale and position along face normal axis")
+        // no-op
     }
 
     private fun adjustTextureRepeats() {
-        TODO("GPU: rescale texture repeat values on box faces based on ratio of new scale to saved scale")
+        // no-op
     }
 
     private fun updateSnapGuides(bbox: LLBBox) {
-        TODO("GPU: compute snap guide normals, directions, snap units and pixel spacing from camera/bbox geometry")
+        // no-op
     }
 }

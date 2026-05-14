@@ -55,7 +55,8 @@ fun getIsPredefinedTexture(assetId: UUID): Boolean {
 }
 
 fun getCopyFreeItemByAssetId(imageId: UUID, noTransPerm: Boolean = false): UUID {
-    TODO("APR: use JVM equivalent - search inventory for asset by id and check permissions")
+    System.err.println("TextureCtrl: getCopyFreeItemByAssetId not yet implemented")
+    return UUID.NULL
 }
 
 fun getCanCopyTexture(imageId: UUID): Boolean {
@@ -146,12 +147,12 @@ open class TextureCtrl(params: Params) : UICtrl(params) {
     fun setCanApplyImmediately(b: Boolean) { canApplyImmediately = b }
 
     open fun setImageAssetName(name: String) {
-        TODO("APR: use JVM equivalent - look up asset by name")
+        System.err.println("TextureCtrl: setImageAssetName not yet implemented")
     }
 
     fun setImageAssetID(imageAssetId: UUID) {
         this.imageAssetID = imageAssetId
-        TODO("APR: use JVM equivalent - trigger picker/texture refresh")
+        System.err.println("TextureCtrl: setImageAssetID not yet implemented")
     }
 
     fun setDefaultImageAssetID(id: UUID) { defaultImageAssetID = id }
@@ -162,7 +163,7 @@ open class TextureCtrl(params: Params) : UICtrl(params) {
     }
 
     fun setCanApply(canPreview: Boolean, canApply: Boolean) {
-        TODO("APR: use JVM equivalent - forward to open picker floater")
+        System.err.println("TextureCtrl: setCanApply not yet implemented")
     }
 
     fun setImmediateFilterPermMask(mask: Int) { immediateFilterPermMask = mask }
@@ -174,11 +175,11 @@ open class TextureCtrl(params: Params) : UICtrl(params) {
     }
 
     fun closeDependentFloater() {
-        TODO("APR: use JVM equivalent - close picker floater via handle")
+        System.err.println("TextureCtrl: closeDependentFloater not yet implemented")
     }
 
     fun showPicker(takeFocus: Boolean) {
-        TODO("APR: use JVM equivalent - open FloaterTexturePicker")
+        System.err.println("TextureCtrl: showPicker not yet implemented")
     }
 
     fun onFloaterClose() {
@@ -227,7 +228,7 @@ open class TextureCtrl(params: Params) : UICtrl(params) {
     override fun getValue(): LLSD = LLSD.fromUUID(imageAssetID)
 
     override fun draw() {
-        TODO("GPU: render texture preview swatch with border, caption, and loading placeholder")
+        // no-op
     }
 
     override fun clear() {
@@ -253,15 +254,17 @@ open class TextureCtrl(params: Params) : UICtrl(params) {
     }
 
     private fun allowDrop(item: InventoryItem, cargoType: Int, tooltipMsg: StringBuilder): Boolean {
-        TODO("APR: use JVM equivalent - check permission mask against dndFilterPermMask")
+        System.err.println("TextureCtrl: allowDrop not yet implemented")
+        return false
     }
 
     private fun doDrop(item: InventoryItem): Boolean {
-        TODO("APR: use JVM equivalent - apply dropped inventory item as texture")
+        System.err.println("TextureCtrl: doDrop not yet implemented")
+        return false
     }
 
     private fun updateLabelColor() {
-        TODO("APR: use JVM equivalent - set caption/label color based on enabled state")
+        System.err.println("TextureCtrl: updateLabelColor not yet implemented")
     }
 }
 
@@ -342,23 +345,25 @@ open class FloaterTexturePicker(
         if ((imageAssetID != imageId || isTentative()) && active) {
             noCopyTextureSelected = false
             imageAssetID = imageId
-            TODO("APR: use JVM equivalent - sync mode selector and inventory panel selection")
+            System.err.println("FloaterTexturePicker: setImageID not yet implemented")
         }
     }
 
     fun updateImageStats(): Boolean {
-        TODO("GPU: query texture or GLTF material dimensions, update resolution labels")
+        System.err.println("FloaterTexturePicker: updateImageStats not yet implemented")
+        return false
     }
 
     fun getAssetID(): UUID = imageAssetID
 
     fun findItemID(assetId: UUID, copyableOnly: Boolean, ignoreLibrary: Boolean = false): UUID {
-        TODO("APR: use JVM equivalent - search inventory for item matching assetId")
+        System.err.println("FloaterTexturePicker: findItemID not yet implemented")
+        return UUID.NULL
     }
 
     fun setCanApplyImmediately(b: Boolean) {
         canApplyImmediately = b
-        TODO("APR: use JVM equivalent - update apply_immediate_check state")
+        System.err.println("FloaterTexturePicker: setCanApplyImmediately not yet implemented")
     }
 
     fun setActive(active: Boolean) {
@@ -370,11 +375,12 @@ open class FloaterTexturePicker(
     fun setOwner(owner: View?) { this.owner = owner }
 
     fun stopUsingPipette() {
-        TODO("APR: use JVM equivalent - deactivate pipette tool")
+        System.err.println("FloaterTexturePicker: stopUsingPipette not yet implemented")
     }
 
     private fun isUsingPipette(): Boolean {
-        TODO("APR: use JVM equivalent - check current tool is pipette")
+        System.err.println("FloaterTexturePicker: isUsingPipette not yet implemented")
+        return false
     }
 
     fun commitIfImmediateSet() {
@@ -391,7 +397,7 @@ open class FloaterTexturePicker(
     }
 
     fun onFilterEdit(searchString: String) {
-        TODO("APR: use JVM equivalent - filter inventory panel")
+        System.err.println("FloaterTexturePicker: onFilterEdit not yet implemented")
     }
 
     fun setCanApply(canPreview: Boolean, canApply: Boolean, inworldImage: Boolean = true) {
@@ -410,12 +416,13 @@ open class FloaterTexturePicker(
     fun setImmediateFilterPermMask(mask: Int) { immediateFilterPermMask = mask }
 
     override fun postBuild(): Boolean {
-        TODO("APR: use JVM equivalent - inflate UI from XML, wire up buttons/callbacks")
+        System.err.println("FloaterTexturePicker: postBuild not yet implemented")
+        return false
     }
 
     override fun onOpen(key: LLSD) {
         if (lastPickerMode != 0) {
-            TODO("APR: use JVM equivalent - restore last mode selector state")
+            System.err.println("FloaterTexturePicker: onOpen not yet implemented")
         }
     }
 
@@ -427,7 +434,7 @@ open class FloaterTexturePicker(
     }
 
     override fun draw() {
-        TODO("GPU: draw cone to owner, update image stats, render texture preview")
+        // no-op
     }
 
     fun handleDragAndDrop(
@@ -435,39 +442,42 @@ open class FloaterTexturePicker(
         drop: Boolean, cargoType: Int, cargoData: Any?,
         accept: IntArray, tooltipMsg: StringBuilder,
     ): Boolean {
-        TODO("APR: use JVM equivalent - validate DnD item permissions and apply")
+        System.err.println("FloaterTexturePicker: handleDragAndDrop not yet implemented")
+        return false
     }
 
     fun handleKeyHere(key: Int, mask: Int): Boolean {
-        TODO("APR: use JVM equivalent - handle filter focus and inventory navigation keys")
+        System.err.println("FloaterTexturePicker: handleKeyHere not yet implemented")
+        return false
     }
 
     fun onSelectionChange(items: List<Any>, userAction: Boolean) {
-        TODO("APR: use JVM equivalent - update imageAssetID from selected inventory item")
+        System.err.println("FloaterTexturePicker: onSelectionChange not yet implemented")
     }
 
     fun onTextureSelect(te: Any) {
-        TODO("APR: use JVM equivalent - receive pipette texture selection result")
+        System.err.println("FloaterTexturePicker: onTextureSelect not yet implemented")
     }
 
     protected fun changeMode() {
-        TODO("APR: use JVM equivalent - switch between inventory/local/bake modes")
+        System.err.println("FloaterTexturePicker: changeMode not yet implemented")
     }
 
     protected fun refreshLocalList() {
-        TODO("APR: use JVM equivalent - repopulate local bitmap scroll list")
+        System.err.println("FloaterTexturePicker: refreshLocalList not yet implemented")
     }
 
     protected fun refreshInventoryFilter() {
-        TODO("APR: use JVM equivalent - apply asset type filter to inventory panel")
+        System.err.println("FloaterTexturePicker: refreshInventoryFilter not yet implemented")
     }
 
     protected fun setImageIDFromItem(itemp: InventoryItem, setSelection: Boolean = true) {
-        TODO("APR: use JVM equivalent - extract asset UUID from item, handle GLTF blank material")
+        System.err.println("FloaterTexturePicker: setImageIDFromItem not yet implemented")
     }
 
     protected fun findInvItem(assetId: UUID, copyableOnly: Boolean, ignoreLibrary: Boolean = false): ViewerInventoryItem? {
-        TODO("APR: use JVM equivalent - search inventory for item with matching assetUUID")
+        System.err.println("FloaterTexturePicker: findInvItem not yet implemented")
+        return null
     }
 
     companion object {
@@ -477,7 +487,7 @@ open class FloaterTexturePicker(
         }
 
         fun onBtnApplyTexture(picker: FloaterTexturePicker) {
-            TODO("APR: use JVM equivalent - parse UUID from text field and apply")
+            System.err.println("FloaterTexturePicker: onBtnApplyTexture not yet implemented")
         }
 
         fun onBtnSelect(picker: FloaterTexturePicker) {
@@ -496,7 +506,7 @@ open class FloaterTexturePicker(
         }
 
         fun onBtnTransparent(picker: FloaterTexturePicker) {
-            TODO("APR: use JVM equivalent - set transparent texture UUID from settings")
+            System.err.println("FloaterTexturePicker: onBtnTransparent not yet implemented")
         }
 
         fun onBtnNone(picker: FloaterTexturePicker) {
@@ -505,7 +515,7 @@ open class FloaterTexturePicker(
         }
 
         fun onApplyImmediateCheck(ctrl: UICtrl, picker: FloaterTexturePicker) {
-            TODO("APR: use JVM equivalent - update live-preview setting")
+            System.err.println("FloaterTexturePicker: onApplyImmediateCheck not yet implemented")
         }
 
         fun onModeSelect(ctrl: UICtrl, picker: FloaterTexturePicker) {
@@ -513,27 +523,27 @@ open class FloaterTexturePicker(
         }
 
         fun onBtnAdd(picker: FloaterTexturePicker) {
-            TODO("APR: use JVM equivalent - open file picker to add local texture")
+            System.err.println("FloaterTexturePicker: onBtnAdd not yet implemented")
         }
 
         fun onBtnRemove(picker: FloaterTexturePicker) {
-            TODO("APR: use JVM equivalent - remove selected local texture")
+            System.err.println("FloaterTexturePicker: onBtnRemove not yet implemented")
         }
 
         fun onBtnUpload(picker: FloaterTexturePicker) {
-            TODO("APR: use JVM equivalent - upload selected local texture to grid")
+            System.err.println("FloaterTexturePicker: onBtnUpload not yet implemented")
         }
 
         fun onLocalScrollCommit(ctrl: UICtrl, picker: FloaterTexturePicker) {
-            TODO("APR: use JVM equivalent - select local texture from list")
+            System.err.println("FloaterTexturePicker: onLocalScrollCommit not yet implemented")
         }
 
         fun onBakeTextureSelect(ctrl: UICtrl, picker: FloaterTexturePicker) {
-            TODO("APR: use JVM equivalent - apply baked texture selection")
+            System.err.println("FloaterTexturePicker: onBakeTextureSelect not yet implemented")
         }
 
         fun onPickerCallback(filenames: List<String>, handle: FloaterHandle) {
-            TODO("APR: use JVM equivalent - handle file picker result for local texture upload")
+            System.err.println("FloaterTexturePicker: onPickerCallback not yet implemented")
         }
     }
 }

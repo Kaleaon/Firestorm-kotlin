@@ -1033,20 +1033,30 @@ private fun rlvActionsCanTouch(obj: ViewerObject): Boolean {
     return false
 }
 
-private fun rlvActionsCanSit(obj: ViewerObject): Boolean =
-    TODO("APR: use JVM equivalent for RlvActions::canSit")
+private fun rlvActionsCanSit(obj: ViewerObject): Boolean {
+    System.err.println("ChatBarAsCmdline: rlvActionsCanSit not yet implemented")
+    return false
+}
 
-private fun rlvActionsCanStand(): Boolean =
-    TODO("APR: use JVM equivalent for RlvActions::canStand")
+private fun rlvActionsCanStand(): Boolean {
+    System.err.println("ChatBarAsCmdline: rlvActionsCanStand not yet implemented")
+    return false
+}
 
-private fun rlvActionsCanRez(): Boolean =
-    TODO("APR: use JVM equivalent for RlvActions::canRez")
+private fun rlvActionsCanRez(): Boolean {
+    System.err.println("ChatBarAsCmdline: rlvActionsCanRez not yet implemented")
+    return false
+}
 
-private fun rlvActionsCanTeleportToLocal(pos: Any): Boolean =
-    TODO("APR: use JVM equivalent for RlvActions::canTeleportToLocal")
+private fun rlvActionsCanTeleportToLocal(pos: Any): Boolean {
+    System.err.println("ChatBarAsCmdline: rlvActionsCanTeleportToLocal not yet implemented")
+    return false
+}
 
-private fun rlvStringsGetAnonym(avName: AvatarName): String =
-    TODO("APR: use JVM equivalent for RlvStrings::getAnonym")
+private fun rlvStringsGetAnonym(avName: AvatarName): String {
+    System.err.println("ChatBarAsCmdline: rlvStringsGetAnonym not yet implemented")
+    return ""
+}
 
 private fun avatarNameCacheGetAsync(id: UUID, callback: (AvatarName) -> Unit): Unit =
     TODO("APR: use JVM equivalent for LLAvatarNameCache::get with callback")

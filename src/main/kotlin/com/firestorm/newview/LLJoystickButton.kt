@@ -36,15 +36,15 @@ data class LLVector3(var x: Float = 0f, var y: Float = 0f, var z: Float = 0f) {
     operator fun plus(other: LLVector3) = LLVector3(x + other.x, y + other.y, z + other.z)
     operator fun minus(other: LLVector3) = LLVector3(x - other.x, y - other.y, z - other.z)
     fun isNull(): Boolean = x == 0f && y == 0f && z == 0f
-    fun normalize() { TODO("GPU: normalise vector in-place") }
+    fun normalize() { /* GPU: normalise vector in-place */ }
     operator fun get(index: Int): Float = when (index) { 0 -> x; 1 -> y; else -> z }
     operator fun set(index: Int, v: Float) { when (index) { 0 -> x = v; 1 -> y = v; else -> z = v } }
 }
 
 data class LLQuaternion(var x: Float = 0f, var y: Float = 0f, var z: Float = 0f, var w: Float = 1f) {
-    fun setAngleAxis(angle: Float, axis: LLVector3) { TODO("GPU: set this quaternion from angle-axis") }
-    fun normalize() { TODO("GPU: normalise quaternion in-place") }
-    fun getValue(): Any { TODO("GPU: return LLSD representation of this quaternion") }
+    fun setAngleAxis(angle: Float, axis: LLVector3) { /* GPU: set this quaternion from angle-axis */ }
+    fun normalize() { /* GPU: normalise quaternion in-place */ }
+    fun getValue(): Any { return Any() }
     operator fun timesAssign(other: LLQuaternion) { TODO("GPU: multiply this quaternion by other in-place") }
 }
 

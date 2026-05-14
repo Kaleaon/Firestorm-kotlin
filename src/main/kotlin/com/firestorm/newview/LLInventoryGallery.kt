@@ -408,35 +408,38 @@ class LLInventoryGallery(params: Params = Params()) : LLPanel(), LLEditMenuHandl
     }
 
     override fun cut() {
-        TODO("APR: use JVM equivalent - mark selected items for cut in clipboard")
+        System.err.println("LLInventoryGallery: cut not yet implemented")
     }
 
     override fun canCut(): Boolean {
-        TODO("APR: use JVM equivalent - check all selected items are removable")
+        System.err.println("LLInventoryGallery: canCut not yet implemented")
+        return false
     }
 
     override fun paste() {
-        TODO("APR: use JVM equivalent - paste clipboard contents into current folder")
+        System.err.println("LLInventoryGallery: paste not yet implemented")
     }
 
     override fun canPaste(): Boolean {
-        TODO("APR: use JVM equivalent - check clipboard has contents and destination is valid")
+        System.err.println("LLInventoryGallery: canPaste not yet implemented")
+        return false
     }
 
     fun deleteSelection() {
-        TODO("APR: use JVM equivalent - remove all selected items from inventory")
+        System.err.println("LLInventoryGallery: deleteSelection not yet implemented")
     }
 
     fun canDeleteSelection(): Boolean {
-        TODO("APR: use JVM equivalent - check all selected items are removable")
+        System.err.println("LLInventoryGallery: canDeleteSelection not yet implemented")
+        return false
     }
 
     fun pasteAsLink() {
-        TODO("APR: use JVM equivalent - create inventory links from clipboard in current folder")
+        System.err.println("LLInventoryGallery: pasteAsLink not yet implemented")
     }
 
     fun doCreate(dest: UUID, userdata: Any) {
-        TODO("APR: use JVM equivalent - create new inventory item/folder per userdata type")
+        System.err.println("LLInventoryGallery: doCreate not yet implemented")
     }
 
     fun setSortOrder(order: UInt, update: Boolean = false) {
@@ -447,18 +450,21 @@ class LLInventoryGallery(params: Params = Params()) : LLPanel(), LLEditMenuHandl
     fun getSortOrder(): UInt = sortOrder
 
     fun claimEditHandler() {
-        TODO("GPU: set global edit menu handler to this gallery")
+        // GPU: set global edit menu handler to this gallery
     }
 
     fun resetEditHandler() {
-        TODO("GPU: clear global edit menu handler if it points to this gallery")
+        // GPU: clear global edit menu handler if it points to this gallery
     }
 
     fun baseHandleDragAndDrop(
         destId: UUID, drop: Boolean,
         cargoType: EDragAndDropType, cargoData: Any?,
         accept: Array<EAcceptance>, tooltipMsg: StringBuilder
-    ): Boolean = TODO("APR: use JVM equivalent - validate and execute item/category drag into destId")
+    ): Boolean {
+        System.err.println("LLInventoryGallery: baseHandleDragAndDrop not yet implemented")
+        return false
+    }
 
     fun showContextMenu(ctrl: LLUICtrl, x: Int, y: Int, itemId: UUID) {
         inventoryGalleryMenu?.show(ctrl, listOf(itemId), x, y)
@@ -470,7 +476,7 @@ class LLInventoryGallery(params: Params = Params()) : LLPanel(), LLEditMenuHandl
         isCutMode: Boolean,
         marketplacelistingsId: UUID
     ) {
-        TODO("APR: use JVM equivalent - copy or move clipboard objects to dest folder")
+        System.err.println("LLInventoryGallery: paste(dest) not yet implemented")
     }
 
     protected fun pasteAsLink(
@@ -480,7 +486,7 @@ class LLInventoryGallery(params: Params = Params()) : LLPanel(), LLEditMenuHandl
         marketplacelistingsId: UUID,
         myOutfitsId: UUID
     ) {
-        TODO("APR: use JVM equivalent - create inventory links for objects in dest folder")
+        System.err.println("LLInventoryGallery: pasteAsLink(dest) not yet implemented")
     }
 
     protected fun applyFilter(item: LLInventoryGalleryItem, filterSubstring: String): Boolean {

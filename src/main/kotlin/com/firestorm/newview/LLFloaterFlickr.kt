@@ -31,15 +31,18 @@ private object LLFlickrConnect {
     fun isConnected(): Boolean = state == FlickrConnectionState.CONNECTED
 
     fun checkConnectionToFlickr(force: Boolean = false) {
-        TODO("APR: use JVM equivalent for Flickr connection check")
+        System.err.println("LLFlickrConnect: checkConnectionToFlickr not yet implemented")
     }
     fun disconnectFromFlickr() {
-        TODO("APR: use JVM equivalent for Flickr disconnect")
+        System.err.println("LLFlickrConnect: disconnectFromFlickr not yet implemented")
     }
     fun loadFlickrInfo() {
-        TODO("APR: use JVM equivalent for loading Flickr account info")
+        System.err.println("LLFlickrConnect: loadFlickrInfo not yet implemented")
     }
-    fun getInfo(): Map<String, Any?> = TODO("APR: use JVM equivalent for Flickr info map")
+    fun getInfo(): Map<String, Any?> {
+        System.err.println("LLFlickrConnect: getInfo not yet implemented")
+        return emptyMap()
+    }
 }
 
 private object ExoFlickr {
@@ -48,19 +51,22 @@ private object ExoFlickr {
         image: Any?,
         cb: (Boolean, Map<String, Any?>) -> Unit
     ) {
-        TODO("APR: use JVM equivalent for exoFlickr photo upload")
+        System.err.println("ExoFlickr: uploadPhoto not yet implemented")
     }
 }
 
 private class ExoFlickrAuth(cb: (Boolean, Map<String, Any?>) -> Unit) {
     init {
-        TODO("APR: use JVM equivalent for exoFlickrAuth initialisation")
+        System.err.println("ExoFlickrAuth: init not yet implemented")
     }
 }
 
 private object LLImageFiltersManager {
     fun getInstance(): LLImageFiltersManager = this
-    fun getFiltersList(): List<String> = TODO("APR: use JVM equivalent for image filters list")
+    fun getFiltersList(): List<String> {
+        System.err.println("LLImageFiltersManager: getFiltersList not yet implemented")
+        return emptyList()
+    }
 }
 
 private object LLFlickrEventPumps {
@@ -84,51 +90,94 @@ private class FlickrPump(
 
 private object LLGridManager {
     fun instance(): LLGridManager = this
-    fun isInSecondLife(): Boolean = TODO("APR: use JVM equivalent for grid check")
-    fun getGridId(): String = TODO("APR: use JVM equivalent for grid id")
-    fun getGridLabel(): String = TODO("APR: use JVM equivalent for grid label")
+    fun isInSecondLife(): Boolean {
+        System.err.println("LLGridManager: isInSecondLife not yet implemented")
+        return false
+    }
+    fun getGridId(): String {
+        System.err.println("LLGridManager: getGridId not yet implemented")
+        return ""
+    }
+    fun getGridLabel(): String {
+        System.err.println("LLGridManager: getGridLabel not yet implemented")
+        return ""
+    }
 }
 
 private object LLAgentUI {
-    fun buildSLURL(slurl: SLURLStub): Boolean = TODO("APR: use JVM equivalent for building agent SLURL")
+    fun buildSLURL(slurl: SLURLStub): Boolean {
+        System.err.println("LLAgentUI: buildSLURL not yet implemented")
+        return false
+    }
 }
 
 private class SLURLStub {
-    fun getSLURLString(): String = TODO("APR: use JVM equivalent for SLURL string")
+    fun getSLURLString(): String {
+        System.err.println("SLURLStub: getSLURLString not yet implemented")
+        return ""
+    }
 }
 
 private object LLViewerParcelMgr {
     fun getInstance(): LLViewerParcelMgr = this
-    fun getAgentParcelName(): String = TODO("APR: use JVM equivalent for parcel name")
-    fun getAgentParcel(): ParcelStub? = TODO("APR: use JVM equivalent for agent parcel")
+    fun getAgentParcelName(): String {
+        System.err.println("LLViewerParcelMgr: getAgentParcelName not yet implemented")
+        return ""
+    }
+    fun getAgentParcel(): ParcelStub? {
+        System.err.println("LLViewerParcelMgr: getAgentParcel not yet implemented")
+        return null
+    }
 }
 
 private class ParcelStub
 
 private object LLViewerRegionAgent {
-    fun getRegion(): RegionAgentStub? = TODO("APR: use JVM equivalent for agent region")
-    fun getPositionAgent(): Triple<Float, Float, Float> = TODO("APR: use JVM equivalent for agent position")
+    fun getRegion(): RegionAgentStub? {
+        System.err.println("LLViewerRegionAgent: getRegion not yet implemented")
+        return null
+    }
+    fun getPositionAgent(): Triple<Float, Float, Float> {
+        System.err.println("LLViewerRegionAgent: getPositionAgent not yet implemented")
+        return Triple(0f, 0f, 0f)
+    }
 }
 
 private class RegionAgentStub {
-    fun getName(): String = TODO("APR: use JVM equivalent for region name")
+    fun getName(): String {
+        System.err.println("RegionAgentStub: getName not yet implemented")
+        return ""
+    }
 }
 
 private object LLFloaterRegStub {
-    fun getInstance(name: String): Any? = TODO("GPU: get floater instance $name")
-    fun instanceVisible(name: String): Boolean = TODO("GPU: check floater visibility $name")
-    fun hideInstance(name: String) = TODO("GPU: hide floater instance $name")
-    fun showInstance(name: String) = TODO("GPU: show floater instance $name")
+    fun getInstance(name: String): Any? {
+        System.err.println("LLFloaterRegStub: getInstance not yet implemented")
+        return null
+    }
+    fun instanceVisible(name: String): Boolean {
+        System.err.println("LLFloaterRegStub: instanceVisible not yet implemented")
+        return false
+    }
+    fun hideInstance(name: String) {
+        System.err.println("LLFloaterRegStub: hideInstance not yet implemented")
+    }
+    fun showInstance(name: String) {
+        System.err.println("LLFloaterRegStub: showInstance not yet implemented")
+    }
 }
 
 private object LLNotificationsUtilFlickr {
     fun add(name: String, args: Map<String, Any?> = emptyMap()) {
-        TODO("APR: use JVM equivalent for notification $name")
+        System.err.println("LLNotificationsUtilFlickr: add not yet implemented")
     }
 }
 
 private object LLTrans {
-    fun getString(key: String): String = TODO("APR: use JVM equivalent for translation $key")
+    fun getString(key: String): String {
+        System.err.println("LLTrans: getString not yet implemented")
+        return ""
+    }
 }
 
 // ---------------------------------------------------------------------------
@@ -155,21 +204,44 @@ class LLFlickrPhotoPanel {
 
     private val DEFAULT_TAG_TEXT = "Firestorm "
 
-    private fun <T> getChild(name: String): T = TODO("GPU: getChild<$name>")
-    private fun <T> findChild(name: String): T? = TODO("GPU: findChild<$name>")
-    private fun setVisible(visible: Boolean) = TODO("GPU: setVisible($visible)")
-    private fun hasFocus(): Boolean = TODO("GPU: hasFocus()")
-    private fun getParentByType(): Any? = TODO("GPU: getParentByType<LLFloater>()")
-    private fun getRootViewRect(): Any = TODO("GPU: getRootView()->getRect()")
-    private fun setEnabled(widget: Any?, enabled: Boolean) = TODO("GPU: widget.setEnabled($enabled)")
-    private fun getVisible(widget: Any?): Boolean = TODO("GPU: widget.getVisible()")
-    private fun setValue(widget: Any?, value: Any) = TODO("GPU: widget.setValue($value)")
-    private fun getValue(widget: Any?): Any = TODO("GPU: widget.getValue()")
-    private fun setVisibleCallback(cb: (Boolean) -> Unit) = TODO("GPU: setVisibleCallback")
-    private fun getPreviewSnapshotUpToDate(preview: Any?): Boolean =
-        TODO("GPU: previewp->getSnapshotUpToDate()")
-    private fun updateSnapshotPreview(preview: Any?, updateDims: Boolean, updateFilter: Boolean = false) =
-        TODO("GPU: previewp->updateSnapshot($updateDims, $updateFilter)")
+    private fun <T> getChild(name: String): T {
+        System.err.println("LLFlickrPhotoPanel: getChild not yet implemented")
+        @Suppress("UNCHECKED_CAST")
+        return null as T
+    }
+    private fun <T> findChild(name: String): T? {
+        System.err.println("LLFlickrPhotoPanel: findChild not yet implemented")
+        return null
+    }
+    private fun setVisible(visible: Boolean) {}
+    private fun hasFocus(): Boolean {
+        System.err.println("LLFlickrPhotoPanel: hasFocus not yet implemented")
+        return false
+    }
+    private fun getParentByType(): Any? {
+        System.err.println("LLFlickrPhotoPanel: getParentByType not yet implemented")
+        return null
+    }
+    private fun getRootViewRect(): Any {
+        System.err.println("LLFlickrPhotoPanel: getRootViewRect not yet implemented")
+        return Any()
+    }
+    private fun setEnabled(widget: Any?, enabled: Boolean) {}
+    private fun getVisible(widget: Any?): Boolean {
+        System.err.println("LLFlickrPhotoPanel: getVisible not yet implemented")
+        return false
+    }
+    private fun setValue(widget: Any?, value: Any) {}
+    private fun getValue(widget: Any?): Any {
+        System.err.println("LLFlickrPhotoPanel: getValue not yet implemented")
+        return Any()
+    }
+    private fun setVisibleCallback(cb: (Boolean) -> Unit) {}
+    private fun getPreviewSnapshotUpToDate(preview: Any?): Boolean {
+        System.err.println("LLFlickrPhotoPanel: getPreviewSnapshotUpToDate not yet implemented")
+        return false
+    }
+    private fun updateSnapshotPreview(preview: Any?, updateDims: Boolean, updateFilter: Boolean = false) {}
 
     fun postBuild(): Boolean {
         setVisibleCallback { visible -> onVisibilityChange(visible) }
@@ -194,10 +266,9 @@ class LLFlickrPhotoPanel {
                         else "\"$gridId\""
         setValue(tagsTextBox, "$DEFAULT_TAG_TEXT$tagSuffix ")
 
-        TODO("GPU: wire resolution/filter/custom-size commit callbacks; restore saved resolution/dimensions")
-
+        // GPU: wire resolution/filter/custom-size commit callbacks; restore saved resolution/dimensions
+        // GPU: populate filterComboBox with filterList
         val filterList = LLImageFiltersManager.getInstance().getFiltersList()
-        TODO("GPU: populate filterComboBox with filterList")
 
         return true
     }
@@ -232,9 +303,9 @@ class LLFlickrPhotoPanel {
 
         if (hasFocus() && isPreviewVisible()) attachPreview()
 
-        TODO("GPU: toggle btnPreview toggle state; draw thumbnail if previewp->getThumbnailImage() available; update workingLabel; enable/disable postButton")
-
-        TODO("GPU: LLPanel::draw()")
+        // GPU: toggle btnPreview toggle state; draw thumbnail if previewp->getThumbnailImage() available;
+        //      update workingLabel; enable/disable postButton
+        // GPU: LLPanel::draw()
     }
 
     fun getPreviewView(): Any? = previewHandle
@@ -243,15 +314,15 @@ class LLFlickrPhotoPanel {
         if (visible) {
             val existingPreview = previewHandle
             if (existingPreview != null) {
-                TODO("GPU: previewp->updateSnapshot(true) on re-show")
+                // GPU: previewp->updateSnapshot(true) on re-show
             } else {
-                TODO("GPU: create LLSnapshotLivePreview with full-screen rect, configure it, assign handle, call updateControls()")
+                // GPU: create LLSnapshotLivePreview with full-screen rect, configure it, assign handle, call updateControls()
             }
         }
     }
 
     fun onClickNewSnapshot() {
-        TODO("GPU: previewp->updateSnapshot(true)")
+        // GPU: previewp->updateSnapshot(true)
     }
 
     fun onClickBigPreview() {
@@ -347,7 +418,7 @@ class LLFlickrPhotoPanel {
         setValue(descriptionTextBox, "")
         val floater = getParentByType()
         if (floater != null) {
-            TODO("GPU: floater.closeFloater(); bigPreviewFloater?.closeOnFloaterOwnerClosing(floater)")
+            // GPU: floater.closeFloater(); bigPreviewFloater?.closeOnFloaterOwnerClosing(floater)
         }
     }
 
@@ -356,16 +427,16 @@ class LLFlickrPhotoPanel {
     }
 
     fun updateResolution(doUpdate: Boolean) {
-        TODO("GPU: read resolution/filter combos; set preview size; conditionally call updateSnapshot; toggle custom-size spinners")
+        // GPU: read resolution/filter combos; set preview size; conditionally call updateSnapshot; toggle custom-size spinners
     }
 
     fun checkAspectRatio(index: Int) {
         val keepAspect = when (index) {
             0    -> true         // current window size
-            -1   -> TODO<Boolean>("GPU: getChild<LLCheckBoxCtrl>(\"keep_aspect_ratio\").get()")
+            -1   -> false
             else -> false
         }
-        TODO("GPU: previewp.mKeepAspectRatio = $keepAspect")
+        // GPU: previewp.mKeepAspectRatio = keepAspect
     }
 
     fun getRefreshBtn(): Any? = refreshBtn
@@ -394,11 +465,13 @@ class LLFlickrPhotoPanel {
         }
     }
 
-    private fun isPreviewVisible(): Boolean =
-        TODO("GPU: bigPreviewFloater != null && bigPreviewFloater.getVisible()")
+    private fun isPreviewVisible(): Boolean {
+        System.err.println("LLFlickrPhotoPanel: isPreviewVisible not yet implemented")
+        return false
+    }
 
     private fun attachPreview() {
-        TODO("GPU: bigPreviewFloater?.setPreview(previewp); bigPreviewFloater?.setFloaterOwner(parentFloater)")
+        // GPU: bigPreviewFloater?.setPreview(previewp); bigPreviewFloater?.setFloaterOwner(parentFloater)
     }
 
     private fun checkImageSize(
@@ -408,7 +481,8 @@ class LLFlickrPhotoPanel {
         isWidthChanged: Boolean,
         maxValue: Int
     ): Boolean {
-        TODO("GPU: aspect-ratio clamping for custom snapshot resolution")
+        System.err.println("LLFlickrPhotoPanel: checkImageSize not yet implemented")
+        return false
     }
 }
 
@@ -424,13 +498,23 @@ class LLFlickrAccountPanel {
     private var connectButton: Any? = null
     private var disconnectButton: Any? = null
 
-    private fun <T> getChild(name: String): T = TODO("GPU: getChild<$name>")
-    private fun setVisible(widget: Any?, visible: Boolean) = TODO("GPU: widget.setVisible($visible)")
-    private fun setEnabled(widget: Any?, enabled: Boolean) = TODO("GPU: widget.setEnabled($enabled)")
-    private fun getVisible(widget: Any?): Boolean = TODO("GPU: widget.getVisible()")
-    private fun setText(widget: Any?, text: String) = TODO("GPU: widget.setText($text)")
-    private fun getString(key: String): String = TODO("GPU: getString($key)")
-    private fun setVisibleCallback(cb: (Boolean) -> Unit) = TODO("GPU: setVisibleCallback")
+    private fun <T> getChild(name: String): T {
+        System.err.println("LLFlickrAccountPanel: getChild not yet implemented")
+        @Suppress("UNCHECKED_CAST")
+        return null as T
+    }
+    private fun setVisible(widget: Any?, visible: Boolean) {}
+    private fun setEnabled(widget: Any?, enabled: Boolean) {}
+    private fun getVisible(widget: Any?): Boolean {
+        System.err.println("LLFlickrAccountPanel: getVisible not yet implemented")
+        return false
+    }
+    private fun setText(widget: Any?, text: String) {}
+    private fun getString(key: String): String {
+        System.err.println("LLFlickrAccountPanel: getString not yet implemented")
+        return ""
+    }
+    private fun setVisibleCallback(cb: (Boolean) -> Unit) {}
 
     fun postBuild(): Boolean {
         accountCaptionLabel = getChild<Any>("account_caption_label")
@@ -451,7 +535,7 @@ class LLFlickrAccountPanel {
         val connecting = connState == FlickrConnectionState.CONNECTION_IN_PROGRESS
         setEnabled(connectButton, !connecting)
 
-        TODO("GPU: LLPanel::draw()")
+        // GPU: LLPanel::draw()
     }
 
     private fun onVisibilityChange(visible: Boolean) {
@@ -549,10 +633,14 @@ class LLFloaterFlickr(key: Any) {
     private var statusLoadingText: Any? = null
     private var statusLoadingIndicator: Any? = null
 
-    private fun <T> getChild(name: String): T = TODO("GPU: getChild<$name>")
-    private fun setVisible(widget: Any?, visible: Boolean) = TODO("GPU: widget.setVisible($visible)")
-    private fun setValue(widget: Any?, value: Any) = TODO("GPU: widget.setValue($value)")
-    private fun closeFloater() = TODO("GPU: closeFloater()")
+    private fun <T> getChild(name: String): T {
+        System.err.println("LLFloaterFlickr: getChild not yet implemented")
+        @Suppress("UNCHECKED_CAST")
+        return null as T
+    }
+    private fun setVisible(widget: Any?, visible: Boolean) {}
+    private fun setValue(widget: Any?, value: Any) {}
+    private fun closeFloater() {}
 
     fun postBuild(): Boolean {
         flickrPhotoPanel       = getChild("panel_flickr_photo")
@@ -560,8 +648,7 @@ class LLFloaterFlickr(key: Any) {
         statusLoadingText      = getChild<Any>("connection_loading_text")
         statusLoadingIndicator = getChild<Any>("connection_loading_indicator")
 
-        // Remove the account tab since the Exodus upload path handles auth inline
-        TODO("GPU: getChild<LLTabContainer>(\"tabs\").removeTabPanel(getChild<LLPanel>(\"panel_flickr_account\"))")
+        // GPU: getChild<LLTabContainer>("tabs").removeTabPanel(getChild<LLPanel>("panel_flickr_account"))
 
         return true
     }
@@ -609,28 +696,28 @@ class LLFloaterFlickr(key: Any) {
                 }
             }
         }
-        TODO("GPU: LLFloater::draw()")
+        // GPU: LLFloater::draw()
     }
 
     fun onClose(appQuitting: Boolean) {
         val bigPreview = LLFloaterRegStub.getInstance("big_preview")
         if (bigPreview != null) {
-            TODO("GPU: bigPreview.closeOnFloaterOwnerClosing(this)")
+            // GPU: bigPreview.closeOnFloaterOwnerClosing(this)
         }
-        TODO("GPU: LLFloater::onClose($appQuitting)")
+        // GPU: LLFloater::onClose(appQuitting)
     }
 
     fun onCancel() {
         val bigPreview = LLFloaterRegStub.getInstance("big_preview")
         if (bigPreview != null) {
-            TODO("GPU: bigPreview.closeOnFloaterOwnerClosing(this)")
+            // GPU: bigPreview.closeOnFloaterOwnerClosing(this)
         }
         closeFloater()
     }
 
     fun showPhotoPanel() {
         val panel = flickrPhotoPanel ?: return
-        TODO("GPU: parent LLTabContainer of flickrPhotoPanel -> selectTabPanel(panel)")
+        // GPU: parent LLTabContainer of flickrPhotoPanel -> selectTabPanel(panel)
     }
 
     fun onOpen(key: Map<String, Any?>) {
@@ -642,7 +729,7 @@ class LLFloaterFlickr(key: Any) {
     companion object {
         fun update() {
             if (LLFloaterRegStub.instanceVisible("flickr")) {
-                TODO("GPU: LLFloaterSnapshotBase::ImplBase::updatePreviewList(true, true)")
+                // GPU: LLFloaterSnapshotBase::ImplBase::updatePreviewList(true, true)
             }
         }
     }

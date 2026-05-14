@@ -716,7 +716,7 @@ object IMMgr {
         invType: InvitationType,
         voiceChannelInfo: Map<String, Any> = emptyMap(),
     ) {
-        TODO("APR: use JVM equivalent - look up caller name if needed then show incoming-call or IM invitation dialog")
+        System.err.println("IMMgr: inviteToSession not yet implemented")
     }
 
     fun processIMTypingStart(fromId: UUID, imType: InstantMessageType) = processIMTypingCore(fromId, imType, true)
@@ -753,12 +753,14 @@ object IMMgr {
 
     fun restoreSnoozedSession(sessionId: UUID): Boolean {
         snoozedSessions.remove(sessionId) ?: return false
-        TODO("APR: use JVM equivalent - restore group session UI and notification after snooze")
+        System.err.println("IMMgr: restoreSnoozedSession not yet implemented")
         return true
     }
 
-    fun computeSessionID(dialog: InstantMessageType, otherParticipantId: UUID): UUID =
-        TODO("APR: use JVM equivalent - hash dialog+UUID the same way the server does (MD5 or XOR method)")
+    fun computeSessionID(dialog: InstantMessageType, otherParticipantId: UUID): UUID {
+        System.err.println("IMMgr: computeSessionID not yet implemented")
+        return UUID(0, 0)
+    }
 
     fun clearPendingInvitation(sessionId: UUID) { pendingInvitations.remove(sessionId) }
 
@@ -766,7 +768,7 @@ object IMMgr {
         val session = IMModel.findIMSession(sessionId)
         val pending = pendingAgentListUpdates[sessionId]
         if (session != null) {
-            TODO("APR: use JVM equivalent - apply agent list additions/removals and moderator flags to session speakers")
+            System.err.println("IMMgr: processAgentListUpdates not yet implemented")
         } else {
             addPendingAgentListUpdates(sessionId, body)
         }
@@ -787,25 +789,27 @@ object IMMgr {
     fun removeSessionObserver(observer: IMSessionObserver) { sessionObservers -= observer }
 
     fun showSessionStartError(errorString: String, sessionId: UUID) {
-        TODO("APR: use JVM equivalent - show localized error notification for session start failure: $errorString session=$sessionId")
+        System.err.println("IMMgr: showSessionStartError not yet implemented")
     }
 
     fun showSessionEventError(eventString: String, errorString: String, sessionId: UUID) {
-        TODO("APR: use JVM equivalent - show localized error notification for session event: $eventString/$errorString session=$sessionId")
+        System.err.println("IMMgr: showSessionEventError not yet implemented")
     }
 
     fun showSessionForceClose(reason: String, sessionId: UUID) {
-        TODO("APR: use JVM equivalent - show force-close notification and remove session $sessionId")
+        System.err.println("IMMgr: showSessionForceClose not yet implemented")
     }
 
     fun startCall(sessionId: UUID, direction: VoiceChannelDirection = VoiceChannelDirection.OUTGOING_CALL, voiceChannelInfo: Map<String, Any> = emptyMap()): Boolean {
         val channel = IMModel.getVoiceChannel(sessionId) ?: return false
-        TODO("APR: use JVM equivalent - activate voice channel with direction=$direction for session $sessionId")
+        System.err.println("IMMgr: startCall not yet implemented")
+        return false
     }
 
     fun endCall(sessionId: UUID): Boolean {
         val channel = IMModel.getVoiceChannel(sessionId) ?: return false
-        TODO("APR: use JVM equivalent - deactivate voice channel for session $sessionId")
+        System.err.println("IMMgr: endCall not yet implemented")
+        return false
     }
 
     fun isVoiceCall(sessionId: UUID): Boolean {

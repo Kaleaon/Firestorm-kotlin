@@ -107,8 +107,37 @@ class FloaterLand(private val seed: Any?) {
     }
 }
 
-fun sendParcelSelectObjects(parcelLocalId: Int, returnType: UInt, returnIds: Set<UUID>? = null) {
-    TODO("APR: use JVM equivalent")
+/**
+ * Send a ParcelSelectObjects UDP message to the region simulator.
+ *
+ * Packet layout (little-endian):
+ *   AgentData block  : AgentID (UUID 16 B) + SessionID (UUID 16 B)
+ *   ParcelData block : LocalID (S32 4 B) + ReturnType (U32 4 B)
+ *   ReturnIDs blocks : ReturnID (UUID 16 B) per id, or one null UUID when empty
+ */
+fun sendParcelSelectObjects(
+    parcelLocalId: Int,
+    returnType: UInt,
+    returnIds: Set<UUID>? = null,
+    regionHost: String = "127.0.0.1",
+    regionPort: Int = 13000,
+    agentId: UUID = UUID(0L, 0L),
+    sessionId: UUID = UUID(0L, 0L)
+) {
+    val idCount = returnIds?.size?.coerceAtLeast(1) ?: 1
+    val buf = ByteBuffer.allocate(32 + 8 + 16 * idCount).order(ByteOrder.LITTLE_ENDIAN)
+    fun putUUID(uuid: UUID) { buf.putLong(uuid.mostSignificantBits); buf.putLong(uuid.leastSignificantBits) }
+    putUUID(agentId); putUUID(sessionId)
+    buf.putInt(parcelLocalId); buf.putInt(returnType.toInt())
+    if (returnIds.isNullOrEmpty()) putUUID(UUID(0L, 0L)) else returnIds.forEach { putUUID(it) }
+    val data = buf.array()
+    try {
+        DatagramSocket().use { socket ->
+            socket.send(DatagramPacket(data, data.size, InetSocketAddress(regionHost, regionPort)))
+        }
+    } catch (e: Exception) {
+        System.err.println("sendParcelSelectObjects: UDP send failed: ${e.message}")
+    }
 }
 
 class PanelLandGeneral(private val parcel: Any?) {

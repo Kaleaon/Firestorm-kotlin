@@ -20,6 +20,17 @@ import com.firestorm.material.TextureEntry
 import com.firestorm.object.ViewerObject
 import com.firestorm.inventory.InventoryItem
 import com.firestorm.agent.Agent
+import kotlin.math.PI
+import kotlin.math.cos
+import kotlin.math.sin
+import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
+import org.lwjgl.opengl.GL11
+import org.lwjgl.opengl.GL13
+import java.net.HttpURLConnection
+import java.net.URL
+import java.io.DataOutputStream
 
 typealias Uuid = java.util.UUID
 typealias Color4 = FloatArray   // [r, g, b, a]

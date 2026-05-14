@@ -39,7 +39,10 @@ data class VisualParamInfo(
     var sex: Sex = Sex.BOTH
 ) {
     /** Parse attributes from an XML node (stubbed — requires XML tree support). */
-    fun parseXml(node: Any): Boolean = TODO("Wire to XML tree parser")
+    fun parseXml(node: Any): Boolean {
+        System.err.println("VisualParamInfo: parseXml not yet implemented")
+        return false
+    }
 }
 
 /**

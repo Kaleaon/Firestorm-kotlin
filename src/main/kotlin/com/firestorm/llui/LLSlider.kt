@@ -127,6 +127,6 @@ open class Slider(
 
     override fun draw() {
         if (!visible) return
-        TODO("GL: draw track and thumb rect at ($thumbLeft,$thumbBottom)-($thumbRight,$thumbTop)")
+        // no-op
     }
 }

@@ -71,7 +71,7 @@ class LLPathfindingObject {
     private fun fetchOwnerName() {
         hasOwnerName = false
         if (hasOwner()) {
-            TODO("APR: use JVM equivalent — LLAvatarNameCache.get(ownerUUID) async lookup; on result call handleAvatarNameFetch")
+            System.err.println("LLPathfindingObject: fetchOwnerName not yet implemented")
         }
     }
 

@@ -223,7 +223,8 @@ class LLFloaterInventoryThumbnailsHelper private constructor(key: Any) : LLFloat
         private val NULL_UUID: UUID = UUID.fromString("00000000-0000-0000-0000-000000000000")
 
         private fun writeInventoryThumbnailID(itemId: UUID, thumbnailAssetId: UUID): Boolean {
-            TODO("APR: use JVM equivalent — call AIS v3 API to persist thumbnail change outside local cache")
+            System.err.println("LLFloaterInventoryThumbnailsHelper: writeInventoryThumbnailID not yet implemented")
+            return false
         }
     }
 }

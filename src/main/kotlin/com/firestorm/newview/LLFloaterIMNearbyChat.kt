@@ -363,7 +363,7 @@ class LLFloaterIMNearbyChat(key: Any = UUID(0, 0)) : LLFloaterIMSessionTab(key) 
         }
 
         fun sendChatFromViewer(utf8Text: String, type: EChatType, animate: Boolean) {
-            TODO("APR: use JVM equivalent - send ChatFromViewer or ScriptDialogReply UDP message via gMessageSystem")
+            System.err.println("LLFloaterIMNearbyChat: sendChatFromViewer not yet implemented")
         }
 
         fun isWordsName(name: String): Boolean {

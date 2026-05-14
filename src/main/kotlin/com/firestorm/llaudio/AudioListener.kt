@@ -142,7 +142,7 @@ open class Listener {
      * Mirrors `LLListener::commitDeferredChanges()`.
      */
     open fun commitDeferredChanges() {
-        TODO("AUDIO: Listener — push position/velocity/orientation to audio hardware")
+        System.err.println("AudioListener: commitDeferredChanges not yet implemented")
     }
 
     // ---- Conversion to/from the value-type snapshot -----------------------

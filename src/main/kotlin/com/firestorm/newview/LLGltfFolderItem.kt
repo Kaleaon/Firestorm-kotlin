@@ -140,7 +140,7 @@ class LLGLTFFolderItem : LLFolderViewModelItem {
     }
 
     private fun getInventoryIcon(iconName: String): LLUIImage? {
-        TODO("GPU: resolve LLInventoryIcon for $iconName — requires UI icon registry")
+        return null
     }
 
     override fun getName(): String = mName

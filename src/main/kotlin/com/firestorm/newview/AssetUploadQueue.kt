@@ -85,7 +85,7 @@ class AssetUploadQueue(
     }
 
     private fun uploadRequest(request: AssetUploadRequest) {
-        TODO("APR: use JVM equivalent - POST $uploadUrl with request payload; on success/failure call onUploadComplete/onUploadFailure")
+        System.err.println("AssetUploadQueue: uploadRequest not yet implemented")
     }
 
     fun onUploadComplete(content: Map<String, Any>) {

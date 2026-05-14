@@ -198,7 +198,8 @@ class PoseBlender {
 
     /** Register all joint states from [motion]'s pose into the blender pool. */
     fun addMotion(motion: Any): Boolean {
-        TODO("Wire to Motion type once available")
+        System.err.println("Pose: addMotion not yet implemented")
+        return false
     }
 
     fun blendAndApply() {

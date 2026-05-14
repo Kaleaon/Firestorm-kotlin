@@ -119,6 +119,7 @@ class Login {
         method: String,
         credentials: Map<String, Any?>
     ): Map<String, Any?>? {
-        TODO("APR: use JVM equivalent - send XMLRPC login request to $uri using method $method")
+        System.err.println("Login: xmlrpcLogin not yet implemented")
+        return null
     }
 }

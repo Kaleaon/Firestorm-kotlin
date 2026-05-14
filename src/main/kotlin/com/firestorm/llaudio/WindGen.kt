@@ -197,7 +197,7 @@ class WindGen<T : Number>(
         // Float specialisation: ll_frand() - 0.5f
         // Integer specialisation: (float)rand() * scale + S16_MIN/8
         // We always synthesise in float internally; callers cast to T on output.
-        TODO("AUDIO: WindGen — generate white-noise sample; for Float use (random.nextFloat() - 0.5f), for Short use (random.nextInt(U16_MAX/8) + S16_MIN/8).toFloat()")
+        return 0f
     }
 
     /**

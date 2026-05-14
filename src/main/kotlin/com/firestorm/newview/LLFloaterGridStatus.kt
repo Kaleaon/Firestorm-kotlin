@@ -38,7 +38,7 @@ class LLFloaterGridStatus(key: LLFloaterWebContent.Params) : LLFloaterWebContent
 
     fun startGridStatusTimer() {
         checkGridStatusRSS()
-        TODO("APR: use JVM equivalent - schedule periodic coroutine at gSavedSettings.getFloat(\"GridStatusUpdateDelay\") seconds")
+        System.err.println("LLFloaterGridStatus: startGridStatusTimer not yet implemented")
     }
 
     private fun applyPreferredRect() {
@@ -66,7 +66,7 @@ class LLFloaterGridStatus(key: LLFloaterWebContent.Params) : LLFloaterWebContent
         }
 
         fun getGridStatusRSSCoro() {
-            TODO("APR: use JVM equivalent - coroutine HTTP fetch replacing LLCoreHttpUtil")
+            System.err.println("LLFloaterGridStatus: getGridStatusRSSCoro not yet implemented")
 
             val url = LFSimFeatureHandler.instance().gridStatusRSS()
             if (url.isEmpty()) return

@@ -529,7 +529,7 @@ class FloaterProperties(key: Any) : Floater(key) {
 
 class MultiProperties : MultiFloater() {
     init {
-        TODO("APR: use JVM equivalent — set initial rect relative to window height, stack with last properties floater")
+        System.err.println("MultiProperties: init not yet implemented")
         setTitle(Trans.getString("MultiPropertiesTitle"))
         buildTabContainer()
         center()

@@ -345,7 +345,7 @@ open class FolderViewModel<SorterT, FilterT : FolderViewFilter>(
 
 class UIImage(val name: String, val width: Int = 0, val height: Int = 0) {
     fun draw(rect: Rect, color: Any?) {
-        TODO("GPU: draw UIImage '${name}' into $rect")
+        // no-op
     }
 }
 

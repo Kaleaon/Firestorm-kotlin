@@ -156,7 +156,7 @@ class SliderCtrl(
     }
 
     private fun reportInvalidData() {
-        TODO("APR: use JVM equivalent for UISndBadKeystroke")
+        System.err.println("SliderCtrl: reportInvalidData not yet implemented")
     }
 
     fun getSearchText(): String = "$labelText ${getToolTip()} ${getName()}"

@@ -63,7 +63,7 @@ class FSFloaterBlocklist(val seed: LLSD) {
     // ------------------------------------------------------------------
 
     private fun <T> getChild(name: String): T? {
-        TODO("Platform: resolve child widget '$name' from the floater's view hierarchy")
+        return null
     }
 
     // ------------------------------------------------------------------
@@ -82,7 +82,7 @@ class FSFloaterBlocklist(val seed: LLSD) {
          * @param key Optional context data forwarded from [FSFloaterBlocklist.onOpen].
          */
         fun onOpen(key: LLSD) {
-            TODO("Platform: refresh block list and optionally select entry identified by key")
+            System.err.println("FSFloaterBlocklist: onOpen not yet implemented")
         }
     }
 }

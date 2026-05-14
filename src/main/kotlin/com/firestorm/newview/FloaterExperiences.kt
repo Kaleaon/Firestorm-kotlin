@@ -182,7 +182,7 @@ class FloaterExperiences(data: LLSD) : Floater(data) {
         errorNotify: String = "ErrorMessage",
         cback: Callback? = null
     ) {
-        TODO("APR: use JVM equivalent — launch coroutine with GET $url, then populate tabs via tabMapping")
+        System.err.println("FloaterExperiences: retrieveExperienceList not yet implemented")
     }
 
     private fun requestNewExperience(
@@ -192,7 +192,7 @@ class FloaterExperiences(data: LLSD) : Floater(data) {
         errorNotify: String,
         cback: Callback
     ) {
-        TODO("APR: use JVM equivalent — launch coroutine with POST $url, then populate tabs via tabMapping")
+        System.err.println("FloaterExperiences: requestNewExperience not yet implemented")
     }
 
     companion object {

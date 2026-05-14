@@ -64,7 +64,7 @@ object FSPrimfeedConnect {
         val multipartSuffix = "$sep$dash--$sep".toByteArray(Charsets.UTF_8)
         val fullBody = multipartPrefix + imageData + multipartSuffix
 
-        TODO("APR: use JVM equivalent — send HTTP multipart POST to https://api.primfeed.com/pf/viewer/post with Bearer token, pf-viewer-api-key, and optional kynno-selected-store headers; parse JSON response for 'url' field; invoke mPostCallback(success, url)")
+        System.err.println("FSPrimfeedConnect: uploadPhotoCoro not yet implemented")
 
         // After real HTTP call:
         // val success = httpStatus == 200

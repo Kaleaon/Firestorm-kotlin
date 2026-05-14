@@ -51,7 +51,7 @@ class ChatEntry(private val params: ChatEntryParams) {
     }
 
     fun onFocusLost() {
-        TODO("APR: use JVM equivalent — notify focus system")
+        System.err.println("ChatEntry: onFocusLost not yet implemented")
     }
 
     fun enableSingleLineMode(singleLineMode: Boolean) {

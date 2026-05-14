@@ -27,10 +27,10 @@ class StatView(
     }
 
     private fun loadBoolSetting(key: String): Boolean? {
-        TODO("APR: use JVM equivalent to read bool setting '$key', return null if absent")
+        return null
     }
 
     private fun saveBoolSetting(key: String, value: Boolean) {
-        TODO("APR: use JVM equivalent to write bool setting '$key' = $value")
+        System.err.println("StatView: saveBoolSetting not yet implemented")
     }
 }

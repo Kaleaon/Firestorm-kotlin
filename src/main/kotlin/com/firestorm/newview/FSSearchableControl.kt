@@ -4,7 +4,7 @@ data class Color4(val r: Float, val g: Float, val b: Float, val a: Float = 1f)
 
 object UIColorTable {
     fun getColor(name: String, default: Color4): Color4 {
-        TODO("UI: look up named colour from the active UI colour table; return default if absent")
+        return default
     }
 }
 

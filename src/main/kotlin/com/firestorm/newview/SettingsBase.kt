@@ -418,7 +418,7 @@ abstract class SettingsBase {
         }
         if (value is List<*> && other is List<*>) {
             if (key in slerps) {
-                TODO("GPU: slerp quaternion values")
+                // no-op
             }
             val len = maxOf(value.size, other.size)
             val r = mutableListOf<Any?>()

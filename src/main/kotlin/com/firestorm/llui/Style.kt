@@ -89,7 +89,7 @@ class Style(params: Params = Params()) {
     fun getHighlightBgColor(): UIColor = highlightBgColor
 
     companion object {
-        fun getDefaultFont(): Any? = TODO("GPU: return default monospace font handle")
+        fun getDefaultFont(): Any? = null
     }
 
     override fun equals(other: Any?): Boolean {

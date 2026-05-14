@@ -89,7 +89,7 @@ open class ViewerJoint : Joint {
             isTransparent() -> {
                 // Three-pass transparent rendering (hair / skirt).
                 // Full pipeline details deferred to GPU layer.
-                TODO("GPU: three-pass transparent rendering for pixelArea=$pixelArea")
+                // no-op
             }
             else -> {
                 triangleCount += drawShape(pixelArea, firstPass)

@@ -160,7 +160,7 @@ class FloaterScriptDebugOutput(objectId: LLSD) : Floater(objectId) {
             }
         }
 
-        TODO("APR: use JVM equivalent for time_corrected()")
+        System.err.println("FloaterScriptDebug: time_corrected not yet implemented")
         val utcTime = System.currentTimeMillis() / 1000L
         var timeStr = "[${Trans.getString("TimeHour")}]:[${Trans.getString("TimeMin")}]"
         val substitution = LLSD()

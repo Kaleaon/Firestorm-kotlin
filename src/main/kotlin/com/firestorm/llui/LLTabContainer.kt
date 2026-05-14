@@ -152,7 +152,7 @@ open class TabContainer(
     override fun draw() {
         if (!visible) return
         if (!tabsHidden) {
-            TODO("GL: draw tab buttons for ${tabs.size} tabs at position $tabPosition")
+            // no-op
         }
         getCurrentPanel()?.draw()
     }

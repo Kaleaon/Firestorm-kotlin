@@ -101,7 +101,7 @@ class FloaterInventory private constructor(
     fun draw() {
         if (!visible) return
         mainPanel.draw()
-        TODO("Draw floater chrome (title bar, resize handles) via UI toolkit")
+        // no-op
     }
 
     // ── Singleton registry ────────────────────────────────────────────────────

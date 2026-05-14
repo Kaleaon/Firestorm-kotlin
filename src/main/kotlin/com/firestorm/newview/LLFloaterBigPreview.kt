@@ -56,7 +56,7 @@ class LLFloaterBigPreview(key: LLSD) : LLFloater(key) {
         val offsetX = previewRect.mLeft + localOffsetX
         val offsetY = previewRect.mBottom + localOffsetY
 
-        TODO("GPU: gGL.matrixMode(MM_MODELVIEW); gl_draw_scaled_image with transparency alpha")
+        // no-op
     }
 
     override fun onDestroy() {

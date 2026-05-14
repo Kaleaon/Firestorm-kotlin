@@ -28,7 +28,7 @@ class LLFloaterPreferenceGraphicsAdvanced(key: LLSD) : LLFloater(key) {
 
     fun postBuild(): Boolean {
         val combo = getChild<LLComboBox>("fsaa")
-        TODO("GPU: check gFXAAProgram[0].isComplete() / gSMAAEdgeDetectProgram[0].isComplete() and remove entries accordingly")
+        System.err.println("LLFloaterPreferencesGraphicsAdvanced: postBuild GPU shader check not yet implemented")
 
         mComplexityChangedSignal = gSavedSettings.getControl("RenderAvatarMaxComplexity")
             .connectCommitSignal { updateComplexityText() }

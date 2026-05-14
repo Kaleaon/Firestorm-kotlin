@@ -64,7 +64,7 @@ object LLAccountingCostManager {
 
         pendingObjectQuota.addAll(diffSet)
 
-        TODO("APR: use JVM equivalent — POST diffSet as { keystr: [uuid...] } to url, parse 'selected.physics/streaming/simulation', call observer.onWeightsUpdate or observer.setErrorStatus")
+        System.err.println("LLAccountingCost: requestCosts not yet implemented")
 
         pendingObjectQuota.clear()
     }

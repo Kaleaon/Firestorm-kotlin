@@ -28,7 +28,8 @@ class LLPhysicsVolumeParams(
         if (!isMeshSculpt()) return false
         val meshId = getSculptID()
         if (meshId == null || meshId.mostSignificantBits == 0L && meshId.leastSignificantBits == 0L) return false
-        return TODO("APR: gMeshRepo.getDecomposition(meshId) != null")
+        System.err.println("LLPhysicsShapeBuilderUtil: hasDecomposition not yet implemented")
+        return false
     }
 
     override fun equals(other: Any?): Boolean {

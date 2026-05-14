@@ -164,7 +164,7 @@ object LLError {
         if (logToStderr) logToStderr()
 
         // In C++ a live LogControlFile is loaded here; stub with TODO.
-        TODO("APR: load logcontrol.xml from $userDir or $appDir and apply configure()")
+        System.err.println("LLError: initForApplication logcontrol.xml loading not yet implemented")
     }
 
     fun setFatalFunction(f: (String) -> Unit) { settings.crashFunction = f }

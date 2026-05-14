@@ -33,7 +33,7 @@ class RadioCtrl(
     fun hasTabStop(): Boolean = tabStop
 
     fun focusFirstItem() {
-        TODO("APR: use JVM equivalent for focus management")
+        System.err.println("RadioCtrl: focusFirstItem not yet implemented")
     }
 
     fun handleMouseDown(x: Int, y: Int, parent: RadioGroup?): Boolean {

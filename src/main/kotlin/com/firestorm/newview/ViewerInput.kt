@@ -310,7 +310,8 @@ object ViewerInput {
      */
     fun loadBindingsXml(filename: String): Int {
         resetBindings()
-        TODO("XML parsing and binding registration not yet implemented (filename=$filename)")
+        System.err.println("ViewerInput: loadBindingsXml not yet implemented")
+        return 0
     }
 
     // -----------------------------------------------------------------------

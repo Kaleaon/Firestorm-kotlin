@@ -218,7 +218,7 @@ class LLFloaterForgetUser(key: LLSD) : LLFloater("floater_forget_user") {
 
             if (deleteData) {
                 val userPath = gDirUtilp.getOSUserAppDir() + gDirUtilp.getDirDelimiter() + userid
-                TODO("APR: use JVM equivalent – delete directory tree at $userPath")
+                System.err.println("LLFloaterForgetUser: deleteUserDirectory not yet implemented")
 
                 LLFavoritesOrderStorage.removeFavoritesRecordOfUser(favId, grid)
             }

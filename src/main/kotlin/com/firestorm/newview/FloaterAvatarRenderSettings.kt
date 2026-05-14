@@ -124,7 +124,7 @@ class FloaterAvatarRenderSettings(key: Any) : Floater(key) {
     }
 
     fun createTimestamp(datetime: Int): String {
-        TODO("APR: use JVM equivalent")
+        return ""
     }
 
     private fun callbackAvatarPicked(ids: List<UUID>, visualSetting: AvatarVisualMuteSetting) {

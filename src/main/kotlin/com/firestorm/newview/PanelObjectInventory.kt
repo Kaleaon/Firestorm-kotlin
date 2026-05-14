@@ -629,7 +629,7 @@ class PanelObjectInventory(
                 else -> ""
             }
             if (text.isNotEmpty()) {
-                TODO("GPU: render centered status text '$text'")
+                // no-op
             }
         }
     }

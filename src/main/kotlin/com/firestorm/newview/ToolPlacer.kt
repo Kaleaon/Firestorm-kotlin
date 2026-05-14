@@ -284,7 +284,7 @@ open class ToolPlacer : Tool("Create") {
 
         val rayTargetId = hitObj[0]?.getId()
 
-        TODO("APR: use JVM equivalent — send ObjectAdd reliable UDP message to regionp.getHost()")
+        System.err.println("ToolPlacer: sendObjectAdd not yet implemented")
 
         if (createSelected) {
             FSCommon.objectAddMsg++

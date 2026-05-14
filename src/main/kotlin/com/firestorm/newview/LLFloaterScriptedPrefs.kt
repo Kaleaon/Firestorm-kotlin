@@ -41,7 +41,7 @@ class LLFloaterScriptEdPrefs(val key: Any) : LLFloater(key) {
 
     private fun setPreprocInclude() {
         val curName = gSavedSettings.getString("_NACL_PreProcHDDIncludeLocation")
-        TODO("APR: use JVM equivalent - open directory picker, then call changePreprocIncludePath")
+        System.err.println("LLFloaterScriptedPrefs: setPreprocInclude not yet implemented")
     }
 
     private fun changePreprocIncludePath(filenames: MutableList<String>, proposedName: String) {

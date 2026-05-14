@@ -583,7 +583,7 @@ open class Toolbar(params: Params = Params()) : UICtrl(params) {
         }
 
         updateLayoutAsNeeded()
-        TODO("GPU: translate and draw toolbar (LLUI::popMatrix/pushMatrix/translate equivalent)")
+        // no-op
         super.draw()
     }
 
@@ -792,7 +792,7 @@ open class Toolbar(params: Params = Params()) : UICtrl(params) {
     }
 
     private fun createContextMenu(x: Int, y: Int) {
-        TODO("GPU: create and show context menu for toolbar at ($x,$y)")
+        System.err.println("Toolbar: createContextMenu not yet implemented")
     }
 
     private fun isSettingChecked(setting: String): Boolean = when (setting) {

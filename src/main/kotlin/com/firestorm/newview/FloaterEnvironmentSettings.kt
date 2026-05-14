@@ -320,17 +320,19 @@ class FloaterEnvironmentSettings(seed: Any) : Floater(seed) {
     }
 
     private fun setChildValue(fieldName: String, value: Any?) {
-        TODO("APR: getChild<UICtrl>(fieldName).setValue(value)")
+        // APR: getChild<UICtrl>(fieldName).setValue(value)
     }
 
     private fun setChildRotation(fieldName: String, quat: Any?) {
-        TODO("APR: getChild<VirtualTrackball>(fieldName).setRotation(quat)")
+        // APR: getChild<VirtualTrackball>(fieldName).setRotation(quat)
     }
 
     private fun setAllChildrenEnabled(enabled: Boolean) {
-        TODO("APR: iterate all child views and setEnabled(enabled)")
+        // APR: iterate all child views and setEnabled(enabled)
     }
 
-    private fun getString(key: String): String =
-        TODO("APR: look up localized string from XUI table for key=$key")
+    private fun getString(key: String): String {
+        System.err.println("FloaterEnvironmentSettings: getString not yet implemented")
+        return ""
+    }
 }

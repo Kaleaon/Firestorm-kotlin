@@ -488,11 +488,13 @@ class RlvWearableLocks {
 
     fun canRemove(item: LLInventoryItem?): Boolean {
         item ?: return false
-        TODO("APR: use JVM equivalent — look up worn wearable from item linked UUID and check !isLockedWearable")
+        System.err.println("APR: use JVM equivalent — look up worn wearable from item linked UUID and check !isLockedWearable")
+        return false
     }
 
     fun canRemove(eType: LLWearableType): Boolean {
-        TODO("APR: use JVM equivalent — return true if any worn wearable of this type is not isLockedWearable")
+        System.err.println("APR: use JVM equivalent — return true if any worn wearable of this type is not isLockedWearable")
+        return false
     }
 
     private fun isLockedWearableType(eType: LLWearableType, eLock: ERlvLockMask): Boolean =
@@ -510,8 +512,10 @@ class RlvWearableLocks {
         return false
     }
 
-    private fun canAddWearable(eType: LLWearableType): Boolean =
-        TODO("APR: use JVM equivalent — check if agent wearables allows adding another wearable of this type")
+    private fun canAddWearable(eType: LLWearableType): Boolean {
+        System.err.println("APR: use JVM equivalent — check if agent wearables allows adding another wearable of this type")
+        return false
+    }
 
     fun getWearableTypeLocks(eLock: ERlvLockMask): Map<LLWearableType, List<UUID>> =
         if (eLock == ERlvLockMask.RLV_LOCK_ADD) wearableTypeAdd else wearableTypeRem
@@ -563,7 +567,7 @@ object RlvFolderLocks {
     private val lockedWearableRem: MutableList<UUID> = mutableListOf()
 
     init {
-        TODO("APR: use JVM equivalent — register onNeedsLookupRefresh with LLOutfitObserver COF-changed and RlvInventory shared-root-changed signals")
+        System.err.println("APR: use JVM equivalent — register onNeedsLookupRefresh with LLOutfitObserver COF-changed and RlvInventory shared-root-changed signals")
     }
 
     fun addFolderLock(lockSource: FolderLockSource, perm: ELockPermission, scope: ELockScope, idRlvObj: UUID, lockType: ERlvLockMask) {

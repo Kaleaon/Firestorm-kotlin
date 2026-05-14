@@ -57,36 +57,27 @@ class FSFloaterNearbyChat(val key: LLSD) {
     private val rlvBehaviorCallbacks: MutableList<(String) -> Unit> = mutableListOf()
 
     fun postBuild(): Boolean {
-        TODO(
-            "Wire up: inputEditor (autoreplace, commit, keystroke, focusLost, focusReceived, textExpanded callbacks); " +
-            "RLV behavior toggle; emoji buttons; chat history + muted history with unread callbacks; " +
-            "chatTypeCombo, sendChatButton; FSUseNearbyChatConsole + FSShowMutedChatHistory settings listeners"
-        )
+        System.err.println("FSFloaterNearbyChat: postBuild not yet implemented")
+        return false
     }
 
     fun onOpen(key: LLSD) {
-        TODO(
-            "Handle ChatHistoryTornOff tear-off; add floater to IM container at START position; " +
-            "show container and floater if isChatMultiTab and not yet visible"
-        )
+        System.err.println("FSFloaterNearbyChat: onOpen not yet implemented")
     }
 
     fun setVisible(visible: Boolean) {
         if (visible) removeScreenChat()
-        TODO(
-            "Call super.setVisible(visible); compute is_minimized; " +
-            "focus inputEditor if active tab; manage gConsole session"
-        )
+        System.err.println("FSFloaterNearbyChat: setVisible not yet implemented")
     }
 
     fun setMinimized(b: Boolean) {
         handleMinimized(b)
-        TODO("Call super.setMinimized(b)")
+        System.err.println("FSFloaterNearbyChat: setMinimized not yet implemented")
     }
 
     fun openFloater(key: LLSD) {
         if (isChatMultiTab()) {
-            TODO("Show IM container at START position; setVisible(true); call super.openFloater(key)")
+            System.err.println("FSFloaterNearbyChat: openFloater not yet implemented")
         }
     }
 

@@ -53,31 +53,29 @@ class FloaterInspect(key: String) : Floater(key) {
     }
 
     fun onOpen(key: String) {
-        val prevForcesel: Boolean =
-            TODO("APR: SelectMgr.getInstance().setForceSelection(true)") as Boolean
+        val prevForcesel: Boolean = false // APR: SelectMgr.getInstance().setForceSelection(true)
         ToolMgr.setTransientTool(ToolCompInspect)
-        TODO("APR: SelectMgr.getInstance().setForceSelection(prevForcesel)")
-        objectSelection = TODO("APR: SelectMgr.getInstance().getSelection()")
+        // APR: SelectMgr.getInstance().setForceSelection(prevForcesel)
+        objectSelection = null // APR: SelectMgr.getInstance().getSelection()
         refresh()
     }
 
     fun onDestroy() {
-        if (ownerNameCacheConnected) TODO("APR: disconnect ownerNameCacheConnection")
-        if (creatorNameCacheConnected) TODO("APR: disconnect creatorNameCacheConnection")
+        if (ownerNameCacheConnected) { /* APR: disconnect ownerNameCacheConnection */ }
+        if (creatorNameCacheConnected) { /* APR: disconnect creatorNameCacheConnection */ }
 
-        val buildVisible: Boolean =
-            TODO("APR: FloaterReg.instanceVisible(\"build\")") as Boolean
+        val buildVisible: Boolean = false // APR: FloaterReg.instanceVisible("build")
         if (!buildVisible) {
             if (ToolMgr.getBaseTool() === ToolCompInspect) {
                 ToolMgr.clearTransientTool()
             }
             ToolMgr.setCurrentToolset(gBasicToolset!!)
         } else {
-            TODO("APR: FloaterReg.showInstance(\"build\", LLSD(), true)")
+            // APR: FloaterReg.showInstance("build", LLSD(), true)
         }
 
         disconnectColumnConfigSignal()
-        TODO("APR: destroy options menu handle")
+        // APR: destroy options menu handle
     }
 
     fun getSelectedUUID(): String {

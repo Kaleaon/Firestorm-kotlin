@@ -938,13 +938,13 @@ abstract class CallDialog(protected val payload: Map<String, Any>) {
 class IncomingCallDialog(payload: Map<String, Any>) : CallDialog(payload) {
 
     override fun postBuild(): Boolean {
-        TODO("APR: use JVM equivalent - wire accept/reject/start-IM buttons; set caller name and icon")
+        System.err.println("IncomingCallDialog: postBuild not yet implemented")
         return true
     }
 
     override fun onOpen(key: Any) {
         super.onOpen(key)
-        TODO("APR: use JVM equivalent - fetch avatar name then update dialog UI with caller info and call type")
+        System.err.println("IncomingCallDialog: onOpen not yet implemented")
     }
 
     override fun onLifetimeExpired() {
@@ -963,13 +963,13 @@ class IncomingCallDialog(payload: Map<String, Any>) : CallDialog(payload) {
                 ?: IMMgr.InvitationType.INSTANT_MESSAGE
             when (response) {
                 ACCEPT -> {
-                    TODO("APR: use JVM equivalent - accept chatter-box invitation for $sessionId via HTTP coroutine")
+                    System.err.println("IncomingCallDialog: accept chatter-box invitation not yet implemented")
                 }
                 DECLINE -> {
-                    TODO("APR: use JVM equivalent - send rejection to server and clear pending invitation for $sessionId")
+                    System.err.println("IncomingCallDialog: decline invitation not yet implemented")
                 }
                 START_IM -> {
-                    TODO("APR: use JVM equivalent - open IM session with $callerId without starting call")
+                    System.err.println("IncomingCallDialog: start IM without call not yet implemented")
                 }
             }
         }
@@ -984,17 +984,17 @@ class OutgoingCallDialog(payload: Map<String, Any>) : CallDialog(payload) {
         val OCD_KEY: UUID = UUID.fromString("7CF78E11-0CFE-498D-ADB9-1417BF03DDB4")
 
         fun onCancel(userData: Any) {
-            TODO("APR: use JVM equivalent - end the voice call in progress when user cancels")
+            System.err.println("OutgoingCallDialog: onCancel not yet implemented")
         }
     }
 
     override fun postBuild(): Boolean {
-        TODO("APR: use JVM equivalent - wire cancel button; hide all text boxes initially")
+        System.err.println("OutgoingCallDialog: postBuild not yet implemented")
         return true
     }
 
     fun show(key: Any) {
-        TODO("APR: use JVM equivalent - update outgoing call dialog with session/caller info and show")
+        System.err.println("OutgoingCallDialog: show not yet implemented")
     }
 }
 

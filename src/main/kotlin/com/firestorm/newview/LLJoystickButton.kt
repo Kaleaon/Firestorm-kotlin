@@ -260,19 +260,19 @@ class LLJoystickAgentSlide(
         val dy = mLastMouse.y - mFirstMouse.y + mInitialOffset.y
 
         if (dx > mHorizSlopNear) {
-            TODO("GPU: gAgent.moveLeft(-1)")
+            // GPU: gAgent.moveLeft(-1)
         } else if (dx < -mHorizSlopNear) {
-            TODO("GPU: gAgent.moveLeft(1)")
+            // GPU: gAgent.moveLeft(1)
         }
 
         if (dy > mVertSlopFar) {
-            TODO("GPU: gAgent.moveAt(1)")
+            // GPU: gAgent.moveAt(1)
         } else if (dy > mVertSlopNear) {
-            TODO("GPU: gAgent.moveAtNudge(1)")
+            // GPU: gAgent.moveAtNudge(1)
         } else if (dy < -mVertSlopFar) {
-            TODO("GPU: gAgent.moveAt(-1)")
+            // GPU: gAgent.moveAt(-1)
         } else if (dy < -mVertSlopNear) {
-            TODO("GPU: gAgent.moveAtNudge(-1)")
+            // GPU: gAgent.moveAtNudge(-1)
         }
     }
 }
@@ -294,7 +294,7 @@ open class LLJoystickCameraRotate(
     }
 
     override fun handleMouseDown(x: Int, y: Int, mask: Int): Boolean {
-        TODO("GPU: gAgent.setMovementLocked(true)")
+        // GPU: gAgent.setMovementLocked(true)
         updateSlop()
 
         val horizCenter = getRect().getWidth() / 2
@@ -329,7 +329,7 @@ open class LLJoystickCameraRotate(
     }
 
     override fun handleMouseUp(x: Int, y: Int, mask: Int): Boolean {
-        TODO("GPU: gAgent.setMovementLocked(false)")
+        // GPU: gAgent.setMovementLocked(false)
         mInCenter = false
         return super.handleMouseUp(x, y, mask)
     }

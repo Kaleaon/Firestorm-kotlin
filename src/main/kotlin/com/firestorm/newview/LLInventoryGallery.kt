@@ -682,7 +682,8 @@ class LLInventoryGallery(params: Params = Params()) : LLPanel(), LLEditMenuHandl
     }
 
     private fun updateRowsIfNeeded(): Boolean {
-        TODO("GPU: check scroll container width vs rowPanelWidth, call reArrangeRows if needed")
+        // GPU: check scroll container width vs rowPanelWidth, call reArrangeRows if needed
+        return false
     }
 
     private fun updateGalleryWidth() {
@@ -697,15 +698,16 @@ class LLInventoryGallery(params: Params = Params()) : LLPanel(), LLEditMenuHandl
                 self.needsArrange = false
                 return
             }
-            TODO("APR: use JVM equivalent - process itemBuildQuery batch within time budget, then handle selection queue")
+            System.err.println("LLInventoryGallery: onIdle itemBuildQuery processing not yet implemented")
         }
 
         fun isItemCopyable(itemId: UUID): Boolean {
-            TODO("APR: use JVM equivalent - check copy permission on item or linked item")
+            System.err.println("LLInventoryGallery: isItemCopyable not yet implemented")
+            return false
         }
 
         fun onDelete(notification: Any, response: Any, selectedIds: ArrayDeque<UUID>) {
-            TODO("APR: use JVM equivalent - confirm then remove selected inventory items")
+            System.err.println("LLInventoryGallery: onDelete not yet implemented")
         }
     }
 }

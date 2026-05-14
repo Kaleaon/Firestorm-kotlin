@@ -166,7 +166,7 @@ object ToolDragAndDrop : Tool("draganddrop") {
         cursor = ECursorType.UI_CURSOR_NO
         if (type == EDragAndDropType.DAD_CATEGORY &&
             (source == ESource.SOURCE_AGENT || source == ESource.SOURCE_LIBRARY)) {
-            TODO("APR: use JVM equivalent - prefetch category descendants")
+            System.err.println("APR: use JVM equivalent - prefetch category descendants")
         }
     }
 
@@ -187,7 +187,7 @@ object ToolDragAndDrop : Tool("draganddrop") {
         ToolMgr.instance.setTransientTool(this)
         cursor = ECursorType.UI_CURSOR_NO
         if (source == ESource.SOURCE_AGENT || source == ESource.SOURCE_LIBRARY) {
-            TODO("APR: use JVM equivalent - prefetch category descendants for multi-drag")
+            System.err.println("APR: use JVM equivalent - prefetch category descendants for multi-drag")
         }
     }
 
@@ -234,7 +234,7 @@ object ToolDragAndDrop : Tool("draganddrop") {
 
     override fun handleToolTip(x: Int, y: Int, mask: MASK): Boolean {
         if (toolTipMsg.isNotEmpty()) {
-            TODO("APR: use JVM equivalent - show tooltip: $toolTipMsg")
+            System.err.println("APR: use JVM equivalent - show tooltip: $toolTipMsg")
         }
         return true
     }

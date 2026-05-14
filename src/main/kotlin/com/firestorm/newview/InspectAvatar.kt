@@ -130,15 +130,15 @@ class InspectAvatar(avatarIdData: Map<String, Any?>) : Inspect() {
     }
 
     fun processAvatarData(data: AvatarData) {
-        TODO("APR: format and display born_on, age, SL/RW profiles, account type, payment info in user_subtitle and user_details controls; delete propertiesRequest")
+        System.err.println("InspectAvatar: processAvatarData not yet implemented")
     }
 
     private fun updateVolumeSlider() {
-        TODO("APR: hide mute_btn and volume_slider if not in voice with this avatar; otherwise set mute state and volume from VoiceClient")
+        System.err.println("InspectAvatar: updateVolumeSlider not yet implemented")
     }
 
     private fun updateModeratorPanel() {
-        TODO("APR: show/hide moderator panel based on current voice channel session and speaker manager moderator state")
+        System.err.println("InspectAvatar: updateModeratorPanel not yet implemented")
     }
 
     private fun toggleSelectedVoice(enabled: Boolean) {

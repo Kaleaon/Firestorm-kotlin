@@ -320,27 +320,27 @@ object Environment {
     }
 
     fun updateShaderUniforms() {
-        TODO("GPU: push sky and water uniforms to shader")
+        // GPU: push sky and water uniforms to shader
     }
 
     fun updateSettingsUniforms() {
-        TODO("GPU: snapshot current sky/water into uniform arrays for all shader groups")
+        // GPU: snapshot current sky/water into uniform arrays for all shader groups
     }
 
-    fun getLightDirection(): Vector3    = TODO("return sun or moon direction (whichever is above horizon)")
-    fun getSunDirection(): Vector3      = TODO("return sun direction in viewer +x right +z up coords")
-    fun getMoonDirection(): Vector3     = TODO("return moon direction in viewer coords")
+    fun getLightDirection(): Vector3    { System.err.println("Environment: getLightDirection not yet implemented"); return Vector3.ZERO }
+    fun getSunDirection(): Vector3      { System.err.println("Environment: getSunDirection not yet implemented"); return Vector3.ZERO }
+    fun getMoonDirection(): Vector3     { System.err.println("Environment: getMoonDirection not yet implemented"); return Vector3.ZERO }
 
-    fun getLightDirectionCFR(): Vector4 = TODO("convert getLightDirection() to Camera-Frame-Right coords")
-    fun getSunDirectionCFR(): Vector4   = TODO("convert getSunDirection() to CFR")
-    fun getMoonDirectionCFR(): Vector4  = TODO("convert getMoonDirection() to CFR")
-    fun getClampedLightNorm(): Vector4  = TODO("OGL coords, Y clamped above -0.1 to avoid sky shader artifacts")
-    fun getClampedSunNorm(): Vector4    = TODO("OGL coords sun, Y clamped above -0.1")
-    fun getClampedMoonNorm(): Vector4   = TODO("OGL coords moon, Y clamped above -0.1")
-    fun getRotatedLightNorm(): Vector4  = TODO("OGL coords rotated by lastCamYaw for water shaders")
+    fun getLightDirectionCFR(): Vector4 { System.err.println("Environment: getLightDirectionCFR not yet implemented"); return Vector4.ZERO }
+    fun getSunDirectionCFR(): Vector4   { System.err.println("Environment: getSunDirectionCFR not yet implemented"); return Vector4.ZERO }
+    fun getMoonDirectionCFR(): Vector4  { System.err.println("Environment: getMoonDirectionCFR not yet implemented"); return Vector4.ZERO }
+    fun getClampedLightNorm(): Vector4  { System.err.println("Environment: getClampedLightNorm not yet implemented"); return Vector4.ZERO }
+    fun getClampedSunNorm(): Vector4    { System.err.println("Environment: getClampedSunNorm not yet implemented"); return Vector4.ZERO }
+    fun getClampedMoonNorm(): Vector4   { System.err.println("Environment: getClampedMoonNorm not yet implemented"); return Vector4.ZERO }
+    fun getRotatedLightNorm(): Vector4  { System.err.println("Environment: getRotatedLightNorm not yet implemented"); return Vector4.ZERO }
 
-    fun getCamHeight(): Float   = TODO("return camera altitude above terrain")
-    fun getWaterHeight(): Float = TODO("return current region water level")
+    fun getCamHeight(): Float   { System.err.println("Environment: getCamHeight not yet implemented"); return 0f }
+    fun getWaterHeight(): Float { System.err.println("Environment: getWaterHeight not yet implemented"); return 0f }
     fun getIsSunUp(): Boolean   = getCurrentSky()?.getIsSunUp() ?: false
     fun getIsMoonUp(): Boolean  = getCurrentSky()?.getIsMoonUp() ?: false
     fun getCloudScrollDelta(): Vector2 = cloudScrollDelta

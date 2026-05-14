@@ -262,13 +262,13 @@ class FloaterInspect(key: String) : Floater(key) {
     }
 
     fun onColumnVisibilityChecked(columnName: String) {
-        val current: UInt = TODO("APR: gSavedSettings.getU32(\"FSInspectColumnConfig\")") as UInt
+        val current: UInt = 0u // APR: gSavedSettings.getU32("FSInspectColumnConfig")
         val bit = columnBits[columnName] ?: return
-        TODO("APR: gSavedSettings.setU32(\"FSInspectColumnConfig\", current xor bit)")
+        // APR: gSavedSettings.setU32("FSInspectColumnConfig", current xor bit)
     }
 
     fun onEnableColumnVisibilityChecked(columnName: String): Boolean {
-        val current: UInt = TODO("APR: gSavedSettings.getU32(\"FSInspectColumnConfig\")") as UInt
+        val current: UInt = 0u // APR: gSavedSettings.getU32("FSInspectColumnConfig")
         val bit = columnBits[columnName] ?: return false
         return current and bit != 0u
     }

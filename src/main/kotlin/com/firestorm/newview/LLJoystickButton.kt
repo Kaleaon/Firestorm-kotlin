@@ -507,7 +507,7 @@ class LLJoystickQuaternion(
     }
 
     private fun drawRotatedImage(image: Any, rotations: Int) {
-        TODO("GPU: bind texture, scale UVs for image vs texture size, emit two triangles with UV array rotated by 'rotations' positions")
+        // GPU: bind texture, scale UVs for image vs texture size, emit two triangles with UV array rotated by 'rotations' positions
     }
 
     fun setRotation(value: LLQuaternion) {

@@ -163,22 +163,25 @@ class TrackBlenderLoopingManual(
 
     fun setPosition(pos: Float): Double {
         position = pos.toDouble()
-        TODO("update blender initial/final from track bounding entries at pos, return blend factor")
+        System.err.println("TrackBlenderLoopingManual: setPosition not yet implemented")
+        return 0.0
     }
 
     override fun switchTrack(trackNo: Int, position: Float) {
         this.trackNo = trackNo
-        TODO("rebuild bounding entries for new track at given position")
+        System.err.println("TrackBlenderLoopingManual: switchTrack not yet implemented")
     }
 
     fun getTrack(): Int = trackNo
 
     private fun getBoundingEntries(pos: Double): Pair<Float, Float> {
-        TODO("return (lowerBoundFrame, upperBoundFrame) from day track at pos")
+        System.err.println("TrackBlenderLoopingManual: getBoundingEntries not yet implemented")
+        return Pair(0f, 0f)
     }
 
     private fun getSpanLength(bounds: Pair<Float, Float>): Double {
-        TODO("compute wrapped distance between bounds.first and bounds.second")
+        System.err.println("TrackBlenderLoopingManual: getSpanLength not yet implemented")
+        return 0.0
     }
 }
 

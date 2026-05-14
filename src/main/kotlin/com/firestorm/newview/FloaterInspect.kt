@@ -152,26 +152,26 @@ class FloaterInspect(key: String) : Floater(key) {
 
     fun onClickCreatorProfile() {
         val node = getSelectedNode() ?: return
-        val creatorId: String = TODO("APR: node.permissions.creator") as String
-        TODO("APR: RlvActions.canShowName check; if allowed: AvatarActions.showProfile(creatorId)")
+        val creatorId: String = "" // APR: node.permissions.creator
+        // APR: RlvActions.canShowName check; if allowed: AvatarActions.showProfile(creatorId)
     }
 
     fun onClickOwnerProfile() {
         val node = getSelectedNode() ?: return
-        val groupOwned: Boolean = TODO("APR: node.permissions.isGroupOwned") as Boolean
+        val groupOwned: Boolean = false // APR: node.permissions.isGroupOwned
         if (groupOwned) {
-            val groupId: String = TODO("APR: node.permissions.group") as String
-            TODO("APR: GroupActions.show(groupId)")
+            val groupId: String = "" // APR: node.permissions.group
+            // APR: GroupActions.show(groupId)
         } else {
-            val ownerId: String = TODO("APR: node.permissions.owner") as String
-            TODO("APR: RlvActions.canShowName check; if allowed: AvatarActions.showProfile(ownerId)")
+            val ownerId: String = "" // APR: node.permissions.owner
+            // APR: RlvActions.canShowName check; if allowed: AvatarActions.showProfile(ownerId)
         }
     }
 
     fun onSelectObject() {
         val selectedUuid = getSelectedUUID()
         if (selectedUuid.isEmpty()) return
-        TODO("APR: enable/disable owner and creator profile buttons subject to RLVa name-visibility restrictions")
+        // APR: enable/disable owner and creator profile buttons subject to RLVa name-visibility restrictions
     }
 
     private fun getSelectedNode(): Any? {

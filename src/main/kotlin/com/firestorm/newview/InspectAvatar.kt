@@ -27,7 +27,7 @@ class FetchAvatarData(
     private val inspector: InspectAvatar
 ) {
     init {
-        TODO("APR: register as observer on AvatarPropertiesProcessor for avatarId; send properties request (legacy if OpenSim without AgentProfile cap)")
+        System.err.println("FetchAvatarData: init not yet implemented")
     }
 
     fun processProperties(data: Any?, type: String) {

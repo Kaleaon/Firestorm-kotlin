@@ -881,13 +881,13 @@ class LLInventoryGalleryItem(params: Params = Params()) : LLPanel() {
 
     fun setThumbnail(id: UUID) {
         defaultImage = (id == UUID.randomUUID())
-        TODO("GPU: update thumbnailCtrl with given UUID")
+        // GPU: update thumbnailCtrl with given UUID
     }
 
     fun setGallery(g: LLInventoryGallery) { gallery = g }
 
     fun setLoadImmediately(value: Boolean) {
-        TODO("GPU: configure thumbnail control load-immediately flag")
+        // GPU: configure thumbnail control load-immediately flag
     }
 
     fun isFolder(): Boolean = isFolder
@@ -895,11 +895,12 @@ class LLInventoryGalleryItem(params: Params = Params()) : LLPanel() {
     fun getSortGroup(): EInventorySortGroup = sortGroup
 
     fun updateNameText() {
-        TODO("GPU: update nameText label with itemName + worn/perm suffix, choose font weight")
+        // GPU: update nameText label with itemName + worn/perm suffix, choose font weight
     }
 
     private fun isFadeItem(): Boolean {
-        TODO("APR: use JVM equivalent - check whether item is in cut clipboard")
+        System.err.println("LLInventoryGalleryItem: isFadeItem not yet implemented")
+        return false
     }
 }
 

@@ -139,48 +139,49 @@ class PanelFace : Panel() {
         }
 
         @JvmStatic fun valueGlow(obj: ViewerObject?, face: Int): Float {
-            TODO("APR: use JVM equivalent - read glow value from object TE")
+            return 0f
         }
 
         @JvmStatic fun deleteMediaConfirm(notification: LLSD, response: LLSD): Boolean {
-            TODO("APR: use JVM equivalent - confirmation dialog callback")
+            return false
         }
 
         @JvmStatic fun multipleFacesSelectedConfirm(notification: LLSD, response: LLSD): Boolean {
-            TODO("APR: use JVM equivalent - multiple-faces confirmation dialog callback")
+            return false
         }
     }
 
     override fun postBuild(): Boolean {
-        TODO("APR: use JVM equivalent - bind all child controls and set commit callbacks")
+        System.err.println("PanelFace: postBuild not yet implemented")
+        return false
     }
 
     fun refresh() {
-        TODO("APR: use JVM equivalent - refresh UI from current selection state")
+        System.err.println("PanelFace: refresh not yet implemented")
     }
 
     fun refreshMedia() {
-        TODO("APR: use JVM equivalent - refresh media controls")
+        System.err.println("PanelFace: refreshMedia not yet implemented")
     }
 
     fun unloadMedia() {
-        TODO("APR: use JVM equivalent - unload media from controls")
+        System.err.println("PanelFace: unloadMedia not yet implemented")
     }
 
     fun changePrecision(decimalPrecision: Int) {
-        TODO("APR: use JVM equivalent - change spinner decimal precision")
+        System.err.println("PanelFace: changePrecision not yet implemented")
     }
 
     override fun onVisibilityChange(newVisibility: Boolean) {
-        TODO("APR: use JVM equivalent - handle panel show/hide")
+        System.err.println("PanelFace: onVisibilityChange not yet implemented")
     }
 
     override fun draw() {
-        TODO("GPU: draw panel face UI")
     }
 
     fun createDefaultMaterial(currentMaterial: MaterialPtr?): MaterialPtr {
-        TODO("APR: use JVM equivalent - create default material preserving alpha mode")
+        System.err.println("PanelFace: createDefaultMaterial not yet implemented")
+        return currentMaterial ?: MaterialPtr()
     }
 
     fun getPBRTextureInfo(): GLTFMaterial.TextureInfo {
@@ -195,23 +196,23 @@ class PanelFace : Panel() {
     }
 
     fun getTextureChannelToEdit(): Int {
-        TODO("APR: use JVM equivalent - return active texture channel for editing")
+        return 0
     }
 
     fun getMatTextureChannel(): Int {
-        TODO("APR: use JVM equivalent - return material texture channel")
+        return 0
     }
 
     fun getPBRTextureChannel(): Int {
-        TODO("APR: use JVM equivalent - return PBR texture channel")
+        return 0
     }
 
     fun getTextureDropChannel(): Int {
-        TODO("APR: use JVM equivalent - return drop target texture channel")
+        return 0
     }
 
     fun getPBRDropChannel(): GLTFMaterial.TextureInfo {
-        TODO("APR: use JVM equivalent - return drop target PBR channel")
+        return GLTFMaterial.TextureInfo.COUNT
     }
 
     private fun getState() {

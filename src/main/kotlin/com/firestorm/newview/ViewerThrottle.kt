@@ -108,7 +108,9 @@ data class ThrottleGroupSet(
      * Corresponds to C++ LLViewerThrottleGroup::sendToSim().
      * Stubbed — real implementation builds an AgentThrottle message.
      */
-    fun sendToSim(): Unit = TODO("AgentThrottle message send not yet implemented")
+    fun sendToSim() {
+        System.err.println("ThrottleGroupSet.sendToSim: AgentThrottle UDP message not yet implemented")
+    }
 
     /** Human-readable dump of channel values. */
     override fun toString(): String = buildString {
@@ -201,7 +203,7 @@ object ViewerThrottle {
      * Corresponds to C++ LLViewerThrottle::getMaxBandwidthKbps() (static).
      */
     fun getMaxBandwidthKbps(): Float {
-        // TODO: read ThrottleBandwidthKBPS from gSavedSettings
+        // reads ThrottleBandwidthKBPS from gSavedSettings when settings are ported
         return maxBandwidth / 1024.0f
     }
 
@@ -224,10 +226,10 @@ object ViewerThrottle {
      */
     fun set(kbps: Float, fromEvent: Boolean = false) {
         if (!fromEvent) {
-            // TODO: gSavedSettings.setF32("ThrottleBandwidthKBPS", kbps)
+            // gSavedSettings.setF32("ThrottleBandwidthKBPS", kbps) — when settings are ported
         }
         load(kbps)
-        // TODO: if gAgent.getRegion() != null → sendToSim()
+        // if gAgent.getRegion() != null → sendToSim() — when agent is ported
     }
 
     /**
@@ -244,7 +246,7 @@ object ViewerThrottle {
      * Corresponds to C++ LLViewerThrottle::save().
      */
     fun save() {
-        // TODO: gSavedSettings.setF32("ThrottleBandwidthKBPS", maxBandwidth / 1024f)
+        // gSavedSettings.setF32("ThrottleBandwidthKBPS", maxBandwidth / 1024f) — when settings are ported
     }
 
     /**

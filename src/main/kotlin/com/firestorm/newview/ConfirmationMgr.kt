@@ -14,6 +14,8 @@ package com.firestorm.newview
 
 import com.firestorm.llcommon.*
 import com.firestorm.llmath.*
+import javax.swing.JOptionPane
+import javax.swing.JPasswordField
 
 // ---------------------------------------------------------------------------
 // Singleton: ConfirmationMgr
@@ -112,18 +114,32 @@ object ConfirmationMgr {
             }
 
             ConfirmType.CLICK -> {
-                // TODO: show a click-through alert (analogous to
-                //   LLNotificationsUtil::add("ConfirmPurchase", …)) and call
-                //   responder.onConfirm("") on option 0, onCancel() otherwise.
-                TODO("Wire up click-through confirmation dialog for '$name'")
+                val choice = JOptionPane.showConfirmDialog(
+                    null, "Confirm: $name", "Confirmation Required",
+                    JOptionPane.OK_CANCEL_OPTION
+                )
+                if (choice == JOptionPane.OK_OPTION) {
+                    responder.onConfirm("")
+                    pendingTokens.remove(name)
+                } else {
+                    responder.onCancel()
+                    pendingTokens.remove(name)
+                }
             }
 
             ConfirmType.PASSWORD -> {
-                // TODO: show a password-entry dialog (analogous to
-                //   LLNotificationsUtil::add("ConfirmPurchasePassword", …)) and
-                //   call responder.onConfirm(enteredPassword) on option 0,
-                //   onCancel() otherwise.
-                TODO("Wire up password confirmation dialog for '$name'")
+                val passField = JPasswordField()
+                val choice = JOptionPane.showConfirmDialog(
+                    null, passField, "Enter password for: $name",
+                    JOptionPane.OK_CANCEL_OPTION
+                )
+                if (choice == JOptionPane.OK_OPTION) {
+                    responder.onConfirm(String(passField.password))
+                    pendingTokens.remove(name)
+                } else {
+                    responder.onCancel()
+                    pendingTokens.remove(name)
+                }
             }
         }
     }

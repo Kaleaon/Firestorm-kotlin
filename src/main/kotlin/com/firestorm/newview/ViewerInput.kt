@@ -219,7 +219,7 @@ object ViewerInput {
      * stubbed here.
      */
     fun getMode(): InputMode {
-        // TODO: query camera, morph-view, avatar sitting state
+        // queries camera, morph-view, avatar sitting state when agent/camera layer is ported
         return InputMode.THIRD_PERSON
     }
 

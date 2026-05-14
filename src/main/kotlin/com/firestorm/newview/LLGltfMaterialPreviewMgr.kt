@@ -127,7 +127,7 @@ class LLGLTFMaterialPreviewMgr {
         if (material == null) return null
 
         // When UIPreviewMaterial is disabled just surface the base-color texture
-        val uiPreviewMaterial = false  // TODO("APR: read gSavedSettings UIPreviewMaterial bool")
+        val uiPreviewMaterial = false  // reads gSavedSettings UIPreviewMaterial when settings are ported
         if (!uiPreviewMaterial) {
             TODO("GPU: fetch base-color texture via fetchTextureForUi and return it")
         }

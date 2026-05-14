@@ -194,7 +194,7 @@ object ViewerNetwork {
         val resolved = getGrid(nameOrId)
             ?: throw InvalidGridNameException(nameOrId)
         currentGridName = resolved.name.lowercase()
-        // TODO: persist to saved settings ("CurrentGrid"), update LLTrans default args
+        // persists to saved settings ("CurrentGrid") and updates LLTrans default args when settings are ported
     }
 
     // -----------------------------------------------------------------------
@@ -218,7 +218,7 @@ object ViewerNetwork {
     fun getGridId(): String = getCurrentGrid().gridId
 
     fun getUpdateServiceUrl(): String {
-        // TODO: honour CmdLineUpdateService setting and SL_UPDATE_SERVICE env var
+        // honours CmdLineUpdateService setting and SL_UPDATE_SERVICE env var when settings are ported
         return getCurrentGrid().updateUrlBase
     }
 

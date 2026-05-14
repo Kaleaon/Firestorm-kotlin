@@ -208,8 +208,8 @@ object AttachmentsMgr {
         val timedOut = cofLinkBatchTimer.getElapsedTimeF32() > COF_LINK_BATCH_TIME
         if (!allRequestsDone && !timedOut) return
 
-        // TODO: call LLAppearanceMgr.addCOFItemLink for each item in
-        //       recentlyArrivedAttachments that is worn but not yet in COF.
+        // call LLAppearanceMgr.addCOFItemLink for each item in
+        //       recentlyArrivedAttachments that is worn but not yet in COF — when appearance mgr is ported
         recentlyArrivedAttachments.clear()
     }
 

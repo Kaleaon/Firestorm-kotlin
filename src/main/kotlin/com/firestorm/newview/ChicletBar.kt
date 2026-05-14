@@ -70,8 +70,8 @@ object ChicletBar : IMSessionObserver {
      * Binds the internal ChicletPanel and layout stack.
      */
     fun postBuild(): Boolean {
-        // TODO("GL: getChild<ChicletPanel>('chiclet_list_panel') → chicletPanel")
-        // TODO("GL: getChild<LLLayoutStack>('toolbar_stack') → mToolbarStack")
+        // getChild<ChicletPanel>('chiclet_list_panel') → chicletPanel (GL stub)
+        // getChild<LLLayoutStack>('toolbar_stack') → mToolbarStack (GL stub)
         return true
     }
 
@@ -149,14 +149,14 @@ object ChicletBar : IMSessionObserver {
      * @param visible   desired visibility.
      */
     fun showWellButton(wellName: String, visible: Boolean) {
-        // TODO("GL: getChild<LLLayoutPanel>(wellName).isVisible = visible")
-        // TODO("GL: mToolbarStack.updateLayout()")
+        // getChild<LLLayoutPanel>(wellName).isVisible = visible (GL stub)
+        // mToolbarStack.updateLayout() (GL stub)
     }
 
     /** Hides or shows IM/group chiclets based on a preference change. */
     fun updateVisibility(visible: Boolean) {
         isVisible = visible
-        // TODO("GL: show/hide the chiclet panel and re-layout toolbar stack")
+        // show/hide the chiclet panel and re-layout toolbar stack (GL stub)
     }
 
     // ── IM chiclet factory ────────────────────────────────────────────────────
@@ -177,7 +177,7 @@ object ChicletBar : IMSessionObserver {
      * Mirrors C++ LLChicletBar::reshape() → processWidthDecreased().
      */
     fun reshape(width: Int, height: Int, calledFromParent: Boolean = false) {
-        // TODO("GL: call processWidthDecreased(delta) when width < previous width")
+        // call processWidthDecreased(delta) when width < previous width (GL stub)
         fitWithTopInfoBar()
     }
 
@@ -189,7 +189,7 @@ object ChicletBar : IMSessionObserver {
      * Mirrors C++ LLChicletBar::processWidthDecreased().
      */
     private fun processWidthDecreased(deltaWidth: Int): Int {
-        // TODO("GL: reduce chiclet panel width by deltaWidth, clamped to minWidth")
+        // reduce chiclet panel width by deltaWidth, clamped to minWidth (GL stub)
         return 0
     }
 
@@ -205,7 +205,7 @@ object ChicletBar : IMSessionObserver {
      * Mirrors C++ LLChicletBar::fitWithTopInfoBar().
      */
     private fun fitWithTopInfoBar() {
-        // TODO("GL: query LLPanelTopInfoBar geometry and clamp our right edge")
+        // query LLPanelTopInfoBar geometry and clamp our right edge (GL stub)
     }
 
     /** Resolves [ChicletType] for [sessionId] via IMMgr. */

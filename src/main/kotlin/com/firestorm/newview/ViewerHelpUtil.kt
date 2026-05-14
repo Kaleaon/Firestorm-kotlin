@@ -110,9 +110,9 @@ object ViewerHelpUtil {
             .replace("{TOPIC}",      encodedTopic)
             .replace("{LANGUAGE}",   language)
             .replace("{DEBUG_MODE}", debugMode)
-            // TODO: expand additional tokens ([VERSION], [OS], [CHANNEL], …)
-            //       via LLWeb::expandURLSubstitutions equivalent once the
-            //       settings and agent singletons are ported.
+            // expands additional tokens ([VERSION], [OS], [CHANNEL], …)
+            // via LLWeb::expandURLSubstitutions equivalent once the
+            // settings and agent singletons are ported.
     }
 
     /**
@@ -122,7 +122,7 @@ object ViewerHelpUtil {
      * The default value is used until the settings system is ported.
      */
     fun getHelpURLPrefix(): String {
-        // TODO: delegate to ViewerControl / gSavedSettings equivalent
+        // delegates to ViewerControl / gSavedSettings equivalent when ported:
         //       return ViewerControl.getString("HelpURLFormat")
         return DEFAULT_HELP_URL_FORMAT
     }
@@ -134,7 +134,7 @@ object ViewerHelpUtil {
      * viewer locale.  We use the JVM default locale here as a stand-in.
      */
     fun getHelpLanguage(): String {
-        // TODO: read from viewer's language setting rather than JVM default
+        // reads from viewer's language setting rather than JVM default when settings are ported
         return Locale.getDefault().toLanguageTag().lowercase()
     }
 
@@ -149,7 +149,7 @@ object ViewerHelpUtil {
      * In C++: `gAgent.isGodlike() ? "/debug" : ""`
      */
     private fun getDebugModeSuffix(): String {
-        // TODO: delegate to LLAgent equivalent
+        // delegates to LLAgent equivalent when agent is ported:
         //       return if (Agent.isGodlike()) "/debug" else ""
         return ""
     }

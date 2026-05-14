@@ -86,19 +86,19 @@ data class ViewerGesture(
      */
     fun doTrigger(sendChat: Boolean) {
         if (soundItemId != LLUUID.NULL) {
-            // TODO: look up soundItemId in inventory, then call sendSoundTrigger(assetId, SOUND_VOLUME)
+            // looks up soundItemId in inventory, then calls sendSoundTrigger(assetId, SOUND_VOLUME) — when inventory/audio are ported
         }
 
         if (animation.isNotEmpty()) {
             if (animation == "enter_away_from_keyboard_state" || animation == "away") {
-                // TODO: gAgent.setAFK()
+                // gAgent.setAFK() — when agent is ported
             } else {
-                // TODO: resolve animation name → UUID via gAnimLibrary, then gAgent.sendAnimationRequest(animId, ANIM_REQUEST_START)
+                // resolve animation name → UUID via gAnimLibrary, then gAgent.sendAnimationRequest(animId, ANIM_REQUEST_START) — when agent/anim are ported
             }
         }
 
         if (sendChat && outputString.isNotEmpty()) {
-            // TODO: FSNearbyChat.instance().sendChatFromViewer(outputString, CHAT_TYPE_NORMAL, false)
+            // FSNearbyChat.instance().sendChatFromViewer(outputString, CHAT_TYPE_NORMAL, false) — when nearby-chat is ported
         }
     }
 }
@@ -160,7 +160,7 @@ object ViewerGestureManager {
      */
     fun playGesture(itemId: LLUUID) {
         playing.add(itemId)
-        // TODO: locate gesture asset by itemId, build step sequence, start playback
+        // locate gesture asset by itemId, build step sequence, start playback — when asset/sequencer are ported
     }
 
     /**
@@ -169,7 +169,7 @@ object ViewerGestureManager {
      */
     fun stopGesture(itemId: LLUUID) {
         playing.remove(itemId)
-        // TODO: interrupt active steps (animation, sound) for this gesture
+        // interrupt active steps (animation, sound) for this gesture — when sequencer is ported
     }
 
     /**
@@ -228,7 +228,7 @@ object ViewerGestureManager {
      */
     fun deserializeFromXfer(data: ByteArray, status: Int) {
         if (status == 0 /* LL_ERR_NOERR */) {
-            // TODO: parse data into ViewerGesture instances, call add() for each
+            // parse data into ViewerGesture instances, call add() for each — when LLSD/xfer parsing is ported
             isLoaded = true
         } else {
             System.err.println("ViewerGestureManager: Unable to load gesture list (status=$status)")

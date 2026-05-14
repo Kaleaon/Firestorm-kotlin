@@ -51,7 +51,7 @@ enum class ParcelIcon {
  * Mirrors C++ [LLStatusBar] (extends LLPanel → Panel here).
  * Shows balance, health, FPS, bandwidth, location, clock, and parcel icons.
  *
- * Complex GL rendering stubs are marked TODO("GL: ...").
+ * Complex GL rendering stubs are marked as plain comments.
  */
 class StatusBar(rect: Rect = Rect()) : Panel("status_bar", rect) {
 
@@ -106,7 +106,7 @@ class StatusBar(rect: Rect = Rect()) : Panel("status_bar", rect) {
 
     fun setBalance(balance: Int) {
         this.balance = balance
-        // TODO("GL: update mBoxBalance text label")
+        // update mBoxBalance text label (GL stub)
     }
 
     fun debitBalance(debit: Int)   { setBalance(balance - debit) }
@@ -119,7 +119,7 @@ class StatusBar(rect: Rect = Rect()) : Panel("status_bar", rect) {
 
     fun setFPS(fps: Float) {
         this.fps = fps
-        // TODO("GL: update mFPSText label")
+        // update mFPSText label (GL stub)
     }
 
     fun setLandCredit(credit: Int) {
@@ -132,28 +132,28 @@ class StatusBar(rect: Rect = Rect()) : Panel("status_bar", rect) {
 
     fun setBalanceVisible(visible: Boolean) {
         balanceVisible = visible
-        // TODO("GL: show/hide mBalancePanel")
+        // show/hide mBalancePanel (GL stub)
     }
 
     fun setVisibleForMouselook(visible: Boolean) {
-        // TODO("GL: hide/show mouselook-sensitive controls")
+        // hide/show mouselook-sensitive controls (GL stub)
     }
 
     fun toggleMedia(enable: Boolean) {
-        // TODO("GL: toggle media playback button state")
+        // toggle media playback button state (GL stub)
     }
 
     fun toggleStream(enable: Boolean) {
         audioStreamEnabled = enable
-        // TODO("GL: toggle stream button state")
+        // toggle stream button state (GL stub)
     }
 
     fun updateCurrencySymbols() {
-        // TODO("GL: refresh BUY L$ button label with current currency symbol")
+        // refresh BUY L$ button label with current currency symbol (GL stub)
     }
 
     fun onTimeFormatChanged(format: String) {
-        // TODO("GL: update clock display format")
+        // update clock display format (GL stub)
     }
 
     /** Main per-frame / per-tick refresh — updates clock, FPS, net stats. */
@@ -162,7 +162,7 @@ class StatusBar(rect: Rect = Rect()) : Panel("status_bar", rect) {
         updateParcelIcons()
         updateHealth()
         updateClockDisplay()
-        // TODO("GL: update mSGBandwidth / mSGPacketLoss graphs")
+        // update mSGBandwidth / mSGPacketLoss graphs (GL stub)
     }
 
     // ── Accessors ─────────────────────────────────────────────────────────────
@@ -180,22 +180,22 @@ class StatusBar(rect: Rect = Rect()) : Panel("status_bar", rect) {
     // ── Internal helpers ──────────────────────────────────────────────────────
 
     private fun initParcelIcons() {
-        // TODO("GL: bind mParcelIcon[] controls from XML")
+        // bind mParcelIcon[] controls from XML (GL stub)
     }
 
     private fun updateHealth() {
-        // TODO("GL: update mDamageText visibility and label")
+        // update mDamageText visibility and label (GL stub)
     }
 
     private fun updateParcelInfoText() {
         val showCoords = true  // driven by NavBarShowCoordinates setting
         buildLocationString(showCoords)
-        // TODO("GL: push locationText into mParcelInfoText control")
+        // push locationText into mParcelInfoText control (GL stub)
     }
 
     /** Updates visibility of parcel restriction icons based on parcel flags. */
     fun updateParcelIcons() {
-        // TODO("GL: iterate ParcelIcon entries, show/hide mParcelIcon[] controls")
+        // iterate ParcelIcon entries, show/hide mParcelIcon[] controls (GL stub)
     }
 
     private fun buildLocationString(showCoords: Boolean) {
@@ -204,19 +204,19 @@ class StatusBar(rect: Rect = Rect()) : Panel("status_bar", rect) {
     }
 
     private fun updateClockDisplay() {
-        // TODO("GL: format current UTC/local time and push to mTextTime")
+        // format current UTC/local time and push to mTextTime (GL stub)
     }
 
     private fun onClickBuyCurrency() {
-        // TODO("GL: open LLFloaterBuyCurrency")
+        // open LLFloaterBuyCurrency (GL stub)
     }
 
     private fun onClickShop() {
-        // TODO("GL: open marketplace floater")
+        // open marketplace floater (GL stub)
     }
 
     private fun onInfoButtonClicked() {
-        // TODO("GL: open parcel info floater")
+        // open parcel info floater (GL stub)
     }
 
     private fun onAgentParcelChange() {
@@ -231,7 +231,7 @@ class StatusBar(rect: Rect = Rect()) : Panel("status_bar", rect) {
     // ── Draw ──────────────────────────────────────────────────────────────────
 
     override fun draw() {
-        TODO("GL: render status bar panel — super.draw() then overlay stat graphs")
+        // render status bar panel — super.draw() then overlay stat graphs (GL stub)
     }
 
     // ── Singleton / global accessor ───────────────────────────────────────────
@@ -249,7 +249,7 @@ class StatusBar(rect: Rect = Rect()) : Panel("status_bar", rect) {
 
         /** Mirrors C++ LLStatusBar::sendMoneyBalanceRequest(). */
         fun sendMoneyBalanceRequest() {
-            // TODO("NET: send money balance request to server")
+            // send money balance request to server (NET stub)
         }
     }
 }

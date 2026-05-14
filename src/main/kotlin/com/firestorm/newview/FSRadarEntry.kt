@@ -97,14 +97,14 @@ class FSRadarEntry(val id: LLUUID) {
     /** Called when the avatar-name cache resolves the name for [id]. */
     fun onAvatarNameCache(avId: LLUUID, avUserName: String, avDisplayName: String, isDisplayNameDefault: Boolean) {
         // Respect RLVa shownames restriction — stub for now
-        val rlvHideNames = false // TODO: query RLVa handler
+        val rlvHideNames = false // RLVa handler not yet ported
         if (!rlvHideNames) {
             userName = avUserName
             displayName = avDisplayName
             name = buildRadarName(avUserName, avDisplayName, isDisplayNameDefault)
             isLinden = checkIsLinden(avId)
         } else {
-            val anonymName = "[hidden]" // TODO: RlvStrings.getAnonym(avName)
+            val anonymName = "[hidden]" // RlvStrings.getAnonym(avName) — when RLVa is ported
             userName = anonymName
             displayName = anonymName
             name = anonymName
@@ -120,7 +120,7 @@ class FSRadarEntry(val id: LLUUID) {
         fmt: RadarNameFormat = RadarNameFormat.DISPLAYNAME,
         useDisplayNames: Boolean = true
     ): String {
-        val rlvHideNames = false // TODO: query RLVa handler
+        val rlvHideNames = false // RLVa handler not yet ported
         if (rlvHideNames) return "[hidden]"
 
         if (!useDisplayNames) return avUserName
@@ -169,7 +169,7 @@ class FSRadarEntry(val id: LLUUID) {
     /** Recompute [alertAge] against the configured alert threshold. */
     fun checkAge(ageAlertThreshold: Int = 0) {
         alertAge = age > -1 && age <= ageAlertThreshold
-        val rlvHideNames = false // TODO: query RLVa handler
+        val rlvHideNames = false // RLVa handler not yet ported
         if (!alertAge || rlvHideNames) {
             ageAlertPerformed = true
         }

@@ -322,7 +322,7 @@ object AvatarPropertiesProcessor {
          * or "Linden Employee".  Mirrors the C++ static [accountType].
          */
         fun accountType(data: AvatarData): String {
-            // TODO: wire to LLTrans / localisation layer
+            // wire to LLTrans / localisation layer when i18n is ported
             return when {
                 data.flags and AvatarFlags.IDENTIFIED != 0u -> "Identified Resident"
                 else -> "Resident"

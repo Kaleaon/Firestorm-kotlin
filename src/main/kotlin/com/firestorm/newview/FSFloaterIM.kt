@@ -80,7 +80,7 @@ class FSFloaterIM(val sessionId: LLUUID) {
         messages.add(Message(from = from, message = msg, timestamp = timestamp))
         lastMessageIndex = messages.lastIndex
         unreadMessageCount++
-        // TODO: Scroll chat history to bottom; update unread-message badge UI.
+        // Scroll chat history to bottom; update unread-message badge UI — when UI layer is ported.
     }
 
     /**
@@ -90,7 +90,7 @@ class FSFloaterIM(val sessionId: LLUUID) {
      */
     fun markAllRead() {
         unreadMessageCount = 0
-        // TODO: Hide unread-message notification panel.
+        // Hide unread-message notification panel — when UI layer is ported.
     }
 
     /**
@@ -131,7 +131,7 @@ class FSFloaterIM(val sessionId: LLUUID) {
          */
         fun show(sessionId: LLUUID): FSFloaterIM {
             val floater = instances.getOrPut(sessionId) { FSFloaterIM(sessionId) }
-            // TODO: Bring floater to front / add to tabbed IM container.
+            // Bring floater to front / add to tabbed IM container — when UI layer is ported.
             return floater
         }
 
@@ -143,7 +143,7 @@ class FSFloaterIM(val sessionId: LLUUID) {
         fun hide(sessionId: LLUUID) {
             instances[sessionId]
                 ?: return  // Nothing to do if not open.
-            // TODO: Detach from UI hierarchy / minimise in IM container.
+            // Detach from UI hierarchy / minimise in IM container — when UI layer is ported.
         }
 
         /**

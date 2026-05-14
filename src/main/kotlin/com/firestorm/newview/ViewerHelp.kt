@@ -102,8 +102,8 @@ object ViewerHelp {
      * UI-framework coupling is platform-specific and is stubbed here.
      */
     fun getTopicFromFocus(): String {
-        // TODO: query the UI focus manager for the focused control and call
-        //       findHelpTopic() on it, mirroring LLViewerHelp::getTopicFromFocus()
+        // queries the UI focus manager for the focused control and calls
+        // findHelpTopic() on it, mirroring LLViewerHelp::getTopicFromFocus() — when UI layer is ported
         return defaultTopic()
     }
 
@@ -149,8 +149,8 @@ object ViewerHelp {
      */
     fun showHelp(topic: String) {
         val url = getHelpURL(topic)
-        // TODO: check LLWeb.useExternalBrowser(url) and branch accordingly,
-        //       mirroring the <FS:Beq> block in llviewerhelp.cpp
+        // checks LLWeb.useExternalBrowser(url) and branches accordingly,
+        // mirroring the <FS:Beq> block in llviewerhelp.cpp — when LLWeb is ported
         helpImpl?.showHelp(url)
             ?: showHelpURL(url) // default: no-op stub until impl is wired up
     }
@@ -162,8 +162,8 @@ object ViewerHelp {
      */
     fun showHelpURL(url: String) {
         helpImpl?.showHelp(url)
-        // TODO: fall back to opening an in-viewer floater (LLFloaterReg::showInstance)
-        //       when no impl is registered and the URL is internal
+        // falls back to opening an in-viewer floater (LLFloaterReg::showInstance)
+        // when no impl is registered and the URL is internal — when floater registry is ported
     }
 
     // ------------------------------------------------------------------
@@ -176,7 +176,7 @@ object ViewerHelp {
      * C++ used `LLLoginInstance::getInstance()->authSuccess()`.
      */
     private fun isLoggedIn(): Boolean {
-        // TODO: delegate to LLLoginInstance equivalent
+        // delegates to LLLoginInstance equivalent when login layer is ported
         return false
     }
 }

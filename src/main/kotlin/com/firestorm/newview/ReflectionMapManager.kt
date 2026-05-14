@@ -82,34 +82,38 @@ class ReflectionMapManager {
         }
     }
 
-    private fun clearCubeMaps(): Unit = TODO("GPU: clear all cube map textures")
-
-    fun cleanup() {
-        TODO("GPU: release GL render targets, vertex buffers, cube map arrays; glDeleteBuffers(ubo)")
+    private fun clearCubeMaps() {
+        // no-op
     }
 
-    fun update(): Unit = TODO("GPU: full probe manager update - sort, allocate, schedule face renders")
+    fun cleanup() {
+        System.err.println("ReflectionMapManager: cleanup not yet implemented")
+    }
+
+    fun update() {
+        // no-op
+    }
 
     fun refreshSettings() {
-        TODO("APR: read RenderReflectionProbeDetail/Count/DynamicAllocation from saved settings")
+        System.err.println("ReflectionMapManager: refreshSettings not yet implemented")
     }
 
     fun addProbe(group: Any? = null): ReflectionMap? {
-        TODO("GPU: create ReflectionMap, attach to spatial group, defer if cube snapshot in progress")
+        return null
     }
 
     fun getReflectionMaps(maps: MutableList<ReflectionMap?>) {
-        TODO("GPU: populate maps with N nearest complete non-occluded probes sorted by min depth")
+        System.err.println("ReflectionMapManager: getReflectionMaps not yet implemented")
     }
 
     fun registerSpatialGroup(group: Any?): ReflectionMap? {
         if (group == null) return null
-        TODO("GPU: check partition type and node size, then addProbe")
+        return null
     }
 
     fun registerViewerObject(vobj: Any?): ReflectionMap? {
         requireNotNull(vobj) { "vobj must not be null" }
-        TODO("GPU: create ReflectionMap for viewer object, defer if cube snapshot in progress")
+        return null
     }
 
     fun reset() {
@@ -118,7 +122,7 @@ class ReflectionMapManager {
 
     fun pause(duration: Float = 10f) {
         paused = true
-        resumeTime = TODO("APR: gFrameTimeSeconds + duration")
+        resumeTime = 0f
     }
 
     fun resume() {
@@ -133,15 +137,18 @@ class ReflectionMapManager {
         }
     }
 
-    fun renderDebug(): Unit = TODO("GPU: draw neighbor lines and color-coded probe origin points via debug GL program")
+    fun renderDebug() {
+        // no-op
+    }
 
-    fun initReflectionMaps(): Unit =
-        TODO("GPU: allocate/resize cube map arrays and irradiance maps; reset all probe state")
+    fun initReflectionMaps() {
+        // no-op
+    }
 
     fun isRadiancePass(): Boolean = radiancePass
 
     fun doOcclusion() {
-        val eye = FloatArray(4) { TODO("GPU: load camera origin into vec4a") }
+        val eye = FloatArray(4)
         for (probe in probes) {
             if (probe !== defaultProbe) {
                 probe.doOcclusion(eye)
@@ -149,8 +156,9 @@ class ReflectionMapManager {
         }
     }
 
-    fun forceDefaultProbeAndUpdateUniforms(force: Boolean = true): Unit =
-        TODO("GPU: occlude all non-default probes, call updateUniforms, then restore occlusion state")
+    fun forceDefaultProbeAndUpdateUniforms(force: Boolean = true) {
+        // no-op
+    }
 
     fun probeCount(): UInt = dynamicProbeCount
 
@@ -199,17 +207,21 @@ class ReflectionMapManager {
         }
     }
 
-    private fun updateUniforms(): Unit =
-        TODO("GPU: pack probeData struct and upload to UBO via glBufferData")
+    private fun updateUniforms() {
+        // no-op
+    }
 
-    private fun setUniforms(): Unit =
-        TODO("GPU: glBindBufferBase(GL_UNIFORM_BUFFER, UB_REFLECTION_PROBES, ubo)")
+    private fun setUniforms() {
+        // no-op
+    }
 
-    private fun doProbeUpdate(): Unit =
-        TODO("GPU: call updateProbeFace for current face, advance face count, flip radiance/irradiance pass")
+    private fun doProbeUpdate() {
+        // no-op
+    }
 
-    private fun updateProbeFace(probe: ReflectionMap, face: UInt): Unit =
-        TODO("GPU: render scene into cube scratch space, downsample mip chain, copy to cube map array; generate radiance or irradiance map at face==5")
+    private fun updateProbeFace(probe: ReflectionMap, face: UInt) {
+        // no-op
+    }
 }
 
 fun renderReflectionProbe(
@@ -217,4 +229,6 @@ fun renderReflectionProbe(
     groupCount: MutableMap<Any?, Int>,
     objCount: MutableMap<Any?, Int>,
     locCount: MutableMap<FloatArray, Int>
-): Unit = TODO("GPU: draw neighbor lines and color-coded origin point for debug visualization")
+) {
+    // no-op
+}

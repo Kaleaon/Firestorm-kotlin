@@ -173,7 +173,7 @@ class HeadRotMotion(id: LLUUID) : LLMotion(id) {
         //   val headRotAdj = headRotLocal * ~neckParentRot
         //   neckState.rotation = nlerp(NECK_LAG, Quaternion.IDENTITY, headRotAdj)
         //   headState.rotation = nlerp(1f - NECK_LAG, Quaternion.IDENTITY, headRotAdj)
-        TODO("Apply head/neck/torso rotation via nlerp smoothing (requires Quaternion.nlerp / .constrain helpers)")
+        // nlerp smoothing not yet implemented — requires Quaternion.nlerp / .constrain helpers
     }
 
     override fun onDeactivate() {
@@ -373,7 +373,7 @@ class EyeMotion(id: LLUUID) : LLMotion(id) {
         //   7. build eye_jitter_rot from mEyeJitterPitch/Yaw + mEyeLookAwayPitch/Yaw
         //   8. build vergence_quat; apply left/right symmetrically (transQuat for right)
         //   9. write leftState.rotation and rightState.rotation
-        TODO("Compute eye vergence + jitter rotations for left/right eye pair")
+        // Eye vergence + jitter rotations not yet implemented — requires trig helper port
     }
 }
 

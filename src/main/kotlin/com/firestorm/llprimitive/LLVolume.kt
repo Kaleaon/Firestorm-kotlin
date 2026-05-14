@@ -188,10 +188,7 @@ open class LLVolume(
      * deferred until the algorithm is ported.
      */
     open fun generate(detail: Float) {
-        TODO(
-            "Port LLVolume::generate() — sweep LLProfile along LLPath " +
-            "and populate `faces` with vertices, normals, texcoords and indices."
-        )
+        System.err.println("LLVolume: generate not yet implemented")
     }
 
     // ------------------------------------------------------------------

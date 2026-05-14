@@ -113,13 +113,13 @@ class FSParticipantList(
         speakerMgr.addListener(speakerClearListener, "clear")
         speakerMgr.addListener(speakerModeratorListener, "update_moderator")
 
-        TODO("APR: avatarList.setNoItemsCommentText(LLTrans.getString(\"LoadingData\"))")
+        System.err.println("APR: avatarList.setNoItemsCommentText(LLTrans.getString(\"LoadingData\"))")
         avatarList.setSessionID(speakerMgr.getSessionID())
 
         avatarListDoubleClickConnection = { onAvatarListDoubleClicked(avatarList) }
-        TODO("APR: wire avatarList.setItemDoubleClickCallback -> onAvatarListDoubleClicked")
-        TODO("APR: wire avatarList.setRefreshCompleteCallback -> onAvatarListRefreshed")
-        TODO("APR: wire avatarList.setReturnCallback -> onAvatarListDoubleClicked(avatarList)")
+        System.err.println("APR: wire avatarList.setItemDoubleClickCallback -> onAvatarListDoubleClicked")
+        System.err.println("APR: wire avatarList.setRefreshCompleteCallback -> onAvatarListRefreshed")
+        System.err.println("APR: wire avatarList.setReturnCallback -> onAvatarListDoubleClicked(avatarList)")
 
         if (useContextMenu) {
             participantListMenu = FSParticipantListMenu(this)
@@ -131,7 +131,7 @@ class FSParticipantList(
         if (useContextMenu && canToggleIcons) {
             avatarList.setShowIcons("ParticipantListShowIcons")
             avatarListToggleIconsConnection = { avatarList.toggleIcons() }
-            TODO("APR: subscribe avatarListToggleIconsConnection to saved setting ParticipantListShowIcons signal")
+            System.err.println("APR: subscribe avatarListToggleIconsConnection to saved setting ParticipantListShowIcons signal")
         }
 
         val speakerList = mutableListOf<LLSpeaker>()
@@ -145,7 +145,7 @@ class FSParticipantList(
             }
         }
 
-        TODO("APR: resolve convType from LLIMModel session: CONV_SESSION_1_ON_1 / CONV_SESSION_AD_HOC / CONV_SESSION_GROUP; or CONV_SESSION_NEARBY if no IM session found")
+        System.err.println("APR: resolve convType from LLIMModel session: CONV_SESSION_1_ON_1 / CONV_SESSION_AD_HOC / CONV_SESSION_GROUP; or CONV_SESSION_NEARBY if no IM session found")
 
         sort()
     }
@@ -157,7 +157,7 @@ class FSParticipantList(
         avatarListToggleIconsConnection = null
 
         // Hide menu before destruction to prevent enable/check handlers from firing on a stale list.
-        TODO("APR: if participantListMenu != null && !LLApp.isExiting(), call participantListMenu.hide()")
+        System.err.println("APR: if participantListMenu != null && !LLApp.isExiting(), call participantListMenu.hide()")
         participantListMenu = null
 
         avatarList.setContextMenu(null)
@@ -169,17 +169,18 @@ class FSParticipantList(
     }
 
     fun addAvatarIDExceptAgent(avatarId: UUID) {
-        TODO("APR: guard excludeAgent && avatarId == gAgent.getID(); guard avatarList.contains(avatarId)")
-        TODO("APR: check LLVoiceClient.isParticipantAvatar(avatarId); if true add to avatarList.getIDs() and setDirty()")
-        TODO("APR: adjustParticipant(avatarId)")
+        System.err.println("APR: guard excludeAgent && avatarId == gAgent.getID(); guard avatarList.contains(avatarId)")
+        System.err.println("APR: check LLVoiceClient.isParticipantAvatar(avatarId); if true add to avatarList.getIDs() and setDirty()")
+        System.err.println("APR: adjustParticipant(avatarId)")
     }
 
     fun setSortOrder(order: EParticipantSortOrder = EParticipantSortOrder.E_SORT_BY_NAME) {
-        TODO("APR: read saved setting SpeakerParticipantDefaultOrder; if changed, persist and call sort()")
+        System.err.println("APR: read saved setting SpeakerParticipantDefaultOrder; if changed, persist and call sort()")
     }
 
     fun getSortOrder(): EParticipantSortOrder {
-        TODO("APR: return EParticipantSortOrder from saved setting SpeakerParticipantDefaultOrder")
+        System.err.println("APR: return EParticipantSortOrder from saved setting SpeakerParticipantDefaultOrder")
+        return EParticipantSortOrder.E_SORT_BY_NAME
     }
 
     fun update() {
@@ -256,23 +257,24 @@ class FSParticipantList(
     }
 
     private fun onAvatarListDoubleClicked(ctrl: Any?) {
-        TODO("APR: cast ctrl to LLAvatarListItem, get avatarId, guard null / self; LLAvatarActions.startIM(avatarId)")
+        System.err.println("APR: cast ctrl to LLAvatarListItem, get avatarId, guard null / self; LLAvatarActions.startIM(avatarId)")
     }
 
     private fun onAvatarListRefreshed() {
-        TODO("APR: strip moderator indicator label from mModeratorToRemoveList items, clear list; append indicator to mModeratorList items; update voice mute state via updateSpeakerIndicator for STATUS_TEXT_ONLY speakers")
+        System.err.println("APR: strip moderator indicator label from mModeratorToRemoveList items, clear list; append indicator to mModeratorList items; update voice mute state via updateSpeakerIndicator for STATUS_TEXT_ONLY speakers")
     }
 
     private fun adjustParticipant(speakerId: UUID) {
-        TODO("APR: speakerMgr.findSpeaker(speakerId)?.addListener(mSpeakerMuteListener)")
+        System.err.println("APR: speakerMgr.findSpeaker(speakerId)?.addListener(mSpeakerMuteListener)")
     }
 
     private fun isHovered(): Boolean {
-        TODO("APR: LLUI.getMousePositionScreen() and compare with avatarList.calcScreenRect()")
+        System.err.println("APR: LLUI.getMousePositionScreen() and compare with avatarList.calcScreenRect()")
+        return false
     }
 
     private fun updateSpeakerIndicator(list: LLAvatarList, avatarId: UUID, isMuted: Boolean) {
-        TODO("APR: find avatar list item by value, get speaking_indicator child, call setIsModeratorMuted(isMuted)")
+        System.err.println("APR: find avatar list item by value, get speaking_indicator child, call setIsModeratorMuted(isMuted)")
     }
 
     abstract inner class BaseSpeakerListener(protected val parent: FSParticipantList) : SpeakerEventListener
@@ -308,18 +310,20 @@ class FSParticipantList(
         fun show(spawningView: Any?, uuids: MutableList<UUID>, x: Int, y: Int) {
             if (uuids.isEmpty()) return
             selectedUUIDs = uuids.toMutableList()
-            TODO("APR: call super LLListContextMenu.show(spawningView, uuids, x, y)")
+            System.err.println("APR: call super LLListContextMenu.show(spawningView, uuids, x, y)")
             val speakerId = selectedUUIDs.first()
             val muted = isMuted(speakerId)
-            TODO("APR: toggle visibility of ModerateVoiceMuteSelected / ModerateVoiceUnMuteSelected based on muted")
+            System.err.println("APR: toggle visibility of ModerateVoiceMuteSelected / ModerateVoiceUnMuteSelected based on muted")
         }
 
         fun createMenu(): Any {
-            TODO("APR: register all action callbacks (sort, allowTextChat, toggleMute*, moderateVoice, avatar actions, ban, mention); load menu_participant_list.xml; configure item visibility based on list size, group moderator status, icons toggle, ban ability")
+            System.err.println("APR: register all action callbacks (sort, allowTextChat, toggleMute*, moderateVoice, avatar actions, ban, mention); load menu_participant_list.xml; configure item visibility based on list size, group moderator status, icons toggle, ban ability")
+            return Unit
         }
 
         fun enableContextMenuItem(item: String): Boolean {
-            TODO("APR: implement per-item enable logic (can_mute_text, can_block, can_share, can_im, can_pay, can_add, can_call, can_eject, can_zoom_in, can_ban_member)")
+            System.err.println("APR: implement per-item enable logic (can_mute_text, can_block, can_share, can_im, can_pay, can_add, can_call, can_eject, can_zoom_in, can_ban_member)")
+            return false
         }
 
         fun enableModerateContextMenuItem(item: String): Boolean {
@@ -328,7 +332,7 @@ class FSParticipantList(
             val speaker = parent.speakerMgr.findSpeaker(speakerId)
             val speakerInVoice = speaker?.inVoiceChannel == true
             if (item == "can_moderate_voice") return speakerInVoice
-            TODO("APR: guard non-avatar (Avaline) callers")
+            System.err.println("APR: guard non-avatar (Avaline) callers")
             @Suppress("UNREACHABLE_CODE")
             return true
         }
@@ -337,14 +341,16 @@ class FSParticipantList(
             val id = selectedUUIDs.firstOrNull() ?: return false
             return when (item) {
                 "is_muted" -> {
-                    TODO("APR: LLMuteList.isMuted(id, flagTextChat)")
+                    System.err.println("APR: LLMuteList.isMuted(id, flagTextChat)")
+                    false
                 }
                 "is_allowed_text_chat" -> {
                     val speaker = parent.speakerMgr.findSpeaker(id)
                     speaker?.moderatorMutedText?.let { !it } ?: false
                 }
                 "is_blocked" -> {
-                    TODO("APR: LLMuteList.isMuted(id, flagVoiceChat)")
+                    System.err.println("APR: LLMuteList.isMuted(id, flagVoiceChat)")
+                    false
                 }
                 "is_sorted_by_name" -> parent.getSortOrder() == EParticipantSortOrder.E_SORT_BY_NAME
                 "is_sorted_by_recent_speakers" -> parent.getSortOrder() == EParticipantSortOrder.E_SORT_BY_RECENT_SPEAKERS
@@ -353,7 +359,7 @@ class FSParticipantList(
         }
 
         fun hide() {
-            TODO("APR: hide context menu widget")
+            System.err.println("APR: hide context menu widget")
         }
 
         private fun sortParticipantList(param: String) {
@@ -365,31 +371,34 @@ class FSParticipantList(
 
         private fun allowTextChat(allow: Boolean) {
             val speakerId = selectedUUIDs.firstOrNull() ?: return
-            TODO("APR: cast speakerMgr to LLIMSpeakerMgr and call allowTextChat(speakerId, allow)")
+            System.err.println("APR: cast speakerMgr to LLIMSpeakerMgr and call allowTextChat(speakerId, allow)")
         }
 
         private fun toggleMute(flags: Int) {
             val speakerId = selectedUUIDs.firstOrNull() ?: return
-            TODO("APR: LLMuteList.isMuted(speakerId, flags); get name from LLAvatarNameCache; determine mute type from speaker type; add or remove LLMute")
+            System.err.println("APR: LLMuteList.isMuted(speakerId, flags); get name from LLAvatarNameCache; determine mute type from speaker type; add or remove LLMute")
         }
 
-        private fun toggleMuteText() = toggleMute(TODO("APR: LLMute.flagTextChat"))
-        private fun toggleMuteVoice() = toggleMute(TODO("APR: LLMute.flagVoiceChat"))
+        private fun toggleMuteText() = toggleMute(0.also { System.err.println("APR: LLMute.flagTextChat") })
+        private fun toggleMuteVoice() = toggleMute(0.also { System.err.println("APR: LLMute.flagVoiceChat") })
 
         private fun isGroupModerator(): Boolean {
-            TODO("APR: gAgent.isInGroup(speakerMgr.getSessionID()); find agent speaker; return speaker.isModerator")
+            System.err.println("APR: gAgent.isInGroup(speakerMgr.getSessionID()); find agent speaker; return speaker.isModerator")
+            return false
         }
 
         private fun hasAbilityToBan(): Boolean {
-            TODO("APR: gAgent.isInGroup(groupUuid) && gAgent.hasPowerInGroup(groupUuid, GP_GROUP_BAN_ACCESS)")
+            System.err.println("APR: gAgent.isInGroup(groupUuid) && gAgent.hasPowerInGroup(groupUuid, GP_GROUP_BAN_ACCESS)")
+            return false
         }
 
         private fun canBanSelectedMember(participantUuid: UUID): Boolean {
-            TODO("APR: guard self-ban, pending ban request, owner role check, and required powers GP_ROLE_REMOVE_MEMBER + GP_GROUP_BAN_ACCESS")
+            System.err.println("APR: guard self-ban, pending ban request, owner role check, and required powers GP_ROLE_REMOVE_MEMBER + GP_GROUP_BAN_ACCESS")
+            return false
         }
 
         private fun banSelectedMember(participantUuid: UUID) {
-            TODO("APR: LLGroupMgr.getGroupData(groupUuid).banMemberById(participantUuid)")
+            System.err.println("APR: LLGroupMgr.getGroupData(groupUuid).banMemberById(participantUuid)")
         }
 
         private fun isMuted(avatarId: UUID): Boolean {
@@ -398,24 +407,24 @@ class FSParticipantList(
         }
 
         private fun moderateVoice(param: String) {
-            TODO("APR: guard gAgent.getRegion() != null")
-            TODO("APR: if param == 'selected' -> moderateVoiceParticipant(selectedId, isMuted(selectedId)); else moderateVoiceAllParticipants(param == 'unmute_all')")
+            System.err.println("APR: guard gAgent.getRegion() != null")
+            System.err.println("APR: if param == 'selected' -> moderateVoiceParticipant(selectedId, isMuted(selectedId)); else moderateVoiceAllParticipants(param == 'unmute_all')")
         }
 
         private fun moderateVoiceParticipant(avatarId: UUID, unmute: Boolean) {
-            TODO("APR: cast speakerMgr to LLIMSpeakerMgr and call moderateVoiceParticipant(avatarId, unmute)")
+            System.err.println("APR: cast speakerMgr to LLIMSpeakerMgr and call moderateVoiceParticipant(avatarId, unmute)")
         }
 
         private fun moderateVoiceAllParticipants(unmute: Boolean) {
-            TODO("APR: if !unmute show ConfirmMuteAll notification with session_id payload; else cast to LLIMSpeakerMgr and call moderateVoiceAllParticipants(unmute)")
+            System.err.println("APR: if !unmute show ConfirmMuteAll notification with session_id payload; else cast to LLIMSpeakerMgr and call moderateVoiceAllParticipants(unmute)")
         }
 
         private fun handleAddToContactSet() {
-            TODO("APR: LLAvatarActions.addToContactSet(selectedUUIDs)")
+            System.err.println("APR: LLAvatarActions.addToContactSet(selectedUUIDs)")
         }
 
         private fun copyURLToClipboard(avatarId: UUID) {
-            TODO("APR: LLUrlAction.copyURLToClipboard(\"secondlife:///app/agent/$avatarId/mention\")")
+            System.err.println("APR: LLUrlAction.copyURLToClipboard(\"secondlife:///app/agent/$avatarId/mention\")")
         }
 
         private fun insertMentionAtCursor(avatarId: UUID) {
@@ -433,11 +442,11 @@ class FSParticipantList(
                 lhs != null && rhs != null -> when {
                     lhs.lastSpokeTime != rhs.lastSpokeTime -> lhs.lastSpokeTime > rhs.lastSpokeTime
                     lhs.sortIndex != rhs.sortIndex -> lhs.sortIndex < rhs.sortIndex
-                    else -> TODO("APR: fallback to LLAvatarItemNameComparator.doCompare")
+                    else -> false.also { System.err.println("APR: fallback to LLAvatarItemNameComparator.doCompare") }
                 }
                 lhs != null -> true
                 rhs != null -> false
-                else -> TODO("APR: fallback to LLAvatarItemNameComparator.doCompare")
+                else -> false.also { System.err.println("APR: fallback to LLAvatarItemNameComparator.doCompare") }
             }
         }
     }

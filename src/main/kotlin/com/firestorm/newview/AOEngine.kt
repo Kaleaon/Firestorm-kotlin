@@ -8,19 +8,52 @@ typealias InventoryItem = Any          // placeholder for LLInventoryItem
 typealias InventoryFuncType = (UUID) -> Unit
 
 object InventoryModel {
-    fun getItem(uuid: UUID): AOSet.AOAnimation? = TODO("APR: use JVM inventory model")
-    fun isCategoryComplete(uuid: UUID): Boolean = TODO("APR: use JVM inventory model")
-    fun fetchDescendentsOf(uuid: UUID): Unit = TODO("APR: use JVM inventory model")
-    fun getDirectDescendentsOf(uuid: UUID): Pair<List<Any>, List<Any>> = TODO("APR: use JVM inventory model")
-    fun createNewCategory(parentId: UUID, name: String, callback: (UUID) -> Unit): Unit = TODO("APR: use JVM inventory model")
-    fun updateItem(item: Any): Unit = TODO("APR: use JVM inventory model")
-    fun removeCategory(uuid: UUID): Unit = TODO("APR: use JVM inventory model")
-    fun notifyObservers(): Unit = TODO("APR: use JVM inventory model")
-    fun changeItemParent(item: Any, newParent: UUID, restamp: Boolean): Unit = TODO("APR: use JVM inventory model")
-    fun getRootFolderID(): UUID = TODO("APR: use JVM inventory model")
-    fun findCategoryByName(name: String): UUID = TODO("APR: use JVM inventory model")
-    fun findCategoryUUIDForType(type: Any): UUID = TODO("APR: use JVM inventory model")
-    fun getCategory(uuid: UUID): Any? = TODO("APR: use JVM inventory model")
+    fun getItem(uuid: UUID): AOSet.AOAnimation? {
+        System.err.println("STUB: APR: use JVM inventory model - getItem")
+        return null
+    }
+    fun isCategoryComplete(uuid: UUID): Boolean {
+        System.err.println("STUB: APR: use JVM inventory model - isCategoryComplete")
+        return false
+    }
+    fun fetchDescendentsOf(uuid: UUID): Unit {
+        System.err.println("STUB: APR: use JVM inventory model - fetchDescendentsOf")
+    }
+    fun getDirectDescendentsOf(uuid: UUID): Pair<List<Any>, List<Any>> {
+        System.err.println("STUB: APR: use JVM inventory model - getDirectDescendentsOf")
+        return Pair(emptyList(), emptyList())
+    }
+    fun createNewCategory(parentId: UUID, name: String, callback: (UUID) -> Unit): Unit {
+        System.err.println("STUB: APR: use JVM inventory model - createNewCategory")
+    }
+    fun updateItem(item: Any): Unit {
+        System.err.println("STUB: APR: use JVM inventory model - updateItem")
+    }
+    fun removeCategory(uuid: UUID): Unit {
+        System.err.println("STUB: APR: use JVM inventory model - removeCategory")
+    }
+    fun notifyObservers(): Unit {
+        System.err.println("STUB: APR: use JVM inventory model - notifyObservers")
+    }
+    fun changeItemParent(item: Any, newParent: UUID, restamp: Boolean): Unit {
+        System.err.println("STUB: APR: use JVM inventory model - changeItemParent")
+    }
+    fun getRootFolderID(): UUID {
+        System.err.println("STUB: APR: use JVM inventory model - getRootFolderID")
+        return UUID(0, 0)
+    }
+    fun findCategoryByName(name: String): UUID {
+        System.err.println("STUB: APR: use JVM inventory model - findCategoryByName")
+        return UUID(0, 0)
+    }
+    fun findCategoryUUIDForType(type: Any): UUID {
+        System.err.println("STUB: APR: use JVM inventory model - findCategoryUUIDForType")
+        return UUID(0, 0)
+    }
+    fun getCategory(uuid: UUID): Any? {
+        System.err.println("STUB: APR: use JVM inventory model - getCategory")
+        return null
+    }
 }
 
 object AnimationStates {
@@ -87,7 +120,8 @@ class AOTimerCollection {
 
     private fun updateTimers() {
         val anyActive = inventoryTimer || settingsTimer || reloadTimer || importTimer
-        TODO("APR: use JVM equivalent – ${if (anyActive) "start" else "stop"} periodic timer at $inventoryPollingIntervalMs ms")
+        // APR: use JVM equivalent – start/stop periodic timer at $inventoryPollingIntervalMs ms
+        System.err.println("STUB: APR: updateTimers anyActive=$anyActive interval=${inventoryPollingIntervalMs}ms not implemented")
     }
 }
 
@@ -100,7 +134,8 @@ class AOSitCancelTimer {
     fun oneShot() {
         tickCount = 0
         running = true
-        TODO("APR: use JVM equivalent – schedule tick() every 100 ms")
+        // APR: use JVM equivalent – schedule tick() every 100 ms
+        System.err.println("STUB: APR: AOSitCancelTimer.oneShot scheduling not implemented")
     }
 
     fun stop() {
@@ -636,12 +671,15 @@ object AOEngine {
     }
 
     fun addAnimation(set: AOSet, state: AOSet.AOState, item: InventoryItem, reload: Boolean = true) {
-        TODO("APR: use JVM inventory model – build AOAnimation from item and add to state")
+        // APR: use JVM inventory model – build AOAnimation from item and add to state
+        System.err.println("STUB: APR: addAnimation not implemented")
     }
 
     fun removeAnimation(set: AOSet, state: AOSet.AOState, index: Int): Boolean {
         if (index < 0 || state.animations.isEmpty()) return false
-        TODO("APR: use JVM inventory model – remove inventory link and erase animations[index]")
+        // APR: use JVM inventory model – remove inventory link and erase animations[index]
+        System.err.println("STUB: APR: removeAnimation not implemented")
+        return false
     }
 
     fun swapWithPrevious(state: AOSet.AOState, index: Int): Boolean {
@@ -662,7 +700,8 @@ object AOEngine {
 
     fun reloadStateAnimations(set: AOSet, state: AOSet.AOState) {
         state.animations.clear()
-        TODO("APR: use JVM inventory model – fetch descendents of state.inventoryUUID and rebuild animations list")
+        // APR: use JVM inventory model – fetch descendents of state.inventoryUUID and rebuild animations list
+        System.err.println("STUB: APR: reloadStateAnimations not implemented")
     }
 
     // ── Reload / update ───────────────────────────────────────────────────────
@@ -686,12 +725,14 @@ object AOEngine {
             InventoryModel.fetchDescendentsOf(aoFolder)
             return
         }
-        TODO("APR: use JVM inventory model – walk AO folder tree and rebuild sets/states")
+        // APR: use JVM inventory model – walk AO folder tree and rebuild sets/states
+        System.err.println("STUB: APR: update AO folder tree walk not implemented")
     }
 
     fun tick() {
         if (!AgentAvatar.isValid()) return
-        TODO("APR: use JVM inventory model – locate #Firestorm/#AO folders and call update()")
+        // APR: use JVM inventory model – locate #Firestorm/#AO folders and call update()
+        System.err.println("STUB: APR: tick AO folder locate not implemented")
     }
 
     fun clear(fromTimer: Boolean) {
@@ -707,7 +748,9 @@ object AOEngine {
     // ── Notecard import ───────────────────────────────────────────────────────
 
     fun importNotecard(item: InventoryItem): Boolean {
-        TODO("APR: use JVM asset storage – download notecard asset and call parseNotecard()")
+        // APR: use JVM asset storage – download notecard asset and call parseNotecard()
+        System.err.println("STUB: APR: importNotecard not implemented")
+        return false
     }
 
     fun parseNotecard(buffer: String?) {
@@ -716,7 +759,8 @@ object AOEngine {
             fireUpdated()
             return
         }
-        TODO("APR: parse ZHAO-II notecard format and populate importSet states")
+        // APR: parse ZHAO-II notecard format and populate importSet states
+        System.err.println("STUB: APR: parseNotecard not implemented")
     }
 
     fun processImport(fromTimer: Boolean) {
@@ -731,7 +775,8 @@ object AOEngine {
             }
             return
         }
-        TODO("APR: use JVM inventory model – create state folders and link animations for impSet")
+        // APR: use JVM inventory model – create state folders and link animations for impSet
+        System.err.println("STUB: APR: processImport state folder creation not implemented")
     }
 
     // ── Underwater / sit-cancel helpers ──────────────────────────────────────
@@ -865,7 +910,8 @@ object AOEngine {
         for (index in state.animations.indices) {
             if (state.animations[index].sortOrder != index) {
                 state.animations[index].sortOrder = index
-                TODO("APR: use JVM inventory model – update item description to \"$index\"")
+                // APR: use JVM inventory model – update item description to "$index"
+                System.err.println("STUB: APR: updateSortOrder item description update not implemented for index $index")
             }
         }
     }
@@ -876,7 +922,8 @@ object AOEngine {
         if (set.smart) params += ":SM"
         if (set.mouselookStandDisable) params += ":DM"
         if (set === defaultSet) params += ":**"
-        TODO("APR: use JVM inventory model – rename category set.inventoryUUID to \"$params\"")
+        // APR: use JVM inventory model – rename category set.inventoryUUID to "$params"
+        System.err.println("STUB: APR: saveSet rename category not implemented for params=$params")
         fireUpdated()
     }
 
@@ -885,45 +932,80 @@ object AOEngine {
         if (state.cycleTime > 0f) params += ":CT${"%.2f".format(state.cycleTime)}"
         if (state.cycle) params += ":CY"
         if (state.random) params += ":RN"
-        TODO("APR: use JVM inventory model – rename category state.inventoryUUID to \"$params\"")
+        // APR: use JVM inventory model – rename category state.inventoryUUID to "$params"
+        System.err.println("STUB: APR: saveState rename category not implemented for params=$params")
     }
 
     private fun findForeignItems(uuid: UUID): Boolean {
-        TODO("APR: use JVM inventory model – walk subtree and move non-animation-link items to lost-and-found")
+        // APR: use JVM inventory model – walk subtree and move non-animation-link items to lost-and-found
+        System.err.println("STUB: APR: findForeignItems not implemented")
+        return false
     }
 
     private fun purgeFolder(uuid: UUID) {
-        TODO("APR: use JVM inventory model – move non-links to lost-and-found, trash and purge folder")
+        // APR: use JVM inventory model – move non-links to lost-and-found, trash and purge folder
+        System.err.println("STUB: APR: purgeFolder not implemented")
     }
 
     private fun createAnimationLink(state: AOSet.AOState, item: InventoryItem): Boolean {
         if (state.inventoryUUID == UUID(0, 0)) return false
-        TODO("APR: use JVM inventory model – link item into state.inventoryUUID folder")
+        // APR: use JVM inventory model – link item into state.inventoryUUID folder
+        System.err.println("STUB: APR: createAnimationLink not implemented")
+        return false
     }
 
     // ── Platform stubs ────────────────────────────────────────────────────────
 
     private object Agent {
-        val agentId: UUID get() = TODO("APR: use JVM equivalent")
-        fun sendAnimationRequest(id: UUID, request: AnimRequest): Unit = TODO("APR: use JVM equivalent")
-        fun stopCurrentAnimations(): Unit = TODO("APR: use JVM equivalent")
-        fun allowOperation(perm: Int, permissions: Any, group: Int): Boolean = TODO("APR: use JVM equivalent")
+        val agentId: UUID get() {
+            System.err.println("STUB: APR: Agent.agentId not implemented")
+            return UUID(0, 0)
+        }
+        fun sendAnimationRequest(id: UUID, request: AnimRequest): Unit {
+            System.err.println("STUB: APR: Agent.sendAnimationRequest not implemented")
+        }
+        fun stopCurrentAnimations(): Unit {
+            System.err.println("STUB: APR: Agent.stopCurrentAnimations not implemented")
+        }
+        fun allowOperation(perm: Int, permissions: Any, group: Int): Boolean {
+            System.err.println("STUB: APR: Agent.allowOperation not implemented")
+            return false
+        }
     }
 
     private object AgentAvatar {
-        fun isValid(): Boolean = TODO("APR: use JVM equivalent")
-        fun getRootId(): UUID? = TODO("APR: use JVM equivalent")
-        fun stopMotion(id: UUID): Unit = TODO("APR: use JVM equivalent")
-        fun hasNonAgentAnimationOnSeat(seatId: UUID): Boolean = TODO("APR: use JVM equivalent")
+        fun isValid(): Boolean {
+            System.err.println("STUB: APR: AgentAvatar.isValid not implemented")
+            return false
+        }
+        fun getRootId(): UUID? {
+            System.err.println("STUB: APR: AgentAvatar.getRootId not implemented")
+            return null
+        }
+        fun stopMotion(id: UUID): Unit {
+            System.err.println("STUB: APR: AgentAvatar.stopMotion not implemented")
+        }
+        fun hasNonAgentAnimationOnSeat(seatId: UUID): Boolean {
+            System.err.println("STUB: APR: AgentAvatar.hasNonAgentAnimationOnSeat not implemented")
+            return false
+        }
     }
 
     private object AgentCamera {
-        fun cameraMouselook(): Boolean = TODO("APR: use JVM equivalent")
+        fun cameraMouselook(): Boolean {
+            System.err.println("STUB: APR: AgentCamera.cameraMouselook not implemented")
+            return false
+        }
     }
 
     private object SavedPerAccountSettings {
-        fun getBool(key: String): Boolean = TODO("APR: use JVM equivalent")
-        fun setBool(key: String, value: Boolean): Unit = TODO("APR: use JVM equivalent")
+        fun getBool(key: String): Boolean {
+            System.err.println("STUB: APR: SavedPerAccountSettings.getBool($key) not implemented")
+            return false
+        }
+        fun setBool(key: String, value: Boolean): Unit {
+            System.err.println("STUB: APR: SavedPerAccountSettings.setBool($key, $value) not implemented")
+        }
     }
 
     private enum class AnimRequest { START, STOP }

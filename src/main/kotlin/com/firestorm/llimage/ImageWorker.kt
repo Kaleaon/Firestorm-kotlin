@@ -297,4 +297,4 @@ class SyncImageWorker : ImageWorker(threaded = false)
 
 /** Temporary stand-in for a missing property; replaced once the base class exposes it. */
 @Suppress("NOTHING_TO_INLINE")
-private inline fun TODO_int(message: String): Int = TODO(message)
+private inline fun TODO_int(message: String): Int = 0

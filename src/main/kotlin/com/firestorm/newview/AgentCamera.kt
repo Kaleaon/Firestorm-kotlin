@@ -93,7 +93,7 @@ object AgentCamera {
     }
 
     fun setAvatarObject(avatar: Any?) {
-        TODO("APR: setAvatarObject — create HUD look-at and point-at effects")
+        System.err.println("AgentCamera: setAvatarObject — create HUD look-at and point-at effects not yet implemented")
     }
 
     // ---- Mode ----------------------------------------------------------------
@@ -109,14 +109,14 @@ object AgentCamera {
     fun cameraCustomizeAvatar(): Boolean = mCameraMode == CameraMode.CUSTOMIZE_AVATAR
     fun cameraFollow():          Boolean = mCameraMode == CameraMode.FOLLOW          && mLastCameraMode == CameraMode.FOLLOW
 
-    fun changeCameraToDefault()                            { TODO("changeCameraToDefault") }
-    fun changeCameraToMouselook(animate: Boolean = true)   { TODO("changeCameraToMouselook animate=$animate") }
-    fun changeCameraToThirdPerson(animate: Boolean = true) { TODO("changeCameraToThirdPerson animate=$animate") }
-    fun changeCameraToCustomizeAvatar()                    { TODO("changeCameraToCustomizeAvatar") }
-    fun changeCameraToFollow(animate: Boolean = true)      { TODO("changeCameraToFollow animate=$animate") }
+    fun changeCameraToDefault()                            { System.err.println("AgentCamera: changeCameraToDefault not yet implemented") }
+    fun changeCameraToMouselook(animate: Boolean = true)   { System.err.println("AgentCamera: changeCameraToMouselook not yet implemented") }
+    fun changeCameraToThirdPerson(animate: Boolean = true) { System.err.println("AgentCamera: changeCameraToThirdPerson not yet implemented") }
+    fun changeCameraToCustomizeAvatar()                    { System.err.println("AgentCamera: changeCameraToCustomizeAvatar not yet implemented") }
+    fun changeCameraToFollow(animate: Boolean = true)      { System.err.println("AgentCamera: changeCameraToFollow not yet implemented") }
 
-    fun updateCamera()     { TODO("GPU: updateCamera — interpolate position/focus each frame") }
-    fun resetCamera()      { TODO("resetCamera — slam to default position") }
+    fun updateCamera()     { /* GPU: updateCamera — interpolate position/focus each frame */ }
+    fun resetCamera()      { System.err.println("AgentCamera: resetCamera not yet implemented") }
     fun updateLastCamera() { mLastCameraMode = mCameraMode }
 
     // ---- Preset --------------------------------------------------------------
@@ -127,22 +127,22 @@ object AgentCamera {
 
     fun switchCameraPreset(preset: CameraPreset) {
         mCameraPreset = preset
-        TODO("switchCameraPreset preset=$preset — apply offset/focus for preset")
+        System.err.println("AgentCamera: switchCameraPreset not yet implemented")
     }
 
-    fun getCameraOffsetInitial(): Vector3  = TODO("getCameraOffsetInitial — read from saved settings by preset")
-    fun getCameraOffsetScale(): Float      = TODO("getCameraOffsetScale — read from saved settings / RLVa")
-    fun getFocusOffsetInitial(): Vector3d  = TODO("getFocusOffsetInitial — read from saved settings by preset")
+    fun getCameraOffsetInitial(): Vector3  { System.err.println("AgentCamera: getCameraOffsetInitial not yet implemented"); return Vector3.ZERO }
+    fun getCameraOffsetScale(): Float      { System.err.println("AgentCamera: getCameraOffsetScale not yet implemented"); return 0f }
+    fun getFocusOffsetInitial(): Vector3d  { System.err.println("AgentCamera: getFocusOffsetInitial not yet implemented"); return Vector3d.ZERO }
 
-    fun getCurrentCameraOffset(): Vector3     = TODO("getCurrentCameraOffset")
-    fun getCurrentFocusOffset(): Vector3d     = TODO("getCurrentFocusOffset")
-    fun getCurrentAvatarRotation(): Quaternion= TODO("getCurrentAvatarRotation")
+    fun getCurrentCameraOffset(): Vector3     { System.err.println("AgentCamera: getCurrentCameraOffset not yet implemented"); return Vector3.ZERO }
+    fun getCurrentFocusOffset(): Vector3d     { System.err.println("AgentCamera: getCurrentFocusOffset not yet implemented"); return Vector3d.ZERO }
+    fun getCurrentAvatarRotation(): Quaternion{ System.err.println("AgentCamera: getCurrentAvatarRotation not yet implemented"); return Quaternion.IDENTITY }
 
-    fun isJoystickCameraUsed(): Boolean = TODO("isJoystickCameraUsed")
+    fun isJoystickCameraUsed(): Boolean { System.err.println("AgentCamera: isJoystickCameraUsed not yet implemented"); return false }
 
     var initSitRot: Quaternion = Quaternion.IDENTITY
     fun setInitSitRot(rot: Quaternion) { initSitRot = rot }
-    fun rotateToInitSitRot() { TODO("rotateToInitSitRot") }
+    fun rotateToInitSitRot() { System.err.println("AgentCamera: rotateToInitSitRot not yet implemented") }
 
     // ---- Camera position / distance ------------------------------------------
 

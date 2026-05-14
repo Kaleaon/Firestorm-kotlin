@@ -47,7 +47,7 @@ abstract class FloaterSnapshotBase(key: Any) : Floater(key) {
                 val localOffsetY = (thumbnailRect.height - thumbnailH) / 2
                 val offsetX = thumbnailRect.left + localOffsetX
                 val offsetY = thumbnailRect.bottom + localOffsetY
-                TODO("GPU: gGL.matrixMode / gl_draw_scaled_image for thumbnail")
+                // GPU: gGL.matrixMode / gl_draw_scaled_image for thumbnail
             }
         }
         impl?.updateLayout(this)
@@ -59,10 +59,10 @@ abstract class FloaterSnapshotBase(key: Any) : Floater(key) {
         previewp?.setAllowFullScreenPreview(false)
         previewp?.setVisible(false)
         previewp?.setEnabled(false)
-        TODO("APR: use JVM equivalent - gSavedSettings.setBOOL(FreezeTime, false)")
+        System.err.println("FloaterSnapshotBase: gSavedSettings.setBOOL(FreezeTime) not yet implemented")
         impl?.avatarPauseHandles?.clear()
         impl?.lastToolset?.let {
-            TODO("APR: use JVM equivalent - LLToolMgr::getInstance()->setCurrentToolset")
+            System.err.println("FloaterSnapshotBase: LLToolMgr::getInstance()->setCurrentToolset not yet implemented")
         }
     }
 
@@ -101,13 +101,16 @@ abstract class FloaterSnapshotBase(key: Any) : Floater(key) {
         impl?.previewHandle?.get() as? SnapshotLivePreview
 
     fun getImageData(): Any? {
-        TODO("APR: use JVM equivalent - get formatted image data from preview")
+        System.err.println("FloaterSnapshotBase: getImageData not yet implemented")
+        return null
     }
 
-    fun getPosTakenGlobal(): Any = TODO("APR: use JVM equivalent - get position taken global")
+    fun getPosTakenGlobal(): Any {
+        System.err.println("FloaterSnapshotBase: getPosTakenGlobal not yet implemented")
+        return Any()
+    }
 
-    fun getThumbnailPlaceholderRect(): Any = thumbnailPlaceholder?.getRect()
-        ?: TODO("APR: use JVM equivalent - return empty rect")
+    fun getThumbnailPlaceholderRect(): Any = thumbnailPlaceholder?.getRect() ?: Any()
 
     fun setRefreshLabelVisible(value: Boolean) { refreshLabel?.setVisible(value) }
     fun setSuccessLabelPanelVisible(value: Boolean) { succeessLblPanel?.setVisible(value) }
@@ -152,7 +155,8 @@ abstract class FloaterSnapshotBase(key: Any) : Floater(key) {
         fun setSkipReshaping(skip: Boolean) { skipReshaping = skip }
 
         fun getPreviewView(): SnapshotLivePreview? = previewHandle?.let {
-            TODO("APR: use JVM equivalent - resolve handle to SnapshotLivePreview")
+            System.err.println("ImplBase: getPreviewView handle resolution not yet implemented")
+            null
         }
 
         abstract fun getActivePanel(floater: FloaterSnapshotBase, okIfNotFound: Boolean = true): PanelSnapshot?
@@ -167,10 +171,10 @@ abstract class FloaterSnapshotBase(key: Any) : Floater(key) {
 
         open fun updateLayout(floaterp: FloaterSnapshotBase) {
             val previewp = getPreviewView() ?: return
-            var panelWidth = (400f * TODO("APR: use JVM equivalent - gViewerWindow->getWorldViewAspectRatio()") as Float).toInt()
+            var panelWidth = (400f * 1.0f).toInt()
             if (panelWidth > 700) panelWidth = 700
             previewp.setFixedThumbnailSize(panelWidth, 420)
-            TODO("APR: use JVM equivalent - reshape floater based on advanced/collapsed state")
+            System.err.println("ImplBase: reshape floater based on advanced/collapsed state not yet implemented")
         }
 
         open fun updateLivePreview() {
@@ -191,7 +195,7 @@ abstract class FloaterSnapshotBase(key: Any) : Floater(key) {
         fun getStatus(): Status = status
 
         open fun setNeedRefresh(need: Boolean) {
-            val autoSnapshot = TODO("APR: use JVM equivalent - gSavedSettings.getBOOL(AutoSnapshot)") as? Boolean ?: false
+            val autoSnapshot = false
             val effective = if (autoSnapshot) false else need
             floater.setRefreshLabelVisible(effective)
             needRefresh = effective
@@ -199,7 +203,7 @@ abstract class FloaterSnapshotBase(key: Any) : Floater(key) {
 
         open fun checkAutoSnapshot(previewp: SnapshotLivePreview?, updateThumbnail: Boolean = false) {
             if (previewp == null) return
-            val autosnap = TODO("APR: use JVM equivalent - gSavedSettings.getBOOL(AutoSnapshot)") as? Boolean ?: false
+            val autosnap = false
             previewp.updateSnapshot(autosnap, updateThumbnail, if (autosnap) AUTO_SNAPSHOT_TIME_DELAY else 0f)
         }
 
@@ -222,7 +226,8 @@ abstract class FloaterSnapshotBase(key: Any) : Floater(key) {
         companion object {
             fun updatePreviewList(initialized: Boolean, haveSocials: Boolean = false): Boolean {
                 if (!initialized && !haveSocials) return false
-                TODO("APR: use JVM equivalent - LLSnapshotLivePreview::onIdle for each preview")
+                System.err.println("ImplBase: updatePreviewList LLSnapshotLivePreview::onIdle not yet implemented")
+                return false
             }
 
             fun onClickNewSnapshot(data: Any?) {
@@ -234,7 +239,7 @@ abstract class FloaterSnapshotBase(key: Any) : Floater(key) {
 
             fun onClickAutoSnap(ctrl: UICtrl?, data: Any?) {
                 val check = ctrl as? CheckBoxCtrl ?: return
-                TODO("APR: use JVM equivalent - gSavedSettings.setBOOL(AutoSnapshot, check.get())")
+                System.err.println("ImplBase: gSavedSettings.setBOOL(AutoSnapshot) not yet implemented")
                 val view = data as? FloaterSnapshotBase ?: return
                 view.impl?.checkAutoSnapshot(view.getPreviewView())
                 view.impl?.updateControls(view)

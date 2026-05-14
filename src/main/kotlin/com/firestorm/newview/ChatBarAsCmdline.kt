@@ -1058,8 +1058,9 @@ private fun rlvStringsGetAnonym(avName: AvatarName): String {
     return ""
 }
 
-private fun avatarNameCacheGetAsync(id: UUID, callback: (AvatarName) -> Unit): Unit =
-    TODO("APR: use JVM equivalent for LLAvatarNameCache::get with callback")
+private fun avatarNameCacheGetAsync(id: UUID, callback: (AvatarName) -> Unit) {
+    System.err.println("ChatBarAsCmdline: avatarNameCacheGetAsync not yet implemented")
+}
 
 private fun fsRadarGetRadarList(): Map<UUID, RadarEntry> =
     TODO("APR: use JVM equivalent for FSRadar::getInstance()->getRadarList()")

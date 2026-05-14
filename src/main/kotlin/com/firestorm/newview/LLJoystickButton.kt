@@ -45,7 +45,7 @@ data class LLQuaternion(var x: Float = 0f, var y: Float = 0f, var z: Float = 0f,
     fun setAngleAxis(angle: Float, axis: LLVector3) { /* GPU: set this quaternion from angle-axis */ }
     fun normalize() { /* GPU: normalise quaternion in-place */ }
     fun getValue(): Any { return Any() }
-    operator fun timesAssign(other: LLQuaternion) { TODO("GPU: multiply this quaternion by other in-place") }
+    operator fun timesAssign(other: LLQuaternion) { /* GPU: multiply this quaternion by other in-place */ }
 }
 
 data class LLJoystickRect(

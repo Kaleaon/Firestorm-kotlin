@@ -820,7 +820,7 @@ object IMMgr {
     fun updateDNDMessageStatus() {
         for (session in IMModel.id2SessionMap.values) {
             if (!session.isDNDSend) {
-                TODO("APR: use JVM equivalent - send DND auto-response to session ${session.sessionID} if agent is in DND mode")
+                System.err.println("IMMgr: updateDNDMessageStatus not yet implemented")
             }
         }
     }

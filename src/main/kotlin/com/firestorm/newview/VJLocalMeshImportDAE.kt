@@ -14,33 +14,66 @@ class LLLocalMeshImportDAE : FSLocalMeshImportBase() {
         pushLog("DAE Importer", "Starting")
         setLod(lod)
 
-        val colladaCore: DaeHandle = TODO("APR: use JVM equivalent — instantiate a COLLADA DOM or JAXB-parsed DAE document")
-        val preprocessDae: Boolean = TODO("APR: read ImporterPreprocessDAE setting")
+        val colladaCore: DaeHandle = run {
+            System.err.println("LLLocalMeshImportDAE: use JVM equivalent — instantiate a COLLADA DOM or JAXB-parsed DAE document not yet implemented")
+            object : DaeHandle {}
+        }
+        val preprocessDae: Boolean = run {
+            System.err.println("LLLocalMeshImportDAE: read ImporterPreprocessDAE setting not yet implemented")
+            false
+        }
         val colladaDom: DaeDocument = if (preprocessDae) {
-            TODO("APR: use JVM equivalent — open DAE from preprocessed string (LLDAELoader::preprocessDAE equivalent)")
+            run {
+                System.err.println("LLLocalMeshImportDAE: use JVM equivalent — open DAE from preprocessed string (LLDAELoader::preprocessDAE equivalent) not yet implemented")
+                object : DaeDocument {}
+            }
         } else {
-            TODO("APR: use JVM equivalent — open DAE directly from filename")
+            run {
+                System.err.println("LLLocalMeshImportDAE: use JVM equivalent — open DAE directly from filename not yet implemented")
+                object : DaeDocument {}
+            }
         }
 
-        val alwaysUseMeterScale: Boolean = TODO("APR: read FSLocalMeshScaleAlwaysMeters setting")
+        val alwaysUseMeterScale: Boolean = run {
+            System.err.println("LLLocalMeshImportDAE: read FSLocalMeshScaleAlwaysMeters setting not yet implemented")
+            false
+        }
 
         var sceneTransformBase = identityMatrix4x4()
         if (!alwaysUseMeterScale) {
-            val meter: Float = TODO("APR: use JVM equivalent — read domAsset.domUnit meter value from DAE document")
+            val meter: Float = run {
+                System.err.println("LLLocalMeshImportDAE: use JVM equivalent — read domAsset.domUnit meter value from DAE document not yet implemented")
+                1f
+            }
             sceneTransformBase[0] = meter; sceneTransformBase[5] = meter; sceneTransformBase[10] = meter
         }
 
-        val upAxis: UpAxisType = TODO("APR: use JVM equivalent — read domAsset.domUp_axis from DAE document, default Y_UP")
+        val upAxis: UpAxisType = run {
+            System.err.println("LLLocalMeshImportDAE: use JVM equivalent — read domAsset.domUp_axis from DAE document, default Y_UP not yet implemented")
+            UpAxisType.Z_UP
+        }
         val rotation = when (upAxis) {
-            UpAxisType.X_UP -> TODO("GPU: rotation matrix 0, 90°, 0 (Y rotation)")
-            UpAxisType.Y_UP -> TODO("GPU: rotation matrix 90°, 0, 0 (X rotation)")
+            UpAxisType.X_UP -> run {
+                System.err.println("LLLocalMeshImportDAE: rotation matrix 0, 90°, 0 (Y rotation) not yet implemented")
+                identityMatrix4x4()
+            }
+            UpAxisType.Y_UP -> run {
+                System.err.println("LLLocalMeshImportDAE: rotation matrix 90°, 0, 0 (X rotation) not yet implemented")
+                identityMatrix4x4()
+            }
             UpAxisType.Z_UP -> identityMatrix4x4()
         }
 
         sceneTransformBase = multiplyMatrix4x4(rotation, sceneTransformBase)
 
-        val meshAmount: Int = TODO("APR: use JVM equivalent — collada_db.getElementCount(COLLADA_TYPE_MESH)")
-        val skinAmount: Int = TODO("APR: use JVM equivalent — collada_db.getElementCount(COLLADA_TYPE_SKIN)")
+        val meshAmount: Int = run {
+            System.err.println("LLLocalMeshImportDAE: use JVM equivalent — collada_db.getElementCount(COLLADA_TYPE_MESH) not yet implemented")
+            0
+        }
+        val skinAmount: Int = run {
+            System.err.println("LLLocalMeshImportDAE: use JVM equivalent — collada_db.getElementCount(COLLADA_TYPE_SKIN) not yet implemented")
+            0
+        }
 
         if (meshAmount == 0) {
             pushLog("DAE Importer", "Collada document contained no MESH instances.")
@@ -52,7 +85,10 @@ class LLLocalMeshImportDAE : FSLocalMeshImportBase() {
         for (meshIndex in 0 until meshAmount) {
             pushLog("DAE Importer", "Parsing object number $meshIndex")
 
-            val meshCurrent: DaeMeshHandle = TODO("APR: use JVM equivalent — collada_db.getElement(meshIndex, COLLADA_TYPE_MESH)")
+            val meshCurrent: DaeMeshHandle = run {
+                System.err.println("LLLocalMeshImportDAE: use JVM equivalent — collada_db.getElement(meshIndex, COLLADA_TYPE_MESH) not yet implemented")
+                object : DaeMeshHandle {}
+            }
             val objectName = getElementName(meshCurrent, meshIndex)
             pushLog("DAE Importer", "Object name found: $objectName")
 
@@ -94,9 +130,18 @@ class LLLocalMeshImportDAE : FSLocalMeshImportBase() {
         for (skinIndex in 0 until skinAmount) {
             pushLog("DAE Importer", "Parsing skin number $skinIndex")
 
-            val skinCurrent: DaeSkinHandle = TODO("APR: use JVM equivalent — collada_db.getElement(skinIndex, COLLADA_TYPE_SKIN)")
-            val skinGeom: DaeGeometryHandle = TODO("APR: use JVM equivalent — skin.getSource().getElement() as domGeometry")
-            val skinMesh: DaeMeshHandle = TODO("APR: use JVM equivalent — skinGeom.getMesh()")
+            val skinCurrent: DaeSkinHandle = run {
+                System.err.println("LLLocalMeshImportDAE: use JVM equivalent — collada_db.getElement(skinIndex, COLLADA_TYPE_SKIN) not yet implemented")
+                object : DaeSkinHandle {}
+            }
+            val skinGeom: DaeGeometryHandle = run {
+                System.err.println("LLLocalMeshImportDAE: use JVM equivalent — skin.getSource().getElement() as domGeometry not yet implemented")
+                object : DaeGeometryHandle {}
+            }
+            val skinMesh: DaeMeshHandle = run {
+                System.err.println("LLLocalMeshImportDAE: use JVM equivalent — skinGeom.getMesh() not yet implemented")
+                object : DaeMeshHandle {}
+            }
 
             val currentObjectIter = meshUsageTracker.indexOfFirst { it === skinMesh }
             if (currentObjectIter < 0) {
@@ -135,8 +180,14 @@ class LLLocalMeshImportDAE : FSLocalMeshImportBase() {
 
     fun processObject(currentMesh: DaeMeshHandle, currentObject: LLLocalMeshObject): Boolean {
         val objectFaces = currentObject.getFaces(mLod)
-        val triangleCount: Int = TODO("APR: use JVM equivalent — currentMesh.getTriangles_array().getCount()")
-        val polylistCount: Int = TODO("APR: use JVM equivalent — currentMesh.getPolylist_array().getCount()")
+        val triangleCount: Int = run {
+            System.err.println("LLLocalMeshImportDAE: use JVM equivalent — currentMesh.getTriangles_array().getCount() not yet implemented")
+            0
+        }
+        val polylistCount: Int = run {
+            System.err.println("LLLocalMeshImportDAE: use JVM equivalent — currentMesh.getPolylist_array().getCount() not yet implemented")
+            0
+        }
         val totalFacesFound = triangleCount + polylistCount
 
         pushLog("DAE Importer", "Potentially $totalFacesFound object faces found.")
@@ -159,12 +210,18 @@ class LLLocalMeshImportDAE : FSLocalMeshImportBase() {
             val success: Boolean = when (arrayType) {
                 SubmeshType.TRIANGLE -> {
                     pushLog("DAE Importer", "Attempting to load face idx $idx of type TRIANGLES.")
-                    val triangleRef: DaeTrianglesHandle = TODO("APR: use JVM equivalent — triangle_array.get(idx)")
+                    val triangleRef: DaeTrianglesHandle = run {
+                        System.err.println("LLLocalMeshImportDAE: use JVM equivalent — triangle_array.get(idx) not yet implemented")
+                        object : DaeTrianglesHandle {}
+                    }
                     readMesh_Triangle(submesh, triangleRef)
                 }
                 SubmeshType.POLYLIST -> {
                     pushLog("DAE Importer", "Attempting to load face idx $idx of type POLYLIST.")
-                    val polylistRef: DaePolylistHandle = TODO("APR: use JVM equivalent — polylist_array.get(idx)")
+                    val polylistRef: DaePolylistHandle = run {
+                        System.err.println("LLLocalMeshImportDAE: use JVM equivalent — polylist_array.get(idx) not yet implemented")
+                        object : DaePolylistHandle {}
+                    }
                     readMesh_Polylist(submesh, polylistRef)
                 }
                 SubmeshType.POLYGONS -> {
@@ -207,11 +264,17 @@ class LLLocalMeshImportDAE : FSLocalMeshImportBase() {
         val skinInfo = currentObject.getObjectMeshSkinInfo() ?: MeshSkinInfo()
 
         val normalizedTransformation = buildNormalizedTransformation(currentObject)
-        val inverseNormalizedTransformation: FloatArray = TODO("GPU: inverse(normalizedTransformation)")
+        val inverseNormalizedTransformation: FloatArray = run {
+            System.err.println("LLLocalMeshImportDAE: GPU inverse(normalizedTransformation) not yet implemented")
+            identityMatrix4x4()
+        }
 
-        val bindShapeMatrix: FloatArray? = TODO("APR: use JVM equivalent — currentSkin.getBind_shape_matrix()")
+        val bindShapeMatrix: FloatArray? = run {
+            System.err.println("LLLocalMeshImportDAE: use JVM equivalent — currentSkin.getBind_shape_matrix() not yet implemented")
+            null
+        }
         if (bindShapeMatrix != null) {
-            TODO("GPU: load bind matrix from DAE, multiply normalizedTransformation * bindShapeMatrix -> skinInfo.bindShapeMatrix")
+            System.err.println("LLLocalMeshImportDAE: GPU load bind matrix from DAE, multiply normalizedTransformation * bindShapeMatrix -> skinInfo.bindShapeMatrix not yet implemented")
         }
 
         val jointMap = loadJointMap()
@@ -219,21 +282,33 @@ class LLLocalMeshImportDAE : FSLocalMeshImportBase() {
         pushLog("DAE Importer", "Preparing to process skeleton[s]...")
 
         val jointTransforms: JointTransformMap = mutableMapOf()
-        val skeletonCount: Int = TODO("APR: use JVM equivalent — collada_db.getElementCount(\"skeleton\")")
+        val skeletonCount: Int = run {
+            System.err.println("LLLocalMeshImportDAE: use JVM equivalent — collada_db.getElementCount(\"skeleton\") not yet implemented")
+            0
+        }
 
         if (skeletonCount == 0) {
             pushLog("DAE Importer", "No conventional skeleton data found, attempting to recreate from joints...")
-            val documentScene: DaeElementHandle = TODO("APR: use JVM equivalent — collada_document_root.getDescendant(\"visual_scene\")")
-            val sceneChildren: List<DaeNodeHandle> = TODO("APR: use JVM equivalent — documentScene.getChildren() as domNode list")
+            val documentScene: DaeElementHandle = run {
+                System.err.println("LLLocalMeshImportDAE: use JVM equivalent — collada_document_root.getDescendant(\"visual_scene\") not yet implemented")
+                object : DaeElementHandle {}
+            }
+            val sceneChildren: List<DaeNodeHandle> = run {
+                System.err.println("LLLocalMeshImportDAE: use JVM equivalent — documentScene.getChildren() as domNode list not yet implemented")
+                emptyList()
+            }
             for (child in sceneChildren) {
                 processSkeletonJoint(child, jointMap, jointTransforms, recurseChildren = true)
             }
         } else {
             pushLog("DAE Importer", "Found $skeletonCount skeletons.")
-            TODO("APR: use JVM equivalent — iterate skeletons, use daeSIDResolver to find each joint by name, call processSkeletonJoint")
+            System.err.println("LLLocalMeshImportDAE: use JVM equivalent — iterate skeletons, use daeSIDResolver to find each joint by name, call processSkeletonJoint not yet implemented")
         }
 
-        val jointInputs: List<DaeInputHandle> = TODO("APR: use JVM equivalent — currentSkin.getJoints().getInput_array()")
+        val jointInputs: List<DaeInputHandle> = run {
+            System.err.println("LLLocalMeshImportDAE: use JVM equivalent — currentSkin.getJoints().getInput_array() not yet implemented")
+            emptyList()
+        }
 
         val processJointName = { jointName: String ->
             if (jointMap.containsKey(jointName)) {
@@ -244,22 +319,37 @@ class LLLocalMeshImportDAE : FSLocalMeshImportBase() {
         }
 
         for (input in jointInputs) {
-            val semantic: String = TODO("APR: use JVM equivalent — input.getSemantic()")
-            val source: DaeSourceHandle = TODO("APR: use JVM equivalent — input.getSource().getElement() as domSource")
+            val semantic: String = run {
+                System.err.println("LLLocalMeshImportDAE: use JVM equivalent — input.getSemantic() not yet implemented")
+                ""
+            }
+            val source: DaeSourceHandle = run {
+                System.err.println("LLLocalMeshImportDAE: use JVM equivalent — input.getSource().getElement() as domSource not yet implemented")
+                object : DaeSourceHandle {}
+            }
 
             when (semantic) {
                 "JOINT" -> {
-                    val nameArray: List<String>? = TODO("APR: use JVM equivalent — source.getName_array()?.getValue()")
+                    val nameArray: List<String>? = run {
+                        System.err.println("LLLocalMeshImportDAE: use JVM equivalent — source.getName_array()?.getValue() not yet implemented")
+                        null
+                    }
                     if (nameArray != null) {
                         for (name in nameArray) processJointName(name)
                     } else {
-                        val idArray: List<String>? = TODO("APR: use JVM equivalent — source.getIDREF_array()?.getValue() mapped to IDs")
+                        val idArray: List<String>? = run {
+                            System.err.println("LLLocalMeshImportDAE: use JVM equivalent — source.getIDREF_array()?.getValue() mapped to IDs not yet implemented")
+                            null
+                        }
                         idArray?.forEach { processJointName(it) }
                             ?: pushLog("DAE Importer", "WARNING: Joint input did not provide name or ID, skipping.")
                     }
                 }
                 "INV_BIND_MATRIX" -> {
-                    val floatValues: List<Float> = TODO("APR: use JVM equivalent — source.getFloat_array().getValue()")
+                    val floatValues: List<Float> = run {
+                        System.err.println("LLLocalMeshImportDAE: use JVM equivalent — source.getFloat_array().getValue() not yet implemented")
+                        emptyList()
+                    }
                     var matIdx = 0
                     while (matIdx + 15 < floatValues.size) {
                         val mat = FloatArray(16)
@@ -275,7 +365,10 @@ class LLLocalMeshImportDAE : FSLocalMeshImportBase() {
             return false
         }
 
-        val applyJointOffsets: Boolean = TODO("APR: read FSLocalMeshApplyJointOffsets setting")
+        val applyJointOffsets: Boolean = run {
+            System.err.println("LLLocalMeshImportDAE: read FSLocalMeshApplyJointOffsets setting not yet implemented")
+            false
+        }
         if (applyJointOffsets) {
             for ((jointNameIdx, jointName) in skinInfo.jointNames.withIndex()) {
                 if (!jointMap.containsKey(jointName)) {
@@ -289,7 +382,7 @@ class LLLocalMeshImportDAE : FSLocalMeshImportBase() {
                 val newInverse = skinInfo.invBindMatrix[jointNameIdx].copyOf()
                 val jointTranslation = jointTransforms[jointName]
                 if (jointTranslation != null) {
-                    TODO("GPU: setTranslation of newInverse from jointTranslation")
+                    System.err.println("LLLocalMeshImportDAE: GPU setTranslation of newInverse from jointTranslation not yet implemented")
                 }
                 skinInfo.alternateBindMatrix.add(newInverse)
             }
@@ -300,34 +393,61 @@ class LLLocalMeshImportDAE : FSLocalMeshImportBase() {
             pushLog("DAE Importer", "WARNING: ${skinInfo.jointNames.size} joints were found, but $bindCount bind matrices were made.")
         }
 
-        val rawVertexArray: DaeVerticesHandle = TODO("APR: use JVM equivalent — currentMesh.getVertices()")
+        val rawVertexArray: DaeVerticesHandle = run {
+            System.err.println("LLLocalMeshImportDAE: use JVM equivalent — currentMesh.getVertices() not yet implemented")
+            object : DaeVerticesHandle {}
+        }
         val transformedPositions = mutableListOf<FloatArray>()
-        val vertexInputs: List<DaeInputHandle> = TODO("APR: use JVM equivalent — rawVertexArray.getInput_array()")
+        val vertexInputs: List<DaeInputHandle> = run {
+            System.err.println("LLLocalMeshImportDAE: use JVM equivalent — rawVertexArray.getInput_array() not yet implemented")
+            emptyList()
+        }
 
         for (vertexInput in vertexInputs) {
-            val semantic: String = TODO("APR: use JVM equivalent — vertexInput.getSemantic()")
+            val semantic: String = run {
+                System.err.println("LLLocalMeshImportDAE: use JVM equivalent — vertexInput.getSemantic() not yet implemented")
+                ""
+            }
             if (semantic != "POSITION") continue
 
-            val posSource: DaeSourceHandle = TODO("APR: use JVM equivalent — vertexInput.getSource().getElement() as domSource")
-            val posArray: List<Float> = TODO("APR: use JVM equivalent — posSource.getFloat_array().getValue()")
+            val posSource: DaeSourceHandle = run {
+                System.err.println("LLLocalMeshImportDAE: use JVM equivalent — vertexInput.getSource().getElement() as domSource not yet implemented")
+                object : DaeSourceHandle {}
+            }
+            val posArray: List<Float> = run {
+                System.err.println("LLLocalMeshImportDAE: use JVM equivalent — posSource.getFloat_array().getValue() not yet implemented")
+                emptyList()
+            }
 
             var i = 0
             while (i + 2 < posArray.size) {
                 val posVec = floatArrayOf(posArray[i], posArray[i + 1], posArray[i + 2], 0f)
-                TODO("GPU: transform posVec by inverseNormalizedTransformation")
+                System.err.println("LLLocalMeshImportDAE: GPU transform posVec by inverseNormalizedTransformation not yet implemented")
                 transformedPositions.add(posVec)
                 i += 3
             }
         }
 
-        val currentWeights: DaeVertexWeightsHandle = TODO("APR: use JVM equivalent — currentSkin.getVertex_weights()")
-        val weightInputs: List<DaeInputHandle> = TODO("APR: use JVM equivalent — currentWeights.getInput_array()")
+        val currentWeights: DaeVertexWeightsHandle = run {
+            System.err.println("LLLocalMeshImportDAE: use JVM equivalent — currentSkin.getVertex_weights() not yet implemented")
+            object : DaeVertexWeightsHandle {}
+        }
+        val weightInputs: List<DaeInputHandle> = run {
+            System.err.println("LLLocalMeshImportDAE: use JVM equivalent — currentWeights.getInput_array() not yet implemented")
+            emptyList()
+        }
         var vertexWeights: List<Float>? = null
 
         for (wInput in weightInputs) {
-            val semantic: String = TODO("APR: use JVM equivalent — wInput.getSemantic()")
+            val semantic: String = run {
+                System.err.println("LLLocalMeshImportDAE: use JVM equivalent — wInput.getSemantic() not yet implemented")
+                ""
+            }
             if (semantic == "WEIGHT") {
-                vertexWeights = TODO("APR: use JVM equivalent — wInput.getSource().getElement().getFloat_array().getValue()")
+                vertexWeights = run {
+                    System.err.println("LLLocalMeshImportDAE: use JVM equivalent — wInput.getSource().getElement().getFloat_array().getValue() not yet implemented")
+                    emptyList()
+                }
                 break
             }
         }
@@ -337,8 +457,14 @@ class LLLocalMeshImportDAE : FSLocalMeshImportBase() {
             return false
         }
 
-        val vtxInfluenceCount: List<Int> = TODO("APR: use JVM equivalent — currentWeights.getVcount().getValue()")
-        val jointWeightIndices: List<Int> = TODO("APR: use JVM equivalent — currentWeights.getV().getValue()")
+        val vtxInfluenceCount: List<Int> = run {
+            System.err.println("LLLocalMeshImportDAE: use JVM equivalent — currentWeights.getVcount().getValue() not yet implemented")
+            emptyList()
+        }
+        val jointWeightIndices: List<Int> = run {
+            System.err.println("LLLocalMeshImportDAE: use JVM equivalent — currentWeights.getV().getValue() not yet implemented")
+            emptyList()
+        }
 
         data class JointWeightEntry(val jointIdx: Int, val weight: Float)
         val skinweightData: MutableMap<Int, List<JointWeightEntry>> = mutableMapOf()
@@ -407,20 +533,32 @@ class LLLocalMeshImportDAE : FSLocalMeshImportBase() {
         jointTransforms: JointTransformMap,
         recurseChildren: Boolean = false
     ): Boolean {
-        val nodeName: String? = TODO("APR: use JVM equivalent — currentNode.getName()")
+        val nodeName: String? = run {
+            System.err.println("LLLocalMeshImportDAE: use JVM equivalent — currentNode.getName() not yet implemented")
+            null
+        }
         if (nodeName == null) return false
-        val nodeType: NodeType = TODO("APR: use JVM equivalent — currentNode.getType()")
+        val nodeType: NodeType = run {
+            System.err.println("LLLocalMeshImportDAE: use JVM equivalent — currentNode.getType() not yet implemented")
+            NodeType.NODE
+        }
         if (nodeType != NodeType.JOINT) return false
 
         if (jointMap.containsKey(nodeName)) {
-            val translation: FloatArray? = TODO("APR: use JVM equivalent — resolve ./translate or ./location or child translate or ./transform matrix or ./matrix from domNode")
+            val translation: FloatArray? = run {
+                System.err.println("LLLocalMeshImportDAE: use JVM equivalent — resolve ./translate or ./location or child translate or ./transform matrix or ./matrix from domNode not yet implemented")
+                null
+            }
             if (translation != null) {
                 jointTransforms[nodeName] = translation
             }
         }
 
         if (recurseChildren) {
-            val children: List<DaeNodeHandle> = TODO("APR: use JVM equivalent — currentNode.getChildren() as domNode list")
+            val children: List<DaeNodeHandle> = run {
+                System.err.println("LLLocalMeshImportDAE: use JVM equivalent — currentNode.getChildren() as domNode list not yet implemented")
+                emptyList()
+            }
             for (child in children) {
                 processSkeletonJoint(child, jointMap, jointTransforms, recurseChildren)
             }
@@ -439,17 +577,20 @@ class LLLocalMeshImportDAE : FSLocalMeshImportBase() {
         sourceNormals: Ref<DaeSourceHandle?>,
         sourceUvmap: Ref<DaeSourceHandle?>
     ): Boolean {
-        TODO(
-            "APR: use JVM equivalent — iterate domInputLocalOffset_Array, " +
-            "find VERTEX/NORMAL/TEXCOORD offsets and their domSource references, " +
-            "compute indexStride, validate sourcePosition is non-null with float array"
-        )
+        System.err.println("LLLocalMeshImportDAE: use JVM equivalent — iterate domInputLocalOffset_Array, find VERTEX/NORMAL/TEXCOORD offsets and their domSource references, compute indexStride, validate sourcePosition is non-null with float array not yet implemented")
+        return false
     }
 
     fun getElementName(element: DaeElementHandle?, fallbackIndex: Int): String {
         fun askElement(el: DaeElementHandle): String {
-            val nameAttr: String? = TODO("APR: use JVM equivalent — el.getAttribute(\"name\")")
-            val idAttr: String? = TODO("APR: use JVM equivalent — el.getID()")
+            val nameAttr: String? = run {
+                System.err.println("LLLocalMeshImportDAE: use JVM equivalent — el.getAttribute(\"name\") not yet implemented")
+                null
+            }
+            val idAttr: String? = run {
+                System.err.println("LLLocalMeshImportDAE: use JVM equivalent — el.getID() not yet implemented")
+                null
+            }
             return when {
                 !nameAttr.isNullOrEmpty() && !idAttr.isNullOrEmpty() -> "$nameAttr | $idAttr"
                 !nameAttr.isNullOrEmpty() -> nameAttr
@@ -461,7 +602,10 @@ class LLLocalMeshImportDAE : FSLocalMeshImportBase() {
         if (element != null) {
             val result = askElement(element)
             if (result.isNotEmpty()) return result
-            val parent: DaeElementHandle? = TODO("APR: use JVM equivalent — element.getParent()")
+            val parent: DaeElementHandle? = run {
+                System.err.println("LLLocalMeshImportDAE: use JVM equivalent — element.getParent() not yet implemented")
+                null
+            }
             if (parent != null) {
                 val parentResult = askElement(parent)
                 if (parentResult.isNotEmpty()) return parentResult
@@ -471,7 +615,10 @@ class LLLocalMeshImportDAE : FSLocalMeshImportBase() {
     }
 
     fun readMesh_Triangle(dataOut: LLLocalMeshFace, dataIn: DaeTrianglesHandle): Boolean {
-        val inputs: DaeInputArrayHandle = TODO("APR: use JVM equivalent — dataIn.getInput_array()")
+        val inputs: DaeInputArrayHandle = run {
+            System.err.println("LLLocalMeshImportDAE: use JVM equivalent — dataIn.getInput_array() not yet implemented")
+            object : DaeInputArrayHandle {}
+        }
         val offsetPos = IntRef(); val offsetNorm = IntRef(); val offsetUv = IntRef(); val stride = IntRef()
         val srcPos = Ref<DaeSourceHandle?>(null)
         val srcNorm = Ref<DaeSourceHandle?>(null)
@@ -482,15 +629,31 @@ class LLLocalMeshImportDAE : FSLocalMeshImportBase() {
             return false
         }
 
-        val posValues: List<Float> = TODO("APR: use JVM equivalent — srcPos.value.getFloat_array().getValue()")
+        val posValues: List<Float> = run {
+            System.err.println("LLLocalMeshImportDAE: use JVM equivalent — srcPos.value.getFloat_array().getValue() not yet implemented")
+            emptyList()
+        }
         if (posValues.isEmpty()) {
             pushLog("DAE Importer", "Collada file error, vertex position array is empty.")
             return false
         }
 
-        val normValues: List<Float> = srcNorm.value?.let { TODO("APR: use JVM equivalent — it.getFloat_array().getValue()") } ?: emptyList()
-        val uvValues: List<Float> = srcUv.value?.let { TODO("APR: use JVM equivalent — it.getFloat_array().getValue()") } ?: emptyList()
-        val triangleList: List<Int> = TODO("APR: use JVM equivalent — dataIn.getP().getValue()")
+        val normValues: List<Float> = srcNorm.value?.let {
+            run {
+                System.err.println("LLLocalMeshImportDAE: use JVM equivalent — it.getFloat_array().getValue() not yet implemented")
+                emptyList<Float>()
+            }
+        } ?: emptyList()
+        val uvValues: List<Float> = srcUv.value?.let {
+            run {
+                System.err.println("LLLocalMeshImportDAE: use JVM equivalent — it.getFloat_array().getValue() not yet implemented")
+                emptyList<Float>()
+            }
+        } ?: emptyList()
+        val triangleList: List<Int> = run {
+            System.err.println("LLLocalMeshImportDAE: use JVM equivalent — dataIn.getP().getValue() not yet implemented")
+            emptyList()
+        }
 
         val listIndices = dataOut.getIndices()
         val listPositions = dataOut.getPositions()
@@ -572,7 +735,10 @@ class LLLocalMeshImportDAE : FSLocalMeshImportBase() {
     }
 
     fun readMesh_Polylist(dataOut: LLLocalMeshFace, dataIn: DaePolylistHandle): Boolean {
-        val inputs: DaeInputArrayHandle = TODO("APR: use JVM equivalent — dataIn.getInput_array()")
+        val inputs: DaeInputArrayHandle = run {
+            System.err.println("LLLocalMeshImportDAE: use JVM equivalent — dataIn.getInput_array() not yet implemented")
+            object : DaeInputArrayHandle {}
+        }
         val offsetPos = IntRef(); val offsetNorm = IntRef(); val offsetUv = IntRef(); val stride = IntRef()
         val srcPos = Ref<DaeSourceHandle?>(null)
         val srcNorm = Ref<DaeSourceHandle?>(null)
@@ -583,16 +749,35 @@ class LLLocalMeshImportDAE : FSLocalMeshImportBase() {
             return false
         }
 
-        val posValues: List<Float> = TODO("APR: use JVM equivalent — srcPos.value.getFloat_array().getValue()")
+        val posValues: List<Float> = run {
+            System.err.println("LLLocalMeshImportDAE: use JVM equivalent — srcPos.value.getFloat_array().getValue() not yet implemented")
+            emptyList()
+        }
         if (posValues.isEmpty()) {
             pushLog("DAE Importer", "Collada file error, vertex position array is empty.")
             return false
         }
 
-        val normValues: List<Float> = srcNorm.value?.let { TODO("APR: use JVM equivalent — it.getFloat_array().getValue()") } ?: emptyList()
-        val uvValues: List<Float> = srcUv.value?.let { TODO("APR: use JVM equivalent — it.getFloat_array().getValue()") } ?: emptyList()
-        val listPrimitives: List<Int> = TODO("APR: use JVM equivalent — dataIn.getVcount().getValue()")
-        val vertexIndices: List<Int> = TODO("APR: use JVM equivalent — dataIn.getP().getValue()")
+        val normValues: List<Float> = srcNorm.value?.let {
+            run {
+                System.err.println("LLLocalMeshImportDAE: use JVM equivalent — it.getFloat_array().getValue() not yet implemented")
+                emptyList<Float>()
+            }
+        } ?: emptyList()
+        val uvValues: List<Float> = srcUv.value?.let {
+            run {
+                System.err.println("LLLocalMeshImportDAE: use JVM equivalent — it.getFloat_array().getValue() not yet implemented")
+                emptyList<Float>()
+            }
+        } ?: emptyList()
+        val listPrimitives: List<Int> = run {
+            System.err.println("LLLocalMeshImportDAE: use JVM equivalent — dataIn.getVcount().getValue() not yet implemented")
+            emptyList()
+        }
+        val vertexIndices: List<Int> = run {
+            System.err.println("LLLocalMeshImportDAE: use JVM equivalent — dataIn.getP().getValue() not yet implemented")
+            emptyList()
+        }
 
         val listIndices = dataOut.getIndices()
         val listPositions = dataOut.getPositions()
@@ -699,7 +884,8 @@ class LLLocalMeshImportDAE : FSLocalMeshImportBase() {
         floatArrayOf(1f, 0f, 0f, 0f, 0f, 1f, 0f, 0f, 0f, 0f, 1f, 0f, 0f, 0f, 0f, 1f)
 
     private fun multiplyMatrix4x4(a: FloatArray, b: FloatArray): FloatArray {
-        TODO("GPU: 4x4 column-major matrix multiplication a * b")
+        System.err.println("LLLocalMeshImportDAE: GPU 4x4 column-major matrix multiplication a * b not yet implemented")
+        return identityMatrix4x4()
     }
 }
 

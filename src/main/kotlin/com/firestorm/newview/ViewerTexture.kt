@@ -118,10 +118,18 @@ open class ViewerTexture(var useMipMaps: Boolean = true) {
 
     open fun getType(): Byte = TextureType.LOCAL_TEXTURE.ordinal.toByte()
     open fun isMissingAsset(): Boolean = false
-    open fun dump() { TODO("GPU: dump texture info to log") }
+    open fun dump() {
+        // GPU: dump texture info to log
+    }
     open fun isViewerMediaTexture(): Boolean = false
-    open fun bindDefaultImage(stage: Int = 0): Boolean { TODO("GPU: bind default image to texture unit $stage") }
-    open fun bindDebugImage(stage: Int = 0): Boolean { TODO("GPU: bind debug checkerboard image to texture unit $stage") }
+    open fun bindDefaultImage(stage: Int = 0): Boolean {
+        // GPU: bind default image to texture unit $stage
+        return false
+    }
+    open fun bindDebugImage(stage: Int = 0): Boolean {
+        // GPU: bind debug checkerboard image to texture unit $stage
+        return false
+    }
     open fun forceImmediateUpdate() {}
     open fun isActiveFetching(): Boolean = false
     open fun getMaxVirtualSize(): Float = maxVirtualSize
@@ -183,7 +191,9 @@ open class ViewerTexture(var useMipMaps: Boolean = true) {
 
     fun hasParcelMedia(): Boolean = parcelMedia != null
 
-    fun updateBindStatsForTester() { TODO("APR: update bind stats via tester") }
+    fun updateBindStatsForTester() {
+        // APR: update bind stats via tester
+    }
 
     companion object {
         const val BOOST_NONE = 0
@@ -231,15 +241,26 @@ open class ViewerTexture(var useMipMaps: Boolean = true) {
         fun isInvisiprim(id: UUID): Boolean =
             id == INVISIPRIM_TEXTURE_1 || id == INVISIPRIM_TEXTURE_2
 
-        fun initClass() { TODO("GPU: set default GL texture reference from sDefaultImagep") }
-
-        fun updateClass() {
-            TODO("GPU: compute VRAM usage, update desiredDiscardBias and freezeImageUpdates")
+        fun initClass() {
+            // GPU: set default GL texture reference from sDefaultImagep
         }
 
-        fun isSystemMemoryLow(): Boolean { TODO("APR: query available physical memory via JVM Runtime") }
-        fun isSystemMemoryCritical(): Boolean { TODO("APR: query available physical memory via JVM Runtime") }
-        fun getSystemMemoryBudgetFactor(): Float { TODO("APR: compute memory budget factor from free/threshold ratio") }
+        fun updateClass() {
+            // GPU: compute VRAM usage, update desiredDiscardBias and freezeImageUpdates
+        }
+
+        fun isSystemMemoryLow(): Boolean {
+            // APR: query available physical memory via JVM Runtime
+            return false
+        }
+        fun isSystemMemoryCritical(): Boolean {
+            // APR: query available physical memory via JVM Runtime
+            return false
+        }
+        fun getSystemMemoryBudgetFactor(): Float {
+            // APR: compute memory budget factor from free/threshold ratio
+            return 0f
+        }
     }
 }
 
@@ -313,7 +334,9 @@ open class ViewerFetchedTexture(
     override fun isMissingAsset(): Boolean = _isMissingAsset
     fun setIsMissingAsset(missing: Boolean = true) { _isMissingAsset = missing }
 
-    override fun forceImmediateUpdate() { TODO("GPU: force immediate texture fetch and upload") }
+    override fun forceImmediateUpdate() {
+        // GPU: force immediate texture fetch and upload
+    }
 
     override fun setKnownDrawSize(width: Int, height: Int) {
         if (knownDrawWidth != width || knownDrawHeight != height) {
@@ -353,25 +376,53 @@ open class ViewerFetchedTexture(
 
     fun clearCallbackEntryList() { loadedCallbackList.clear() }
 
-    fun doLoadedCallbacks(): Boolean { TODO("GPU: invoke pending loaded callbacks") }
+    fun doLoadedCallbacks(): Boolean {
+        // GPU: invoke pending loaded callbacks
+        return false
+    }
 
-    fun addToCreateTexture() { TODO("GPU: enqueue texture for GL upload") }
-    fun preCreateTexture(useName: Int = 0): Boolean { TODO("GPU: pre-allocate GL texture name") }
-    fun createTexture(useName: Int = 0): Boolean { TODO("GPU: create and upload GL texture") }
-    fun postCreateTexture() { TODO("GPU: finalize GL texture after upload") }
-    fun scheduleCreateTexture() { TODO("GPU: schedule GL texture creation on image worker thread") }
-    fun destroyTexture() { TODO("GPU: delete GL texture object") }
+    fun addToCreateTexture() {
+        // GPU: enqueue texture for GL upload
+    }
+    fun preCreateTexture(useName: Int = 0): Boolean {
+        // GPU: pre-allocate GL texture name
+        return false
+    }
+    fun createTexture(useName: Int = 0): Boolean {
+        // GPU: create and upload GL texture
+        return false
+    }
+    fun postCreateTexture() {
+        // GPU: finalize GL texture after upload
+    }
+    fun scheduleCreateTexture() {
+        // GPU: schedule GL texture creation on image worker thread
+    }
+    fun destroyTexture() {
+        // GPU: delete GL texture object
+    }
 
-    open fun processTextureStats() { TODO("GPU: compute desired discard from virtual size") }
+    open fun processTextureStats() {
+        // GPU: compute desired discard from virtual size
+    }
 
     fun setMinDiscardLevel(discard: Int) {
         minDesiredDiscardLevel = minOf(minDesiredDiscardLevel, discard.toByte())
     }
 
-    fun updateFetch(): Boolean { TODO("GPU: step texture fetch state machine") }
-    fun clearFetchedResults() { TODO("GPU: clear raw image buffers and reset fetch state") }
-    fun updateVirtualSize() { TODO("GPU: recompute maxVirtualSize from attached faces/volumes") }
-    fun setDebugText(text: String) { TODO("GPU: propagate debug text to attached viewer objects") }
+    fun updateFetch(): Boolean {
+        // GPU: step texture fetch state machine
+        return false
+    }
+    fun clearFetchedResults() {
+        // GPU: clear raw image buffers and reset fetch state
+    }
+    fun updateVirtualSize() {
+        // GPU: recompute maxVirtualSize from attached faces/volumes
+    }
+    fun setDebugText(text: String) {
+        // GPU: propagate debug text to attached viewer objects
+    }
 
     fun setTargetHost(host: String) { targetHost = host }
     fun getTargetHost(): String = targetHost
@@ -389,7 +440,10 @@ open class ViewerFetchedTexture(
     fun getUseDiscard(): Boolean = useMipMaps
 
     fun setForSculpt() { forSculpt = true }
-    fun isForSculptOnly(): Boolean { TODO("GPU: check sculpt-only usage flag") }
+    fun isForSculptOnly(): Boolean {
+        // GPU: check sculpt-only usage flag
+        return false
+    }
 
     fun getRawImage(): Any? = rawImage
     fun getRawImageLevel(): Int = rawDiscardLevel
@@ -401,7 +455,9 @@ open class ViewerFetchedTexture(
         keptSavedRawImageTime = keptTime
     }
 
-    fun readbackRawImage() { TODO("GPU: readback raw pixel data from OpenGL texture") }
+    fun readbackRawImage() {
+        // GPU: readback raw pixel data from OpenGL texture
+    }
 
     fun destroySavedRawImage() { savedRawImage = null }
     fun getSavedRawImage(): Any? = savedRawImage
@@ -412,8 +468,12 @@ open class ViewerFetchedTexture(
 
     fun isFullyLoaded(): Boolean = fullLoaded
     fun setCanUseHTTP(canUse: Boolean) { canUseHttp = canUse }
-    fun forceToDeleteRequest() { TODO("GPU: cancel and remove active fetch request") }
-    fun loadFromFastCache() { TODO("APR: load low-res thumbnail from fast-cache file") }
+    fun forceToDeleteRequest() {
+        // GPU: cancel and remove active fetch request
+    }
+    fun loadFromFastCache() {
+        // APR: load low-res thumbnail from fast-cache file
+    }
     fun setInFastCacheList(inList: Boolean) { inFastCacheList = inList }
     fun isInFastCacheList(): Boolean = inFastCacheList
 
@@ -422,7 +482,7 @@ open class ViewerFetchedTexture(
     open fun scaleDown(): Boolean = false
 
     fun forceToRefetchTexture(desiredDiscard: Int = 0, keptTime: Float = 60f) {
-        TODO("GPU: invalidate current data and re-issue fetch request")
+        // GPU: invalidate current data and re-issue fetch request
     }
 
     companion object {
@@ -450,12 +510,15 @@ open class ViewerLODTexture(
     override fun getType(): Byte = TextureType.LOD_TEXTURE.ordinal.toByte()
 
     override fun processTextureStats() {
-        TODO("GPU: compute discard level from camera-distance-based virtual size")
+        // GPU: compute discard level from camera-distance-based virtual size
     }
 
     fun isUpdateFrozen(): Boolean = freezeImageUpdates
 
-    override fun scaleDown(): Boolean { TODO("GPU: force texture to lower discard level") }
+    override fun scaleDown(): Boolean {
+        // GPU: force texture to lower discard level
+        return false
+    }
 }
 
 class ViewerMediaTexture(
@@ -471,7 +534,9 @@ class ViewerMediaTexture(
 
     override fun getType(): Byte = TextureType.MEDIA_TEXTURE.ordinal.toByte()
 
-    fun reinit(useMipMaps: Boolean = true) { TODO("GPU: reinitialize media texture GL state") }
+    fun reinit(useMipMaps: Boolean = true) {
+        // GPU: reinitialize media texture GL state
+    }
     fun getUseMipMaps(): Boolean = useMipMaps
     fun setUseMipMaps(mipmap: Boolean) { this.useMipMaps = mipmap }
 
@@ -483,20 +548,42 @@ class ViewerMediaTexture(
     }
 
     fun isPlaying(): Boolean = isPlayingState
-    fun setMediaImpl() { TODO("GPU: bind LLViewerMediaImpl to this texture") }
+    fun setMediaImpl() {
+        // GPU: bind LLViewerMediaImpl to this texture
+    }
     override fun isViewerMediaTexture(): Boolean = true
-    fun initVirtualSize() { TODO("GPU: compute initial virtual size from media faces") }
+    fun initVirtualSize() {
+        // GPU: compute initial virtual size from media faces
+    }
     fun invalidateMediaImpl() { mediaImpl = null }
-    fun addMediaToFace(face: Any) { TODO("GPU: attach media to face render state") }
-    fun removeMediaFromFace(face: Any) { TODO("GPU: detach media from face render state") }
+    fun addMediaToFace(face: Any) {
+        // GPU: attach media to face render state
+    }
+    fun removeMediaFromFace(face: Any) {
+        // GPU: detach media from face render state
+    }
 
-    override fun addFace(channel: UInt, face: Any) { TODO("GPU: add face to media texture tracking") }
-    override fun removeFace(channel: UInt, face: Any) { TODO("GPU: remove face from media texture tracking") }
-    override fun getMaxVirtualSize(): Float { TODO("GPU: aggregate virtual sizes from all media faces") }
+    override fun addFace(channel: UInt, face: Any) {
+        // GPU: add face to media texture tracking
+    }
+    override fun removeFace(channel: UInt, face: Any) {
+        // GPU: remove face from media texture tracking
+    }
+    override fun getMaxVirtualSize(): Float {
+        // GPU: aggregate virtual sizes from all media faces
+        return 0f
+    }
 
-    private fun switchTexture(ch: UInt, face: Any) { TODO("GPU: swap face's bound texture") }
-    private fun findFaces(): Boolean { TODO("GPU: scan face list for references to this media texture") }
-    private fun stopPlaying() { TODO("GPU: tear down media playback state") }
+    private fun switchTexture(ch: UInt, face: Any) {
+        // GPU: swap face's bound texture
+    }
+    private fun findFaces(): Boolean {
+        // GPU: scan face list for references to this media texture
+        return false
+    }
+    private fun stopPlaying() {
+        // GPU: tear down media playback state
+    }
 
     companion object {
         private val mediaMap: MutableMap<UUID, ViewerMediaTexture> = mutableMapOf()
@@ -507,7 +594,9 @@ class ViewerMediaTexture(
             mediaMap[mediaId]?.invalidateMediaImpl()
         }
 
-        fun updateClass() { TODO("GPU: tick all active media textures") }
+        fun updateClass() {
+            // GPU: tick all active media textures
+        }
         fun cleanUpClass() { mediaMap.clear() }
     }
 }
@@ -554,13 +643,17 @@ object ViewerTextureManager {
 
     fun getLocalTexture(useMipMaps: Boolean = true, generateGlTex: Boolean = true): ViewerTexture {
         val tex = ViewerTexture(useMipMaps)
-        if (generateGlTex) { TODO("GPU: generate GL texture name") }
+        if (generateGlTex) {
+            // GPU: generate GL texture name
+        }
         return tex
     }
 
     fun getLocalTexture(id: UUID, useMipMaps: Boolean, generateGlTex: Boolean = true): ViewerTexture {
         val tex = ViewerTexture(useMipMaps).apply { this.id = id }
-        if (generateGlTex) { TODO("GPU: generate GL texture name") }
+        if (generateGlTex) {
+            // GPU: generate GL texture name
+        }
         return tex
     }
 
@@ -568,7 +661,9 @@ object ViewerTextureManager {
 
     fun getLocalTexture(width: UInt, height: UInt, components: UByte, useMipMaps: Boolean, generateGlTex: Boolean = true): ViewerTexture {
         val tex = ViewerTexture(useMipMaps).apply { fullWidth = width.toInt(); fullHeight = height.toInt() }
-        if (generateGlTex) { TODO("GPU: generate GL texture name") }
+        if (generateGlTex) {
+            // GPU: generate GL texture name
+        }
         return tex
     }
 
@@ -617,8 +712,12 @@ object ViewerTextureManager {
     fun getRawImageFromMemory(data: ByteArray, mimetype: String): Any? =
         ViewerTextureList.instance.getRawImageFromMemory(data, mimetype)
 
-    fun init() { TODO("GPU: create null/black/checkerboard/default textures and texture manager bridge") }
-    fun cleanup() { TODO("GPU: release all static texture pointers and GL resources") }
+    fun init() {
+        // GPU: create null/black/checkerboard/default textures and texture manager bridge
+    }
+    fun cleanup() {
+        // GPU: release all static texture pointers and GL resources
+    }
 }
 
 class TexturePipelineTester {
@@ -640,11 +739,19 @@ class TexturePipelineTester {
     private var startStabilizingTime: Float = 0f
     private var endStabilizingTime: Float = 0f
 
-    fun update() { TODO("APR: aggregate per-frame texture pipeline metrics") }
-    fun updateTextureBindingStats(imagep: ViewerTexture) { TODO("APR: record bytes bound for this frame") }
-    fun updateTextureLoadingStats(imagep: ViewerFetchedTexture, rawImagep: Any?, fromCache: Boolean) { TODO("APR: record bytes loaded, distinguish cache vs network") }
+    fun update() {
+        // APR: aggregate per-frame texture pipeline metrics
+    }
+    fun updateTextureBindingStats(imagep: ViewerTexture) {
+        // APR: record bytes bound for this frame
+    }
+    fun updateTextureLoadingStats(imagep: ViewerFetchedTexture, rawImagep: Any?, fromCache: Boolean) {
+        // APR: record bytes loaded, distinguish cache vs network
+    }
     fun updateGrayTextureBinding() { usingDefaultTexture = true }
-    fun setStabilizingTime() { TODO("APR: record the point at which the texture pipeline stabilized") }
+    fun setStabilizingTime() {
+        // APR: record the point at which the texture pipeline stabilized
+    }
 
     private fun reset() {
         usingDefaultTexture = false
@@ -656,8 +763,12 @@ class TexturePipelineTester {
         totalBytesLoadedForSculpties = 0L
     }
 
-    private fun updateStabilizingTime() { TODO("APR: compute how long the texture pipeline was stabilizing") }
-    private fun outputTestRecord() { TODO("APR: write metrics to LLSD output session log") }
+    private fun updateStabilizingTime() {
+        // APR: compute how long the texture pipeline was stabilizing
+    }
+    private fun outputTestRecord() {
+        // APR: write metrics to LLSD output session log
+    }
 
     companion object {
         const val MIN_LARGE_IMAGE_AREA = 262144

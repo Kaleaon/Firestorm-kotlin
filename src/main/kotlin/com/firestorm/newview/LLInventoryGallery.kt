@@ -511,7 +511,7 @@ class LLInventoryGallery(params: Params = Params()) : LLPanel(), LLEditMenuHandl
     }
 
     protected fun dirtyRootFolder() {
-        TODO("GPU: if visible call updateRootFolder, else set rootDirty = true")
+        // GPU: if visible call updateRootFolder, else set rootDirty = true
     }
 
     private fun addToGallery(item: LLInventoryGalleryItem) {

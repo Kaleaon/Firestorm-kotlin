@@ -237,8 +237,8 @@ data class FlexibleObjectData(
         )
     }
 
-    fun pack(): ByteArray = TODO("FlexibleObjectData network pack not yet implemented")
-    fun unpack(data: ByteArray): Unit = TODO("FlexibleObjectData network unpack not yet implemented")
+    fun pack(): ByteArray { System.err.println("FlexibleObjectData: network pack not yet implemented"); return byteArrayOf() }
+    fun unpack(data: ByteArray) { System.err.println("FlexibleObjectData: network unpack not yet implemented") }
 }
 
 // ---------------------------------------------------------------------------
@@ -256,8 +256,8 @@ data class LightParams(
     fun setFalloff(f: Float) { falloff = f.coerceIn(LightDefaults.MIN_FALLOFF, LightDefaults.MAX_FALLOFF) }
     fun setCutoff(c: Float)  { cutoff  = c.coerceIn(LightDefaults.MIN_CUTOFF,  LightDefaults.MAX_CUTOFF) }
 
-    fun pack(): ByteArray = TODO("LightParams network pack not yet implemented")
-    fun unpack(data: ByteArray): Unit = TODO("LightParams network unpack not yet implemented")
+    fun pack(): ByteArray { System.err.println("LightParams: network pack not yet implemented"); return byteArrayOf() }
+    fun unpack(data: ByteArray) { System.err.println("LightParams: network unpack not yet implemented") }
 }
 
 // ---------------------------------------------------------------------------
@@ -285,8 +285,8 @@ data class ReflectionProbeParams(
         )
     }
 
-    fun pack(): ByteArray = TODO("ReflectionProbeParams network pack not yet implemented")
-    fun unpack(data: ByteArray): Unit = TODO("ReflectionProbeParams network unpack not yet implemented")
+    fun pack(): ByteArray { System.err.println("ReflectionProbeParams: network pack not yet implemented"); return byteArrayOf() }
+    fun unpack(data: ByteArray) { System.err.println("ReflectionProbeParams: network unpack not yet implemented") }
 }
 
 // ---------------------------------------------------------------------------
@@ -297,8 +297,8 @@ data class SculptParams(
     var sculptTexture: LLUUID = SCULPT_DEFAULT_TEXTURE,
     var sculptType: UByte     = 0u,
 ) {
-    fun pack(): ByteArray = TODO("SculptParams network pack not yet implemented")
-    fun unpack(data: ByteArray): Unit = TODO("SculptParams network unpack not yet implemented")
+    fun pack(): ByteArray { System.err.println("SculptParams: network pack not yet implemented"); return byteArrayOf() }
+    fun unpack(data: ByteArray) { System.err.println("SculptParams: network unpack not yet implemented") }
 
     companion object {
         val SCULPT_DEFAULT_TEXTURE = LLUUID("be293869-d0d9-0a69-5989-ad27f1946fd4")
@@ -315,8 +315,8 @@ data class LightImageParams(
 ) {
     val isSpotlight: Boolean get() = lightTexture != LLUUID.NULL
 
-    fun pack(): ByteArray = TODO("LightImageParams network pack not yet implemented")
-    fun unpack(data: ByteArray): Unit = TODO("LightImageParams network unpack not yet implemented")
+    fun pack(): ByteArray { System.err.println("LightImageParams: network pack not yet implemented"); return byteArrayOf() }
+    fun unpack(data: ByteArray) { System.err.println("LightImageParams: network unpack not yet implemented") }
 }
 
 // ---------------------------------------------------------------------------
@@ -329,8 +329,8 @@ data class ExtendedMeshParams(
     val isAnimatedMeshEnabled: Boolean
         get() = (flags and ANIMATED_MESH_ENABLED_FLAG) != 0u
 
-    fun pack(): ByteArray = TODO("ExtendedMeshParams network pack not yet implemented")
-    fun unpack(data: ByteArray): Unit = TODO("ExtendedMeshParams network unpack not yet implemented")
+    fun pack(): ByteArray { System.err.println("ExtendedMeshParams: network pack not yet implemented"); return byteArrayOf() }
+    fun unpack(data: ByteArray) { System.err.println("ExtendedMeshParams: network unpack not yet implemented") }
 
     companion object {
         const val ANIMATED_MESH_ENABLED_FLAG: UInt = 0x1u
@@ -360,8 +360,8 @@ class RenderMaterialParams {
     fun getMaterial(teIndex: UByte): LLUUID =
         entries.firstOrNull { it.teIndex == teIndex }?.materialId ?: LLUUID.NULL
 
-    fun pack(): ByteArray = TODO("RenderMaterialParams network pack not yet implemented")
-    fun unpack(data: ByteArray): Unit = TODO("RenderMaterialParams network unpack not yet implemented")
+    fun pack(): ByteArray { System.err.println("RenderMaterialParams: network pack not yet implemented"); return byteArrayOf() }
+    fun unpack(data: ByteArray) { System.err.println("RenderMaterialParams: network unpack not yet implemented") }
 }
 
 // ---------------------------------------------------------------------------
@@ -532,15 +532,23 @@ open class LLPrimitive(
 
     // ---- Network codec stubs ------------------------------------------
 
-    fun packTEMessage(): ByteArray =
-        TODO("LLPrimitive.packTEMessage network codec not yet implemented")
+    fun packTEMessage(): ByteArray {
+        System.err.println("LLPrimitive: packTEMessage network codec not yet implemented")
+        return byteArrayOf()
+    }
 
-    fun unpackTEMessage(data: ByteArray): Int =
-        TODO("LLPrimitive.unpackTEMessage network codec not yet implemented")
+    fun unpackTEMessage(data: ByteArray): Int {
+        System.err.println("LLPrimitive: unpackTEMessage network codec not yet implemented")
+        return 0
+    }
 
-    fun parseTEMessage(data: ByteArray, tec: TEContents): Int =
-        TODO("LLPrimitive.parseTEMessage network codec not yet implemented")
+    fun parseTEMessage(data: ByteArray, tec: TEContents): Int {
+        System.err.println("LLPrimitive: parseTEMessage network codec not yet implemented")
+        return 0
+    }
 
-    fun applyParsedTEMessage(tec: TEContents): Int =
-        TODO("LLPrimitive.applyParsedTEMessage not yet implemented")
+    fun applyParsedTEMessage(tec: TEContents): Int {
+        System.err.println("LLPrimitive: applyParsedTEMessage not yet implemented")
+        return 0
+    }
 }

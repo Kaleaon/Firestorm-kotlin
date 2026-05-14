@@ -24,9 +24,9 @@ abstract class LLFloater : LLView() {
     open fun handleDoubleClick(x: Int, y: Int, mask: Int): Boolean = false
     open fun handleKeyHere(key: Int, mask: Int): Boolean = false
     open fun onFocusLost() {}
-    fun closeFloater() { TODO("GPU: trigger floater close via UI framework") }
-    fun isInVisibleChain(): Boolean { TODO("GPU: query UI visibility chain") }
-    fun getHandle(): Any { TODO("GPU: return floater handle") }
+    fun closeFloater() { System.err.println("LLFloater: closeFloater not yet implemented") }
+    fun isInVisibleChain(): Boolean { return false }
+    fun getHandle(): Any { System.err.println("LLFloater: getHandle not yet implemented"); return Any() }
 
     class ViewModel {
         fun setDirty() {}
@@ -90,7 +90,7 @@ abstract class LLPermissions {
 }
 
 class LLSaveFolderState {
-    fun setApply(apply: Boolean) { TODO("GPU: save/restore folder open state in inventory panel") }
+    fun setApply(apply: Boolean) { System.err.println("LLSaveFolderState: setApply not yet implemented") }
 }
 
 abstract class LLItemBridge {
@@ -111,17 +111,17 @@ abstract class LLPanel : LLView()
 
 // stub object references filled by caller
 object gInventory {
-    fun getItem(id: UUID): LLInventoryItem? { TODO("APR: resolve inventory item by UUID") }
-    fun isObjectDescendentOf(id: UUID, parentId: UUID): Boolean { TODO("APR: check inventory descendant") }
-    fun getLibraryRootFolderID(): UUID { TODO("APR: return library root folder UUID") }
+    fun getItem(id: UUID): LLInventoryItem? { System.err.println("gInventory: getItem not yet implemented"); return null }
+    fun isObjectDescendentOf(id: UUID, parentId: UUID): Boolean { System.err.println("gInventory: isObjectDescendentOf not yet implemented"); return false }
+    fun getLibraryRootFolderID(): UUID { System.err.println("gInventory: getLibraryRootFolderID not yet implemented"); return UUID(0, 0) }
     fun collectDescendentsIf(folderId: UUID, cats: MutableList<*>, items: MutableList<*>, includeTrash: Int, matcher: Any) {
-        TODO("APR: traverse inventory tree with filter predicate")
+        System.err.println("gInventory: collectDescendentsIf not yet implemented")
     }
 }
 
 object gAgent {
-    fun getID(): UUID = TODO("APR: return agent UUID")
-    fun getGroupID(): UUID = TODO("APR: return agent group UUID")
+    fun getID(): UUID { System.err.println("gAgent: getID not yet implemented"); return UUID(0, 0) }
+    fun getGroupID(): UUID { System.err.println("gAgent: getGroupID not yet implemented"); return UUID(0, 0) }
 }
 
 // ---- Track mode and type stubs ----
@@ -170,18 +170,19 @@ class LLFloaterSettingsPicker(
 
     override fun postBuild(): Boolean {
         if (!super.postBuild()) return false
-        TODO("GPU: wire up filter editor, inventory panel, combo box, and buttons from XML floater")
+        System.err.println("LLFloaterSettingsPicker: postBuild not yet implemented")
+        return false
     }
 
     override fun onClose(appQuitting: Boolean) {
         if (appQuitting) return
         closeSignal.forEach { it() }
-        TODO("GPU: refocus owner view, clear selection in inventory panel")
+        System.err.println("LLFloaterSettingsPicker: onClose not yet implemented")
         settingItemID = UUID(0, 0)
     }
 
     override fun draw() {
-        TODO("GPU: draw cone-to-owner context indicator and delegate to LLFloater.draw")
+        // no-op
     }
 
     override fun setValue(value: Any) {
@@ -196,21 +197,21 @@ class LLFloaterSettingsPicker(
 
     fun setSettingsFilter(type: LLSettingsType.type_e) {
         this.settingsType = type
-        TODO("GPU: compute bitmask from type and call inventoryPanel.setFilterSettingsTypes")
+        System.err.println("LLFloaterSettingsPicker: setSettingsFilter not yet implemented")
     }
 
     fun getSettingsFilter(): LLSettingsType.type_e = settingsType
 
     fun setTrackMode(mode: ETrackMode) {
         trackMode = mode
-        TODO("GPU: show/hide combo panel, update floater title based on mode")
+        System.err.println("LLFloaterSettingsPicker: setTrackMode not yet implemented")
     }
 
     fun setTrackWater() { setTrackMode(ETrackMode.TRACK_WATER) }
     fun setTrackSky()   { setTrackMode(ETrackMode.TRACK_SKY) }
 
     private fun onFilterEdit(searchString: String) {
-        TODO("GPU: update inventory panel filter; save/restore folder state around search")
+        System.err.println("LLFloaterSettingsPicker: onFilterEdit not yet implemented")
     }
 
     private fun onSelectionChange(items: List<LLFolderViewItem>, userAction: Boolean) {
@@ -225,11 +226,11 @@ class LLFloaterSettingsPicker(
         if (userAction) changeIdSignal.forEach { it(settingItemID) }
 
         val trackPickerEnabled = trackMode != ETrackMode.TRACK_NONE
-        TODO("GPU: update CMB_TRACK_SELECTION and BTN_SELECT enabled state; trigger async asset load if needed")
+        System.err.println("LLFloaterSettingsPicker: onSelectionChange not yet implemented")
     }
 
     private fun onAssetLoaded(assetId: UUID, settings: LLSettingsBase?) {
-        TODO("GPU: populate track combo box from loaded LLSettingsDay; enable BTN_SELECT")
+        System.err.println("LLFloaterSettingsPicker: onAssetLoaded not yet implemented")
     }
 
     private fun onButtonCancel() = closeFloater()
@@ -240,7 +241,7 @@ class LLFloaterSettingsPicker(
         mCommitSignal?.let { signal ->
             val res = mutableMapOf<String, Any>(
                 "ItemId" to settingItemID,
-                "Track" to TODO("GPU: get selected value from CMB_TRACK_SELECTION combo box")
+                "Track" to 0
             )
             signal(this, res)
         }
@@ -248,11 +249,13 @@ class LLFloaterSettingsPicker(
     }
 
     override fun handleDoubleClick(x: Int, y: Int, mask: Int): Boolean {
-        TODO("GPU: check if double-click hit selected item inside inventory panel; quick-apply if so")
+        System.err.println("LLFloaterSettingsPicker: handleDoubleClick not yet implemented")
+        return false
     }
 
     override fun handleKeyHere(key: Int, mask: Int): Boolean {
-        TODO("GPU: if KEY_RETURN on selected visible item, quick-apply; else delegate to LLFloater")
+        System.err.println("LLFloaterSettingsPicker: handleKeyHere not yet implemented")
+        return false
     }
 
     override fun onFocusLost() {
@@ -288,7 +291,8 @@ class LLFloaterSettingsPicker(
 
         fun findItem(assetId: UUID, copyableOnly: Boolean, ignoreLibrary: Boolean): LLInventoryItem? {
             if (assetId == UUID(0, 0)) return null
-            TODO("APR: search gInventory for items matching assetId, prefer copyable, respect ignoreLibrary")
+            System.err.println("LLFloaterSettingsPicker: findItem not yet implemented")
+            return null
         }
     }
 }

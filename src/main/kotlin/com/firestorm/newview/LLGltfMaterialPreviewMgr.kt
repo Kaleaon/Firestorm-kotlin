@@ -51,20 +51,21 @@ class MaterialLoadLevels {
 
 private fun fetchTextureForUi(currentTexture: Any?, id: UUID?): Any? {
     if (currentTexture != null || id == null || id == UUID(0, 0)) return currentTexture
-    TODO("GPU: fetch viewer texture for UI preview (LLViewerTextureManager::getFetchedTexture)")
+    System.err.println("LLGltfMaterialPreviewMgr: fetchTextureForUi not yet implemented")
+    return null
 }
 
 private fun getTextureLoadLevel(texture: Any?): Int {
     if (texture == null) return FULLY_LOADED
-    TODO("GPU: return texture discard level (LLViewerFetchedTexture::getDiscardLevel)")
+    System.err.println("LLGltfMaterialPreviewMgr: getTextureLoadLevel not yet implemented")
+    return 0
 }
 
 private fun getMaterialLoadLevels(material: LLFetchedGLTFMaterial): MaterialLoadLevels {
     val levels = MaterialLoadLevels()
     for (i in 0 until GLTF_TEXTURE_INFO_COUNT) {
-        TODO("GPU: fetch textures and populate load levels from material texture slots")
+        System.err.println("LLGltfMaterialPreviewMgr: getMaterialLoadLevels not yet implemented")
     }
-    @Suppress("UNREACHABLE_CODE")
     return levels
 }
 
@@ -90,28 +91,31 @@ class LLGLTFPreviewTexture private constructor(
 
     companion object {
         fun create(material: LLFetchedGLTFMaterial): LLGLTFPreviewTexture {
-            TODO("GPU: resolve MAX_PREVIEW_WIDTH from LLPipeline and construct preview texture")
+            System.err.println("LLGLTFPreviewTexture: create not yet implemented")
+            return LLGLTFPreviewTexture(material, 0)
         }
     }
 
     fun needsRender(): Boolean {
-        TODO("GPU: check material load levels against bestLoad to determine if re-render is needed")
+        System.err.println("LLGLTFPreviewTexture: needsRender not yet implemented")
+        return false
     }
 
     fun preRender(clearDepth: Boolean = true) {
         if (!shouldRender) return
-        TODO("GPU: bind render target (LLViewerDynamicTexture::preRender)")
+        // no-op
     }
 
     fun render(): Boolean {
         if (!shouldRender) return false
-        TODO("GPU: full PBR deferred render of preview sphere into auxiliary render target")
+        System.err.println("LLGLTFPreviewTexture: render not yet implemented")
+        return false
     }
 
     fun postRender(success: Boolean) {
         if (!shouldRender) return
         shouldRender = false
-        TODO("GPU: unbind render target (LLViewerDynamicTexture::postRender)")
+        // no-op
     }
 }
 
@@ -129,7 +133,8 @@ class LLGLTFMaterialPreviewMgr {
         // When UIPreviewMaterial is disabled just surface the base-color texture
         val uiPreviewMaterial = false  // reads gSavedSettings UIPreviewMaterial when settings are ported
         if (!uiPreviewMaterial) {
-            TODO("GPU: fetch base-color texture via fetchTextureForUi and return it")
+            System.err.println("LLGLTFMaterialPreviewMgr: getPreview base-color texture fetch not yet implemented")
+            return null
         }
 
         if (!isMaterialLoadedEnoughForUi(material)) return null

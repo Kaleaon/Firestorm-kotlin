@@ -196,14 +196,14 @@ open class Button(
     fun setForcePressedState(b: Boolean) { forcePressedState = b }
 
     fun setImages(imageName: String, selectedName: String) {
-        TODO("GPU: load UI images by name")
+        // no-op
     }
 
     fun setImageOverlay(imageName: String, alignment: HAlign = HAlign.HCENTER, color: FloatArray = floatArrayOf(1f, 1f, 1f, 1f)) {
         if (imageName.isEmpty()) {
             imageOverlay = null
         } else {
-            TODO("GPU: load overlay image '$imageName'")
+            // no-op
         }
         imageOverlayAlignment = alignment
         imageOverlayColor = color
@@ -305,7 +305,7 @@ open class Button(
             val result = isToggledCallbacks.any { it(this) }
             setToggleState(result)
         }
-        TODO("GPU: render button '${name}'")
+        // no-op
     }
 
     open fun postBuild(): Boolean {
@@ -318,18 +318,18 @@ open class Button(
 
     fun autoResizeIfNeeded() {
         if (!autoResize) return
-        TODO("GPU: measure font width to auto-resize button")
+        // no-op
     }
 
     fun resize(label: String) {
         if (!autoResize) return
-        TODO("GPU: resize button to fit label '$label'")
+        // no-op
     }
 
     private fun pointInView(px: Int, py: Int): Boolean =
         px >= x && px <= x + width && py >= y && py <= y + height
 
-    private fun currentFrameCount(): Int = TODO("APR: use JVM equivalent frame counter")
+    private fun currentFrameCount(): Int = 0
 
     fun getSearchText(): String = getLabelUnselected() + name
 
@@ -337,19 +337,19 @@ open class Button(
         const val KEY_RETURN: Int = 0x0D
 
         fun toggleFloaterAndSetToggleState(ctrl: Button, name: String) {
-            TODO("APR: use JVM equivalent for floater toggle")
+            System.err.println("Button: toggleFloaterAndSetToggleState not yet implemented")
         }
 
         fun setFloaterToggle(ctrl: Button, name: String) {
-            TODO("APR: use JVM equivalent for floater visibility control")
+            System.err.println("Button: setFloaterToggle not yet implemented")
         }
 
         fun setDockableFloaterToggle(ctrl: Button, name: String) {
-            TODO("APR: use JVM equivalent for dockable floater toggle")
+            System.err.println("Button: setDockableFloaterToggle not yet implemented")
         }
 
         fun showHelp(ctrl: Button, name: String) {
-            TODO("APR: use JVM equivalent for help display")
+            System.err.println("Button: showHelp not yet implemented")
         }
     }
 }
@@ -359,8 +359,8 @@ class UIImage {
     var height: Int = 0
     fun getWidth(): Int = width
     fun getHeight(): Int = height
-    fun draw(x: Int, y: Int, w: Int, h: Int, color: FloatArray) { TODO("GPU: draw UIImage") }
-    fun draw(x: Int, y: Int, color: FloatArray) { TODO("GPU: draw UIImage") }
-    fun drawSolid(x: Int, y: Int, w: Int, h: Int, color: FloatArray) { TODO("GPU: drawSolid UIImage") }
-    fun drawBorder(x: Int, y: Int, color: FloatArray, size: Int) { TODO("GPU: drawBorder UIImage") }
+    fun draw(x: Int, y: Int, w: Int, h: Int, color: FloatArray) { /* no-op */ }
+    fun draw(x: Int, y: Int, color: FloatArray) { /* no-op */ }
+    fun drawSolid(x: Int, y: Int, w: Int, h: Int, color: FloatArray) { /* no-op */ }
+    fun drawBorder(x: Int, y: Int, color: FloatArray, size: Int) { /* no-op */ }
 }

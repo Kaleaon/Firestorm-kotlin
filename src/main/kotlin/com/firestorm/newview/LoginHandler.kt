@@ -26,7 +26,7 @@ object LoginHandler {
             return true
         }
 
-        TODO("GPU: restore window if minimized")
+        // no-op
 
         parse(queryMap)
 
@@ -62,27 +62,27 @@ object LoginHandler {
                 "algorithm" to "md5",
                 "secret"    to md5pass
             )
-            TODO("APR: use JVM equivalent - set AutoLogin = true, call secApiHandler.createCredential")
-            @Suppress("UNREACHABLE_CODE")
+            System.err.println("LoginHandler: loadSavedUserLoginInfo createCredential not yet implemented")
             return LoginCredential(identifier, authenticator)
         }
-        TODO("APR: use JVM equivalent - call secApiHandler.loadCredential(gSavedSettings[UserLoginInfo])")
+        System.err.println("LoginHandler: loadSavedUserLoginInfo loadCredential not yet implemented")
+        return null
     }
 
     fun initializeLoginInfo(): LoginCredential = loadSavedUserLoginInfo() ?: LoginCredential()
 
     private fun parse(queryMap: Map<String, String>) {
         queryMap["grid"]?.let { grid ->
-            TODO("APR: use JVM equivalent - GridManager.setGridChoice($grid)")
+            System.err.println("LoginHandler: parse grid GridManager.setGridChoice not yet implemented")
         }
 
         when (queryMap["location"]) {
             "specify" -> {
                 val region = queryMap.getOrDefault("region", "")
-                TODO("APR: use JVM equivalent - Startup.setStartSLURL(SLURL(gridLoginId, region=$region))")
+                System.err.println("LoginHandler: parse location=specify setStartSLURL not yet implemented")
             }
-            "home" -> TODO("APR: use JVM equivalent - Startup.setStartSLURL(SLURL(SIM_LOCATION_HOME))")
-            "last" -> TODO("APR: use JVM equivalent - Startup.setStartSLURL(SLURL(SIM_LOCATION_LAST))")
+            "home" -> System.err.println("LoginHandler: parse location=home setStartSLURL not yet implemented")
+            "last" -> System.err.println("LoginHandler: parse location=last setStartSLURL not yet implemented")
         }
     }
 
@@ -102,9 +102,15 @@ object LoginHandler {
         return bytes.joinToString("") { "%02x".format(it) }
     }
 
-    private fun savedSettings(key: String): Any? = TODO("APR: use JVM equivalent - gSavedSettings[$key]")
+    private fun savedSettings(key: String): Any? {
+        System.err.println("LoginHandler: savedSettings not yet implemented")
+        return null
+    }
 }
 
 object LoginInstance {
-    fun authSuccess(): Boolean = TODO("APR: use JVM equivalent - LLLoginInstance.authSuccess()")
+    fun authSuccess(): Boolean {
+        System.err.println("LoginInstance: authSuccess not yet implemented")
+        return false
+    }
 }

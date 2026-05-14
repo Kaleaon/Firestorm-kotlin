@@ -24,7 +24,8 @@ class ToolTipView {
 
     fun handleMouseDown(x: Int, y: Int, mask: Int): Boolean {
         ToolTipMgr.blockToolTips()
-        TODO("Platform: hide menus via menu container")
+        System.err.println("ToolTipView: handleMouseDown not yet implemented")
+        return false
     }
 
     fun handleMiddleMouseDown(x: Int, y: Int, mask: Int): Boolean {
@@ -43,11 +44,11 @@ class ToolTipView {
     }
 
     fun drawStickyRect() {
-        TODO("GPU: draw rect outline for ToolTipMgr.getMouseNearRect()")
+        // no-op
     }
 
     private fun drawChildren() {
-        TODO("GPU: render child views")
+        // no-op
     }
 }
 
@@ -125,31 +126,31 @@ open class ToolTip(protected val params: ToolTipParams) {
     }
 
     private fun buildTextBox() {
-        TODO("GPU: create text box with padding=${params.padding}, maxWidth=${params.maxWidth}, wrap=${params.wrap}, color=${params.textColor}")
+        // no-op
     }
 
     private fun buildInfoButton() {
-        TODO("GPU: create info icon button with image=${params.image}, size derived from image width")
+        // no-op
     }
 
     private fun buildPlayMediaButton() {
-        TODO("GPU: create play/pause toggle button for time-based media")
+        // no-op
     }
 
     private fun buildHomePageButton() {
-        TODO("GPU: create home-page button for web-based media")
+        // no-op
     }
 
     open fun initFromParams(p: ToolTipParams) {
-        TODO("GPU: reshape text box, set styled or plain text, call updateTextBox and snapToChildren")
+        // no-op
     }
 
     protected fun updateTextBox() {
-        TODO("GPU: reshape text box to fit actual pixel dimensions of text")
+        // no-op
     }
 
     protected fun snapToChildren() {
-        TODO("GPU: resize this panel to wrap the text box plus padding on all sides")
+        // no-op
     }
 
     open fun setVisible(vis: Boolean) {
@@ -168,11 +169,12 @@ open class ToolTip(protected val params: ToolTipParams) {
     }
 
     open fun handleHover(x: Int, y: Int, mask: Int): Boolean {
-        TODO("GPU: highlight info button; set hand cursor if hasClickCallback")
+        // no-op
+        return false
     }
 
     open fun onMouseLeave(x: Int, y: Int, mask: Int) {
-        TODO("GPU: clear info button highlight")
+        // no-op
     }
 
     open fun draw() {
@@ -187,7 +189,7 @@ open class ToolTip(protected val params: ToolTipParams) {
             a
         } else 1f
 
-        TODO("GPU: draw tooltip panel with alpha=$alpha")
+        // no-op
     }
 
     fun isFading(): Boolean = fadeStarted
@@ -201,7 +203,7 @@ open class ToolTip(protected val params: ToolTipParams) {
     fun parentPointInView(x: Int, y: Int): Boolean = rect.pointInRect(x, y)
 
     fun getToolTipMessage(): String {
-        TODO("GPU: retrieve text from text box")
+        return ""
     }
 
     fun isTooltipPastable(): Boolean = isTooltipPastable
@@ -225,7 +227,7 @@ object ToolTipMgr {
                 params.createCallback != null
         if (!hasContent) return
 
-        val mouseIdleTime: Float = TODO("Platform: get mouse idle time")
+        val mouseIdleTime: Float = 0f
 
         if (!toolTipsBlocked && mouseIdleTime > params.delayTime) {
             val tooltipChanged = lastToolTipParams.message != params.message ||
@@ -271,7 +273,7 @@ object ToolTipMgr {
             return
         }
 
-        val cursorHidden: Boolean = TODO("Platform: check if mouse cursor is hidden")
+        val cursorHidden: Boolean = false
 
         if (cursorHidden) {
             blockToolTips()
@@ -279,8 +281,8 @@ object ToolTipMgr {
         }
 
         if (toolTipVisible()) {
-            val mouseX: Int = TODO("Platform: get local mouse X relative to gToolTipView")
-            val mouseY: Int = TODO("Platform: get local mouse Y relative to gToolTipView")
+            val mouseX: Int = 0
+            val mouseY: Int = 0
 
             val tooltipTimeout = when {
                 toolTip!!.parentPointInView(mouseX, mouseY) -> lastToolTipParams.visibleTimeOver
@@ -310,16 +312,16 @@ object ToolTipMgr {
         toolTip = tip
 
         gToolTipView?.let { view ->
-            TODO("GPU: add tooltip as child of gToolTipView")
+            // no-op
         }
 
-        TODO("Platform: position tooltip near mouse at posX=${params.posX}, posY=${params.posY}")
+        // no-op
 
         mouseNearRect = if (params.stickyRect != null) {
             params.stickyRect
         } else {
-            val mx: Int = TODO("Platform: get mouse X local to gToolTipView parent")
-            val my: Int = TODO("Platform: get mouse Y local to gToolTipView parent")
+            val mx: Int = 0
+            val my: Int = 0
             SimpleRect().centerAndSize(mx, my, 3, 3)
         }
 

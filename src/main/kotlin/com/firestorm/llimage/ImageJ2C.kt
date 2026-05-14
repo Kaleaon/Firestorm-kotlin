@@ -57,7 +57,8 @@ class ImageJ2C : ImageFormatted(ImageCodecType.J2C) {
      * Returns true when the header was parsed successfully.
      */
     override fun updateData(): Boolean {
-        TODO("CODEC: J2C — parse JPEG2000 SOC/SIZ marker to populate width/height/components")
+        System.err.println("ImageJ2C: parse JPEG2000 SOC/SIZ marker to populate width/height/components not yet implemented")
+        return false
     }
 
     /**
@@ -68,7 +69,8 @@ class ImageJ2C : ImageFormatted(ImageCodecType.J2C) {
      * @return true on success (even partial), false on hard error.
      */
     override fun decode(rawImage: ImageRaw, decodeTime: Float): Boolean {
-        TODO("CODEC: J2C — invoke native OpenJPEG/KDU decode, honour discardLevel and maxBytes")
+        System.err.println("ImageJ2C: invoke native OpenJPEG/KDU decode, honour discardLevel and maxBytes not yet implemented")
+        return false
     }
 
     /**
@@ -83,7 +85,8 @@ class ImageJ2C : ImageFormatted(ImageCodecType.J2C) {
         firstChannel: Int,
         maxChannelCount: Int,
     ): Boolean {
-        TODO("CODEC: J2C — partial-channel decode via native impl")
+        System.err.println("ImageJ2C: partial-channel decode via native impl not yet implemented")
+        return false
     }
 
     /**
@@ -93,7 +96,8 @@ class ImageJ2C : ImageFormatted(ImageCodecType.J2C) {
      * @param encodeTime Maximum wall-clock seconds; 0 = no limit.
      */
     override fun encode(rawImage: ImageRaw, encodeTime: Float): Boolean {
-        TODO("CODEC: J2C — invoke native OpenJPEG/KDU encode with rate=$rate reversible=$reversible")
+        System.err.println("ImageJ2C: invoke native OpenJPEG/KDU encode not yet implemented")
+        return false
     }
 
     /**
@@ -101,14 +105,16 @@ class ImageJ2C : ImageFormatted(ImageCodecType.J2C) {
      * Comment prefix convention: [LINDEN_J2C_COMMENT_PREFIX].
      */
     fun encode(rawImage: ImageRaw, commentText: String, encodeTime: Float = 0f): Boolean {
-        TODO("CODEC: J2C — encode with comment '$commentText' embedded in COM marker")
+        System.err.println("ImageJ2C: encode with comment embedded in COM marker not yet implemented")
+        return false
     }
 
     // ---- Header / data-size helpers ------------------------------------------
 
     /** Returns the byte size of the J2C codestream header region. */
     override fun calcHeaderSize(): Int {
-        TODO("CODEC: J2C — return SOC+SIZ+COD+QCD marker block size")
+        System.err.println("ImageJ2C: return SOC+SIZ+COD+QCD marker block size not yet implemented")
+        return 0
     }
 
     /**
@@ -117,14 +123,16 @@ class ImageJ2C : ImageFormatted(ImageCodecType.J2C) {
      * @param discardLevel 0 = full res, [ImageConstants.MAX_DISCARD_LEVEL] = lowest.
      */
     override fun calcDataSize(discardLevel: Int): Int {
-        TODO("CODEC: J2C — look up or compute byte range for discard level $discardLevel")
+        System.err.println("ImageJ2C: look up or compute byte range for discard level not yet implemented")
+        return 0
     }
 
     /**
      * Given [bytes] of data available, returns the best achievable discard level.
      */
     override fun calcDiscardLevelBytes(bytes: Int): Int {
-        TODO("CODEC: J2C — binary-search dataSizes[] for largest level reachable with $bytes bytes")
+        System.err.println("ImageJ2C: binary-search dataSizes[] for largest level reachable not yet implemented")
+        return 0
     }
 
     /** Returns [rawDiscardLevel] instead of the field-level [discardLevel]. */
@@ -139,7 +147,8 @@ class ImageJ2C : ImageFormatted(ImageCodecType.J2C) {
      * @param region       Optional [x0, y0, x1, y1] region-of-interest, or null.
      */
     fun initDecode(rawImage: ImageRaw, discardLevel: Int = -1, region: IntArray? = null): Boolean {
-        TODO("CODEC: J2C — initialise native decoder state for progressive tile-part fetch")
+        System.err.println("ImageJ2C: initialise native decoder state for progressive tile-part fetch not yet implemented")
+        return false
     }
 
     /**
@@ -150,19 +159,22 @@ class ImageJ2C : ImageFormatted(ImageCodecType.J2C) {
      * @param levels        Number of DWT decomposition levels (5–32 for SL).
      */
     fun initEncode(rawImage: ImageRaw, blocksSize: Int = -1, precinctsSize: Int = -1, levels: Int = 0): Boolean {
-        TODO("CODEC: J2C — initialise native encoder state")
+        System.err.println("ImageJ2C: initialise native encoder state not yet implemented")
+        return false
     }
 
     // ---- Validation ----------------------------------------------------------
 
     /** Quick magic-byte check that [data] starts with a valid J2C/JP2 signature. */
     fun validate(data: ByteArray, fileSize: UInt): Boolean {
-        TODO("CODEC: J2C — verify SOC marker (0xFF 0x4F) or JP2 box signature")
+        System.err.println("ImageJ2C: validate J2C/JP2 signature not yet implemented")
+        return false
     }
 
     /** Load the file at [filename] and validate its header. */
     fun loadAndValidate(filename: String): Boolean {
-        TODO("CODEC: J2C — read file then call validate()")
+        System.err.println("ImageJ2C: loadAndValidate read file then call validate() not yet implemented")
+        return false
     }
 
     // ---- Accessors -----------------------------------------------------------
@@ -179,11 +191,11 @@ class ImageJ2C : ImageFormatted(ImageCodecType.J2C) {
 
     internal fun decodeFailed() {
         // Mirrors LLImageJ2C::decodeFailed(); update stats / state here.
-        TODO("CODEC: J2C — record decode failure for LLImageCompressionTester")
+        System.err.println("ImageJ2C: record decode failure for LLImageCompressionTester not yet implemented")
     }
 
     internal fun updateRawDiscardLevel() {
-        TODO("CODEC: J2C — re-read rawDiscardLevel from native impl after data update")
+        System.err.println("ImageJ2C: re-read rawDiscardLevel from native impl after data update not yet implemented")
     }
 
     // ---- Static helpers ------------------------------------------------------
@@ -197,7 +209,8 @@ class ImageJ2C : ImageFormatted(ImageCodecType.J2C) {
 
         /** Minimum header size of any valid J2C stream (SOC + SIZ markers). */
         fun calcHeaderSizeJ2C(): Int {
-            TODO("CODEC: J2C — return fixed SOC/SIZ/COD/QCD block byte count")
+            System.err.println("ImageJ2C: return fixed SOC/SIZ/COD/QCD block byte count not yet implemented")
+            return 0
         }
 
         /**
@@ -211,12 +224,14 @@ class ImageJ2C : ImageFormatted(ImageCodecType.J2C) {
             discardLevel: Int,
             rate: Float = DEFAULT_J2C_COMPRESSION_RATE,
         ): Int {
-            TODO("CODEC: J2C — compute byte budget from (w >> discardLevel) * (h >> discardLevel) * comp * rate")
+            System.err.println("ImageJ2C: compute byte budget from discard level not yet implemented")
+            return 0
         }
 
         /** Return a human-readable string describing the underlying codec library. */
         fun getEngineInfo(): String {
-            TODO("CODEC: J2C — query native library version string")
+            System.err.println("ImageJ2C: query native library version string not yet implemented")
+            return ""
         }
     }
 }

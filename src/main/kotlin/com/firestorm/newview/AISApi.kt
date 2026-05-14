@@ -86,7 +86,8 @@ object AISApi {
      * Mirrors AISAPI::isAvailable().
      */
     fun isAvailable(): Boolean {
-        TODO("HTTP: AIS — check agent region for '$INVENTORY_CAP_NAME' capability")
+        System.err.println("AISApi: isAvailable not yet implemented")
+        return false
     }
 
     /**
@@ -118,7 +119,7 @@ object AISApi {
         name: String,
         callback: (LLUUID) -> Unit = {}
     ) {
-        TODO("HTTP: AIS — POST $INVENTORY_CAP_NAME/category?name=$name under $parentId")
+        System.err.println("AISApi: createCategory not yet implemented")
     }
 
     /**
@@ -129,7 +130,7 @@ object AISApi {
      * @param callback  invoked (with no arguments) when the operation completes
      */
     fun removeCategory(id: LLUUID, callback: () -> Unit = {}) {
-        TODO("HTTP: AIS — DELETE $INVENTORY_CAP_NAME/category/$id")
+        System.err.println("AISApi: removeCategory not yet implemented")
     }
 
     /**
@@ -146,7 +147,7 @@ object AISApi {
         newInventory: LLSD,
         callback: (LLUUID) -> Unit = {}
     ) {
-        TODO("HTTP: AIS — PUT $INVENTORY_CAP_NAME/category/$folderId/links")
+        System.err.println("AISApi: slamFolder not yet implemented")
     }
 
     /**
@@ -158,7 +159,7 @@ object AISApi {
      * @param callback    invoked with the category UUID on completion
      */
     fun purgeDescendents(categoryId: LLUUID, callback: (LLUUID) -> Unit = {}) {
-        TODO("HTTP: AIS — DELETE $INVENTORY_CAP_NAME/category/$categoryId/children")
+        System.err.println("AISApi: purgeDescendents not yet implemented")
     }
 
     /**
@@ -174,7 +175,7 @@ object AISApi {
         updates: LLSD,
         callback: (LLUUID) -> Unit = {}
     ) {
-        TODO("HTTP: AIS — PATCH $INVENTORY_CAP_NAME/category/$categoryId")
+        System.err.println("AISApi: updateCategory not yet implemented")
     }
 
     /**
@@ -192,7 +193,7 @@ object AISApi {
         copySubfolders: Boolean = true,
         callback: (LLUUID) -> Unit = {}
     ) {
-        TODO("HTTP: AIS — COPY $LIBRARY_CAP_NAME/category/$sourceId → $INVENTORY_CAP_NAME/category/$destId")
+        System.err.println("AISApi: copyLibraryCategory not yet implemented")
     }
 
     // -----------------------------------------------------------------------
@@ -213,7 +214,7 @@ object AISApi {
         type: ItemType = ItemType.INVENTORY,
         callback: (LLSD?) -> Unit = {}
     ) {
-        TODO("HTTP: AIS — GET ${capNameFor(type)}/item/$id")
+        System.err.println("AISApi: fetchItem not yet implemented")
     }
 
     /**
@@ -224,7 +225,7 @@ object AISApi {
      * @param callback invoked with the item UUID on completion
      */
     fun removeItem(itemId: LLUUID, callback: (LLUUID) -> Unit = {}) {
-        TODO("HTTP: AIS — DELETE $INVENTORY_CAP_NAME/item/$itemId")
+        System.err.println("AISApi: removeItem not yet implemented")
     }
 
     /**
@@ -240,7 +241,7 @@ object AISApi {
         updates: LLSD,
         callback: (LLUUID) -> Unit = {}
     ) {
-        TODO("HTTP: AIS — PATCH $INVENTORY_CAP_NAME/item/$itemId")
+        System.err.println("AISApi: updateItem not yet implemented")
     }
 
     // -----------------------------------------------------------------------
@@ -264,7 +265,7 @@ object AISApi {
         callback: (LLUUID) -> Unit = {},
         depth: Int = 0
     ) {
-        TODO("HTTP: AIS — GET ${capNameFor(type)}/category/$catId/children?depth=$depth")
+        System.err.println("AISApi: fetchCategoryChildren not yet implemented")
     }
 
     /**
@@ -278,7 +279,7 @@ object AISApi {
         callback: (LLUUID) -> Unit = {},
         depth: Int = 0
     ) {
-        TODO("HTTP: AIS — GET $INVENTORY_CAP_NAME/$identifier/children?depth=$depth")
+        System.err.println("AISApi: fetchCategoryChildren (by identifier) not yet implemented")
     }
 
     /**
@@ -292,7 +293,7 @@ object AISApi {
         callback: (LLUUID) -> Unit = {},
         depth: Int = 0
     ) {
-        TODO("HTTP: AIS — GET ${capNameFor(type)}/category/$catId/categories?depth=$depth")
+        System.err.println("AISApi: fetchCategoryCategories not yet implemented")
     }
 
     /**
@@ -309,7 +310,7 @@ object AISApi {
         callback: (LLUUID) -> Unit = {},
         depth: Int = 0
     ) {
-        TODO("HTTP: AIS — GET ${capNameFor(type)}/category/$catId/children subset=$specificChildren")
+        System.err.println("AISApi: fetchCategorySubset not yet implemented")
     }
 
     /**
@@ -317,7 +318,7 @@ object AISApi {
      * Mirrors AISAPI::FetchCOF().
      */
     fun fetchCOF(callback: (LLUUID) -> Unit = {}) {
-        TODO("HTTP: AIS — GET $INVENTORY_CAP_NAME/category/current-outfit-folder/links")
+        System.err.println("AISApi: fetchCOF not yet implemented")
     }
 
     /**
@@ -325,7 +326,7 @@ object AISApi {
      * Mirrors AISAPI::FetchCategoryLinks().
      */
     fun fetchCategoryLinks(catId: LLUUID, callback: (LLUUID) -> Unit = {}) {
-        TODO("HTTP: AIS — GET $INVENTORY_CAP_NAME/category/$catId/links")
+        System.err.println("AISApi: fetchCategoryLinks not yet implemented")
     }
 
     /**
@@ -333,7 +334,7 @@ object AISApi {
      * Mirrors AISAPI::FetchOrphans().
      */
     fun fetchOrphans(callback: (LLUUID) -> Unit = {}) {
-        TODO("HTTP: AIS — GET $INVENTORY_CAP_NAME/orphans")
+        System.err.println("AISApi: fetchOrphans not yet implemented")
     }
 
     // -----------------------------------------------------------------------
@@ -372,11 +373,11 @@ class AISUpdate(
     }
 
     fun parseMeta(update: LLSD) {
-        TODO("HTTP: AIS — extract _categories_removed, _items_removed, _link_ids from update")
+        System.err.println("AISUpdate: parseMeta not yet implemented")
     }
 
     fun parseContent(update: LLSD) {
-        TODO("HTTP: AIS — route to parseLink / parseItem / parseCategory based on content type")
+        System.err.println("AISUpdate: parseContent not yet implemented")
     }
 
     // -----------------------------------------------------------------------
@@ -384,19 +385,19 @@ class AISUpdate(
     // -----------------------------------------------------------------------
 
     fun parseLink(linkMap: LLSD, depth: Int) {
-        TODO("HTTP: AIS — build LLViewerInventoryItem (link) from linkMap at depth=$depth")
+        System.err.println("AISUpdate: parseLink not yet implemented")
     }
 
     fun parseItem(itemMap: LLSD) {
-        TODO("HTTP: AIS — build LLViewerInventoryItem from itemMap")
+        System.err.println("AISUpdate: parseItem not yet implemented")
     }
 
     fun parseCategory(categoryMap: LLSD, depth: Int) {
-        TODO("HTTP: AIS — build LLViewerInventoryCategory from categoryMap at depth=$depth")
+        System.err.println("AISUpdate: parseCategory not yet implemented")
     }
 
     fun parseDescendentCount(categoryId: LLUUID, folderType: Int, embedded: LLSD) {
-        TODO("HTTP: AIS — update descendent count for $categoryId from embedded data")
+        System.err.println("AISUpdate: parseDescendentCount not yet implemented")
     }
 
     fun parseEmbedded(embedded: LLSD, depth: Int) {
@@ -406,27 +407,27 @@ class AISUpdate(
     }
 
     fun parseEmbeddedLinks(links: LLSD, depth: Int) {
-        TODO("HTTP: AIS — iterate embedded links and call parseLink()")
+        System.err.println("AISUpdate: parseEmbeddedLinks not yet implemented")
     }
 
     fun parseEmbeddedItems(items: LLSD) {
-        TODO("HTTP: AIS — iterate embedded items and call parseItem()")
+        System.err.println("AISUpdate: parseEmbeddedItems not yet implemented")
     }
 
     fun parseEmbeddedCategories(categories: LLSD, depth: Int) {
-        TODO("HTTP: AIS — iterate embedded categories and call parseCategory()")
+        System.err.println("AISUpdate: parseEmbeddedCategories not yet implemented")
     }
 
     fun parseEmbeddedItem(item: LLSD) {
-        TODO("HTTP: AIS — upsert a single embedded item into local inventory model")
+        System.err.println("AISUpdate: parseEmbeddedItem not yet implemented")
     }
 
     fun parseEmbeddedCategory(category: LLSD, depth: Int) {
-        TODO("HTTP: AIS — upsert a single embedded category into local inventory model at depth=$depth")
+        System.err.println("AISUpdate: parseEmbeddedCategory not yet implemented")
     }
 
     fun parseUUIDArray(content: LLSD, name: String, ids: MutableSet<LLUUID>) {
-        TODO("HTTP: AIS — extract UUID list under key '$name' from content into ids")
+        System.err.println("AISUpdate: parseUUIDArray not yet implemented")
     }
 
     // -----------------------------------------------------------------------
@@ -438,6 +439,6 @@ class AISUpdate(
      * Mirrors AISUpdate::doUpdate().
      */
     fun doUpdate() {
-        TODO("HTTP: AIS — apply mItemsCreated/Updated/Lost and mCategoriesCreated/Updated to LLInventoryModel; fire observers")
+        System.err.println("AISUpdate: doUpdate not yet implemented")
     }
 }

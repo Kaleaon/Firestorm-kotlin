@@ -77,7 +77,8 @@ abstract class LLPanelInventoryListItemBase(
     companion object {
         fun create(item: LLViewerInventoryItemStub?): LLPanelInventoryListItemBase? {
             if (item == null) return null
-            TODO("GPU: construct default-params panel and call postBuild()")
+            System.err.println("LLPanelInventoryListItemBase: create not yet implemented")
+            return null
         }
     }
 
@@ -89,7 +90,7 @@ abstract class LLPanelInventoryListItemBase(
             }
             setNeedsRefresh(false)
         }
-        TODO("GPU: draw hover/selected/separator images and call panel draw")
+        // no-op
     }
 
     protected open fun updateItem(name: String, favorite: Boolean, itemState: EItemState = EItemState.IS_DEFAULT) {
@@ -121,7 +122,7 @@ abstract class LLPanelInventoryListItemBase(
     open fun postBuild(): Boolean {
         val invItem = getItem()
         if (invItem != null) {
-            TODO("GPU: load iconImage from LLInventoryIcon.getIcon for invItem type/flags")
+            System.err.println("LLPanelInventoryListItemBase: postBuild icon loading not yet implemented")
             updateItem(invItem.name, getIsItemFavorite(invItem))
         }
         setNeedsRefresh(true)
@@ -166,7 +167,8 @@ abstract class LLPanelInventoryListItemBase(
     fun getCreationDate(): Long = getItem()?.creationDate ?: 0L
 
     fun getItem(): LLViewerInventoryItemStub? {
-        TODO("APR: use JVM equivalent - return gInventory.getItem(inventoryItemUUID)")
+        System.err.println("LLPanelInventoryListItemBase: getItem not yet implemented")
+        return null
     }
 
     fun setSeparatorVisible(visible: Boolean) { mSeparatorVisible = visible }
@@ -201,16 +203,18 @@ abstract class LLPanelInventoryListItemBase(
 
     protected fun setTitle(title: String, highlitText: String, itemState: EItemState = EItemState.IS_DEFAULT) {
         titleCtrl?.setToolTip(title)
-        TODO("GPU: apply style params for itemState, apply favorite color if mIsFavorite, then textboxSetHighlightedVal")
+        // no-op
     }
 
     protected open fun handleToolTip(x: Int, y: Int, mask: Int): Boolean {
         val textBoxRect = titleCtrl?.getRect() ?: return false
-        TODO("GPU: show thumbnail tooltip if FSShowInventoryThumbnailTooltips enabled; fall back to panel tooltip if text is clipped")
+        System.err.println("LLPanelInventoryListItemBase: handleToolTip not yet implemented")
+        return false
     }
 
     protected open fun getDefaultParams(): Any {
-        TODO("GPU: return LLUICtrlFactory.getDefaultParams<LLPanelInventoryListItemBase>()")
+        System.err.println("LLPanelInventoryListItemBase: getDefaultParams not yet implemented")
+        return Any()
     }
 
     @Suppress("UNUSED")
@@ -254,11 +258,13 @@ abstract class LLPanelInventoryListItemBase(
     }
 
     protected open fun getLocalWidth(): Int {
-        TODO("GPU: return panel local rect width")
+        System.err.println("LLPanelInventoryListItemBase: getLocalWidth not yet implemented")
+        return 0
     }
 
     private fun getIsItemFavorite(inv: LLViewerInventoryItemStub): Boolean {
-        TODO("APR: use JVM equivalent - if item is link resolve linked object via gInventory and check getIsFavorite(), else check item.getIsFavorite()")
+        System.err.println("LLPanelInventoryListItemBase: getIsItemFavorite not yet implemented")
+        return false
     }
 }
 

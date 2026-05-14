@@ -118,7 +118,8 @@ object FloaterReg {
      * (Mirrors `LLFloaterReg::getLastFloaterCascading`.)
      */
     fun getLastFloaterCascading(): LLFloater? {
-        TODO("Requires LLFloater positioning API")
+        System.err.println("FloaterReg: getLastFloaterCascading not yet implemented")
+        return null
     }
 
     /**
@@ -238,7 +239,8 @@ object FloaterReg {
      * (RLVa hook — always true in the base port.)
      */
     fun canShowInstance(name: String, key: LLSD? = null): Boolean {
-        TODO("Requires RLVa validate-signal infrastructure")
+        System.err.println("FloaterReg: canShowInstance not yet implemented")
+        return false
     }
 
     /**
@@ -289,7 +291,7 @@ object FloaterReg {
 
     /** Shows every registered floater whose saved-visibility control is `true`. */
     fun showInitialVisibleInstances() {
-        TODO("Requires LLControlGroup / persisted visibility controls")
+        System.err.println("FloaterReg: showInitialVisibleInstances not yet implemented")
     }
 
     /**
@@ -315,26 +317,26 @@ object FloaterReg {
     fun getBaseControlName(name: String): String = name.replace(' ', '_')
     fun getRectControlName(name: String): String = "floater_rect_${getBaseControlName(name)}"
     fun declareRectControl(name: String): String = getRectControlName(name).also {
-        TODO("Requires LLControlGroup infrastructure")
+        System.err.println("FloaterReg: declareRectControl not yet implemented")
     }
     fun declarePosXControl(name: String): String = "floater_pos_${getBaseControlName(name)}_x".also {
-        TODO("Requires LLControlGroup infrastructure")
+        System.err.println("FloaterReg: declarePosXControl not yet implemented")
     }
     fun declarePosYControl(name: String): String = "floater_pos_${getBaseControlName(name)}_y".also {
-        TODO("Requires LLControlGroup infrastructure")
+        System.err.println("FloaterReg: declarePosYControl not yet implemented")
     }
     fun getVisibilityControlName(name: String): String = "floater_vis_${getBaseControlName(name)}"
     fun declareVisibilityControl(name: String): String = getVisibilityControlName(name).also {
-        TODO("Requires LLControlGroup infrastructure")
+        System.err.println("FloaterReg: declareVisibilityControl not yet implemented")
     }
     fun getDockStateControlName(name: String): String = "floater_dock_${getBaseControlName(name)}"
     fun declareDockStateControl(name: String): String = getDockStateControlName(name).also {
-        TODO("Requires LLControlGroup infrastructure")
+        System.err.println("FloaterReg: declareDockStateControl not yet implemented")
     }
 
     /** Iterates all registered names and declares their rect / visibility controls. */
     fun registerControlVariables() {
-        TODO("Requires LLControlGroup infrastructure")
+        System.err.println("FloaterReg: registerControlVariables not yet implemented")
     }
 
     // ------------------------------------------------------------------

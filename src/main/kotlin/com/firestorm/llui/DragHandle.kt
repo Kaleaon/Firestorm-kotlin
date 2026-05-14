@@ -70,7 +70,7 @@ abstract class DragHandle(
     }
 
     fun handleMouseDown(x: Int, y: Int, mask: Int): Boolean {
-        TODO("APR: use JVM equivalent for gFocusMgr.setMouseCapture(this)")
+        System.err.println("DragHandle: handleMouseDown not yet implemented")
         localPointToScreen(x, y).also { (sx, sy) ->
             dragLastScreenX = sx; dragLastScreenY = sy
             lastMouseScreenX = sx; lastMouseScreenY = sy
@@ -79,13 +79,13 @@ abstract class DragHandle(
     }
 
     fun handleMouseUp(x: Int, y: Int, mask: Int): Boolean {
-        TODO("APR: use JVM equivalent for gFocusMgr.setMouseCapture(null)")
+        System.err.println("DragHandle: handleMouseUp not yet implemented")
         return true
     }
 
     fun handleHover(x: Int, y: Int, mask: Int): Boolean {
         if (!hasMouseCapture()) {
-            TODO("GPU: set cursor to arrow")
+            // no-op
             return true
         }
 
@@ -119,21 +119,21 @@ abstract class DragHandle(
         lastMouseScreenX = screenX
         lastMouseScreenY = screenY
 
-        TODO("GPU: call parent.findSnapRect, parent.setSnappedTo, parent.setShape with snapped rect")
+        // no-op
 
         return true
     }
 
     private fun localPointToScreen(x: Int, y: Int): Pair<Int, Int> {
-        TODO("GPU: transform local coords to screen coords")
+        return Pair(x, y)
     }
 
     private fun hasMouseCapture(): Boolean {
-        TODO("APR: use JVM equivalent for gFocusMgr.getMouseCapture() == this")
+        return false
     }
 
     private fun getParent(): FloaterStub? {
-        TODO("GPU: return parent view cast to FloaterStub")
+        return null
     }
 
     data class Rect(val left: Int, val top: Int, val width: Int, val height: Int) {
@@ -179,7 +179,7 @@ class DragHandleTop(
         if (box != null) {
             box.setText(trimmed)
         } else {
-            TODO("GPU: create LLTextBox for title with sans-serif font and add as child")
+            // no-op
         }
         reshapeTitleBox()
     }
@@ -188,13 +188,13 @@ class DragHandleTop(
 
     override fun draw() {
         titleBox?.setEnabled(getForeground())
-        TODO("GPU: delegate to LLView::draw()")
+        // no-op
     }
 
     override fun reshape(width: Int, height: Int, calledFromParent: Boolean) {
         rectWidth = width
         rectHeight = height
-        TODO("GPU: delegate to LLView::reshape then call reshapeTitleBox()")
+        // no-op
         reshapeTitleBox()
     }
 
@@ -202,7 +202,7 @@ class DragHandleTop(
         val box = titleBox ?: return
         val vpad = if (labelVPadding == -1) defaultTitleVPad else labelVPadding
         val titleWidth = rectWidth - LEFT_PAD - 2 * BORDER_PAD - getButtonsRect().width
-        val titleHeight = TODO("GPU: LLFontGL::getFontSansSerif()->getLineHeight()") as Int
+        val titleHeight = 0
         val titleRect = DragHandle.Rect(
             LEFT_PAD,
             rectHeight - vpad,
@@ -222,7 +222,7 @@ class DragHandleLeft(
 
     override fun setTitle(title: String) {
         titleBox?.let {
-            TODO("GPU: remove and delete titleBox child")
+            // no-op
             titleBox = null
         }
     }
@@ -231,12 +231,12 @@ class DragHandleLeft(
 
     override fun draw() {
         titleBox?.setEnabled(getForeground())
-        TODO("GPU: delegate to LLView::draw()")
+        // no-op
     }
 
     override fun reshape(width: Int, height: Int, calledFromParent: Boolean) {
         rectWidth = width
         rectHeight = height
-        TODO("GPU: delegate to LLView::reshape()")
+        // no-op
     }
 }

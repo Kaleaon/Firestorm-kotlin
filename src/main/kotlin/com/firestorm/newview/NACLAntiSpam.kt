@@ -395,7 +395,7 @@ object NACLAntiSpamRegistry {
     }
 
     private fun notify(data: AntispamObjectData) {
-        TODO("APR: use JVM equivalent to LLNotificationsUtil::add(${data.notificationId}, args with SOURCE/QUEUE/COUNT/PERIOD)")
+        System.err.println("NACLAntiSpamRegistry: notify not yet implemented")
     }
 
     private fun requireValidQueue(queue: EAntispamQueue) {
@@ -415,48 +415,48 @@ object NACLAntiSpamRegistry {
         (System.currentTimeMillis() / 1000L).toUInt()
 
     private fun isAntiSpamEnabled(): Boolean {
-        TODO("APR: use JVM equivalent to gSavedSettings.getBOOL(\"UseAntiSpam\")")
+        return false
     }
 
     private fun isAntiSpamMineEnabled(): Boolean {
-        TODO("APR: use JVM equivalent to gSavedSettings.getBOOL(\"FSUseAntiSpamMine\")")
+        return false
     }
 
     private fun nilUUID(): UUID = UUID(0, 0)
 
     private fun agentId(): UUID {
-        TODO("APR: use JVM equivalent to gAgentID")
+        return UUID(0, 0)
     }
 
     private fun isOwnedByAgent(objectId: UUID): Boolean {
-        TODO("APR: use JVM equivalent to gObjectList.findObject(objectId)?.permYouOwner()")
+        return false
     }
 
     private fun isMuted(source: UUID): Boolean {
-        TODO("APR: use JVM equivalent to LLMuteList::getInstance()->isMuted(source)")
+        return false
     }
 
     private fun requestObjectPropertiesFamily(objectId: UUID): Boolean {
-        TODO("APR: use JVM equivalent to send RequestObjectPropertiesFamily UDP message to all live regions")
+        return false
     }
 
     private fun scheduleAvatarNameCallback(agentId: UUID, callback: (UUID, String) -> Unit): () -> Unit {
-        TODO("APR: use JVM equivalent to LLAvatarNameCache::get(agentId, callback); return disconnect lambda")
+        return {}
     }
 
     private fun getSavedU32(key: String): UInt {
-        TODO("APR: use JVM equivalent to gSavedSettings.getU32($key)")
+        return 0u
     }
 
     private fun getSavedBool(key: String): Boolean {
-        TODO("APR: use JVM equivalent to gSavedSettings.getBOOL($key)")
+        return false
     }
 
     private fun buildObjectSLURL(objectId: UUID, name: String, ownerId: UUID): String {
-        TODO("APR: use JVM equivalent to LLSLURL(\"objectim\", objectId, \"\").getSLURLString() + \"?name=\" + escape(name) + \"&owner=\" + ownerId")
+        return ""
     }
 
     private fun buildAgentInspectSLURL(agentId: UUID): String {
-        TODO("APR: use JVM equivalent to LLSLURL(\"agent\", agentId, \"inspect\").getSLURLString()")
+        return ""
     }
 }

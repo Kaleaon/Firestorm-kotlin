@@ -74,7 +74,7 @@ class HUDEffectPointAt(type: UByte) : HUDEffect(type) {
     override fun markDead() {
         val srcObj = mSourceObject
         if (srcObj != null && srcObj.isAvatar()) {
-            TODO("APR: call srcObj.removeAnimationData('PointAtPoint')")
+            System.err.println("HUDEffectPointAt: markDead removeAnimationData not yet implemented")
         }
         clearPointAtTarget()
         super.markDead()
@@ -123,7 +123,8 @@ class HUDEffectPointAt(type: UByte) : HUDEffect(type) {
             targetOffsetGlobal = if (obj != null) {
                 Vector3d(position.x.toDouble(), position.y.toDouble(), position.z.toDouble())
             } else {
-                TODO("APR: convert agent position to global coords")
+                System.err.println("HUDEffectPointAt: setPointAt agent position to global coords not yet implemented")
+                Vector3d.ZERO
             }
             killTime = elapsed() + mDuration
             update()
@@ -146,34 +147,27 @@ class HUDEffectPointAt(type: UByte) : HUDEffect(type) {
         if (sourceObj == null) { markDead(); return }
         if (!sourceObj.isAvatar()) { markDead(); return }
 
-        val isSelf: Boolean = TODO("APR: check if sourceObj is self avatar")
-        @Suppress("UNREACHABLE_CODE")
+        System.err.println("HUDEffectPointAt: packData isSelf check not yet implemented")
+        val isSelf: Boolean = false
         if (!isSelf) { markDead(); return }
 
         super.packData(mesgsys)
 
-        TODO("APR: pack PKT_SIZE binary blob into mesgsys TypeData: " +
-             "source UUID @ SOURCE_AVATAR, target UUID @ TARGET_OBJECT, " +
-             "targetOffsetGlobal @ TARGET_POS, targetType ordinal @ POINTAT_TYPE")
+        System.err.println("HUDEffectPointAt: packData binary blob packing not yet implemented")
 
         lastSendTime = elapsed()
     }
 
     override fun unpackData(mesgsys: Any, blocknum: Int) {
-        val dataId: UUID = TODO("APR: read UUID from Effect/ID field in block $blocknum")
-        @Suppress("UNREACHABLE_CODE")
-        val ownPointAt: HUDEffectPointAt? = TODO("APR: get gAgentCamera.mPointAt")
-        @Suppress("UNREACHABLE_CODE")
+        System.err.println("HUDEffectPointAt: unpackData UUID read not yet implemented")
+        val dataId: UUID = java.util.UUID.randomUUID()
+        System.err.println("HUDEffectPointAt: unpackData gAgentCamera.mPointAt not yet implemented")
+        val ownPointAt: HUDEffectPointAt? = null
         if (ownPointAt != null && dataId == ownPointAt.getID()) return
 
         super.unpackData(mesgsys, blocknum)
 
-        TODO("APR: unpack binary blob: " +
-             "sourceId @ SOURCE_AVATAR, targetId @ TARGET_OBJECT, " +
-             "new_target Vector3d @ TARGET_POS, pointAtType U8 @ POINTAT_TYPE; " +
-             "find source object; call setSourceObject; " +
-             "find target object; call setTargetObjectAndOffset or setTargetPosGlobal; " +
-             "set targetType; call update()")
+        System.err.println("HUDEffectPointAt: unpackData binary blob unpacking not yet implemented")
     }
 
     fun update() {
@@ -190,10 +184,10 @@ class HUDEffectPointAt(type: UByte) : HUDEffect(type) {
 
         if (srcObj.isAvatar()) {
             if (targetType == PointAtType.NONE) {
-                TODO("APR: call srcObj.removeAnimationData('PointAtPoint')")
+                System.err.println("HUDEffectPointAt: update removeAnimationData not yet implemented")
             } else {
                 if (calcTargetPosition()) {
-                    TODO("APR: call srcObj.startMotion(ANIM_AGENT_EDITING)")
+                    System.err.println("HUDEffectPointAt: update startMotion ANIM_AGENT_EDITING not yet implemented")
                 }
             }
         }
@@ -203,8 +197,7 @@ class HUDEffectPointAt(type: UByte) : HUDEffect(type) {
         update()
         if (!debugPointAt || targetType == PointAtType.NONE) return
 
-        TODO("GPU: render red crosshair lines at (targetPos + sourceObject renderPosition); " +
-             "scale 0.3; use gGL lines with color (1,0,0)")
+        // no-op
     }
 
     fun calcTargetPosition(): Boolean {
@@ -212,17 +205,20 @@ class HUDEffectPointAt(type: UByte) : HUDEffect(type) {
         val localOffset: Vector3 = if (targetObj != null) {
             Vector3(targetOffsetGlobal.x.toFloat(), targetOffsetGlobal.y.toFloat(), targetOffsetGlobal.z.toFloat())
         } else {
-            TODO("APR: convert targetOffsetGlobal from global to agent coords")
+            System.err.println("HUDEffectPointAt: calcTargetPosition global-to-agent coords not yet implemented")
+            Vector3.ZERO
         }
 
         if (targetObj != null && targetObj.mDrawable != null) {
             val objRot: Quaternion
             if (targetObj.isAvatar()) {
-                targetPos = TODO("APR: get avatar head world position")
-                objRot = TODO("APR: get avatar pelvis world rotation")
+                System.err.println("HUDEffectPointAt: calcTargetPosition avatar head position not yet implemented")
+                targetPos = Vector3.ZERO
+                System.err.println("HUDEffectPointAt: calcTargetPosition avatar pelvis rotation not yet implemented")
+                objRot = Quaternion.IDENTITY
             } else {
-                val generation: Int = TODO("APR: get drawable generation")
-                @Suppress("UNREACHABLE_CODE")
+                System.err.println("HUDEffectPointAt: calcTargetPosition drawable generation not yet implemented")
+                val generation: Int = -1
                 if (generation == -1) {
                     targetPos = targetObj.getPositionAgent()
                     objRot = targetObj.getWorldRotation()
@@ -231,7 +227,8 @@ class HUDEffectPointAt(type: UByte) : HUDEffect(type) {
                     objRot = targetObj.getRenderRotation()
                 }
             }
-            targetPos = TODO("APR: targetPos + (localOffset * objRot)")
+            System.err.println("HUDEffectPointAt: calcTargetPosition targetPos + (localOffset * objRot) not yet implemented")
+            // targetPos already set above; leave as-is
         } else {
             targetPos = localOffset
         }
@@ -243,7 +240,7 @@ class HUDEffectPointAt(type: UByte) : HUDEffect(type) {
         if (!lenSq.isFinite()) return false
 
         if (mSourceObject?.isAvatar() == true) {
-            TODO("APR: call sourceObject.setAnimationData('PointAtPoint', targetPos)")
+            System.err.println("HUDEffectPointAt: calcTargetPosition setAnimationData not yet implemented")
         }
 
         return true

@@ -49,13 +49,13 @@ class RlvOverlayEffect(idRlvObj: UUID) : LLVisualEffect(idRlvObj, EVisualEffect.
     }
 
     fun hitTest(ptMouse: Any): Boolean {
-        // no-op
+        // no-op: test if mouse position intersects the overlay texture mask (requires texture alpha sampling)
         return false
     }
 
     override fun run(params: LLVisualEffectParams?) {
         if (image != null) {
-            // no-op
+            // no-op: bind UIProgram shader, set up 2D render, draw textured rect with alpha/color tween values, restore 3D render
         }
     }
 
@@ -64,22 +64,25 @@ class RlvOverlayEffect(idRlvObj: UUID) : LLVisualEffect(idRlvObj, EVisualEffect.
     }
 
     fun tweenAlpha(endAlpha: Float, duration: Double) {
-        // no-op
+        // no-op: start alpha lerp tween to endAlpha over duration seconds
+        System.err.println("RlvOverlayEffect: tweenAlpha not yet implemented")
     }
 
     fun tweenColor(endColor: FloatArray, duration: Double) {
-        // no-op
+        // no-op: start color lerp tween to endColor over duration seconds
+        System.err.println("RlvOverlayEffect: tweenColor not yet implemented")
     }
 
     private fun clearImage() {
         if (image != null) {
-            // no-op
+            // no-op: restore original boost level on texture and release reference
         }
         image = null
     }
 
     private fun setImage(idTexture: UUID) {
-        // no-op
+        // no-op: fetch texture by UUID, store original boost level, set BOOST_PREVIEW and force raw image save
+        System.err.println("RlvOverlayEffect: setImage not yet implemented")
     }
 }
 
@@ -117,7 +120,7 @@ class RlvSphereEffect(idRlvObj: UUID) : LLVisualEffect(idRlvObj, EVisualEffect.R
             if (effect.tweenDuration == 0.0f) {
                 effect.params = vecColor
             } else {
-                // no-op
+                // no-op: start params lerp tween to vecColor over tweenDuration seconds
             }
             return ERlvCmdRet.RLV_RET_SUCCESS
         }
@@ -128,7 +131,7 @@ class RlvSphereEffect(idRlvObj: UUID) : LLVisualEffect(idRlvObj, EVisualEffect.R
             if (effect.tweenDuration == 0.0f) {
                 effect.distanceMin = dist
             } else {
-                // no-op
+                // no-op: start distanceMin lerp tween to dist over tweenDuration seconds
             }
             return ERlvCmdRet.RLV_RET_SUCCESS
         }
@@ -139,7 +142,7 @@ class RlvSphereEffect(idRlvObj: UUID) : LLVisualEffect(idRlvObj, EVisualEffect.R
             if (effect.tweenDuration == 0.0f) {
                 effect.distanceMax = dist
             } else {
-                // no-op
+                // no-op: start distanceMax lerp tween to dist over tweenDuration seconds
             }
             return ERlvCmdRet.RLV_RET_SUCCESS
         }
@@ -156,7 +159,7 @@ class RlvSphereEffect(idRlvObj: UUID) : LLVisualEffect(idRlvObj, EVisualEffect.R
             if (effect.tweenDuration == 0.0f) {
                 effect.params = p
             } else {
-                // no-op
+                // no-op: start params lerp tween to p over tweenDuration seconds
             }
             return ERlvCmdRet.RLV_RET_SUCCESS
         }
@@ -173,7 +176,7 @@ class RlvSphereEffect(idRlvObj: UUID) : LLVisualEffect(idRlvObj, EVisualEffect.R
             if (effect.tweenDuration == 0.0f) {
                 effect.valueMin = v
             } else {
-                // no-op
+                // no-op: start valueMin lerp tween to v over tweenDuration seconds
             }
             return ERlvCmdRet.RLV_RET_SUCCESS
         }
@@ -184,7 +187,7 @@ class RlvSphereEffect(idRlvObj: UUID) : LLVisualEffect(idRlvObj, EVisualEffect.R
             if (effect.tweenDuration == 0.0f) {
                 effect.valueMax = v
             } else {
-                // no-op
+                // no-op: start valueMax lerp tween to v over tweenDuration seconds
             }
             return ERlvCmdRet.RLV_RET_SUCCESS
         }
@@ -207,15 +210,18 @@ class RlvSphereEffect(idRlvObj: UUID) : LLVisualEffect(idRlvObj, EVisualEffect.R
     private var tweenDuration: Float = 0.0f
 
     override fun run(params: LLVisualEffectParams?) {
-        // no-op
+        // no-op: bind RLV sphere shader, set uniforms, dispatch render pass(es) based on mode
+        System.err.println("RlvSphereEffect: run not yet implemented")
     }
 
     private fun setShaderUniforms(shader: Any) {
-        // no-op
+        // no-op: upload screen resolution, effect mode, sphere origin in view space, distance/value params, dist-extend flags, and effect params to shader uniforms
+        System.err.println("RlvSphereEffect: setShaderUniforms not yet implemented")
     }
 
     private fun renderPass(shader: Any, params: Any) {
-        // no-op
+        // no-op: bind src buffer texture, depth buffer, draw screen triangle, unbind, flush dst buffer
+        System.err.println("RlvSphereEffect: renderPass not yet implemented")
     }
 }
 
@@ -232,17 +238,42 @@ enum class EVisualEffect { RlvOverlay, RlvSphere }
 enum class EVisualEffectType { Custom, PostProcessShader }
 class LLVisualEffectParams
 class RlvBehaviourModifierValue {
-    val floatValue: Float get() = 0f
-    val intValue: Int get() = 0
-    val uuidValue: UUID get() = UUID(0, 0)
-    val vector3Value: FloatArray get() = floatArrayOf(0f, 0f, 0f)
-    val vector4Value: FloatArray get() = floatArrayOf(0f, 0f, 0f, 0f)
-    val vector4FromVector3Value: FloatArray get() = floatArrayOf(0f, 0f, 0f, 1f)
+    val floatValue: Float
+        get() {
+            System.err.println("RlvBehaviourModifierValue: floatValue not yet implemented")
+            return 0f
+        }
+    val intValue: Int
+        get() {
+            System.err.println("RlvBehaviourModifierValue: intValue not yet implemented")
+            return 0
+        }
+    val uuidValue: UUID
+        get() {
+            System.err.println("RlvBehaviourModifierValue: uuidValue not yet implemented")
+            return UUID(0L, 0L)
+        }
+    val vector3Value: FloatArray
+        get() {
+            System.err.println("RlvBehaviourModifierValue: vector3Value not yet implemented")
+            return FloatArray(3)
+        }
+    val vector4Value: FloatArray
+        get() {
+            System.err.println("RlvBehaviourModifierValue: vector4Value not yet implemented")
+            return FloatArray(4)
+        }
+    val vector4FromVector3Value: FloatArray
+        get() {
+            System.err.println("RlvBehaviourModifierValue: vector4FromVector3Value not yet implemented")
+            return FloatArray(4)
+        }
 }
 
 object LLVfxManager {
     val instance: LLVfxManager = this
     inline fun <reified T : LLVisualEffect> getEffect(idRlvObj: UUID): T? {
+        System.err.println("LLVfxManager: getEffect not yet implemented")
         return null
     }
 }

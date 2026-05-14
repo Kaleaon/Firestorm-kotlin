@@ -100,7 +100,7 @@ object FSRadar {
      */
     fun startTracking(avatarId: LLUUID) {
         trackedAvatarId = avatarId
-        TODO("Call LLTracker::trackAvatar(avatarId)")
+        System.err.println("FSRadar: startTracking not yet implemented")
     }
 
     /**
@@ -108,7 +108,7 @@ object FSRadar {
      * Mirrors FSRadar::zoomAvatar().
      */
     fun zoomAvatar(avatarId: LLUUID, name: String) {
-        TODO("Focus camera on avatar position via LLAvatarActions::zoomIn()")
+        System.err.println("FSRadar: zoomAvatar not yet implemented")
     }
 
     /**
@@ -116,7 +116,7 @@ object FSRadar {
      * Mirrors FSRadar::teleportToAvatar().
      */
     fun teleportToAvatar(targetAv: LLUUID) {
-        TODO("Use LLAvatarActions::teleportTo() or direct TP request")
+        System.err.println("FSRadar: teleportToAvatar not yet implemented")
     }
 
     /**
@@ -173,11 +173,7 @@ object FSRadar {
      * Mirrors FSRadar::updateRadarList().
      */
     private fun updateRadarList() {
-        TODO(
-            "Query LLWorld for nearby avatars; update entryList; " +
-            "populate radarEnterAlerts / radarLeaveAlerts; " +
-            "call radarAlertMsg() for each alert UUID"
-        )
+        System.err.println("FSRadar: updateRadarList not yet implemented")
     }
 
     /**
@@ -186,7 +182,7 @@ object FSRadar {
      */
     private fun updateTracking() {
         if (trackedAvatarId.isNull()) return
-        TODO("Update LLTracker with latest globalPos from entryList[trackedAvatarId]")
+        System.err.println("FSRadar: updateTracking not yet implemented")
     }
 
     /**
@@ -194,7 +190,7 @@ object FSRadar {
      * Mirrors FSRadar::radarAlertMsg().
      */
     private fun radarAlertMsg(agentId: LLUUID, displayName: String, postMsg: String) {
-        TODO("Format and post chat notification via LLNotificationsUtil")
+        System.err.println("FSRadar: radarAlertMsg not yet implemented")
     }
 
     /**
@@ -202,7 +198,7 @@ object FSRadar {
      * changes.  Mirrors FSRadar::updateAgeAlertCheck().
      */
     private fun updateAgeAlertCheck() {
-        TODO("Read RadarAvatarAgeAlertValue from settings; call entry.checkAge() for each entry")
+        System.err.println("FSRadar: updateAgeAlertCheck not yet implemented")
     }
 
     /**
@@ -210,7 +206,7 @@ object FSRadar {
      * Mirrors FSRadar::onRegionChanged().
      */
     private fun onRegionChanged() {
-        TODO("Re-subscribe to region capability signals; clear stale offset requests")
+        System.err.println("FSRadar: onRegionChanged not yet implemented")
     }
 
     // -----------------------------------------------------------------------
@@ -219,22 +215,22 @@ object FSRadar {
     companion object {
         /** Toggle or set the radar name-format preference. */
         fun onRadarNameFmtClicked(userdata: String) {
-            TODO("Update gSavedSettings RadarNameFormat and call FSRadar.updateNames()")
+            System.err.println("FSRadar: onRadarNameFmtClicked not yet implemented")
         }
 
         /** Return true if [userdata] matches the currently active name format. */
         fun radarNameFmtCheck(userdata: String): Boolean {
-            TODO("Compare userdata against gSavedSettings RadarNameFormat")
+            return false
         }
 
         /** Handle 'Report to…' menu item. */
         fun onRadarReportToClicked(userdata: String) {
-            TODO("Open IM or abuse-report dialog for the selected avatar")
+            System.err.println("FSRadar: onRadarReportToClicked not yet implemented")
         }
 
         /** Return true if the 'Report to…' option identified by [userdata] is applicable. */
         fun radarReportToCheck(userdata: String): Boolean {
-            TODO("Return whether the report target is valid in current context")
+            return false
         }
     }
 }

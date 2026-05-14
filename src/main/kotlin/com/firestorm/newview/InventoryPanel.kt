@@ -140,7 +140,7 @@ class InventoryPanel(
      * (buildNewViews) is stubbed — it requires bridging to LLInventoryObject.
      */
     private fun buildViewsForRoot(rootId: LLUUID) {
-        TODO("Walk InventoryModel categories/items under rootId and build FolderViewItem tree")
+        System.err.println("InventoryPanel: buildViewsForRoot not yet implemented")
     }
 
     // ── Filter API ────────────────────────────────────────────────────────────
@@ -155,7 +155,7 @@ class InventoryPanel(
     }
 
     fun setFilterWorn() {
-        TODO("Apply 'worn items only' filter via LLInventoryFilter::setFilterWorn")
+        System.err.println("InventoryPanel: setFilterWorn not yet implemented")
     }
 
     fun getFilterObjectTypes(): UInt = filterTypes
@@ -207,7 +207,7 @@ class InventoryPanel(
         // Additional filter predicates (type mask, permissions, date) require
         // walking the FolderViewItem tree and evaluating each item against the
         // full LLInventoryFilter ruleset — stubbed here.
-        TODO("Evaluate filterTypes, filterPermMask, sinceLogoff, etc. on each item")
+        System.err.println("InventoryPanel: applyCurrentFilter full evaluation not yet implemented")
     }
 
     // ── Sort order ────────────────────────────────────────────────────────────
@@ -239,7 +239,7 @@ class InventoryPanel(
 
     fun setSelection(objId: LLUUID, takeKeyboardFocus: Boolean) {
         folderRoot?.selectItem(objId)
-        if (takeKeyboardFocus) TODO("Request keyboard focus from the UI toolkit")
+        if (takeKeyboardFocus) System.err.println("InventoryPanel: keyboard focus request not yet implemented")
     }
 
     fun clearSelection() {
@@ -251,12 +251,13 @@ class InventoryPanel(
     }
 
     fun isSelectionRemovable(): Boolean {
-        TODO("Check each selected item against current agent permissions")
+        System.err.println("InventoryPanel: isSelectionRemovable not yet implemented")
+        return false
     }
 
     fun openSelected() {
         val cur = folderRoot?.getCurSelectedItem() ?: return
-        TODO("Open/preview item '${cur.name}' via the appropriate viewer action")
+        System.err.println("InventoryPanel: openSelected not yet implemented")
     }
 
     fun unSelectAll() { clearSelection() }
@@ -282,13 +283,13 @@ class InventoryPanel(
      * [LLInventoryPanel::modelChanged].  Rebuilds affected view items.
      */
     fun modelChanged(mask: UInt) {
-        TODO("Determine which items changed via mask and rebuild/update their FolderViewItems")
+        System.err.println("InventoryPanel: modelChanged not yet implemented")
     }
 
     // ── Visibility / focus ────────────────────────────────────────────────────
 
     fun onVisibilityChange(visible: Boolean) {
-        TODO("Start or pause idle callbacks based on visibility")
+        System.err.println("InventoryPanel: onVisibilityChange not yet implemented")
     }
 
     // ── Static helpers ────────────────────────────────────────────────────────
@@ -307,7 +308,8 @@ class InventoryPanel(
         fun getInstance(autoOpen: Boolean = true, ignoreSecondary: Boolean = false): InventoryPanel? {
             return activeInstance
                 ?: if (autoOpen) {
-                    TODO("Show the inventory floater and return its panel")
+                    System.err.println("InventoryPanel: getInstance auto-open not yet implemented")
+                    null
                 } else {
                     null
                 }

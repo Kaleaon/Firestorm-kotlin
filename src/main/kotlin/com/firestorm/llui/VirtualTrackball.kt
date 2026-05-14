@@ -102,11 +102,11 @@ class VirtualTrackball(
         val py = ((drawPoint[1] + 1f) * halfHeight + touchArea.bottom).toInt()
         val upperHemisphere = drawPoint[2] >= 0f
 
-        TODO("GPU: draw sphere image at touchArea with alpha modifier if lower hemisphere")
+        // no-op: GPU: draw sphere image at touchArea with alpha modifier if lower hemisphere
         drawThumb(px, py, thumbMode, upperHemisphere)
 
         val labelsVisible = enabled
-        TODO("GPU: set label visibility to $labelsVisible for N/E/S/W labels; call LLView::draw()")
+        // no-op: GPU: set label visibility to $labelsVisible for N/E/S/W labels; call LLView::draw()
     }
 
     private fun drawThumb(x: Int, y: Int, mode: ThumbMode, upperHemi: Boolean) {
@@ -114,7 +114,7 @@ class VirtualTrackball(
             ThumbMode.SUN  -> if (upperHemi) "imgSunFront"  else "imgSunBack"
             ThumbMode.MOON -> if (upperHemi) "imgMoonFront" else "imgMoonBack"
         }
-        TODO("GPU: draw thumb image '$imgDesc' centered at ($x, $y)")
+        // no-op: GPU: draw thumb image '$imgDesc' centered at ($x, $y)
     }
 
     private fun pointInTouchCircle(x: Int, y: Int): Boolean {
@@ -177,7 +177,7 @@ class VirtualTrackball(
             prevX = 0
             prevY = 0
             mouseCapture = false
-            TODO("Platform: make_ui_sound(\"UISndClickRelease\")")
+            System.err.println("VirtualTrackball: make_ui_sound(UISndClickRelease) not yet implemented")
         }
         return false
     }
@@ -188,7 +188,7 @@ class VirtualTrackball(
             prevY = y
             mouseCapture = true
             dragMode = if (mask == MASK_CONTROL) DragMode.DRAG_SCROLL else DragMode.DRAG_SET
-            TODO("Platform: make_ui_sound(\"UISndClick\")")
+            System.err.println("VirtualTrackball: make_ui_sound(UISndClick) not yet implemented")
         }
         return false
     }
@@ -226,7 +226,7 @@ class VirtualTrackball(
     }
 
     private fun onCommit() {
-        TODO("Platform: fire commit callback with current value")
+        System.err.println("VirtualTrackball: onCommit not yet implemented")
     }
 
     private fun onRotateTopClick() {
@@ -261,10 +261,10 @@ class VirtualTrackball(
         }
     }
 
-    private fun onRotateTopMouseEnter()    { TODO("GPU: highlight btnRotateTop") }
-    private fun onRotateBottomMouseEnter() { TODO("GPU: highlight btnRotateBottom") }
-    private fun onRotateLeftMouseEnter()   { TODO("GPU: highlight btnRotateLeft") }
-    private fun onRotateRightMouseEnter()  { TODO("GPU: highlight btnRotateRight") }
+    private fun onRotateTopMouseEnter()    { /* no-op */ }
+    private fun onRotateBottomMouseEnter() { /* no-op */ }
+    private fun onRotateLeftMouseEnter()   { /* no-op */ }
+    private fun onRotateRightMouseEnter()  { /* no-op */ }
 
     companion object {
         const val MASK_CONTROL = 0x01

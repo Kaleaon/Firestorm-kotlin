@@ -201,7 +201,8 @@ class FSFloaterRadar(val seed: LLSD) : RadarUpdateObserver {
     // ------------------------------------------------------------------
 
     private fun <T> getChild(name: String): T? {
-        TODO("Platform: resolve child widget '$name' from the floater's view hierarchy")
+        System.err.println("FSFloaterRadar: getChild not yet implemented")
+        return null
     }
 
     // ------------------------------------------------------------------
@@ -223,7 +224,7 @@ class FSFloaterRadar(val seed: LLSD) : RadarUpdateObserver {
                 "UNDN" -> RadarNameFormat.USERNAME_DISPLAYNAME
                 else   -> return
             }
-            TODO("Persist RadarNameFormat=$fmt to gSavedSettings and call FSRadar.updateNames()")
+            System.err.println("FSFloaterRadar: onRadarNameFmtClicked not yet implemented")
         }
 
         /**
@@ -232,7 +233,8 @@ class FSFloaterRadar(val seed: LLSD) : RadarUpdateObserver {
          * Mirrors [FSRadar::radarNameFmtCheck].
          */
         fun radarNameFmtCheck(userdata: String): Boolean {
-            TODO("Read RadarNameFormat from gSavedSettings, compare to userdata mapping")
+            System.err.println("FSFloaterRadar: radarNameFmtCheck not yet implemented")
+            return false
         }
 
         /**
@@ -246,7 +248,7 @@ class FSFloaterRadar(val seed: LLSD) : RadarUpdateObserver {
                 "radar_nearby_chat" -> false
                 else                -> return
             }
-            TODO("Persist FSMilkshakeRadarToasts=$useToasts to gSavedSettings")
+            System.err.println("FSFloaterRadar: onRadarReportToClicked not yet implemented")
         }
 
         /**
@@ -255,7 +257,8 @@ class FSFloaterRadar(val seed: LLSD) : RadarUpdateObserver {
          * Mirrors [FSRadar::radarReportToCheck].
          */
         fun radarReportToCheck(userdata: String): Boolean {
-            TODO("Read FSMilkshakeRadarToasts from gSavedSettings; match against userdata")
+            System.err.println("FSFloaterRadar: radarReportToCheck not yet implemented")
+            return false
         }
 
         // Avatar-property flag masks — mirrors AVATAR_TRANSACTED / AVATAR_IDENTIFIED
@@ -280,18 +283,21 @@ class FSFloaterRadar(val seed: LLSD) : RadarUpdateObserver {
 
     /** Stub: the specialised radar scroll-list control (mirrors FSRadarListCtrl). */
     class RadarListCtrl {
-        fun clearRows() { TODO("Platform: remove all rows from the scroll list") }
-        fun addRow(row: RadarRow) { TODO("Platform: append row to the scroll list") }
+        fun clearRows() { System.err.println("RadarListCtrl: clearRows not yet implemented") }
+        fun addRow(row: RadarRow) { System.err.println("RadarListCtrl: addRow not yet implemented") }
     }
 
     /** Stub: filter editor widget. */
     class FilterEditor {
-        fun getText(): String { TODO("Platform: return current filter text") }
-        fun setCommitCallback(cb: (String) -> Unit) { TODO("Platform: wire commit callback") }
+        fun getText(): String {
+            System.err.println("FilterEditor: getText not yet implemented")
+            return ""
+        }
+        fun setCommitCallback(cb: (String) -> Unit) { System.err.println("FilterEditor: setCommitCallback not yet implemented") }
     }
 
     /** Stub: text label widget. */
     class Label {
-        fun setText(text: String) { TODO("Platform: update label text") }
+        fun setText(text: String) { System.err.println("Label: setText not yet implemented") }
     }
 }

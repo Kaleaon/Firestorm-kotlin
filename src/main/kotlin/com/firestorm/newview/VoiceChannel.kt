@@ -93,7 +93,7 @@ open class VoiceChannel(
         }
         if (callStarted()) {
             setState(State.HUNG_UP)
-            TODO("IPC: if AutoDisengageMic and this is sCurrentVoiceChannel and userPTTState, reset PTT")
+            System.err.println("VoiceChannel: reset PTT on deactivate not yet implemented")
         }
         VoiceClient.removeObserver(this)
         if (sCurrentVoiceChannel === this) {
@@ -125,7 +125,7 @@ open class VoiceChannel(
         channelInfo = info
         if (state == State.NO_CHANNEL_INFO) {
             if (info.isEmpty()) {
-                TODO("UI: show VoiceChannelJoinFailed notification")
+                System.err.println("VoiceChannel: show VoiceChannelJoinFailed notification not yet implemented")
                 deactivate()
             } else {
                 setState(State.READY)
@@ -158,7 +158,7 @@ open class VoiceChannel(
     fun updateSessionId(newId: LLUUID) {
         voiceChannelMap.remove(sessionId)
         voiceChannelMap[newId] = this
-        TODO("IPC: update mSessionID field — requires mutable sessionId or reassignment")
+        System.err.println("VoiceChannel: updateSessionId mSessionID reassignment not yet implemented")
     }
 
     fun isThisVoiceChannel(info: Map<String, Any?>): Boolean =
@@ -248,16 +248,16 @@ open class VoiceChannelGroup(
                 isP2P,
             )
             if (isP2P) {
-                TODO("IPC: LLIMModel.addSpeakersToRecent(sessionId)")
+                System.err.println("VoiceChannelGroup: addSpeakersToRecent not yet implemented")
             } else {
-                TODO("IPC: add ad-hoc call participants to recent people list")
+                System.err.println("VoiceChannelGroup: add ad-hoc participants to recent people list not yet implemented")
             }
             VoiceClient.setUserPTTState(isP2P)
         }
     }
 
     override fun requestChannelInfo() {
-        TODO("IPC: GET region capability ChatSessionRequest; launch voiceCallCapCoro with preferred voice server type")
+        System.err.println("VoiceChannelGroup: requestChannelInfo not yet implemented")
     }
 
     override fun setChannelInfo(info: Map<String, Any?>) {
@@ -267,7 +267,7 @@ open class VoiceChannelGroup(
                 setState(State.READY)
                 if (VoiceChannel.sCurrentVoiceChannel === this) activate()
             } else {
-                TODO("UI: notify user of invalid credentials for $sessionName")
+                System.err.println("VoiceChannelGroup: notify invalid credentials not yet implemented")
                 deactivate()
             }
         } else if (isRetrying) {
@@ -303,7 +303,7 @@ open class VoiceChannelGroup(
             else -> null
         }
         if (notify != null) {
-            TODO("UI: show $notify notification; echo to IM window")
+            System.err.println("VoiceChannelGroup: show $notify notification not yet implemented")
         }
         super.handleError(status)
     }
@@ -345,7 +345,7 @@ object VoiceChannelProximal : VoiceChannel(LLUUID.NULL, "") {
             VoiceObserver.StatusType.STATUS_LEFT_CHANNEL -> return
             VoiceObserver.StatusType.STATUS_VOICE_DISABLED -> {
                 VoiceClient.setUserPTTState(false)
-                TODO("IPC: agent.setVoiceConnected(false)")
+                System.err.println("VoiceChannelProximal: setVoiceConnected(false) not yet implemented")
                 return
             }
             else -> Unit
@@ -360,7 +360,7 @@ object VoiceChannelProximal : VoiceChannel(LLUUID.NULL, "") {
             else -> null
         }
         if (notify != null) {
-            TODO("UI: show $notify notification")
+            System.err.println("VoiceChannelProximal: show $notify notification not yet implemented")
         }
         // proximal voice provider will try to reconnect; no deactivate here
     }
@@ -391,7 +391,7 @@ class VoiceChannelP2P(
             VoiceObserver.StatusType.STATUS_LEFT_CHANNEL -> {
                 if (callStarted() && !ignoreNextSessionLeave && !sSuspended) {
                     if (state == State.RINGING) {
-                        TODO("UI: show P2PCallDeclined notification")
+                        System.err.println("VoiceChannelP2P: show P2PCallDeclined notification not yet implemented")
                     } else {
                         callEndedByAgent = false
                     }
@@ -410,7 +410,7 @@ class VoiceChannelP2P(
 
     override fun handleError(status: VoiceObserver.StatusType) {
         if (status == VoiceObserver.StatusType.ERROR_NOT_AVAILABLE) {
-            TODO("UI: show P2PCallNoAnswer notification")
+            System.err.println("VoiceChannelP2P: show P2PCallNoAnswer notification not yet implemented")
         }
         super.handleError(status)
     }
@@ -456,7 +456,7 @@ class VoiceChannelP2P(
         channelInfo = info
         var needsActivate = false
         if (callStarted()) {
-            TODO("IPC: compare otherUserId to gAgent.getID()")
+            System.err.println("VoiceChannelP2P: compare otherUserId to agentId not yet implemented")
             // if otherUserId < agentId: deactivate(); needsActivate = true
             // else: outgoingCallInterface.callUser(otherUserId); return
         }
@@ -481,6 +481,6 @@ class VoiceChannelP2P(
     }
 
     private fun addToRecentPeopleList() {
-        TODO("IPC: RecentPeople.add(otherUserId)")
+        System.err.println("VoiceChannelP2P: addToRecentPeopleList not yet implemented")
     }
 }

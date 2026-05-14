@@ -192,8 +192,7 @@ class ImageFilter(val filterDescriptionPath: String = "") {
      * @param params Filter parameter bundle.
      */
     fun applyFilter(image: ImageRaw, params: FilterParams) {
-        TODO("FILTER: apply gamma / brightness / contrast / saturation / sharpness " +
-                "operations to image.data in-place using the values in params")
+        System.err.println("ImageFilter: applyFilter not yet implemented")
     }
 
     /**
@@ -208,8 +207,7 @@ class ImageFilter(val filterDescriptionPath: String = "") {
      * @param image  Image to filter in-place.
      */
     fun executeFilter(image: ImageRaw) {
-        TODO("FILTER: parse filterDescriptionPath LLSD XML and dispatch each named " +
-                "operation to the appropriate private helper")
+        System.err.println("ImageFilter: executeFilter not yet implemented")
     }
 
     // ---- convolution --------------------------------------------------------
@@ -241,8 +239,7 @@ class ImageFilter(val filterDescriptionPath: String = "") {
         require(kernel.size == kernelSize * kernelSize) {
             "Kernel array length ${kernel.size} != kernelSize² ${kernelSize * kernelSize}"
         }
-        TODO("FILTER: convolve image.data with kernel[$kernelSize×$kernelSize], " +
-                "normalize=$normalize, absValue=$absValue; clamp results to 0..255")
+        System.err.println("ImageFilter: convolve not yet implemented")
     }
 
     // ---- colour transforms --------------------------------------------------
@@ -264,8 +261,7 @@ class ImageFilter(val filterDescriptionPath: String = "") {
         gamma: Float,
         alphaR: Float = 1.0f, alphaG: Float = 1.0f, alphaB: Float = 1.0f
     ) {
-        TODO("FILTER: apply gamma correction via LUT (256-entry precomputed table) " +
-                "to image.data with per-channel alpha weights")
+        System.err.println("ImageFilter: filterGamma not yet implemented")
     }
 
     /**
@@ -275,7 +271,7 @@ class ImageFilter(val filterDescriptionPath: String = "") {
      * matching the C++ `filterGrayScale` implementation.
      */
     fun filterGrayScale(image: ImageRaw) {
-        TODO("FILTER: replace each RGB triple with Y = 0.299R + 0.587G + 0.114B")
+        System.err.println("ImageFilter: filterGrayScale not yet implemented")
     }
 
     /**
@@ -285,7 +281,7 @@ class ImageFilter(val filterDescriptionPath: String = "") {
      * A standard sepia matrix maps RGB → a warm brownish palette.
      */
     fun filterSepia(image: ImageRaw) {
-        TODO("FILTER: multiply each RGB triple by the sepia colour-transform matrix")
+        System.err.println("ImageFilter: filterSepia not yet implemented")
     }
 
     /**
@@ -295,7 +291,7 @@ class ImageFilter(val filterDescriptionPath: String = "") {
      * Internally the C++ uses an HSV saturation matrix (LLMatrix3).
      */
     fun filterSaturate(image: ImageRaw, saturation: Float) {
-        TODO("FILTER: apply saturation=%.2f via colour-transform matrix to image.data".format(saturation))
+        System.err.println("ImageFilter: filterSaturate not yet implemented")
     }
 
     /**
@@ -304,7 +300,7 @@ class ImageFilter(val filterDescriptionPath: String = "") {
      * Implemented via an RGB rotation matrix in the C++ source.
      */
     fun filterRotateHue(image: ImageRaw, angleDeg: Float) {
-        TODO("FILTER: apply hue rotation by ${angleDeg}° via 3×3 colour matrix")
+        System.err.println("ImageFilter: filterRotateHue not yet implemented")
     }
 
     /**
@@ -323,7 +319,7 @@ class ImageFilter(val filterDescriptionPath: String = "") {
         add: Float,
         alphaR: Float = 1.0f, alphaG: Float = 1.0f, alphaB: Float = 1.0f
     ) {
-        TODO("FILTER: add ${(add * 255).toInt()} to each pixel channel (clamped) with per-channel alpha")
+        System.err.println("ImageFilter: filterBrightness not yet implemented")
     }
 
     /**
@@ -338,7 +334,7 @@ class ImageFilter(val filterDescriptionPath: String = "") {
         slope: Float,
         alphaR: Float = 1.0f, alphaG: Float = 1.0f, alphaB: Float = 1.0f
     ) {
-        TODO("FILTER: apply contrast slope=$slope around mid-grey (128) with per-channel alpha")
+        System.err.println("ImageFilter: filterContrast not yet implemented")
     }
 
     /**
@@ -354,7 +350,7 @@ class ImageFilter(val filterDescriptionPath: String = "") {
         tail: Float,
         alphaR: Float = 1.0f, alphaG: Float = 1.0f, alphaB: Float = 1.0f
     ) {
-        TODO("FILTER: compute per-channel histogram, trim tail fraction, remap pixel values")
+        System.err.println("ImageFilter: filterLinearize not yet implemented")
     }
 
     /**
@@ -367,7 +363,7 @@ class ImageFilter(val filterDescriptionPath: String = "") {
         nbClasses: Int,
         alphaR: Float = 1.0f, alphaG: Float = 1.0f, alphaB: Float = 1.0f
     ) {
-        TODO("FILTER: equalise histogram with nbClasses=$nbClasses output levels")
+        System.err.println("ImageFilter: filterEqualize not yet implemented")
     }
 
     /**
@@ -382,7 +378,7 @@ class ImageFilter(val filterDescriptionPath: String = "") {
         colorR: Float, colorG: Float, colorB: Float,
         alphaR: Float = 1.0f, alphaG: Float = 1.0f, alphaB: Float = 1.0f
     ) {
-        TODO("FILTER: blend each pixel with color=(R=$colorR, G=$colorG, B=$colorB) at per-channel alpha")
+        System.err.println("ImageFilter: filterColorize not yet implemented")
     }
 
     // ---- stencil / mask configuration --------------------------------------
@@ -411,7 +407,7 @@ class ImageFilter(val filterDescriptionPath: String = "") {
         stencilBlendMode = mode
         stencilMin       = min
         stencilMax       = max
-        TODO("FILTER: initialise stencil geometry from params based on shape=$shape")
+        System.err.println("ImageFilter: setStencil initialise stencil geometry not yet implemented")
     }
 
     /**
@@ -421,7 +417,8 @@ class ImageFilter(val filterDescriptionPath: String = "") {
      * The result is in [[stencilMin], [stencilMax]].
      */
     fun getStencilAlpha(col: Int, row: Int): Float {
-        TODO("FILTER: compute stencil alpha at ($col, $row) for stencilShape=$stencilShape")
+        System.err.println("ImageFilter: getStencilAlpha not yet implemented")
+        return 0f
     }
 
     // ---- screen / halftone overlay -----------------------------------------
@@ -434,8 +431,7 @@ class ImageFilter(val filterDescriptionPath: String = "") {
      * @param angle       Rotation angle of the pattern in degrees.
      */
     fun filterScreen(image: ImageRaw, mode: ScreenMode, waveLength: Float, angle: Float) {
-        TODO("FILTER: generate screen pattern at wavelength=$waveLength, angle=$angle, mode=$mode " +
-                "and blend with image.data")
+        System.err.println("ImageFilter: filterScreen not yet implemented")
     }
 
     // ---- histogram helpers --------------------------------------------------
@@ -448,7 +444,7 @@ class ImageFilter(val filterDescriptionPath: String = "") {
      * that require histogram data ([filterLinearize], [filterEqualize]).
      */
     private fun computeHistograms(image: ImageRaw) {
-        TODO("FILTER: iterate image.data and accumulate R/G/B/brightness histogram counts")
+        System.err.println("ImageFilter: computeHistograms not yet implemented")
     }
 
     /**

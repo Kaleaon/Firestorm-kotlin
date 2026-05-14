@@ -67,7 +67,7 @@ object FSDiscordConnect {
      * discordConnectCoro() via LLCoros.
      */
     fun connectToDiscord() {
-        TODO("DISCORD: launch discordConnectCoro — call Discord_Initialize with API key and event handlers")
+        System.err.println("FSDiscordConnect: connectToDiscord not yet implemented")
     }
 
     /**
@@ -76,7 +76,7 @@ object FSDiscordConnect {
      */
     fun disconnectFromDiscord() {
         setConnectionState(ConnectionState.DISCONNECTING)
-        TODO("DISCORD: launch discordDisconnectCoro — call Discord_Shutdown then set NOT_CONNECTED")
+        System.err.println("FSDiscordConnect: disconnectFromDiscord not yet implemented")
     }
 
     /**
@@ -86,7 +86,7 @@ object FSDiscordConnect {
      * @param autoConnect If `true` and not connected, initiate a connection.
      */
     fun checkConnectionToDiscord(autoConnect: Boolean = false) {
-        TODO("DISCORD: launch discordConnectedCoro — check marker file, then connectToDiscord if autoConnect")
+        System.err.println("FSDiscordConnect: checkConnectionToDiscord not yet implemented")
     }
 
     // ------------------------------------------------------------------
@@ -103,13 +103,13 @@ object FSDiscordConnect {
      */
     fun setActivity(details: String, state: String) {
         if (!isConnected) return
-        TODO("DISCORD: populate DiscordRichPresence struct and call Discord_UpdatePresence")
+        System.err.println("FSDiscordConnect: setActivity not yet implemented")
     }
 
     /** Clear the Rich Presence activity, keeping the connection alive. */
     fun clearActivity() {
         if (!isConnected) return
-        TODO("DISCORD: call Discord_ClearPresence")
+        System.err.println("FSDiscordConnect: clearActivity not yet implemented")
     }
 
     /**
@@ -119,7 +119,7 @@ object FSDiscordConnect {
      */
     fun updateRichPresence() {
         if (!isConnected) return
-        TODO("DISCORD: read region/agent data, respect RLV + maturity + blacklist settings, call Discord_UpdatePresence")
+        System.err.println("FSDiscordConnect: updateRichPresence not yet implemented")
     }
 
     // ------------------------------------------------------------------
@@ -130,7 +130,7 @@ object FSDiscordConnect {
         info.clear()
         info.putAll(infoMap)
         // In C++ this posts to sInfoWatcher event pump; stub that here.
-        TODO("DISCORD: notify info watchers after storing")
+        System.err.println("FSDiscordConnect: notify info watchers after storing not yet implemented")
     }
 
     fun getInfo(): Map<String, String> = info.toMap()
@@ -157,7 +157,7 @@ object FSDiscordConnect {
 
         if (connectionState != newState) {
             connectionState = newState
-            TODO("DISCORD: post state-change event to sStateWatcher equivalent")
+            System.err.println("FSDiscordConnect: post state-change event to sStateWatcher not yet implemented")
         }
     }
 
@@ -172,8 +172,7 @@ object FSDiscordConnect {
      * @return `false` so the listener stays registered (LLEventPump convention).
      */
     fun tick(): Boolean {
-        TODO("DISCORD: call Discord_RunCallbacks(); then updateRichPresence()")
-        @Suppress("UNREACHABLE_CODE")
+        System.err.println("FSDiscordConnect: tick not yet implemented")
         return false
     }
 
@@ -187,14 +186,15 @@ object FSDiscordConnect {
      * viewer instance (i.e. someone else is using Discord).
      */
     private fun checkMarkerFile(): Boolean {
-        TODO("DISCORD: read marker file, compare stored UUID to gAgentID; return true if foreign instance owns it")
+        System.err.println("FSDiscordConnect: checkMarkerFile not yet implemented")
+        return false
     }
 
     private fun setMarkerFile() {
-        TODO("DISCORD: write gAgentID to marker file if not already owned by another instance")
+        System.err.println("FSDiscordConnect: setMarkerFile not yet implemented")
     }
 
     private fun clearMarkerFile() {
-        TODO("DISCORD: delete marker file if it belongs to this instance")
+        System.err.println("FSDiscordConnect: clearMarkerFile not yet implemented")
     }
 }

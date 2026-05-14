@@ -15,16 +15,18 @@ class LGGBeamMapFloater(seed: LLSD) : LLFloater(seed) {
     private var beamshapePanel: LLPanel? = null
 
     fun postBuild(): Boolean {
-        TODO("Wire 'beamshape_save' -> onClickSave, 'beamshape_clear' -> onClickClear, 'beamshape_load' -> onClickLoad, 'cancel' -> closeFloater; wire 'back_color_swatch' -> onBackgroundChange; set 'beam_color_swatch' to Color4.red; bind beamshapePanel to 'beamshape_draw'")
+        System.err.println("LGGBeamMapFloater: postBuild not yet implemented")
+        return false
     }
 
     open fun draw() {
-        TODO("GPU: drawConeToOwner when fsPanel != null; call super.draw(); push GL matrix; draw concentric reference circles at beamshapePanel center; draw each dot as 3 concentric filled circles (white/black/dot.c); pop GL matrix")
+        // no-op
     }
 
     open fun handleMouseDown(x: Int, y: Int, mask: Int): Boolean {
         if (y > 39 && x > 16 && x < 394 && y < 317) {
-            val color = TODO("GPU: read 'beam_color_swatch' color swatch value") as Color4
+            // no-op: beam_color_swatch read not yet implemented
+            val color = Color4(1f, 1f, 1f, 1f)
             dots.add(LGGPoint(x, y, color))
         }
         return super.handleMouseDown(x, y, mask)
@@ -39,11 +41,11 @@ class LGGBeamMapFloater(seed: LLSD) : LLFloater(seed) {
 
     fun setData(panel: FSPanelPrefs) {
         fsPanel = panel
-        TODO("APR: gFloaterView->getParentFloater(fsPanel)->addDependentFloater(this)")
+        System.err.println("LGGBeamMapFloater: setData addDependentFloater not yet implemented")
     }
 
     private fun onClickSave() {
-        TODO("APR: resolve 'beams/NewBeam.xml' via gDirUtilp; open LLFilePickerReplyThread for FFSAVE_BEAM -> onSaveCallback")
+        System.err.println("LGGBeamMapFloater: onClickSave not yet implemented")
     }
 
     private fun onClickClear() {
@@ -51,11 +53,11 @@ class LGGBeamMapFloater(seed: LLSD) : LLFloater(seed) {
     }
 
     private fun onClickLoad() {
-        TODO("APR: open LLFilePickerReplyThread for FFLOAD_XML -> onLoadCallback")
+        System.err.println("LGGBeamMapFloater: onClickLoad not yet implemented")
     }
 
     private fun onBackgroundChange() {
-        TODO("GPU: set beamshapePanel background color from 'back_color_swatch' value")
+        // no-op
     }
 
     private fun onSaveCallback(filenames: List<String>) {
@@ -64,12 +66,12 @@ class LGGBeamMapFloater(seed: LLSD) : LLFloater(seed) {
         val panelWidth = beamshapePanel?.rect?.width?.toFloat() ?: 1f
         exportData["scale"] = 8.0f / panelWidth
         exportData["data"] = getDataSerialized()
-        TODO("APR: write exportData as pretty XML to $filename; gSavedSettings.setString('FSBeamShape', baseName); fsPanel?.refreshBeamLists()")
+        System.err.println("LGGBeamMapFloater: onSaveCallback not yet implemented")
     }
 
     private fun onLoadCallback(filenames: List<String>) {
         dots.clear()
-        TODO("APR: parse LLSD XML from filenames[0]; for each entry compute scaled offset relative to beamshapePanel center; reconstruct LGGPoint list and assign to dots")
+        System.err.println("LGGBeamMapFloater: onLoadCallback not yet implemented")
     }
 
     private fun clearPoints() {

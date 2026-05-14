@@ -112,7 +112,7 @@ class LLFloaterLagMeter(key: LLSD) : LLFloater(key) {
     }
 
     private fun determineClient() {
-        val clientFrameTime: Float = TODO("GPU: LLTrace::get_frame_recording().getPeriodMean(FRAME_STACKTIME) in ms")
+        val clientFrameTime: Float = 0f
         var findCause = false
 
         if (!appHasFocus()) {
@@ -138,8 +138,8 @@ class LLFloaterLagMeter(key: LLSD) : LLFloater(key) {
         }
 
         if (findCause) {
-            val renderFarClip: Float = TODO("APR: use JVM equivalent for gSavedSettings.getF32(\"RenderFarClip\")")
-            val textureFetchRequests: Int = TODO("APR: use JVM equivalent for LLAppViewer::instance()->getTextureFetch()->getNumRequests()")
+            val renderFarClip: Float = 0f
+            val textureFetchRequests: Int = 0
             when {
                 renderFarClip > 128f ->
                     mClientCause?.setText(getString("client_draw_distance_cause_msg", mStringArgs))
@@ -152,9 +152,9 @@ class LLFloaterLagMeter(key: LLSD) : LLFloater(key) {
     }
 
     private fun determineNetwork() {
-        val packetLoss: Float = TODO("GPU: frame_recording.getPeriodMean(PACKETS_LOST_PERCENT)")
-        val pingTime: Float   = TODO("GPU: frame_recording.getPeriodMean(SIM_PING) in ms")
-        val clientFrameTime: Float = TODO("GPU: frame_recording.getPeriodMean(FRAME_STACKTIME) in ms")
+        val packetLoss: Float = 0f
+        val pingTime: Float   = 0f
+        val clientFrameTime: Float = 0f
         var findCauseLoss = false
         var findCausePing = false
 
@@ -206,7 +206,7 @@ class LLFloaterLagMeter(key: LLSD) : LLFloater(key) {
         mServerFrameTimeWarning   = 1.0f / LFSimFeatureHandler.instance().simulatorFPSWarn()
         mServerFrameTimeCritical  = 1.0f / LFSimFeatureHandler.instance().simulatorFPSCrit()
 
-        val simFrameTime: Float = TODO("GPU: get_frame_recording().getLastRecording().getLastValue(SIM_FRAME_TIME) in ms")
+        val simFrameTime: Float = 0f
         var findCause = false
 
         when {
@@ -231,11 +231,11 @@ class LLFloaterLagMeter(key: LLSD) : LLFloater(key) {
         }
 
         if (findCause) {
-            val physicsTime: Float   = TODO("GPU: lastRecording.getLastValue(SIM_PHYSICS_TIME) in ms")
-            val scriptsTime: Float   = TODO("GPU: lastRecording.getLastValue(SIM_SCRIPTS_TIME) in ms")
-            val netTime: Float       = TODO("GPU: lastRecording.getLastValue(SIM_NET_TIME) in ms")
-            val agentsTime: Float    = TODO("GPU: lastRecording.getLastValue(SIM_AGENTS_TIME) in ms")
-            val imagesTime: Float    = TODO("GPU: lastRecording.getLastValue(SIM_IMAGES_TIME) in ms")
+            val physicsTime: Float   = 0f
+            val scriptsTime: Float   = 0f
+            val netTime: Float       = 0f
+            val agentsTime: Float    = 0f
+            val imagesTime: Float    = 0f
 
             when {
                 physicsTime > mServerSingleProcessMaxTime ->

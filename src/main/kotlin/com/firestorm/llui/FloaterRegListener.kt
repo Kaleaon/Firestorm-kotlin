@@ -26,7 +26,7 @@ abstract class EventApi(val name: String, val description: String) {
 
     protected fun sendReply(reply: EventMap, event: EventMap) {
         val replyPump = event["reply"] as? String ?: return
-        TODO("APR: LLEventPumps.obtain($replyPump).post($reply)")
+        System.err.println("EventApi: sendReply not yet implemented")
     }
 }
 
@@ -114,36 +114,46 @@ class FloaterRegListener : EventApi(
 
         val replyPump = event["reply"] as? String
         if (replyPump != null) {
-            TODO("APR: LLEventPumps.obtain($replyPump).post($reply)")
+            System.err.println("FloaterRegListener: clickButton reply dispatch not yet implemented")
         }
     }
 }
 
 fun FloaterReg.showInstance(name: String, key: Any?, focus: Boolean) {
-    TODO("APR: FloaterReg.showInstance($name, $key, $focus)")
+    System.err.println("FloaterReg: showInstance not yet implemented")
 }
 
 fun FloaterReg.hideInstance(name: String, key: Any?) {
-    TODO("APR: FloaterReg.hideInstance($name, $key)")
+    System.err.println("FloaterReg: hideInstance not yet implemented")
 }
 
 fun FloaterReg.toggleInstance(name: String, key: Any?) {
-    TODO("APR: FloaterReg.toggleInstance($name, $key)")
+    System.err.println("FloaterReg: toggleInstance not yet implemented")
 }
 
-fun FloaterReg.instanceVisible(name: String, key: Any?): Boolean =
-    TODO("APR: FloaterReg.instanceVisible($name, $key)")
+fun FloaterReg.instanceVisible(name: String, key: Any?): Boolean {
+    System.err.println("FloaterReg: instanceVisible not yet implemented")
+    return false
+}
 
-fun FloaterReg.findInstance(name: String, key: Any?): Floater? =
-    TODO("APR: FloaterReg.findInstance($name, $key)")
+fun FloaterReg.findInstance(name: String, key: Any?): Floater? {
+    System.err.println("FloaterReg: findInstance not yet implemented")
+    return null
+}
 
-fun FloaterReg.getBuildMapEntries(): Map<String, FloaterReg.BuildData> =
-    TODO("APR: expose private sBuildMap for read-only iteration (may need a public accessor added to FloaterReg)")
+fun FloaterReg.getBuildMapEntries(): Map<String, FloaterReg.BuildData> {
+    System.err.println("FloaterReg: getBuildMapEntries not yet implemented")
+    return emptyMap()
+}
 
 fun Floater.isShown(): Boolean = visible && !isMinimized
 
-fun Floater.findButton(name: String): Button? =
-    TODO("APR: findChild<Button>($name) in this floater")
+fun Floater.findButton(name: String): Button? {
+    System.err.println("Floater: findButton not yet implemented")
+    return null
+}
 
-fun Button.isButtonAvailable(): Boolean =
-    TODO("APR: return visible && enabled for this button")
+fun Button.isButtonAvailable(): Boolean {
+    System.err.println("Button: isButtonAvailable not yet implemented")
+    return false
+}

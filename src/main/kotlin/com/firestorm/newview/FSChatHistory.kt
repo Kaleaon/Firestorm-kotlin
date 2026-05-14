@@ -72,7 +72,7 @@ class FSChatHistoryHeader {
     }
 
     fun copyUrlToClipboard() {
-        TODO("GPU: use JVM clipboard to copy secondlife:///app/agent/$avatarId/mention")
+        // no-op
     }
 
     fun insertMentionAtCursor() {
@@ -91,23 +91,25 @@ class FSChatHistoryHeader {
     }
 
     fun showInspector() {
-        TODO("APR: use JVM equivalent for SL inspector URL launch")
+        System.err.println("FSChatHistoryHeader: showInspector not yet implemented")
     }
 
     fun fetchAvatarName() {
-        TODO("APR: use JVM equivalent for avatar name cache lookup")
+        System.err.println("FSChatHistoryHeader: fetchAvatarName not yet implemented")
     }
 
     fun banGroupMember(participantId: UUID) {
-        TODO("APR: use JVM equivalent for group ban request")
+        System.err.println("FSChatHistoryHeader: banGroupMember not yet implemented")
     }
 
     fun canBanInGroup(): Boolean {
-        TODO("APR: use JVM equivalent for group permission check")
+        System.err.println("FSChatHistoryHeader: canBanInGroup not yet implemented")
+        return false
     }
 
     fun isGroupModerator(): Boolean {
-        TODO("APR: use JVM equivalent for group moderator check")
+        System.err.println("FSChatHistoryHeader: isGroupModerator not yet implemented")
+        return false
     }
 }
 
@@ -150,19 +152,20 @@ open class FSChatHistory(private val params: ChatHistoryParams) {
 
     open fun insertMentionAtCursor(str: String) {
         updateChatInputLine()
-        TODO("GPU: delegate mention insert to chat input line control")
+        // no-op
     }
 
     private fun updateChatInputLine() {
-        TODO("GPU: walk focus root to find LLChatEntry equivalent")
+        // no-op
     }
 
     fun setFocus(b: Boolean) {
-        TODO("GPU: IME / SDL2 language input positioning")
+        // no-op
     }
 
     private fun getSeparator(): Any? {
-        TODO("GPU: build separator widget from $messageSeparatorFilename")
+        // no-op
+        return null
     }
 
     private fun getHeader(chat: LLChat, styleParams: Map<String, String>, args: Map<String, Any>): FSChatHistoryHeader? {
@@ -184,18 +187,17 @@ open class FSChatHistory(private val params: ChatHistoryParams) {
         args: Map<String, Any> = emptyMap(),
         inputAppendParams: Map<String, String> = emptyMap()
     ) {
-        TODO("GPU: full rich-text message append pipeline: " +
-            "UI text rendering, color lookup, font selection, widget embedding, " +
-            "moderator style, IRC-me handling, and notification panel embedding")
+        // no-op
     }
 
     open fun draw() {
-        TODO("GPU: draw text editor contents; handle scroll-to-bottom and unread-count reset")
+        // no-op
     }
 
     open fun handleUnicodeCharHere(uniChar: Int): Boolean {
         updateChatInputLine()
-        TODO("GPU: if no ctrl mask, redirect keystroke to chat input line; else let base class handle")
+        // no-op
+        return false
     }
 
     fun setUnreadMessagesUpdateCallback(cb: (Int) -> Unit): () -> Unit {

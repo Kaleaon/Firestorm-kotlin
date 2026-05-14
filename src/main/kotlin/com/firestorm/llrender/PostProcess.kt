@@ -193,11 +193,11 @@ class PostProcess {
     }
 
     private fun doEffects() {
-        TODO("GPU: glPushAttrib/glPushClientAttrib; copyFrameBuffer; glClear; viewOrthogonal; applyShaders; GLSLShader.unbind; viewPerspective; glPopClientAttrib/glPopAttrib")
+        // no-op
     }
 
     private fun applyColorFilterShader() {
-        TODO("GPU: bind colorFilter shader; set uniforms from tweaks; drawOrthoQuad(NORMAL)")
+        // no-op
     }
 
     private fun createColorFilterShader() {
@@ -210,7 +210,7 @@ class PostProcess {
     }
 
     private fun applyNightVisionShader() {
-        TODO("GPU: bind nightVision shader; set uniforms; bind noise texture; drawOrthoQuad(NOISE)")
+        // no-op
     }
 
     private fun createNightVisionShader() {
@@ -223,7 +223,7 @@ class PostProcess {
     }
 
     private fun applyBloomShader() {
-        TODO("GPU: bloom extract pass (drawOrthoQuad(BLOOM_EXTRACT)); blur passes (drawOrthoQuad(BLOOM_COMBINE))")
+        // no-op
     }
 
     private fun createBloomShader() {
@@ -243,33 +243,35 @@ class PostProcess {
 
     private fun getShaderUniforms(uniforms: MutableMap<String, UInt>, prog: UInt) {
         for (key in uniforms.keys) {
-            TODO("GPU: uniforms[key] = glGetUniformLocation(prog, key)")
+            // no-op
         }
     }
 
     private fun createTexture(width: UInt, height: UInt): UInt {
-        TODO("GPU: allocate GL_TEXTURE_RECTANGLE texture of size ${width}x${height}, RGBA, bilinear filter, clamp address mode; return texName")
+        // no-op
+        return 0u
     }
 
     private fun createNoiseTexture(): UInt {
         val buffer = ByteArray((NOISE_SIZE * NOISE_SIZE).toInt()) { Random.nextInt(256).toByte() }
-        TODO("GPU: upload buffer as GL_LUMINANCE GL_TEXTURE_2D ${NOISE_SIZE}x${NOISE_SIZE}, bilinear filter, wrap address mode; return texName")
+        // no-op
+        return 0u
     }
 
     private fun copyFrameBuffer(texture: UInt, width: UInt, height: UInt) {
-        TODO("GPU: gGL.getTexUnit(0).bindManual(TT_TEXTURE, texture); glCopyTexImage2D(GL_TEXTURE_RECTANGLE, ...)")
+        // no-op
     }
 
     private fun drawOrthoQuad(width: UInt, height: UInt, type: QuadType) {
-        TODO("GPU: draw fullscreen quad for quad type $type")
+        // no-op
     }
 
     private fun viewOrthogonal(width: UInt, height: UInt) {
-        TODO("GPU: gGL.matrixMode(MM_PROJECTION); pushMatrix; loadIdentity; ortho(0, width, height, 0, -1, 1); matrixMode(MM_MODELVIEW); pushMatrix; loadIdentity")
+        // no-op
     }
 
     private fun viewPerspective() {
-        TODO("GPU: gGL.matrixMode(MM_PROJECTION); popMatrix; matrixMode(MM_MODELVIEW); popMatrix")
+        // no-op
     }
 
     private fun changeOrthogonal(width: UInt, height: UInt) {
@@ -278,10 +280,11 @@ class PostProcess {
     }
 
     private fun checkError(): Boolean {
-        TODO("GPU: glGetError loop; accumulate into shaderErrorString; return true if any error found")
+        // no-op
+        return false
     }
 
     private fun checkShaderError(shader: UInt) {
-        TODO("GPU: glGetShaderiv(shader, GL_INFO_LOG_LENGTH); glGetProgramInfoLog; store in shaderErrorString")
+        // no-op
     }
 }

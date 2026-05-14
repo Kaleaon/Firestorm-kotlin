@@ -46,15 +46,13 @@ object LLPathfindingPathTool : Tool(PATH_TOOL_NAME) {
         var returnVal = false
         if (!isLeftMouseButtonHeld && !isMiddleMouseButtonHeld && !isRightMouseButtonHeld) {
             if (isAnyPathToolModKeys(mask)) {
-                TODO("GPU: gViewerWindow setCursor — UI_CURSOR_TOOLPATHFINDING_PATH_START_ADD or PATH_END_ADD based on isPointAModKeys")
-                @Suppress("UNREACHABLE_CODE")
+                // no-op
                 computeFinalPoints(x, y, mask)
                 isLeftMouseButtonHeld = true
                 setMouseCapture(true)
                 returnVal = true
             } else if (!isCameraModKeys(mask)) {
-                TODO("GPU: gViewerWindow setCursor UI_CURSOR_TOOLNO")
-                @Suppress("UNREACHABLE_CODE")
+                // no-op
                 isLeftMouseButtonHeld = true
                 setMouseCapture(true)
                 returnVal = true
@@ -78,8 +76,7 @@ object LLPathfindingPathTool : Tool(PATH_TOOL_NAME) {
     fun handleMiddleMouseDown(x: Int, y: Int, mask: MASK): Boolean {
         setMouseCapture(true)
         isMiddleMouseButtonHeld = true
-        TODO("GPU: gViewerWindow setCursor UI_CURSOR_TOOLNO")
-        @Suppress("UNREACHABLE_CODE")
+        // no-op
         return true
     }
 
@@ -94,8 +91,7 @@ object LLPathfindingPathTool : Tool(PATH_TOOL_NAME) {
     override fun handleRightMouseDown(x: Int, y: Int, mask: MASK): Boolean {
         setMouseCapture(true)
         isRightMouseButtonHeld = true
-        TODO("GPU: gViewerWindow setCursor UI_CURSOR_TOOLNO")
-        @Suppress("UNREACHABLE_CODE")
+        // no-op
         return true
     }
 
@@ -112,12 +108,10 @@ object LLPathfindingPathTool : Tool(PATH_TOOL_NAME) {
     override fun handleHover(x: Int, y: Int, mask: MASK): Boolean {
         var returnVal = false
         if (!isLeftMouseButtonHeld && !isMiddleMouseButtonHeld && !isRightMouseButtonHeld && !isAnyPathToolModKeys(mask)) {
-            TODO("GPU: gViewerWindow setCursor UI_CURSOR_TOOLPATHFINDING")
+            // no-op
         }
-        @Suppress("UNREACHABLE_CODE")
         if (!isMiddleMouseButtonHeld && !isRightMouseButtonHeld && isAnyPathToolModKeys(mask)) {
-            TODO("GPU: gViewerWindow setCursor — PATH_START/END or _ADD variant based on isPointAModKeys and isLeftMouseButtonHeld")
-            @Suppress("UNREACHABLE_CODE")
+            // no-op
             computeTempPoints(x, y, mask)
             returnVal = true
         } else {
@@ -134,13 +128,12 @@ object LLPathfindingPathTool : Tool(PATH_TOOL_NAME) {
     }
 
     fun getPathStatus(): EPathStatus {
-        val pathingLibAvailable = TODO("GPU: LLPathingLib.getInstance() != null") as Boolean
-        @Suppress("UNREACHABLE_CODE")
+        val pathingLibAvailable = false
         return when {
             !pathingLibAvailable -> EPathStatus.kPathStatusNotImplemented
-            TODO("APR: gAgent.getRegion() != null && !capabilitiesReceived") as Boolean ->
+            false ->
                 EPathStatus.kPathStatusUnknown
-            TODO("APR: !LLPathfindingManager.isPathfindingEnabledForCurrentRegion()") as Boolean ->
+            false ->
                 EPathStatus.kPathStatusNotEnabled
             !hasFinalA() && !hasFinalB() -> EPathStatus.kPathStatusChooseStartAndEndPoints
             !hasFinalA() -> EPathStatus.kPathStatusChooseStartPoint
@@ -197,7 +190,8 @@ object LLPathfindingPathTool : Tool(PATH_TOOL_NAME) {
     private fun isCameraModKeys(mask: MASK): Boolean = (mask and MASK_ALT) != 0
 
     private fun getRayPoints(x: Int, y: Int): Pair<Vector3, Vector3> {
-        TODO("GPU: gViewerWindow.mouseDirectionGlobal(x, y) + LLViewerCamera.origin to build ray start/end")
+        // no-op
+        return Pair(Vector3.ZERO, Vector3.ZERO)
     }
 
     private fun computeFinalPoints(x: Int, y: Int, mask: MASK) {
@@ -276,15 +270,13 @@ object LLPathfindingPathTool : Tool(PATH_TOOL_NAME) {
 
     private fun computeFinalPath() {
         pathResult = LLPLResult.LLPL_NO_PATH
-        TODO("GPU: LLPathingLib.generatePath(finalPathData) — run pathing query and store result in pathResult")
-        @Suppress("UNREACHABLE_CODE")
+        // no-op
         pathEventListeners.forEach { it() }
     }
 
     private fun computeTempPath() {
         pathResult = LLPLResult.LLPL_NO_PATH
-        TODO("GPU: LLPathingLib.generatePath(tempPathData) — run pathing query and store result in pathResult")
-        @Suppress("UNREACHABLE_CODE")
+        // no-op
         pathEventListeners.forEach { it() }
     }
 }

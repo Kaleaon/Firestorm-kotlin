@@ -74,7 +74,7 @@ class ToastNotifyPanel(
     }
 
     private fun buildLayout(rect: Rect, showImages: Boolean) {
-        TODO("GPU: load panel_notification layout and populate infoPanel / controlPanel children")
+        // no-op
     }
 
     fun createButton(formElement: Map<String, Any?>, isOption: Boolean): Any {
@@ -89,7 +89,8 @@ class ToastNotifyPanel(
         val callbackData = ButtonCallbackData(buttonName)
         buttonCallbackData.add(callbackData)
 
-        TODO("GPU: create Button '$buttonName' label='$text' height=${if (isSmall) BTN_HEIGHT_SMALL else BTN_HEIGHT} width=$BUTTON_WIDTH default=$isDefault enabled=$enabled")
+        System.err.println("ToastNotifyPanel: createButton not yet implemented")
+        return Any()
     }
 
     private fun addDefaultButton() {
@@ -105,7 +106,7 @@ class ToastNotifyPanel(
         notification.id.let { id ->
             fireButtonClick(id, callbackData.buttonName)
         }
-        TODO("APR: use JVM equivalent — dispatch notification response $response")
+        System.err.println("ToastNotifyPanel: onClickButton dispatch not yet implemented")
     }
 
     private fun buildResponse(buttonName: String): Map<String, Any?> {
@@ -116,21 +117,21 @@ class ToastNotifyPanel(
     fun updateButtonsLayout(buttons: List<Pair<Int, Any>>, hPad: Int) {
         val maxWidth = controlPanel?.rect?.width ?: return
         val bottomOffset = if (isScriptDialog) BTN_HEIGHT + IGNORE_BTN_TOP_DELTA + BOTTOM_PAD else BOTTOM_PAD
-        TODO("GPU: lay out ${buttons.size} buttons with hPad=$hPad bottomOffset=$bottomOffset maxWidth=$maxWidth")
+        // no-op
     }
 
     private fun adjustPanelForScriptNotice(buttonPanelWidth: Int, buttonPanelHeight: Int) {
-        TODO("GPU: reshape panel and control panel to w=$buttonPanelWidth h=$buttonPanelHeight")
+        // no-op
     }
 
     private fun adjustPanelForTipNotice() {
         controlPanel?.visible = false
-        TODO("GPU: reshape panel to info-panel height only")
+        // no-op
     }
 
     override fun draw() {
         if (!visible) return
-        TODO("GPU: draw toast notify panel")
+        // no-op
     }
 
     fun isControlPanelEnabled(): Boolean {
@@ -164,16 +165,16 @@ class IMToastNotifyPanel(
     }
 
     fun compactButtons() {
-        TODO("GPU: compact and auto-resize all buttons in controlPanel from right-to-left order")
+        // no-op
     }
 
     fun updateNotification() {
         deleteAllChildren()
-        TODO("GPU: rebuild layout via init(LLRect(), true) equivalent")
+        // no-op
     }
 
     override fun draw() {
         if (!visible) return
-        TODO("GPU: draw IM toast notify panel and snap to message height")
+        // no-op
     }
 }

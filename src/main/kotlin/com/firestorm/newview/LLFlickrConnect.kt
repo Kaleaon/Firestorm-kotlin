@@ -35,20 +35,20 @@ object LLFlickrConnect {
     fun getConnectionState(): EConnectionState = connectionState
 
     fun connectToFlickr(requestToken: String = "", oauthVerifier: String = "") {
-        TODO("APR: launch coroutine flickrConnectCoro(requestToken, oauthVerifier) on a background thread/coroutine")
+        System.err.println("LLFlickrConnect: connectToFlickr not yet implemented")
     }
 
     fun disconnectFromFlickr() {
-        TODO("APR: launch coroutine flickrDisconnectCoro() on a background thread/coroutine")
+        System.err.println("LLFlickrConnect: disconnectFromFlickr not yet implemented")
     }
 
     fun checkConnectionToFlickr(autoConnect: Boolean = false) {
-        TODO("APR: launch coroutine flickrConnectedCoro(autoConnect) on a background thread/coroutine")
+        System.err.println("LLFlickrConnect: checkConnectionToFlickr not yet implemented")
     }
 
     fun loadFlickrInfo() {
         if (refreshInfo) {
-            TODO("APR: launch coroutine flickrInfoCoro() on a background thread/coroutine")
+            System.err.println("LLFlickrConnect: loadFlickrInfo not yet implemented")
         }
     }
 
@@ -61,12 +61,12 @@ object LLFlickrConnect {
             "safety_level" to safetyLevel
         )
         setConnectionState(EConnectionState.FLICKR_POSTING)
-        TODO("APR: launch coroutine flickrShareCoro(body) on a background thread/coroutine")
+        System.err.println("LLFlickrConnect: uploadPhoto (url) not yet implemented")
     }
 
     fun uploadPhoto(image: Any, title: String, description: String, tags: String, safetyLevel: Int) {
         setConnectionState(EConnectionState.FLICKR_POSTING)
-        TODO("APR: launch coroutine flickrShareImageCoro(image, title, description, tags, safetyLevel) on a background thread/coroutine")
+        System.err.println("LLFlickrConnect: uploadPhoto (image) not yet implemented")
     }
 
     fun storeInfo(newInfo: Map<String, Any?>) {
@@ -113,11 +113,11 @@ object LLFlickrConnect {
     }
 
     fun openFlickrWeb(url: String) {
-        TODO("APR: open the Flickr auth URL in an embedded web floater and set keyboard focus to it")
+        System.err.println("LLFlickrConnect: openFlickrWeb not yet implemented")
     }
 
     private fun getFlickrConnectURL(route: String = "", includeReadFromMaster: Boolean = false): String {
-        TODO("APR: obtain FlickrConnect capability URL from current viewer region; append route and optional ?read_from_master=true")
+        return ""
     }
 
     private fun flickrConnectCoro(requestToken: String, oauthVerifier: String) {
@@ -126,42 +126,42 @@ object LLFlickrConnect {
         if (requestToken.isNotEmpty()) body["request_token"] = requestToken
         if (oauthVerifier.isNotEmpty()) body["oauth_verifier"] = oauthVerifier
 
-        TODO("APR: HTTP PUT to getFlickrConnectURL(\"/connection\") with body; on HTTP_FOUND redirect call openFlickrWeb; on success call setConnectionState(FLICKR_CONNECTED); on other error call setConnectionState(FLICKR_CONNECTION_FAILED)")
+        System.err.println("LLFlickrConnect: flickrConnectCoro not yet implemented")
     }
 
     private fun testShareStatus(result: Map<String, Any?>): Boolean {
-        TODO("APR: extract HTTP status from result; return true on 2xx; on HTTP_FOUND open redirect URL; on HTTP_NOT_FOUND call connectToFlickr(); on other error set FLICKR_POST_FAILED")
+        return false
     }
 
     private fun flickrShareCoro(share: Map<String, Any?>) {
-        TODO("APR: HTTP POST to getFlickrConnectURL(\"/share/photo\", true) with share body; on success toast user and set FLICKR_POSTED")
+        System.err.println("LLFlickrConnect: flickrShareCoro not yet implemented")
     }
 
     private fun flickrShareImageCoro(image: Any, title: String, description: String, tags: String, safetyLevel: Int) {
-        TODO("APR: determine image format (PNG/JPEG); build multipart/form-data body with title, description, tags, safety_level, image bytes; HTTP POST to getFlickrConnectURL(\"/share/photo\", true) with timeout FLICKR_CONNECT_TIMEOUT and retries=0; on success toast user and set FLICKR_POSTED")
+        System.err.println("LLFlickrConnect: flickrShareImageCoro not yet implemented")
     }
 
     private fun flickrDisconnectCoro() {
         setConnectionState(EConnectionState.FLICKR_DISCONNECTING)
-        TODO("APR: HTTP DELETE to getFlickrConnectURL(\"/connection\"); on success call clearInfo() and set FLICKR_NOT_CONNECTED; on failure set FLICKR_DISCONNECT_FAILED (ignore HTTP_NOT_FOUND as success)")
+        System.err.println("LLFlickrConnect: flickrDisconnectCoro not yet implemented")
     }
 
     private fun flickrConnectedCoro(autoConnect: Boolean) {
         setConnectionState(EConnectionState.FLICKR_CONNECTION_IN_PROGRESS)
-        TODO("APR: HTTP GET to getFlickrConnectURL(\"/connection\", true); on HTTP_NOT_FOUND either call connectToFlickr() if autoConnect else set FLICKR_NOT_CONNECTED; on 2xx set FLICKR_CONNECTED; on other error set FLICKR_CONNECTION_FAILED")
+        System.err.println("LLFlickrConnect: flickrConnectedCoro not yet implemented")
     }
 
     private fun flickrInfoCoro() {
-        TODO("APR: HTTP GET to getFlickrConnectURL(\"/info\", true); on HTTP_FOUND open redirect; on 2xx call storeInfo(result); on error log warning")
+        System.err.println("LLFlickrConnect: flickrInfoCoro not yet implemented")
     }
 
     private fun logFlickrConnectError(request: String, status: Int, reason: String, code: String?, description: String?) {
         if (status != 302) {
-            TODO("APR: log warning \"$request request failed with $status $reason. Reason: $code ($description)\"")
+            System.err.println("LLFlickrConnect: logFlickrConnectError not yet implemented")
         }
     }
 
     private fun toastUserForFlickrSuccess() {
-        TODO("APR: LLNotificationsUtil::add(\"FlickrConnect\", args=[\"MESSAGE\": LLTrans.getString(\"flickr_post_success\")])")
+        System.err.println("LLFlickrConnect: toastUserForFlickrSuccess not yet implemented")
     }
 }

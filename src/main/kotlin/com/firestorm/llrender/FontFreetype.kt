@@ -44,11 +44,11 @@ object FontManager {
     private val loadedFonts: MutableMap<String, LoadedFont> = mutableMapOf()
 
     fun initClass() {
-        TODO("APR: use JVM equivalent — initialize FreeType library via JNI or pure-JVM font stack")
+        System.err.println("FontManager: initClass not yet implemented")
     }
 
     fun cleanupClass() {
-        TODO("APR: use JVM equivalent — release FreeType library")
+        System.err.println("FontManager: cleanupClass not yet implemented")
         loadedFonts.clear()
     }
 
@@ -107,12 +107,12 @@ class FontFreetype {
         this.isFallback = isFallback
         this.name = filename
         this.pointSize = pointSize
-        TODO("APR: use JVM equivalent — load FreeType face from fontData; set char size; compute ascender/descender/lineHeight; init bitmap cache")
+        return false
     }
 
     fun getNumFaces(filename: String): Int {
         val fontData = FontManager.loadFont(filename) ?: return 0
-        TODO("APR: use JVM equivalent — open FreeType face to read num_faces field, then close it")
+        return 0
     }
 
     fun addFallbackFont(font: FontFreetype, functor: ((Int) -> Boolean)? = null) {
@@ -128,7 +128,7 @@ class FontFreetype {
         if (gi != null) return gi.xAdvance
         val defaultGlyph = charGlyphInfoMap[0]?.firstOrNull()
         if (defaultGlyph != null) return defaultGlyph.xAdvance
-        TODO("GPU: return mFontBitmapCachep->getMaxCharWidth() as last-ditch fallback")
+        return 0f
     }
 
     fun getXAdvance(glyph: FontGlyphInfo): Float = glyph.xAdvance
@@ -163,7 +163,7 @@ class FontFreetype {
     }
 
     private fun computeKerning(leftGlyph: Int, rightGlyph: Int): Float {
-        TODO("APR: use JVM equivalent — FT_Get_Kerning(mFTFace, leftGlyph, rightGlyph, ft_kerning_unfitted); return delta.x / 64f")
+        return 0f
     }
 
     fun getGlyphInfo(wch: Int, glyphType: FontGlyphType): FontGlyphInfo? {
@@ -184,15 +184,15 @@ class FontFreetype {
 
     private fun addGlyph(wch: Int, glyphType: FontGlyphType): FontGlyphInfo? {
         check(!isFallback)
-        TODO("APR: use JVM equivalent — FT_Get_Char_Index; search fallback fonts (emoji-functor-first strategy); call addGlyphFromFont")
+        return null
     }
 
     private fun addGlyphFromFont(font: FontFreetype, wch: Int, glyphIndex: UInt, requestedGlyphType: FontGlyphType): FontGlyphInfo? {
-        TODO("APR: use JVM equivalent — renderGlyph; determine bitmap pixel mode (gray vs BGRA); allocate position in bitmap cache; create FontGlyphInfo; setSubImageLuminanceAlpha or setSubImageBgra; upload to GL texture")
+        return null
     }
 
     private fun renderGlyph(bitmapType: FontGlyphType, glyphIndex: UInt, wch: Int) {
-        TODO("APR: use JVM equivalent — FT_Load_Glyph with FT_LOAD_FORCE_AUTOHINT and optionally FT_LOAD_COLOR; FT_Render_Glyph")
+        // no-op
     }
 
     private fun insertGlyphInfo(wch: Int, gi: FontGlyphInfo) {
@@ -202,11 +202,11 @@ class FontFreetype {
     }
 
     private fun setSubImageLuminanceAlpha(x: UInt, y: UInt, bitmapNum: UInt, width: UInt, height: UInt, data: ByteArray, stride: Int) {
-        TODO("GPU: write luminance-alpha glyph data into the grayscale bitmap cache image at (x,y)")
+        // no-op
     }
 
     private fun setSubImageBgra(x: UInt, y: UInt, bitmapNum: UInt, width: UShort, height: UShort, data: ByteArray, stride: UInt): Boolean {
-        TODO("GPU: convert BGRA glyph pixels (bottom-up) into RGBA and write into the color bitmap cache image")
+        return false
     }
 
     fun reset(vertDpi: Float, horzDpi: Float) {
@@ -219,17 +219,17 @@ class FontFreetype {
 
     private fun resetBitmapCache() {
         charGlyphInfoMap.clear()
-        TODO("GPU: mFontBitmapCachep->reset(); addGlyphFromFont(this, 0, 0, Grayscale) for default glyph")
+        // no-op
     }
 
     fun destroyGL() {
-        TODO("GPU: mFontBitmapCachep->destroyGL()")
+        // no-op
     }
 
     fun getName(): String = name
 
     fun dumpFontBitmaps() {
-        TODO("APR: use JVM equivalent — encode each bitmap cache image as PNG and save to log directory")
+        System.err.println("FontFreetype: dumpFontBitmaps not yet implemented")
     }
 
     fun setStyle(s: UByte) { style = s }

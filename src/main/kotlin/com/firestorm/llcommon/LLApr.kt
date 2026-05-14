@@ -124,7 +124,7 @@ object LLApr {
     ) : AutoCloseable {
         /** JVM replacement: java.nio.ByteBuffer.allocateDirect(maxSizeBytes) */
         fun getBuffer(): Nothing =
-            TODO("APR Pool: use java.nio.ByteBuffer.allocateDirect(maxSizeBytes) or ByteArray")
+            error("APR Pool: use java.nio.ByteBuffer.allocateDirect(maxSizeBytes) or ByteArray — not yet implemented")
 
         override fun close() {
             // JVM replacement: de-reference the ByteBuffer; GC handles the rest.
@@ -151,15 +151,17 @@ object LLApr {
 
         /** JVM replacement: ByteBuffer.clear() to reuse a buffer. */
         fun getVolatilePool(): Nothing =
-            TODO("APR VolatilePool: use a pooled ByteBuffer and call ByteBuffer.clear() to reset")
+            error("APR VolatilePool: use a pooled ByteBuffer and call ByteBuffer.clear() to reset — not yet implemented")
 
         fun clearVolatilePool() {
             // JVM replacement: call buffer.clear() on the backing ByteBuffer.
-            TODO("APR VolatilePool.clear: call ByteBuffer.clear() on the backing buffer")
+            System.err.println("LLApr.VolatilePool: clearVolatilePool not yet implemented")
         }
 
-        fun isFull(): Boolean =
-            TODO("APR VolatilePool.isFull: track reference count against a configured cap")
+        fun isFull(): Boolean {
+            System.err.println("LLApr.VolatilePool: isFull not yet implemented")
+            return false
+        }
 
         override fun close() { /* GC reclaims the ByteBuffer */ }
     }
@@ -182,7 +184,8 @@ object LLApr {
 
         /** JVM replacement: Files.newInputStream(Path.of(filename)) */
         fun open(filename: String, flags: Int, pool: VolatilePool? = null): Int {
-            TODO("APR File.open: use java.nio.file.Files.newInputStream / newOutputStream")
+            System.err.println("LLApr.APRFile: open not yet implemented")
+            return 0
         }
 
         /**
@@ -194,27 +197,31 @@ object LLApr {
          * Named `closeFile` to avoid conflicting with [AutoCloseable.close].
          */
         fun closeFile(): Int {
-            TODO("APR File.close: use try-with-resources or .use { } in Kotlin")
+            System.err.println("LLApr.APRFile: closeFile not yet implemented")
+            return 0
         }
 
         /** JVM replacement: RandomAccessFile.seek(offset) */
         fun seek(whence: Int, offset: Int): Int {
-            TODO("APR File.seek: use RandomAccessFile.seek(offset)")
+            System.err.println("LLApr.APRFile: seek not yet implemented")
+            return 0
         }
 
         /** JVM replacement: InputStream.read(buf, 0, nbytes) */
         fun read(buf: ByteArray, nbytes: Int): Int {
-            TODO("APR File.read: use InputStream.read(buf, 0, nbytes)")
+            System.err.println("LLApr.APRFile: read not yet implemented")
+            return 0
         }
 
         /** JVM replacement: OutputStream.write(buf, 0, nbytes) */
         fun write(buf: ByteArray, nbytes: Int): Int {
-            TODO("APR File.write: use OutputStream.write(buf, 0, nbytes)")
+            System.err.println("LLApr.APRFile: write not yet implemented")
+            return 0
         }
 
         /** JVM replacement: channel.force(true) / stream.flush() */
         fun flush() {
-            TODO("APR File.flush: use OutputStream.flush() or FileChannel.force(true)")
+            System.err.println("LLApr.APRFile: flush not yet implemented")
         }
 
         /** Release the resource; GC reclaims underlying JVM streams automatically. */
@@ -228,32 +235,38 @@ object LLApr {
 
     /** JVM replacement: java.nio.file.Files.delete(Path.of(filename)) */
     fun remove(filename: String, pool: VolatilePool? = null): Boolean {
-        TODO("APR remove: use java.nio.file.Files.delete(Path.of(filename))")
+        System.err.println("LLApr: remove not yet implemented")
+        return false
     }
 
     /** JVM replacement: java.nio.file.Files.move(source, target) */
     fun rename(filename: String, newname: String, pool: VolatilePool? = null): Boolean {
-        TODO("APR rename: use java.nio.file.Files.move(Path.of(filename), Path.of(newname))")
+        System.err.println("LLApr: rename not yet implemented")
+        return false
     }
 
     /** JVM replacement: java.nio.file.Files.exists(Path.of(filename)) */
     fun isExist(filename: String, pool: VolatilePool? = null, flags: Int = 0): Boolean {
-        TODO("APR isExist: use java.nio.file.Files.exists(Path.of(filename))")
+        System.err.println("LLApr: isExist not yet implemented")
+        return false
     }
 
     /** JVM replacement: java.nio.file.Files.size(Path.of(filename)).toInt() */
     fun size(filename: String, pool: VolatilePool? = null): Int {
-        TODO("APR size: use java.nio.file.Files.size(Path.of(filename)).toInt()")
+        System.err.println("LLApr: size not yet implemented")
+        return 0
     }
 
     /** JVM replacement: java.nio.file.Files.createDirectories(Path.of(dirname)) */
     fun makeDir(dirname: String, pool: VolatilePool? = null): Boolean {
-        TODO("APR makeDir: use java.nio.file.Files.createDirectories(Path.of(dirname))")
+        System.err.println("LLApr: makeDir not yet implemented")
+        return false
     }
 
     /** JVM replacement: walk + Files.delete for each path, then delete the root. */
     fun removeDir(dirname: String, pool: VolatilePool? = null): Boolean {
-        TODO("APR removeDir: use Files.walk(Path.of(dirname)).sorted(Comparator.reverseOrder()).forEach(Files::delete)")
+        System.err.println("LLApr: removeDir not yet implemented")
+        return false
     }
 
     /**
@@ -263,7 +276,8 @@ object LLApr {
      */
     fun readEx(filename: String, buf: ByteArray, offset: Int, nbytes: Int,
                pool: VolatilePool? = null): Int {
-        TODO("APR readEx: use RandomAccessFile(filename, \"r\").use { it.seek(offset.toLong()); it.read(buf, 0, nbytes) }")
+        System.err.println("LLApr: readEx not yet implemented")
+        return 0
     }
 
     /**
@@ -274,6 +288,7 @@ object LLApr {
      */
     fun writeEx(filename: String, buf: ByteArray, offset: Int, nbytes: Int,
                 pool: VolatilePool? = null): Int {
-        TODO("APR writeEx: use RandomAccessFile(filename, \"rw\").use { it.seek(offset.toLong()); it.write(buf, 0, nbytes) }")
+        System.err.println("LLApr: writeEx not yet implemented")
+        return 0
     }
 }

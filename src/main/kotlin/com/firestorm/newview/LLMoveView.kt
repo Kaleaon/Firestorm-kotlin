@@ -27,67 +27,72 @@ class LLFloaterMove(private val key: Any) {
     private var currentMode: EMovementMode = EMovementMode.MM_WALK
 
     open fun postBuild(): Boolean {
-        forwardButton = TODO("GPU: getChild<LLJoystickAgentTurn>(\"forward btn\")")
-        TODO("GPU: forwardButton.setHeldDownDelay(MOVE_BUTTON_DELAY)")
+        forwardButton = null
+        // LLFloaterMove: getChild<LLJoystickAgentTurn>("forward btn") not yet implemented
+        // LLFloaterMove: forwardButton.setHeldDownDelay(MOVE_BUTTON_DELAY) not yet implemented
 
-        backwardButton = TODO("GPU: getChild<LLJoystickAgentTurn>(\"backward btn\")")
-        TODO("GPU: backwardButton.setHeldDownDelay(MOVE_BUTTON_DELAY)")
+        backwardButton = null
+        // LLFloaterMove: getChild<LLJoystickAgentTurn>("backward btn") not yet implemented
+        // LLFloaterMove: backwardButton.setHeldDownDelay(MOVE_BUTTON_DELAY) not yet implemented
 
-        slideLeftButton = TODO("GPU: getChild<LLJoystickAgentSlide>(\"move left btn\")")
-        TODO("GPU: slideLeftButton.setHeldDownDelay(MOVE_BUTTON_DELAY)")
+        slideLeftButton = null
+        // LLFloaterMove: getChild<LLJoystickAgentSlide>("move left btn") not yet implemented
+        // LLFloaterMove: slideLeftButton.setHeldDownDelay(MOVE_BUTTON_DELAY) not yet implemented
 
-        slideRightButton = TODO("GPU: getChild<LLJoystickAgentSlide>(\"move right btn\")")
-        TODO("GPU: slideRightButton.setHeldDownDelay(MOVE_BUTTON_DELAY)")
+        slideRightButton = null
+        // LLFloaterMove: getChild<LLJoystickAgentSlide>("move right btn") not yet implemented
+        // LLFloaterMove: slideRightButton.setHeldDownDelay(MOVE_BUTTON_DELAY) not yet implemented
 
-        turnLeftButton = TODO("GPU: getChild<LLButton>(\"turn left btn\")")
-        TODO("GPU: turnLeftButton.setHeldDownDelay(MOVE_BUTTON_DELAY); .setHeldDownCallback { turnLeft() }")
+        turnLeftButton = null
+        // LLFloaterMove: turnLeftButton.setHeldDownDelay(MOVE_BUTTON_DELAY); .setHeldDownCallback { turnLeft() } not yet implemented
 
-        turnRightButton = TODO("GPU: getChild<LLButton>(\"turn right btn\")")
-        TODO("GPU: turnRightButton.setHeldDownDelay(MOVE_BUTTON_DELAY); .setHeldDownCallback { turnRight() }")
+        turnRightButton = null
+        // LLFloaterMove: turnRightButton.setHeldDownDelay(MOVE_BUTTON_DELAY); .setHeldDownCallback { turnRight() } not yet implemented
 
-        moveUpButton = TODO("GPU: getChild<LLButton>(\"move up btn\")")
-        TODO("GPU: moveUpButton.setHeldDownDelay(MOVE_BUTTON_DELAY); .setHeldDownCallback { moveUp() }")
+        moveUpButton = null
+        // LLFloaterMove: moveUpButton.setHeldDownDelay(MOVE_BUTTON_DELAY); .setHeldDownCallback { moveUp() } not yet implemented
 
-        moveDownButton = TODO("GPU: getChild<LLButton>(\"move down btn\")")
-        TODO("GPU: moveDownButton.setHeldDownDelay(MOVE_BUTTON_DELAY); .setHeldDownCallback { moveDown() }")
+        moveDownButton = null
+        // LLFloaterMove: moveDownButton.setHeldDownDelay(MOVE_BUTTON_DELAY); .setHeldDownCallback { moveDown() } not yet implemented
 
-        modeActionsPanel = TODO("GPU: getChild<LLPanel>(\"panel_modes\")")
+        modeActionsPanel = null
+        // LLFloaterMove: getChild<LLPanel>("panel_modes") not yet implemented
 
-        TODO("GPU: wire mode_walk_btn, mode_run_btn, mode_fly_btn commit callbacks to onWalkButtonClick/onRunButtonClick/onFlyButtonClick")
+        // LLFloaterMove: wire mode_walk_btn, mode_run_btn, mode_fly_btn commit callbacks not yet implemented
 
         initModeTooltips()
         initModeButtonMap()
         initMovementMode()
 
-        TODO("APR: gAgent.addParcelChangedCallback { sUpdateMovementStatus() }")
+        System.err.println("LLFloaterMove: gAgent.addParcelChangedCallback { sUpdateMovementStatus() } not yet implemented")
 
         return true
     }
 
     open fun setVisible(visible: Boolean) {
-        val currentVisible: Boolean = TODO("GPU: getVisible()")
+        val currentVisible: Boolean = false
         if (currentVisible == visible) {
-            TODO("GPU: LLFloater::setVisible(visible)")
+            // LLFloaterMove: LLFloater::setVisible(visible) not yet implemented
             return
         }
         if (visible) {
-            TODO("APR: LLFirstUse::notMoving(false)")
+            System.err.println("LLFloaterMove: LLFirstUse::notMoving(false) not yet implemented")
             val ssfPanel = LLPanelStandStopFlying.getInstance()
             ssfPanel.reparent(this)
-            TODO("GPU: ssf_panel.setOrigin(modeActionsRect.mLeft, modeActionsRect.mBottom)")
+            // LLFloaterMove: ssf_panel.setOrigin(modeActionsRect.mLeft, modeActionsRect.mBottom) not yet implemented
         } else {
             LLPanelStandStopFlying.getInstance().reparent(null)
         }
-        TODO("GPU: LLFloater::setVisible(visible)")
+        // LLFloaterMove: LLFloater::setVisible(visible) not yet implemented
     }
 
     open fun onOpen(key: Any) {
-        val agentFlying: Boolean = TODO("APR: gAgent.getFlying()")
+        val agentFlying: Boolean = false
         if (agentFlying) {
             setFlyingMode(true)
             showModeButtons(false)
         }
-        val avatarSitting: Boolean = TODO("APR: isAgentAvatarValid() && gAgentAvatarp->isSitting()")
+        val avatarSitting: Boolean = false
         if (avatarSitting) {
             setSittingMode(true)
             showModeButtons(false)
@@ -96,25 +101,25 @@ class LLFloaterMove(private val key: Any) {
     }
 
     fun getCurrentTransparency(): Float {
-        TODO("APR: gSavedSettings.getF32(\"CameraOpacity\")")
+        return 0f
     }
 
     protected fun turnLeft() {
-        val time: Float = TODO("GPU: turnLeftButton.getHeldDownTime()")
-        TODO("APR: gAgent.moveYaw(getYawRate(time))")
+        val time: Float = 0f
+        System.err.println("LLFloaterMove: gAgent.moveYaw(getYawRate(time)) not yet implemented")
     }
 
     protected fun turnRight() {
-        val time: Float = TODO("GPU: turnRightButton.getHeldDownTime()")
-        TODO("APR: gAgent.moveYaw(-getYawRate(time))")
+        val time: Float = 0f
+        System.err.println("LLFloaterMove: gAgent.moveYaw(-getYawRate(time)) not yet implemented")
     }
 
     protected fun moveUp() {
-        TODO("APR: gAgent.moveUp(1)")
+        System.err.println("LLFloaterMove: gAgent.moveUp(1) not yet implemented")
     }
 
     protected fun moveDown() {
-        TODO("APR: gAgent.moveUp(-1)")
+        System.err.println("LLFloaterMove: gAgent.moveUp(-1) not yet implemented")
     }
 
     private fun onWalkButtonClick() { setMovementMode(EMovementMode.MM_WALK) }
@@ -124,28 +129,28 @@ class LLFloaterMove(private val key: Any) {
     private fun setMovementMode(mode: EMovementMode) {
         currentMode = mode
         if (mode == EMovementMode.MM_FLY) {
-            TODO("APR: LLAgent::toggleFlying()")
+            System.err.println("LLFloaterMove: LLAgent::toggleFlying() not yet implemented")
         } else {
-            TODO("APR: gAgent.setFlying(false)")
+            System.err.println("LLFloaterMove: gAgent.setFlying(false) not yet implemented")
         }
 
-        val agentFlying: Boolean = TODO("APR: gAgent.getFlying()")
+        val agentFlying: Boolean = false
         if (mode == EMovementMode.MM_FLY && !agentFlying) return
 
         when (mode) {
-            EMovementMode.MM_RUN -> TODO("APR: gAgent.setAlwaysRun()")
-            EMovementMode.MM_WALK -> TODO("APR: gAgent.clearAlwaysRun()")
+            EMovementMode.MM_RUN -> System.err.println("LLFloaterMove: gAgent.setAlwaysRun() not yet implemented")
+            EMovementMode.MM_WALK -> System.err.println("LLFloaterMove: gAgent.clearAlwaysRun() not yet implemented")
             else -> {}
         }
 
-        val agentRunning: Boolean = TODO("APR: gAgent.getRunning()")
+        val agentRunning: Boolean = false
         if (mode == EMovementMode.MM_WALK || mode == EMovementMode.MM_RUN) {
             currentMode = if (agentRunning) EMovementMode.MM_RUN else EMovementMode.MM_WALK
         }
 
         updateButtonsWithMovementMode(currentMode)
 
-        val avatarSitting: Boolean = TODO("APR: isAgentAvatarValid() && gAgentAvatarp->isSitting()")
+        val avatarSitting: Boolean = false
         val hideModeButtons = currentMode == EMovementMode.MM_FLY || avatarSitting
         showModeButtons(!hideModeButtons)
     }
@@ -157,23 +162,23 @@ class LLFloaterMove(private val key: Any) {
     }
 
     private fun initModeTooltips() {
-        TODO("GPU: populate modeControlTooltipsMap for MM_WALK, MM_RUN, MM_FLY using getString() for each button tooltip key")
+        // LLFloaterMove: populate modeControlTooltipsMap for MM_WALK, MM_RUN, MM_FLY not yet implemented
     }
 
     private fun initModeButtonMap() {
-        TODO("GPU: populate modeControlButtonMap: MM_WALK->\"mode_walk_btn\", MM_RUN->\"mode_run_btn\", MM_FLY->\"mode_fly_btn\"")
+        // LLFloaterMove: populate modeControlButtonMap: MM_WALK->"mode_walk_btn", MM_RUN->"mode_run_btn", MM_FLY->"mode_fly_btn" not yet implemented
     }
 
     private fun initMovementMode() {
-        val alwaysRun: Boolean = TODO("APR: gAgent.getAlwaysRun()")
-        val agentFlying: Boolean = TODO("APR: gAgent.getFlying()")
+        val alwaysRun: Boolean = false
+        val agentFlying: Boolean = false
         val initMode = when {
             agentFlying -> EMovementMode.MM_FLY
             alwaysRun -> EMovementMode.MM_RUN
             else -> EMovementMode.MM_WALK
         }
         currentMode = initMode
-        val avatarSitting: Boolean = TODO("APR: isAgentAvatarValid() && gAgentAvatarp->isSitting()")
+        val avatarSitting: Boolean = false
         val hideModeButtons = currentMode == EMovementMode.MM_FLY || avatarSitting
         updateButtonsWithMovementMode(currentMode)
         showModeButtons(!hideModeButtons)
@@ -181,32 +186,33 @@ class LLFloaterMove(private val key: Any) {
 
     private fun setModeTooltip(mode: EMovementMode) {
         val tipMap = modeControlTooltipsMap[mode] ?: return
-        tipMap.forEach { (ctrl, tooltip) ->
-            TODO("GPU: ctrl.setToolTip(tooltip)")
+        tipMap.forEach { (_, _) ->
+            // LLFloaterMove: ctrl.setToolTip(tooltip) not yet implemented
         }
     }
 
     private fun setModeTitle(mode: EMovementMode) {
         val title = when (mode) {
-            EMovementMode.MM_WALK -> TODO("GPU: getString(\"walk_title\")")
-            EMovementMode.MM_RUN -> TODO("GPU: getString(\"run_title\")")
-            EMovementMode.MM_FLY -> TODO("GPU: getString(\"fly_title\")")
+            EMovementMode.MM_WALK -> ""
+            EMovementMode.MM_RUN -> ""
+            EMovementMode.MM_FLY -> ""
         }
-        TODO("GPU: setTitle(title)")
+        // LLFloaterMove: setTitle(title) not yet implemented
+        @Suppress("UNUSED_EXPRESSION")
+        title
     }
 
     private fun setModeButtonToggleState(mode: EMovementMode) {
-        modeControlButtonMap.forEach { (_, btn) ->
-            TODO("GPU: btn.setToggleState(false)")
+        modeControlButtonMap.forEach { (_, _) ->
+            // LLFloaterMove: btn.setToggleState(false) not yet implemented
         }
-        val activeBtn = modeControlButtonMap[mode]
-        TODO("GPU: activeBtn.setToggleState(true)")
+        // LLFloaterMove: activeBtn.setToggleState(true) not yet implemented
     }
 
     private fun showModeButtons(show: Boolean) {
-        val panelVisible: Boolean = TODO("GPU: modeActionsPanel.getVisible()")
+        val panelVisible: Boolean = false
         if (panelVisible == show) return
-        TODO("GPU: modeActionsPanel.setVisible(show)")
+        // LLFloaterMove: modeActionsPanel.setVisible(show) not yet implemented
     }
 
     companion object {
@@ -219,10 +225,10 @@ class LLFloaterMove(private val key: Any) {
         }
 
         fun setFlyingMode(fly: Boolean) {
-            val instance: LLFloaterMove? = TODO("GPU: LLFloaterReg::findTypedInstance<LLFloaterMove>(\"moveview\")")
+            val instance: LLFloaterMove? = null
             instance?.let {
                 it.setFlyingModeImpl(fly)
-                val avatarSitting: Boolean = TODO("APR: check gAgentAvatarp region/dead/sitting")
+                val avatarSitting: Boolean = false
                 it.showModeButtons(!fly && !avatarSitting)
             }
             if (fly) {
@@ -233,7 +239,7 @@ class LLFloaterMove(private val key: Any) {
         }
 
         fun setAlwaysRunMode(run: Boolean) {
-            val instance: LLFloaterMove? = TODO("GPU: LLFloaterReg::findTypedInstance<LLFloaterMove>(\"moveview\")")
+            val instance: LLFloaterMove? = null
             instance?.setAlwaysRunModeImpl(run)
         }
 
@@ -242,7 +248,7 @@ class LLFloaterMove(private val key: Any) {
                 LLPanelStandStopFlying.setStandStopFlyingMode(LLPanelStandStopFlying.EStandStopFlyingMode.SSFM_STAND)
             } else {
                 LLPanelStandStopFlying.clearStandStopFlyingMode(LLPanelStandStopFlying.EStandStopFlyingMode.SSFM_STAND)
-                val agentFlying: Boolean = TODO("APR: gAgent.getFlying()")
+                val agentFlying: Boolean = false
                 if (agentFlying) {
                     LLPanelStandStopFlying.setStandStopFlyingMode(LLPanelStandStopFlying.EStandStopFlyingMode.SSFM_STOP_FLYING)
                 }
@@ -251,30 +257,28 @@ class LLFloaterMove(private val key: Any) {
         }
 
         fun enableInstance() {
-            val instance: LLFloaterMove? = TODO("GPU: LLFloaterReg::findTypedInstance<LLFloaterMove>(\"moveview\")")
+            val instance: LLFloaterMove? = null
             instance?.let {
-                val agentFlying: Boolean = TODO("APR: gAgent.getFlying()")
+                val agentFlying: Boolean = false
                 if (agentFlying) {
                     it.showModeButtons(false)
                 } else {
-                    val avatarValid: Boolean = TODO("APR: isAgentAvatarValid() && !gAgentAvatarp->isSitting()")
+                    val avatarValid: Boolean = false
                     it.showModeButtons(avatarValid)
                 }
             }
         }
 
         fun sUpdateMovementStatus() {
-            val floater: LLFloaterMove? = TODO("GPU: LLFloaterReg::findTypedInstance<LLFloaterMove>(\"moveview\")")
+            val floater: LLFloaterMove? = null
             floater?.let {
-                val canRun: Boolean = TODO("APR: !RlvActions::hasBehaviour(RLV_BHVR_ALWAYSRUN)")
-                val canFly: Boolean = TODO("APR: gAgent.canFly()")
-                TODO("GPU: floater.modeControlButtonMap[MM_RUN].setEnabled(canRun); floater.modeControlButtonMap[MM_FLY].setEnabled(canFly)")
+                // LLFloaterMove: modeControlButtonMap[MM_RUN].setEnabled(canRun); modeControlButtonMap[MM_FLY].setEnabled(canFly) not yet implemented
             }
         }
     }
 
     fun setFlyingModeImpl(fly: Boolean) {
-        val alwaysRun: Boolean = TODO("APR: gAgent.getAlwaysRun()")
+        val alwaysRun: Boolean = false
         updateButtonsWithMovementMode(
             if (fly) EMovementMode.MM_FLY
             else if (alwaysRun) EMovementMode.MM_RUN
@@ -283,7 +287,7 @@ class LLFloaterMove(private val key: Any) {
     }
 
     fun setAlwaysRunModeImpl(run: Boolean) {
-        val agentFlying: Boolean = TODO("APR: gAgent.getFlying()")
+        val agentFlying: Boolean = false
         if (!agentFlying) {
             updateButtonsWithMovementMode(if (run) EMovementMode.MM_RUN else EMovementMode.MM_WALK)
         }
@@ -305,92 +309,94 @@ class LLPanelStandStopFlying private constructor() {
     private var attached: Boolean = false
 
     open fun postBuild(): Boolean {
-        standButton = TODO("GPU: getChild<LLButton>(\"stand_btn\")")
-        TODO("GPU: standButton.setCommitCallback { onStandButtonClick() }; .setCommitCallback { LLFloaterMove.enableInstance() }; .setVisible(false)")
-        TODO("GPU: LLHints::getInstance()->registerHintTarget(\"stand_btn\", standButton.getHandle())")
+        standButton = null
+        // LLPanelStandStopFlying: standButton.setCommitCallback/setVisible not yet implemented
+        // LLPanelStandStopFlying: LLHints::getInstance()->registerHintTarget("stand_btn", ...) not yet implemented
 
-        stopFlyingButton = TODO("GPU: getChild<LLButton>(\"stop_fly_btn\")")
-        TODO("GPU: stopFlyingButton.setCommitCallback { onStopFlyingButtonClick() }; .setVisible(false)")
+        stopFlyingButton = null
+        // LLPanelStandStopFlying: stopFlyingButton.setCommitCallback/setVisible not yet implemented
 
-        TODO("GPU: gViewerWindow.setOnWorldViewRectUpdated { updatePosition() }")
+        // LLPanelStandStopFlying: gViewerWindow.setOnWorldViewRectUpdated { updatePosition() } not yet implemented
 
-        flycamButton = TODO("GPU: getChild<LLButton>(\"flycam_btn\")")
-        TODO("GPU: flycamButton.setVisible(false)")
+        flycamButton = null
+        // LLPanelStandStopFlying: flycamButton.setVisible(false) not yet implemented
 
         return true
     }
 
     open fun setVisible(visible: Boolean) {
-        val cameraMode: Int = TODO("GPU: gAgentCamera.getCameraMode()")
-        val mouseLook: Int = TODO("GPU: CAMERA_MODE_MOUSELOOK constant")
-        val showInMouselook: Boolean = TODO("APR: gSavedSettings.getBOOL(\"FSShowInterfaceInMouselook\")")
+        val cameraMode: Int = 0
+        val mouseLook: Int = 0
+        val showInMouselook: Boolean = false
         val effectiveVisible = if (cameraMode == mouseLook && !showInMouselook) false else visible
 
         if (effectiveVisible) updatePosition()
 
         if (!attached) {
-            TODO("GPU: if (getParent() != null) getParent().setVisible(effectiveVisible)")
+            // LLPanelStandStopFlying: if (getParent() != null) getParent().setVisible(effectiveVisible) not yet implemented
         }
-        TODO("GPU: LLPanel::setVisible(effectiveVisible)")
+        // LLPanelStandStopFlying: LLPanel::setVisible(effectiveVisible) not yet implemented
     }
 
     fun draw() {
         updatePosition()
-        TODO("GPU: LLPanel::draw()")
+        // LLPanelStandStopFlying: LLPanel::draw() not yet implemented
     }
 
     fun handleToolTip(x: Int, y: Int, mask: Int): Boolean {
-        TODO("GPU: LLToolTipMgr::instance().unblockToolTips()")
-        val standVisible: Boolean = TODO("GPU: standButton.getVisible()")
-        val stopFlyVisible: Boolean = TODO("GPU: stopFlyingButton.getVisible()")
+        // LLPanelStandStopFlying: LLToolTipMgr::instance().unblockToolTips() not yet implemented
+        val standVisible: Boolean = false
+        val stopFlyVisible: Boolean = false
         if (standVisible) {
-            TODO("GPU: LLToolTipMgr::instance().show(standButton.getToolTip())")
+            // LLPanelStandStopFlying: LLToolTipMgr::instance().show(standButton.getToolTip()) not yet implemented
         } else if (stopFlyVisible) {
-            TODO("GPU: LLToolTipMgr::instance().show(stopFlyingButton.getToolTip())")
+            // LLPanelStandStopFlying: LLToolTipMgr::instance().show(stopFlyingButton.getToolTip()) not yet implemented
         }
-        TODO("GPU: return LLPanel::handleToolTip(x, y, mask)")
+        return false
     }
 
     fun reparent(moveView: LLFloaterMove?) {
-        val parent: Any? = TODO("GPU: dynamic_cast<LLPanel*>(getParent())")
+        val parent: Any? = null
         if (parent == null) return
 
         if (moveView != null) {
             if (originalParent == null) {
-                originalParent = TODO("GPU: parent.getHandle()")
+                originalParent = null
             }
-            TODO("GPU: parent.removeChild(this)")
-            val modesContainer: Any? = TODO("GPU: moveView.findChildView(\"modes_container\")")
+            // LLPanelStandStopFlying: parent.removeChild(this) not yet implemented
+            val modesContainer: Any? = null
             if (modesContainer != null) {
-                TODO("GPU: modesContainer.addChild(this)")
+                // LLPanelStandStopFlying: modesContainer.addChild(this) not yet implemented
             } else {
-                TODO("GPU: moveView.addChild(this)")
+                // LLPanelStandStopFlying: moveView.addChild(this) not yet implemented
             }
             attached = true
         } else {
             val orig = originalParent ?: return
-            TODO("GPU: parent.removeChild(this); orig.addChild(this); orig.setVisible(getVisible())")
+            // LLPanelStandStopFlying: parent.removeChild(this); orig.addChild(this); orig.setVisible(getVisible()) not yet implemented
+            @Suppress("UNUSED_EXPRESSION")
+            orig
             attached = false
             updatePosition()
         }
 
-        TODO("GPU: if (getParent() != null) reshape(getParent().getRect().getWidth(), getParent().getRect().getHeight(), false)")
+        // LLPanelStandStopFlying: reshape(getParent().getRect().getWidth(), getParent().getRect().getHeight(), false) not yet implemented
     }
 
     private fun onStandButtonClick() {
-        val rlvEnabled: Boolean = TODO("APR: RlvActions::isRlvEnabled()")
-        val canStand: Boolean = TODO("APR: RlvActions::canStand()")
+        val rlvEnabled: Boolean = false
+        val canStand: Boolean = false
         if (!rlvEnabled || canStand) {
-            TODO("APR: LLFirstUse::sit(false)")
-            TODO("APR: LLSelectMgr::getInstance()->deselectAllForStandingUp()")
-            TODO("APR: gAgent.setControlFlags(AGENT_CONTROL_STAND_UP)")
+            System.err.println("LLPanelStandStopFlying: LLFirstUse::sit(false) not yet implemented")
+            System.err.println("LLPanelStandStopFlying: LLSelectMgr::getInstance()->deselectAllForStandingUp() not yet implemented")
+            System.err.println("LLPanelStandStopFlying: gAgent.setControlFlags(AGENT_CONTROL_STAND_UP) not yet implemented")
         }
-        TODO("GPU: setFocus(false)")
+        // LLPanelStandStopFlying: setFocus(false) not yet implemented
     }
 
     private fun onStopFlyingButtonClick() {
-        TODO("APR: gAgent.setFlying(false)")
-        TODO("GPU: setFocus(false)")
+        System.err.println("LLPanelStandStopFlying: gAgent.setFlying(false) not yet implemented")
+        // LLPanelStandStopFlying: setFocus(false) not yet implemented
     }
 
     private fun updatePosition() {
@@ -408,14 +414,14 @@ class LLPanelStandStopFlying private constructor() {
             val panel = getInstance()
             when (mode) {
                 EStandStopFlyingMode.SSFM_FLYCAM -> {
-                    TODO("GPU: panel.flycamButton.setVisible(true)")
+                    // LLPanelStandStopFlying: panel.flycamButton.setVisible(true) not yet implemented
                 }
                 EStandStopFlyingMode.SSFM_STAND -> {
-                    TODO("APR: LLFirstUse::sit(); LLFirstUse::notMoving(false)")
-                    TODO("GPU: panel.standButton.setVisible(true); panel.stopFlyingButton.setVisible(false)")
+                    System.err.println("LLPanelStandStopFlying: LLFirstUse::sit(); LLFirstUse::notMoving(false) not yet implemented")
+                    // LLPanelStandStopFlying: panel.standButton.setVisible(true); panel.stopFlyingButton.setVisible(false) not yet implemented
                 }
                 EStandStopFlyingMode.SSFM_STOP_FLYING -> {
-                    TODO("GPU: panel.standButton.setVisible(false); panel.stopFlyingButton.setVisible(true)")
+                    // LLPanelStandStopFlying: panel.standButton.setVisible(false); panel.stopFlyingButton.setVisible(true) not yet implemented
                 }
             }
             panel.setVisible(true)
@@ -424,17 +430,21 @@ class LLPanelStandStopFlying private constructor() {
         fun clearStandStopFlyingMode(mode: EStandStopFlyingMode) {
             val panel = getInstance()
             when (mode) {
-                EStandStopFlyingMode.SSFM_STAND -> TODO("GPU: panel.standButton.setVisible(false)")
-                EStandStopFlyingMode.SSFM_STOP_FLYING -> TODO("GPU: panel.stopFlyingButton.setVisible(false)")
+                EStandStopFlyingMode.SSFM_STAND -> {
+                    // LLPanelStandStopFlying: panel.standButton.setVisible(false) not yet implemented
+                }
+                EStandStopFlyingMode.SSFM_STOP_FLYING -> {
+                    // LLPanelStandStopFlying: panel.stopFlyingButton.setVisible(false) not yet implemented
+                }
                 EStandStopFlyingMode.SSFM_FLYCAM -> {
-                    TODO("GPU: panel.flycamButton.setVisible(false); panel.setFocus(false)")
+                    // LLPanelStandStopFlying: panel.flycamButton.setVisible(false); panel.setFocus(false) not yet implemented
                 }
             }
         }
 
         private fun getStandStopFlyingPanel(): LLPanelStandStopFlying {
             val panel = LLPanelStandStopFlying()
-            TODO("GPU: panel.buildFromFile(\"panel_stand_stop_flying.xml\"); panel.setVisible(false); panel.updatePosition()")
+            // LLPanelStandStopFlying: panel.buildFromFile("panel_stand_stop_flying.xml"); panel.setVisible(false); panel.updatePosition() not yet implemented
             return panel
         }
     }

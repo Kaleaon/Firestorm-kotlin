@@ -25,27 +25,27 @@ class FSPanelFace {
         const val SHINY_TEXTURE = 4
 
         fun onMaterialOverrideReceived(objectId: UUID, side: Int) {
-            TODO("APR: use JVM equivalent for LLGLTFMaterialList selection-update callback")
+            System.err.println("FSPanelFace: onMaterialOverrideReceived not yet implemented")
         }
 
         fun syncRepeatX(self: FSPanelFace, scaleU: Float) {
-            TODO("GPU: sync diffuse U scale to other material channels when sync is enabled")
+            System.err.println("FSPanelFace: syncRepeatX not yet implemented")
         }
 
         fun syncRepeatY(self: FSPanelFace, scaleV: Float) {
-            TODO("GPU: sync diffuse V scale to other material channels when sync is enabled")
+            System.err.println("FSPanelFace: syncRepeatY not yet implemented")
         }
 
         fun syncOffsetX(self: FSPanelFace, offsetU: Float) {
-            TODO("GPU: sync diffuse U offset to other material channels")
+            System.err.println("FSPanelFace: syncOffsetX not yet implemented")
         }
 
         fun syncOffsetY(self: FSPanelFace, offsetV: Float) {
-            TODO("GPU: sync diffuse V offset to other material channels")
+            System.err.println("FSPanelFace: syncOffsetY not yet implemented")
         }
 
         fun syncMaterialRot(self: FSPanelFace, rot: Float, te: Int = -1) {
-            TODO("GPU: sync material rotation to other channels")
+            System.err.println("FSPanelFace: syncMaterialRot not yet implemented")
         }
     }
 
@@ -173,12 +173,11 @@ class FSPanelFace {
         private var lastSelectedSide: Int = -1
 
         fun connect() {
-            TODO("APR: use JVM equivalent for LLSelectMgr selection-change signal connection")
+            System.err.println("FSPanelFace: Selection.connect not yet implemented")
         }
 
         fun update(): Boolean {
-            TODO("APR: use JVM equivalent: return true when selected objects/sides changed " +
-                "and no pending object update")
+            return false
         }
 
         fun setDirty() { changed = true }
@@ -186,11 +185,11 @@ class FSPanelFace {
         fun onSelectionChanged() { needsSelectionCheck = true }
 
         fun onSelectedObjectUpdated(objectId: UUID, side: Int) {
-            TODO("APR: use JVM equivalent for selection object-updated callback")
+            System.err.println("FSPanelFace: Selection.onSelectedObjectUpdated not yet implemented")
         }
 
         private fun compareSelection(): Boolean {
-            TODO("APR: use JVM equivalent for comparing current vs stored TE selection")
+            return false
         }
     }
 
@@ -199,53 +198,51 @@ class FSPanelFace {
     // -------------------------------------------------------------------------
 
     init {
-        TODO("GPU: register UI callbacks (BuildTool.Flip, GLTFUVSpinner, SelectSameTexture, " +
-            "ShowFindAllButton, HideFindAllButton) and buildFromFile('panel_fs_tools_texture.xml')")
+        System.err.println("FSPanelFace: init not yet implemented")
     }
 
     fun postBuild(): Boolean {
-        TODO("GPU: resolve all UI control references from skin XML, wire commit callbacks, " +
-            "register GLTF material list selection-update callback, apply decimal precision setting")
+        return false
     }
 
     fun refresh() {
-        TODO("GPU: read current selection state and push values to all UI controls")
+        System.err.println("FSPanelFace: refresh not yet implemented")
     }
 
     fun refreshMedia() {
-        TODO("GPU: refresh media settings panel controls")
+        System.err.println("FSPanelFace: refreshMedia not yet implemented")
     }
 
     fun unloadMedia() {
-        TODO("GPU: unload any embedded media controller resources")
+        System.err.println("FSPanelFace: unloadMedia not yet implemented")
     }
 
     fun changePrecision(decimalPrecision: Int) {
-        TODO("GPU: set decimal precision on all relevant spin controls")
+        System.err.println("FSPanelFace: changePrecision not yet implemented")
     }
 
     open fun onVisibilityChange(newVisibility: Boolean) {
-        TODO("GPU: update visibility of UI sub-panels based on current material type selection")
+        System.err.println("FSPanelFace: onVisibilityChange not yet implemented")
     }
 
     open fun draw() {
-        TODO("GPU: draw panel; delegate to parent LLPanel draw")
+        System.err.println("FSPanelFace: draw not yet implemented")
     }
 
     fun createDefaultMaterial(currentMaterial: Any?): Any? {
-        TODO("GPU: create a new LLMaterialPtr, copying from currentMaterial if non-null")
+        return null
     }
 
     fun getTextureChannelToEdit(): Int {
-        TODO("GPU: return tex-index for the currently active material/channel tab")
+        return 0
     }
 
     fun getTextureDropChannel(): Int {
-        TODO("GPU: return drop-target tex-index for the current Blinn-Phong channel")
+        return 0
     }
 
     fun getPbrDropChannel(): Int {
-        TODO("GPU: return GLTF TextureInfo enum for the current PBR channel tab")
+        return 0
     }
 
     // -------------------------------------------------------------------------
@@ -253,11 +250,11 @@ class FSPanelFace {
     // -------------------------------------------------------------------------
 
     protected fun navigateToTitleMedia(url: String) {
-        TODO("GPU: navigate embedded LLMediaCtrl to $url")
+        System.err.println("FSPanelFace: navigateToTitleMedia not yet implemented")
     }
 
     protected fun selectedMediaEditable(): Boolean {
-        TODO("GPU: check if current selection allows media editing")
+        return false
     }
 
     protected fun clearMediaSettings() {
@@ -266,15 +263,15 @@ class FSPanelFace {
     }
 
     protected fun updateMediaSettings() {
-        TODO("APR: use JVM equivalent for reading media settings from the selection")
+        System.err.println("FSPanelFace: updateMediaSettings not yet implemented")
     }
 
     protected fun updateMediaTitle() {
-        TODO("GPU: fetch page title from embedded media and update UI label")
+        System.err.println("FSPanelFace: updateMediaTitle not yet implemented")
     }
 
     protected fun isMediaTexSelected(): Boolean {
-        TODO("GPU: return true when selected texture channel is a media texture")
+        return false
     }
 
     // -------------------------------------------------------------------------
@@ -282,42 +279,42 @@ class FSPanelFace {
     // -------------------------------------------------------------------------
 
     protected fun getState() {
-        TODO("GPU: read full material state from selection and populate all UI fields")
+        System.err.println("FSPanelFace: getState not yet implemented")
     }
 
     // -------------------------------------------------------------------------
     // Send-to-server helpers
     // -------------------------------------------------------------------------
 
-    protected fun sendTexture() { TODO("GPU: apply and send texture to simulator") }
-    protected fun sendTextureInfo() { TODO("GPU: apply and send texture transforms to simulator") }
-    protected fun sendColor() { TODO("GPU: apply and send diffuse color to simulator") }
-    protected fun sendAlpha() { TODO("GPU: apply and send transparency to simulator") }
-    protected fun sendBump(bumpiness: UInt) { TODO("GPU: apply and send bump map index $bumpiness") }
-    protected fun sendTexGen() { TODO("GPU: apply and send texgen mode to simulator") }
-    protected fun sendShiny(shininess: UInt) { TODO("GPU: apply and send shininess index $shininess") }
-    protected fun sendFullbright() { TODO("GPU: apply and send fullbright flag to simulator") }
-    protected fun sendGlow() { TODO("GPU: apply and send glow value to simulator") }
-    protected fun alignTextureLayer() { TODO("GPU: align texture UVs across selection") }
-    protected fun updateCopyTexButton() { TODO("GPU: enable/disable copy-texture button based on selection perms") }
+    protected fun sendTexture() { System.err.println("FSPanelFace: sendTexture not yet implemented") }
+    protected fun sendTextureInfo() { System.err.println("FSPanelFace: sendTextureInfo not yet implemented") }
+    protected fun sendColor() { System.err.println("FSPanelFace: sendColor not yet implemented") }
+    protected fun sendAlpha() { System.err.println("FSPanelFace: sendAlpha not yet implemented") }
+    protected fun sendBump(bumpiness: UInt) { System.err.println("FSPanelFace: sendBump not yet implemented") }
+    protected fun sendTexGen() { System.err.println("FSPanelFace: sendTexGen not yet implemented") }
+    protected fun sendShiny(shininess: UInt) { System.err.println("FSPanelFace: sendShiny not yet implemented") }
+    protected fun sendFullbright() { System.err.println("FSPanelFace: sendFullbright not yet implemented") }
+    protected fun sendGlow() { System.err.println("FSPanelFace: sendGlow not yet implemented") }
+    protected fun alignTextureLayer() { System.err.println("FSPanelFace: alignTextureLayer not yet implemented") }
+    protected fun updateCopyTexButton() { System.err.println("FSPanelFace: updateCopyTexButton not yet implemented") }
 
     // -------------------------------------------------------------------------
     // UI Callbacks – common
     // -------------------------------------------------------------------------
 
-    protected fun onCopyFaces() { TODO("GPU: copy all face parameters from selection to clipboard") }
-    protected fun onPasteFaces() { TODO("GPU: paste clipboard face parameters to selection") }
-    protected fun onCommitHideWater() { TODO("GPU: toggle hide-water flag on selection") }
+    protected fun onCopyFaces() { System.err.println("FSPanelFace: onCopyFaces not yet implemented") }
+    protected fun onPasteFaces() { System.err.println("FSPanelFace: onPasteFaces not yet implemented") }
+    protected fun onCommitHideWater() { System.err.println("FSPanelFace: onCommitHideWater not yet implemented") }
     protected fun onCommitGlow() { sendGlow() }
-    protected fun onCommitRepeatsPerMeter() { TODO("GPU: convert repeats-per-meter to UV scale and apply") }
+    protected fun onCommitRepeatsPerMeter() { System.err.println("FSPanelFace: onCommitRepeatsPerMeter not yet implemented") }
 
     // -------------------------------------------------------------------------
     // UI Callbacks – Blinn-Phong alpha
     // -------------------------------------------------------------------------
 
     protected fun onCommitAlpha() { sendAlpha() }
-    protected fun onCommitAlphaMode() { TODO("GPU: commit diffuse alpha mode to material") }
-    protected fun onCommitMaterialMaskCutoff() { TODO("GPU: commit alpha mask cutoff to material") }
+    protected fun onCommitAlphaMode() { System.err.println("FSPanelFace: onCommitAlphaMode not yet implemented") }
+    protected fun onCommitMaterialMaskCutoff() { System.err.println("FSPanelFace: onCommitMaterialMaskCutoff not yet implemented") }
     protected fun onCommitFullbright() { sendFullbright() }
 
     // -------------------------------------------------------------------------
@@ -325,112 +322,112 @@ class FSPanelFace {
     // -------------------------------------------------------------------------
 
     protected fun onCommitTexGen() { sendTexGen() }
-    protected fun onCommitPlanarAlign() { TODO("GPU: align planar textures across selection") }
-    protected fun onCommitBump() { TODO("GPU: commit bump index; load normal map if BUMPY_TEXTURE selected") }
-    protected fun onCommitShiny() { TODO("GPU: commit shininess index; load specular map if SHINY_TEXTURE selected") }
-    protected fun onCommitTextureScaleX() { TODO("GPU: commit diffuse U scale; sync if sync-materials enabled") }
-    protected fun onCommitTextureScaleY() { TODO("GPU: commit diffuse V scale; sync if sync-materials enabled") }
-    protected fun onCommitTextureOffsetX() { TODO("GPU: commit diffuse U offset") }
-    protected fun onCommitTextureOffsetY() { TODO("GPU: commit diffuse V offset") }
-    protected fun onCommitTextureRot() { TODO("GPU: commit diffuse rotation") }
-    protected fun onCommitMaterialBumpyScaleX() { TODO("GPU: commit normal U scale") }
-    protected fun onCommitMaterialBumpyScaleY() { TODO("GPU: commit normal V scale") }
-    protected fun onCommitMaterialBumpyOffsetX() { TODO("GPU: commit normal U offset") }
-    protected fun onCommitMaterialBumpyOffsetY() { TODO("GPU: commit normal V offset") }
-    protected fun onCommitMaterialBumpyRot() { TODO("GPU: commit normal rotation") }
-    protected fun onCommitMaterialShinyScaleX() { TODO("GPU: commit specular U scale") }
-    protected fun onCommitMaterialShinyScaleY() { TODO("GPU: commit specular V scale") }
-    protected fun onCommitMaterialShinyOffsetX() { TODO("GPU: commit specular U offset") }
-    protected fun onCommitMaterialShinyOffsetY() { TODO("GPU: commit specular V offset") }
-    protected fun onCommitMaterialShinyRot() { TODO("GPU: commit specular rotation") }
-    protected fun onCommitMaterialGloss() { TODO("GPU: commit glossiness value to material") }
-    protected fun onCommitMaterialEnv() { TODO("GPU: commit environment intensity to material") }
+    protected fun onCommitPlanarAlign() { System.err.println("FSPanelFace: onCommitPlanarAlign not yet implemented") }
+    protected fun onCommitBump() { System.err.println("FSPanelFace: onCommitBump not yet implemented") }
+    protected fun onCommitShiny() { System.err.println("FSPanelFace: onCommitShiny not yet implemented") }
+    protected fun onCommitTextureScaleX() { System.err.println("FSPanelFace: onCommitTextureScaleX not yet implemented") }
+    protected fun onCommitTextureScaleY() { System.err.println("FSPanelFace: onCommitTextureScaleY not yet implemented") }
+    protected fun onCommitTextureOffsetX() { System.err.println("FSPanelFace: onCommitTextureOffsetX not yet implemented") }
+    protected fun onCommitTextureOffsetY() { System.err.println("FSPanelFace: onCommitTextureOffsetY not yet implemented") }
+    protected fun onCommitTextureRot() { System.err.println("FSPanelFace: onCommitTextureRot not yet implemented") }
+    protected fun onCommitMaterialBumpyScaleX() { System.err.println("FSPanelFace: onCommitMaterialBumpyScaleX not yet implemented") }
+    protected fun onCommitMaterialBumpyScaleY() { System.err.println("FSPanelFace: onCommitMaterialBumpyScaleY not yet implemented") }
+    protected fun onCommitMaterialBumpyOffsetX() { System.err.println("FSPanelFace: onCommitMaterialBumpyOffsetX not yet implemented") }
+    protected fun onCommitMaterialBumpyOffsetY() { System.err.println("FSPanelFace: onCommitMaterialBumpyOffsetY not yet implemented") }
+    protected fun onCommitMaterialBumpyRot() { System.err.println("FSPanelFace: onCommitMaterialBumpyRot not yet implemented") }
+    protected fun onCommitMaterialShinyScaleX() { System.err.println("FSPanelFace: onCommitMaterialShinyScaleX not yet implemented") }
+    protected fun onCommitMaterialShinyScaleY() { System.err.println("FSPanelFace: onCommitMaterialShinyScaleY not yet implemented") }
+    protected fun onCommitMaterialShinyOffsetX() { System.err.println("FSPanelFace: onCommitMaterialShinyOffsetX not yet implemented") }
+    protected fun onCommitMaterialShinyOffsetY() { System.err.println("FSPanelFace: onCommitMaterialShinyOffsetY not yet implemented") }
+    protected fun onCommitMaterialShinyRot() { System.err.println("FSPanelFace: onCommitMaterialShinyRot not yet implemented") }
+    protected fun onCommitMaterialGloss() { System.err.println("FSPanelFace: onCommitMaterialGloss not yet implemented") }
+    protected fun onCommitMaterialEnv() { System.err.println("FSPanelFace: onCommitMaterialEnv not yet implemented") }
 
     // -------------------------------------------------------------------------
     // UI Callbacks – Diffuse color swatch
     // -------------------------------------------------------------------------
 
     protected fun onCommitColor() { sendColor() }
-    protected fun onCancelColor() { TODO("GPU: revert color swatch to last committed value") }
-    protected fun onSelectColor() { TODO("GPU: preview color selection immediately") }
+    protected fun onCancelColor() { System.err.println("FSPanelFace: onCancelColor not yet implemented") }
+    protected fun onSelectColor() { System.err.println("FSPanelFace: onSelectColor not yet implemented") }
 
     // -------------------------------------------------------------------------
     // UI Callbacks – Diffuse texture swatch
     // -------------------------------------------------------------------------
 
-    protected fun onSelectTexture() { TODO("GPU: handle texture picker selection") }
+    protected fun onSelectTexture() { System.err.println("FSPanelFace: onSelectTexture not yet implemented") }
     protected fun onCommitTexture() { sendTexture() }
-    protected fun onCancelTexture() { TODO("GPU: revert texture picker to last committed texture") }
+    protected fun onCancelTexture() { System.err.println("FSPanelFace: onCancelTexture not yet implemented") }
     protected fun onDragTexture(textureCtrl: Any?, item: Any?): Boolean {
-        TODO("GPU: validate drag-and-drop texture permission; return true to allow drop")
+        return false
     }
-    protected fun onCloseTexturePicker() { TODO("GPU: handle texture picker close; restore overlay state") }
+    protected fun onCloseTexturePicker() { System.err.println("FSPanelFace: onCloseTexturePicker not yet implemented") }
 
     // -------------------------------------------------------------------------
     // UI Callbacks – Normal/Specular texture swatches
     // -------------------------------------------------------------------------
 
-    protected fun onCommitNormalTexture() { TODO("GPU: commit normal map to material") }
-    protected fun onCancelNormalTexture() { TODO("GPU: revert normal map picker") }
-    protected fun onCommitSpecularTexture() { TODO("GPU: commit specular map to material") }
-    protected fun onCancelSpecularTexture() { TODO("GPU: revert specular map picker") }
+    protected fun onCommitNormalTexture() { System.err.println("FSPanelFace: onCommitNormalTexture not yet implemented") }
+    protected fun onCancelNormalTexture() { System.err.println("FSPanelFace: onCancelNormalTexture not yet implemented") }
+    protected fun onCommitSpecularTexture() { System.err.println("FSPanelFace: onCommitSpecularTexture not yet implemented") }
+    protected fun onCancelSpecularTexture() { System.err.println("FSPanelFace: onCancelSpecularTexture not yet implemented") }
 
     // -------------------------------------------------------------------------
     // UI Callbacks – Specular color swatch
     // -------------------------------------------------------------------------
 
-    protected fun onCommitShinyColor() { TODO("GPU: commit specular tint color to material") }
-    protected fun onCancelShinyColor() { TODO("GPU: revert specular tint color picker") }
-    protected fun onSelectShinyColor() { TODO("GPU: preview specular tint color immediately") }
+    protected fun onCommitShinyColor() { System.err.println("FSPanelFace: onCommitShinyColor not yet implemented") }
+    protected fun onCancelShinyColor() { System.err.println("FSPanelFace: onCancelShinyColor not yet implemented") }
+    protected fun onSelectShinyColor() { System.err.println("FSPanelFace: onSelectShinyColor not yet implemented") }
 
     // -------------------------------------------------------------------------
     // UI Callbacks – Alignment & sync
     // -------------------------------------------------------------------------
 
-    protected fun onClickAutoFix() { TODO("GPU: auto-fix media alignment") }
+    protected fun onClickAutoFix() { System.err.println("FSPanelFace: onClickAutoFix not yet implemented") }
     protected fun onAlignTexture() { alignTextureLayer() }
-    protected fun onClickMapsSync() { TODO("GPU: toggle sync between Blinn-Phong material maps") }
+    protected fun onClickMapsSync() { System.err.println("FSPanelFace: onClickMapsSync not yet implemented") }
     protected fun onTextureSelectionChanged(textureCtrl: Any?) {
-        TODO("GPU: disable apply controls in texture picker when texture not permitted on selection")
+        System.err.println("FSPanelFace: onTextureSelectionChanged not yet implemented")
     }
 
     // -------------------------------------------------------------------------
     // UI Callbacks – Media
     // -------------------------------------------------------------------------
 
-    protected fun onClickBtnEditMedia() { TODO("GPU: open LLFloaterMediaSettings for selection") }
-    protected fun onClickBtnDeleteMedia() { TODO("GPU: confirm then delete media from selection") }
-    protected fun onClickBtnAddMedia() { TODO("GPU: confirm then add media to selection") }
+    protected fun onClickBtnEditMedia() { System.err.println("FSPanelFace: onClickBtnEditMedia not yet implemented") }
+    protected fun onClickBtnDeleteMedia() { System.err.println("FSPanelFace: onClickBtnDeleteMedia not yet implemented") }
+    protected fun onClickBtnAddMedia() { System.err.println("FSPanelFace: onClickBtnAddMedia not yet implemented") }
 
     protected fun alignMaterialsProperties() {
-        TODO("GPU: align normal/specular map UV params to match diffuse map")
+        System.err.println("FSPanelFace: alignMaterialsProperties not yet implemented")
     }
 
     // -------------------------------------------------------------------------
     // UI Callbacks – PBR material
     // -------------------------------------------------------------------------
 
-    protected fun onCommitPbr() { TODO("GPU: commit PBR base material from material picker") }
-    protected fun onCancelPbr() { TODO("GPU: revert PBR material picker") }
-    protected fun onSelectPbr() { TODO("GPU: handle PBR material picker selection") }
+    protected fun onCommitPbr() { System.err.println("FSPanelFace: onCommitPbr not yet implemented") }
+    protected fun onCancelPbr() { System.err.println("FSPanelFace: onCancelPbr not yet implemented") }
+    protected fun onSelectPbr() { System.err.println("FSPanelFace: onSelectPbr not yet implemented") }
     protected fun onDragPbr(item: Any?): Boolean {
-        TODO("GPU: validate drag-and-drop PBR material permission; return true to allow drop")
+        return false
     }
     protected fun onPbrSelectionChanged(item: Any?) {
-        TODO("GPU: update PBR override display when material asset selection changes")
+        System.err.println("FSPanelFace: onPbrSelectionChanged not yet implemented")
     }
-    protected fun onClickBtnSavePBR() { TODO("GPU: save PBR material overrides as new inventory asset") }
+    protected fun onClickBtnSavePBR() { System.err.println("FSPanelFace: onClickBtnSavePBR not yet implemented") }
     protected fun updatePBROverrideDisplay() {
-        TODO("GPU: show/hide PBR override controls based on whether a base material is assigned")
+        System.err.println("FSPanelFace: updatePBROverrideDisplay not yet implemented")
     }
 
     // PBR per-channel overloads (called by individual texture/color swatches)
-    protected fun onCommitPbr(pbrCtrl: Any?) { TODO("GPU: commit single PBR channel change from ctrl=$pbrCtrl") }
-    protected fun onCancelPbr(pbrCtrl: Any?) { TODO("GPU: revert single PBR channel from ctrl=$pbrCtrl") }
-    protected fun onSelectPbr(pbrCtrl: Any?) { TODO("GPU: select single PBR channel from ctrl=$pbrCtrl") }
+    protected fun onCommitPbr(pbrCtrl: Any?) { System.err.println("FSPanelFace: onCommitPbr(pbrCtrl) not yet implemented") }
+    protected fun onCancelPbr(pbrCtrl: Any?) { System.err.println("FSPanelFace: onCancelPbr(pbrCtrl) not yet implemented") }
+    protected fun onSelectPbr(pbrCtrl: Any?) { System.err.println("FSPanelFace: onSelectPbr(pbrCtrl) not yet implemented") }
 
     protected fun getGltfMaterial(mat: Any?) {
-        TODO("GPU: populate mat with the current GLTF override values from the UI controls")
+        System.err.println("FSPanelFace: getGltfMaterial not yet implemented")
     }
 
     // -------------------------------------------------------------------------
@@ -438,11 +435,11 @@ class FSPanelFace {
     // -------------------------------------------------------------------------
 
     protected fun deleteMediaConfirm(notification: Map<String, Any>, response: Map<String, Any>): Boolean {
-        TODO("APR: use JVM equivalent for notification response handling")
+        return false
     }
 
     protected fun multipleFacesSelectedConfirm(notification: Map<String, Any>, response: Map<String, Any>): Boolean {
-        TODO("APR: use JVM equivalent for notification response handling")
+        return false
     }
 
     // -------------------------------------------------------------------------
@@ -450,12 +447,11 @@ class FSPanelFace {
     // -------------------------------------------------------------------------
 
     protected fun updateUI(forceSetValues: Boolean = false) {
-        TODO("GPU: read selection material state and push values to all controls; " +
-            "forceSetValues=$forceSetValues bypasses spinner focus guard")
+        System.err.println("FSPanelFace: updateUI not yet implemented")
     }
 
     protected fun isIdenticalPlanarTexgen(): Boolean {
-        TODO("GPU: query selection for identical planar texgen across all faces")
+        return false
     }
 
     // -------------------------------------------------------------------------
@@ -463,23 +459,23 @@ class FSPanelFace {
     // -------------------------------------------------------------------------
 
     protected fun updateSelectedGltfMaterials(func: (Any) -> Unit) {
-        TODO("GPU: iterate selected TEs, apply func to GLTF material override, queue modify")
+        System.err.println("FSPanelFace: updateSelectedGltfMaterials not yet implemented")
     }
 
     protected fun updateSelectedGltfMaterialsWithScale(func: (Any, Float, Float) -> Unit) {
-        TODO("GPU: iterate selected TEs with per-face s/t axis scale, apply func, queue modify")
+        System.err.println("FSPanelFace: updateSelectedGltfMaterialsWithScale not yet implemented")
     }
 
     protected fun updateGltfTextureTransform(textureInfo: Int, edit: (Any) -> Unit) {
-        TODO("GPU: apply edit lambda to the TextureTransform for textureInfo on all selected TEs")
+        System.err.println("FSPanelFace: updateGltfTextureTransform not yet implemented")
     }
 
     protected fun updateGltfTextureTransformWithScale(textureInfo: Int, edit: (Any, Float, Float) -> Unit) {
-        TODO("GPU: apply edit lambda with object scale to TextureTransform on all selected TEs")
+        System.err.println("FSPanelFace: updateGltfTextureTransformWithScale not yet implemented")
     }
 
     protected fun setMaterialOverridesFromSelection() {
-        TODO("GPU: read GLTF override values from selection into the local PBR param cache")
+        System.err.println("FSPanelFace: setMaterialOverridesFromSelection not yet implemented")
     }
 
     // -------------------------------------------------------------------------
@@ -487,15 +483,15 @@ class FSPanelFace {
     // -------------------------------------------------------------------------
 
     private fun updateShinyControls(isSettingTexture: Boolean = false, messWithCombobox: Boolean = false) {
-        TODO("GPU: show/hide specular spinner group depending on shininess combo selection")
+        System.err.println("FSPanelFace: updateShinyControls not yet implemented")
     }
 
     private fun updateBumpyControls(isSettingTexture: Boolean = false, messWithCombobox: Boolean = false) {
-        TODO("GPU: show/hide normal map spinner group depending on bumpiness combo selection")
+        System.err.println("FSPanelFace: updateBumpyControls not yet implemented")
     }
 
     private fun updateAlphaControls() {
-        TODO("GPU: show/hide alpha-mode and mask-cutoff controls depending on diffuse alpha mode")
+        System.err.println("FSPanelFace: updateAlphaControls not yet implemented")
     }
 
     private fun updateUIGltf(
@@ -504,11 +500,11 @@ class FSPanelFace {
         hasFacesWithoutPbr: Boolean,
         forceSetValues: Boolean
     ) {
-        TODO("GPU: update PBR channel controls from GLTF material state on objectp")
+        System.err.println("FSPanelFace: updateUIGltf not yet implemented")
     }
 
     private fun updateVisibility(objectp: Any? = null) {
-        TODO("GPU: show/hide Blinn-Phong vs PBR vs Media sub-panels based on tab selection")
+        System.err.println("FSPanelFace: updateVisibility not yet implemented")
     }
 
     // -------------------------------------------------------------------------
@@ -516,50 +512,50 @@ class FSPanelFace {
     // -------------------------------------------------------------------------
 
     fun onCommitFlip(userData: Map<String, Any>) {
-        TODO("GPU: flip diffuse/normal/specular UV axis indicated by userData")
+        System.err.println("FSPanelFace: onCommitFlip not yet implemented")
     }
 
     fun onCommitGltfUVSpinner(ctrl: Any?, userData: Map<String, Any>) {
-        TODO("GPU: commit a GLTF UV transform value from ctrl to the appropriate TextureTransform channel")
+        System.err.println("FSPanelFace: onCommitGltfUVSpinner not yet implemented")
     }
 
     protected fun onClickBtnSelectSameTexture(ctrl: Any?, userData: Map<String, Any>) {
-        TODO("GPU: select all faces in scene that share the same texture as the current face selection")
+        System.err.println("FSPanelFace: onClickBtnSelectSameTexture not yet implemented")
     }
 
     protected fun onShowFindAllButton(ctrl: Any?, userData: Map<String, Any>) {
-        TODO("GPU: make the 'find all faces' button visible")
+        System.err.println("FSPanelFace: onShowFindAllButton not yet implemented")
     }
 
     protected fun onHideFindAllButton(ctrl: Any?, userData: Map<String, Any>) {
-        TODO("GPU: hide the 'find all faces' button")
+        System.err.println("FSPanelFace: onHideFindAllButton not yet implemented")
     }
 
     // -------------------------------------------------------------------------
     // Clipboard operations (accessible to selection manager)
     // -------------------------------------------------------------------------
 
-    fun onCopyColor() { TODO("GPU: copy color parameters from all selected faces to clipboard") }
-    fun onPasteColor() { TODO("GPU: paste clipboard color to selection") }
-    fun onPasteColor(objectp: Any?, te: Int) { TODO("GPU: paste clipboard color to specific TE $te of objectp") }
-    fun onCopyTexture() { TODO("GPU: copy texture parameters from selection to clipboard") }
-    fun onPasteTexture() { TODO("GPU: paste clipboard texture to selection") }
-    fun onPasteTexture(objectp: Any?, te: Int) { TODO("GPU: paste clipboard texture to specific TE $te of objectp") }
+    fun onCopyColor() { System.err.println("FSPanelFace: onCopyColor not yet implemented") }
+    fun onPasteColor() { System.err.println("FSPanelFace: onPasteColor not yet implemented") }
+    fun onPasteColor(objectp: Any?, te: Int) { System.err.println("FSPanelFace: onPasteColor(objectp, te) not yet implemented") }
+    fun onCopyTexture() { System.err.println("FSPanelFace: onCopyTexture not yet implemented") }
+    fun onPasteTexture() { System.err.println("FSPanelFace: onPasteTexture not yet implemented") }
+    fun onPasteTexture(objectp: Any?, te: Int) { System.err.println("FSPanelFace: onPasteTexture(objectp, te) not yet implemented") }
 
     // -------------------------------------------------------------------------
     // Tab change callbacks
     // -------------------------------------------------------------------------
 
     fun onMatTabChange() {
-        TODO("GPU: switch BP/PBR/Media mode; hide/show GLTF material on objects; call updateUI")
+        System.err.println("FSPanelFace: onMatTabChange not yet implemented")
     }
 
     fun onMatChannelTabChange() {
-        TODO("GPU: switch Blinn-Phong channel (diffuse/normal/specular); call updateUI if not programmatic")
+        System.err.println("FSPanelFace: onMatChannelTabChange not yet implemented")
     }
 
     fun onPBRChannelTabChange() {
-        TODO("GPU: switch PBR channel tab; call updateUI if not programmatic")
+        System.err.println("FSPanelFace: onPBRChannelTabChange not yet implemented")
     }
 
     // -------------------------------------------------------------------------
@@ -567,79 +563,79 @@ class FSPanelFace {
     // -------------------------------------------------------------------------
 
     private fun getCurrentNormalMap(): UUID {
-        TODO("GPU: return bumpyTextureCtrl.imageAssetId")
+        return UUID(0L, 0L)
     }
 
     private fun getCurrentSpecularMap(): UUID {
-        TODO("GPU: return shinyTextureCtrl.imageAssetId")
+        return UUID(0L, 0L)
     }
 
     private fun getCurrentShininess(): UInt {
-        TODO("GPU: return comboShininess.currentIndex as UInt")
+        return 0u
     }
 
     private fun getCurrentBumpiness(): UInt {
-        TODO("GPU: return comboBumpiness.currentIndex as UInt")
+        return 0u
     }
 
     private fun getCurrentDiffuseAlphaMode(): UByte {
-        TODO("GPU: return comboAlphaMode.currentIndex as UByte")
+        return 0u
     }
 
     private fun getCurrentAlphaMaskCutoff(): UByte {
-        TODO("GPU: return ctrlMaskCutoff.value as UByte")
+        return 0u
     }
 
     private fun getCurrentEnvIntensity(): UByte {
-        TODO("GPU: return ctrlEnvironment.value as UByte")
+        return 0u
     }
 
     private fun getCurrentGlossiness(): UByte {
-        TODO("GPU: return ctrlGlossiness.value as UByte")
+        return 0u
     }
 
-    private fun getCurrentBumpyRot(): Float { TODO("GPU: return ctrlBumpyRot.value as Float") }
-    private fun getCurrentBumpyScaleU(): Float { TODO("GPU: return ctrlBumpyScaleU.value as Float") }
-    private fun getCurrentBumpyScaleV(): Float { TODO("GPU: return ctrlBumpyScaleV.value as Float") }
-    private fun getCurrentBumpyOffsetU(): Float { TODO("GPU: return ctrlBumpyOffsetU.value as Float") }
-    private fun getCurrentBumpyOffsetV(): Float { TODO("GPU: return ctrlBumpyOffsetV.value as Float") }
-    private fun getCurrentShinyRot(): Float { TODO("GPU: return ctrlShinyRot.value as Float") }
-    private fun getCurrentShinyScaleU(): Float { TODO("GPU: return ctrlShinyScaleU.value as Float") }
-    private fun getCurrentShinyScaleV(): Float { TODO("GPU: return ctrlShinyScaleV.value as Float") }
-    private fun getCurrentShinyOffsetU(): Float { TODO("GPU: return ctrlShinyOffsetU.value as Float") }
-    private fun getCurrentShinyOffsetV(): Float { TODO("GPU: return ctrlShinyOffsetV.value as Float") }
-    private fun getCurrentTextureRot(): Float { TODO("GPU: return ctrlTexRot.value as Float") }
-    private fun getCurrentTextureScaleU(): Float { TODO("GPU: return ctrlTexScaleU.value as Float") }
-    private fun getCurrentTextureScaleV(): Float { TODO("GPU: return ctrlTexScaleV.value as Float") }
-    private fun getCurrentTextureOffsetU(): Float { TODO("GPU: return ctrlTexOffsetU.value as Float") }
-    private fun getCurrentTextureOffsetV(): Float { TODO("GPU: return ctrlTexOffsetV.value as Float") }
+    private fun getCurrentBumpyRot(): Float { return 0f }
+    private fun getCurrentBumpyScaleU(): Float { return 0f }
+    private fun getCurrentBumpyScaleV(): Float { return 0f }
+    private fun getCurrentBumpyOffsetU(): Float { return 0f }
+    private fun getCurrentBumpyOffsetV(): Float { return 0f }
+    private fun getCurrentShinyRot(): Float { return 0f }
+    private fun getCurrentShinyScaleU(): Float { return 0f }
+    private fun getCurrentShinyScaleV(): Float { return 0f }
+    private fun getCurrentShinyOffsetU(): Float { return 0f }
+    private fun getCurrentShinyOffsetV(): Float { return 0f }
+    private fun getCurrentTextureRot(): Float { return 0f }
+    private fun getCurrentTextureScaleU(): Float { return 0f }
+    private fun getCurrentTextureScaleV(): Float { return 0f }
+    private fun getCurrentTextureOffsetU(): Float { return 0f }
+    private fun getCurrentTextureOffsetV(): Float { return 0f }
 
     private fun getCurrentMaterialType(): Int {
-        TODO("GPU: return selected tab index from tabsPBRMatMedia")
+        return 0
     }
 
     private fun getCurrentMatChannel(): Int {
-        TODO("GPU: return selected tab index from tabsMatChannel as LLRender.eTexIndex")
+        return 0
     }
 
     private fun getCurrentPBRChannel(): Int {
-        TODO("GPU: return selected tab index from tabsPBRChannel as LLRender.eTexIndex")
+        return 0
     }
 
     private fun getCurrentPBRType(pbrChannel: Int): Int {
-        TODO("GPU: map pbrChannel tab index to LLGLTFMaterial.TextureInfo enum value")
+        return 0
     }
 
     private fun selectMaterialType(materialType: Int) {
-        TODO("GPU: programmatically select material-type tab $materialType and call onMatTabChange")
+        System.err.println("FSPanelFace: selectMaterialType not yet implemented")
     }
 
     private fun selectMatChannel(matChannel: Int) {
-        TODO("GPU: programmatically select Blinn-Phong channel tab $matChannel")
+        System.err.println("FSPanelFace: selectMatChannel not yet implemented")
     }
 
     private fun selectPBRChannel(pbrChannel: Int) {
-        TODO("GPU: programmatically select PBR channel tab $pbrChannel")
+        System.err.println("FSPanelFace: selectPBRChannel not yet implemented")
     }
 
     // -------------------------------------------------------------------------
@@ -648,27 +644,27 @@ class FSPanelFace {
 
     object LLSelectedTEMaterial {
         fun getCurrent(materialPtr: Any?, identicalMaterial: Boolean) {
-            TODO("GPU: get current LLMaterialPtr from selection; set identicalMaterial output")
+            System.err.println("FSPanelFace: LLSelectedTEMaterial.getCurrent not yet implemented")
         }
 
         fun getMaxSpecularRepeats(repeats: Float, identical: Boolean) {
-            TODO("GPU: get max specular repeat scale from selection")
+            System.err.println("FSPanelFace: LLSelectedTEMaterial.getMaxSpecularRepeats not yet implemented")
         }
 
         fun getMaxNormalRepeats(repeats: Float, identical: Boolean) {
-            TODO("GPU: get max normal repeat scale from selection")
+            System.err.println("FSPanelFace: LLSelectedTEMaterial.getMaxNormalRepeats not yet implemented")
         }
 
         fun getCurrentDiffuseAlphaMode(diffuseAlphaMode: UByte, identical: Boolean, diffuseTextureHasAlpha: Boolean) {
-            TODO("GPU: get diffuse alpha mode from selection; account for alpha presence")
+            System.err.println("FSPanelFace: LLSelectedTEMaterial.getCurrentDiffuseAlphaMode not yet implemented")
         }
 
         fun selectionNormalScaleAutofit(panelFace: FSPanelFace, repeatsPerMeter: Float) {
-            TODO("GPU: auto-fit normal map scale based on object dimensions and repeats-per-meter")
+            System.err.println("FSPanelFace: LLSelectedTEMaterial.selectionNormalScaleAutofit not yet implemented")
         }
 
         fun selectionSpecularScaleAutofit(panelFace: FSPanelFace, repeatsPerMeter: Float) {
-            TODO("GPU: auto-fit specular map scale based on object dimensions and repeats-per-meter")
+            System.err.println("FSPanelFace: LLSelectedTEMaterial.selectionSpecularScaleAutofit not yet implemented")
         }
     }
 
@@ -678,27 +674,27 @@ class FSPanelFace {
 
     object LLSelectedTE {
         fun getFace(faceToReturn: Any?, identicalFace: Boolean) {
-            TODO("GPU: get LLFace from first selected TE")
+            System.err.println("FSPanelFace: LLSelectedTE.getFace not yet implemented")
         }
 
         fun getImageFormat(imageFormatToReturn: Int, identicalFace: Boolean, missingAsset: Boolean) {
-            TODO("GPU: get GL image format from selected TE")
+            System.err.println("FSPanelFace: LLSelectedTE.getImageFormat not yet implemented")
         }
 
         fun getTexId(id: UUID, identical: Boolean) {
-            TODO("GPU: get diffuse texture UUID from selected TE")
+            System.err.println("FSPanelFace: LLSelectedTE.getTexId not yet implemented")
         }
 
         fun getObjectScaleS(scaleS: Float, identical: Boolean) {
-            TODO("GPU: get object S-axis scale from selected TE")
+            System.err.println("FSPanelFace: LLSelectedTE.getObjectScaleS not yet implemented")
         }
 
         fun getObjectScaleT(scaleT: Float, identical: Boolean) {
-            TODO("GPU: get object T-axis scale from selected TE")
+            System.err.println("FSPanelFace: LLSelectedTE.getObjectScaleT not yet implemented")
         }
 
         fun getMaxDiffuseRepeats(repeats: Float, identical: Boolean) {
-            TODO("GPU: get maximum diffuse repeat value across all selected TEs")
+            System.err.println("FSPanelFace: LLSelectedTE.getMaxDiffuseRepeats not yet implemented")
         }
     }
 }

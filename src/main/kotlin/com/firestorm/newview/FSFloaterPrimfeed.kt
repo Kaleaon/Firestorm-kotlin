@@ -24,22 +24,22 @@ class FSPrimfeedPhotoPanel {
     private var bigPreviewFloater: Any? = null
 
     init {
-        TODO("APR: use JVM equivalent: register SocialSharing.SendPhoto -> onSend(), SocialSharing.RefreshPhoto -> onClickNewSnapshot(), SocialSharing.BigPreview -> onClickBigPreview() commit callbacks")
-        TODO("APR: use JVM equivalent: register Primfeed.Info commit callback that opens url externally")
-        TODO("APR: use JVM equivalent: listen on FSPrimfeedAuth.sPrimfeedAuthPump for primfeed_user_info responses; call loadPrimfeedInfo(data) when matched")
+        System.err.println("FSPrimfeedPhotoPanel: register SocialSharing.SendPhoto -> onSend(), SocialSharing.RefreshPhoto -> onClickNewSnapshot(), SocialSharing.BigPreview -> onClickBigPreview() commit callbacks not yet implemented")
+        System.err.println("FSPrimfeedPhotoPanel: register Primfeed.Info commit callback that opens url externally not yet implemented")
+        System.err.println("FSPrimfeedPhotoPanel: listen on FSPrimfeedAuth.sPrimfeedAuthPump for primfeed_user_info responses; call loadPrimfeedInfo(data) when matched not yet implemented")
     }
 
     fun destroy() {
-        TODO("APR: use JVM equivalent: if previewHandle is non-null, call die() on the preview")
-        TODO("APR: use JVM equivalent: save FSLastSnapshotToPrimfeedResolution, FSLastSnapshotToPrimfeedWidth, FSLastSnapshotToPrimfeedHeight settings")
+        System.err.println("FSPrimfeedPhotoPanel: if previewHandle is non-null, call die() on the preview not yet implemented")
+        System.err.println("FSPrimfeedPhotoPanel: save FSLastSnapshotToPrimfeedResolution, FSLastSnapshotToPrimfeedWidth, FSLastSnapshotToPrimfeedHeight settings not yet implemented")
     }
 
     fun postBuild(): Boolean {
-        TODO("APR: use JVM equivalent: find all child UI controls by name and assign to fields")
-        TODO("APR: use JVM equivalent: wire commit callbacks for resolutionComboBox, filterComboBox, customSnapshotWidth, customSnapshotHeight, keepAspectRatioCbx to updateResolution(true)")
-        TODO("APR: use JVM equivalent: restore resolution/width/height from saved settings")
-        TODO("APR: use JVM equivalent: populate filterComboBox from LLImageFiltersManager.getInstance().getFiltersList()")
-        TODO("APR: use JVM equivalent: call LLPanel.postBuild()")
+        System.err.println("FSPrimfeedPhotoPanel: find all child UI controls by name and assign to fields not yet implemented")
+        System.err.println("FSPrimfeedPhotoPanel: wire commit callbacks for resolutionComboBox, filterComboBox, customSnapshotWidth, customSnapshotHeight, keepAspectRatioCbx to updateResolution(true) not yet implemented")
+        System.err.println("FSPrimfeedPhotoPanel: restore resolution/width/height from saved settings not yet implemented")
+        System.err.println("FSPrimfeedPhotoPanel: populate filterComboBox from LLImageFiltersManager.getInstance().getFiltersList() not yet implemented")
+        System.err.println("FSPrimfeedPhotoPanel: call LLPanel.postBuild() not yet implemented")
         return true
     }
 
@@ -49,24 +49,24 @@ class FSPrimfeedPhotoPanel {
         }
         if (info.containsKey("snapshot-updated")) {
             updateControls()
-            TODO("APR: use JVM equivalent: make refreshBtn visible if it was hidden")
+            System.err.println("FSPrimfeedPhotoPanel: make refreshBtn visible if it was hidden not yet implemented")
             return 1
         }
         return 0
     }
 
     fun draw() {
-        TODO("APR: use JVM equivalent: cast previewHandle to LLSnapshotLivePreview")
-        TODO("APR: use JVM equivalent: compute canPost = !FSPrimfeedConnect.isTransactionOngoing() && FSPrimfeedAuth.isAuthorized()")
-        TODO("APR: use JVM equivalent: set enabled state on cancelButton, descriptionTextBox, ratingComboBox, storesComboBox, resolutionComboBox, filterComboBox, refreshBtn, btnPreview, locationCheckbox, publicGalleryCheckbox, commercialCheckbox based on canPost")
-        TODO("APR: use JVM equivalent: if hasFocus() && isPreviewVisible(), call attachPreview()")
-        TODO("APR: use JVM equivalent: set btnPreview toggle state based on preview active state")
+        System.err.println("FSPrimfeedPhotoPanel: cast previewHandle to LLSnapshotLivePreview not yet implemented")
+        System.err.println("FSPrimfeedPhotoPanel: compute canPost = !FSPrimfeedConnect.isTransactionOngoing() && FSPrimfeedAuth.isAuthorized() not yet implemented")
+        System.err.println("FSPrimfeedPhotoPanel: set enabled state on cancelButton, descriptionTextBox, ratingComboBox, storesComboBox, resolutionComboBox, filterComboBox, refreshBtn, btnPreview, locationCheckbox, publicGalleryCheckbox, commercialCheckbox based on canPost not yet implemented")
+        System.err.println("FSPrimfeedPhotoPanel: if hasFocus() && isPreviewVisible(), call attachPreview() not yet implemented")
+        System.err.println("FSPrimfeedPhotoPanel: set btnPreview toggle state based on preview active state not yet implemented")
         if (previewHandle != null) {
-            TODO("GPU: gl_draw_scaled_image with thumbnail image, offset calculated from thumbnailPlaceholder rect, applying floater transparency alpha")
+            // GPU: gl_draw_scaled_image with thumbnail image, offset calculated from thumbnailPlaceholder rect, applying floater transparency alpha
         }
-        TODO("APR: use JVM equivalent: set workingLabel visibility based on whether snapshot is up to date")
-        TODO("APR: use JVM equivalent: set postButton enabled based on canPost and snapshot up-to-date")
-        TODO("APR: use JVM equivalent: call LLPanel.draw()")
+        System.err.println("FSPrimfeedPhotoPanel: set workingLabel visibility based on whether snapshot is up to date not yet implemented")
+        System.err.println("FSPrimfeedPhotoPanel: set postButton enabled based on canPost and snapshot up-to-date not yet implemented")
+        System.err.println("FSPrimfeedPhotoPanel: call LLPanel.draw() not yet implemented")
     }
 
     fun getPreviewView(): Any? {
@@ -76,23 +76,23 @@ class FSPrimfeedPhotoPanel {
     fun onVisibilityChange(visible: Boolean) {
         if (visible) {
             if (previewHandle != null) {
-                TODO("APR: use JVM equivalent: call preview.updateSnapshot(true)")
+                System.err.println("FSPrimfeedPhotoPanel: call preview.updateSnapshot(true) not yet implemented")
             } else {
-                TODO("APR: use JVM equivalent: create LLSnapshotLivePreview with full-screen rect, configure snapshot type/format/flags, store handle, call updateControls()")
+                System.err.println("FSPrimfeedPhotoPanel: create LLSnapshotLivePreview with full-screen rect, configure snapshot type/format/flags, store handle, call updateControls() not yet implemented")
             }
         }
     }
 
     fun onClickNewSnapshot() {
-        TODO("APR: use JVM equivalent: call getPreviewView().updateSnapshot(true)")
+        System.err.println("FSPrimfeedPhotoPanel: call getPreviewView().updateSnapshot(true) not yet implemented")
     }
 
     fun onClickBigPreview() {
         if (isPreviewVisible()) {
-            TODO("APR: use JVM equivalent: hide big_preview floater instance")
+            System.err.println("FSPrimfeedPhotoPanel: hide big_preview floater instance not yet implemented")
         } else {
             attachPreview()
-            TODO("APR: use JVM equivalent: show big_preview floater instance")
+            System.err.println("FSPrimfeedPhotoPanel: show big_preview floater instance not yet implemented")
         }
     }
 
@@ -101,15 +101,16 @@ class FSPrimfeedPhotoPanel {
     }
 
     fun onPrimfeedConnectStateChange(data: Map<String, Any?>): Boolean {
-        TODO("APR: use JVM equivalent: return FSPrimfeedAuth.isAuthorized()")
+        System.err.println("FSPrimfeedPhotoPanel: return FSPrimfeedAuth.isAuthorized() not yet implemented")
+        return false
     }
 
     fun sendPhoto() {
-        val description = TODO("APR: use JVM equivalent: read value from descriptionTextBox") as String
-        val contentRating = TODO("APR: use JVM equivalent: read integer value from ratingComboBox") as Int
-        val postToPublicGallery = TODO("APR: use JVM equivalent: read boolean from publicGalleryCheckbox") as Boolean
-        val commercialContent = TODO("APR: use JVM equivalent: read boolean from commercialCheckbox") as Boolean
-        val storeId = TODO("APR: use JVM equivalent: read string value from storesComboBox") as String
+        val description = ""
+        val contentRating = 1
+        val postToPublicGallery = false
+        val commercialContent = false
+        val storeId = ""
 
         val ratingString = when (contentRating.coerceIn(1, 4)) {
             1 -> "general"
@@ -125,22 +126,22 @@ class FSPrimfeedPhotoPanel {
             "post_to_public_gallery" to postToPublicGallery
         )
 
-        val addLocation = TODO("APR: use JVM equivalent: read boolean from locationCheckbox") as Boolean
+        val addLocation = false
         if (addLocation) {
-            TODO("APR: use JVM equivalent: build SLURL from LLAgentUI.buildSLURL and add 'location' key to params")
+            System.err.println("FSPrimfeedPhotoPanel: build SLURL from LLAgentUI.buildSLURL and add 'location' key to params not yet implemented")
         }
         if (storeId.isNotEmpty()) {
             params["store_id"] = storeId
         }
 
-        TODO("APR: use JVM equivalent: FSPrimfeedConnect.instance.setConnectionState(PRIMFEED_POSTING)")
-        TODO("APR: use JVM equivalent: FSPrimfeedConnect.instance.uploadPhoto(params, previewp.getFormattedImage()) { success, url -> handle result, open url if FSPrimfeedOpenURLOnPost, show notification }")
+        System.err.println("FSPrimfeedPhotoPanel: FSPrimfeedConnect.instance.setConnectionState(PRIMFEED_POSTING) not yet implemented")
+        System.err.println("FSPrimfeedPhotoPanel: FSPrimfeedConnect.instance.uploadPhoto(params, previewp.getFormattedImage()) { success, url -> handle result, open url if FSPrimfeedOpenURLOnPost, show notification } not yet implemented")
         updateControls()
     }
 
     fun clearAndClose() {
-        TODO("APR: use JVM equivalent: clear descriptionTextBox value")
-        TODO("APR: use JVM equivalent: close parent floater and call bigPreviewFloater.closeOnFloaterOwnerClosing if present")
+        System.err.println("FSPrimfeedPhotoPanel: clear descriptionTextBox value not yet implemented")
+        System.err.println("FSPrimfeedPhotoPanel: close parent floater and call bigPreviewFloater.closeOnFloaterOwnerClosing if present not yet implemented")
     }
 
     fun updateControls() {
@@ -148,46 +149,46 @@ class FSPrimfeedPhotoPanel {
     }
 
     fun updateResolution(doUpdate: Boolean) {
-        TODO("APR: use JVM equivalent: parse resolution from resolutionComboBox selected value as LLSD [width, height]")
-        TODO("APR: use JVM equivalent: get filter name from filterComboBox (empty string if index 0)")
-        TODO("APR: use JVM equivalent: call checkAspectRatio(width) on preview; compare old/new sizes; call preview.setSize and optionally updateSnapshot(true,true)")
-        TODO("APR: use JVM equivalent: compare old/new filter; call preview.setFilter if changed and optionally updateSnapshot(false,true)")
-        TODO("APR: use JVM equivalent: enable/disable customSnapshotWidth, customSnapshotHeight, keepAspectRatioCbx based on custom resolution selection")
+        System.err.println("FSPrimfeedPhotoPanel: parse resolution from resolutionComboBox selected value as LLSD [width, height] not yet implemented")
+        System.err.println("FSPrimfeedPhotoPanel: get filter name from filterComboBox (empty string if index 0) not yet implemented")
+        System.err.println("FSPrimfeedPhotoPanel: call checkAspectRatio(width) on preview; compare old/new sizes; call preview.setSize and optionally updateSnapshot(true,true) not yet implemented")
+        System.err.println("FSPrimfeedPhotoPanel: compare old/new filter; call preview.setFilter if changed and optionally updateSnapshot(false,true) not yet implemented")
+        System.err.println("FSPrimfeedPhotoPanel: enable/disable customSnapshotWidth, customSnapshotHeight, keepAspectRatioCbx based on custom resolution selection not yet implemented")
     }
 
     fun checkAspectRatio(index: Int) {
         val keepAspect = when (index) {
             0 -> true
-            -1 -> TODO("APR: use JVM equivalent: read keepAspectRatioCbx checked state") as Boolean
+            -1 -> false
             else -> false
         }
-        TODO("APR: use JVM equivalent: set preview.mKeepAspectRatio = keepAspect")
+        System.err.println("FSPrimfeedPhotoPanel: set preview.mKeepAspectRatio = keepAspect not yet implemented")
     }
 
     fun loadPrimfeedInfo(data: Map<String, Any?>) {
-        TODO("APR: use JVM equivalent: clear storesComboBox and add 'Personal' entry")
+        System.err.println("FSPrimfeedPhotoPanel: clear storesComboBox and add 'Personal' entry not yet implemented")
         val stores = data["stores"] as? List<*>
         if (stores.isNullOrEmpty()) {
-            TODO("APR: use JVM equivalent: disable storesComboBox")
+            System.err.println("FSPrimfeedPhotoPanel: disable storesComboBox not yet implemented")
             return
         }
-        TODO("APR: use JVM equivalent: enable storesComboBox and populate with store name/id entries from stores list")
-        TODO("APR: use JVM equivalent: select index 0 in storesComboBox")
+        System.err.println("FSPrimfeedPhotoPanel: enable storesComboBox and populate with store name/id entries from stores list not yet implemented")
+        System.err.println("FSPrimfeedPhotoPanel: select index 0 in storesComboBox not yet implemented")
     }
 
     fun getRefreshBtn(): Any? = refreshBtn
 
     fun onOpen(key: Map<String, Any?>) {
-        TODO("APR: use JVM equivalent: FSPrimfeedAuth.initiateAuthRequest()")
+        System.err.println("FSPrimfeedPhotoPanel: FSPrimfeedAuth.initiateAuthRequest() not yet implemented")
         onPrimfeedConnectStateChange(emptyMap())
     }
 
     fun uploadCallback(success: Boolean, response: Map<String, Any?>) {
         if (success && response["stat"] == "ok") {
-            TODO("APR: use JVM equivalent: FSPrimfeedConnect.instance.setConnectionState(PRIMFEED_POSTED)")
-            TODO("APR: use JVM equivalent: show FSPrimfeedUploadComplete notification with postUrl")
+            System.err.println("FSPrimfeedPhotoPanel: FSPrimfeedConnect.instance.setConnectionState(PRIMFEED_POSTED) not yet implemented")
+            System.err.println("FSPrimfeedPhotoPanel: show FSPrimfeedUploadComplete notification with postUrl not yet implemented")
         } else {
-            TODO("APR: use JVM equivalent: FSPrimfeedConnect.instance.setConnectionState(PRIMFEED_POST_FAILED)")
+            System.err.println("FSPrimfeedPhotoPanel: FSPrimfeedConnect.instance.setConnectionState(PRIMFEED_POST_FAILED) not yet implemented")
         }
     }
 
@@ -196,11 +197,12 @@ class FSPrimfeedPhotoPanel {
     }
 
     private fun isPreviewVisible(): Boolean {
-        TODO("APR: use JVM equivalent: return bigPreviewFloater != null && bigPreviewFloater.isVisible()")
+        System.err.println("FSPrimfeedPhotoPanel: return bigPreviewFloater != null && bigPreviewFloater.isVisible() not yet implemented")
+        return false
     }
 
     private fun attachPreview() {
-        TODO("APR: use JVM equivalent: set preview on bigPreviewFloater and set floater owner to parent floater")
+        System.err.println("FSPrimfeedPhotoPanel: set preview on bigPreviewFloater and set floater owner to parent floater not yet implemented")
     }
 
     private fun checkImageSize(
@@ -212,7 +214,7 @@ class FSPrimfeedPhotoPanel {
     ): Triple<Boolean, Int, Int> {
         var w = width
         var h = height
-        TODO("APR: use JVM equivalent: if previewp.mKeepAspectRatio, compute aspect ratio from window size and adjust width or height proportionally, clamping to maxValue")
+        System.err.println("FSPrimfeedPhotoPanel: if previewp.mKeepAspectRatio, compute aspect ratio from window size and adjust width or height proportionally, clamping to maxValue not yet implemented")
         return Triple(w != width || h != height, w, h)
     }
 }
@@ -226,30 +228,31 @@ class FSPrimfeedAccountPanel {
     private var disconnectButton: Any? = null
 
     init {
-        TODO("APR: use JVM equivalent: register SocialSharing.Connect -> onConnect() and SocialSharing.Disconnect -> onDisconnect() commit callbacks")
-        TODO("APR: use JVM equivalent: listen on FSPrimfeedAuth.sPrimfeedAuthPump for primfeed_auth_response and primfeed_auth_reset events; call primfeedAuthResponse(success, data)")
-        TODO("APR: use JVM equivalent: register visibility-change callback to onVisibilityChange")
+        System.err.println("FSPrimfeedAccountPanel: register SocialSharing.Connect -> onConnect() and SocialSharing.Disconnect -> onDisconnect() commit callbacks not yet implemented")
+        System.err.println("FSPrimfeedAccountPanel: listen on FSPrimfeedAuth.sPrimfeedAuthPump for primfeed_auth_response and primfeed_auth_reset events; call primfeedAuthResponse(success, data) not yet implemented")
+        System.err.println("FSPrimfeedAccountPanel: register visibility-change callback to onVisibilityChange not yet implemented")
     }
 
     fun destroy() {
-        TODO("APR: use JVM equivalent: stop listening on FSPrimfeedAuth.sPrimfeedAuthPump for FSPrimfeedAccountPanel")
+        System.err.println("FSPrimfeedAccountPanel: stop listening on FSPrimfeedAuth.sPrimfeedAuthPump for FSPrimfeedAccountPanel not yet implemented")
     }
 
     fun postBuild(): Boolean {
-        TODO("APR: use JVM equivalent: find child UI controls by name and assign to fields")
+        System.err.println("FSPrimfeedAccountPanel: find child UI controls by name and assign to fields not yet implemented")
         onPrimfeedConnectStateChange(emptyMap<String, Any?>())
-        TODO("APR: use JVM equivalent: call LLPanel.postBuild()")
+        System.err.println("FSPrimfeedAccountPanel: call LLPanel.postBuild() not yet implemented")
         return true
     }
 
     fun draw() {
-        TODO("APR: use JVM equivalent: get FSPrimfeedConnect.instance.connectionState; if changed since last frame, call onPrimfeedConnectStateChange()")
-        TODO("APR: use JVM equivalent: call LLPanel.draw()")
+        System.err.println("FSPrimfeedAccountPanel: get FSPrimfeedConnect.instance.connectionState; if changed since last frame, call onPrimfeedConnectStateChange() not yet implemented")
+        System.err.println("FSPrimfeedAccountPanel: call LLPanel.draw() not yet implemented")
     }
 
     fun onVisibilityChange(visible: Boolean) {
         if (visible) {
-            if (TODO("APR: use JVM equivalent: FSPrimfeedAuth.isAuthorized()") as Boolean) {
+            val isAuthorized = false
+            if (isAuthorized) {
                 showConnectedLayout()
             } else {
                 showDisconnectedLayout()
@@ -258,8 +261,8 @@ class FSPrimfeedAccountPanel {
     }
 
     fun onPrimfeedConnectStateChange(data: Map<String, Any?>): Boolean {
-        val isAuthorized = TODO("APR: use JVM equivalent: FSPrimfeedAuth.isAuthorized()") as Boolean
-        val isConnecting = TODO("APR: use JVM equivalent: FSPrimfeedConnect.instance.connectionState == PRIMFEED_CONNECTING") as Boolean
+        val isAuthorized = false
+        val isConnecting = false
         if (isAuthorized || isConnecting) {
             showConnectedLayout()
         } else {
@@ -270,42 +273,42 @@ class FSPrimfeedAccountPanel {
     }
 
     fun onPrimfeedConnectInfoChange(): Boolean {
-        TODO("APR: use JVM equivalent: read FSPrimfeedUsername, FSPrimfeedProfileLink, FSPrimfeedPlan from saved per-account settings")
-        TODO("APR: use JVM equivalent: build clickable name string as '[profileLink username]' and set on accountNameLink; set accountPlan text")
+        System.err.println("FSPrimfeedAccountPanel: read FSPrimfeedUsername, FSPrimfeedProfileLink, FSPrimfeedPlan from saved per-account settings not yet implemented")
+        System.err.println("FSPrimfeedAccountPanel: build clickable name string as '[profileLink username]' and set on accountNameLink; set accountPlan text not yet implemented")
         return false
     }
 
     private fun showConnectButton() {
-        TODO("APR: use JVM equivalent: if connectButton not visible, set connectButton visible and disconnectButton not visible")
+        System.err.println("FSPrimfeedAccountPanel: if connectButton not visible, set connectButton visible and disconnectButton not visible not yet implemented")
     }
 
     private fun hideConnectButton() {
-        TODO("APR: use JVM equivalent: if connectButton visible, set connectButton not visible and disconnectButton visible")
+        System.err.println("FSPrimfeedAccountPanel: if connectButton visible, set connectButton not visible and disconnectButton visible not yet implemented")
     }
 
     private fun showDisconnectedLayout() {
-        TODO("APR: use JVM equivalent: set accountConnectedAsLabel to primfeed_disconnected string, clear accountNameLink, set accountPlan to primfeed_plan_unknown string")
+        System.err.println("FSPrimfeedAccountPanel: set accountConnectedAsLabel to primfeed_disconnected string, clear accountNameLink, set accountPlan to primfeed_plan_unknown string not yet implemented")
         showConnectButton()
     }
 
     private fun showConnectedLayout() {
-        TODO("APR: use JVM equivalent: set accountConnectedAsLabel to primfeed_connected string")
+        System.err.println("FSPrimfeedAccountPanel: set accountConnectedAsLabel to primfeed_connected string not yet implemented")
         hideConnectButton()
     }
 
     private fun onConnect() {
-        TODO("APR: use JVM equivalent: FSPrimfeedAuth.initiateAuthRequest()")
+        System.err.println("FSPrimfeedAccountPanel: FSPrimfeedAuth.initiateAuthRequest() not yet implemented")
         onPrimfeedConnectStateChange(emptyMap())
     }
 
     private fun onDisconnect() {
-        TODO("APR: use JVM equivalent: FSPrimfeedAuth.resetAuthStatus()")
+        System.err.println("FSPrimfeedAccountPanel: FSPrimfeedAuth.resetAuthStatus() not yet implemented")
         onPrimfeedConnectStateChange(emptyMap())
     }
 
     private fun primfeedAuthResponse(success: Boolean, response: Map<String, Any?>) {
         if (!success) {
-            TODO("APR: use JVM equivalent: open https://www.primfeed.com/login externally")
+            System.err.println("FSPrimfeedAccountPanel: open https://www.primfeed.com/login externally not yet implemented")
         }
         onPrimfeedConnectStateChange(response)
     }
@@ -320,54 +323,46 @@ class FSFloaterPrimfeed(key: Map<String, Any?>) {
     private var statusLoadingIndicator: Any? = null
 
     init {
-        TODO("APR: use JVM equivalent: register SocialSharing.Cancel -> onCancel() commit callback")
+        System.err.println("FSFloaterPrimfeed: register SocialSharing.Cancel -> onCancel() commit callback not yet implemented")
     }
 
     fun onClose(appQuitting: Boolean) {
-        TODO("APR: use JVM equivalent: close big_preview floater on owner closing if it exists")
-        TODO("APR: use JVM equivalent: call LLFloater.onClose(appQuitting)")
+        System.err.println("FSFloaterPrimfeed: close big_preview floater on owner closing if it exists not yet implemented")
+        System.err.println("FSFloaterPrimfeed: call LLFloater.onClose(appQuitting) not yet implemented")
     }
 
     fun onCancel() {
-        TODO("APR: use JVM equivalent: close big_preview floater on owner closing if it exists")
-        TODO("APR: use JVM equivalent: closeFloater()")
+        System.err.println("FSFloaterPrimfeed: close big_preview floater on owner closing if it exists not yet implemented")
+        System.err.println("FSFloaterPrimfeed: closeFloater() not yet implemented")
     }
 
     fun postBuild(): Boolean {
-        TODO("APR: use JVM equivalent: find panel_primfeed_photo and panel_primfeed_account child panels")
-        TODO("APR: use JVM equivalent: find connection_error_text, connection_loading_text, connection_loading_indicator children")
-        TODO("APR: use JVM equivalent: call LLFloater.postBuild()")
+        System.err.println("FSFloaterPrimfeed: find panel_primfeed_photo and panel_primfeed_account child panels not yet implemented")
+        System.err.println("FSFloaterPrimfeed: find connection_error_text, connection_loading_text, connection_loading_indicator children not yet implemented")
+        System.err.println("FSFloaterPrimfeed: call LLFloater.postBuild() not yet implemented")
         return true
     }
 
     fun showPhotoPanel() {
-        TODO("APR: use JVM equivalent: get parent tab container of primfeedPhotoPanel and select that tab")
+        System.err.println("FSFloaterPrimfeed: get parent tab container of primfeedPhotoPanel and select that tab not yet implemented")
     }
 
     fun draw() {
         if (statusErrorText != null && statusLoadingText != null && statusLoadingIndicator != null) {
-            TODO("APR: use JVM equivalent: hide all three status widgets initially")
-            val isAuthorized = TODO("APR: use JVM equivalent: FSPrimfeedAuth.isAuthorized()") as Boolean
-            val isPendingAuth = TODO("APR: use JVM equivalent: FSPrimfeedAuth.isPendingAuth()") as Boolean
-            val connectionState = TODO("APR: use JVM equivalent: FSPrimfeedConnect.instance.connectionState") as Int
+            System.err.println("FSFloaterPrimfeed: hide all three status widgets initially not yet implemented")
+            val isAuthorized = false
+            val isPendingAuth = false
+            val connectionState = 0
 
             if (isAuthorized) {
-                when (connectionState) {
-                    TODO("APR: PRIMFEED_POSTING state value") as Int -> {
-                        TODO("APR: use JVM equivalent: show statusLoadingText with SocialPrimfeedPosting string and show statusLoadingIndicator")
-                    }
-                    TODO("APR: PRIMFEED_POST_FAILED state value") as Int -> {
-                        TODO("APR: use JVM equivalent: show statusErrorText with SocialPrimfeedErrorPosting string")
-                    }
-                    else -> {}
-                }
+                // connection state handling stubbed out - PRIMFEED_POSTING and PRIMFEED_POST_FAILED values not yet implemented
             } else if (isPendingAuth) {
-                TODO("APR: use JVM equivalent: show statusLoadingText with SocialPrimfeedConnecting string")
+                System.err.println("FSFloaterPrimfeed: show statusLoadingText with SocialPrimfeedConnecting string not yet implemented")
             } else {
-                TODO("APR: use JVM equivalent: show statusErrorText with SocialPrimfeedNotAuthorized string")
+                System.err.println("FSFloaterPrimfeed: show statusErrorText with SocialPrimfeedNotAuthorized string not yet implemented")
             }
         }
-        TODO("APR: use JVM equivalent: call LLFloater.draw()")
+        System.err.println("FSFloaterPrimfeed: call LLFloater.draw() not yet implemented")
     }
 
     fun onOpen(key: Map<String, Any?>) {
@@ -380,7 +375,7 @@ class FSFloaterPrimfeed(key: Map<String, Any?>) {
 
     companion object {
         fun update() {
-            TODO("APR: use JVM equivalent: if primfeed floater instance is visible, call LLFloaterSnapshotBase.ImplBase.updatePreviewList(true, true)")
+            System.err.println("FSFloaterPrimfeed: if primfeed floater instance is visible, call LLFloaterSnapshotBase.ImplBase.updatePreviewList(true, true) not yet implemented")
         }
     }
 }

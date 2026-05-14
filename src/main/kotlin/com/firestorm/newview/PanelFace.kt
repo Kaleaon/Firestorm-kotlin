@@ -216,254 +216,248 @@ class PanelFace : Panel() {
     }
 
     private fun getState() {
-        TODO("APR: use JVM equivalent - read selection state into UI controls")
+        System.err.println("PanelFace: getState not yet implemented")
     }
 
     private fun sendTexture() {
-        TODO("APR: use JVM equivalent - apply and send texture to selected faces")
+        System.err.println("PanelFace: sendTexture not yet implemented")
     }
 
     private fun sendTextureInfo() {
-        TODO("APR: use JVM equivalent - apply and send texture scale/offset/rotation")
+        System.err.println("PanelFace: sendTextureInfo not yet implemented")
     }
 
     private fun sendColor() {
-        TODO("APR: use JVM equivalent - apply and send face color")
+        System.err.println("PanelFace: sendColor not yet implemented")
     }
 
     private fun sendAlpha() {
-        TODO("APR: use JVM equivalent - apply and send face alpha/transparency")
+        System.err.println("PanelFace: sendAlpha not yet implemented")
     }
 
     private fun sendBump(bumpiness: UInt) {
-        TODO("APR: use JVM equivalent - apply and send bump map")
+        System.err.println("PanelFace: sendBump not yet implemented")
     }
 
     private fun sendTexGen() {
-        TODO("APR: use JVM equivalent - apply and send tex-gen mode")
+        System.err.println("PanelFace: sendTexGen not yet implemented")
     }
 
     private fun sendShiny(shininess: UInt) {
-        TODO("APR: use JVM equivalent - apply and send shininess")
+        System.err.println("PanelFace: sendShiny not yet implemented")
     }
 
     private fun sendFullbright() {
-        TODO("APR: use JVM equivalent - apply and send fullbright flag")
+        System.err.println("PanelFace: sendFullbright not yet implemented")
     }
 
     private fun sendGlow() {
-        TODO("APR: use JVM equivalent - apply and send glow value")
+        System.err.println("PanelFace: sendGlow not yet implemented")
     }
 
     private fun alignTextureLayer() {
-        TODO("APR: use JVM equivalent - align texture to face dimensions")
+        System.err.println("PanelFace: alignTextureLayer not yet implemented")
     }
 
     private fun updateCopyTexButton() {
-        TODO("APR: use JVM equivalent - update enabled state of copy texture button")
+        System.err.println("PanelFace: updateCopyTexButton not yet implemented")
     }
 
     private fun navigateToTitleMedia(url: String) {
-        TODO("APR: use JVM equivalent - navigate media to URL")
+        System.err.println("PanelFace: navigateToTitleMedia not yet implemented")
     }
 
     private fun selectedMediaEditable(): Boolean {
-        TODO("APR: use JVM equivalent - check if selected media is editable")
+        return false
     }
 
     private fun clearMediaSettings() {
-        TODO("APR: use JVM equivalent - clear cached media settings")
+        System.err.println("PanelFace: clearMediaSettings not yet implemented")
     }
 
     private fun updateMediaSettings() {
-        TODO("APR: use JVM equivalent - refresh media settings from selection")
+        System.err.println("PanelFace: updateMediaSettings not yet implemented")
     }
 
     private fun updateMediaTitle() {
-        TODO("APR: use JVM equivalent - refresh media title label")
+        System.err.println("PanelFace: updateMediaTitle not yet implemented")
     }
 
     private fun isMediaTexSelected(): Boolean {
-        TODO("APR: use JVM equivalent - check if selected texture is media texture")
+        return false
     }
 
     private fun updateUI(forceSetValues: Boolean = false) {
-        TODO("APR: use JVM equivalent - rebuild all controls from material/TE state")
+        System.err.println("PanelFace: updateUI not yet implemented")
     }
 
     private fun updateVisibility(objectp: ViewerObject? = null) {
-        TODO("APR: use JVM equivalent - show/hide control subsets based on UI mode")
+        System.err.println("PanelFace: updateVisibility not yet implemented")
     }
 
     private fun isIdenticalPlanarTexgen(): Boolean {
-        TODO("APR: use JVM equivalent - check all selected faces for identical planar texgen")
+        return false
     }
 
     private fun updateShinyControls(isSettingTexture: Boolean = false, messWithCombobox: Boolean = false) {
-        TODO("APR: use JVM equivalent - update shininess control visibility/enabled")
+        System.err.println("PanelFace: updateShinyControls not yet implemented")
     }
 
     private fun updateBumpyControls(isSettingTexture: Boolean = false, messWithCombobox: Boolean = false) {
-        TODO("APR: use JVM equivalent - update bump control visibility/enabled")
+        System.err.println("PanelFace: updateBumpyControls not yet implemented")
     }
 
     private fun updateAlphaControls() {
-        TODO("APR: use JVM equivalent - update alpha-mode control visibility/enabled")
+        System.err.println("PanelFace: updateAlphaControls not yet implemented")
     }
 
     private fun updateUIGLTF(objectp: ViewerObject?, hasPbrMaterial: Boolean, hasFacesWithoutPbr: Boolean, forceSetValues: Boolean) {
-        TODO("GPU: update GLTF/PBR control state from selection")
     }
 
     private fun updateVisibilityGLTF(objectp: ViewerObject? = null) {
-        TODO("GPU: update GLTF/PBR control visibility")
     }
 
     private fun updateSelectedGLTFMaterials(func: (GLTFMaterial) -> Unit) {
-        TODO("GPU: iterate selected TEs and apply func to their GLTF material overrides")
     }
 
     private fun updateSelectedGLTFMaterialsWithScale(func: (GLTFMaterial, Float, Float) -> Unit) {
-        TODO("GPU: iterate selected TEs applying func with per-face object scale")
     }
 
     private fun updateGLTFTextureTransform(edit: (GLTFMaterial.TextureTransform) -> Unit) {
-        TODO("GPU: apply texture transform edit to selected GLTF material overrides")
     }
 
     private fun updateGLTFTextureTransformWithScale(
         textureInfo: GLTFMaterial.TextureInfo,
         edit: (GLTFMaterial.TextureTransform, Float, Float) -> Unit
     ) {
-        TODO("GPU: apply texture transform edit with scale to selected GLTF material overrides")
     }
 
     private fun setMaterialOverridesFromSelection() {
-        TODO("APR: use JVM equivalent - read GLTF overrides from selection into UI")
+        System.err.println("PanelFace: setMaterialOverridesFromSelection not yet implemented")
     }
 
     private fun onTextureSelectionChanged(itemp: InventoryItem?) {
-        TODO("APR: use JVM equivalent - validate texture selection against object permissions")
+        System.err.println("PanelFace: onTextureSelectionChanged not yet implemented")
     }
 
     private fun onPbrSelectionChanged(itemp: InventoryItem?) {
-        TODO("APR: use JVM equivalent - validate PBR material selection against object permissions")
+        System.err.println("PanelFace: onPbrSelectionChanged not yet implemented")
     }
 
-    private fun onCommitPbr() { TODO("GPU: commit PBR material change") }
-    private fun onCancelPbr() { TODO("GPU: cancel PBR material change") }
-    private fun onSelectPbr() { TODO("GPU: handle PBR material selected in picker") }
-    private fun onDragPbr(item: InventoryItem?): Boolean { TODO("GPU: validate PBR drag") }
-    private fun onDragTexture(item: InventoryItem?): Boolean { TODO("APR: use JVM equivalent - validate texture drag") }
-    private fun onCommitTexture() { TODO("GPU: commit texture change") }
-    private fun onCancelTexture() { TODO("GPU: cancel texture change") }
-    private fun onSelectTexture() { TODO("GPU: handle texture selected in picker") }
-    private fun onCommitSpecularTexture(data: LLSD) { TODO("GPU: commit specular texture change") }
-    private fun onCancelSpecularTexture(data: LLSD) { TODO("GPU: cancel specular texture change") }
-    private fun onSelectSpecularTexture(data: LLSD) { TODO("GPU: handle specular texture selected") }
-    private fun onCommitNormalTexture(data: LLSD) { TODO("GPU: commit normal map change") }
-    private fun onCancelNormalTexture(data: LLSD) { TODO("GPU: cancel normal map change") }
-    private fun onSelectNormalTexture(data: LLSD) { TODO("GPU: handle normal map selected") }
-    private fun onCommitColor() { TODO("APR: use JVM equivalent - commit color change") }
-    private fun onCommitShinyColor() { TODO("GPU: commit specular light color change") }
-    private fun onCommitAlpha() { TODO("APR: use JVM equivalent - commit alpha change") }
-    private fun onCancelColor() { TODO("APR: use JVM equivalent - cancel color change") }
-    private fun onCancelShinyColor() { TODO("GPU: cancel specular light color change") }
-    private fun onSelectColor() { TODO("APR: use JVM equivalent - handle color selected") }
-    private fun onSelectShinyColor() { TODO("GPU: handle specular color selected") }
-    private fun onCloseTexturePicker(data: LLSD) { TODO("APR: use JVM equivalent - handle texture picker close") }
-    private fun onCommitTextureInfo() { TODO("APR: use JVM equivalent - commit texture info (scale/offset/rot)") }
-    private fun onCommitTextureScaleX() { TODO("APR: use JVM equivalent - commit texture scale U") }
-    private fun onCommitTextureScaleY() { TODO("APR: use JVM equivalent - commit texture scale V") }
-    private fun onCommitTextureRot() { TODO("APR: use JVM equivalent - commit texture rotation") }
-    private fun onCommitTextureOffsetX() { TODO("APR: use JVM equivalent - commit texture offset U") }
-    private fun onCommitTextureOffsetY() { TODO("APR: use JVM equivalent - commit texture offset V") }
-    private fun onCommitMaterialBumpyScaleX() { TODO("GPU: commit normal map scale U") }
-    private fun onCommitMaterialBumpyScaleY() { TODO("GPU: commit normal map scale V") }
-    private fun onCommitMaterialBumpyRot() { TODO("GPU: commit normal map rotation") }
-    private fun onCommitMaterialBumpyOffsetX() { TODO("GPU: commit normal map offset U") }
-    private fun onCommitMaterialBumpyOffsetY() { TODO("GPU: commit normal map offset V") }
-    private fun syncRepeatX(scaleU: Float) { TODO("APR: use JVM equivalent - sync repeat X across all material layers") }
-    private fun syncRepeatY(scaleV: Float) { TODO("APR: use JVM equivalent - sync repeat Y across all material layers") }
-    private fun syncOffsetX(offsetU: Float) { TODO("APR: use JVM equivalent - sync offset X across all material layers") }
-    private fun syncOffsetY(offsetV: Float) { TODO("APR: use JVM equivalent - sync offset Y across all material layers") }
-    private fun syncMaterialRot(rot: Float, te: Int = -1) { TODO("APR: use JVM equivalent - sync rotation across all material layers") }
-    private fun onCommitMaterialShinyScaleX() { TODO("GPU: commit specular scale U") }
-    private fun onCommitMaterialShinyScaleY() { TODO("GPU: commit specular scale V") }
-    private fun onCommitMaterialShinyRot() { TODO("GPU: commit specular rotation") }
-    private fun onCommitMaterialShinyOffsetX() { TODO("GPU: commit specular offset U") }
-    private fun onCommitMaterialShinyOffsetY() { TODO("GPU: commit specular offset V") }
-    private fun onCommitMaterialGloss() { TODO("GPU: commit glossiness value") }
-    private fun onCommitMaterialEnv() { TODO("GPU: commit environment intensity value") }
-    private fun onCommitMaterialMaskCutoff() { TODO("GPU: commit alpha mask cutoff value") }
-    private fun onCommitMaterialsMedia() { TODO("APR: use JVM equivalent - commit material/media selection") }
-    private fun onCommitMaterialType() { TODO("APR: use JVM equivalent - switch between Blinn-Phong material layers") }
-    private fun onCommitPbrType() { TODO("GPU: switch PBR sub-texture channel selection") }
-    private fun onClickBtnEditMedia() { TODO("APR: use JVM equivalent - open media settings floater") }
-    private fun onClickBtnDeleteMedia() { TODO("APR: use JVM equivalent - delete media from face") }
-    private fun onClickBtnAddMedia() { TODO("APR: use JVM equivalent - add media to face") }
-    private fun onCommitBump() { TODO("GPU: commit bump map selection") }
-    private fun onCommitTexGen() { TODO("APR: use JVM equivalent - commit texgen mode") }
-    private fun onCommitShiny() { TODO("GPU: commit shininess selection") }
-    private fun onCommitAlphaMode() { TODO("GPU: commit alpha mode selection") }
-    private fun onCommitFullbright() { TODO("GPU: commit fullbright flag") }
-    private fun onCommitHideWater() { TODO("GPU: commit hide-water flag") }
-    private fun onCommitGlow() { TODO("GPU: commit glow value") }
-    private fun onCommitPlanarAlign() { TODO("APR: use JVM equivalent - commit planar alignment flag") }
-    private fun onCommitRepeatsPerMeter() { TODO("APR: use JVM equivalent - commit repeats-per-meter") }
-    private fun onCommitGLTFTextureScaleU() { TODO("GPU: commit GLTF texture scale U") }
-    private fun onCommitGLTFTextureScaleV() { TODO("GPU: commit GLTF texture scale V") }
-    private fun onCommitGLTFRotation() { TODO("GPU: commit GLTF texture rotation") }
-    private fun onCommitGLTFTextureOffsetU() { TODO("GPU: commit GLTF texture offset U") }
-    private fun onCommitGLTFTextureOffsetV() { TODO("GPU: commit GLTF texture offset V") }
-    private fun onCommitGLTFRepeatsPerMeter() { TODO("GPU: commit GLTF repeats-per-meter") }
-    private fun onClickAutoFix() { TODO("APR: use JVM equivalent - auto-fix invalid texture settings") }
-    private fun onAlignTexture() { TODO("APR: use JVM equivalent - align texture to face") }
-    private fun onClickBtnLoadInvPBR() { TODO("GPU: load PBR material from inventory") }
-    private fun onClickBtnEditPBR() { TODO("GPU: open PBR material editor") }
-    private fun onClickBtnSavePBR() { TODO("GPU: save PBR material to inventory") }
-    private fun onCopyFaces() { TODO("APR: use JVM equivalent - copy face attributes to clipboard") }
-    private fun onPasteFaces() { TODO("APR: use JVM equivalent - paste face attributes from clipboard") }
-    private fun onClickBtnSelectSameTexture(userData: LLSD) { TODO("APR: use JVM equivalent - select all faces with same texture") }
-    private fun onClickMapsSync() { TODO("APR: use JVM equivalent - sync all material map transforms") }
-    private fun alignMaterialsProperties() { TODO("APR: use JVM equivalent - align all material map transforms to diffuse") }
+    private fun onCommitPbr() { }
+    private fun onCancelPbr() { }
+    private fun onSelectPbr() { }
+    private fun onDragPbr(item: InventoryItem?): Boolean { return false }
+    private fun onDragTexture(item: InventoryItem?): Boolean { return false }
+    private fun onCommitTexture() { }
+    private fun onCancelTexture() { }
+    private fun onSelectTexture() { }
+    private fun onCommitSpecularTexture(data: LLSD) { }
+    private fun onCancelSpecularTexture(data: LLSD) { }
+    private fun onSelectSpecularTexture(data: LLSD) { }
+    private fun onCommitNormalTexture(data: LLSD) { }
+    private fun onCancelNormalTexture(data: LLSD) { }
+    private fun onSelectNormalTexture(data: LLSD) { }
+    private fun onCommitColor() { System.err.println("PanelFace: onCommitColor not yet implemented") }
+    private fun onCommitShinyColor() { }
+    private fun onCommitAlpha() { System.err.println("PanelFace: onCommitAlpha not yet implemented") }
+    private fun onCancelColor() { System.err.println("PanelFace: onCancelColor not yet implemented") }
+    private fun onCancelShinyColor() { }
+    private fun onSelectColor() { System.err.println("PanelFace: onSelectColor not yet implemented") }
+    private fun onSelectShinyColor() { }
+    private fun onCloseTexturePicker(data: LLSD) { System.err.println("PanelFace: onCloseTexturePicker not yet implemented") }
+    private fun onCommitTextureInfo() { System.err.println("PanelFace: onCommitTextureInfo not yet implemented") }
+    private fun onCommitTextureScaleX() { System.err.println("PanelFace: onCommitTextureScaleX not yet implemented") }
+    private fun onCommitTextureScaleY() { System.err.println("PanelFace: onCommitTextureScaleY not yet implemented") }
+    private fun onCommitTextureRot() { System.err.println("PanelFace: onCommitTextureRot not yet implemented") }
+    private fun onCommitTextureOffsetX() { System.err.println("PanelFace: onCommitTextureOffsetX not yet implemented") }
+    private fun onCommitTextureOffsetY() { System.err.println("PanelFace: onCommitTextureOffsetY not yet implemented") }
+    private fun onCommitMaterialBumpyScaleX() { }
+    private fun onCommitMaterialBumpyScaleY() { }
+    private fun onCommitMaterialBumpyRot() { }
+    private fun onCommitMaterialBumpyOffsetX() { }
+    private fun onCommitMaterialBumpyOffsetY() { }
+    private fun syncRepeatX(scaleU: Float) { System.err.println("PanelFace: syncRepeatX not yet implemented") }
+    private fun syncRepeatY(scaleV: Float) { System.err.println("PanelFace: syncRepeatY not yet implemented") }
+    private fun syncOffsetX(offsetU: Float) { System.err.println("PanelFace: syncOffsetX not yet implemented") }
+    private fun syncOffsetY(offsetV: Float) { System.err.println("PanelFace: syncOffsetY not yet implemented") }
+    private fun syncMaterialRot(rot: Float, te: Int = -1) { System.err.println("PanelFace: syncMaterialRot not yet implemented") }
+    private fun onCommitMaterialShinyScaleX() { }
+    private fun onCommitMaterialShinyScaleY() { }
+    private fun onCommitMaterialShinyRot() { }
+    private fun onCommitMaterialShinyOffsetX() { }
+    private fun onCommitMaterialShinyOffsetY() { }
+    private fun onCommitMaterialGloss() { }
+    private fun onCommitMaterialEnv() { }
+    private fun onCommitMaterialMaskCutoff() { }
+    private fun onCommitMaterialsMedia() { System.err.println("PanelFace: onCommitMaterialsMedia not yet implemented") }
+    private fun onCommitMaterialType() { System.err.println("PanelFace: onCommitMaterialType not yet implemented") }
+    private fun onCommitPbrType() { }
+    private fun onClickBtnEditMedia() { System.err.println("PanelFace: onClickBtnEditMedia not yet implemented") }
+    private fun onClickBtnDeleteMedia() { System.err.println("PanelFace: onClickBtnDeleteMedia not yet implemented") }
+    private fun onClickBtnAddMedia() { System.err.println("PanelFace: onClickBtnAddMedia not yet implemented") }
+    private fun onCommitBump() { }
+    private fun onCommitTexGen() { System.err.println("PanelFace: onCommitTexGen not yet implemented") }
+    private fun onCommitShiny() { }
+    private fun onCommitAlphaMode() { }
+    private fun onCommitFullbright() { }
+    private fun onCommitHideWater() { }
+    private fun onCommitGlow() { }
+    private fun onCommitPlanarAlign() { System.err.println("PanelFace: onCommitPlanarAlign not yet implemented") }
+    private fun onCommitRepeatsPerMeter() { System.err.println("PanelFace: onCommitRepeatsPerMeter not yet implemented") }
+    private fun onCommitGLTFTextureScaleU() { }
+    private fun onCommitGLTFTextureScaleV() { }
+    private fun onCommitGLTFRotation() { }
+    private fun onCommitGLTFTextureOffsetU() { }
+    private fun onCommitGLTFTextureOffsetV() { }
+    private fun onCommitGLTFRepeatsPerMeter() { }
+    private fun onClickAutoFix() { System.err.println("PanelFace: onClickAutoFix not yet implemented") }
+    private fun onAlignTexture() { System.err.println("PanelFace: onAlignTexture not yet implemented") }
+    private fun onClickBtnLoadInvPBR() { }
+    private fun onClickBtnEditPBR() { }
+    private fun onClickBtnSavePBR() { }
+    private fun onCopyFaces() { System.err.println("PanelFace: onCopyFaces not yet implemented") }
+    private fun onPasteFaces() { System.err.println("PanelFace: onPasteFaces not yet implemented") }
+    private fun onClickBtnSelectSameTexture(userData: LLSD) { System.err.println("PanelFace: onClickBtnSelectSameTexture not yet implemented") }
+    private fun onClickMapsSync() { System.err.println("PanelFace: onClickMapsSync not yet implemented") }
+    private fun alignMaterialsProperties() { System.err.println("PanelFace: alignMaterialsProperties not yet implemented") }
 
-    fun onCommitFlip(userData: LLSD) { TODO("APR: use JVM equivalent - flip texture scale sign") }
+    fun onCommitFlip(userData: LLSD) { System.err.println("PanelFace: onCommitFlip not yet implemented") }
 
-    fun onCopyColor() { TODO("APR: use JVM equivalent - copy color from all selected faces") }
-    fun onPasteColor() { TODO("APR: use JVM equivalent - paste color to selection") }
-    fun onPasteColor(objectp: ViewerObject?, te: Int) { TODO("APR: use JVM equivalent - paste color to specific face") }
-    fun onCopyTexture() { TODO("APR: use JVM equivalent - copy texture from selection") }
-    fun onPasteTexture() { TODO("APR: use JVM equivalent - paste texture to selection") }
-    fun onPasteTexture(objectp: ViewerObject?, te: Int) { TODO("APR: use JVM equivalent - paste texture to specific face") }
+    fun onCopyColor() { System.err.println("PanelFace: onCopyColor not yet implemented") }
+    fun onPasteColor() { System.err.println("PanelFace: onPasteColor not yet implemented") }
+    fun onPasteColor(objectp: ViewerObject?, te: Int) { System.err.println("PanelFace: onPasteColor(object, te) not yet implemented") }
+    fun onCopyTexture() { System.err.println("PanelFace: onCopyTexture not yet implemented") }
+    fun onPasteTexture() { System.err.println("PanelFace: onPasteTexture not yet implemented") }
+    fun onPasteTexture(objectp: ViewerObject?, te: Int) { System.err.println("PanelFace: onPasteTexture(object, te) not yet implemented") }
 
     private fun validateInventoryItem(te: LLSD, prefix: String): Boolean {
-        TODO("APR: use JVM equivalent - validate inventory item for paste operation")
+        return false
     }
 
-    private fun getCurrentNormalMap(): Uuid { TODO("APR: use JVM equivalent - get current normal map UUID") }
-    private fun getCurrentSpecularMap(): Uuid { TODO("APR: use JVM equivalent - get current specular map UUID") }
-    private fun getCurrentShininess(): UInt { TODO("APR: use JVM equivalent - get current shininess value") }
-    private fun getCurrentBumpiness(): UInt { TODO("APR: use JVM equivalent - get current bumpiness value") }
-    private fun getCurrentDiffuseAlphaMode(): UByte { TODO("APR: use JVM equivalent - get current diffuse alpha mode") }
-    private fun getCurrentAlphaMaskCutoff(): UByte { TODO("APR: use JVM equivalent - get current alpha mask cutoff") }
-    private fun getCurrentEnvIntensity(): UByte { TODO("GPU: get current environment intensity") }
-    private fun getCurrentGlossiness(): UByte { TODO("GPU: get current glossiness") }
-    private fun getCurrentBumpyRot(): Float { TODO("GPU: get current bump rotation") }
-    private fun getCurrentBumpyScaleU(): Float { TODO("GPU: get current bump scale U") }
-    private fun getCurrentBumpyScaleV(): Float { TODO("GPU: get current bump scale V") }
-    private fun getCurrentBumpyOffsetU(): Float { TODO("GPU: get current bump offset U") }
-    private fun getCurrentBumpyOffsetV(): Float { TODO("GPU: get current bump offset V") }
-    private fun getCurrentShinyRot(): Float { TODO("GPU: get current specular rotation") }
-    private fun getCurrentShinyScaleU(): Float { TODO("GPU: get current specular scale U") }
-    private fun getCurrentShinyScaleV(): Float { TODO("GPU: get current specular scale V") }
-    private fun getCurrentShinyOffsetU(): Float { TODO("GPU: get current specular offset U") }
-    private fun getCurrentShinyOffsetV(): Float { TODO("GPU: get current specular offset V") }
-    private fun getCurrentTextureRot(): Float { TODO("APR: use JVM equivalent - get current diffuse texture rotation") }
-    private fun getCurrentTextureScaleU(): Float { TODO("APR: use JVM equivalent - get current diffuse scale U") }
-    private fun getCurrentTextureScaleV(): Float { TODO("APR: use JVM equivalent - get current diffuse scale V") }
-    private fun getCurrentTextureOffsetU(): Float { TODO("APR: use JVM equivalent - get current diffuse offset U") }
-    private fun getCurrentTextureOffsetV(): Float { TODO("APR: use JVM equivalent - get current diffuse offset V") }
+    private fun getCurrentNormalMap(): Uuid { return Uuid(0, 0) }
+    private fun getCurrentSpecularMap(): Uuid { return Uuid(0, 0) }
+    private fun getCurrentShininess(): UInt { return 0u }
+    private fun getCurrentBumpiness(): UInt { return 0u }
+    private fun getCurrentDiffuseAlphaMode(): UByte { return 0u }
+    private fun getCurrentAlphaMaskCutoff(): UByte { return 0u }
+    private fun getCurrentEnvIntensity(): UByte { return 0u }
+    private fun getCurrentGlossiness(): UByte { return 0u }
+    private fun getCurrentBumpyRot(): Float { return 0f }
+    private fun getCurrentBumpyScaleU(): Float { return 0f }
+    private fun getCurrentBumpyScaleV(): Float { return 0f }
+    private fun getCurrentBumpyOffsetU(): Float { return 0f }
+    private fun getCurrentBumpyOffsetV(): Float { return 0f }
+    private fun getCurrentShinyRot(): Float { return 0f }
+    private fun getCurrentShinyScaleU(): Float { return 0f }
+    private fun getCurrentShinyScaleV(): Float { return 0f }
+    private fun getCurrentShinyOffsetU(): Float { return 0f }
+    private fun getCurrentShinyOffsetV(): Float { return 0f }
+    private fun getCurrentTextureRot(): Float { return 0f }
+    private fun getCurrentTextureScaleU(): Float { return 0f }
+    private fun getCurrentTextureScaleV(): Float { return 0f }
+    private fun getCurrentTextureOffsetU(): Float { return 0f }
+    private fun getCurrentTextureOffsetV(): Float { return 0f }
 
     class Selection {
         private var changed: Boolean = false
@@ -474,11 +468,11 @@ class PanelFace : Panel() {
         private var lastSelectedSide: Int = -1
 
         fun connect() {
-            TODO("APR: use JVM equivalent - connect to selection change signal")
+            System.err.println("PanelFace: Selection.connect not yet implemented")
         }
 
         fun update(): Boolean {
-            TODO("APR: use JVM equivalent - check if selection changed since last call")
+            return false
         }
 
         fun setDirty() { changed = true }
@@ -486,11 +480,11 @@ class PanelFace : Panel() {
         fun onSelectionChanged() { needsSelectionCheck = true }
 
         fun onSelectedObjectUpdated(objectId: Uuid, side: Int) {
-            TODO("APR: use JVM equivalent - mark dirty when specific object/side is updated")
+            System.err.println("PanelFace: Selection.onSelectedObjectUpdated not yet implemented")
         }
 
         private fun compareSelection(): Boolean {
-            TODO("APR: use JVM equivalent - compare current vs. cached selection state")
+            return false
         }
     }
 

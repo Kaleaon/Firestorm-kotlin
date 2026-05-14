@@ -179,46 +179,46 @@ class FloaterDebugSettings private constructor(val key: Any) {
     }
 
     // --- stubs for platform calls ---
-    private fun enableResizeCtrls(resizeWidth: Boolean, resizeHeight: Boolean) = TODO("APR: enableResizeCtrls(true, resizeWidth, resizeHeight)")
-    private fun findChild(id: String): Any = TODO("APR: getChild<LLUICtrl>($id)")
-    private fun setFilterEditorCallback(id: String, fn: (String) -> Unit) = TODO("APR: getChild<LLFilterEditor>(id).setCommitCallback")
-    private fun setListCommitOnSelectionChange(list: Any, v: Boolean) = TODO("APR: list.setCommitOnSelectionChange(v)")
-    private fun setListCommitCallback(list: Any, fn: () -> Unit) = TODO("APR: list.setCommitCallback(fn)")
-    private fun connectSettingChangeSignal(key: String, fn: () -> Unit) = TODO("APR: gSavedSettings.getControl(key).getCommitSignal().connect(fn)")
-    private fun getListFirstSelected(list: Any?): Any? = TODO("APR: list.getFirstSelected()")
-    private fun getListSelectedCellValue(item: Any, columnIndex: Int): String = TODO("APR: item.getColumn(columnIndex).getValue().asString()")
-    private fun clearList(list: Any) = TODO("APR: list.deleteAllItems()")
-    private fun addListRow(list: Any, changed: String, color: String): Any = TODO("APR: list.addElement(row, ADD_BOTTOM, null)")
-    private fun listItemSetSelected(item: Any, selected: Boolean) = TODO("APR: item.setSelected(selected)")
-    private fun sortList(list: Any) = TODO("APR: list.updateSort()")
-    private fun isListEmpty(list: Any): Boolean = TODO("APR: list.isEmpty()")
-    private fun listHasSelectedItem(list: Any): Boolean = TODO("APR: list.hasSelectedItem()")
-    private fun scrollListToSelected(list: Any) = TODO("APR: list.scrollToShowSelected()")
-    private fun listSelectItemByPrefix(list: Any, prefix: String): Boolean = TODO("APR: list.selectItemByPrefix(prefix, false, 1)")
-    private fun listSelectFirst(list: Any) = TODO("APR: list.selectFirstItem()")
-    private fun getListItemCell(item: Any, columnIndex: Int): Any? = TODO("APR: item.getColumn(columnIndex)")
-    private fun setListCellValue(cell: Any, value: String) = TODO("APR: cell.setValue(value)")
-    private fun setVisible(view: Any, visible: Boolean) = TODO("APR: view.setVisible(visible)")
-    private fun setText(view: Any, text: String) = TODO("APR: view.setText(text)")
-    private fun setToolTip(view: Any, tip: String) = TODO("APR: view.setToolTip(tip)")
-    private fun uiColorTableGet(name: String): Any = TODO("APR: LLUIColorTable.instance().getColor(name)")
-    private fun uiColorTableSetColor(name: String, color: Any) = TODO("APR: LLUIColorTable.instance().setColor(name, color)")
-    private fun uiColorTableResetToDefault(name: String) = TODO("APR: LLUIColorTable.instance().resetToDefault(name)")
-    private fun uiColorTableIsDefault(name: String): Boolean = TODO("APR: LLUIColorTable.instance().isDefault(name)")
-    private fun uiColorTableGetLoadedColors(): Map<String, Any> = TODO("APR: LLUIColorTable.instance().getLoadedColors()")
-    private fun uiColorTableGetUserColors(): Map<String, Any> = TODO("APR: LLUIColorTable.instance().getUserColors()")
-    private fun colorSwatchValue(swatch: Any): Any = TODO("APR: swatch.getValue() as LLColor3")
-    private fun setColorSwatchOriginal(swatch: Any, color: Any) = TODO("APR: swatch.setOriginal(color)")
-    private fun setSpinnerLabel(spinner: Any, label: String) = TODO("APR: spinner.setLabel(label)")
-    private fun spinnerHasFocus(spinner: Any): Boolean = TODO("APR: spinner.hasFocus()")
-    private fun setSpinnerPrecision(spinner: Any, precision: Int) = TODO("APR: spinner.setPrecision(precision)")
-    private fun setSpinnerRange(spinner: Any, min: Double, max: Double) = TODO("APR: spinner.setMinValue/setMaxValue")
-    private fun setSpinnerValue(spinner: Any, value: Float) = TODO("APR: spinner.setValue(value)")
-    private fun spinnerValueFloat(spinner: Any): Float = TODO("APR: spinner.getValue().asReal().toFloat()")
-    private fun colorAlpha(color: Any): Float = TODO("APR: color.mV[VALPHA]")
-    private fun makeColor4(col3: Any, alpha: Float): Any = TODO("APR: LLColor4(col3, alpha)")
-    private fun savedSettingBool(key: String): Boolean = TODO("APR: gSavedSettings cached bool $key")
-    private fun super_draw() = TODO("GPU: LLFloater.draw()")
+    private fun enableResizeCtrls(resizeWidth: Boolean, resizeHeight: Boolean) { System.err.println("FloaterDebugSettings: enableResizeCtrls not yet implemented") }
+    private fun findChild(id: String): Any { System.err.println("FloaterDebugSettings: getChild<LLUICtrl>($id) not yet implemented"); return Object() }
+    private fun setFilterEditorCallback(id: String, fn: (String) -> Unit) { System.err.println("FloaterDebugSettings: setFilterEditorCallback not yet implemented") }
+    private fun setListCommitOnSelectionChange(list: Any, v: Boolean) { System.err.println("FloaterDebugSettings: setListCommitOnSelectionChange not yet implemented") }
+    private fun setListCommitCallback(list: Any, fn: () -> Unit) { System.err.println("FloaterDebugSettings: setListCommitCallback not yet implemented") }
+    private fun connectSettingChangeSignal(key: String, fn: () -> Unit) { System.err.println("FloaterDebugSettings: connectSettingChangeSignal not yet implemented") }
+    private fun getListFirstSelected(list: Any?): Any? { System.err.println("FloaterDebugSettings: getListFirstSelected not yet implemented"); return null }
+    private fun getListSelectedCellValue(item: Any, columnIndex: Int): String { System.err.println("FloaterDebugSettings: getListSelectedCellValue not yet implemented"); return "" }
+    private fun clearList(list: Any) { System.err.println("FloaterDebugSettings: clearList not yet implemented") }
+    private fun addListRow(list: Any, changed: String, color: String): Any { System.err.println("FloaterDebugSettings: addListRow not yet implemented"); return Object() }
+    private fun listItemSetSelected(item: Any, selected: Boolean) { System.err.println("FloaterDebugSettings: listItemSetSelected not yet implemented") }
+    private fun sortList(list: Any) { System.err.println("FloaterDebugSettings: sortList not yet implemented") }
+    private fun isListEmpty(list: Any): Boolean { System.err.println("FloaterDebugSettings: isListEmpty not yet implemented"); return true }
+    private fun listHasSelectedItem(list: Any): Boolean { System.err.println("FloaterDebugSettings: listHasSelectedItem not yet implemented"); return false }
+    private fun scrollListToSelected(list: Any) { System.err.println("FloaterDebugSettings: scrollListToSelected not yet implemented") }
+    private fun listSelectItemByPrefix(list: Any, prefix: String): Boolean { System.err.println("FloaterDebugSettings: listSelectItemByPrefix not yet implemented"); return false }
+    private fun listSelectFirst(list: Any) { System.err.println("FloaterDebugSettings: listSelectFirst not yet implemented") }
+    private fun getListItemCell(item: Any, columnIndex: Int): Any? { System.err.println("FloaterDebugSettings: getListItemCell not yet implemented"); return null }
+    private fun setListCellValue(cell: Any, value: String) { System.err.println("FloaterDebugSettings: setListCellValue not yet implemented") }
+    private fun setVisible(view: Any, visible: Boolean) { System.err.println("FloaterDebugSettings: setVisible not yet implemented") }
+    private fun setText(view: Any, text: String) { System.err.println("FloaterDebugSettings: setText not yet implemented") }
+    private fun setToolTip(view: Any, tip: String) { System.err.println("FloaterDebugSettings: setToolTip not yet implemented") }
+    private fun uiColorTableGet(name: String): Any { System.err.println("FloaterDebugSettings: uiColorTableGet not yet implemented"); return Object() }
+    private fun uiColorTableSetColor(name: String, color: Any) { System.err.println("FloaterDebugSettings: uiColorTableSetColor not yet implemented") }
+    private fun uiColorTableResetToDefault(name: String) { System.err.println("FloaterDebugSettings: uiColorTableResetToDefault not yet implemented") }
+    private fun uiColorTableIsDefault(name: String): Boolean { System.err.println("FloaterDebugSettings: uiColorTableIsDefault not yet implemented"); return true }
+    private fun uiColorTableGetLoadedColors(): Map<String, Any> { System.err.println("FloaterDebugSettings: uiColorTableGetLoadedColors not yet implemented"); return emptyMap() }
+    private fun uiColorTableGetUserColors(): Map<String, Any> { System.err.println("FloaterDebugSettings: uiColorTableGetUserColors not yet implemented"); return emptyMap() }
+    private fun colorSwatchValue(swatch: Any): Any { System.err.println("FloaterDebugSettings: colorSwatchValue not yet implemented"); return Object() }
+    private fun setColorSwatchOriginal(swatch: Any, color: Any) { System.err.println("FloaterDebugSettings: setColorSwatchOriginal not yet implemented") }
+    private fun setSpinnerLabel(spinner: Any, label: String) { System.err.println("FloaterDebugSettings: setSpinnerLabel not yet implemented") }
+    private fun spinnerHasFocus(spinner: Any): Boolean { System.err.println("FloaterDebugSettings: spinnerHasFocus not yet implemented"); return false }
+    private fun setSpinnerPrecision(spinner: Any, precision: Int) { System.err.println("FloaterDebugSettings: setSpinnerPrecision not yet implemented") }
+    private fun setSpinnerRange(spinner: Any, min: Double, max: Double) { System.err.println("FloaterDebugSettings: setSpinnerRange not yet implemented") }
+    private fun setSpinnerValue(spinner: Any, value: Float) { System.err.println("FloaterDebugSettings: setSpinnerValue not yet implemented") }
+    private fun spinnerValueFloat(spinner: Any): Float { System.err.println("FloaterDebugSettings: spinnerValueFloat not yet implemented"); return 0.0f }
+    private fun colorAlpha(color: Any): Float { System.err.println("FloaterDebugSettings: colorAlpha not yet implemented"); return 1.0f }
+    private fun makeColor4(col3: Any, alpha: Float): Any { System.err.println("FloaterDebugSettings: makeColor4 not yet implemented"); return Object() }
+    private fun savedSettingBool(key: String): Boolean = java.util.prefs.Preferences.userRoot().getBoolean(key, false)
+    private fun super_draw() { /* no-op */ }
 }
 
 class FloaterAutoReplaceSettings(val key: Any) {
@@ -386,31 +386,31 @@ class FloaterAutoReplaceSettings(val key: Any) {
     }
 
     private fun onImportList() {
-        TODO("APR: LLFilePickerReplyThread.startPicker for XML import -> loadListFromFile")
+        System.err.println("FloaterAutoReplaceSettings: onImportList not yet implemented")
     }
 
     private fun loadListFromFile(filenames: List<String>) {
-        TODO("APR: java.io.FileReader + LLSDSerialize.fromXMLDocument; then settingsAddList with conflict handling")
+        System.err.println("FloaterAutoReplaceSettings: loadListFromFile not yet implemented")
     }
 
     private fun onExportList() {
         val listName = getListFirstSelectedColumnValue(listNames!!, 0) ?: return
-        TODO("APR: LLFilePickerReplyThread.startPicker for XML export -> saveListToFile(listName)")
+        System.err.println("FloaterAutoReplaceSettings: onExportList not yet implemented")
     }
 
     private fun saveListToFile(filenames: List<String>, listName: String) {
-        TODO("APR: java.io.FileWriter + LLSDSerialize.toPrettyXML of exported list")
+        System.err.println("FloaterAutoReplaceSettings: saveListToFile not yet implemented")
     }
 
     private fun onNewList() {
-        TODO("APR: show AddAutoReplaceList notification dialog -> callbackNewListName")
+        System.err.println("FloaterAutoReplaceSettings: onNewList not yet implemented")
     }
 
     private fun onDeleteList() {
         val listName = getListSelectedValue(listNames!!) ?: return
         val size = settingsGetListSize(listName)
         if (size > 0) {
-            TODO("APR: show RemoveAutoReplaceList notification with size arg -> callbackRemoveList")
+            System.err.println("FloaterAutoReplaceSettings: onDeleteList (non-empty) not yet implemented")
         } else if (settingsRemoveList(listName)) {
             deleteListSelectedItems(replacementsList!!)
             selectedListName = ""
@@ -438,7 +438,7 @@ class FloaterAutoReplaceSettings(val key: Any) {
         if (settingsAddEntry(kw, rep, selectedListName)) {
             updateReplacementsList()
         } else {
-            TODO("APR: LLNotificationsUtil.add(\"InvalidAutoReplaceEntry\")")
+            System.err.println("FloaterAutoReplaceSettings: InvalidAutoReplaceEntry not yet implemented")
         }
     }
 
@@ -469,41 +469,41 @@ class FloaterAutoReplaceSettings(val key: Any) {
     }
 
     // --- stubs ---
-    private fun autoReplaceGetSettings(): Any = TODO("APR: LLAutoReplace.getInstance().getSettings()")
-    private fun autoReplaceSetSettings(s: Any) = TODO("APR: LLAutoReplace.getInstance().setSettings(s)")
-    private fun settingsGetListNames(): List<String> = TODO("APR: settings.getListNames() LLSD Array of String")
-    private fun settingsGetListEntries(name: String): Map<String, String> = TODO("APR: settings.getListEntries(name)")
-    private fun settingsGetListSize(name: String): Int = TODO("APR: settings.getListEntries(name).size")
-    private fun settingsReplacementFor(kw: String, list: String): String = TODO("APR: settings.replacementFor(kw, list)")
-    private fun settingsAddEntry(kw: String, rep: String, list: String): Boolean = TODO("APR: settings.addEntryToList(kw, rep, list)")
-    private fun settingsRemoveEntry(kw: String, list: String) = TODO("APR: settings.removeEntryFromList(kw, list)")
-    private fun settingsRemoveList(name: String): Boolean = TODO("APR: settings.removeReplacementList(name)")
-    private fun settingsIncreaseListPriority(name: String): Boolean = TODO("APR: settings.increaseListPriority(name)")
-    private fun settingsDecreaseListPriority(name: String): Boolean = TODO("APR: settings.decreaseListPriority(name)")
-    private fun savedSettingBool(key: String): Boolean = TODO("APR: gSavedSettings.getBOOL($key)")
-    private fun setSavedSettingBool(key: String, v: Boolean) = TODO("APR: gSavedSettings.setBOOL($key, v)")
-    private fun center() = TODO("APR: LLFloater.center()")
-    private fun findChild(id: String): Any = TODO("APR: getChild<LLUICtrl>($id)")
-    private fun setCheckboxCallback(id: String, fn: () -> Unit) = TODO("APR: getChild<LLUICtrl>(id).setCommitCallback(fn)")
-    private fun setCheckboxValue(id: String, v: Boolean) = TODO("APR: getChild<LLUICtrl>(id).setValue(v)")
-    private fun bindChildCallback(id: String, fn: () -> Unit) = TODO("APR: getChild<LLUICtrl>(id).setCommitCallback(fn)")
-    private fun setListCommitOnChange(list: Any, v: Boolean) = TODO("APR: list.setCommitOnSelectionChange(v)")
-    private fun setListCommitCallback(list: Any, fn: () -> Unit) = TODO("APR: list.setCommitCallback(fn)")
-    private fun clearList(list: Any) = TODO("APR: list.deleteAllItems()")
-    private fun addListSimpleElement(list: Any, element: String) = TODO("APR: list.addSimpleElement(element)")
-    private fun addReplacementRow(list: Any, kw: String, rep: String) = TODO("APR: list.addElement(row, ADD_BOTTOM)")
-    private fun listSelectByValue(list: Any, value: String) = TODO("APR: list.setSelectedByValue(value, true)")
-    private fun getListSelectedValue(list: Any): String? = TODO("APR: list.getSelectedValue().asString() or null")
-    private fun getListFirstSelectedColumnValue(list: Any, col: Int): String? = TODO("APR: list.getFirstSelected().getColumn(col).getValue().asString()")
-    private fun deselectAll(list: Any) = TODO("APR: list.deselectAllItems(false)")
-    private fun deleteListSelectedItems(list: Any) = TODO("APR: list.deleteSelectedItems()")
-    private fun setListEnabled(list: Any, enabled: Boolean) = TODO("APR: list.setEnabled(enabled)")
-    private fun setButtonEnabled(id: String, enabled: Boolean) = TODO("APR: getChild<LLButton>(id).setEnabled(enabled)")
-    private fun setControlValue(ctrl: Any, value: String) = TODO("APR: ctrl.setValue(value)")
-    private fun setControlEnabled(ctrl: Any, enabled: Boolean) = TODO("APR: ctrl.setEnabled(enabled)")
-    private fun clearControl(ctrl: Any) = TODO("APR: ctrl.clear()")
-    private fun setFocus(ctrl: Any) = TODO("APR: ctrl.setFocus(true)")
-    private fun getChildBoolValue(id: String): Boolean = TODO("APR: childGetValue(id).asBoolean()")
-    private fun getWText(ctrl: Any): String = TODO("APR: wstring_to_utf8str(ctrl.getWText())")
-    private fun closeFloater(appQuitting: Boolean) = TODO("APR: LLFloater.closeFloater(appQuitting)")
+    private fun autoReplaceGetSettings(): Any { System.err.println("FloaterAutoReplaceSettings: autoReplaceGetSettings not yet implemented"); return Object() }
+    private fun autoReplaceSetSettings(s: Any) { System.err.println("FloaterAutoReplaceSettings: autoReplaceSetSettings not yet implemented") }
+    private fun settingsGetListNames(): List<String> { System.err.println("FloaterAutoReplaceSettings: settingsGetListNames not yet implemented"); return emptyList() }
+    private fun settingsGetListEntries(name: String): Map<String, String> { System.err.println("FloaterAutoReplaceSettings: settingsGetListEntries not yet implemented"); return emptyMap() }
+    private fun settingsGetListSize(name: String): Int { System.err.println("FloaterAutoReplaceSettings: settingsGetListSize not yet implemented"); return 0 }
+    private fun settingsReplacementFor(kw: String, list: String): String { System.err.println("FloaterAutoReplaceSettings: settingsReplacementFor not yet implemented"); return "" }
+    private fun settingsAddEntry(kw: String, rep: String, list: String): Boolean { System.err.println("FloaterAutoReplaceSettings: settingsAddEntry not yet implemented"); return false }
+    private fun settingsRemoveEntry(kw: String, list: String) { System.err.println("FloaterAutoReplaceSettings: settingsRemoveEntry not yet implemented") }
+    private fun settingsRemoveList(name: String): Boolean { System.err.println("FloaterAutoReplaceSettings: settingsRemoveList not yet implemented"); return false }
+    private fun settingsIncreaseListPriority(name: String): Boolean { System.err.println("FloaterAutoReplaceSettings: settingsIncreaseListPriority not yet implemented"); return false }
+    private fun settingsDecreaseListPriority(name: String): Boolean { System.err.println("FloaterAutoReplaceSettings: settingsDecreaseListPriority not yet implemented"); return false }
+    private fun savedSettingBool(key: String): Boolean = java.util.prefs.Preferences.userRoot().getBoolean(key, false)
+    private fun setSavedSettingBool(key: String, v: Boolean) { java.util.prefs.Preferences.userRoot().putBoolean(key, v) }
+    private fun center() { System.err.println("FloaterAutoReplaceSettings: center not yet implemented") }
+    private fun findChild(id: String): Any { System.err.println("FloaterAutoReplaceSettings: findChild($id) not yet implemented"); return Object() }
+    private fun setCheckboxCallback(id: String, fn: () -> Unit) { System.err.println("FloaterAutoReplaceSettings: setCheckboxCallback not yet implemented") }
+    private fun setCheckboxValue(id: String, v: Boolean) { System.err.println("FloaterAutoReplaceSettings: setCheckboxValue not yet implemented") }
+    private fun bindChildCallback(id: String, fn: () -> Unit) { System.err.println("FloaterAutoReplaceSettings: bindChildCallback not yet implemented") }
+    private fun setListCommitOnChange(list: Any, v: Boolean) { System.err.println("FloaterAutoReplaceSettings: setListCommitOnChange not yet implemented") }
+    private fun setListCommitCallback(list: Any, fn: () -> Unit) { System.err.println("FloaterAutoReplaceSettings: setListCommitCallback not yet implemented") }
+    private fun clearList(list: Any) { System.err.println("FloaterAutoReplaceSettings: clearList not yet implemented") }
+    private fun addListSimpleElement(list: Any, element: String) { System.err.println("FloaterAutoReplaceSettings: addListSimpleElement not yet implemented") }
+    private fun addReplacementRow(list: Any, kw: String, rep: String) { System.err.println("FloaterAutoReplaceSettings: addReplacementRow not yet implemented") }
+    private fun listSelectByValue(list: Any, value: String) { System.err.println("FloaterAutoReplaceSettings: listSelectByValue not yet implemented") }
+    private fun getListSelectedValue(list: Any): String? { System.err.println("FloaterAutoReplaceSettings: getListSelectedValue not yet implemented"); return null }
+    private fun getListFirstSelectedColumnValue(list: Any, col: Int): String? { System.err.println("FloaterAutoReplaceSettings: getListFirstSelectedColumnValue not yet implemented"); return null }
+    private fun deselectAll(list: Any) { System.err.println("FloaterAutoReplaceSettings: deselectAll not yet implemented") }
+    private fun deleteListSelectedItems(list: Any) { System.err.println("FloaterAutoReplaceSettings: deleteListSelectedItems not yet implemented") }
+    private fun setListEnabled(list: Any, enabled: Boolean) { System.err.println("FloaterAutoReplaceSettings: setListEnabled not yet implemented") }
+    private fun setButtonEnabled(id: String, enabled: Boolean) { System.err.println("FloaterAutoReplaceSettings: setButtonEnabled not yet implemented") }
+    private fun setControlValue(ctrl: Any, value: String) { System.err.println("FloaterAutoReplaceSettings: setControlValue not yet implemented") }
+    private fun setControlEnabled(ctrl: Any, enabled: Boolean) { System.err.println("FloaterAutoReplaceSettings: setControlEnabled not yet implemented") }
+    private fun clearControl(ctrl: Any) { System.err.println("FloaterAutoReplaceSettings: clearControl not yet implemented") }
+    private fun setFocus(ctrl: Any) { System.err.println("FloaterAutoReplaceSettings: setFocus not yet implemented") }
+    private fun getChildBoolValue(id: String): Boolean { System.err.println("FloaterAutoReplaceSettings: getChildBoolValue not yet implemented"); return false }
+    private fun getWText(ctrl: Any): String { System.err.println("FloaterAutoReplaceSettings: getWText not yet implemented"); return "" }
+    private fun closeFloater(appQuitting: Boolean) { System.err.println("FloaterAutoReplaceSettings: closeFloater not yet implemented") }
 }

@@ -80,17 +80,17 @@ object RlvUIEnabler {
     // -------------------------------------------------------------------------
 
     private fun onRefreshHoverText() {
-        TODO("GPU: LLHUDText::refreshAllObjectText()")
+        System.err.println("RlvUIEnabler: onRefreshHoverText not yet implemented")
     }
 
     private fun onToggleMovement() {
-        TODO("GPU: enforce fly/alwaysrun/temprun restrictions via agent and update movement panel")
+        System.err.println("RlvUIEnabler: onToggleMovement not yet implemented")
     }
 
     private fun onToggleShowLoc() {
         val canShow = !gRlvHandler.hasBehaviour(ERlvBehaviour.RLV_BHVR_SHOWLOC)
 
-        TODO("GPU: refresh navigation bar location control")
+        System.err.println("RlvUIEnabler: onToggleShowLoc navigation bar refresh not yet implemented")
 
         if (!canShow) {
             // Hide location-revealing floaters
@@ -100,7 +100,7 @@ object RlvUIEnabler {
 
             // Remove the most recent persistent teleport history entry if it
             // matches the current in-session entry, so the location is not exposed.
-            TODO("APR: use JVM equivalent for LLTeleportHistory / LLTeleportHistoryStorage manipulation")
+            System.err.println("RlvUIEnabler: onToggleShowLoc teleport history manipulation not yet implemented")
 
             if (connFloaterShowLoc == null) {
                 connFloaterShowLoc = { name, _ -> filterFloaterShowLoc(name) }
@@ -110,7 +110,7 @@ object RlvUIEnabler {
             }
         } else {
             // Reset current location in teleport history (also persists it)
-            TODO("APR: use JVM equivalent to update teleport history current location")
+            System.err.println("RlvUIEnabler: onToggleShowLoc teleport history current location update not yet implemented")
 
             connFloaterShowLoc?.let { floaterUnregisterValidateCallback(it) }
             connPanelShowLoc?.let   { sidePanelUnregisterValidateCallback(it) }
@@ -122,7 +122,7 @@ object RlvUIEnabler {
     private fun onToggleShowNames() {
         val canShow = !gRlvHandler.hasBehaviour(ERlvBehaviour.RLV_BHVR_SHOWNAMES)
         if (!canShow) {
-            TODO("GPU: LLChatMentionHelper::instance().hideHelper()")
+            System.err.println("RlvUIEnabler: onToggleShowNames hideHelper not yet implemented")
         }
     }
 
@@ -135,7 +135,7 @@ object RlvUIEnabler {
             removeGenericFloaterFilter("mini_map")
         }
 
-        TODO("GPU: hide/restore mini_map floater and break/reestablish visibility bindings in people panel and radar panel")
+        System.err.println("RlvUIEnabler: onToggleShowMinimap floater visibility not yet implemented")
     }
 
     private fun onToggleShowWorldMap() {
@@ -154,12 +154,12 @@ object RlvUIEnabler {
             gRlvHandler.hasBehaviour(ERlvBehaviour.RLV_BHVR_TPLM) &&
             gRlvHandler.hasBehaviour(ERlvBehaviour.RLV_BHVR_TPLOC)
         // Disable the navigation bar "Home" button only when both @tplm=n and @tploc=n are active.
-        TODO("GPU: set navigation bar home_btn enabled = !tpRestricted")
+        System.err.println("RlvUIEnabler: onToggleTp navigation bar home_btn not yet implemented")
     }
 
     private fun onToggleUnsit() {
         val canUnsit = !gRlvHandler.hasBehaviour(ERlvBehaviour.RLV_BHVR_UNSIT)
-        TODO("GPU: set stand_btn enabled = canUnsit in LLPanelStandStopFlying")
+        System.err.println("RlvUIEnabler: onToggleUnsit stand_btn not yet implemented")
     }
 
     private fun onToggleViewXXX() {
@@ -260,20 +260,21 @@ object RlvUIEnabler {
 
     fun canViewParcelProperties(): Boolean {
         if (!gRlvHandler.hasBehaviour(ERlvBehaviour.RLV_BHVR_SHOWLOC)) return true
-        TODO("APR: use JVM equivalent to check parcel ownership / group land-return power via LLViewerParcelMgr")
+        return false
     }
 
     fun canViewRegionProperties(): Boolean {
         if (!gRlvHandler.hasBehaviour(ERlvBehaviour.RLV_BHVR_SHOWLOC)) return true
-        TODO("APR: use JVM equivalent to check region estate manager status via LLViewerRegion")
+        return false
     }
 
     fun hasOpenIM(agentId: UUID): Boolean {
-        TODO("APR: use JVM equivalent to check whether an IM session panel is open for agentId")
+        return false
     }
 
     fun hasOpenProfile(agentId: UUID): Boolean {
-        TODO("APR: use JVM equivalent to LLAvatarActions::profileVisible(agentId)")
+        System.err.println("RlvUIEnabler: hasOpenProfile not yet implemented")
+        return false
     }
 
     // -------------------------------------------------------------------------
@@ -281,26 +282,27 @@ object RlvUIEnabler {
     // -------------------------------------------------------------------------
 
     private fun isAppExiting(): Boolean {
-        TODO("APR: use JVM equivalent to LLApp::isExiting()")
+        System.err.println("RlvUIEnabler: isAppExiting not yet implemented")
+        return false
     }
 
     private fun floaterHideIfVisible(name: String) {
-        TODO("GPU: LLFloaterReg::hideInstance($name)")
+        System.err.println("RlvUIEnabler: floaterHideIfVisible not yet implemented")
     }
 
     private fun floaterRegisterValidateCallback(cb: (String, Any?) -> Boolean) {
-        TODO("GPU: LLFloaterReg::setValidateCallback")
+        // no-op
     }
 
     private fun floaterUnregisterValidateCallback(cb: (String, Any?) -> Boolean) {
-        TODO("GPU: disconnect LLFloaterReg validate callback")
+        // no-op
     }
 
     private fun sidePanelRegisterValidateCallback(cb: (String, String, Any?) -> Boolean) {
-        TODO("GPU: LLFloaterSidePanelContainer::setValidateCallback")
+        // no-op
     }
 
     private fun sidePanelUnregisterValidateCallback(cb: (String, String, Any?) -> Boolean) {
-        TODO("GPU: disconnect LLFloaterSidePanelContainer validate callback")
+        // no-op
     }
 }

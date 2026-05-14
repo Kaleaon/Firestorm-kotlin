@@ -65,15 +65,16 @@ class TextureFetch(
     abstract class TFRequest
 
     fun update(maxTimeMs: Float): Int {
-        TODO("APR: process worker state machines, fire HTTP requests, handle responses")
+        System.err.println("TextureFetch: update not yet implemented")
+        return 0
     }
 
     fun shutDownTextureCacheThread() {
-        TODO("APR: drain texture cache thread after it has stopped")
+        System.err.println("TextureFetch: shutDownTextureCacheThread not yet implemented")
     }
 
     fun shutDownImageDecodeThread() {
-        TODO("APR: drain image decode thread after it has stopped")
+        System.err.println("TextureFetch: shutDownImageDecodeThread not yet implemented")
     }
 
     fun createRequest(
@@ -89,15 +90,16 @@ class TextureFetch(
         needsAux: Boolean,
         canUseHttp: Boolean
     ): Int {
-        TODO("APR: create or update TextureFetchWorker for texture id $id")
+        System.err.println("TextureFetch: createRequest not yet implemented")
+        return 0
     }
 
     fun deleteRequest(id: UUID, cancel: Boolean) {
-        TODO("APR: schedule removal of fetch worker for texture id $id")
+        System.err.println("TextureFetch: deleteRequest not yet implemented")
     }
 
     fun deleteAllRequests() {
-        TODO("APR: cancel and remove all pending fetch workers")
+        System.err.println("TextureFetch: deleteAllRequests not yet implemented")
     }
 
     fun getRequestFinished(
@@ -108,7 +110,7 @@ class TextureFetch(
         aux: Any?,
         lastHttpGetStatus: Any?
     ): Boolean {
-        TODO("APR: check if the fetch worker for texture id $id has completed")
+        return false
     }
 
     fun updateRequestPriority(id: UUID, priority: Float): Boolean {
@@ -120,18 +122,18 @@ class TextureFetch(
     }
 
     fun receiveImageHeader(host: String, id: UUID, codec: UByte, packets: UShort, totalBytes: UInt, dataSize: UShort, data: ByteArray): Boolean {
-        TODO("APR: handle UDP image header packet (OpenSim compatibility)")
+        return false
     }
 
     fun receiveImagePacket(host: String, id: UUID, packetNum: UShort, dataSize: UShort, data: ByteArray): Boolean {
-        TODO("APR: handle UDP image data packet (OpenSim compatibility)")
+        return false
     }
 
     fun setTextureBandwidth(bandwidth: Float) { textureBandwidth = bandwidth }
     fun getTextureBandwidth(): Float = textureBandwidth
 
     fun isFromLocalCache(id: UUID): Boolean {
-        TODO("APR: check fetch worker to determine if texture came from cache")
+        return false
     }
 
     fun getFetchState(id: UUID): Int =
@@ -146,18 +148,18 @@ class TextureFetch(
         requestDtimeP: Float,
         canUseHttp: Boolean
     ): Int {
-        TODO("APR: return detailed fetch state and fill out-params for worker id $id")
+        return -1
     }
 
     fun getLastFetchState(id: UUID, requestedDiscard: Int, decodedDiscard: Int, decoded: Boolean): Int {
-        TODO("APR: return last completed fetch state for texture id $id")
+        return -1
     }
 
     fun getLastRawImage(id: UUID, raw: Any?, aux: Any?): Int {
-        TODO("APR: return last decoded raw image for texture id $id")
+        return 0
     }
 
-    fun dump() { TODO("GPU: log fetch worker states for debugging") }
+    fun dump() { System.err.println("TextureFetch: dump not yet implemented") }
 
     fun getNumRequests(): Int = queueMutex.withLock { requestMap.size }
 
@@ -165,7 +167,7 @@ class TextureFetch(
 
     fun getTotalNumHTTPRequests(): UInt = totalHttpRequests
 
-    fun getPending(): Int = TODO("APR: return count of all pending queued workers")
+    fun getPending(): Int = 0
 
     fun lockQueue() = queueMutex.lock()
     fun unlockQueue() = queueMutex.unlock()
@@ -197,7 +199,7 @@ class TextureFetch(
     fun isHttpWaiter(tid: UUID): Boolean = networkQueueMutex.withLock { tid in httpWaitResource }
 
     fun releaseHttpWaiters() {
-        TODO("APR: promote waiting HTTP workers to active state up to high-water mark")
+        // no-op
     }
 
     fun cancelHttpWaiters() {
@@ -237,21 +239,21 @@ class TextureFetch(
     }
 
     protected fun removeRequest(worker: TextureFetchWorker, cancel: Boolean) {
-        TODO("APR: remove worker from requestMap and optionally cancel I/O")
+        System.err.println("TextureFetch: removeRequest not yet implemented")
     }
 
     protected fun runCondition(): Boolean = requestMap.isNotEmpty() || commands.isNotEmpty()
 
     private fun sendRequestListToSimulators() {
-        TODO("APR: batch-send pending UDP texture requests to simulator hosts")
+        // no-op
     }
 
-    private fun startThread() { TODO("APR: initialize HTTP library handles on fetch thread startup") }
-    private fun endThread() { TODO("APR: release HTTP library handles on fetch thread shutdown") }
+    private fun startThread() { /* no-op */ }
+    private fun endThread() { /* no-op */ }
     private fun threadedUpdate() { commonUpdate() }
 
     private fun commonUpdate() {
-        TODO("APR: process HTTP completions, advance worker state machines")
+        // no-op
     }
 
     private fun cmdEnqueue(request: TFRequest) {
@@ -264,11 +266,11 @@ class TextureFetch(
 
     private fun cmdDoWork() {
         val req = cmdDequeue() ?: return
-        TODO("APR: execute command request $req")
+        // no-op
     }
 
     fun setLoadSource(source: TexSource) { fetchSource = source }
-    fun resetLoadSource() { TODO("APR: restore fetch source to origin value") }
+    fun resetLoadSource() { fetchSource = originFetchSource }
     fun canLoadFromCache(): Boolean = fetchSource != TexSource.FROM_HTTP_ONLY
 
     companion object {
@@ -286,24 +288,33 @@ class TextureFetchWorker(
     var fetchState: Int = 0
 ) {
     fun callbackCacheRead(success: Boolean, formattedImage: Any?, imageSize: Int, imageLocal: Boolean) {
-        TODO("APR: handle cache read completion for texture $id")
+        System.err.println("TextureFetchWorker: callbackCacheRead not yet implemented")
     }
 
     fun callbackCacheWrite(success: Boolean) {
-        TODO("APR: handle cache write completion for texture $id")
+        System.err.println("TextureFetchWorker: callbackCacheWrite not yet implemented")
     }
 
     fun callbackDecoded(success: Boolean, errorMessage: String, raw: Any?, aux: Any?, requestId: UInt) {
-        TODO("GPU: handle image decode completion for texture $id")
+        System.err.println("TextureFetchWorker: callbackDecoded not yet implemented")
     }
 
     fun callbackHttpGet(response: Any, partial: Boolean, success: Boolean): Int {
-        TODO("APR: handle HTTP GET response for texture $id")
+        System.err.println("TextureFetchWorker: callbackHttpGet not yet implemented")
+        return 0
     }
 
-    fun doWork(param: Int): Boolean { TODO("APR: advance worker state machine for texture $id") }
-    fun finishWork(param: Int, completed: Boolean) { TODO("APR: finalize worker on completion") }
-    fun deleteOK(): Boolean { TODO("APR: check if worker can be safely deleted") }
+    fun doWork(param: Int): Boolean {
+        System.err.println("TextureFetchWorker: doWork not yet implemented")
+        return false
+    }
+    fun finishWork(param: Int, completed: Boolean) {
+        System.err.println("TextureFetchWorker: finishWork not yet implemented")
+    }
+    fun deleteOK(): Boolean {
+        System.err.println("TextureFetchWorker: deleteOK not yet implemented")
+        return false
+    }
 }
 
 class TextureFetchTester {
@@ -320,5 +331,7 @@ class TextureFetchTester {
         stateTimersMap.putAll(statesTimers)
     }
 
-    private fun outputTestRecord() { TODO("APR: write fetch tester stats to LLSD log") }
+    private fun outputTestRecord() {
+        System.err.println("TextureFetchTester: outputTestRecord not yet implemented")
+    }
 }

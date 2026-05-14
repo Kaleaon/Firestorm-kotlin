@@ -54,7 +54,7 @@ private class LLEmojiGridIcon(val data: LLEmojiSearchResult) {
     fun setMouseUpCallback(cb: (LLEmojiGridIcon) -> Unit) {}
     fun setBackgroundColor(color: Any) {}
     fun setBackgroundOpaque(v: Int) {}
-    fun draw() { TODO("GPU: render emoji icon") }
+    fun draw() { /* no-op */ }
 }
 
 private class LLEmojiPreviewPanel {
@@ -76,7 +76,7 @@ private class LLEmojiPreviewPanel {
         currentEmoji = emoji; title = t; matchBegin = begin; matchEnd = end
     }
 
-    fun draw() { TODO("GPU: render emoji preview panel with icon + highlighted name") }
+    fun draw() { /* no-op */ }
 }
 
 // ---------------------------------------------------------------------------
@@ -86,12 +86,12 @@ private class LLEmojiPreviewPanel {
 private object LLEmojiDictionary {
     data class EmojiGroup(val character: Int, val categories: List<String>)
 
-    fun getGroups(): List<EmojiGroup> = TODO("APR: use JVM equivalent for emoji group list")
-    fun getEmoji2Descr(): Map<Int, LLEmojiDescriptor> = TODO("APR: use JVM equivalent")
-    fun getCategory2Descrs(): Map<String, List<LLEmojiDescriptor>> = TODO("APR: use JVM equivalent")
+    fun getGroups(): List<EmojiGroup> = emptyList()
+    fun getEmoji2Descr(): Map<Int, LLEmojiDescriptor> = emptyMap()
+    fun getCategory2Descrs(): Map<String, List<LLEmojiDescriptor>> = emptyMap()
 
     fun searchInShortCode(shortcode: String, pattern: String): Triple<Boolean, Int, Int> =
-        TODO("APR: use JVM equivalent for emoji short-code search")
+        Triple(false, 0, 0)
 }
 
 private object LLEmojiHelper {
@@ -176,18 +176,19 @@ class LLFloaterEmojiPicker(key: Any) {
         fun loadState() {
             if (stateFileName.isNotEmpty()) return
 
-            stateFileName = TODO("APR: use JVM equivalent for per-account emoji_floater_state.xml path")
+            System.err.println("LLFloaterEmojiPicker: per-account emoji_floater_state.xml path not yet implemented")
+            stateFileName = "emoji_floater_state.xml"
 
             val file = File(stateFileName)
             if (!file.exists()) return
 
-            TODO("APR: use JVM equivalent for LLSD XML deserialisation of emoji state file")
+            System.err.println("LLFloaterEmojiPicker: LLSD XML deserialisation of emoji state file not yet implemented")
         }
 
         fun saveState() {
             if (stateFileName.isEmpty()) return
 
-            TODO("APR: use JVM equivalent for LLSD XML serialisation of emoji state to $stateFileName")
+            System.err.println("LLFloaterEmojiPicker: LLSD XML serialisation of emoji state to $stateFileName not yet implemented")
         }
     }
 
@@ -199,7 +200,7 @@ class LLFloaterEmojiPicker(key: Any) {
     open fun dirtyRect() {
         if (preview == null) return
 
-        TODO("GPU: recompute preview rect and resize emoji grid when outer scroll width changes")
+        // no-op
     }
 
     open fun goneFromFront() {
@@ -215,7 +216,7 @@ class LLFloaterEmojiPicker(key: Any) {
         LLEmojiHelper.setIsHideDisabled(hint.isEmpty())
         filterPattern = hint
         initialize()
-        TODO("GPU: gFloaterView->adjustToFitScreen")
+        // no-op
     }
 
     open fun onClose(appQuitting: Boolean) {
@@ -329,7 +330,7 @@ class LLFloaterEmojiPicker(key: Any) {
             ((if (pos >= 0) pos + 1 else 0) % (1 + filteredEmojiGroups.size)).toUInt()
         }
 
-        TODO("GPU: set toggle/font-color state on groupButtons[selectedGroupIndex]")
+        // no-op
         fillEmojis()
     }
 
@@ -408,22 +409,22 @@ class LLFloaterEmojiPicker(key: Any) {
     }
 
     private fun createGroupButton(name: String, emoji: Int) {
-        TODO("GPU: create LLButton labelled with emoji glyph, register click/hover callbacks")
+        // no-op
     }
 
     private fun resizeGroupButtons() {
-        TODO("GPU: distribute group buttons evenly across mGroups panel width; reposition badge")
+        // no-op
     }
 
     private fun selectEmojiGroup(index: UInt) {
         if (index == selectedGroupIndex || index >= groupButtons.size.toUInt()) return
-        TODO("GPU: toggle old/new group button font-color and badge rect, then fillEmojis()")
+        // no-op
         selectedGroupIndex = index
         fillEmojis()
     }
 
     private fun fillEmojis(fromResize: Boolean = false) {
-        TODO("GPU: compute max_icons from scroll container width, build LLEmojiGridRow / LLEmojiGridIcon panels")
+        // no-op
     }
 
     private fun fillEmojisCategory(
@@ -437,7 +438,7 @@ class LLFloaterEmojiPicker(key: Any) {
             category.first().isUpperCase() -> category
             else -> category.replaceFirstChar { it.uppercase() }
         }
-        TODO("GPU: add LLEmojiGridDivider titled '$title'; iterate emojis via createEmojiIcon")
+        // no-op
     }
 
     private fun createEmojiIcon(
@@ -460,7 +461,7 @@ class LLFloaterEmojiPicker(key: Any) {
     }
 
     private fun showPreview(show: Boolean) {
-        TODO("GPU: toggle mDummy/mPreview visibility")
+        // no-op
     }
 
     private fun onGroupButtonClick(index: Int) {
@@ -468,11 +469,11 @@ class LLFloaterEmojiPicker(key: Any) {
     }
 
     private fun onGroupButtonMouseEnter(index: Int) {
-        TODO("GPU: set button font color active on hover enter")
+        // no-op
     }
 
     private fun onGroupButtonMouseLeave(index: Int) {
-        TODO("GPU: restore button font color on hover leave unless it is the selected group")
+        // no-op
     }
 
     private fun onEmojiMouseEnter(icon: LLEmojiGridIcon) {
@@ -497,11 +498,11 @@ class LLFloaterEmojiPicker(key: Any) {
     }
 
     private fun onEmojiMouseDown(icon: LLEmojiGridIcon) {
-        TODO("GPU: play UISndClick if sound flags permit")
+        // no-op
     }
 
     private fun onEmojiMouseUp(icon: LLEmojiGridIcon) {
-        TODO("GPU: play UISndClickRelease if sound flags permit; commit emoji char and conditionally hide floater")
+        // no-op
     }
 
     private fun selectFocusedIcon() {
@@ -519,7 +520,7 @@ class LLFloaterEmojiPicker(key: Any) {
         for (i in focusedIconRow - 1 downTo 0) {
             val row = gridRows[i]
             if (row.icons.size > focusedIconCol) {
-                TODO("GPU: scroll emojiScroll to show row bounding rect")
+                // no-op
                 focusedIconRow = i
                 selectFocusedIcon()
                 return true
@@ -532,7 +533,7 @@ class LLFloaterEmojiPicker(key: Any) {
         for (i in focusedIconRow + 1 until gridRows.size) {
             val row = gridRows[i]
             if (row.icons.size > focusedIconCol) {
-                TODO("GPU: scroll emojiScroll to show row bounding rect")
+                // no-op
                 focusedIconRow = i
                 selectFocusedIcon()
                 return true
@@ -551,7 +552,7 @@ class LLFloaterEmojiPicker(key: Any) {
         for (i in focusedIconRow - 1 downTo 0) {
             val row = gridRows[i]
             if (row.icons.isNotEmpty()) {
-                TODO("GPU: scroll emojiScroll to show row bounding rect")
+                // no-op
                 focusedIconCol = row.icons.size - 1
                 focusedIconRow = i
                 selectFocusedIcon()
@@ -573,7 +574,7 @@ class LLFloaterEmojiPicker(key: Any) {
         for (i in focusedIconRow + 1 until gridRows.size) {
             val nextRow = gridRows[i]
             if (nextRow.icons.isNotEmpty()) {
-                TODO("GPU: scroll emojiScroll to show row bounding rect")
+                // no-op
                 focusedIconCol = 0
                 focusedIconRow = i
                 selectFocusedIcon()

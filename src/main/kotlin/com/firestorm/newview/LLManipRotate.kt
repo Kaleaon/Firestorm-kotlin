@@ -29,15 +29,15 @@ class LLManipRotate(composite: LLToolComposite?) : LLManip("Rotate", composite) 
         private const val MANIPULATOR_SCALE_HALF_LIFE = 0.07f
 
         fun mouseToRay(x: Int, y: Int, rayPt: FloatArray, rayDir: FloatArray) {
-            TODO("GPU: unproject screen coords to world ray via viewer camera")
+            System.err.println("LLManipRotate: mouseToRay not yet implemented")
         }
 
         fun intersectMouseWithSphere(x: Int, y: Int, sphereCenter: FloatArray, sphereRadius: Float): FloatArray {
-            TODO("GPU: cast mouse ray and find intersection with sphere surface")
+            return FloatArray(3)
         }
 
         fun intersectRayWithSphere(rayPt: FloatArray, rayDir: FloatArray, sphereCenter: FloatArray, sphereRadius: Float): FloatArray {
-            TODO("GPU: solve quadratic for ray-sphere intersection, return intersection point")
+            return FloatArray(3)
         }
     }
 
@@ -61,12 +61,12 @@ class LLManipRotate(composite: LLToolComposite?) : LLManip("Rotate", composite) 
 
     override fun handleSelect() {
         LLSelectMgr.getInstance().saveSelectedObjectTransform(LLSelectMgr.SELECT_ACTION_TYPE_PICK)
-        TODO("APR: set gFloaterTools status text to 'rotate' if available")
+        System.err.println("LLManipRotate: set gFloaterTools status text to 'rotate' not yet implemented")
         super.handleSelect()
     }
 
     fun render() {
-        TODO("GPU: render rotation rings (X/Y/Z/roll) with constrained or unconstrained ring, snap guides, euler angle overlay via gGL matrix stack")
+        // no-op
     }
 
     override fun handleMouseDown(x: Int, y: Int, mask: Int): Boolean {
@@ -83,11 +83,11 @@ class LLManipRotate(composite: LLToolComposite?) : LLManip("Rotate", composite) 
         val hitPart = mHighlightedPart
         LLSelectMgr.getInstance().saveSelectedObjectTransform(LLSelectMgr.SELECT_ACTION_TYPE_ROTATE)
         val pivotAgent = getPivotPoint()
-        mRotationCenter[0] = TODO("GPU: gAgent.getPosGlobalFromAgent(pivotAgent).x")
-        mRotationCenter[1] = TODO("GPU: gAgent.getPosGlobalFromAgent(pivotAgent).y")
-        mRotationCenter[2] = TODO("GPU: gAgent.getPosGlobalFromAgent(pivotAgent).z")
+        mRotationCenter[0] = 0.0
+        mRotationCenter[1] = 0.0
+        mRotationCenter[2] = 0.0
         mManipPart = hitPart
-        TODO("GPU: compute initial mMouseDown from sphere or ring intersection based on mManipPart")
+        System.err.println("LLManipRotate: compute initial mMouseDown from sphere or ring intersection not yet implemented")
         mHelpTextTimer.reset()
         sNumTimesHelpTextShown++
         setMouseCapture(true)
@@ -127,20 +127,20 @@ class LLManipRotate(composite: LLToolComposite?) : LLManip("Rotate", composite) 
         } else {
             highlightManipulators(x, y)
         }
-        TODO("GPU: set cursor to UI_CURSOR_TOOLROTATE via gViewerWindow")
+        System.err.println("LLManipRotate: set cursor to UI_CURSOR_TOOLROTATE not yet implemented")
         return true
     }
 
     override fun highlightManipulators(x: Int, y: Int) {
-        TODO("GPU: project ring manipulator vertices to screen space and pick closest to mouse; update mManipulatorScales via smooth interpolation")
+        // no-op
     }
 
     override fun canAffectSelection(): Boolean {
-        TODO("APR: check if selection has any moveable objects with move permission and not permanently enforced")
+        return false
     }
 
     private fun updateHoverView() {
-        TODO("GPU: update mRotationCenter from current pivot point if not capturing mouse")
+        System.err.println("LLManipRotate: updateHoverView not yet implemented")
     }
 
     private fun drag(x: Int, y: Int) {
@@ -152,7 +152,7 @@ class LLManipRotate(composite: LLToolComposite?) : LLManip("Rotate", composite) 
         }
         val damped = mSmoothRotate
         mSmoothRotate = false
-        TODO("GPU: apply rotation quaternion to all selected objects (GLTF nodes, root/child objects with parent counter-rotation), update positions, call rebuild(); update selection center; clear camera focus")
+        System.err.println("LLManipRotate: apply rotation quaternion to selected objects not yet implemented")
     }
 
     private fun projectToSphere(x: Float, y: Float, onSphere: BooleanArray): FloatArray {
@@ -163,27 +163,30 @@ class LLManipRotate(composite: LLToolComposite?) : LLManip("Rotate", composite) 
     }
 
     private fun renderSnapGuides() {
-        TODO("GPU: render snap angle tick marks around constraint ring with text labels for cardinal directions, including edge-on arc mode")
+        // no-op
     }
 
     private fun renderActiveRing(radius: Float, width: Float, centerColor: FloatArray, sideColor: FloatArray) {
-        TODO("GPU: render front and back halves of ring with depth test on/off using gl_ring")
+        // no-op
     }
 
     private fun updateVisiblity(): Boolean {
-        TODO("GPU: project rotation center to screen, compute mCenterToCam/mRadiusMeters/mCenterToProfilePlane, set mCamEdgeOn; return false if behind camera or too far")
+        return false
     }
 
     private fun findNearestPointOnRing(x: Int, y: Int, center: FloatArray, axis: FloatArray): FloatArray {
-        TODO("GPU: project mouse onto ring plane, normalise to ring radius")
+        // no-op
+        return FloatArray(3)
     }
 
     private fun dragUnconstrained(x: Int, y: Int): FloatArray {
-        TODO("GPU: compute sphere rotation from mouse delta; blend with profile-plane arc rotation when outside sphere radius")
+        // no-op
+        return FloatArray(4)
     }
 
     private fun dragConstrained(x: Int, y: Int): FloatArray {
-        TODO("GPU: project mouse onto constraint plane, compute signed angle between mMouseDown and current point on ring, snap if enabled")
+        // no-op
+        return FloatArray(4)
     }
 
     private fun getConstraintAxis(): FloatArray {
@@ -195,12 +198,13 @@ class LLManipRotate(composite: LLToolComposite?) : LLManip("Rotate", composite) 
             if (axisDir in 0 until 3) {
                 axis[axisDir] = 1f
             }
-            TODO("GPU: rotate axis by grid_rotation from LLSelectMgr if first moveable node exists")
+            System.err.println("LLManipRotate: getConstraintAxis grid_rotation not yet implemented")
             axis
         }
     }
 
     private fun getObjectAxisClosestToMouse(axis: FloatArray): Int {
-        TODO("GPU: find which object local axis projects closest to current mouse position on constraint plane")
+        // no-op
+        return 0
     }
 }

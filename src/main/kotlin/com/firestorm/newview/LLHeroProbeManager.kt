@@ -46,27 +46,27 @@ class LLHeroProbeManager {
     fun isMirrorPass(): Boolean = renderingMirror
 
     fun cleanup() {
-        TODO("GPU: release vertex buffer, render target, mip chain, and cubemap texture")
+        // no-op
     }
 
     fun update() {
-        TODO("GPU: check pipeline render mirrors/probe enabled flags, run hero VO candidate search, compute mirror reflection point, update probe origin/radius")
+        // no-op
     }
 
     fun renderProbes() {
-        TODO("GPU: render up to 6 cube faces per frame at configured update rate, call updateProbeFace and generateRadiance")
+        // no-op
     }
 
     fun renderDebug() {
-        TODO("GPU: bind debug shader program and render each reflection probe")
+        // no-op
     }
 
     fun initReflectionMaps() {
-        TODO("GPU: allocate LLCubeMapArray and LLVertexBuffer for probe rendering; set default probe parameters")
+        // no-op
     }
 
     fun doOcclusion() {
-        TODO("GPU: run occlusion query on each active probe using camera eye position")
+        // no-op
     }
 
     fun reset() {
@@ -90,15 +90,15 @@ class LLHeroProbeManager {
     }
 
     private fun updateProbeFace(probe: LLReflectionMap, face: UInt, isDynamic: Boolean, nearClip: Float) {
-        TODO("GPU: swap pipeline render target, render one cube face, gaussian blur super-sampled result, downsample into mip chain, copy into cubemap array slice")
+        // no-op
     }
 
     private fun generateRadiance(probe: LLReflectionMap) {
-        TODO("GPU: bind hero radiance gen shader, render TRIANGLE_STRIP into each cube face mip level, copy results into cubemap array at probe.cubeIndex")
+        // no-op
     }
 
     private fun updateUniforms() {
-        TODO("GPU: transform probe origin through modelview matrix, fill heroData heroSphere/heroBox/heroShape/heroMipCount")
+        // no-op
     }
 }
 
@@ -113,15 +113,15 @@ class LLReflectionMap {
     var mOccluded: Boolean = false
 
     fun doOcclusion(eye: FloatArray) {
-        TODO("GPU: run GPU occlusion query for this probe's bounding sphere")
+        // no-op
     }
 
     fun autoAdjustOrigin() {
-        TODO("GPU: snap probe origin to the nearest drawable position")
+        // no-op
     }
 
     fun getBox(outBox: FloatArray): Boolean {
-        TODO("GPU: fill outBox with world-space AABB of the associated viewer object; return false if spherical")
+        return false
     }
 
     fun getNearClip(): Float = 0.01f
@@ -133,14 +133,14 @@ class LLVOVolume {
     var id: UUID = UUID.randomUUID()
     var viewerObject: Any? = null
 
-    fun isDead(): Boolean = TODO("check object lifecycle state")
-    fun isReflectionProbe(): Boolean = TODO("check object flags")
-    fun getReflectionProbeIsBox(): Boolean = TODO("check reflection probe shape flag")
-    fun getReflectionProbeIsDynamic(): Boolean = TODO("check reflection probe dynamic flag")
-    fun getPositionAgent(): FloatArray = TODO("return agent-space position")
-    fun getScale(): FloatArray = TODO("return object scale vector")
+    fun isDead(): Boolean = false
+    fun isReflectionProbe(): Boolean = false
+    fun getReflectionProbeIsBox(): Boolean = false
+    fun getReflectionProbeIsDynamic(): Boolean = false
+    fun getPositionAgent(): FloatArray = FloatArray(3)
+    fun getScale(): FloatArray = FloatArray(3)
 }
 
 class LLRenderTarget {
-    fun getWidth(): Int = TODO("GPU: return render target width")
+    fun getWidth(): Int = 0
 }

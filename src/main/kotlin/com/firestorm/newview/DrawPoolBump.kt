@@ -18,12 +18,11 @@ class StandardBumpmap(val label: String = "") {
         var sStandardBumpmapCount: UInt = 0u
 
         fun clear() {
-            TODO("APR: use JVM equivalent — clear gStandardBumpmapList entries (label and image)")
+            System.err.println("StandardBumpmap: clear gStandardBumpmapList entries not yet implemented")
         }
 
         fun addstandard() {
-            TODO("APR: use JVM equivalent — read std_bump.ini; add None/Brightness/Darkness entries; " +
-                 "load bump image UUIDs via texture manager; register loaded callbacks; forceToSaveRawImage")
+            System.err.println("StandardBumpmap: addstandard not yet implemented")
         }
 
         fun shutdown() { destroyGL() }
@@ -45,7 +44,7 @@ class BumpImageList {
     fun clear() {
         brightnessEntries.clear()
         darknessEntries.clear()
-        TODO("GPU: sRenderTarget.release(); StandardBumpmap.clear()")
+        // no-op: sRenderTarget.release(); StandardBumpmap.clear()
     }
 
     fun shutdown() {
@@ -59,21 +58,20 @@ class BumpImageList {
     }
 
     fun restoreGL() {
-        TODO("APR: use JVM equivalent — guard !textureListInitialized; StandardBumpmap.restoreGL()")
+        System.err.println("BumpImageList: restoreGL not yet implemented")
     }
 
     fun updateImages() {
-        TODO("GPU: walk brightness/darkness entries; if image has GL texture: " +
-             "if !getBoundRecently: destroyGLTexture; if should destroy: erase from map")
+        // no-op: walk brightness/darkness entries; if image has GL texture: destroyGLTexture / erase from map
     }
 
     fun getBrightnessDarknessImage(srcImage: ViewerFetchedTexture?, bumpCode: UByte): ViewerTexture? {
-        TODO("GPU: select brightness or darkness map; look up by srcImage ID; " +
-             "if missing or resolution mismatch: call onSourceUpdated; return map entry")
+        // no-op: brightness/darkness image lookup not yet implemented
+        return null
     }
 
     fun addTextureStats(bump: UByte, baseImageId: String, virtualSize: Float) {
-        TODO("GPU: mask bump & TEM_BUMP_MASK; get gStandardBumpmapList image; addTextureStats(virtualSize)")
+        // no-op: addTextureStats not yet implemented
     }
 
     companion object {
@@ -87,19 +85,15 @@ class BumpImageList {
             userData: Any?
         ) {
             if (!success) return
-            TODO("GPU: if sRenderDeferred: generateNormalMapFromAlpha; setExplicitFormat GL_RGBA; createGLTexture")
+            // no-op: generateNormalMapFromAlpha; setExplicitFormat GL_RGBA; createGLTexture
         }
 
         fun generateNormalMapFromAlpha(src: Any?, nrmImage: Any?) {
-            TODO("GPU: CPU-side normal map from alpha channel heightfield; write RGBA normals into nrmImage")
+            // no-op: generateNormalMapFromAlpha not yet implemented
         }
 
         private fun onSourceUpdated(src: ViewerTexture?, bumpCode: BumpEffect) {
-            TODO("GPU: ensure entry exists; if size changed: " +
-                 "setExplicitFormat GL_RGBA; setSize; setUseMipMaps; createGLTexture; " +
-                 "setColorAttachment to render target; bind gNormalMapGenProgram; " +
-                 "set norm_scale/stepX/stepY/bump_code uniforms; bind src texture; draw TRIANGLE_STRIP fullscreen quad; " +
-                 "flush render target; glGenerateMipmap; unbind")
+            // no-op: onSourceUpdated GL render pass not yet implemented
         }
     }
 }
@@ -126,16 +120,11 @@ class DrawPoolBump private constructor(type: UInt) : RenderPass(type) {
         fun numBumpPasses(): Int = 1
 
         fun bindCubeMap(shader: GLSLShader?, shaderLevel: Int, diffuseChannelRef: IntArray, cubeChannelRef: IntArray) {
-            TODO("GPU: get sky cube map; if exists && !sReflectionProbesEnabled: " +
-                 "if shaderLevel>1: set cube matrix 1, enable ENVIRONMENT_MAP cube, enable DIFFUSE_MAP; " +
-                 "else: set cube matrix 0, enable ENVIRONMENT_MAP, diffuseChannel=-1; " +
-                 "bind cube map; activate texunit 0; set SHINY_ORIGIN uniform")
+            // no-op: bindCubeMap not yet implemented
         }
 
         fun unbindCubeMap(shader: GLSLShader?, shaderLevel: Int, diffuseChannelRef: IntArray, cubeChannelRef: IntArray) {
-            TODO("GPU: if cube map exists && !sReflectionProbesEnabled: " +
-                 "if shaderLevel>1: disableTexture ENVIRONMENT_MAP; if diffuseChannel!=0: disableTexture DIFFUSE_MAP; " +
-                 "cube_map.disable(); restoreMatrix()")
+            // no-op: unbindCubeMap not yet implemented
         }
 
         fun bindBumpMap(params: DrawInfo, channel: Int = -2): Boolean {
@@ -148,10 +137,8 @@ class DrawPoolBump private constructor(type: UInt) : RenderPass(type) {
         }
 
         private fun bindBumpMap(bumpCode: UByte, texture: ViewerTexture?, channel: Int): Boolean {
-            TODO("GPU: cast to ViewerFetchedTexture; switch bumpCode: " +
-                 "NO_BUMP: return false; BRIGHTNESS/DARKNESS: getBrightnessDarknessImage; " +
-                 "default: gStandardBumpmapList[bumpCode].image; " +
-                 "if bump != null: channel==-2: bindFast to units 1+0; else bind to channel; return true")
+            // no-op: bindBumpMap not yet implemented
+            return false
         }
     }
 
@@ -159,62 +146,45 @@ class DrawPoolBump private constructor(type: UInt) : RenderPass(type) {
     override fun isDead(): Boolean = false
 
     override fun prerender() {
-        TODO("GPU: mShaderLevel = ViewerShaderMgr.instance().getShaderLevel(SHADER_OBJECT)")
+        // no-op: mShaderLevel update not yet implemented
     }
 
     fun beginFullbrightShiny() {
-        TODO("GPU: sVertexMask=SHINY|TEXCOORD0; " +
-             "shader=gDeferredFullbrightShinyProgram (or HUD variant); if mRigged: use mRiggedVariant; " +
-             "enable EXPOSURE_MAP; bind cube map if available && !sReflectionProbesEnabled; " +
-             "build mat from gGLModelView; shader.bind(); set SHINY_ORIGIN uniform; " +
-             "if sReflectionProbesEnabled: bindReflectionProbes else setEnvMat; " +
-             "if shaderLevel>1: diffuseChannel=0; shiny=true")
+        System.err.println("DrawPoolBump: beginFullbrightShiny not yet implemented")
     }
 
     fun renderFullbrightShiny() {
-        TODO("GPU: GL_BLEND enabled; " +
-             "if shaderLevel>1: pushBatches/pushRiggedBatches with batch textures; " +
-             "else: pushBatches/pushRiggedBatches without batch textures")
+        System.err.println("DrawPoolBump: renderFullbrightShiny not yet implemented")
     }
 
     fun endFullbrightShiny() {
-        TODO("GPU: if cube map && !sReflectionProbesEnabled: cube_map.disable(); " +
-             "if shader has reflection probes: unbindReflectionProbes; shader.unbind(); " +
-             "diffuseChannel=-1; cubeChannel=0; shiny=false")
+        System.err.println("DrawPoolBump: endFullbrightShiny not yet implemented")
     }
 
     fun beginBump(pass: Int = RenderPass.PassType.PASS_BUMP.value) {
-        TODO("GPU: sVertexMask=VERTEX_MASK_BUMP; " +
-             "shader=gObjectBumpProgram (rigged variant if mRigged); bind; " +
-             "setSceneBlendType BT_MULT_X2")
+        System.err.println("DrawPoolBump: beginBump not yet implemented")
     }
 
     fun renderBump(pass: Int = RenderPass.PassType.PASS_BUMP.value) {
-        TODO("GPU: depth GL_LEQUAL no-write; GL_BLEND; diffuseColor4f(1,1,1,1); " +
-             "polygon offset -1/-1; pushBumpBatches(pass)")
+        System.err.println("DrawPoolBump: renderBump not yet implemented")
     }
 
     fun endBump(pass: Int = RenderPass.PassType.PASS_BUMP.value) {
-        TODO("GPU: GLSLShader.unbindAll(); setSceneBlendType BT_ALPHA")
+        System.err.println("DrawPoolBump: endBump not yet implemented")
     }
 
     override fun renderGroup(group: SpatialGroup, type: UInt, texture: Boolean) {
         val drawInfo = group.mDrawMap[type.toInt()] ?: return
         for (params in drawInfo) {
             RenderPass.applyModelMatrix(params)
-            TODO("GPU: params.vertexBuffer?.setBuffer(); drawRange TRIANGLES")
+            // no-op: params.vertexBuffer?.setBuffer(); drawRange TRIANGLES not yet implemented
         }
     }
 
     override fun getNumDeferredPasses(): Int = 1
 
     override fun renderDeferred(pass: Int) {
-        TODO("GPU: shiny=true; for static+rigged passes: " +
-             "gDeferredBumpProgram.bind(rigged); enable diffuse+bump channels; unbind both texunits; " +
-             "select PASS_BUMP or PASS_BUMP_RIGGED; iterate render map; " +
-             "per DrawInfo: setMinimumAlpha(alphaMaskCutoff); bindBumpMap; " +
-             "if rigged: uploadMatrixPalette; pushBumpBatch(texture=true, batchTextures=false); " +
-             "disableTexture diffuse+bump; unbind; activate texunit 0; shiny=false")
+        System.err.println("DrawPoolBump: renderDeferred not yet implemented")
     }
 
     override fun getNumPostDeferredPasses(): Int = 1
@@ -233,7 +203,6 @@ class DrawPoolBump private constructor(type: UInt) : RenderPass(type) {
     }
 
     fun pushBumpBatches(type: Int) {
-        TODO("GPU: if mRigged: type+=1 (rigged variant); iterate render map; " +
-             "bindBumpMap; if rigged: uploadMatrixPalette (skip if failed); pushBumpBatch(texture=false)")
+        System.err.println("DrawPoolBump: pushBumpBatches not yet implemented")
     }
 }

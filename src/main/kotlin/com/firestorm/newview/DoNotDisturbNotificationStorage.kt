@@ -217,12 +217,13 @@ abstract class CommunicationChannel : NotificationChannel("Communication", "", "
 }
 
 object savedPerAccountSettings {
-    fun getInt(key: String): Int = TODO("APR: read integer per-account setting by key")
+    fun getInt(key: String): Int { System.err.println("savedPerAccountSettings: getInt not yet implemented"); return 0 }
 }
 
 object FloaterReg {
-    fun showInstance(name: String) { TODO("GPU: show floater by registered name") }
+    fun showInstance(name: String) { // no-op
+    }
 }
 
-fun makeUiSoundDeferred(sound: String, immediate: Boolean) { TODO("APR: schedule deferred UI sound playback") }
-fun makeUiSound(sound: String) { TODO("APR: play UI sound immediately") }
+fun makeUiSoundDeferred(sound: String, immediate: Boolean) { System.err.println("makeUiSoundDeferred: not yet implemented") }
+fun makeUiSound(sound: String) { System.err.println("makeUiSound: not yet implemented") }

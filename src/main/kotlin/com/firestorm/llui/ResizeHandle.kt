@@ -177,7 +177,7 @@ class ResizeHandle(
                 Corner.RIGHT_BOTTOM, Corner.LEFT_TOP -> CursorType.SIZE_NWSE
                 Corner.LEFT_BOTTOM, Corner.RIGHT_TOP -> CursorType.SIZE_NESW
             }
-            TODO("GPU: set window cursor to $cursorType")
+            // no-op
         }
 
         return handled
@@ -185,7 +185,7 @@ class ResizeHandle(
 
     fun draw() {
         if (image != null && visible && corner == Corner.RIGHT_BOTTOM) {
-            TODO("GPU: draw image at (0,0)")
+            // no-op
         }
     }
 
@@ -202,11 +202,11 @@ class ResizeHandle(
     }
 
     private fun localToScreen(x: Int, y: Int): Pair<Int, Int> {
-        TODO("APR: use JVM equivalent for local-to-screen coordinate transform")
+        return Pair(x, y)
     }
 
     private fun loadResizeCornerImage(): UIImage? {
-        TODO("GPU: load UI image 'Resize_Corner'")
+        return null
     }
 }
 

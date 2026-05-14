@@ -342,12 +342,14 @@ open class GLTFMaterial {
     }
 
     /** Apply override data encoded in LLSD form. */
-    fun applyOverrideLLSD(data: LLSD): Unit =
-        TODO("GLTFMaterial.applyOverrideLLSD LLSD encoding not yet implemented")
+    fun applyOverrideLLSD(data: LLSD): Unit {
+        System.err.println("GLTFMaterial: applyOverrideLLSD not yet implemented")
+    }
 
     /** Produce the delta LLSD between this material and an override. */
-    fun getOverrideLLSD(overrideMat: GLTFMaterial, data: LLSD): Unit =
-        TODO("GLTFMaterial.getOverrideLLSD LLSD encoding not yet implemented")
+    fun getOverrideLLSD(overrideMat: GLTFMaterial, data: LLSD): Unit {
+        System.err.println("GLTFMaterial: getOverrideLLSD not yet implemented")
+    }
 
     /**
      * For base materials (assets): strip UV transforms since they are not
@@ -418,7 +420,7 @@ open class GLTFMaterial {
     }
 
     open fun updateTextureTracking() {
-        TODO("GLTFMaterial.updateTextureTracking not yet implemented")
+        System.err.println("GLTFMaterial: updateTextureTracking not yet implemented")
     }
 
     open fun addTextureEntry(te: Any?) { /* subclass hook */ }
@@ -437,16 +439,22 @@ open class GLTFMaterial {
     // ---- JSON (de)serialisation ---------------------------------------
 
     /** Load this material from a JSON string (requires TinyGLTF, stubbed). */
-    fun fromJSON(json: String): Triple<Boolean, String, String> =
-        TODO("GLTFMaterial.fromJSON TinyGLTF not yet ported")
+    fun fromJSON(json: String): Triple<Boolean, String, String> {
+        System.err.println("GLTFMaterial: fromJSON not yet implemented")
+        return Triple(false, "", "")
+    }
 
     /** Serialise this material to a GLTF JSON string (requires TinyGLTF, stubbed). */
-    fun asJSON(prettyprint: Boolean = false): String =
-        TODO("GLTFMaterial.asJSON TinyGLTF not yet ported")
+    fun asJSON(prettyprint: Boolean = false): String {
+        System.err.println("GLTFMaterial: asJSON not yet implemented")
+        return ""
+    }
 
     /** Compute a content-hash UUID for this material. */
-    fun getHash(): LLUUID =
-        TODO("GLTFMaterial.getHash not yet implemented")
+    fun getHash(): LLUUID {
+        System.err.println("GLTFMaterial: getHash not yet implemented")
+        return LLUUID.NULL
+    }
 
     // ---- Equality ------------------------------------------------------
 

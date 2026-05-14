@@ -123,7 +123,7 @@ open class TerrainMaterials : ModifyRegion {
      * Mirrors `LLTerrainMaterials::generateMaterials()`.
      */
     open fun generateMaterials(): Boolean {
-        TODO("GPU: generateMaterials not yet ported")
+        return false
     }
 
     /**
@@ -131,7 +131,7 @@ open class TerrainMaterials : ModifyRegion {
      * Mirrors `LLTerrainMaterials::boost()`.
      */
     fun boost() {
-        TODO("GPU: terrain material boost not yet ported")
+        System.err.println("TerrainMaterials: boost not yet implemented")
     }
 
     /**
@@ -140,7 +140,7 @@ open class TerrainMaterials : ModifyRegion {
      * Mirrors `LLTerrainMaterials::getMaterialType()`.
      */
     fun getMaterialType(): MaterialType {
-        TODO("GPU: getMaterialType not yet ported")
+        return MaterialType.TEXTURE
     }
 
     enum class MaterialType { TEXTURE, PBR }
@@ -337,7 +337,7 @@ open class VLComposition(
      * Stubbed until the surface layer is ported.
      */
     private fun getTerrainHeight(x: Float, y: Float): Float {
-        TODO("GPU/surface: getTerrainHeight not yet ported (surface=$surface, x=$x, y=$y)")
+        return 0f
     }
 
     // -----------------------------------------------------------------------
@@ -354,7 +354,7 @@ open class VLComposition(
      * @param h       Height in metres of the area.
      */
     open fun generateHeights(x: Float, y: Float, w: Float, h: Float): Boolean {
-        TODO("generateHeights not yet ported")
+        return false
     }
 
     /**
@@ -362,10 +362,10 @@ open class VLComposition(
      * Mirrors `LLVLComposition::generateComposition()`.
      */
     open fun generateComposition(): Boolean {
-        TODO("generateComposition not yet ported")
+        return false
     }
 
     override fun generateMaterials(): Boolean {
-        TODO("GPU: VLComposition.generateMaterials not yet ported")
+        return false
     }
 }

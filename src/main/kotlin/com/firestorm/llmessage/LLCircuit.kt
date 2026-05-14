@@ -115,7 +115,8 @@ class LLCircuit(
      * window before committing to a new ping; we stub the detail here.
      */
     fun pingReady(host: Host, ping: UByte): Boolean {
-        TODO("Implement ping-window check against CircuitData.nextPingSendTimeMs")
+        System.err.println("LLCircuit: pingReady not yet implemented")
+        return false
     }
 
     // -------------------------------------------------------------------------
@@ -130,7 +131,7 @@ class LLCircuit(
      * message system.
      */
     fun updateWatchDogTimers() {
-        TODO("Drive CircuitData heartbeat/watchdog logic per circuit")
+        System.err.println("LLCircuit: updateWatchDogTimers not yet implemented")
     }
 
     /**
@@ -140,7 +141,7 @@ class LLCircuit(
      * the caller can log bandwidth pressure.
      */
     fun resendUnackedPackets(unackedListLength: IntArray, unackedListSize: IntArray) {
-        TODO("Walk unackedCircuitMap and resend per-circuit unacked packets")
+        System.err.println("LLCircuit: resendUnackedPackets not yet implemented")
     }
 
     /**
@@ -150,7 +151,7 @@ class LLCircuit(
      * sent even if the batch has not reached its size limit.
      */
     fun sendAcks(collectTime: Float) {
-        TODO("Send collected ACKs for each circuit in sendAckMap")
+        System.err.println("LLCircuit: sendAcks not yet implemented")
     }
 
     /**
@@ -160,7 +161,7 @@ class LLCircuit(
     fun dumpResends() {
         for (cd in circuitData.values) {
             // In C++ this calls cd->dumpResendCountAndReset(); stub here.
-            TODO("Call per-circuit resend count dump")
+            System.err.println("LLCircuit: dumpResends not yet implemented")
         }
     }
 

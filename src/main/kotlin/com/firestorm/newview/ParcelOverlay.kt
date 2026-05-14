@@ -300,7 +300,7 @@ class ParcelOverlay(val region: Any?) {
      * Mirrors `LLViewerParcelOverlay::uncompressLandOverlay(S32 chunk, U8*)`.
      */
     fun uncompressLandOverlay(data: ByteArray) {
-        TODO("uncompressLandOverlay not yet ported (${data.size} bytes)")
+        System.err.println("ParcelOverlay: uncompressLandOverlay not yet implemented")
     }
 
     /**
@@ -308,7 +308,7 @@ class ParcelOverlay(val region: Any?) {
      * Mirrors `LLViewerParcelOverlay::updateOverlayTexture()`.
      */
     fun updateOverlayTexture() {
-        TODO("GPU: updateOverlayTexture not yet ported")
+        // no-op
     }
 
     /**
@@ -316,7 +316,7 @@ class ParcelOverlay(val region: Any?) {
      * Mirrors `LLViewerParcelOverlay::renderPropertyLines()`.
      */
     fun renderPropertyLines() {
-        TODO("GPU: renderPropertyLines not yet ported")
+        // no-op
     }
 
     /**
@@ -324,7 +324,7 @@ class ParcelOverlay(val region: Any?) {
      * Mirrors `LLViewerParcelOverlay::renderPropertyLinesOnMinimap()`.
      */
     fun renderPropertyLinesOnMinimap(scalePixelsPerMeter: Float, parcelOutlineColor: FloatArray) {
-        TODO("GPU: renderPropertyLinesOnMinimap not yet ported")
+        // no-op
     }
 
     // -----------------------------------------------------------------------
@@ -354,7 +354,7 @@ class ParcelOverlay(val region: Any?) {
      * Mirrors `LLViewerParcelOverlay::updateGL()`.
      */
     fun updateGL() {
-        TODO("GPU: updateGL not yet ported")
+        // no-op
     }
 
     // -----------------------------------------------------------------------

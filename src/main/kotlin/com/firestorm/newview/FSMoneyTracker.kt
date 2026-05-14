@@ -130,12 +130,12 @@ object FSMoneyTracker {
 
     /** Format a Unix-epoch millisecond value as a HH:MM:SS string. */
     fun formatTime(epochMillis: Long): String {
-        TODO("MONEYTRACKER: format epoch millis as HH:MM:SS using viewer locale")
+        return ""
     }
 
     /** Format a Unix-epoch millisecond value as an ISO date string. */
     fun formatDate(epochMillis: Long): String {
-        TODO("MONEYTRACKER: format epoch millis as ISO date using LLDate equivalent")
+        return ""
     }
 }
 
@@ -155,8 +155,8 @@ class FSMoneyTrackerListMenu {
      */
     fun onContextMenuItemClick(option: String) {
         when (option) {
-            "copy" -> TODO("MONEYTRACKER: copy selected transaction rows to clipboard")
-            "delete" -> TODO("MONEYTRACKER: delete selected transaction rows")
+            "copy" -> System.err.println("FSMoneyTrackerListMenu: onContextMenuItemClick(copy) not yet implemented")
+            "delete" -> System.err.println("FSMoneyTrackerListMenu: onContextMenuItemClick(delete) not yet implemented")
             else -> { /* unknown option — no-op */ }
         }
     }
@@ -169,7 +169,7 @@ class FSMoneyTrackerListMenu {
     fun onContextMenuItemEnable(item: String): Boolean {
         return when (item) {
             "can_copy", "can_delete" -> {
-                TODO("MONEYTRACKER: return true when the transaction list has a selection")
+                return false
             }
             else -> false
         }

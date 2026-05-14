@@ -44,7 +44,7 @@ class LLLocalGLTFMaterial(filename: String, index: Int) : LLFetchedGLTFMaterial(
                             mWorldID = UUID.randomUUID()
                         }
                         mLastModified = newLastModified
-                        TODO("APR: use JVM equivalent — gGLTFMaterialList.addMaterial(mWorldID, this)")
+                        System.err.println("LLLocalGLTFMaterial: updateSelf not yet implemented")
                         mUpdateRetries = LL_LOCAL_UPDATE_RETRIES
                         materialBegin()
                         materialComplete(true)
@@ -72,7 +72,8 @@ class LLLocalGLTFMaterial(filename: String, index: Int) : LLFetchedGLTFMaterial(
         return when (mExtension) {
             Extension.ET_MATERIAL_GLTF,
             Extension.ET_MATERIAL_GLB -> {
-                TODO("APR: use JVM equivalent — LLTinyGLTFHelper.loadModel and getMaterialFromModel for $mFilename index $mMaterialIndex")
+                System.err.println("LLLocalGLTFMaterial: loadMaterial not yet implemented")
+                return false
             }
         }
     }
@@ -104,7 +105,8 @@ object LLLocalGLTFMaterialMgr {
         filenames.filter { it.isNotEmpty() }.fold(0) { acc, f -> acc + addUnit(f) }
 
     fun addUnit(filename: String): Int {
-        TODO("APR: use JVM equivalent — LLTinyGLTFHelper.loadModel($filename) to count materials, then addUnit per index")
+        System.err.println("LLLocalGLTFMaterialMgr: addUnit not yet implemented")
+        return 0
     }
 
     fun delUnit(trackingId: UUID) {
@@ -123,7 +125,7 @@ object LLLocalGLTFMaterialMgr {
     }
 
     fun feedScrollList(ctrl: Any?) {
-        TODO("APR: use JVM equivalent — populate scroll list control with material entries")
+        System.err.println("LLLocalGLTFMaterialMgr: feedScrollList not yet implemented")
     }
 
     fun doUpdates() {

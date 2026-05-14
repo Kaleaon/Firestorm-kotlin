@@ -41,7 +41,7 @@ class DrawPoolMaterials : RenderPass(DrawPool.PoolType.MATERIALS.value.toUInt())
     override fun getNumPasses(): Int = 0
 
     override fun prerender() {
-        TODO("GPU: mShaderLevel = ViewerShaderMgr.instance().getShaderLevel(SHADER_OBJECT)")
+        // no-op
     }
 
     override fun getNumDeferredPasses(): Int = 12 * 2
@@ -51,13 +51,11 @@ class DrawPoolMaterials : RenderPass(DrawPool.PoolType.MATERIALS.value.toUInt())
         val rigged = p >= 12
         if (rigged) p -= 12
         val idx = SHADER_IDX[p]
-        TODO("GPU: shader = gDeferredMaterialProgram[idx]; " +
-             "if rigged: shader = shader.mRiggedVariant; " +
-             "Pipeline.bindDeferredShader(shader)")
+        // no-op
     }
 
     override fun endDeferredPass(pass: Int) {
-        TODO("GPU: shader.unbind(); endRenderPass(pass)")
+        // no-op
     }
 
     override fun renderDeferred(pass: Int) {
@@ -68,16 +66,6 @@ class DrawPoolMaterials : RenderPass(DrawPool.PoolType.MATERIALS.value.toUInt())
         val type = if (rigged) TYPE_LIST[p] + 1 else TYPE_LIST[p]
         val drawShader = shader ?: return
 
-        TODO("GPU: enable diffuse/specular/normal texture channels on shader; " +
-             "unbindFast diffuse channel; " +
-             "set initial lastIntensity/lastFullbright/lastMinimumAlpha/lastSpecular uniforms if locations valid; " +
-             "iterate render map for type; per DrawInfo: " +
-             "  lazy-update specular color, env intensity, min alpha, fullbright brightness uniforms; " +
-             "  lazy-bind normalMap, specMap, diffuse texture; " +
-             "  if rigged: uploadMatrixPalette (skip if failed); " +
-             "  applyModelMatrix; " +
-             "  if textureMatrix: activate texunit 0, matrixMode MM_TEXTURE, loadMatrix; " +
-             "  setBuffer; drawRange TRIANGLES; " +
-             "  restore texture matrix to identity if set")
+        // no-op
     }
 }

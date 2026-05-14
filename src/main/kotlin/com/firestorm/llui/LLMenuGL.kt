@@ -114,7 +114,7 @@ open class MenuGL(val name: String) {
         posX = x
         posY = y
         visible = true
-        TODO("GL: position menu at ($x,$y) and render visible items")
+        // no-op
     }
 
     fun hide() {

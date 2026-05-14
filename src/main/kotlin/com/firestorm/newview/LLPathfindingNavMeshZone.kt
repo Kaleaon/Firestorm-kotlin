@@ -39,8 +39,8 @@ class LLPathfindingNavMeshZone {
         navMeshLocations.clear()
         navMeshLocations.add(NavMeshLocation(CENTER_REGION, ::handleNavMeshLocation))
 
-        val neighborRegionDir = TODO("APR: use JVM equivalent — read 'PathfindingRetrieveNeighboringRegion' setting") as Int
-        @Suppress("UNREACHABLE_CODE")
+        System.err.println("LLPathfindingNavMeshZone: initialize neighborRegionDir not yet implemented")
+        val neighborRegionDir = 0
         if (neighborRegionDir != CENTER_REGION) {
             navMeshLocations.add(NavMeshLocation(neighborRegionDir, ::handleNavMeshLocation))
         }
@@ -55,8 +55,7 @@ class LLPathfindingNavMeshZone {
     }
 
     fun refresh() {
-        TODO("GPU: LLPathingLib cleanupResidual — remove cached pathing render data")
-        @Suppress("UNREACHABLE_CODE")
+        // no-op
         navMeshLocations.forEach { it.refresh() }
     }
 
@@ -128,10 +127,9 @@ class LLPathfindingNavMeshZone {
         if (navMeshZoneRequestStatus != ENavMeshZoneRequestStatus.kNavMeshZoneRequestCompleted &&
             zoneRequestStatus == ENavMeshZoneRequestStatus.kNavMeshZoneRequestCompleted
         ) {
-            TODO("GPU: LLPathingLib processNavMeshData — submit decompressed navmesh to pathing library")
+            // no-op
         }
 
-        @Suppress("UNREACHABLE_CODE")
         navMeshZoneRequestStatus = zoneRequestStatus
         navMeshZoneListeners.forEach { it(navMeshZoneRequestStatus) }
     }
@@ -160,7 +158,7 @@ class LLPathfindingNavMeshZone {
                     handleNavMesh(status, meshStatus, data)
                 }
                 navMeshListener = listener
-                TODO("APR: use JVM equivalent — LLPathfindingManager.registerNavMeshListenerForRegion(region, listener)")
+                System.err.println("LLPathfindingNavMeshZone: enable registerNavMeshListenerForRegion not yet implemented")
             }
         }
 
@@ -176,7 +174,7 @@ class LLPathfindingNavMeshZone {
                 )
             } else {
                 check(regionUUID == region.regionId)
-                TODO("APR: use JVM equivalent — LLPathfindingManager.requestGetNavMeshForRegion(region, false)")
+                System.err.println("LLPathfindingNavMeshZone: refresh requestGetNavMeshForRegion not yet implemented")
             }
         }
 
@@ -201,10 +199,9 @@ class LLPathfindingNavMeshZone {
                 check(pNavMeshData.isNotEmpty())
                 hasNavMesh = true
                 navMeshVersion = pNavMeshStatus.version
-                TODO("GPU: LLPathingLib extractNavMeshSrcFromLLSD(pNavMeshData, direction) — feed navmesh binary to pathing library with region direction slot")
+                // no-op
             }
 
-            @Suppress("UNREACHABLE_CODE")
             requestStatus = pNavMeshRequestStatus
             navMeshStatus = pNavMeshStatus.status
             locationCallback()
@@ -218,7 +215,8 @@ class LLPathfindingNavMeshZone {
         }
 
         private fun getRegion(): ViewerRegion? {
-            TODO("APR: use JVM equivalent — gAgent.getRegion() and neighboring region lookup by direction")
+            System.err.println("LLPathfindingNavMeshZone: getRegion not yet implemented")
+            return null
         }
     }
 

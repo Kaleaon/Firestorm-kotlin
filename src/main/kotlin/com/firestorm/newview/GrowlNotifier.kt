@@ -21,7 +21,7 @@ class GrowlNotifierWin : GrowlNotifier() {
     private var growlImpl: Any? = null
 
     init {
-        TODO("APR: use JVM equivalent for Growl++ native library initialisation (GrowlNotifierWin)")
+        System.err.println("GrowlNotifierWin: init not yet implemented")
     }
 
     override fun showNotification(
@@ -29,15 +29,15 @@ class GrowlNotifierWin : GrowlNotifier() {
         notificationMessage: String,
         notificationType: String
     ) {
-        TODO("APR: use JVM equivalent for Growl::Notify via growlImpl")
+        System.err.println("GrowlNotifierWin: showNotification not yet implemented")
     }
 
     override fun isUsable(): Boolean {
-        TODO("APR: use JVM equivalent for Growl::IsRunning check via growlImpl")
+        return false
     }
 
     override fun registerApplication(application: String, notificationTypes: Set<String>) {
         applicationName = application
-        TODO("APR: use JVM equivalent for Growl::Register via growlImpl")
+        System.err.println("GrowlNotifierWin: registerApplication not yet implemented")
     }
 }

@@ -222,7 +222,7 @@ class LLModel(
      * Sort modelFaces so their order matches mMaterialList.
      */
     fun sortVolumeFacesByMaterialName() {
-        TODO("Port LLModel::sortVolumeFacesByMaterialName()")
+        System.err.println("LLModel: sortVolumeFacesByMaterialName not yet implemented")
     }
 
     /**
@@ -230,14 +230,14 @@ class LLModel(
      * recording the normalizedScale / normalizedTranslation for later retrieval.
      */
     fun normalizeVolumeFaces() {
-        TODO("Port LLModel::normalizeVolumeFaces()")
+        System.err.println("LLModel: normalizeVolumeFaces not yet implemented")
     }
 
     /**
      * Normalise volume faces and remap skin weights to match the new positions.
      */
     fun normalizeVolumeFacesAndWeights() {
-        TODO("Port LLModel::normalizeVolumeFacesAndWeights()")
+        System.err.println("LLModel: normalizeVolumeFacesAndWeights not yet implemented")
     }
 
     /**
@@ -247,28 +247,28 @@ class LLModel(
         newCount: Int = LLVolume.SCULPT_MESH_MAX_FACES,
         remainder: MutableList<ModelFace>? = null,
     ) {
-        TODO("Port LLModel::trimVolumeFacesToSize()")
+        System.err.println("LLModel: trimVolumeFacesToSize not yet implemented")
     }
 
     /**
      * Re-index vertices so that duplicate positions share a single index.
      */
     fun remapVolumeFaces() {
-        TODO("Port LLModel::remapVolumeFaces()")
+        System.err.println("LLModel: remapVolumeFaces not yet implemented")
     }
 
     /**
      * Run meshoptimizer over all faces.
      */
     fun optimizeVolumeFaces() {
-        TODO("Port LLModel::optimizeVolumeFaces()")
+        System.err.println("LLModel: optimizeVolumeFaces not yet implemented")
     }
 
     /**
      * Recompute vertex normals by averaging triangle normals within [angleCutoff].
      */
     fun generateNormals(angleCutoff: Float) {
-        TODO("Port LLModel::generateNormals()")
+        System.err.println("LLModel: generateNormals not yet implemented")
     }
 
     /**
@@ -276,7 +276,7 @@ class LLModel(
      * (Mirrors the combined effect of various validation passes in C++.)
      */
     fun limitLOD() {
-        TODO("Port LLModel LOD limiting / validation logic.")
+        System.err.println("LLModel: limitLOD not yet implemented")
     }
 
     // ------------------------------------------------------------------

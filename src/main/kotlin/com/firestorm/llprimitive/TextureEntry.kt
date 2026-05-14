@@ -242,20 +242,28 @@ data class TextureEntry(
         }
 
         /** Emit a media version string touched by the given agent. */
-        fun touchMediaVersionString(inVersion: String, agentId: LLUUID): String =
-            TODO("TextureEntry.touchMediaVersionString not yet implemented")
+        fun touchMediaVersionString(inVersion: String, agentId: LLUUID): String {
+            System.err.println("TextureEntry: touchMediaVersionString not yet implemented")
+            return ""
+        }
 
         /** Parse the version number from a media-version string. */
-        fun getVersionFromMediaVersionString(versionString: String): UInt =
-            TODO("TextureEntry.getVersionFromMediaVersionString not yet implemented")
+        fun getVersionFromMediaVersionString(versionString: String): UInt {
+            System.err.println("TextureEntry: getVersionFromMediaVersionString not yet implemented")
+            return 0u
+        }
 
         /** Parse the agent UUID from a media-version string. */
-        fun getAgentIDFromMediaVersionString(versionString: String): LLUUID =
-            TODO("TextureEntry.getAgentIDFromMediaVersionString not yet implemented")
+        fun getAgentIDFromMediaVersionString(versionString: String): LLUUID {
+            System.err.println("TextureEntry: getAgentIDFromMediaVersionString not yet implemented")
+            return LLUUID.NULL
+        }
 
         /** Return whether a string is a valid media-version string. */
-        fun isMediaVersionString(versionString: String): Boolean =
-            TODO("TextureEntry.isMediaVersionString not yet implemented")
+        fun isMediaVersionString(versionString: String): Boolean {
+            System.err.println("TextureEntry: isMediaVersionString not yet implemented")
+            return false
+        }
     }
 
     /**

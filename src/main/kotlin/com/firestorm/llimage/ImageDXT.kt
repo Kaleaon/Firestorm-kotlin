@@ -149,8 +149,8 @@ class ImageDXT : ImageFormatted(ImageCodecType.DXT) {
             setLastError("LLImageDXT uninitialized")
             return false
         }
-        TODO("CODEC: DXT — parse dxtfile_header_old_t or dxtfile_header_t, " +
-                "set fileFormat / headerSize / width / height / components / discardLevel")
+        System.err.println("ImageDXT: updateData not yet implemented")
+        return false
     }
 
     /**
@@ -166,8 +166,8 @@ class ImageDXT : ImageFormatted(ImageCodecType.DXT) {
             setLastError("Attempt to decode compressed ImageDXT to Raw (unsupported)")
             return false
         }
-        TODO("CODEC: DXT — copy uncompressed mip bytes at getMipOffset(discardLevel) " +
-                "into rawImage after bounds checking")
+        System.err.println("ImageDXT: decode not yet implemented")
+        return false
     }
 
     /**
@@ -180,8 +180,8 @@ class ImageDXT : ImageFormatted(ImageCodecType.DXT) {
      */
     override fun encode(rawImage: ImageRaw, encodeTime: Float): Boolean {
         resetLastError()
-        TODO("CODEC: DXT — build DDS header + uncompressed mip pyramid from rawImage " +
-                "using formatComponents / formatBytes; block compression requires squish/JNI")
+        System.err.println("ImageDXT: encode not yet implemented")
+        return false
     }
 
     // ---- header / data size -------------------------------------------------
@@ -201,7 +201,8 @@ class ImageDXT : ImageFormatted(ImageCodecType.DXT) {
         if (fileFormat == DXTFormat.UNKNOWN) return 0
         val level = if (discardLevel < 0) this.discardLevel.toInt() else discardLevel
         val offset = getMipOffset(level)
-        TODO("CODEC: DXT — return getMipOffset(level) + formatBytes(fileFormat, w>>level, h>>level)")
+        System.err.println("ImageDXT: calcDataSize not yet implemented")
+        return 0
     }
 
     // ---- mip-level access ---------------------------------------------------
@@ -217,8 +218,8 @@ class ImageDXT : ImageFormatted(ImageCodecType.DXT) {
      * This is a direct port of `LLImageDXT::getMipOffset(S32 discard)`.
      */
     fun getMipOffset(discard: Int): Int {
-        TODO("CODEC: DXT — walk mip sizes using formatBytes() to accumulate the byte offset " +
-                "for the requested discard level within the DXR mip ordering")
+        System.err.println("ImageDXT: getMipOffset not yet implemented")
+        return 0
     }
 
     /**
@@ -243,8 +244,8 @@ class ImageDXT : ImageFormatted(ImageCodecType.DXT) {
      * or if conversion is not applicable.
      */
     fun convertToDXR(): Boolean {
-        TODO("CODEC: DXT — remap mip block positions from DXT to DXR layout, " +
-                "update header fourCC to the DXR equivalent, then call updateData()")
+        System.err.println("ImageDXT: convertToDXR not yet implemented")
+        return false
     }
 
     /**
@@ -252,7 +253,8 @@ class ImageDXT : ImageFormatted(ImageCodecType.DXT) {
      * [discard] defaults to [discardLevel] when negative.
      */
     fun getMipData(discard: Int = -1): ImageRaw {
-        TODO("CODEC: DXT — slice data[getMipOffset(discard)..<nextMipOffset] into ImageRaw")
+        System.err.println("ImageDXT: getMipData not yet implemented")
+        return ImageRaw()
     }
 
     // ---- companion object: static helpers -----------------------------------

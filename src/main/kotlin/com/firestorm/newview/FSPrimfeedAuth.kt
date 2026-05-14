@@ -62,7 +62,7 @@ class FSPrimfeedAuth private constructor(private val callback: AuthorizedCallbac
             "pf-user-uuid"     to userUuid
         )
 
-        TODO("APR: use JVM equivalent")
+        System.err.println("FSPrimfeedAuth: beginLoginRequest not yet implemented")
         // FSCoreHttpUtil.callbackHttpPostRaw(url, "", headers, PRIMFEED_CONNECT_TIMEOUT,
         //     onSuccess = { data -> handleHttpResponse(data) { success, resp -> gotRequestId(success, resp) } },
         //     onFailure = { data -> handleHttpResponse(data) { success, resp -> gotRequestId(success, resp) } }
@@ -79,7 +79,7 @@ class FSPrimfeedAuth private constructor(private val callback: AuthorizedCallbac
             "pf-viewer-api-key" to viewerApiKey
         )
 
-        TODO("APR: use JVM equivalent")
+        System.err.println("FSPrimfeedAuth: checkUserStatus not yet implemented")
         // FSCoreHttpUtil.callbackHttpGetRaw(url, headers, PRIMFEED_CONNECT_TIMEOUT,
         //     onSuccess = { data -> handleHttpResponse(data) { success, resp -> gotUserStatus(success, resp) } },
         //     onFailure = { data -> handleHttpResponse(data) { success, resp -> gotUserStatus(success, resp) } }
@@ -100,7 +100,7 @@ class FSPrimfeedAuth private constructor(private val callback: AuthorizedCallbac
         }
         val viewerApiKey = gSavedSettings.getString("FSPrimfeedViewerApiKey")
         val authUrl = "https://www.primfeed.com/oauth/viewer?r=$requestId&v=$viewerApiKey"
-        TODO("APR: use JVM equivalent")
+        System.err.println("FSPrimfeedAuth: gotRequestId not yet implemented")
         // gViewerWindow.getWindow().spawnWebBrowser(authUrl, true)
     }
 

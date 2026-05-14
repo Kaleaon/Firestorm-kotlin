@@ -138,7 +138,7 @@ object CompileQueue {
         }
         next.status = CompileStatus.COMPILING
         currentObjectId = next.objectId
-        TODO("Upload/recompile asset for itemId=${next.itemId} on objectId=${next.objectId} via HTTP asset upload service")
+        System.err.println("CompileQueue: processNextScript not yet implemented")
     }
 
     /**
@@ -179,7 +179,7 @@ object CompileQueue {
      * Stub — send [ScriptReset] message to the simulator for each entry.
      */
     fun resetAllScripts() {
-        TODO("Send ScriptReset UDP message for each objectId/itemId pair in scriptQueue")
+        System.err.println("CompileQueue: resetAllScripts not yet implemented")
     }
 
     /**
@@ -187,14 +187,14 @@ object CompileQueue {
      * @param running true → run, false → stop.
      */
     fun setAllScriptsRunning(running: Boolean) {
-        TODO("Send SetScriptRunning UDP message (running=$running) for each entry in scriptQueue")
+        System.err.println("CompileQueue: setAllScriptsRunning not yet implemented")
     }
 
     /**
      * Deletes all queued scripts from their host objects.
      */
     fun deleteAllScripts() {
-        TODO("Send RemoveInventory UDP message for each objectId/itemId pair in scriptQueue")
+        System.err.println("CompileQueue: deleteAllScripts not yet implemented")
     }
 
     // -----------------------------------------------------------------------

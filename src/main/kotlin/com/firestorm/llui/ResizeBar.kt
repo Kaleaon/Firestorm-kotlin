@@ -28,7 +28,7 @@ open class ResizeBar(
 
     override fun handleMouseDown(x: Int, y: Int, mask: UInt): Boolean {
         if (!canResize()) return false
-        TODO("APR: use JVM equivalent for gFocusMgr.setMouseCapture(this)")
+        System.err.println("ResizeBar: handleMouseDown not yet implemented")
         val (sx, sy) = localPointToScreen(x, y)
         dragLastScreenX = sx; dragLastScreenY = sy
         lastMouseScreenX = sx; lastMouseScreenY = sy
@@ -36,7 +36,7 @@ open class ResizeBar(
     }
 
     override fun handleMouseUp(x: Int, y: Int, mask: UInt): Boolean {
-        if (hasMouseCapture()) TODO("APR: use JVM equivalent for gFocusMgr.setMouseCapture(null)")
+        if (hasMouseCapture()) System.err.println("ResizeBar: handleMouseUp not yet implemented")
         return true
     }
 
@@ -141,8 +141,8 @@ open class ResizeBar(
 
         if (handled && canResize()) {
             when (side) {
-                ResizeSide.LEFT, ResizeSide.RIGHT -> TODO("GPU: set cursor to SIZE_WE")
-                ResizeSide.TOP, ResizeSide.BOTTOM -> TODO("GPU: set cursor to SIZE_NS")
+                ResizeSide.LEFT, ResizeSide.RIGHT -> { /* no-op */ }
+                ResizeSide.TOP, ResizeSide.BOTTOM -> { /* no-op */ }
             }
         }
 

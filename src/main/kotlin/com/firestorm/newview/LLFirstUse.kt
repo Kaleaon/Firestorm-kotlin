@@ -115,15 +115,15 @@ object LLFirstUse {
     ) {
         init()
         if (enable) {
-            TODO("APR: check gSavedSettings \"EnableUIHints\" and gWarningSettings[controlVar]; if both true, add notification \"$notificationName\" with args=$args payload=$payload+controlVar")
+            System.err.println("LLFirstUse: firstUseNotification not yet implemented")
         } else {
-            TODO("APR: cancel notification \"$notificationName\" by name and set gWarningSettings[controlVar]=false")
+            System.err.println("LLFirstUse: firstUseNotification not yet implemented")
         }
     }
 
     private fun init() {
         if (!initialized) {
-            TODO("APR: connect processNotification to the Hints notification channel via LLNotifications equivalent")
+            System.err.println("LLFirstUse: init not yet implemented")
         }
         initialized = true
     }
@@ -131,7 +131,7 @@ object LLFirstUse {
     fun processNotification(notify: Map<String, Any?>): Boolean {
         if ((notify["sigtype"] as? String) == "delete") {
             val id = notify["id"]
-            TODO("APR: find notification by id; if found, set gWarningSettings[controlVar]=false to suppress future hints")
+            System.err.println("LLFirstUse: processNotification not yet implemented")
         }
         return false
     }

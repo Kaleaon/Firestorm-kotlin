@@ -67,7 +67,7 @@ class LLFloaterRegionRestartSchedule(owner: LLView) : LLFloater(LLSD()) {
     open fun onOpen(key: LLSD) {
         val url = gAgent.getRegionCapability("RegionSchedule")
         if (url.isNotEmpty()) {
-            TODO("APR: use JVM equivalent — launch coroutine requestRegionShcheduleCoro(url, getHandle())")
+            System.err.println("LLFloaterRegionRestartSchedule: onOpen not yet implemented")
             mSaveButton?.setEnabled(false)
         }
     }
@@ -122,7 +122,7 @@ class LLFloaterRegionRestartSchedule(owner: LLView) : LLFloater(LLSD()) {
         val body = LLSD()
         body["restart"] = restart
 
-        TODO("APR: use JVM equivalent — launch coroutine setRegionShcheduleCoro(url, body, getHandle())")
+        System.err.println("LLFloaterRegionRestartSchedule: onSaveButtonClicked not yet implemented")
         mSaveButton?.setEnabled(false)
     }
 
@@ -176,7 +176,7 @@ class LLFloaterRegionRestartSchedule(owner: LLView) : LLFloater(LLSD()) {
         }
 
         fun requestRegionShcheduleCoro(url: String, handle: LLHandle<LLFloater>) {
-            TODO("APR: use JVM equivalent — HTTP GET $url; on success parse LLSD result and populate floater UI via handle")
+            System.err.println("LLFloaterRegionRestartSchedule: requestRegionShcheduleCoro not yet implemented")
         }
 
         fun setRegionShcheduleCoro(url: String, body: LLSD, handle: LLHandle<LLFloater>) {

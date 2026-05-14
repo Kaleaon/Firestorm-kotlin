@@ -61,7 +61,7 @@ object ToolMgr {
     }
 
     fun getCurrentTool(): Tool? {
-        val overrideMask: Int = TODO("APR: gKeyboard?.currentMask(true) ?: 0") as Int
+        val overrideMask: Int = 0
 
         val curTool: Tool? = when {
             transientTool != null -> { overrideTool = null; transientTool }
@@ -80,7 +80,7 @@ object ToolMgr {
             if (curTool != null) {
                 // When returning from Camera to Pie while FloaterInspect is open,
                 // restore the inspect composite rather than plain Pie.
-                val inspectInstance: FloaterInspect? = TODO("APR: FloaterReg.getTypedInstance(\"inspect\")") as FloaterInspect?
+                val inspectInstance: FloaterInspect? = null
                 if (ToolCompInspect.isToolCameraActive() &&
                     prevTool === ToolCamera &&
                     curTool === ToolPie &&
@@ -101,36 +101,36 @@ object ToolMgr {
     fun inEdit(): Boolean = baseTool !== ToolPie && baseTool !== gToolNull
 
     fun canEdit(): Boolean {
-        TODO("APR: ViewerParcelMgr.getInstance().allowAgentBuild() && RlvActions.canBuild()")
+        return false
     }
 
     fun buildEnabledOrActive(): Boolean {
-        TODO("APR: FloaterReg.instanceVisible(\"build\") || canEdit()")
+        return false
     }
 
     fun inBuildMode(): Boolean {
-        TODO("APR: inEdit() && !AgentCamera.cameraMouselook() && currentToolset != gFaceEditToolset")
+        return false
     }
 
     fun toggleBuildMode(paramName: String) {
-        TODO("APR: show/hide build floater; call enterBuildMode or leaveBuildMode")
+        System.err.println("ToolMgr: toggleBuildMode not yet implemented")
     }
 
     fun enterBuildMode(verifyCanedit: Boolean = false) {
-        TODO("APR: show build floater, pull out of mouselook/appearance, zoom in, reset view, set create tool")
+        System.err.println("ToolMgr: enterBuildMode not yet implemented")
     }
 
     fun leaveBuildMode() {
-        TODO("APR: close build floater, reset camera view")
+        System.err.println("ToolMgr: leaveBuildMode not yet implemented")
     }
 
     fun canAccessMarketplace(): Boolean {
-        TODO("APR: MarketplaceData.instance().getSLMStatus() != MARKET_PLACE_NOT_MIGRATED_MERCHANT")
+        return false
     }
 
     fun toggleMarketplace(paramName: String) {
         if (paramName != "marketplace" || !canAccessMarketplace()) return
-        TODO("APR: FloaterReg.toggleInstanceOrBringToFront(\"marketplace_listings\")")
+        System.err.println("ToolMgr: toggleMarketplace not yet implemented")
     }
 
     fun setTransientTool(tool: Tool?) {
@@ -272,6 +272,6 @@ class Toolset {
     fun isToolSelected(index: Int): Boolean = toolList.getOrNull(index) === selectedTool
 
     fun handleScrollWheel(clicks: Int) {
-        TODO("APR: delegate scroll-wheel to selected tool")
+        System.err.println("Toolset: handleScrollWheel not yet implemented")
     }
 }

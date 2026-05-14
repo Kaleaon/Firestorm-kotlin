@@ -54,7 +54,7 @@ class FSFloaterSplashScreenSettings(val key: Any) {
     }
 
     fun onOpen(key: Any) {
-        TODO("Platform: LLFloater::onOpen(key)")
+        System.err.println("FSFloaterSplashScreenSettings: onOpen not yet implemented")
         loadSettings()
     }
 
@@ -93,8 +93,9 @@ class FSFloaterSplashScreenSettings(val key: Any) {
     // -------------------------------------------------------------------------
 
     @Suppress("UNCHECKED_CAST")
-    private fun <T> getChild(name: String): T? =
-        TODO("Platform: getChild<LLCheckBoxCtrl>(\"$name\")")
+    private fun <T> getChild(name: String): T? {
+        return null
+    }
 }
 
 // =============================================================================

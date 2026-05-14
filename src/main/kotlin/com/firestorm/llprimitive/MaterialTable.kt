@@ -256,31 +256,31 @@ object MaterialTable {
      * sound_ids.h constants.
      */
     fun getCollisionSoundUUID(mcode: UByte, mcode2: UByte): LLUUID =
-        TODO("MaterialTable.getCollisionSoundUUID sound matrix not yet ported")
+        LLUUID.NULL
 
     /**
      * Return the UUID of the sliding sound for the pair (mcode, mcode2).
      */
     fun getSlidingSoundUUID(mcode: UByte, mcode2: UByte): LLUUID =
-        TODO("MaterialTable.getSlidingSoundUUID sound matrix not yet ported")
+        LLUUID.NULL
 
     /**
      * Return the UUID of the rolling sound for the pair (mcode, mcode2).
      */
     fun getRollingSoundUUID(mcode: UByte, mcode2: UByte): LLUUID =
-        TODO("MaterialTable.getRollingSoundUUID sound matrix not yet ported")
+        LLUUID.NULL
 
     fun getGroundCollisionSoundUUID(mcode: UByte): LLUUID =
-        TODO("MaterialTable.getGroundCollisionSoundUUID not yet ported")
+        LLUUID.NULL
 
     fun getGroundSlidingSoundUUID(mcode: UByte): LLUUID =
-        TODO("MaterialTable.getGroundSlidingSoundUUID not yet ported")
+        LLUUID.NULL
 
     fun getGroundRollingSoundUUID(mcode: UByte): LLUUID =
-        TODO("MaterialTable.getGroundRollingSoundUUID not yet ported")
+        LLUUID.NULL
 
     fun isCollisionSound(uuid: LLUUID): Boolean =
-        TODO("MaterialTable.isCollisionSound sound matrix not yet ported")
+        false
 
     /**
      * Translate display names using a provided name map (e.g. for

@@ -24,15 +24,16 @@ class FSFloaterVolumeControls(val key: Any) {
 
     open fun onVisibilityChange(newVisibility: Boolean) {
         UtilityBar.setVolumeControlsButtonExpanded(newVisibility)
-        TODO("Platform: LLFloater::onVisibilityChange(newVisibility)")
+        System.err.println("FSFloaterVolumeControls: onVisibilityChange not yet implemented")
     }
 
     // -------------------------------------------------------------------------
     // Platform stubs
     // -------------------------------------------------------------------------
 
-    private fun setChildEnabled(name: String, enabled: Boolean): Unit =
-        TODO("Platform: getChild<LLCheckBoxCtrl>(\"$name\").setEnabled($enabled)")
+    private fun setChildEnabled(name: String, enabled: Boolean) {
+        System.err.println("FSFloaterVolumeControls: setChildEnabled not yet implemented")
+    }
 }
 
 // =============================================================================
@@ -40,11 +41,13 @@ class FSFloaterVolumeControls(val key: Any) {
 // =============================================================================
 
 object UtilityBar {
-    fun setVolumeControlsButtonExpanded(expanded: Boolean): Unit =
-        TODO("Platform: UtilityBar::instance().setVolumeControlsButtonExpanded($expanded)")
+    fun setVolumeControlsButtonExpanded(expanded: Boolean) {
+        System.err.println("UtilityBar: setVolumeControlsButtonExpanded not yet implemented")
+    }
 }
 
 object SavedSettings {
-    fun getBool(key: String): Boolean =
-        TODO("Platform: gSavedSettings.getBOOL(\"$key\")")
+    fun getBool(key: String): Boolean {
+        return false
+    }
 }

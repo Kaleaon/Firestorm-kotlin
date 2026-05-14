@@ -190,23 +190,23 @@ class NullStreamingAudio : StreamingAudio {
         if (url.isEmpty()) {
             state = SoundFlags.STATE_STOPPED
         } else {
-            TODO("AUDIO: StreamingAudio — connect to URL '$url' and begin buffering/decoding")
+            System.err.println("NullStreamingAudio: start not yet implemented")
         }
     }
 
     override fun stop() {
         currentUrl = ""
         state = SoundFlags.STATE_STOPPED
-        TODO("AUDIO: StreamingAudio — stop decoder, release stream resources")
+        System.err.println("NullStreamingAudio: stop not yet implemented")
     }
 
     override fun pause(pause: Boolean) {
         state = if (pause) SoundFlags.STATE_PAUSED else SoundFlags.STATE_PLAYING
-        TODO("AUDIO: StreamingAudio — pause=$pause stream decoder")
+        System.err.println("NullStreamingAudio: pause not yet implemented")
     }
 
     override fun update() {
-        TODO("AUDIO: StreamingAudio — pump decoder ring-buffer, fire metadata callbacks if new ICY data arrived")
+        System.err.println("NullStreamingAudio: update not yet implemented")
     }
 
     override fun isPlaying(): Int = state
@@ -215,7 +215,7 @@ class NullStreamingAudio : StreamingAudio {
 
     override fun setGain(gain: Float) {
         this.gain = gain.coerceIn(0f, 1f)
-        TODO("AUDIO: StreamingAudio — apply gain ${this.gain} to hardware mixer channel")
+        System.err.println("NullStreamingAudio: setGain not yet implemented")
     }
 
     override fun getGain(): Float = gain

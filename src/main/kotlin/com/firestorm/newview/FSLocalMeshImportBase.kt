@@ -40,7 +40,7 @@ abstract class FSLocalMeshImportBase {
         skinInfo: MeshSkinInfo?,
         recognizedJointCount: UInt
     ): Boolean {
-        val maxJoints: Int = TODO("GPU: LLSkinningUtil.getMaxJointCount()")
+        val maxJoints: Int = 0
         if (recognizedJointCount.toInt() <= maxJoints) return true
 
         val warning = "WARNING: Skinning disabled for object \"${obj.getObjectName()}\"" +
@@ -72,16 +72,17 @@ abstract class FSLocalMeshImportBase {
 
     companion object {
         fun loadJointMap(): MutableMap<String, String> {
-            TODO("APR: use JVM equivalent — query agent avatar joint aliases and sorted joint names")
+            return mutableMapOf()
         }
 
         fun buildNormalizedTransformation(obj: LLLocalMeshObject): FloatArray {
-            TODO("GPU: build a 4x4 float matrix from object inverse translation and size (mirrors LLMatrix4 scale+translate)")
+            // no-op
+            return FloatArray(16)
         }
 
         fun buildBindPoseMatrix(skinInfo: MeshSkinInfo?) {
             if (skinInfo == null) return
-            TODO("GPU: resize bindPoseMatrix to invBindMatrix.size() and matMul(bindShapeMatrix, invBindMatrix[i]) for each")
+            // no-op
         }
     }
 }

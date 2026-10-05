@@ -26,6 +26,12 @@ class LLHttpRequest(
     fun setJsonBody(json: String): LLHttpRequest =
         setBody(json.toByteArray(Charsets.UTF_8), "application/json")
 
+    fun setByteRange(offset: Long, length: Long): LLHttpRequest {
+        val end = if (length > 0) (offset + length - 1).toString() else ""
+        headers.set("Range", "bytes=$offset-$end")
+        return this
+    }
+
     companion object {
         fun get(url: String) = LLHttpRequest(HttpMethod.GET, LLURI.fromString(url))
         fun post(url: String, body: ByteArray? = null) =
@@ -33,5 +39,9 @@ class LLHttpRequest(
         fun put(url: String, body: ByteArray? = null) =
             LLHttpRequest(HttpMethod.PUT, LLURI.fromString(url), body = body)
         fun delete(url: String) = LLHttpRequest(HttpMethod.DELETE, LLURI.fromString(url))
+        fun patch(url: String, body: ByteArray? = null) =
+            LLHttpRequest(HttpMethod.PATCH, LLURI.fromString(url), body = body)
+        fun head(url: String) = LLHttpRequest(HttpMethod.HEAD, LLURI.fromString(url))
+        fun options(url: String) = LLHttpRequest(HttpMethod.OPTIONS, LLURI.fromString(url))
     }
 }

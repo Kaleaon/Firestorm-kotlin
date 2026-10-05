@@ -1,9 +1,8 @@
 package com.firestorm.llprimitive
 
 import com.firestorm.llmath.Vector2
-import org.junit.Assert.assertArrayEquals
-import org.junit.Assert.assertEquals
-import org.junit.Test
+import kotlin.test.Test
+import org.junit.jupiter.api.Assertions.assertArrayEquals
 
 class GLTFMaterialTest {
 

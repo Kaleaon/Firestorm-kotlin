@@ -17,4 +17,8 @@ dependencyResolutionManagement {
 rootProject.name = "firestorm-kotlin"
 include(":app")
 include(":llsd-kotlin")
-project(":llsd-kotlin").projectDir = file("/app/Unified-LLSD/kotlin")
+project(":llsd-kotlin").projectDir = listOf(
+    file("/app/Unified-LLSD/kotlin"),
+    file("../Unified-LLSD/kotlin"),
+    file("Unified-LLSD/kotlin")
+).firstOrNull { it.exists() } ?: file("/app/Unified-LLSD/kotlin")

@@ -60,7 +60,9 @@ object LLCoreHttp {
             HttpMethod.POST    -> builder.POST(bodyPublisher)
             HttpMethod.PUT     -> builder.PUT(bodyPublisher)
             HttpMethod.DELETE  -> builder.DELETE()
-            else               -> builder.method(req.method.name, bodyPublisher)
+            HttpMethod.PATCH   -> builder.method("PATCH", bodyPublisher)
+            HttpMethod.HEAD    -> builder.method("HEAD", JHttpRequest.BodyPublishers.noBody())
+            HttpMethod.OPTIONS -> builder.method("OPTIONS", JHttpRequest.BodyPublishers.noBody())
         }
 
         val resp = client.send(builder.build(), HttpResponse.BodyHandlers.ofByteArray())

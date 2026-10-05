@@ -66,6 +66,11 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
+      - name: Run Core Unit Tests
+        run: ./gradlew :core:test --stacktrace
+        env:
+          GRADLE_OPTS: -Dorg.gradle.jvmargs="-Xmx4g -XX:MaxMetaspaceSize=1g -XX:+HeapDumpOnOutOfMemoryError"
+
       - name: Build Debug
         run: ./gradlew :app:assembleDebug --stacktrace
         env:

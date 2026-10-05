@@ -1,0 +1,127 @@
+plugins {
+    kotlin("jvm")
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+    }
+    sourceSets {
+        main {
+            kotlin {
+                exclude("com/firestorm/newview/**")
+                exclude("com/firestorm/llui/**")
+                exclude("com/firestorm/llwindow/**")
+                exclude("com/firestorm/llaudio/**")
+                exclude("com/firestorm/llplugin/**")
+                exclude("com/firestorm/llprimitive/**")
+                exclude("com/firestorm/llfilesystem/**")
+                exclude("com/firestorm/llimage/Image*.kt")
+                exclude("com/firestorm/llimage/PNG*.kt")
+                exclude("com/firestorm/llimage/LLImageBMP.kt")
+                exclude("com/firestorm/llimage/LLImageDXT.kt")
+                exclude("com/firestorm/llimage/LLImageGL.kt")
+                exclude("com/firestorm/llimage/LLImageJ2C.kt")
+                exclude("com/firestorm/llimage/LLImageJPEG.kt")
+                exclude("com/firestorm/llimage/LLImagePNG.kt")
+                exclude("com/firestorm/llimage/LLImageTGA.kt")
+                exclude("com/firestorm/llcharacter/BVHLoader.kt")
+                exclude("com/firestorm/llcharacter/CharacterConstants.kt")
+                exclude("com/firestorm/llcharacter/EditingMotion.kt")
+                exclude("com/firestorm/llcharacter/Gesture.kt")
+                exclude("com/firestorm/llcharacter/HandMotion.kt")
+                exclude("com/firestorm/llcharacter/HeadRotMotion.kt")
+                exclude("com/firestorm/llcharacter/Joint.kt")
+                exclude("com/firestorm/llcharacter/JointSolverRP3.kt")
+                exclude("com/firestorm/llcharacter/JointState.kt")
+                exclude("com/firestorm/llcharacter/KeyframeFallMotion.kt")
+                exclude("com/firestorm/llcharacter/KeyframeMotion.kt")
+                exclude("com/firestorm/llcharacter/KeyframeStandMotion.kt")
+                exclude("com/firestorm/llcharacter/KeyframeWalkMotion.kt")
+                exclude("com/firestorm/llcharacter/LLCharacter.kt")
+                exclude("com/firestorm/llcharacter/LLFaceMotion.kt")
+                exclude("com/firestorm/llcharacter/LLHandMotion.kt")
+                exclude("com/firestorm/llcharacter/LLHeadRotation.kt")
+                exclude("com/firestorm/llcharacter/LLMotion.kt")
+                exclude("com/firestorm/llcharacter/LLPose.kt")
+                exclude("com/firestorm/llcharacter/MotionController.kt")
+                exclude("com/firestorm/llcharacter/MultiGesture.kt")
+                exclude("com/firestorm/llcharacter/PhysicsMotion.kt")
+                exclude("com/firestorm/llcharacter/Pose.kt")
+                exclude("com/firestorm/llcharacter/TargetingMotion.kt")
+                exclude("com/firestorm/llcharacter/VisualParam.kt")
+                exclude("com/firestorm/llmessage/AvatarName.kt")
+                exclude("com/firestorm/llmessage/CacheName.kt")
+                exclude("com/firestorm/llmessage/CircuitData.kt")
+                exclude("com/firestorm/llmessage/ClassifiedFlags.kt")
+                exclude("com/firestorm/llmessage/ExperienceCache.kt")
+                exclude("com/firestorm/llmessage/IOBuffer.kt")
+                exclude("com/firestorm/llmessage/IOPipe.kt")
+                exclude("com/firestorm/llmessage/InstantMessage.kt")
+                exclude("com/firestorm/llmessage/LLAES.kt")
+                exclude("com/firestorm/llmessage/LLBandwidthMgr.kt")
+                exclude("com/firestorm/llmessage/LLBuffer.kt")
+                exclude("com/firestorm/llmessage/LLCipher.kt")
+                exclude("com/firestorm/llmessage/LLCircuit.kt")
+                exclude("com/firestorm/llmessage/LLDispatcher.kt")
+                exclude("com/firestorm/llmessage/LLHost.kt")
+                exclude("com/firestorm/llmessage/LLHTTPNode.kt")
+                exclude("com/firestorm/llmessage/LLMessageSystem.kt")
+                exclude("com/firestorm/llmessage/LLNetStrings.kt")
+                exclude("com/firestorm/llmessage/LLPacketRing.kt")
+                exclude("com/firestorm/llmessage/LLPumpIO.kt")
+                exclude("com/firestorm/llmessage/LLPumps.kt")
+                exclude("com/firestorm/llmessage/LLTransferManager.kt")
+                exclude("com/firestorm/llmessage/LLXfer.kt")
+                exclude("com/firestorm/llmessage/LLXferManager.kt")
+                exclude("com/firestorm/llmessage/MessageBuilder.kt")
+                exclude("com/firestorm/llmessage/MessageReader.kt")
+                exclude("com/firestorm/llmessage/MessageSystem.kt")
+                exclude("com/firestorm/llmessage/PacketBuffer.kt")
+                exclude("com/firestorm/llmessage/Throttle.kt")
+                exclude("com/firestorm/llrender/CubeMap.kt")
+                exclude("com/firestorm/llrender/FontFreetype.kt")
+                exclude("com/firestorm/llrender/FontGL.kt")
+                exclude("com/firestorm/llrender/FontRegistry.kt")
+                exclude("com/firestorm/llrender/GLSLShader.kt")
+                exclude("com/firestorm/llrender/GLStates.kt")
+                exclude("com/firestorm/llrender/ImageWorker.kt")
+                exclude("com/firestorm/llrender/LLCubeMap.kt")
+                exclude("com/firestorm/llrender/LLDrawPool.kt")
+                exclude("com/firestorm/llrender/Material.kt")
+                exclude("com/firestorm/llrender/PostProcess.kt")
+                exclude("com/firestorm/llrender/RenderTarget.kt")
+                exclude("com/firestorm/llrender/Shader.kt")
+                exclude("com/firestorm/llrender/ShaderMgr.kt")
+                exclude("com/firestorm/llrender/Texture.kt")
+                exclude("com/firestorm/llappearance/AvatarAppearance.kt")
+                exclude("com/firestorm/llappearance/DriverParam.kt")
+                exclude("com/firestorm/llappearance/VisualParam.kt")
+                exclude("com/firestorm/llcommon/LLApp.kt")
+                exclude("com/firestorm/llcommon/LLApr.kt")
+                exclude("com/firestorm/llcommon/LLCoros.kt")
+                exclude("com/firestorm/llcommon/LLError.kt")
+                exclude("com/firestorm/llcommon/LLQueuedThread.kt")
+                exclude("com/firestorm/llcommon/LLWorkerThread.kt")
+                exclude("com/firestorm/llcorehttp/CoreHttpUtil.kt")
+                exclude("com/firestorm/llcrashlogger/CrashLogger.kt")
+                exclude("com/firestorm/llmath/LLVolume.kt")
+            }
+        }
+    }
+}
+
+dependencies {
+    implementation("org.lwjgl:lwjgl:3.3.3")
+    implementation("org.lwjgl:lwjgl-opengl:3.3.3")
+    testImplementation(kotlin("test"))
+}
+
+tasks.test {
+    useJUnitPlatform()
+}

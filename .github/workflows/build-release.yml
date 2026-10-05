@@ -19,6 +19,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
 
     steps:
       - name: Checkout
@@ -76,14 +80,30 @@ jobs:
         env:
           GRADLE_OPTS: -Dorg.gradle.jvmargs="-Xmx4g -XX:MaxMetaspaceSize=1g -XX:+HeapDumpOnOutOfMemoryError"
 
+      - name: Generate SHA-256 checksums
+        run: |
+          shopt -s globstar
+          sha256sum app/build/outputs/apk/**/*.apk > SHA256SUMS.txt
+
+      - name: Attest Build Provenance
+        uses: actions/attest-build-provenance@v1
+        with:
+          subject-path: |
+            app/build/outputs/apk/**/*.apk
+            SHA256SUMS.txt
+
       - name: Upload Debug APK
         uses: actions/upload-artifact@v4
         with:
           name: firestorm-debug-APK
-          path: app/build/outputs/apk/*/debug/*.apk
+          path: |
+            app/build/outputs/apk/*/debug/*.apk
+            SHA256SUMS.txt
 
       - name: Upload Release APK
         uses: actions/upload-artifact@v4
         with:
           name: firestorm-release-APK
-          path: app/build/outputs/apk/*/release/*.apk
+          path: |
+            app/build/outputs/apk/*/release/*.apk
+            SHA256SUMS.txt

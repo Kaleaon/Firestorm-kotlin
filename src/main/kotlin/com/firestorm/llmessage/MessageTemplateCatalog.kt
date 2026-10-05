@@ -494,11 +494,52 @@ object MessageTemplateCatalog {
         add("ViewerStats",                     deprecation = Deprecation.DEPRECATED)
     }
 
-    operator fun get(name: String): MessageTemplate? = _templates[name]
+    private const val MAX_CACHE_SIZE = 1000
 
-    fun contains(name: String): Boolean = name in _templates
+    private val dynamicCache: MutableMap<String, MessageTemplate> = java.util.Collections.synchronizedMap(
+        object : LinkedHashMap<String, MessageTemplate>(128, 0.75f, true) {
+            override fun removeEldestEntry(eldest: MutableMap.MutableEntry<String, MessageTemplate>?): Boolean {
+                return size > MAX_CACHE_SIZE
+            }
+        }
+    )
+
+    fun loadFromStream(inputStream: java.io.InputStream) {
+        val parsed = MessageTemplateParser.parseStream(inputStream)
+        for (tmpl in parsed) {
+            addTemplate(tmpl)
+        }
+    }
+
+    fun loadFromText(text: String) {
+        val parsed = MessageTemplateParser.parseText(text)
+        for (tmpl in parsed) {
+            addTemplate(tmpl)
+        }
+    }
+
+    fun addTemplate(template: MessageTemplate) {
+        synchronized(_templates) {
+            _templates[template.name] = template
+            dynamicCache[template.name] = template
+        }
+    }
+
+    operator fun get(name: String): MessageTemplate? {
+        val cached = dynamicCache[name]
+        if (cached != null) return cached
+        val tmpl = _templates[name]
+        if (tmpl != null) {
+            dynamicCache[name] = tmpl
+        }
+        return tmpl
+    }
+
+    fun contains(name: String): Boolean = get(name) != null
 
     val size: Int get() = _templates.size
+
+    val cacheSize: Int get() = dynamicCache.size
 
     val allNames: Set<String>
         get() = _templates.keys.toSet()

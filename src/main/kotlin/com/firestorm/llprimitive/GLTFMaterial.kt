@@ -75,21 +75,22 @@ data class TextureTransform(
         const val PACK_TIGHT_SIZE: Int = 5
     }
 
-    /** Serialize to a FloatArray of [PACK_SIZE] elements (offset, scale, rotation, padding). */
+    /** Serialize to a FloatArray of [PACK_SIZE] elements (scale, rotation, padding, offset, padding). */
     fun getPacked(): FloatArray = floatArrayOf(
-        offset.x, offset.y,
         scale.x,  scale.y,
         rotation,
-        0f, 0f, 0f,  // padding to PACK_SIZE
+        0f,          // padding at index 3 matching C++ layout adapter
+        offset.x, offset.y,
+        0f, 0f,      // padding to PACK_SIZE
     )
 
     /**
-     * Compact form: [offsetX, offsetY, scaleX, scaleY, rotation] — [PACK_TIGHT_SIZE] elements.
+     * Compact form: [scaleX, scaleY, rotation, offsetX, offsetY] — [PACK_TIGHT_SIZE] elements.
      */
     fun getPackedTight(): FloatArray = floatArrayOf(
-        offset.x, offset.y,
         scale.x,  scale.y,
         rotation,
+        offset.x, offset.y,
     )
 }
 

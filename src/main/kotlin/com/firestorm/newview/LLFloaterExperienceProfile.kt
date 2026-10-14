@@ -115,10 +115,6 @@ private class LLRegionStub {
     fun getOriginGlobal(): Any = Any()
 }
 
-private object LLTrans {
-    fun getString(key: String): String = ""
-}
-
 private object LLNotificationsUtil {
     fun add(name: String, subs: Map<String, Any?> = emptyMap(), payload: Map<String, Any?> = emptyMap(),
             cb: ((Map<String, Any?>, Map<String, Any?>) -> Boolean)? = null) {

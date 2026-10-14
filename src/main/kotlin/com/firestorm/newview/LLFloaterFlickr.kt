@@ -173,13 +173,6 @@ private object LLNotificationsUtilFlickr {
     }
 }
 
-private object LLTrans {
-    fun getString(key: String): String {
-        System.err.println("LLTrans: getString not yet implemented")
-        return ""
-    }
-}
-
 // ---------------------------------------------------------------------------
 // LLFlickrPhotoPanel
 // ---------------------------------------------------------------------------

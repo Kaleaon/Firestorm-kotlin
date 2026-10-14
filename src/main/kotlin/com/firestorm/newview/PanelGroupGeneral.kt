@@ -640,10 +640,6 @@ object NotificationsUtil {
     fun getSelectedOption(notification: Any, response: Any): Int { System.err.println("APR: response option"); return 0 }
 }
 
-object LLTrans {
-    fun getString(key: String): String { System.err.println("APR: localized string"); return "" }
-}
-
 class SLUrl(type: String, id: UUID, action: String) {
     fun getSLUrlString(): String { System.err.println("APR: build SLURL string"); return "" }
 }

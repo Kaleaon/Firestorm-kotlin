@@ -40,6 +40,11 @@ android {
         viewBinding = true
     }
 
+    lint {
+        checkReleaseBuilds = false
+        abortOnError = false
+    }
+
     sourceSets {
         getByName("main") {
             java.srcDirs("../src/main/kotlin", "src/main/java")

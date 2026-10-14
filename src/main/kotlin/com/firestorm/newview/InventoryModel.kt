@@ -100,25 +100,52 @@ object InventoryModel {
         findCategoryUUIDForType(FolderType.MARKETPLACE_LISTINGS) ?: LLUUID.NULL
 
     fun isObjectDescendentOf(objId: LLUUID, catId: LLUUID): Boolean {
-        var current = objId
-        val visited = mutableSetOf<LLUUID>()
-        while (current != LLUUID.NULL && visited.add(current)) {
-            val parent = itemMap[current]?.parentId ?: categoryMap[current]?.parentId ?: return false
-            if (parent == catId) return true
-            current = parent
+        if (objId == LLUUID.NULL || catId == LLUUID.NULL) return false
+        var slow = objId
+        var fast = objId
+        while (slow != LLUUID.NULL) {
+            val slowParent = itemMap[slow]?.parentId ?: categoryMap[slow]?.parentId ?: return false
+            if (slowParent == catId) return true
+            slow = slowParent
+
+            val fastParent1 = itemMap[fast]?.parentId ?: categoryMap[fast]?.parentId
+            if (fastParent1 != null && fastParent1 != LLUUID.NULL) {
+                val fastParent2 = itemMap[fastParent1]?.parentId ?: categoryMap[fastParent1]?.parentId
+                if (fastParent2 != null && fastParent2 != LLUUID.NULL) {
+                    if (fastParent2 == slow) return false
+                    fast = fastParent2
+                } else {
+                    fast = LLUUID.NULL
+                }
+            } else {
+                fast = LLUUID.NULL
+            }
         }
         return false
     }
 
     fun getObjectTopmostAncestor(objectId: LLUUID): Pair<AncestorResult, LLUUID> {
-        var current = objectId
-        val visited = mutableSetOf<LLUUID>()
+        if (objectId == LLUUID.NULL) return Pair(AncestorResult.MISSING, LLUUID.NULL)
+        var slow = objectId
+        var fast = objectId
         while (true) {
-            if (!visited.add(current)) return Pair(AncestorResult.LOOP, current)
-            val parent = itemMap[current]?.parentId ?: categoryMap[current]?.parentId
-                ?: return Pair(AncestorResult.MISSING, current)
-            if (parent == LLUUID.NULL) return Pair(AncestorResult.OK, current)
-            current = parent
+            val parent = itemMap[slow]?.parentId ?: categoryMap[slow]?.parentId
+                ?: return Pair(AncestorResult.MISSING, slow)
+            if (parent == LLUUID.NULL) return Pair(AncestorResult.OK, slow)
+            slow = parent
+
+            val fastParent1 = itemMap[fast]?.parentId ?: categoryMap[fast]?.parentId
+            if (fastParent1 != null && fastParent1 != LLUUID.NULL) {
+                val fastParent2 = itemMap[fastParent1]?.parentId ?: categoryMap[fastParent1]?.parentId
+                if (fastParent2 != null && fastParent2 != LLUUID.NULL) {
+                    if (fastParent2 == slow) return Pair(AncestorResult.LOOP, slow)
+                    fast = fastParent2
+                } else {
+                    fast = LLUUID.NULL
+                }
+            } else {
+                fast = LLUUID.NULL
+            }
         }
     }
 

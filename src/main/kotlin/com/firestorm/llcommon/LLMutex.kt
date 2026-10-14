@@ -13,6 +13,7 @@ class LLMutex {
     fun isHeldByCurrentThread(): Boolean = lock.isHeldByCurrentThread
 
     fun <T> withLock(block: () -> T): T = lock.withLock(block)
+    internal fun newCondition(): java.util.concurrent.locks.Condition = lock.newCondition()
 }
 
 class LLMutexLock(private val mutex: LLMutex) : AutoCloseable {

@@ -15,4 +15,4 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "firestorm-kotlin"
-include(":app")
+include(":app", ":core")

@@ -527,18 +527,18 @@ val gRlvWearableLocks = RlvWearableLocks()
 // RlvFolderLocks (singleton)
 //
 
+sealed class LockSource {
+    data class ByUuid(val id: UUID) : LockSource()
+    data class ByString(val path: String) : LockSource()
+    data class ByInt(val index: Int) : LockSource()
+    data class ByWearableType(val type: LLWearableType) : LockSource()
+}
+
 object RlvFolderLocks {
 
     enum class ELockSourceType(val bits: Int) {
         ST_ATTACHMENT(0x01), ST_ATTACHMENTPOINT(0x02), ST_FOLDER(0x04), ST_ROOTFOLDER(0x08),
         ST_SHAREDPATH(0x10), ST_WEARABLETYPE(0x20), ST_NONE(0x00), ST_MASK_ANY(0xFF)
-    }
-
-    sealed class LockSource {
-        data class ByUuid(val id: UUID) : LockSource()
-        data class ByString(val path: String) : LockSource()
-        data class ByInt(val index: Int) : LockSource()
-        data class ByWearableType(val type: LLWearableType) : LockSource()
     }
 
     data class FolderLockSource(val type: ELockSourceType, val source: LockSource)

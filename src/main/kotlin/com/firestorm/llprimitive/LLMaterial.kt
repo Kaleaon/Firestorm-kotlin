@@ -127,40 +127,41 @@ data class LLMaterial(
          * Missing fields fall back to defaults rather than throwing.
          */
         fun fromLLSD(sd: LLSD): LLMaterial = LLMaterial(
-            normalId          = sd.getOrNull(FIELD_NORMAL_MAP)?.asUUID()         ?: LLUUID.NULL,
-            normalOffsetX     = (sd.getOrNull(FIELD_NORMAL_OFFSET_X)?.asInt()    ?: 0).toFloat() / MATERIALS_MULTIPLIER,
-            normalOffsetY     = (sd.getOrNull(FIELD_NORMAL_OFFSET_Y)?.asInt()    ?: 0).toFloat() / MATERIALS_MULTIPLIER,
-            normalRepeatX     = (sd.getOrNull(FIELD_NORMAL_REPEAT_X)?.asInt()    ?: 10000).toFloat() / MATERIALS_MULTIPLIER,
-            normalRepeatY     = (sd.getOrNull(FIELD_NORMAL_REPEAT_Y)?.asInt()    ?: 10000).toFloat() / MATERIALS_MULTIPLIER,
-            normalRotation    = (sd.getOrNull(FIELD_NORMAL_ROTATION)?.asInt()    ?: 0).toFloat() / MATERIALS_MULTIPLIER,
+            normalId          = sd[FIELD_NORMAL_MAP].asUUID(),
+            normalOffsetX     = (if (sd.has(FIELD_NORMAL_OFFSET_X)) sd[FIELD_NORMAL_OFFSET_X].asInt() else 0).toFloat() / MATERIALS_MULTIPLIER,
+            normalOffsetY     = (if (sd.has(FIELD_NORMAL_OFFSET_Y)) sd[FIELD_NORMAL_OFFSET_Y].asInt() else 0).toFloat() / MATERIALS_MULTIPLIER,
+            normalRepeatX     = (if (sd.has(FIELD_NORMAL_REPEAT_X)) sd[FIELD_NORMAL_REPEAT_X].asInt() else 10000).toFloat() / MATERIALS_MULTIPLIER,
+            normalRepeatY     = (if (sd.has(FIELD_NORMAL_REPEAT_Y)) sd[FIELD_NORMAL_REPEAT_Y].asInt() else 10000).toFloat() / MATERIALS_MULTIPLIER,
+            normalRotation    = (if (sd.has(FIELD_NORMAL_ROTATION)) sd[FIELD_NORMAL_ROTATION].asInt() else 0).toFloat() / MATERIALS_MULTIPLIER,
 
-            specularId        = sd.getOrNull(FIELD_SPECULAR_MAP)?.asUUID()       ?: LLUUID.NULL,
-            specularOffsetX   = (sd.getOrNull(FIELD_SPECULAR_OFFSET_X)?.asInt()  ?: 0).toFloat() / MATERIALS_MULTIPLIER,
-            specularOffsetY   = (sd.getOrNull(FIELD_SPECULAR_OFFSET_Y)?.asInt()  ?: 0).toFloat() / MATERIALS_MULTIPLIER,
-            specularRepeatX   = (sd.getOrNull(FIELD_SPECULAR_REPEAT_X)?.asInt()  ?: 10000).toFloat() / MATERIALS_MULTIPLIER,
-            specularRepeatY   = (sd.getOrNull(FIELD_SPECULAR_REPEAT_Y)?.asInt()  ?: 10000).toFloat() / MATERIALS_MULTIPLIER,
-            specularRotation  = (sd.getOrNull(FIELD_SPECULAR_ROTATION)?.asInt()  ?: 0).toFloat() / MATERIALS_MULTIPLIER,
+            specularId        = sd[FIELD_SPECULAR_MAP].asUUID(),
+            specularOffsetX   = (if (sd.has(FIELD_SPECULAR_OFFSET_X)) sd[FIELD_SPECULAR_OFFSET_X].asInt() else 0).toFloat() / MATERIALS_MULTIPLIER,
+            specularOffsetY   = (if (sd.has(FIELD_SPECULAR_OFFSET_Y)) sd[FIELD_SPECULAR_OFFSET_Y].asInt() else 0).toFloat() / MATERIALS_MULTIPLIER,
+            specularRepeatX   = (if (sd.has(FIELD_SPECULAR_REPEAT_X)) sd[FIELD_SPECULAR_REPEAT_X].asInt() else 10000).toFloat() / MATERIALS_MULTIPLIER,
+            specularRepeatY   = (if (sd.has(FIELD_SPECULAR_REPEAT_Y)) sd[FIELD_SPECULAR_REPEAT_Y].asInt() else 10000).toFloat() / MATERIALS_MULTIPLIER,
+            specularRotation  = (if (sd.has(FIELD_SPECULAR_ROTATION)) sd[FIELD_SPECULAR_ROTATION].asInt() else 0).toFloat() / MATERIALS_MULTIPLIER,
 
-            specularLightColor = sd.getOrNull(FIELD_SPECULAR_COLOR)?.let { arr ->
+            specularLightColor = if (sd.has(FIELD_SPECULAR_COLOR)) {
+                val arr = sd[FIELD_SPECULAR_COLOR]
                 Color4U(
                     arr[0].asInt().toUByte(),
                     arr[1].asInt().toUByte(),
                     arr[2].asInt().toUByte(),
                     arr[3].asInt().toUByte(),
                 )
-            } ?: Color4U.WHITE,
+            } else Color4U.WHITE,
 
-            specularLightExponent = sd.getOrNull(FIELD_SPECULAR_EXP)?.asInt()?.toUByte()
-                ?: DEFAULT_SPECULAR_LIGHT_EXPONENT,
+            specularLightExponent = if (sd.has(FIELD_SPECULAR_EXP)) sd[FIELD_SPECULAR_EXP].asInt().toUByte()
+                else DEFAULT_SPECULAR_LIGHT_EXPONENT,
 
-            environmentIntensity = sd.getOrNull(FIELD_ENV_INTENSITY)?.asInt()?.toUByte()
-                ?: DEFAULT_ENV_INTENSITY,
+            environmentIntensity = if (sd.has(FIELD_ENV_INTENSITY)) sd[FIELD_ENV_INTENSITY].asInt().toUByte()
+                else DEFAULT_ENV_INTENSITY,
 
             diffuseAlphaMode = DiffuseAlphaMode.fromCode(
-                sd.getOrNull(FIELD_DIFFUSE_ALPHA_MODE)?.asInt() ?: DiffuseAlphaMode.BLEND.code.toInt()
+                if (sd.has(FIELD_DIFFUSE_ALPHA_MODE)) sd[FIELD_DIFFUSE_ALPHA_MODE].asInt() else DiffuseAlphaMode.BLEND.code.toInt()
             ),
 
-            alphaMaskCutoff = sd.getOrNull(FIELD_ALPHA_MASK_CUTOFF)?.asInt()?.toUByte() ?: 0u,
+            alphaMaskCutoff = if (sd.has(FIELD_ALPHA_MASK_CUTOFF)) sd[FIELD_ALPHA_MASK_CUTOFF].asInt().toUByte() else 0u,
         )
     }
 

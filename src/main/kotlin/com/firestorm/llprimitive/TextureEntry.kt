@@ -222,7 +222,7 @@ data class TextureEntry(
         fun unpack(buf: ByteBuffer): TextureEntry {
             buf.order(ByteOrder.LITTLE_ENDIAN)
             val uuidBytes = ByteArray(16).also { buf.get(it) }
-            val id = LLUUID.fromBytes(uuidBytes)
+            val id = LLUUID.fromBytes(uuidBytes) ?: LLUUID.NULL
             val r  = buf.get().toInt() and 0xFF
             val g  = buf.get().toInt() and 0xFF
             val b  = buf.get().toInt() and 0xFF

@@ -53,6 +53,73 @@ class FSLSLPreprocessor private constructor(
     companion object {
         val cachedAssetids: MutableMap<String, UUID> = mutableMapOf()
 
+        val ENCODE_REPLACE_REGEX: Regex = Regex("""([/*])(?=[/*|])""")
+        val DECODE_REPLACE_REGEX: Regex = Regex("""([/*])\|""")
+        val COMPRESS_SPACES_REGEX: Regex = Regex("""(\s+)""")
+        val LAZY_LIST_REGEX: Regex = Regex(
+            """([a-zA-Z_][a-zA-Z0-9_]*)\s*\[([^\]]+)\]\s*=(?!=)\s*(.+?)(;|\))""",
+            setOf(RegexOption.DOT_MATCHES_ALL)
+        )
+        val SWITCH_STATEMENT_REGEX: Regex = Regex("""(?<![A-Za-z0-9_])switch\s*(\()""")
+
+        private const val CMNT = """//[^\n]*+\n|/\*(?:(?!\*/).)*+\*/"""
+        private const val SPC = """[^\]\[{}()<>@A-Za-z0-9_.,:;!~&|^"=%/*+-]"""
+        private const val REQ_SPC = """(?:$CMNT|$SPC)++"""
+        private const val OPT_SPC = """(?:$CMNT|$SPC)*+"""
+        private const val TYPE_ID = """[a-z]++"""
+        private const val IDENT = """[A-Za-z_][A-Za-z0-9_]*+"""
+        private const val CMNT_OR_STR = """$CMNT|"(?:[^"\\]|\\[^\n])*+""""
+
+        val FINDDECLS_PATTERN: Pattern = Pattern.compile(
+            """(?s)(^$OPT_SPC$TYPE_ID$REQ_SPC($IDENT)$OPT_SPC(?:=(?:$CMNT_OR_STR|[^;])++)?;)""" +
+            """|(^$OPT_SPC(?:$TYPE_ID$REQ_SPC)?($IDENT))$OPT_SPC\(""" +
+            """|(^$OPT_SPC(?:$CMNT_OR_STR|(?!$CMNT_OR_STR|(?<![A-Za-z0-9_])default(?![A-Za-z0-9_])).)*+(?<![A-Za-z0-9_])default(?![A-Za-z0-9_]))"""
+        )
+
+        private const val MAX_PATTERN_CACHE_SIZE = 1024
+
+        private val dynamicPatternCache = object : LinkedHashMap<String, Pattern>(MAX_PATTERN_CACHE_SIZE, 0.75f, true) {
+            override fun removeEldestEntry(eldest: MutableMap.MutableEntry<String, Pattern>?): Boolean {
+                return size > MAX_PATTERN_CACHE_SIZE
+            }
+        }
+
+        fun getFuncCallsPattern(funcname: String): Pattern {
+            val key = "func:$funcname"
+            synchronized(dynamicPatternCache) {
+                return dynamicPatternCache.getOrPut(key) {
+                    Pattern.compile(
+                        """(?s)(?<![A-Za-z0-9_])($funcname)$OPT_SPC\(""" +
+                        """|(?:$CMNT_OR_STR|(?!$CMNT_OR_STR|(?<![A-Za-z0-9_])$funcname$OPT_SPC\().)"""
+                    )
+                }
+            }
+        }
+
+        fun getVarCallsPattern(varname: String): Pattern {
+            val key = "var:$varname"
+            synchronized(dynamicPatternCache) {
+                return dynamicPatternCache.getOrPut(key) {
+                    Pattern.compile(
+                        """(?s)(?<![a-zA-Z0-9_.])($varname)(?![a-zA-Z0-9_"])""" +
+                        """|(?:$CMNT_OR_STR|(?!$CMNT_OR_STR|(?<![a-zA-Z0-9_.])$varname(?![a-zA-Z0-9_"])).)"""
+                    )
+                }
+            }
+        }
+
+        fun clearPatternCache() {
+            synchronized(dynamicPatternCache) {
+                dynamicPatternCache.clear()
+            }
+        }
+
+        fun patternCacheSize(): Int {
+            synchronized(dynamicPatternCache) {
+                return dynamicPatternCache.size
+            }
+        }
+
         fun monoDirective(text: String, agentInv: Boolean = true): Boolean {
             return when {
                 text.contains("//mono\n") -> true
@@ -73,7 +140,7 @@ class FSLSLPreprocessor private constructor(
     fun encode(script: String): String {
         var otext = decode(script)
 
-        otext = otext.replace(Regex("([/*])(?=[/*|])"), "$1|")
+        otext = otext.replace(ENCODE_REPLACE_REGEX, "$1|")
         otext = ENCODE_START + otext + ENCODE_END
         otext += "\n//nfo_preprocessor_version 0"
         otext += "\n//program_version Firestorm"
@@ -95,7 +162,7 @@ class FSLSLPreprocessor private constructor(
         if (end == -1) return script
 
         val data = script.substring(startLen, end)
-        return data.replace(Regex("([/*])\\|"), "$1")
+        return data.replace(DECODE_REPLACE_REGEX, "$1")
     }
 
     fun lslopt(script: String): String {
@@ -112,29 +179,15 @@ class FSLSLPreprocessor private constructor(
         val functions = mutableMapOf<String, String>()
         val gvars = mutableListOf<Pair<String, String>>()
 
-        val CMNT = """//[^\n]*+\n|/\*(?:(?!\*/).)*+\*/"""
-        val SPC = """[^\]\[{}()<>@A-Za-z0-9_.,:;!~&|^"=%/*+-]"""
-        val REQ_SPC = """(?:$CMNT|$SPC)++"""
-        val OPT_SPC = """(?:$CMNT|$SPC)*+"""
-        val TYPE_ID = """[a-z]++"""
-        val IDENT = """[A-Za-z_][A-Za-z0-9_]*+"""
-        val CMNT_OR_STR = """$CMNT|"(?:[^"\\]|\\[^\n])*+""""
-
-        val finddecls = Pattern.compile(
-            """(?s)(^$OPT_SPC$TYPE_ID$REQ_SPC($IDENT)$OPT_SPC(?:=(?:$CMNT_OR_STR|[^;])++)?;)""" +
-            """|(^$OPT_SPC(?:$TYPE_ID$REQ_SPC)?($IDENT))$OPT_SPC\(""" +
-            """|(^$OPT_SPC(?:$CMNT_OR_STR|(?!$CMNT_OR_STR|(?<![A-Za-z0-9_])default(?![A-Za-z0-9_])).)*+(?<![A-Za-z0-9_])default(?![A-Za-z0-9_]))"""
-        )
-
         var top = "\n$scriptIn"
         var bottom = ""
 
-        var m = finddecls.matcher(top)
+        var m = FINDDECLS_PATTERN.matcher(top)
         while (m.find()) {
             val len: Int
             when {
                 m.group(1) != null -> {
-                    gvars.add(Pair(m.group(2) ?: "", m.group(0)))
+                    gvars.add(Pair(m.group(2) ?: "", m.group(0) ?: ""))
                     len = m.end()
                 }
                 m.group(3) != null -> {
@@ -149,7 +202,7 @@ class FSLSLPreprocessor private constructor(
                 }
             }
             top = top.substring(len)
-            m = finddecls.matcher(top)
+            m = FINDDECLS_PATTERN.matcher(top)
         }
 
         if (bottom.isEmpty()) return scriptIn
@@ -159,10 +212,7 @@ class FSLSLPreprocessor private constructor(
             repass = false
             for ((funcname, function) in functions) {
                 if (!keptFunctions.contains(funcname)) {
-                    val findcalls = Pattern.compile(
-                        """(?s)(?<![A-Za-z0-9_])($funcname)$OPT_SPC\(""" +
-                        """|(?:$CMNT_OR_STR|(?!$CMNT_OR_STR|(?<![A-Za-z0-9_])$funcname$OPT_SPC\().)"""
-                    )
+                    val findcalls = getFuncCallsPattern(funcname)
                     val cm = findcalls.matcher(bottom)
                     while (cm.find()) {
                         if (cm.group(1) != null) {
@@ -177,10 +227,7 @@ class FSLSLPreprocessor private constructor(
         } while (repass)
 
         for ((varname, declaration) in gvars.asReversed()) {
-            val findvcalls = Pattern.compile(
-                """(?s)(?<![a-zA-Z0-9_.])($varname)(?![a-zA-Z0-9_"])""" +
-                """|(?:$CMNT_OR_STR|(?!$CMNT_OR_STR|(?<![a-zA-Z0-9_.])$varname(?![a-zA-Z0-9_"])).)"""
-            )
+            val findvcalls = getVarCallsPattern(varname)
             val vm = findvcalls.matcher(bottom)
             if (vm.find() && vm.group(1) != null) {
                 bottom = declaration + bottom
@@ -216,7 +263,7 @@ class FSLSLPreprocessor private constructor(
     fun lslcomp(script: String): String {
         return try {
             val shredded = shred(script)
-            shredded.replace(Regex("""(\s+)"""), "\n")
+            shredded.replace(COMPRESS_SPACES_REGEX, "\n")
         } catch (e: Exception) {
             displayError("Compress error: ${e.message}")
             throw e
@@ -409,8 +456,7 @@ class FSLSLPreprocessor private constructor(
         """.trimIndent()
 
         var result = script.replace(
-            Regex("""([a-zA-Z_][a-zA-Z0-9_]*)\s*\[([^\]]+)\]\s*=(?!=)\s*(.+?)(;|\))""",
-                setOf(RegexOption.DOT_MATCHES_ALL)),
+            LAZY_LIST_REGEX,
             { mr -> "${mr.groupValues[1]}=lazy_list_set(${mr.groupValues[1]},${mr.groupValues[2]},[${mr.groupValues[3]}])${mr.groupValues[4]}" }
         )
         result = "$lazySetFunc\n$result"
@@ -430,10 +476,9 @@ class FSLSLPreprocessor private constructor(
     }
 
     private fun reformatSwitchStatements(script: String, onLackDefault: () -> Unit): String {
-        val switchPattern = Regex("""(?<![A-Za-z0-9_])switch\s*(\()""")
         var result = script
         var offset = 0
-        for (mr in switchPattern.findAll(script)) {
+        for (mr in SWITCH_STATEMENT_REGEX.findAll(script)) {
             val matchStart = mr.range.first + offset
             val label = quickLabel()
             onLackDefault()

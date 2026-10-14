@@ -336,48 +336,97 @@ class FloaterReporter(key: String) : Floater(key) {
         ownerName = ownerNameParam
     }
 
-    // ---- Button handlers ----------------------------------------------------
+    // ---- Button handlers & Service Delegation -------------------------------
+
+    private val screenshotProvider = com.firestorm.abusereport.screenshot.DefaultScreenshotProvider(
+        screenshotSupplier = { captureScreenshot() }
+    )
+
+    private val abuseReportService by lazy {
+        val endpointConfig = com.firestorm.abusereport.models.AbuseReportEndpointConfig(
+            abuseCategoriesUrl = System.getProperty("firestorm.cap.AbuseCategories", ""),
+            sendUserReportWithScreenshotUrl = System.getProperty("firestorm.cap.SendUserReportWithScreenshot", ""),
+            sendUserReportUrl = System.getProperty("firestorm.cap.SendUserReport", ""),
+            legacyReportUrl = System.getProperty("firestorm.legacy.reportEndpoint", ""),
+            agentId = System.getProperty("firestorm.agent.id", "00000000-0000-0000-0000-000000000000"),
+            userDataDir = System.getProperty("firestorm.userDataDir", System.getProperty("user.home") ?: ".")
+        )
+        com.firestorm.abusereport.service.AbuseReportService(
+            endpointConfig = endpointConfig,
+            screenshotProvider = screenshotProvider
+        )
+    }
 
     fun onClickSend() {
         if (picking) closePickTool()
-        if (!validateReport()) return
 
-        val categoryValue: Int = (uiFields["category_combo"] as? Number)?.toInt() ?: 0
-        if (!copyrightWarningSeen) {
-            val detailsLc  = (uiFields["details_edit"]  as? String ?: "").lowercase()
-            val summaryLc  = (uiFields["summary_edit"]  as? String ?: "").lowercase()
-            if (detailsLc.contains("copyright") || summaryLc.contains("copyright") ||
-                categoryValue == IP_CONTENT_REMOVAL || categoryValue == IP_PERMISSIONS_EXPLOIT
-            ) {
-                // In the real viewer: LLNotificationsUtil.add("HelpReportAbuseContainsCopyright").
-                System.err.println("[FloaterReporter] Copyright warning shown; report not sent.")
-                copyrightWarningSeen = true
-                return
+        val categoryValue = (uiFields["category_combo"] as? Number)?.toInt() ?: 0
+        val categoryName = (uiFields["category_combo_label"] as? String) ?: ""
+        val summaryText = (uiFields["summary_edit"] as? String) ?: ""
+        val detailsText = (uiFields["details_edit"] as? String) ?: ""
+        val abuserName = (uiFields["abuser_name_edit"] as? String) ?: ""
+        val abuseLocation = (uiFields["abuse_location_edit"] as? String) ?: ""
+        val objectNameText = (uiFields["object_name"] as? String) ?: ""
+
+        val req = com.firestorm.abusereport.models.AbuseReportRequest(
+            categoryId = categoryValue,
+            categoryName = categoryName,
+            abuserTarget = com.firestorm.abusereport.models.AbuserTarget(
+                id = abuserId,
+                name = abuserName,
+                objectId = objectId,
+                objectName = objectNameText,
+                ownerName = ownerName
+            ),
+            location = com.firestorm.abusereport.models.ReportLocation(
+                regionName = (uiFields["sim_field"] as? String) ?: "",
+                position = position,
+                slurl = abuseLocation
+            ),
+            summary = summaryText,
+            details = detailsText,
+            screenshotId = uiFields["screenshot"] as? String,
+            screenshotBytes = imageRaw as? ByteArray,
+            copyrightAcknowledged = copyrightWarningSeen,
+            defaultDetailsText = defaultSummary
+        )
+
+        val validationErr = abuseReportService.validateRequest(req)
+        if (validationErr != null) {
+            when (validationErr) {
+                is com.firestorm.abusereport.models.AbuseReportErrorState.CopyrightWarning -> {
+                    System.err.println("[FloaterReporter] Copyright warning shown; report not sent.")
+                    copyrightWarningSeen = true
+                    return
+                }
+                is com.firestorm.abusereport.models.AbuseReportErrorState.ValidationError -> {
+                    System.err.println("[FloaterReporter] Validation failed: ${validationErr.field} - ${validationErr.message}")
+                    return
+                }
+                else -> {
+                    System.err.println("[FloaterReporter] Validation failed: $validationErr")
+                    return
+                }
             }
-        } else if (categoryValue == IP_CONTENT_REMOVAL) {
-            // IP_CONTENT_REMOVAL always triggers the dialog; report cannot be sent.
-            System.err.println("[FloaterReporter] IP_CONTENT_REMOVAL category; report not sent.")
-            return
         }
 
-        // In the real viewer: LLUploadDialog.modalUploadDialog("uploading_abuse_report").
-        val url     = System.getProperty("firestorm.cap.SendUserReport", "")
-        val sshotUrl = System.getProperty("firestorm.cap.SendUserReportWithScreenshot", "")
-        if (url.isNotEmpty() || sshotUrl.isNotEmpty()) {
-            sendReportViaCaps(url, sshotUrl, gatherReport())
-            System.err.println("[FloaterReporter] Abuse report sent via capability.")
-            // In the real viewer: LLNotificationsUtil.add("HelpReportAbuseConfirm"); closeFloater().
-        } else {
-            uiFields["send_btn_enabled"]   = false
-            uiFields["cancel_btn_enabled"] = false
-            uploadImage()
+        kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.IO).kotlinx.coroutines.launch {
+            val result = abuseReportService.submitReport(req)
+            when (result) {
+                is com.firestorm.abusereport.models.AbuseReportResult.Success -> {
+                    System.err.println("[FloaterReporter] Abuse report sent via ${result.method}: ${result.message}")
+                }
+                is com.firestorm.abusereport.models.AbuseReportResult.Failure -> {
+                    System.err.println("[FloaterReporter] Abuse report send failed: ${result.errorState}")
+                }
+            }
         }
     }
 
     fun onClickCancel() {
         copyrightWarningSeen = false
+        screenshotProvider.cleanupTemporaryFiles()
         if (picking) closePickTool()
-        // In the real viewer: closeFloater().
     }
 
     fun onClickObjPicker() {
@@ -642,32 +691,13 @@ class FloaterReporter(key: String) : Floater(key) {
     }
 
     private fun requestAbuseCategories() {
-        val capUrl = System.getProperty("firestorm.cap.AbuseCategories", "")
-        if (capUrl.isEmpty()) return
-
         val lang = System.getProperty("firestorm.language", "en")
-        val fullUrl = if (lang != "default" && lang.isNotEmpty()) "$capUrl?lc=$lang" else capUrl
-
-        Thread {
-            try {
-                val conn = URL(fullUrl).openConnection() as HttpURLConnection
-                conn.requestMethod = "GET"
-                conn.connectTimeout = 8_000
-                conn.readTimeout   = 12_000
-                if (conn.responseCode == 200) {
-                    val body = conn.inputStream.bufferedReader().readText()
-                    val data = LLSettingsVOBase.parseJsonToMap(body)
-                    @Suppress("UNCHECKED_CAST")
-                    val categories = data["categories"] as? List<*> ?: return@Thread
-                    // In the real viewer: populate category_combo keeping the first "Select category" entry.
-                    // JVM stub: store the first category id as the default selection.
-                    val firstCat = (categories.firstOrNull() as? Map<*, *>)?.get("category")
-                    if (firstCat != null) uiFields["category_combo_default"] = firstCat
-                }
-            } catch (e: Exception) {
-                System.err.println("[FloaterReporter] requestAbuseCategories failed: ${e.message}")
+        kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.IO).kotlinx.coroutines.launch {
+            val categories = abuseReportService.loadCategories(lang)
+            if (categories.isNotEmpty()) {
+                uiFields["category_combo_default"] = categories.first().id
             }
-        }.start()
+        }
     }
 
     private fun onUpdateScreenshot() {

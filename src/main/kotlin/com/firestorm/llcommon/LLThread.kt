@@ -3,6 +3,8 @@ package com.firestorm.llcommon
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
 
+typealias LLThreadStatus = LLThread.Status
+
 abstract class LLThread(var name: String) {
     enum class Status { STOPPED, RUNNING, QUEUED, PAUSED, QUITTING }
 
@@ -51,6 +53,7 @@ abstract class LLThread(var name: String) {
     }
 
     fun isRunning(): Boolean = status == Status.RUNNING
+    fun shouldRun(): Boolean = status == Status.RUNNING
     fun isStopped(): Boolean = status == Status.STOPPED
     fun isPaused(): Boolean = paused || status == Status.STOPPED
     fun isQuitting(): Boolean = status == Status.QUITTING
@@ -58,7 +61,7 @@ abstract class LLThread(var name: String) {
     fun checkPause() {
         dataLock.lock()
         while (shouldSleep()) {
-            runCondition.wait()
+            runCondition.await()
         }
         dataLock.unlock()
     }
@@ -85,23 +88,10 @@ abstract class LLThread(var name: String) {
     }
 }
 
-class LLMutex {
-    private val lock = ReentrantLock()
-
-    fun lock() = lock.lock()
-    fun unlock() = lock.unlock()
-    fun tryLock(): Boolean = lock.tryLock()
-
-    fun <T> withLock(block: () -> T): T = lock.withLock(block)
-
-    internal fun newCondition(): java.util.concurrent.locks.Condition = lock.newCondition()
-    internal fun isHeldByCurrentThread(): Boolean = lock.isHeldByCurrentThread
-}
-
 class LLCondition(private val mutex: LLMutex) {
     private val condition = mutex.newCondition()
 
-    fun wait() = condition.await()
+    fun await() = condition.await()
     fun signal() = condition.signal()
     fun broadcast() = condition.signalAll()
 }

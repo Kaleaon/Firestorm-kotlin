@@ -39,6 +39,22 @@ class LLPacketBuffer(
          * capped to MTU in the real stack).
          */
         const val MAX_PACKET_SIZE: Int = 4096
+
+        /**
+         * Construct an [LLPacketBuffer] from a raw receive buffer and a source
+         * [host], optionally recording the [receivingInterface].
+         *
+         * This covers the `LLPacketBuffer(S32 hSocket)` C++ constructor, but
+         * in the Kotlin port the actual socket read is done outside this class;
+         * callers pass in the already-read bytes.
+         */
+        fun fromReceive(
+            data: ByteArray,
+            sender: Host,
+            receivingInterface: Host = Host.INVALID
+        ): LLPacketBuffer = LLPacketBuffer(sender, data).also {
+            it.receivingInterface = receivingInterface
+        }
     }
 
     // ── Payload ───────────────────────────────────────────────────────────────
@@ -64,28 +80,6 @@ class LLPacketBuffer(
      * outgoing ones.  Mirrors `mReceivingIF` in C++.
      */
     var receivingInterface: Host = Host.INVALID
-
-    // =========================================================================
-    // Secondary constructor: build from a raw socket receive buffer
-    // =========================================================================
-
-    companion object {
-        /**
-         * Construct an [LLPacketBuffer] from a raw receive buffer and a source
-         * [host], optionally recording the [receivingInterface].
-         *
-         * This covers the `LLPacketBuffer(S32 hSocket)` C++ constructor, but
-         * in the Kotlin port the actual socket read is done outside this class;
-         * callers pass in the already-read bytes.
-         */
-        fun fromReceive(
-            data: ByteArray,
-            sender: Host,
-            receivingInterface: Host = Host.INVALID
-        ): LLPacketBuffer = LLPacketBuffer(sender, data).also {
-            it.receivingInterface = receivingInterface
-        }
-    }
 
     // =========================================================================
     // Accessors (mirrors C++ inline getters)

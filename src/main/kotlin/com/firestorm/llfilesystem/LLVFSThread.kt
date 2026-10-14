@@ -6,14 +6,14 @@ import com.firestorm.llcommon.AssetType
 
 typealias VFSCallback = (id: LLUUID, type: AssetType, data: ByteArray?) -> Unit
 
+sealed class VFSPayload {
+    class Read(val id: LLUUID, val type: AssetType, val callback: VFSCallback) : VFSPayload()
+    class Write(val id: LLUUID, val type: AssetType, val data: ByteArray, val callback: VFSCallback?) : VFSPayload()
+}
+
 class LLVFSThread(
     private val fileSystem: LLFileSystem
 ) : LLQueuedThread("LLVFSThread") {
-
-    sealed class VFSPayload {
-        class Read(val id: LLUUID, val type: AssetType, val callback: VFSCallback) : VFSPayload()
-        class Write(val id: LLUUID, val type: AssetType, val data: ByteArray, val callback: VFSCallback?) : VFSPayload()
-    }
 
     fun readFile(id: LLUUID, type: AssetType, callback: VFSCallback): Long =
         addRequest(payload = VFSPayload.Read(id, type, callback))

@@ -3,6 +3,24 @@ package com.firestorm.newview
 import java.util.UUID
 
 // ============================================================================
+// RlvBehaviourModifierValue — discriminated union replacing boost::variant
+// ============================================================================
+
+sealed class RlvBehaviourModifierValue {
+    data class FloatVal(val value: Float)   : RlvBehaviourModifierValue()
+    data class IntVal(val value: Int)       : RlvBehaviourModifierValue()
+    data class BoolVal(val value: Boolean)  : RlvBehaviourModifierValue()
+    data class StringVal(val value: String) : RlvBehaviourModifierValue()
+    data class UUIDVal(val value: UUID)     : RlvBehaviourModifierValue()
+
+    fun asFloat():  Float?   = (this as? FloatVal)?.value
+    fun asInt():    Int?     = (this as? IntVal)?.value
+    fun asBool():   Boolean? = (this as? BoolVal)?.value
+    fun asString(): String?  = (this as? StringVal)?.value
+    fun asUUID():   UUID?    = (this as? UUIDVal)?.value
+}
+
+// ============================================================================
 // RlvBehaviourModifierComp — base comparator for modifier value ordering
 // ============================================================================
 
@@ -95,24 +113,6 @@ private fun RlvBehaviourModifierCompMax.compareValues(
     val bothPrimary = lhs.second == primaryObjectId && rhs.second == primaryObjectId
     return if (bothNull || bothPrimary) rhs.first lt lhs.first
     else super.compare(lhs, rhs)
-}
-
-// ============================================================================
-// RlvBehaviourModifierValue — discriminated union replacing boost::variant
-// ============================================================================
-
-sealed class RlvBehaviourModifierValue {
-    data class FloatVal(val value: Float)   : RlvBehaviourModifierValue()
-    data class IntVal(val value: Int)       : RlvBehaviourModifierValue()
-    data class BoolVal(val value: Boolean)  : RlvBehaviourModifierValue()
-    data class StringVal(val value: String) : RlvBehaviourModifierValue()
-    data class UUIDVal(val value: UUID)     : RlvBehaviourModifierValue()
-
-    fun asFloat():  Float?   = (this as? FloatVal)?.value
-    fun asInt():    Int?     = (this as? IntVal)?.value
-    fun asBool():   Boolean? = (this as? BoolVal)?.value
-    fun asString(): String?  = (this as? StringVal)?.value
-    fun asUUID():   UUID?    = (this as? UUIDVal)?.value
 }
 
 // ============================================================================

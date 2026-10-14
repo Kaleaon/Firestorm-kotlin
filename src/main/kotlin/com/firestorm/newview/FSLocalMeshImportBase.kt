@@ -40,7 +40,7 @@ abstract class FSLocalMeshImportBase {
         skinInfo: MeshSkinInfo?,
         recognizedJointCount: UInt
     ): Boolean {
-        val maxJoints: Int = 0
+        val maxJoints: Int = com.firestorm.llcommon.MeshModelImporter.MAX_RIGGED_JOINTS
         if (recognizedJointCount.toInt() <= maxJoints) return true
 
         val warning = "WARNING: Skinning disabled for object \"${obj.getObjectName()}\"" +
@@ -54,7 +54,7 @@ abstract class FSLocalMeshImportBase {
             skinInfo.alternateBindMatrix.clear()
             skinInfo.bindPoseMatrix.clear()
             skinInfo.bindShapeMatrix = FloatArray(16).also { it[0] = 1f; it[5] = 1f; it[10] = 1f; it[15] = 1f }
-            skinInfo.invalidJointsScrubbed = false
+            skinInfo.invalidJointsScrubbed = true
             skinInfo.jointNumsInitialized = false
             skinInfo.updateHash()
         }

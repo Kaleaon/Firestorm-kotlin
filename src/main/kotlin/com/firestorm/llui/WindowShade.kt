@@ -3,6 +3,14 @@ package com.firestorm.llui
 import kotlin.math.max
 import kotlin.math.min
 
+sealed class FormElement(val name: String, val text: String) {
+    class Button(name: String, text: String, val isDefault: Boolean = false) : FormElement(name, text)
+    class TextInput(name: String, text: String, val isPassword: Boolean = false) : FormElement(name, text)
+    class IgnoreCheck(name: String, text: String, val initialValue: Boolean = false) : FormElement(name, text)
+}
+
+enum class IgnoreType { NONE, SHOW_AGAIN, IGNORE }
+
 data class Notification(
     val id: String,
     val icon: String = "",
@@ -21,14 +29,6 @@ data class Notification(
     fun setIgnored(ignored: Boolean) {
         this.ignored = ignored
     }
-}
-
-enum class IgnoreType { NONE, SHOW_AGAIN, IGNORE }
-
-sealed class FormElement(val name: String, val text: String) {
-    class Button(name: String, text: String, val isDefault: Boolean = false) : FormElement(name, text)
-    class TextInput(name: String, text: String, val isPassword: Boolean = false) : FormElement(name, text)
-    class IgnoreCheck(name: String, text: String, val initialValue: Boolean = false) : FormElement(name, text)
 }
 
 class WindowShade(

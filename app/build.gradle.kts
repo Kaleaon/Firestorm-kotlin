@@ -58,17 +58,12 @@ android {
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
     exclude { element ->
         if (element.isDirectory) return@exclude false
-        val path = element.path.replace('\\', '/')
-        val isPreproc = path.contains("FSLSLPreproc")
-        val isAndroid = path.contains("android") || path.contains("Firestorm") || path.contains("MainActivity")
-        val broken = path.contains("LLApp.kt") || path.contains("LLProcess.kt") ||
-                     path.contains("LLQueuedThread.kt") || path.contains("LLThread.kt") ||
-                     path.contains("LLWorkerThread.kt") || path.contains("LLMutex.kt") ||
-                     path.contains("LLError.kt") || path.contains("LLApr.kt") ||
-                     path.contains("LLCoros.kt") || path.contains("LLCommonNewTest.kt")
-        if (broken) return@exclude true
-        val isCommon = path.contains("llcommon")
-        !(isPreproc || isAndroid || isCommon)
+        val path = element.file.absolutePath.replace('\\', '/')
+        if (path.contains("/Firestorm-kotlin/src/")) {
+            !path.contains("FSLSLPreproc")
+        } else {
+            false
+        }
     }
 }
 
@@ -77,6 +72,6 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("com.google.android.material:material:1.12.0")
     implementation("androidx.constraintlayout:constraintlayout:2.2.0")
+    testImplementation("org.jetbrains.kotlin:kotlin-test:2.1.0")
     testImplementation("junit:junit:4.13.2")
-    testImplementation(kotlin("test"))
 }

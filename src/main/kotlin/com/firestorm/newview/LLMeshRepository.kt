@@ -9,6 +9,8 @@ import java.util.UUID
 import java.util.LinkedList
 import java.util.concurrent.BlockingQueue
 import java.util.concurrent.CompletableFuture
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.locks.ReentrantLock
@@ -54,6 +56,7 @@ class LLModel {
 class LLMeshSkinInfo
 class LLModelInstance
 class LLImportMaterial { var mOpaqueData: Any? = null }
+class LLViewerFetchedTexture
 class LLVector3(val x: Float = 0f, val y: Float = 0f, val z: Float = 0f)
 class LLMatrix4
 class LLQuaternion
@@ -464,6 +467,13 @@ class LLMeshRepoThread {
     @Volatile private var mShuttingDown: Boolean = false
     private var mDiskCacheBuffer: ByteArray? = null
 
+    val downloadExecutor: ExecutorService = Executors.newCachedThreadPool { runnable ->
+        Thread(runnable).apply {
+            isDaemon = true
+            name = "MeshDownloadWorker-${workerId.getAndIncrement()}"
+        }
+    }
+
     // Pending worker future – null when idle
     private var mWorkerFuture: CompletableFuture<Unit>? = null
 
@@ -480,10 +490,11 @@ class LLMeshRepoThread {
     class LoadedMesh(val mVolume: LLVolume, val mMeshParams: LLVolumeParams, val mLOD: Int)
 
     companion object {
+        private val workerId = AtomicInteger(1)
         val sActiveHeaderRequests = AtomicInteger(0)
         val sActiveLODRequests = AtomicInteger(0)
         val sActiveSkinRequests = AtomicInteger(0)
-        @Volatile var sMaxConcurrentRequests: UInt = 1u
+        @Volatile var sMaxConcurrentRequests: UInt = 8u
         var sRequestLowWater: Int = 16
         var sRequestHighWater: Int = 32
         var sRequestWaterLevel: Int = 0
@@ -504,64 +515,195 @@ class LLMeshRepoThread {
     /**
      * Repo thread main loop.
      * Processes header/LOD/skin/decomp queues in priority order,
-     * issuing HTTP byte-range GETs for any items not already cached.
+     * dispatching HTTP byte-range GETs in parallel across downloadExecutor
+     * worker threads up to sMaxConcurrentRequests.
      */
     fun run() {
         while (!mShuttingDown) {
             // Process pending LOD requests
-            val lodCopy = mMutex.withLock {
-                val list = mutableListOf<LODRequest>()
-                while (mLODReqQ.isNotEmpty() &&
-                    sActiveLODRequests.get() < sMaxConcurrentRequests.toInt()) {
-                    list.add(mLODReqQ.removeFirst())
-                }
-                list
-            }
-            for (req in lodCopy) {
-                if (!req.isDelayed()) {
-                    if (!fetchMeshLOD(req.mMeshParams, req.mLOD)) {
-                        if (req.canRetry()) { req.updateTime(); mMutex.withLock { mLODReqQ.addLast(req) } }
-                        else mLoadedMutex.withLock { mUnavailableQ.addLast(req) }
+            while (!mShuttingDown &&
+                (sActiveHeaderRequests.get() + sActiveLODRequests.get() + sActiveSkinRequests.get()) < sMaxConcurrentRequests.toInt()) {
+                val req = mMutex.withLock {
+                    val it = mLODReqQ.iterator()
+                    var found: LODRequest? = null
+                    while (it.hasNext()) {
+                        val candidate = it.next()
+                        if (!candidate.isDelayed()) {
+                            it.remove()
+                            found = candidate
+                            break
+                        }
                     }
-                } else {
-                    mMutex.withLock { mLODReqQ.addLast(req) }
+                    found
+                } ?: break
+
+                incActiveLODRequests()
+                downloadExecutor.execute {
+                    try {
+                        if (!fetchMeshLOD(req.mMeshParams, req.mLOD)) {
+                            if (req.canRetry()) {
+                                req.updateTime()
+                                mMutex.withLock { mLODReqQ.addLast(req) }
+                            } else {
+                                mLoadedMutex.withLock { mUnavailableQ.addLast(req) }
+                            }
+                        }
+                    } catch (e: Exception) {
+                        if (req.canRetry()) {
+                            req.updateTime()
+                            mMutex.withLock { mLODReqQ.addLast(req) }
+                        } else {
+                            mLoadedMutex.withLock { mUnavailableQ.addLast(req) }
+                        }
+                    } finally {
+                        decActiveLODRequests()
+                    }
                 }
             }
 
             // Process pending header requests
-            val hdrCopy = mMutex.withLock {
-                val list = mutableListOf<HeaderRequest>()
-                while (mHeaderReqQ.isNotEmpty() &&
-                    sActiveHeaderRequests.get() < sMaxConcurrentRequests.toInt()) {
-                    list.add(mHeaderReqQ.removeFirst())
-                }
-                list
-            }
-            for (req in hdrCopy) {
-                if (!req.isDelayed()) {
-                    if (!fetchMeshHeader(req.mMeshParams)) {
-                        if (req.canRetry()) { req.updateTime(); mMutex.withLock { mHeaderReqQ.addLast(req) } }
+            while (!mShuttingDown &&
+                (sActiveHeaderRequests.get() + sActiveLODRequests.get() + sActiveSkinRequests.get()) < sMaxConcurrentRequests.toInt()) {
+                val req = mMutex.withLock {
+                    val it = mHeaderReqQ.iterator()
+                    var found: HeaderRequest? = null
+                    while (it.hasNext()) {
+                        val candidate = it.next()
+                        if (!candidate.isDelayed()) {
+                            it.remove()
+                            found = candidate
+                            break
+                        }
                     }
-                } else {
-                    mMutex.withLock { mHeaderReqQ.addLast(req) }
+                    found
+                } ?: break
+
+                incActiveHeaderRequests()
+                downloadExecutor.execute {
+                    try {
+                        if (!fetchMeshHeader(req.mMeshParams)) {
+                            if (req.canRetry()) {
+                                req.updateTime()
+                                mMutex.withLock { mHeaderReqQ.addLast(req) }
+                            }
+                        }
+                    } catch (e: Exception) {
+                        if (req.canRetry()) {
+                            req.updateTime()
+                            mMutex.withLock { mHeaderReqQ.addLast(req) }
+                        }
+                    } finally {
+                        decActiveHeaderRequests()
+                    }
                 }
             }
 
             // Process skin requests
-            val skinCopy = mMutex.withLock {
-                val list = mutableListOf<UUIDBasedRequest>()
-                repeat(minOf(mSkinRequests.size, sMaxConcurrentRequests.toInt() - sActiveSkinRequests.get())) {
-                    list.add(mSkinRequests.removeFirst())
-                }
-                list
-            }
-            for (req in skinCopy) {
-                if (!req.isDelayed()) {
-                    if (!fetchMeshSkinInfo(req.mId)) {
-                        if (req.canRetry()) { req.updateTime(); mMutex.withLock { mSkinRequests.addLast(req) } }
+            while (!mShuttingDown &&
+                (sActiveHeaderRequests.get() + sActiveLODRequests.get() + sActiveSkinRequests.get()) < sMaxConcurrentRequests.toInt()) {
+                val req = mMutex.withLock {
+                    val it = mSkinRequests.iterator()
+                    var found: UUIDBasedRequest? = null
+                    while (it.hasNext()) {
+                        val candidate = it.next()
+                        if (!candidate.isDelayed()) {
+                            it.remove()
+                            found = candidate
+                            break
+                        }
                     }
-                } else {
-                    mMutex.withLock { mSkinRequests.addLast(req) }
+                    found
+                } ?: break
+
+                incActiveSkinRequests()
+                downloadExecutor.execute {
+                    try {
+                        if (!fetchMeshSkinInfo(req.mId)) {
+                            if (req.canRetry()) {
+                                req.updateTime()
+                                mMutex.withLock { mSkinRequests.addLast(req) }
+                            } else {
+                                mLoadedMutex.withLock { mSkinUnavailableQ.addLast(req) }
+                            }
+                        }
+                    } catch (e: Exception) {
+                        if (req.canRetry()) {
+                            req.updateTime()
+                            mMutex.withLock { mSkinRequests.addLast(req) }
+                        } else {
+                            mLoadedMutex.withLock { mSkinUnavailableQ.addLast(req) }
+                        }
+                    } finally {
+                        decActiveSkinRequests()
+                    }
+                }
+            }
+
+            // Process decomposition requests
+            while (!mShuttingDown &&
+                (sActiveHeaderRequests.get() + sActiveLODRequests.get() + sActiveSkinRequests.get()) < sMaxConcurrentRequests.toInt()) {
+                val req = mMutex.withLock {
+                    val it = mDecompositionRequests.iterator()
+                    var found: UUIDBasedRequest? = null
+                    while (it.hasNext()) {
+                        val candidate = it.next()
+                        if (!candidate.isDelayed()) {
+                            it.remove()
+                            found = candidate
+                            break
+                        }
+                    }
+                    found
+                } ?: break
+
+                downloadExecutor.execute {
+                    try {
+                        if (!fetchMeshDecomposition(req.mId)) {
+                            if (req.canRetry()) {
+                                req.updateTime()
+                                mMutex.withLock { mDecompositionRequests.add(req) }
+                            }
+                        }
+                    } catch (e: Exception) {
+                        if (req.canRetry()) {
+                            req.updateTime()
+                            mMutex.withLock { mDecompositionRequests.add(req) }
+                        }
+                    }
+                }
+            }
+
+            // Process physics shape requests
+            while (!mShuttingDown &&
+                (sActiveHeaderRequests.get() + sActiveLODRequests.get() + sActiveSkinRequests.get()) < sMaxConcurrentRequests.toInt()) {
+                val req = mMutex.withLock {
+                    val it = mPhysicsShapeRequests.iterator()
+                    var found: UUIDBasedRequest? = null
+                    while (it.hasNext()) {
+                        val candidate = it.next()
+                        if (!candidate.isDelayed()) {
+                            it.remove()
+                            found = candidate
+                            break
+                        }
+                    }
+                    found
+                } ?: break
+
+                downloadExecutor.execute {
+                    try {
+                        if (!fetchMeshPhysicsShape(req.mId)) {
+                            if (req.canRetry()) {
+                                req.updateTime()
+                                mMutex.withLock { mPhysicsShapeRequests.add(req) }
+                            }
+                        }
+                    } catch (e: Exception) {
+                        if (req.canRetry()) {
+                            req.updateTime()
+                            mMutex.withLock { mPhysicsShapeRequests.add(req) }
+                        }
+                    }
                 }
             }
 
@@ -574,6 +716,7 @@ class LLMeshRepoThread {
      */
     fun cleanup() {
         mShuttingDown = true
+        downloadExecutor.shutdownNow()
         mMutex.withLock {
             mLODReqQ.clear()
             mHeaderReqQ.clear()
@@ -623,9 +766,7 @@ class LLMeshRepoThread {
         return try {
             val data = httpGetByteRange(url, 0, MESH_HEADER_SIZE)
             if (data != null) {
-                incActiveHeaderRequests()
                 val result = headerReceived(meshParams, data)
-                decActiveHeaderRequests()
                 result == EMeshProcessingResult.MESH_OK
             } else false
         } catch (e: Exception) {
@@ -655,9 +796,7 @@ class LLMeshRepoThread {
         return try {
             val data = httpGetByteRange(url, offset, size)
             if (data != null) {
-                incActiveLODRequests()
                 val result = lodReceived(meshParams, lod, data)
-                decActiveLODRequests()
                 result == EMeshProcessingResult.MESH_OK
             } else false
         } catch (e: Exception) {
@@ -851,9 +990,7 @@ class LLMeshRepoThread {
         if (url.isEmpty()) { mLoadedMutex.withLock { mSkinUnavailableQ.addLast(UUIDBasedRequest(meshId)) }; return true }
         return try {
             val data = httpGetByteRange(url, offset, size) ?: return false
-            incActiveSkinRequests()
             skinInfoReceived(meshId, data)
-            decActiveSkinRequests()
             true
         } catch (e: Exception) { false }
     }
@@ -1393,8 +1530,9 @@ class LLMeshRepository {
         val decompFuture = CompletableFuture.runAsync { decoThread.run() }
         // Store futures so shutdown can cancel them; in a production build these
         // would be stored as instance fields.
-        _ = repoFuture
-        _ = decompFuture
+        // repoFuture and decompFuture run asynchronously
+        repoFuture.isDone
+        decompFuture.isDone
     }
 
     /**
@@ -1747,7 +1885,3 @@ private inline fun <T> ReentrantLock.withLock(block: () -> T): T {
     lock()
     return try { block() } finally { unlock() }
 }
-
-// ---- Suppress unused discard of futures ----
-@Suppress("UNUSED_PARAMETER")
-private var _: Any? = null

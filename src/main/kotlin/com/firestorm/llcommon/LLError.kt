@@ -239,7 +239,6 @@ object LLError {
 
     fun setFatalFunction(f: (String) -> Unit) { settings.crashFunction = f }
     fun getFatalFunction(): ((String) -> Unit)? = settings.crashFunction
-    fun getFatalMessage(): String = fatalMessage
 
     fun setTimeFunction(f: () -> String) { settings.timeFunction = f }
     fun setDefaultLevel(level: ELevel) { settings.defaultLevel = level }

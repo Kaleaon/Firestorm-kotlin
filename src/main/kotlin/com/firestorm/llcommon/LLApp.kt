@@ -107,15 +107,15 @@ abstract class LLApp {
 
         // --- Static status helpers -------------------------------------------
 
-        @JvmStatic fun getStatus(): AppStatus = globalStatus.get()
+        fun getStatus(): AppStatus = globalStatus.get()
 
-        @JvmStatic fun setStatus(s: AppStatus) { globalStatus.set(s) }
+        fun setStatus(s: AppStatus) { globalStatus.set(s) }
 
-        @JvmStatic fun isRunning():  Boolean = globalStatus.get() == AppStatus.RUNNING
-        @JvmStatic fun isQuitting(): Boolean = globalStatus.get() == AppStatus.QUITTING
-        @JvmStatic fun isStopped():  Boolean = globalStatus.get() == AppStatus.STOPPED
-        @JvmStatic fun isError():    Boolean = globalStatus.get() == AppStatus.ERROR
-        @JvmStatic fun isExiting():  Boolean = isQuitting() || isError()
+        fun isRunning():  Boolean = globalStatus.get() == AppStatus.RUNNING
+        fun isQuitting(): Boolean = globalStatus.get() == AppStatus.QUITTING
+        fun isStopped():  Boolean = globalStatus.get() == AppStatus.STOPPED
+        fun isError():    Boolean = globalStatus.get() == AppStatus.ERROR
+        fun isExiting():  Boolean = isQuitting() || isError()
 
         @JvmStatic fun setQuitting() { globalStatus.set(AppStatus.QUITTING) }
         @JvmStatic fun setStopped()  { globalStatus.set(AppStatus.STOPPED) }

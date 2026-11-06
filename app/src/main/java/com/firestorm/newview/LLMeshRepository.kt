@@ -1194,7 +1194,7 @@ class LLMeshUploadThread(
     @Volatile var mDiscarded: Boolean = false
     var mHost: String = ""
     var mWholeModelFeeCapability: String = uploadUrl
-    var mWholeModelUploadURL: String = ""
+    var mWholeModelUploadURL: String = if (doUpload) uploadUrl else ""
     val mDestinationFolderId: UUID = destinationFolderId
     private var mDoUpload: Boolean = doUpload
     private var mModelData: Map<String, Any> = emptyMap()

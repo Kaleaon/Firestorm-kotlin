@@ -25,8 +25,15 @@ jobs:
       attestations: write
 
     steps:
-      - name: Checkout
+      - name: Checkout Firestorm-kotlin
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - name: Checkout Unified-LLSD
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          repository: Kaleaon/Unified-LLSD
+          ref: stitch/polyglot-llsd-native-sdks-jm1-e31de4ba-64b6-4f01-9606-b2ea91a0acb4
+          path: Unified-LLSD
 
       - name: Set up JDK ${{ env.JAVA_VERSION }}
         uses: actions/setup-java@cf277c60eb25467037889841efdb72551f06f6c3 # v4

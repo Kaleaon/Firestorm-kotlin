@@ -4,6 +4,7 @@ sealed class LLSD {
     object Undefined : LLSD()
     data class LLSDBoolean(val value: Boolean) : LLSD()
     data class LLSDInteger(val value: Int) : LLSD()
+    data class LLSDInteger64(val value: Long) : LLSD()
     data class LLSDReal(val value: Double) : LLSD()
     data class LLSDString(val value: String) : LLSD()
     data class LLSDUUID(val value: LLUUID) : LLSD()
@@ -28,6 +29,7 @@ sealed class LLSD {
         is Undefined -> false
         is LLSDBoolean -> value
         is LLSDInteger -> value != 0
+        is LLSDInteger64 -> value != 0L
         is LLSDReal -> value != 0.0
         is LLSDString -> value.isNotEmpty()
         is LLSDUUID -> value.notNull()
@@ -42,15 +44,27 @@ sealed class LLSD {
         is Undefined -> 0
         is LLSDBoolean -> if (value) 1 else 0
         is LLSDInteger -> value
+        is LLSDInteger64 -> value.toInt()
         is LLSDReal -> value.toInt()
         is LLSDString -> value.toIntOrNull() ?: 0
         else -> 0
+    }
+
+    fun asLong(): Long = when (this) {
+        is Undefined -> 0L
+        is LLSDBoolean -> if (value) 1L else 0L
+        is LLSDInteger -> value.toLong()
+        is LLSDInteger64 -> value
+        is LLSDReal -> value.toLong()
+        is LLSDString -> value.toLongOrNull() ?: 0L
+        else -> 0L
     }
 
     fun asReal(): Double = when (this) {
         is Undefined -> 0.0
         is LLSDBoolean -> if (value) 1.0 else 0.0
         is LLSDInteger -> value.toDouble()
+        is LLSDInteger64 -> value.toDouble()
         is LLSDReal -> value
         is LLSDString -> value.toDoubleOrNull() ?: 0.0
         else -> 0.0
@@ -60,6 +74,7 @@ sealed class LLSD {
         is Undefined -> ""
         is LLSDBoolean -> if (value) "true" else "false"
         is LLSDInteger -> value.toString()
+        is LLSDInteger64 -> value.toString()
         is LLSDReal -> value.toString()
         is LLSDString -> value
         is LLSDUUID -> value.toString()
@@ -118,6 +133,7 @@ sealed class LLSD {
     companion object {
         fun of(value: Boolean): LLSD = LLSDBoolean(value)
         fun of(value: Int): LLSD = LLSDInteger(value)
+        fun of(value: Long): LLSD = LLSDInteger64(value)
         fun of(value: Double): LLSD = LLSDReal(value)
         fun of(value: String): LLSD = LLSDString(value)
         fun of(value: LLUUID): LLSD = LLSDUUID(value)
@@ -130,6 +146,7 @@ sealed class LLSD {
         fun emptyArray(): LLSD = LLSDArray(listOf())
 
         fun integer(v: Int): LLSD = LLSDInteger(v)
+        fun integer64(v: Long): LLSD = LLSDInteger64(v)
         fun real(v: Double): LLSD = LLSDReal(v)
         fun string(v: String): LLSD = LLSDString(v)
         fun uuid(v: LLUUID): LLSD = LLSDUUID(v)

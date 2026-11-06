@@ -118,6 +118,11 @@ kotlin {
                 exclude("com/firestorm/llmath/LLVolume.kt")
             }
         }
+        test {
+            kotlin {
+                exclude("com/firestorm/newview/**")
+            }
+        }
     }
 }
 

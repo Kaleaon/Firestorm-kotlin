@@ -25,8 +25,8 @@ enum class Deprecation {
 }
 
 enum class VarType {
-    U8, U16, U32,
-    S8, S16, S32,
+    U8, U16, U32, U64,
+    S8, S16, S32, S64,
     F32, F64,
     LLUUID,
     BOOL,

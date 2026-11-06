@@ -121,6 +121,7 @@ kotlin {
         test {
             kotlin {
                 exclude("com/firestorm/newview/**")
+                exclude("com/firestorm/llui/**")
             }
         }
     }

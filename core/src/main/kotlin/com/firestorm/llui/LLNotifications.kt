@@ -122,11 +122,11 @@ enum class ResponseTemplateType {
 }
 
 class NotificationEntry(
-    val name: String,
+    @get:JvmName("getRawName") val name: String,
     val id: UUID = UUID.randomUUID(),
     val substitutions: MutableMap<String, Any> = mutableMapOf(),
     val payload: MutableMap<String, Any> = mutableMapOf(),
-    val priority: NotificationPriority = NotificationPriority.UNSPECIFIED,
+    @get:JvmName("getRawPriority") val priority: NotificationPriority = NotificationPriority.UNSPECIFIED,
     val timestamp: Instant = Instant.now(),
     var expiresAt: Instant = Instant.EPOCH,
     val offerFromAgent: Boolean = false,
@@ -396,8 +396,8 @@ object NotificationFilters {
     }
 }
 
-abstract class NotificationChannelBase(protected var filter: NotificationFilter) {
-    protected val items: MutableList<NotificationEntry> = mutableListOf()
+abstract class NotificationChannelBase(@get:JvmName("getRawFilter") protected var filter: NotificationFilter) {
+    protected val items: MutableSet<NotificationEntry> = LinkedHashSet()
     protected val itemsMutex = ReentrantLock()
     protected val changedListeners: MutableList<(Map<String, Any>) -> Boolean> = mutableListOf()
     protected val passedFilterListeners: MutableList<(Map<String, Any>) -> Boolean> = mutableListOf()
@@ -413,8 +413,10 @@ abstract class NotificationChannelBase(protected var filter: NotificationFilter)
     }
 
     fun connectAtFrontChanged(slot: (Map<String, Any>) -> Boolean) {
-        for (item in items) {
-            slot(mapOf("sigtype" to "load", "id" to item.id.toString()))
+        itemsMutex.withLock {
+            for (item in items) {
+                slot(mapOf("sigtype" to "load", "id" to item.id.toString()))
+            }
         }
         changedListeners.add(0, slot)
     }
@@ -435,7 +437,7 @@ abstract class NotificationChannelBase(protected var filter: NotificationFilter)
         return updateItem(payload, pNotification)
     }
 
-    fun updateItem(payload: Map<String, Any>, pNotification: NotificationEntry): Boolean {
+    fun updateItem(payload: Map<String, Any>, pNotification: NotificationEntry): Boolean = itemsMutex.withLock {
         val cmd = payload["sigtype"] as? String ?: return false
         val wasFound = items.contains(pNotification)
         val passesFilter = filter(pNotification)
@@ -472,10 +474,10 @@ abstract class NotificationChannelBase(protected var filter: NotificationFilter)
                     }
                 } else {
                     if (wasFound) {
-                        items.remove(pNotification)
-                        onChange(pNotification)
                         val newPayload = payload.toMutableMap().also { it["sigtype"] = "delete" }
                         abortProcessing = changedListeners.any { it(newPayload) }
+                        onChange(pNotification)
+                        items.remove(pNotification)
                     }
                 }
             }
@@ -488,8 +490,8 @@ abstract class NotificationChannelBase(protected var filter: NotificationFilter)
             }
             "delete" -> {
                 if (wasFound) {
-                    onDelete(pNotification)
                     abortProcessing = changedListeners.any { it(payload) }
+                    onDelete(pNotification)
                     items.remove(pNotification)
                 }
             }
@@ -570,6 +572,7 @@ object Notifications : NotificationChannelBase(NotificationFilters::includeEvery
     private val channels: MutableMap<String, NotificationChannel> = mutableMapOf()
     private val functorRegistry: MutableMap<String, Responder> = mutableMapOf()
     private val defaultChannels: MutableList<NotificationChannel> = mutableListOf()
+    private val itemIndex: MutableMap<UUID, NotificationEntry> = mutableMapOf()
 
     fun init() {
         loadTemplates()
@@ -579,6 +582,30 @@ object Notifications : NotificationChannelBase(NotificationFilters::includeEvery
 
     fun clear() {
         defaultChannels.clear()
+        itemsMutex.withLock {
+            items.clear()
+            itemIndex.clear()
+        }
+    }
+
+    override fun onLoad(p: NotificationEntry) {
+        itemIndex[p.id] = p
+    }
+
+    override fun onAdd(p: NotificationEntry) {
+        itemIndex[p.id] = p
+    }
+
+    override fun onDelete(p: NotificationEntry) {
+        itemIndex.remove(p.id)
+    }
+
+    override fun onChange(p: NotificationEntry) {
+        if (items.contains(p)) {
+            itemIndex[p.id] = p
+        } else {
+            itemIndex.remove(p.id)
+        }
     }
 
     fun loadTemplates(): Boolean {
@@ -693,7 +720,7 @@ object Notifications : NotificationChannelBase(NotificationFilters::includeEvery
         }
     }
 
-    fun find(uuid: UUID): NotificationEntry? = items.find { it.id == uuid }
+    fun find(uuid: UUID): NotificationEntry? = itemsMutex.withLock { itemIndex[uuid] }
 
     fun getTemplate(name: String): NotificationTemplate? =
         templates[name] ?: templates["MissingAlert"]

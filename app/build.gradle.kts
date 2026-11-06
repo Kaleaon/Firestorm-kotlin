@@ -34,6 +34,7 @@ android {
 
     kotlinOptions {
         jvmTarget = "17"
+        freeCompilerArgs = listOf("-language-version", "1.9")
     }
 
     buildFeatures {
@@ -47,27 +48,16 @@ android {
 
     sourceSets {
         getByName("main") {
-            java.srcDirs("../src/main/kotlin", "src/main/java")
+            java.srcDirs("src/main/java")
         }
         getByName("test") {
-            java.srcDirs("../src/test/kotlin")
-        }
-    }
-}
-
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-    exclude { element ->
-        if (element.isDirectory) return@exclude false
-        val path = element.file.absolutePath.replace('\\', '/')
-        if (path.contains("/Firestorm-kotlin/src/")) {
-            !path.contains("FSLSLPreproc")
-        } else {
-            false
+            java.srcDirs("src/test/java")
         }
     }
 }
 
 dependencies {
+    implementation(project(":llsd-kotlin"))
     implementation("androidx.core:core-ktx:1.15.0")
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("com.google.android.material:material:1.12.0")

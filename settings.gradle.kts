@@ -15,6 +15,7 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "firestorm-kotlin"
+include(":abuse-report")
 include(":app")
 include(":llsd-kotlin")
 project(":llsd-kotlin").projectDir = listOf(

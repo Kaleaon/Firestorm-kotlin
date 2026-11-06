@@ -1,5 +1,6 @@
 package com.firestorm.newview
 
+import com.firestorm.llappearance.LLWearableType
 import java.util.UUID
 
 // ============================================================================

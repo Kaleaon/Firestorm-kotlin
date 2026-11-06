@@ -215,17 +215,62 @@ class LLSDSerializeBinaryTest {
         assertEquals(0xF0.toByte(), out[2])
     }
 
-    @Test fun dateIsLittleEndianEightBytes() {
+    @Test fun dateIsBigEndianEightBytes() {
         val out = LLSDSerialize.toBinary(LLSD.of(LLDate(1.0)))
         assertEquals(9, out.size)
         assertEquals('d'.code.toByte(), out[0])
-        // IEEE-754 double 1.0 little-endian: 00 00 00 00 00 00 F0 3F
-        assertEquals(0x00.toByte(), out[1])
-        assertEquals(0x00.toByte(), out[2])
-        assertEquals(0xF0.toByte(), out[7])
-        assertEquals(0x3F.toByte(), out[8])
+        // IEEE-754 double 1.0 big-endian: 3F F0 00 00 00 00 00 00
+        assertEquals(0x3F.toByte(), out[1])
+        assertEquals(0xF0.toByte(), out[2])
+        assertEquals(0x00.toByte(), out[7])
+        assertEquals(0x00.toByte(), out[8])
         val back = LLSDSerialize.fromBinary(out).asDate()
         assertEquals(1.0, back.secondsSinceEpoch)
+    }
+
+    @Test fun acceptsMapKeyTagS() {
+        // Manually crafted binary map with tag 's' (115) instead of 'k' (107)
+        // map count = 1, key length = 3 "foo", integer 42
+        val keyBytes = "foo".toByteArray(Charsets.UTF_8)
+        val binaryMap = byteArrayOf(
+            '{'.code.toByte(),
+            0, 0, 0, 1, // count = 1
+            's'.code.toByte(), // tag 's'
+            0, 0, 0, 3 // key len = 3
+        ) + keyBytes + LLSDSerialize.toBinary(LLSD.integer(42)) + '}'.code.toByte()
+        val back = LLSDSerialize.fromBinary(binaryMap)
+        assertTrue(back is LLSD.LLSDMap)
+        assertEquals(42, back["foo"].asInt())
+    }
+
+    @Test fun integer64RoundTripXml() {
+        val val64 = 0x123456789ABCDEF0L
+        val sd = LLSD.integer64(val64)
+        val xml = LLSDSerialize.toXML(sd)
+        val back = LLSDSerialize.fromXML(xml)
+        assertEquals(val64, back.asLong())
+
+        val xmlShort = "<llsd><i64>1234567890123456789</i64></llsd>"
+        assertEquals(1234567890123456789L, LLSDSerialize.fromXML(xmlShort).asLong())
+    }
+
+    @Test fun integer64RoundTripNotation() {
+        val val64 = 0x123456789ABCDEF0L
+        val sd = LLSD.integer64(val64)
+        val notation = LLSDSerialize.toNotation(sd)
+        assertTrue(notation.startsWith("i64"))
+        val back = LLSDSerialize.fromNotation(notation)
+        assertEquals(val64, back.asLong())
+    }
+
+    @Test fun integer64RoundTripBinary() {
+        val val64 = 0x123456789ABCDEF0L
+        val sd = LLSD.integer64(val64)
+        val bin = LLSDSerialize.toBinary(sd)
+        assertEquals(9, bin.size)
+        assertEquals('I'.code.toByte(), bin[0])
+        val back = LLSDSerialize.fromBinary(bin)
+        assertEquals(val64, back.asLong())
     }
 
     @Test fun stringRoundTrip() {

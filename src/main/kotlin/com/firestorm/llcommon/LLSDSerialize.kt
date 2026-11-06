@@ -104,6 +104,7 @@ object LLSDSerialize {
             it.textContent = if (sd.value) "true" else "false"
         }
         is LLSD.LLSDInteger -> doc.createElement("integer").also { it.textContent = sd.value.toString() }
+        is LLSD.LLSDInteger64 -> doc.createElement("integer64").also { it.textContent = sd.value.toString() }
         is LLSD.LLSDReal -> doc.createElement("real").also { it.textContent = formatRealLLSD(sd.value) }
         is LLSD.LLSDString -> if (sd.value.isEmpty()) doc.createElement("string")
         else doc.createElement("string").also { it.textContent = sd.value }
@@ -164,6 +165,7 @@ object LLSDSerialize {
             LLSD.LLSDBoolean(t == "true" || t == "1" || t == "1.0" || t == "t")
         }
         "integer" -> LLSD.LLSDInteger(el.textContent.trim().toIntOrNull() ?: 0)
+        "integer64", "i64" -> LLSD.LLSDInteger64(el.textContent.trim().toLongOrNull() ?: 0L)
         "real" -> LLSD.LLSDReal(parseRealLLSD(el.textContent))
         "string" -> LLSD.LLSDString(el.textContent)
         "uuid" -> LLSD.LLSDUUID(LLUUID.fromString(el.textContent.trim()) ?: LLUUID.NULL)
@@ -248,6 +250,7 @@ object LLSDSerialize {
             is LLSD.Undefined -> append('!')
             is LLSD.LLSDBoolean -> append(if (sd.value) "true" else "false")
             is LLSD.LLSDInteger -> append('i').append(sd.value)
+            is LLSD.LLSDInteger64 -> append("i64").append(sd.value)
             is LLSD.LLSDReal -> append('r').append(formatRealLLSD(sd.value))
             is LLSD.LLSDString -> {
                 append('\'')
@@ -340,7 +343,15 @@ object LLSDSerialize {
                 'F', 'f' -> parseBoolWord(false)
                 '1' -> { consume(); LLSD.LLSDBoolean(true) }
                 '0' -> { consume(); LLSD.LLSDBoolean(false) }
-                'i' -> { consume(); LLSD.LLSDInteger(parseNumberWord().toIntOrNull() ?: 0) }
+                'i' -> {
+                    if (text.startsWith("i64", pos)) {
+                        pos += 3
+                        LLSD.LLSDInteger64(parseNumberWord().toLongOrNull() ?: 0L)
+                    } else {
+                        consume()
+                        LLSD.LLSDInteger(parseNumberWord().toIntOrNull() ?: 0)
+                    }
+                }
                 'r' -> { consume(); LLSD.LLSDReal(parseRealLLSD(parseNumberWord())) }
                 'u' -> { consume(); LLSD.LLSDUUID(LLUUID.fromString(parseUuidLiteral()) ?: LLUUID.NULL) }
                 'd' -> { consume(); LLSD.LLSDDate(LLDate.fromISOString(parseQuotedAfterTag()) ?: LLDate.NULL) }
@@ -582,6 +593,10 @@ object LLSDSerialize {
                 dos.writeByte('i'.code)
                 dos.writeInt(sd.value)
             }
+            is LLSD.LLSDInteger64 -> {
+                dos.writeByte('I'.code)
+                dos.writeLong(sd.value)
+            }
             is LLSD.LLSDReal -> {
                 dos.writeByte('r'.code)
                 dos.writeDouble(sd.value)
@@ -598,7 +613,7 @@ object LLSDSerialize {
             }
             is LLSD.LLSDDate -> {
                 dos.writeByte('d'.code)
-                writeDateLE(dos, sd.value.secondsSinceEpoch)
+                dos.writeDouble(sd.value.secondsSinceEpoch)
             }
             is LLSD.LLSDURI -> {
                 dos.writeByte('l'.code)
@@ -665,7 +680,8 @@ object LLSDSerialize {
                 val bytes = ByteArray(16).also { dis.readFully(it) }
                 LLSD.LLSDUUID(uuidFromBytes(bytes))
             }
-            'd' -> LLSD.LLSDDate(LLDate(readDateLE(dis)))
+            'd' -> LLSD.LLSDDate(LLDate(dis.readDouble()))
+            'I' -> LLSD.LLSDInteger64(dis.readLong())
             'l' -> {
                 val len = dis.readInt()
                 val bytes = ByteArray(len).also { dis.readFully(it) }
@@ -681,7 +697,8 @@ object LLSDSerialize {
                 val map = linkedMapOf<String, LLSD>()
                 repeat(count) {
                     val keyTag = dis.readByte().toInt() and 0xff
-                    require(keyTag.toChar() == 'k') { "Expected 'k' map-key tag, got '${keyTag.toChar()}'" }
+                    val keyChar = keyTag.toChar()
+                    require(keyChar == 'k' || keyChar == 's') { "Expected 'k' or 's' map-key tag, got '$keyChar'" }
                     val klen = dis.readInt()
                     val kbytes = ByteArray(klen).also { dis.readFully(it) }
                     val key = String(kbytes, Charsets.UTF_8)
@@ -713,6 +730,7 @@ object LLSDSerialize {
             is LLSD.Undefined -> append("null")
             is LLSD.LLSDBoolean -> append(sd.value)
             is LLSD.LLSDInteger -> append(sd.value)
+            is LLSD.LLSDInteger64 -> append(sd.value)
             is LLSD.LLSDReal -> when {
                 sd.value.isNaN() || sd.value.isInfinite() -> append("null")
                 else -> append(sd.value)

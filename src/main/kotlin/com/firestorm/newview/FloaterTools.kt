@@ -122,6 +122,33 @@ class FloaterTools(key: LLSD) : Floater(key) {
 
     private var landImpactsObserver: LandImpactsObserver? = null
 
+    val buildToolController = com.firestorm.build.BuildToolController()
+
+    fun getBuildController(): com.firestorm.build.BuildToolController = buildToolController
+
+    fun createPrim(shapeType: Int, x: Float = 0f, y: Float = 0f, z: Float = 0f): com.firestorm.build.BuildPrimitiveState {
+        return buildToolController.createPrim(shapeType, x, y, z)
+    }
+
+    fun onGizmoTransform(mode: Int, dx: Float, dy: Float, dz: Float) {
+        buildToolController.onGizmoTransform(mode, dx, dy, dz)
+    }
+
+    fun updateTextureParameters(faceIndex: Int, textureId: String, colorHex: String = "#FFFFFFFF",
+                                 scaleU: Float = 1f, scaleV: Float = 1f, offsetU: Float = 0f, offsetV: Float = 0f,
+                                 rotationDeg: Float = 0f, glow: Float = 0f, fullbright: Boolean = false) {
+        buildToolController.updateTextureParameters(faceIndex, textureId, colorHex, scaleU, scaleV, offsetU, offsetV, rotationDeg, glow, fullbright)
+    }
+
+    fun pickTextureFromInventory(faceIndex: Int, inventoryItemId: String) {
+        buildToolController.pickTextureFromInventory(faceIndex, inventoryItemId)
+    }
+
+    fun updateShapeParameters(cutStart: Float, cutEnd: Float, twistStart: Float, twistEnd: Float,
+                               hollow: Float, taperX: Float, taperY: Float, shearX: Float, shearY: Float) {
+        buildToolController.updateShapeParameters(cutStart, cutEnd, twistStart, twistEnd, hollow, taperX, taperY, shearX, shearY)
+    }
+
     companion object {
         var showObjectCost: Boolean = true
         var previousFocusOnAvatar: Boolean = false

@@ -50,7 +50,7 @@ object LLError {
     private val emittedOnce: MutableSet<String> = ConcurrentHashMap.newKeySet()
 
     // fatal message saved for crash reporters
-    @Volatile var fatalMessage: String = ""
+    @Volatile @get:JvmName("readFatalMessage") var fatalMessage: String = ""
         private set
 
     // -------------------------------------------------------------------------

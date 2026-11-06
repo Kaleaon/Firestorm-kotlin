@@ -155,6 +155,11 @@ class LLInventorySort(order: Int = 0) {
     private var mFoldersByName: Boolean = false
     private var mFoldersByWeight: Boolean = false
 
+    private var mFavoritesFolderId: UUID? = null
+    private var mFavoritesFolderIdResolved: Boolean = false
+    private val mFavoritesDescendantCache: MutableMap<UUID, Boolean> = mutableMapOf()
+    private var mSortPassActive: Boolean = false
+
     init {
         fromOrder(order)
     }
@@ -163,6 +168,33 @@ class LLInventorySort(order: Int = 0) {
     fun isFoldersByName(): Boolean = (!mByDate || mFoldersByName) && !mFoldersByWeight
     fun isFoldersByDate(): Boolean = mByDate && !mFoldersByName && !mFoldersByWeight
     fun getSortOrder(): UInt = mSortOrder
+    fun isSortPassActive(): Boolean = mSortPassActive
+
+    fun prepareSortContext() {
+        mFavoritesFolderId = gInventory.findCategoryUUIDForType(LLFolderType.EType.FT_FAVORITE)
+        mFavoritesFolderIdResolved = true
+        mFavoritesDescendantCache.clear()
+        mSortPassActive = true
+    }
+
+    fun clearSortContext() {
+        mFavoritesFolderId = null
+        mFavoritesFolderIdResolved = false
+        mFavoritesDescendantCache.clear()
+        mSortPassActive = false
+    }
+
+    private fun isFavoritesDescendant(uuid: UUID): Boolean {
+        if (!mFavoritesFolderIdResolved) {
+            mFavoritesFolderId = gInventory.findCategoryUUIDForType(LLFolderType.EType.FT_FAVORITE)
+            mFavoritesFolderIdResolved = true
+        }
+        val favId = mFavoritesFolderId ?: return false
+        if (favId == UUID.fromString("00000000-0000-0000-0000-000000000000")) return false
+        return mFavoritesDescendantCache.getOrPut(uuid) {
+            gInventory.isObjectDescendentOf(uuid, favId)
+        }
+    }
 
     fun fromOrder(order: Int) {
         mSortOrder = order.toUInt()
@@ -178,10 +210,7 @@ class LLInventorySort(order: Int = 0) {
             && a.getInventoryType() == LLInventoryType.EType.IT_LANDMARK
             && b.getInventoryType() == LLInventoryType.EType.IT_LANDMARK
         ) {
-            val favoritesFolderId = gInventory.findCategoryUUIDForType(LLFolderType.EType.FT_FAVORITE)
-            if (gInventory.isObjectDescendentOf(a.getUUID(), favoritesFolderId)
-                && gInventory.isObjectDescendentOf(b.getUUID(), favoritesFolderId)
-            ) {
+            if (isFavoritesDescendant(a.getUUID()) && isFavoritesDescendant(b.getUUID())) {
                 val aSort = LLFavoritesOrderStorage.instance().getSortIndex(a.getUUID())
                 val bSort = LLFavoritesOrderStorage.instance().getSortIndex(b.getUUID())
                 if (!(aSort < 0 && bSort < 0)) {
@@ -248,41 +277,53 @@ class LLFolderViewModelInventory(name: String) : LLFolderViewModel<LLInventorySo
         val sortModelp = folder.getViewModelItem() as? LLFolderViewModelItemInventory ?: return
         if (!sortModelp.canSortContent()) return
 
-        var hasFavorites = false
+        val sorter = getSorter()
+        val isRootSortPass = !sorter.isSortPassActive()
+        if (isRootSortPass) {
+            sorter.prepareSortContext()
+        }
 
-        for (childFolderp in folder.getFolders()) {
-            sort(childFolderp)
+        try {
+            var hasFavorites = false
 
-            val modelp = childFolderp.getViewModelItem() as LLFolderViewModelItemInventory
-            hasFavorites = hasFavorites || childFolderp.isFavorite() || childFolderp.hasFavorites()
+            for (childFolderp in folder.getFolders()) {
+                sort(childFolderp)
 
-            if (childFolderp.getFoldersCount() > 0) {
-                val folderp = childFolderp.getFolders().first().getViewModelItem() as LLFolderViewModelItemInventory
-                val mostRecentFolderTime = folderp.getCreationDate()
-                if (mostRecentFolderTime > modelp.getCreationDate()) {
-                    modelp.setCreationDate(mostRecentFolderTime)
+                val modelp = childFolderp.getViewModelItem() as LLFolderViewModelItemInventory
+                hasFavorites = hasFavorites || childFolderp.isFavorite() || childFolderp.hasFavorites()
+
+                if (childFolderp.getFoldersCount() > 0) {
+                    val folderp = childFolderp.getFolders().first().getViewModelItem() as LLFolderViewModelItemInventory
+                    val mostRecentFolderTime = folderp.getCreationDate()
+                    if (mostRecentFolderTime > modelp.getCreationDate()) {
+                        modelp.setCreationDate(mostRecentFolderTime)
+                    }
+                }
+                if (childFolderp.getItemsCount() > 0) {
+                    val itemp = childFolderp.getItems().first().getViewModelItem() as LLFolderViewModelItemInventory
+                    val mostRecentItemTime = itemp.getCreationDate()
+                    if (mostRecentItemTime > modelp.getCreationDate()) {
+                        modelp.setCreationDate(mostRecentItemTime)
+                    }
                 }
             }
-            if (childFolderp.getItemsCount() > 0) {
-                val itemp = childFolderp.getItems().first().getViewModelItem() as LLFolderViewModelItemInventory
-                val mostRecentItemTime = itemp.getCreationDate()
-                if (mostRecentItemTime > modelp.getCreationDate()) {
-                    modelp.setCreationDate(mostRecentItemTime)
+
+            if (!hasFavorites) {
+                for (childItemp in folder.getItems()) {
+                    hasFavorites = hasFavorites || childItemp.isFavorite()
+                    if (hasFavorites) break
                 }
             }
-        }
+            if (hasFavorites) {
+                folder.updateHasFavorites(true)
+            }
 
-        if (!hasFavorites) {
-            for (childItemp in folder.getItems()) {
-                hasFavorites = hasFavorites || childItemp.isFavorite()
-                if (hasFavorites) break
+            super.sort(folder)
+        } finally {
+            if (isRootSortPass) {
+                sorter.clearSortContext()
             }
         }
-        if (hasFavorites) {
-            folder.updateHasFavorites(true)
-        }
-
-        super.sort(folder)
     }
 
     fun contentsReady(): Boolean {

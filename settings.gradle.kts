@@ -15,7 +15,8 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "firestorm-kotlin"
-include(":app", ":core")
+include(":core")
+include(":app")
 include(":llsd-kotlin")
 project(":llsd-kotlin").projectDir = listOf(
     file("Unified-LLSD/kotlin"),

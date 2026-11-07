@@ -46,6 +46,12 @@ android {
         abortOnError = false
     }
 
+    packaging {
+        resources {
+            excludes += "/META-INF/INDEX.LIST"
+        }
+    }
+
     sourceSets {
         getByName("main") {
             java.srcDirs("src/main/java")
@@ -57,6 +63,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":core"))
     implementation("androidx.core:core-ktx:1.15.0")
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("com.google.android.material:material:1.12.0")

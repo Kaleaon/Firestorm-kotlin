@@ -1,0 +1,73 @@
+package com.firestorm.llappearance
+
+import com.firestorm.llcommon.LLUUID
+import com.firestorm.llimage.ImageRaw
+
+class LLBakedTexture(val index: BakedTextureIndex) {
+
+    var resultId: LLUUID = LLUUID.NULL
+        private set
+    var isLocallyDirty: Boolean = true
+        private set
+    var isUploaded: Boolean = false
+        private set
+    var needsUpdate: Boolean = true
+        private set
+
+    private val layerList: MutableList<String> = mutableListOf()
+    private var bakedImage: ImageRaw? = null
+
+    fun addLayer(layerName: String) {
+        layerList.add(layerName)
+        isLocallyDirty = true
+    }
+
+    fun removeLayer(layerName: String) {
+        layerList.remove(layerName)
+        isLocallyDirty = true
+    }
+
+    fun getLayers(): List<String> = layerList.toList()
+
+    fun requestUpdate() {
+        needsUpdate = true
+        isLocallyDirty = true
+    }
+
+    fun bake(width: Int = 512, height: Int = 512): Boolean {
+        if (width <= 0 || height <= 0) return false
+        bakedImage = ImageRaw(width, height, 4).apply {
+            clear(0.toByte(), 0.toByte(), 0.toByte(), 0.toByte())
+            comment = if (layerList.isEmpty()) {
+                "Bake:${index.name}"
+            } else {
+                "Bake:${index.name}:${layerList.joinToString(",")}"
+            }
+        }
+        isLocallyDirty = false
+        needsUpdate = false
+        isUploaded = false
+        resultId = LLUUID.generate()
+        return true
+    }
+
+    fun uploadComplete(id: LLUUID) {
+        resultId = id
+        isUploaded = true
+    }
+
+    fun getBakedImage(): ImageRaw? = bakedImage
+
+    fun invalidate() {
+        resultId = LLUUID.NULL
+        isUploaded = false
+        isLocallyDirty = true
+        needsUpdate = true
+        bakedImage = null
+    }
+
+    fun isValid(): Boolean = resultId != LLUUID.NULL
+
+    override fun toString(): String =
+        "LLBakedTexture(index=$index, id=$resultId, dirty=$isLocallyDirty, uploaded=$isUploaded)"
+}

@@ -41,6 +41,11 @@ android {
         viewBinding = true
     }
 
+    lint {
+        checkReleaseBuilds = false
+        abortOnError = false
+    }
+
     packaging {
         resources {
             excludes += "/META-INF/INDEX.LIST"

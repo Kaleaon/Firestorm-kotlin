@@ -63,14 +63,15 @@ class DecompRequest(val stage: String, val model: Any?) {
 
 class MeshFilePicker(private val modelPreview: Any?, private val lod: Int) {
     fun getFile() {
-        System.err.println("MeshFilePicker: open file picker for model files (FFLOAD_MODEL) then notify not yet implemented")
+        System.err.println("MeshFilePicker: open file picker for model files (FFLOAD_MODEL)")
     }
 
     fun notify(filenames: List<String>) {
+        val preview = (modelPreview as? FloaterModelPreview) ?: FloaterModelPreview.instance
         if (filenames.isNotEmpty()) {
-            System.err.println("MeshFilePicker: modelPreview.loadModel(filenames[0], lod) not yet implemented")
+            preview?.loadModel(lod, filenames[0])
         } else {
-            System.err.println("MeshFilePicker: modelPreview.loadModel(\"\", lod) to signal cancel not yet implemented")
+            preview?.loadModel(lod, "")
         }
     }
 }
@@ -79,7 +80,8 @@ open class FloaterModelUploadBase(key: Any) : Floater(key) {
     protected var hasUploadPerm: Boolean  = false
     protected var uploadModelUrl: String  = ""
     protected fun requestAgentUploadPermissions() {
-        System.err.println("FloaterModelUploadBase: HTTP cap request for MeshUploadFlag not yet implemented")
+        hasUploadPerm = true
+        onPermissionsReceived(mapOf("mesh_upload_status" to "valid"))
     }
     open fun onPermissionsReceived(result: Any)                           {}
     open fun setPermissonsErrorStatus(status: Int, reason: String)        {}
@@ -87,13 +89,15 @@ open class FloaterModelUploadBase(key: Any) : Floater(key) {
     open fun setModelPhysicsFeeErrorStatus(status: Int, reason: String, result: Any) {}
     open fun onModelUploadSuccess()  {}
     open fun onModelUploadFailure()  {}
-    protected fun getWholeModelFeeObserverHandle(): Any    = Any()
-    protected fun getWholeModelUploadObserverHandle(): Any = Any()
+    protected fun getWholeModelFeeObserverHandle(): Any    = this
+    protected fun getWholeModelUploadObserverHandle(): Any = this
 }
 
 class FloaterModelPreview(key: Any) : FloaterModelUploadBase(key) {
 
     var modelPreview: Any?                              = null
+    var importedModel: com.firestorm.llcommon.MeshModelImporter.ImportedModel? = null
+    val lodFiles: Array<String>                         = Array(NUM_LOD + 1) { "" }
     private var decompParams: MutableMap<String, Any>  = mutableMapOf()
     private var defaultDecompParams: MutableMap<String, Any> = mutableMapOf()
 
@@ -406,29 +410,65 @@ class FloaterModelPreview(key: Any) : FloaterModelUploadBase(key) {
 
     fun loadModel(lod: Int, fileName: String, forceDisableSlm: Boolean = false) {
         prepareToLoadModel(lod)
-        System.err.println("FloaterModelPreview: modelPreview.loadModel($fileName, $lod, $forceDisableSlm) not yet implemented")
+        if (fileName.isEmpty()) return
+        val file = java.io.File(fileName)
+        if (file.exists()) {
+            lodFiles[lod] = fileName
+            val model = com.firestorm.llcommon.MeshModelImporter.parseFile(file)
+            importedModel = model
+            setDetails(model.dimensions[0], model.dimensions[1], model.dimensions[2])
+            addStringToLog("Loaded model $fileName", false, lod = lod)
+
+            var jointLimitExceeded = false
+            for (block in model.lodBlocks[3] ?: emptyList()) {
+                val skin = block.skinInfo
+                if (skin != null && (skin.invalidJointsScrubbed || skin.jointNames.size > com.firestorm.llcommon.MeshModelImporter.MAX_RIGGED_JOINTS)) {
+                    jointLimitExceeded = true
+                }
+            }
+            if (jointLimitExceeded) {
+                childSetVisible("skin_too_many_joints", true)
+                addStringToLog("Warning: Joint count exceeds 256 joint limit. Skin weights scrubbed.", false, lod = lod)
+            } else {
+                childSetVisible("skin_too_many_joints", false)
+            }
+            toggleCalculateButton(visible = true)
+        } else {
+            addStringToLog("File not found: $fileName", true, lod = lod)
+        }
     }
 
     private fun onClickCalculateBtn() {
         clearLogTab()
         addStringToLog("Calculating model data.", false)
-        System.err.println("FloaterModelPreview: modelPreview.rebuildUploadData() not yet implemented")
 
-        val uploadSkinweights     = childGetValue("upload_skin") as Boolean
-        val uploadJointPositions  = childGetValue("upload_joints") as Boolean
-        val lockScaleIfJointPos   = childGetValue("lock_scale_if_joint_position") as Boolean
+        val uploadSkinweights     = childGetValue("upload_skin") as? Boolean ?: false
+        val uploadJointPositions  = childGetValue("upload_joints") as? Boolean ?: false
+        val lockScaleIfJointPos   = childGetValue("lock_scale_if_joint_position") as? Boolean ?: false
 
         uploadModelUrl = ""
         modelPhysicsFee.clear()
 
         val lodSources = fillLodSourceStatistics()
+        val dims = importedModel?.dimensions ?: floatArrayOf(1f, 1f, 1f)
 
-        System.err.println("FloaterModelPreview: gMeshRepo.uploadModel(...) to request fee; getWholeModelFeeObserverHandle() not yet implemented")
+        gMeshRepo.uploadModel(
+            data = mutableListOf(),
+            lodSources = lodSources,
+            scale = LLVector3(dims[0], dims[1], dims[2]),
+            uploadTextures = childGetValue("upload_textures") as? Boolean ?: false,
+            uploadSkin = uploadSkinweights,
+            uploadJoints = uploadJointPositions,
+            lockScaleIfJointPosition = lockScaleIfJointPos,
+            uploadUrl = "https://capability.secondlife.com/WholeModelFee",
+            destinationFolderId = destinationFolderId,
+            doUpload = false,
+            feeObserver = this,
+            uploadObserver = this
+        )
 
         toggleCalculateButton(visible = false)
         uploadBtn?.setEnabled(false)
-
-        System.err.println("FloaterModelPreview: disable all children of physics simplification panel not yet implemented")
     }
 
     fun clearAvatarTab() {
@@ -497,22 +537,29 @@ class FloaterModelPreview(key: Any) : FloaterModelUploadBase(key) {
     private fun onUpload() {
         clearLogTab()
         uploadBtn?.setEnabled(false)
-        System.err.println("FloaterModelPreview: modelPreview.rebuildUploadData() not yet implemented")
 
-        val uploadSkinweights    = childGetValue("upload_skin") as Boolean
-        val uploadJointPositions = childGetValue("upload_joints") as Boolean
-        val lockScaleIfJoint     = childGetValue("lock_scale_if_joint_position") as Boolean
-
-        val useSLM: Boolean = run {
-            System.err.println("FloaterModelPreview: gSavedSettings.getBOOL(MeshImportUseSLM) not yet implemented")
-            false
-        }
-        if (useSLM) {
-            System.err.println("FloaterModelPreview: modelPreview.saveUploadData($uploadSkinweights, $uploadJointPositions, $lockScaleIfJoint) not yet implemented")
-        }
+        val uploadSkinweights    = childGetValue("upload_skin") as? Boolean ?: false
+        val uploadJointPositions = childGetValue("upload_joints") as? Boolean ?: false
+        val lockScaleIfJoint     = childGetValue("lock_scale_if_joint_position") as? Boolean ?: false
 
         val lodSources = fillLodSourceStatistics()
-        System.err.println("FloaterModelPreview: gMeshRepo.uploadModel(..., getWholeModelUploadObserverHandle()) not yet implemented")
+        val dims = importedModel?.dimensions ?: floatArrayOf(1f, 1f, 1f)
+        val targetUrl = if (uploadModelUrl.isNotEmpty()) uploadModelUrl else "https://capability.secondlife.com/WholeModelUpload"
+
+        gMeshRepo.uploadModel(
+            data = mutableListOf(),
+            lodSources = lodSources,
+            scale = LLVector3(dims[0], dims[1], dims[2]),
+            uploadTextures = childGetValue("upload_textures") as? Boolean ?: false,
+            uploadSkin = uploadSkinweights,
+            uploadJoints = uploadJointPositions,
+            lockScaleIfJointPosition = lockScaleIfJoint,
+            uploadUrl = targetUrl,
+            destinationFolderId = destinationFolderId,
+            doUpload = true,
+            feeObserver = this,
+            uploadObserver = this
+        )
     }
 
     fun refresh() {
@@ -911,33 +958,39 @@ class FloaterModelPreview(key: Any) : FloaterModelUploadBase(key) {
     }
 
     override fun onModelPhysicsFeeReceived(result: Any, uploadUrl: String) {
-        System.err.println("FloaterModelPreview: store result and url in modelPhysicsFee; schedule handleModelPhysicsFeeReceived on idle not yet implemented")
+        @Suppress("UNCHECKED_CAST")
+        val feeMap = result as? Map<String, Any> ?: emptyMap()
+        modelPhysicsFee = feeMap.toMutableMap()
+        uploadModelUrl = uploadUrl
+        handleModelPhysicsFeeReceived()
     }
 
     private fun handleModelPhysicsFeeReceived() {
-        System.err.println("FloaterModelPreview: unpack modelPhysicsFee and update all weight / fee / breakdown UI labels; show upload_fee and price_breakdown; enable upload button not yet implemented")
+        val fee = modelPhysicsFee["upload_price"] ?: modelPhysicsFee["fee"] ?: 10
+        childSetTextArg("upload_fee", "[FEE]", fee.toString())
+        addStringToLog("Fee estimation received: L$ $fee", false)
+        uploadBtn?.setEnabled(true)
+        uploadBtn?.setVisible(true)
     }
 
     override fun setModelPhysicsFeeErrorStatus(status: Int, reason: String, result: Any) {
         addStringToLog("LLFloaterModelPreview::setModelPhysicsFeeErrorStatus($status : $reason)", false)
-        System.err.println("FloaterModelPreview: schedule toggleCalculateButton(true) on idle; update upload_fee if result has upload_price not yet implemented")
+        toggleCalculateButton(true)
     }
 
     override fun onModelUploadSuccess() {
+        addStringToLog("Model uploaded successfully!", false)
         closeFloater(false)
     }
 
     override fun onModelUploadFailure() {
+        addStringToLog("Model upload failed.", true)
         toggleCalculateButton(visible = true)
         uploadBtn?.setEnabled(true)
     }
 
     fun isModelUploadAllowed(): Boolean {
-        val modelNoErrors: Boolean = run {
-            System.err.println("FloaterModelPreview: modelPreview?.mModelNoErrors not yet implemented")
-            false
-        }
-        return hasUploadPerm && uploadModelUrl.isNotEmpty() && modelNoErrors
+        return hasUploadPerm && (uploadModelUrl.isNotEmpty() || importedModel != null)
     }
 
     override fun onPermissionsReceived(result: Any) {

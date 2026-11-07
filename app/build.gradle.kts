@@ -57,7 +57,7 @@ android {
             java.srcDirs("src/main/java")
         }
         getByName("test") {
-            java.srcDirs("src/test/java")
+            java.srcDirs("src/test/java", "src/test/kotlin")
         }
     }
 }

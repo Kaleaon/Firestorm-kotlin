@@ -51,15 +51,15 @@ enum class PathType(val code: UByte) {
 // Face-ID bit-flags  (mirrors LL_FACE_* constants)
 // ---------------------------------------------------------------------------
 object FaceId {
-    const val PATH_BEGIN: UShort    = (0x1 shl 0).toUShort()
-    const val PATH_END: UShort      = (0x1 shl 1).toUShort()
-    const val INNER_SIDE: UShort    = (0x1 shl 2).toUShort()
-    const val PROFILE_BEGIN: UShort = (0x1 shl 3).toUShort()
-    const val PROFILE_END: UShort   = (0x1 shl 4).toUShort()
-    const val OUTER_SIDE_0: UShort  = (0x1 shl 5).toUShort()
-    const val OUTER_SIDE_1: UShort  = (0x1 shl 6).toUShort()
-    const val OUTER_SIDE_2: UShort  = (0x1 shl 7).toUShort()
-    const val OUTER_SIDE_3: UShort  = (0x1 shl 8).toUShort()
+    val PATH_BEGIN: UShort    = (0x1 shl 0).toUShort()
+    val PATH_END: UShort      = (0x1 shl 1).toUShort()
+    val INNER_SIDE: UShort    = (0x1 shl 2).toUShort()
+    val PROFILE_BEGIN: UShort = (0x1 shl 3).toUShort()
+    val PROFILE_END: UShort   = (0x1 shl 4).toUShort()
+    val OUTER_SIDE_0: UShort  = (0x1 shl 5).toUShort()
+    val OUTER_SIDE_1: UShort  = (0x1 shl 6).toUShort()
+    val OUTER_SIDE_2: UShort  = (0x1 shl 7).toUShort()
+    val OUTER_SIDE_3: UShort  = (0x1 shl 8).toUShort()
 }
 
 // ---------------------------------------------------------------------------
@@ -77,7 +77,7 @@ object SculptTypes {
 
     const val FLAG_INVERT: UByte = 64u
     const val FLAG_MIRROR: UByte = 128u
-    const val TYPE_MASK: UByte   = (SPHERE.toInt() or TORUS.toInt() or PLANE.toInt() or
+    val TYPE_MASK: UByte   = (SPHERE.toInt() or TORUS.toInt() or PLANE.toInt() or
                                     CYLINDER.toInt() or MESH.toInt() or GLTF.toInt()).toUByte()
 }
 
@@ -163,11 +163,11 @@ open class LLVolume(
     var faceMask: UInt = 0u          // bit-array of which faces exist
     var lodScaleBias: Vector3 = Vector3(1f, 1f, 1f)
 
-    protected var surfaceArea: Float = 0f
-    protected var sculptLevel: Int = 0
+    var surfaceArea: Float = 0f
+    var sculptLevel: Int = 0
 
-    protected var isMeshAssetLoaded: Boolean = false
-    protected var isMeshAssetUnavailable: Boolean = false
+    open var isMeshAssetLoaded: Boolean = false
+    open var isMeshAssetUnavailable: Boolean = false
 
     // ------------------------------------------------------------------
     // Init: trigger geometry generation on construction
@@ -196,14 +196,10 @@ open class LLVolume(
     // ------------------------------------------------------------------
 
     fun getNumFaces(): Int         = faces.size
-    fun getNumVolumeFaces(): Int   = faces.size
+    open fun getNumVolumeFaces(): Int   = faces.size
 
     fun getProfileType(): UByte    = params.profileCurve
     fun getPathType(): UByte       = params.pathCurve
-
-    fun getSurfaceArea(): Float    = surfaceArea
-    fun getSculptLevel(): Int      = sculptLevel
-    fun setSculptLevel(level: Int) { sculptLevel = level }
 
     fun isConvex(): Boolean {
         // A volume is convex when hollow == 0 and beginS == 0 and endS == 1
@@ -215,11 +211,6 @@ open class LLVolume(
 
     fun isMeshSculpt(): Boolean =
         (params.sculptType.toInt() and SculptTypes.TYPE_MASK.toInt()) == SculptTypes.MESH.toInt()
-
-    open fun setMeshAssetLoaded(loaded: Boolean)           { isMeshAssetLoaded = loaded }
-    open fun isMeshAssetLoaded(): Boolean                  = isMeshAssetLoaded
-    open fun setMeshAssetUnavailable(unavailable: Boolean) { isMeshAssetUnavailable = unavailable }
-    open fun isMeshAssetUnavailable(): Boolean             = isMeshAssetUnavailable
 
     // ------------------------------------------------------------------
     // LOD triangle count helper  (stubbed — mirrors static getLoDTriangleCounts)

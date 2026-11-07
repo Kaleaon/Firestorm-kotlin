@@ -90,6 +90,7 @@ abstract class LLThread(var name: String) {
 class LLCondition(private val mutex: LLMutex) {
     private val condition = mutex.newCondition()
 
+    fun await() = condition.await()
     @JvmName("awaitCondition")
     fun wait() = condition.await()
     fun signal() = condition.signal()

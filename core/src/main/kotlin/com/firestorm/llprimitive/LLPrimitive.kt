@@ -21,8 +21,6 @@ import kotlin.math.roundToInt
 // PCode — raw on-wire primitive byte codes (mirrors LL_PCODE_* values)
 // ---------------------------------------------------------------------------
 
-typealias LLPCode = UByte
-
 enum class PCode(val code: UByte) {
     CUBE(1u),
     PRISM(2u),
@@ -178,68 +176,27 @@ object ExtraParams {
 }
 
 // ---------------------------------------------------------------------------
-// Primitive flags
-// ---------------------------------------------------------------------------
-
-object PrimFlags {
-    const val PHANTOM: UInt            = 0x1u shl 0
-    const val VOLUME_DETECT: UInt      = 0x1u shl 1
-    const val DYNAMIC: UInt            = 0x1u shl 2
-    const val AVATAR: UInt             = 0x1u shl 3
-    const val SCULPT: UInt             = 0x1u shl 4
-    const val COLLISION_CALLBACK: UInt = 0x1u shl 5
-    const val CONVEX: UInt             = 0x1u shl 6
-    const val DEFAULT_VOLUME: UInt     = 0x1u shl 7
-    const val SITTING: UInt            = 0x1u shl 8
-    const val SITTING_ON_GROUND: UInt  = 0x1u shl 9
-}
-
-// ---------------------------------------------------------------------------
 // Flexible object data (LLFlexibleObjectData)
 // ---------------------------------------------------------------------------
 
-data class FlexibleObjectData(
-    var simulateLOD: Int   = FlexibleObjectDefaults.DEFAULT_NUM_SECTIONS,
-    var gravity: Float     = FlexibleObjectDefaults.DEFAULT_GRAVITY,
-    var airFriction: Float = FlexibleObjectDefaults.DEFAULT_AIR_FRICTION,
-    var windSensitivity: Float = FlexibleObjectDefaults.DEFAULT_WIND_SENSITIVITY,
-    var tension: Float     = FlexibleObjectDefaults.DEFAULT_TENSION,
+class FlexibleObjectData(
+    simulateLOD: Int   = FlexibleObjectDefaults.DEFAULT_NUM_SECTIONS,
+    gravity: Float     = FlexibleObjectDefaults.DEFAULT_GRAVITY,
+    airFriction: Float = FlexibleObjectDefaults.DEFAULT_AIR_FRICTION,
+    windSensitivity: Float = FlexibleObjectDefaults.DEFAULT_WIND_SENSITIVITY,
+    tension: Float     = FlexibleObjectDefaults.DEFAULT_TENSION,
     var userForce: Vector3 = Vector3.ZERO,
 ) {
-    fun setSimulateLOD(lod: Int) {
-        simulateLOD = lod.coerceIn(
-            FlexibleObjectDefaults.MIN_SECTIONS,
-            FlexibleObjectDefaults.MAX_SECTIONS
-        )
-    }
-
-    fun setGravity(g: Float) {
-        gravity = g.coerceIn(
-            FlexibleObjectDefaults.MIN_GRAVITY,
-            FlexibleObjectDefaults.MAX_GRAVITY
-        )
-    }
-
-    fun setAirFriction(f: Float) {
-        airFriction = f.coerceIn(
-            FlexibleObjectDefaults.MIN_AIR_FRICTION,
-            FlexibleObjectDefaults.MAX_AIR_FRICTION
-        )
-    }
-
-    fun setWindSensitivity(w: Float) {
-        windSensitivity = w.coerceIn(
-            FlexibleObjectDefaults.MIN_WIND_SENSITIVITY,
-            FlexibleObjectDefaults.MAX_WIND_SENSITIVITY
-        )
-    }
-
-    fun setTension(t: Float) {
-        tension = t.coerceIn(
-            FlexibleObjectDefaults.MIN_TENSION,
-            FlexibleObjectDefaults.MAX_TENSION
-        )
-    }
+    var simulateLOD: Int = simulateLOD.coerceIn(FlexibleObjectDefaults.MIN_SECTIONS, FlexibleObjectDefaults.MAX_SECTIONS)
+        set(v) { field = v.coerceIn(FlexibleObjectDefaults.MIN_SECTIONS, FlexibleObjectDefaults.MAX_SECTIONS) }
+    var gravity: Float = gravity.coerceIn(FlexibleObjectDefaults.MIN_GRAVITY, FlexibleObjectDefaults.MAX_GRAVITY)
+        set(v) { field = v.coerceIn(FlexibleObjectDefaults.MIN_GRAVITY, FlexibleObjectDefaults.MAX_GRAVITY) }
+    var airFriction: Float = airFriction.coerceIn(FlexibleObjectDefaults.MIN_AIR_FRICTION, FlexibleObjectDefaults.MAX_AIR_FRICTION)
+        set(v) { field = v.coerceIn(FlexibleObjectDefaults.MIN_AIR_FRICTION, FlexibleObjectDefaults.MAX_AIR_FRICTION) }
+    var windSensitivity: Float = windSensitivity.coerceIn(FlexibleObjectDefaults.MIN_WIND_SENSITIVITY, FlexibleObjectDefaults.MAX_WIND_SENSITIVITY)
+        set(v) { field = v.coerceIn(FlexibleObjectDefaults.MIN_WIND_SENSITIVITY, FlexibleObjectDefaults.MAX_WIND_SENSITIVITY) }
+    var tension: Float = tension.coerceIn(FlexibleObjectDefaults.MIN_TENSION, FlexibleObjectDefaults.MAX_TENSION)
+        set(v) { field = v.coerceIn(FlexibleObjectDefaults.MIN_TENSION, FlexibleObjectDefaults.MAX_TENSION) }
 
     fun pack(): ByteArray {
         val buf = ByteBuffer.allocate(29).order(ByteOrder.LITTLE_ENDIAN)
@@ -270,16 +227,19 @@ data class FlexibleObjectData(
 // Light params (LLLightParams)
 // ---------------------------------------------------------------------------
 
-data class LightParams(
+class LightParams(
     /** Linear (not gamma-corrected) color; alpha channel = intensity. */
     var linearColor: Color4 = Color4(1f, 1f, 1f, 1f),
-    var radius: Float    = LightDefaults.DEFAULT_RADIUS,
-    var falloff: Float   = LightDefaults.DEFAULT_FALLOFF,
-    var cutoff: Float    = LightDefaults.DEFAULT_CUTOFF,
+    radius: Float    = LightDefaults.DEFAULT_RADIUS,
+    falloff: Float   = LightDefaults.DEFAULT_FALLOFF,
+    cutoff: Float    = LightDefaults.DEFAULT_CUTOFF,
 ) {
-    fun setRadius(r: Float)  { radius  = r.coerceIn(LightDefaults.MIN_RADIUS,  LightDefaults.MAX_RADIUS) }
-    fun setFalloff(f: Float) { falloff = f.coerceIn(LightDefaults.MIN_FALLOFF, LightDefaults.MAX_FALLOFF) }
-    fun setCutoff(c: Float)  { cutoff  = c.coerceIn(LightDefaults.MIN_CUTOFF,  LightDefaults.MAX_CUTOFF) }
+    var radius: Float = radius.coerceIn(LightDefaults.MIN_RADIUS, LightDefaults.MAX_RADIUS)
+        set(v) { field = v.coerceIn(LightDefaults.MIN_RADIUS, LightDefaults.MAX_RADIUS) }
+    var falloff: Float = falloff.coerceIn(LightDefaults.MIN_FALLOFF, LightDefaults.MAX_FALLOFF)
+        set(v) { field = v.coerceIn(LightDefaults.MIN_FALLOFF, LightDefaults.MAX_FALLOFF) }
+    var cutoff: Float = cutoff.coerceIn(LightDefaults.MIN_CUTOFF, LightDefaults.MAX_CUTOFF)
+        set(v) { field = v.coerceIn(LightDefaults.MIN_CUTOFF, LightDefaults.MAX_CUTOFF) }
 
     fun pack(): ByteArray {
         val buf = ByteBuffer.allocate(16).order(ByteOrder.LITTLE_ENDIAN)
@@ -310,26 +270,17 @@ data class LightParams(
 // Reflection probe params (LLReflectionProbeParams)
 // ---------------------------------------------------------------------------
 
-data class ReflectionProbeParams(
-    var ambiance: Float      = ReflectionProbeDefaults.DEFAULT_AMBIANCE,
-    var clipDistance: Float  = ReflectionProbeDefaults.DEFAULT_CLIP_DISTANCE,
+class ReflectionProbeParams(
+    ambiance: Float      = ReflectionProbeDefaults.DEFAULT_AMBIANCE,
+    clipDistance: Float  = ReflectionProbeDefaults.DEFAULT_CLIP_DISTANCE,
     var isBox: Boolean       = false,
     var isDynamic: Boolean   = false,
     var isMirror: Boolean    = false,
 ) {
-    fun setAmbiance(a: Float) {
-        ambiance = a.coerceIn(
-            ReflectionProbeDefaults.MIN_AMBIANCE,
-            ReflectionProbeDefaults.MAX_AMBIANCE
-        )
-    }
-
-    fun setClipDistance(d: Float) {
-        clipDistance = d.coerceIn(
-            ReflectionProbeDefaults.MIN_CLIP_DISTANCE,
-            ReflectionProbeDefaults.MAX_CLIP_DISTANCE
-        )
-    }
+    var ambiance: Float = ambiance.coerceIn(ReflectionProbeDefaults.MIN_AMBIANCE, ReflectionProbeDefaults.MAX_AMBIANCE)
+        set(v) { field = v.coerceIn(ReflectionProbeDefaults.MIN_AMBIANCE, ReflectionProbeDefaults.MAX_AMBIANCE) }
+    var clipDistance: Float = clipDistance.coerceIn(ReflectionProbeDefaults.MIN_CLIP_DISTANCE, ReflectionProbeDefaults.MAX_CLIP_DISTANCE)
+        set(v) { field = v.coerceIn(ReflectionProbeDefaults.MIN_CLIP_DISTANCE, ReflectionProbeDefaults.MAX_CLIP_DISTANCE) }
 
     fun pack(): ByteArray {
         val buf = ByteBuffer.allocate(9).order(ByteOrder.LITTLE_ENDIAN)
@@ -616,6 +567,71 @@ open class LLPrimitive(
     var extendedMeshParams: ExtendedMeshParams? = null
     var reflectionProbeParams: ReflectionProbeParams? = null
     var renderMaterialParams: RenderMaterialParams?   = null
+
+    fun packExtraParams(): ByteArray {
+        val blocks = mutableListOf<Pair<UShort, ByteArray>>()
+        flexibleData?.let { blocks.add(ExtraParams.FLEXIBLE to it.pack()) }
+        lightParams?.let { blocks.add(ExtraParams.LIGHT to it.pack()) }
+        sculptParams?.let { blocks.add(ExtraParams.SCULPT to it.pack()) }
+        lightImageParams?.let { blocks.add(ExtraParams.LIGHT_IMAGE to it.pack()) }
+        extendedMeshParams?.let { blocks.add(ExtraParams.EXTENDED_MESH to it.pack()) }
+        renderMaterialParams?.let { if (!it.isEmpty) blocks.add(ExtraParams.RENDER_MATERIAL to it.pack()) }
+        reflectionProbeParams?.let { blocks.add(ExtraParams.REFLECTION_PROBE to it.pack()) }
+
+        var totalSize = 1 // 1-byte count or 2-byte count depending on spec; SL uses 1-byte count in ExtraParams block
+        for ((_, payload) in blocks) {
+            totalSize += 2 + 4 + payload.size
+        }
+        val buf = ByteBuffer.allocate(totalSize).order(ByteOrder.LITTLE_ENDIAN)
+        buf.put(blocks.size.coerceIn(0, 255).toByte())
+        for ((paramType, payload) in blocks) {
+            buf.putShort(paramType.toShort())
+            buf.putInt(payload.size)
+            buf.put(payload)
+        }
+        return buf.array()
+    }
+
+    fun unpackExtraParams(data: ByteArray) {
+        if (data.isEmpty()) return
+        val buf = ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN)
+        unpackExtraParams(buf)
+    }
+
+    fun unpackExtraParams(buf: ByteBuffer) {
+        if (buf.remaining() < 1) return
+        val count = buf.get().toInt() and 0xFF
+        repeat(count) {
+            if (buf.remaining() < 6) return
+            val paramType = buf.short.toUShort()
+            val paramSize = buf.int
+            if (paramSize < 0 || buf.remaining() < paramSize) return
+            val payload = ByteArray(paramSize).also { buf.get(it) }
+            when (paramType) {
+                ExtraParams.FLEXIBLE -> {
+                    flexibleData = (flexibleData ?: FlexibleObjectData()).apply { unpack(payload) }
+                }
+                ExtraParams.LIGHT -> {
+                    lightParams = (lightParams ?: LightParams()).apply { unpack(payload) }
+                }
+                ExtraParams.SCULPT -> {
+                    sculptParams = (sculptParams ?: SculptParams()).apply { unpack(payload) }
+                }
+                ExtraParams.LIGHT_IMAGE -> {
+                    lightImageParams = (lightImageParams ?: LightImageParams()).apply { unpack(payload) }
+                }
+                ExtraParams.EXTENDED_MESH -> {
+                    extendedMeshParams = (extendedMeshParams ?: ExtendedMeshParams()).apply { unpack(payload) }
+                }
+                ExtraParams.RENDER_MATERIAL -> {
+                    renderMaterialParams = (renderMaterialParams ?: RenderMaterialParams()).apply { unpack(payload) }
+                }
+                ExtraParams.REFLECTION_PROBE -> {
+                    reflectionProbeParams = (reflectionProbeParams ?: ReflectionProbeParams()).apply { unpack(payload) }
+                }
+            }
+        }
+    }
 
     // ---- Flags ---------------------------------------------------------
 

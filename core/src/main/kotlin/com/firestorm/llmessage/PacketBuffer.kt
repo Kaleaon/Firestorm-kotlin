@@ -82,8 +82,6 @@ class LLPacketBuffer(
     var receivingInterface: Host = Host.INVALID
 
     // =========================================================================
-    // Secondary constructor: build from a raw socket receive buffer
-    // =========================================================================
     // Accessors (mirrors C++ inline getters)
     // =========================================================================
 

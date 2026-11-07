@@ -6,6 +6,11 @@ class Quaternion(var x: Float, var y: Float, var z: Float, var w: Float) {
 
     constructor() : this(0f, 0f, 0f, 1f)
 
+    companion object {
+        val DEFAULT = Quaternion()
+        val IDENTITY = Quaternion()
+    }
+
     fun loadIdentity() {
         x = 0f; y = 0f; z = 0f; w = 1f
     }
@@ -162,10 +167,6 @@ class Quaternion(var x: Float, var y: Float, var z: Float, var w: Float) {
     override fun hashCode(): Int = 31 * (31 * (31 * x.hashCode() + y.hashCode()) + z.hashCode()) + w.hashCode()
 
     override fun toString(): String = "{ $x, $y, $z, $w }"
-
-    companion object {
-        val DEFAULT: Quaternion = Quaternion(0f, 0f, 0f, 1f)
-    }
 }
 
 operator fun Float.times(q: Quaternion): Quaternion = Quaternion(this * q.x, this * q.y, this * q.z, this * q.w)

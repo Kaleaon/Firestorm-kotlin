@@ -211,7 +211,7 @@ class LLModel(
         materialList.clear()
     }
 
-    fun getNumVolumeFaces(): Int = modelFaces.size
+    override fun getNumVolumeFaces(): Int = modelFaces.size
 
     fun setNumVolumeFaces(count: Int) {
         while (modelFaces.size < count) modelFaces.add(ModelFace())
